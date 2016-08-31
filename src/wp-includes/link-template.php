@@ -2902,8 +2902,6 @@ function the_comments_pagination( $args = array() ) {
 function get_shortcut_link() {
 	global $is_IE;
 
-	include_once( ABSPATH . 'wp-admin/includes/class-wp-press-this.php' );
-
 	$link = '';
 
 	if ( $is_IE ) {

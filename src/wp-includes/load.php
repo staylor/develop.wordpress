@@ -394,9 +394,9 @@ function wp_set_lang_dir() {
 function require_wp_db() {
 	global $wpdb;
 
-	require_once( ABSPATH . WPINC . '/wp-db.php' );
-	if ( file_exists( WP_CONTENT_DIR . '/db.php' ) )
+	if ( file_exists( WP_CONTENT_DIR . '/db.php' ) ) {
 		require_once( WP_CONTENT_DIR . '/db.php' );
+	}
 
 	if ( isset( $wpdb ) ) {
 		return;
@@ -867,7 +867,6 @@ function wp_load_translations_early() {
 	// Translation and localization
 	require_once ABSPATH . WPINC . '/pomo/mo.php';
 	require_once ABSPATH . WPINC . '/l10n.php';
-	require_once ABSPATH . WPINC . '/class-wp-locale.php';
 
 	// General libraries
 	require_once ABSPATH . WPINC . '/plugin.php';
