@@ -1,0 +1,14 @@
+{
+  "name": "schlessera/composer-wp-autoload",
+  "description": "WordPress Core Autoloader for Composer.",
+  "license": "MIT",
+  "support": {
+    "source": "https://github.com/schlessera/composer-wp-autoload",
+    "issues": "https://github.com/schlessera/composer-wp-autoload/issues"
+  },
+  "autoload": {
+    "psr-4": {
+      "WordPress\\ComposerAutoload\\": "src"
+    }
+  }
+}

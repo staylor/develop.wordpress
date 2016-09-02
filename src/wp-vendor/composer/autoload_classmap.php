@@ -170,6 +170,8 @@ return array(
     'Walker_Nav_Menu_Edit' => $baseDir . '/wp-admin/includes/class-walker-nav-menu-edit.php',
     'Walker_Page' => $baseDir . '/wp-includes/class-walker-page.php',
     'Walker_PageDropdown' => $baseDir . '/wp-includes/class-walker-page-dropdown.php',
+    'WordPress\\ComposerAutoload\\AutoloadGenerator' => $vendorDir . '/schlessera/composer-wp-autoload/src/AutoloadGenerator.php',
+    'WordPress\\ComposerAutoload\\Generator' => $vendorDir . '/schlessera/composer-wp-autoload/src/Generator.php',
     '_WP_Dependency' => $baseDir . '/wp-includes/class-wp-dependency.php',
     '_WP_Editors' => $baseDir . '/wp-includes/class-wp-editor.php',
     '_WP_List_Table_Compat' => $baseDir . '/wp-admin/includes/class-wp-list-table-compat.php',
@@ -179,6 +181,4 @@ return array(
     'ftp_sockets' => $baseDir . '/wp-admin/includes/class-ftp-sockets.php',
     'wp_xmlrpc_server' => $baseDir . '/wp-includes/class-wp-xmlrpc-server.php',
     'wpdb' => $baseDir . '/wp-includes/wp-db.php',
-    'xrstf\\Composer52\\AutoloadGenerator' => $vendorDir . '/xrstf/composer-php52/lib/xrstf/Composer52/AutoloadGenerator.php',
-    'xrstf\\Composer52\\Generator' => $vendorDir . '/xrstf/composer-php52/lib/xrstf/Composer52/Generator.php',
 );
