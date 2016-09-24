@@ -303,8 +303,8 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 	function test_prepare_setting_validity_for_js() {
 		$this->assertTrue( $this->manager->prepare_setting_validity_for_js( true ) );
 		$error = new WP_Error();
-		$error->add( 'bad_letter', 'Bad letter' );
-		$error->add( 'bad_letter', 'Bad letra' );
+		$error->add( 'bad_letter', 'Bad letter', 'A' );
+		$error->add( 'bad_letter', 'Bad letra', 123 );
 		$error->add( 'bad_number', 'Bad number', array( 'number' => 123 ) );
 		$validity = $this->manager->prepare_setting_validity_for_js( $error );
 		$this->assertInternalType( 'array', $validity );
@@ -313,7 +313,7 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 			$this->assertInternalType( 'array', $validity[ $code ] );
 			$this->assertEquals( join( ' ', $messages ), $validity[ $code ]['message'] );
 			$this->assertArrayHasKey( 'data', $validity[ $code ] );
-			$this->assertArrayHasKey( 'from_server', $validity[ $code ]['data'] );
+			$this->assertEquals( $validity[ $code ]['data'], $error->get_error_data( $code ) );
 		}
 		$this->assertArrayHasKey( 'number', $validity['bad_number']['data'] );
 		$this->assertEquals( 123, $validity['bad_number']['data']['number'] );
@@ -396,6 +396,48 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 		$this->assertNotEmpty( $manager->get_setting( 'bar' ), 'Expected bar setting to be created since filters were added.' );
 		$this->assertEquals( 'foo_default', $manager->get_setting( 'foo' )->default, 'Expected static foo setting to not get overridden by dynamic setting.' );
 		$this->assertEquals( 'dynamic_bar_default', $manager->get_setting( 'bar' )->default, 'Expected dynamic setting bar to have default providd by filter.' );
+	}
+
+	/**
+	 * Test WP_Customize_Manager::has_published_pages().
+	 *
+	 * @ticket 38013
+	 * @covers WP_Customize_Manager::has_published_pages()
+	 */
+	function test_has_published_pages() {
+		foreach ( get_pages() as $page ) {
+			wp_delete_post( $page->ID, true );
+		}
+		$this->assertFalse( $this->manager->has_published_pages() );
+
+		$this->factory()->post->create( array( 'post_type' => 'page', 'post_status' => 'private' ) );
+		$this->assertFalse( $this->manager->has_published_pages() );
+
+		$this->factory()->post->create( array( 'post_type' => 'page', 'post_status' => 'publish' ) );
+		$this->assertTrue( $this->manager->has_published_pages() );
+	}
+
+	/**
+	 * Ensure that page stubs created via nav menus will cause has_published_pages to return true.
+	 *
+	 * @ticket 38013
+	 * @covers WP_Customize_Manager::has_published_pages()
+	 */
+	function test_has_published_pages_when_nav_menus_created_posts() {
+		foreach ( get_pages() as $page ) {
+			wp_delete_post( $page->ID, true );
+		}
+		$this->assertFalse( $this->manager->has_published_pages() );
+
+		wp_set_current_user( $this->factory()->user->create( array( 'role' => 'editor' ) ) );
+		$this->manager->nav_menus->customize_register();
+		$setting_id = 'nav_menus_created_posts';
+		$setting = $this->manager->get_setting( $setting_id );
+		$this->assertInstanceOf( 'WP_Customize_Filter_Setting', $setting );
+		$auto_draft_page = $this->factory()->post->create( array( 'post_type' => 'page', 'post_status' => 'auto-draft' ) );
+		$this->manager->set_post_value( $setting_id, array( $auto_draft_page ) );
+		$setting->preview();
+		$this->assertTrue( $this->manager->has_published_pages() );
 	}
 
 	/**

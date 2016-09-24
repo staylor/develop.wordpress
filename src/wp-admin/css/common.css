@@ -680,7 +680,7 @@ ul.striped > :nth-child(odd),
 }
 
 .wp-ui-highlight {
-	color: white;
+	color: #fff;
 	background-color: #1e8cbe;
 }
 .wp-ui-text-highlight {
@@ -826,6 +826,8 @@ hr {
 	border-bottom: 1px solid #fafafa;
 }
 
+.widget-control-remove,
+.widget-control-remove:focus,
 .row-actions span.delete a,
 .row-actions span.trash a,
 .row-actions span.spam a,
@@ -842,7 +844,6 @@ hr {
 abbr.required,
 span.required,
 .file-error,
-.widget-control-remove:hover,
 .row-actions .delete a:hover,
 .row-actions .trash a:hover,
 .row-actions .spam a:hover,
@@ -854,8 +855,11 @@ span.required,
 #media-items a.delete-permanently:hover,
 #nav-menu-footer .menu-delete:hover {
 	color: #f00;
-	text-decoration: none;
 	border: none;
+}
+
+.widget-control-remove:hover {
+	color: #f00;
 }
 
 /*------------------------------------------------------------------------------
@@ -870,10 +874,8 @@ span.required,
 }
 
 #delete-action {
-	line-height: 28px;
-	vertical-align: middle;
-	text-align: left;
 	float: left;
+	line-height: 28px;
 }
 
 #publishing-action {
@@ -1043,37 +1045,51 @@ th.action-links {
 	display: inline-block;
 }
 
-.wp-filter .drawer-toggle {
-	display: inline-block;
-	margin: 0 10px;
-	padding: 4px 6px;
+.wp-filter .button.drawer-toggle {
+	margin: 10px 9px 0;
+	padding: 0 10px 0 6px;
+	border-color: transparent;
+	background-color: transparent;
 	color: #666;
-	cursor: pointer;
+	vertical-align: baseline;
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
 .wp-filter .drawer-toggle:before {
-	display: inline-block;
-	vertical-align: top;
 	content: "\f111";
 	margin: 0 5px 0 0;
-	width: 16px;
-	height: 16px;
 	color: #72777c;
-	-webkit-transition: color .1s ease-in 0;
-	transition: color .1s ease-in 0;
-	font-family: dashicons;
-	font-size: 16px;
-	line-height: 1;
-	text-align: center;
-	text-decoration: inherit;
-	font-weight: 400;
-	font-style: normal;
+	font: normal 16px/1 dashicons;
+	vertical-align: text-bottom;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
-.wp-filter .drawer-toggle:hover,
-.wp-filter .drawer-toggle:hover:before {
+.wp-filter .button.drawer-toggle:hover,
+.wp-filter .drawer-toggle:hover:before,
+.wp-filter .button.drawer-toggle:focus,
+.wp-filter .drawer-toggle:focus:before {
+	background-color: transparent;
 	color: #00a0d2;
+}
+
+.wp-filter .button.drawer-toggle:hover,
+.wp-filter .button.drawer-toggle:focus:active {
+	border-color: transparent;
+}
+
+.wp-filter .button.drawer-toggle:focus {
+	border-color: #5b9dd9;
+}
+
+.wp-filter .button.drawer-toggle:active {
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	-webkit-transform: none;
+	-ms-transform: none;
+	transform: none;
 }
 
 .wp-filter .drawer-toggle.current:before {
@@ -1090,7 +1106,7 @@ th.action-links {
 	width: 100%;
 }
 
-.show-favorites-form .wp-filter .favorites-form {
+.show-favorites-form .favorites-form {
 	display: block;
 }
 
@@ -1108,21 +1124,20 @@ th.action-links {
 	width: 100%;
 }
 
-.show-filters .wp-filter .drawer-toggle:hover,
-.show-filters .wp-filter .drawer-toggle:focus {
-	background: rgb(46, 162, 204);
-}
-
 .show-filters .filter-links a.current {
 	border-bottom: none;
 }
 
-.show-filters .wp-filter .drawer-toggle {
+.show-filters .wp-filter .button.drawer-toggle {
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
-	border: none;
 	background: #72777c;
 	color: #fff;
+}
+
+.show-filters .wp-filter .drawer-toggle:hover,
+.show-filters .wp-filter .drawer-toggle:focus {
+	background: rgb(46, 162, 204);
 }
 
 .show-filters .wp-filter .drawer-toggle:before {
@@ -1168,7 +1183,13 @@ th.action-links {
 }
 
 .filter-drawer .buttons {
+	clear: both;
 	margin-bottom: 20px;
+}
+
+.filter-drawer .filter-group + .buttons {
+	margin-bottom: 0;
+	padding-top: 20px;
 }
 
 .filter-drawer .buttons .button span {
@@ -1181,6 +1202,21 @@ th.action-links {
 .wp-filter .button.clear-filters {
 	display: none;
 	margin-left: 10px;
+}
+
+.wp-filter .button-link.edit-filters {
+	color: #0073aa;
+	text-decoration: underline;
+	padding: 0 5px;
+	line-height: 28px;
+}
+
+.wp-filter .button-link.edit-filters:hover {
+	color: #00a0d2;
+}
+
+.wp-filter .button-link.edit-filters:focus {
+	color: #124964;
 }
 
 .filtered-by {
@@ -1224,6 +1260,7 @@ th.action-links {
 	padding: 20px;
 }
 
+.show-filters .favorites-form,
 .show-filters .content-filterable,
 .show-filters.filters-applied.loading-content .content-filterable,
 .loading-content .content-filterable,
@@ -2815,6 +2852,11 @@ div.action-links {
 	font-size: 13px;
 }
 
+/* For non-js plugin installation screen ticket #36430. */
+.update-php .button.button-primary {
+	margin-right: 1em;
+}
+
 @media screen and ( max-width: 771px ) {
 	#plugin-information-title.with-banner {
 		height: 100px;
@@ -3325,7 +3367,8 @@ img {
 	display: none;
 }
 
-.control-section .accordion-section-title {
+.control-section .accordion-section-title,
+.customize-pane-child .accordion-section-title {
 	border-left: none;
 	border-right: none;
 	padding: 10px 10px 11px 14px;
@@ -3333,7 +3376,8 @@ img {
 	background: #fff;
 }
 
-.control-section .accordion-section-title:after {
+.control-section .accordion-section-title:after,
+.customize-pane-child .accordion-section-title:after {
 	top: 11px;
 }
 
@@ -3713,6 +3757,12 @@ img {
 	.filter-drawer .filter-group-feature input,
 	.filter-drawer .filter-group-feature label {
 		line-height: 25px;
+	}
+
+	.wp-filter .button.drawer-toggle {
+		font-size: 13px;
+		line-height: 26px;
+		height: 28px;
 	}
 }
 

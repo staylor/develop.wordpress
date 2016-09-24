@@ -2411,7 +2411,7 @@ class WP_Query {
 				$cgroupby = "{$this->db->comments}.comment_id";
 			} else { // Other non singular e.g. front
 				$cjoin = "JOIN {$this->db->posts} ON ( {$this->db->comments}.comment_post_ID = {$this->db->posts}.ID )";
-				$cwhere = "WHERE ( post_status = 'publish' OR ( post_status = 'inherit' && post_type = 'attachment' ) ) AND comment_approved = '1'";
+				$cwhere = "WHERE ( post_status = 'publish' OR ( post_status = 'inherit' AND post_type = 'attachment' ) ) AND comment_approved = '1'";
 				$cgroupby = '';
 			}
 
@@ -3257,14 +3257,12 @@ class WP_Query {
 				}
 			} else {
 				// For other tax queries, grab the first term from the first clause.
-				$tax_query_in_and = wp_list_filter( $this->tax_query->queried_terms, array( 'operator' => 'NOT IN' ), 'NOT' );
-
-				if ( ! empty( $tax_query_in_and ) ) {
-					$queried_taxonomies = array_keys( $tax_query_in_and );
+				if ( ! empty( $this->tax_query->queried_terms ) ) {
+					$queried_taxonomies = array_keys( $this->tax_query->queried_terms );
 					$matched_taxonomy = reset( $queried_taxonomies );
-					$query = $tax_query_in_and[ $matched_taxonomy ];
+					$query = $this->tax_query->queried_terms[ $matched_taxonomy ];
 
-					if ( $query['terms'] ) {
+					if ( ! empty( $query['terms'] ) ) {
 						if ( 'term_id' == $query['field'] ) {
 							$term = get_term( reset( $query['terms'] ), $matched_taxonomy );
 						} else {

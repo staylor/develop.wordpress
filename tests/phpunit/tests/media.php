@@ -630,7 +630,7 @@ VIDEO;
 
 		$content = apply_filters( 'the_content', $video );
 
-		$expected = '<div style="width: ' . $width . 'px; " class="wp-video">' .
+		$expected = '<div style="width: ' . $width . 'px;" class="wp-video">' .
 			"<!--[if lt IE 9]><script>document.createElement('video');</script><![endif]-->\n" .
 			'<video class="wp-video-shortcode" id="video-' . $post_id . '-1" width="' . $width . '" height="' . $h . '" preload="metadata" controls="controls">' .
 			'<source type="video/mp4" src="http://domain.tld/wp-content/uploads/2013/12/xyz.mp4?_=1" />' .
@@ -770,6 +770,37 @@ VIDEO;
 		wp_delete_attachment( $post_id );
 
 		$this->assertEquals( 'This is a comment. / Это комментарий. / Βλέπετε ένα σχόλιο.', $post->post_excerpt );
+	}
+
+	/**
+	 * @ticket 37989
+	 */
+	public function test_media_handle_upload_expected_titles() {
+		$test_file = DIR_TESTDATA . '/images/test-image.jpg';
+
+		// Make a copy of this file as it gets moved during the file upload
+		$tmp_name = wp_tempnam( $test_file );
+
+		copy( $test_file, $tmp_name );
+
+		$_FILES['upload'] = array(
+			'tmp_name' => $tmp_name,
+			'name'     => 'This is a test.jpg',
+			'type'     => 'image/jpeg',
+			'error'    => 0,
+			'size'     => filesize( $test_file ),
+		);
+
+		$post_id = media_handle_upload( 'upload', 0, array(), array( 'action' => 'test_upload_titles', 'test_form' => false ) );
+
+		unset( $_FILES['upload'] );
+
+		$post = get_post( $post_id );
+
+		// Clean up.
+		wp_delete_attachment( $post_id );
+
+		$this->assertEquals( 'This is a test', $post->post_title );
 	}
 
 	/**

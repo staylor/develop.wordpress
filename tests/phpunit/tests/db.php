@@ -562,6 +562,8 @@ class Tests_DB extends WP_UnitTestCase {
 			"DELETE QUICK $table",
 			"DELETE IGNORE $table",
 			"DELETE LOW_PRIORITY FROM $table",
+			"DELETE a FROM $table a",
+			"DELETE `a` FROM $table a",
 
 			// STATUS
 			"SHOW TABLE STATUS LIKE '$table'",
@@ -1028,5 +1030,24 @@ class Tests_DB extends WP_UnitTestCase {
 		$result = $wpdb->determine_charset( $charset, $collate );
 
 		$this->assertSame( 'utf8mb4_swedish_ci', $result['collate'] );
+	}
+
+	/**
+	 * @ticket 37982
+	 */
+	function test_charset_switched_to_utf8() {
+		global $wpdb;
+
+		if ( $wpdb->has_cap( 'utf8mb4' ) ) {
+			$this->markTestSkipped( 'This test requires utf8mb4 to not be supported.' );
+		}
+
+		$charset = 'utf8mb4';
+		$collate = 'utf8mb4_general_ci';
+
+		$result = $wpdb->determine_charset( $charset, $collate );
+
+		$this->assertSame( 'utf8', $result['charset'] );
+		$this->assertSame( 'utf8_general_ci', $result['collate'] );
 	}
 }
