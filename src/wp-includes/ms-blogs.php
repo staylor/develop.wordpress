@@ -566,10 +566,10 @@ function update_site_cache( $sites ) {
  *                                           Default false.
  *     @type array        $date_query        Date query clauses to limit sites by. See WP_Date_Query.
  *                                           Default null.
- *     @type string       $fields            Site fields to return. Accepts 'ids' for site IDs only or empty
- *                                           for all fields. Default empty.
+ *     @type string       $fields            Site fields to return. Accepts 'ids' (returns an array of site IDs)
+ *                                           or empty (returns an array of complete site objects). Default empty.
  *     @type int          $ID                A site ID to only return that site. Default empty.
- *     @type int          $number            Maximum number of sites to retrieve. Default null (no limit).
+ *     @type int          $number            Maximum number of sites to retrieve. Default 100.
  *     @type int          $offset            Number of sites to offset the query. Used to build LIMIT clause.
  *                                           Default 0.
  *     @type bool         $no_found_rows     Whether to disable the `SQL_CALC_FOUND_ROWS` query. Default true.
@@ -579,16 +579,14 @@ function update_site_cache( $sites ) {
  *                                           an empty array, or 'none' to disable `ORDER BY` clause.
  *                                           Default 'id'.
  *     @type string       $order             How to order retrieved sites. Accepts 'ASC', 'DESC'. Default 'ASC'.
- *     @type int          $network_id        Limit results to those affiliated with a given network ID.
- *                                           Default current network ID.
+ *     @type int          $network_id        Limit results to those affiliated with a given network ID. If 0,
+ *                                           include all networks. Default 0.
  *     @type array        $network__in       Array of network IDs to include affiliated sites for. Default empty.
  *     @type array        $network__not_in   Array of network IDs to exclude affiliated sites for. Default empty.
- *     @type string       $domain            Limit results to those affiliated with a given domain.
- *                                           Default empty.
+ *     @type string       $domain            Limit results to those affiliated with a given domain. Default empty.
  *     @type array        $domain__in        Array of domains to include affiliated sites for. Default empty.
  *     @type array        $domain__not_in    Array of domains to exclude affiliated sites for. Default empty.
- *     @type string       $path              Limit results to those affiliated with a given path.
- *                                           Default empty.
+ *     @type string       $path              Limit results to those affiliated with a given path. Default empty.
  *     @type array        $path__in          Array of paths to include affiliated sites for. Default empty.
  *     @type array        $path__not_in      Array of paths to exclude affiliated sites for. Default empty.
  *     @type int          $public            Limit results to public sites. Accepts '1' or '0'. Default empty.
@@ -597,6 +595,8 @@ function update_site_cache( $sites ) {
  *     @type int          $spam              Limit results to spam sites. Accepts '1' or '0'. Default empty.
  *     @type int          $deleted           Limit results to deleted sites. Accepts '1' or '0'. Default empty.
  *     @type string       $search            Search term(s) to retrieve matching sites for. Default empty.
+ *     @type array        $search_columns    Array of column names to be searched. Accepts 'domain' and 'path'.
+ *                                           Default empty array.
  *     @type bool         $update_site_cache Whether to prime the cache for found sites. Default false.
  * }
  * @return array List of sites.
@@ -1088,11 +1088,13 @@ function get_networks( $args = array() ) {
  *
  * @since 4.6.0
  *
+ * @global WP_Network $current_site
+ *
  * @param WP_Network|int|null $network Optional. Network to retrieve. Default is the current network.
  * @return WP_Network|null The network object or null if not found.
  */
 function get_network( $network = null ) {
-	$current_site = get_current_site();
+	global $current_site;
 	if ( empty( $network ) && isset( $current_site ) ) {
 		$network = $current_site;
 	}
