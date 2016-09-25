@@ -6,4 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'SimplePie' => array($vendorDir . '/simplepie/simplepie/library'),
+    'Requests' => array($vendorDir . '/rmccue/requests/library'),
+    'PEAR' => array($vendorDir . '/pear/pear_exception'),
 );
