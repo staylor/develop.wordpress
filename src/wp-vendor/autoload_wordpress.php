@@ -4,4 +4,4 @@
 
 require_once dirname(__FILE__) . '/composer'.'/autoload_real_wordpress.php';
 
-return ComposerAutoloaderInitd02c56a2fedd820876e05ce9580b834e::getLoader();
+return ComposerAutoloaderInitWPd02c56a2fedd820876e05ce9580b834e::getLoader();
