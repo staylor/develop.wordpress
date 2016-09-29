@@ -94,6 +94,7 @@ return array(
     'wp_http_proxy' => $baseDir . '/wp-includes/class-wp-http-proxy.php',
     'wp_http_requests_response' => $baseDir . '/wp-includes/class-wp-http-requests-response.php',
     'wp_http_response' => $baseDir . '/wp-includes/class-wp-http-response.php',
+    'wp_hook' => $baseDir . '/wp-includes/class-wp-hook.php',
     'wp_http' => $baseDir . '/wp-includes/class-http.php',
     'wp_http_cookie' => $baseDir . '/wp-includes/class-wp-http-cookie.php',
     'wp_http_curl' => $baseDir . '/wp-includes/class-wp-http-curl.php',
