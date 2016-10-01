@@ -3401,9 +3401,10 @@ function smilies_init() {
  * to be merged into another array.
  *
  * @since 2.2.0
+ * @since 2.3.0 `$args` can now also be an object.
  *
- * @param string|array $args     Value to merge with $defaults
- * @param array        $defaults Optional. Array that serves as the defaults. Default empty.
+ * @param string|array|object $args     Value to merge with $defaults.
+ * @param array               $defaults Optional. Array that serves as the defaults. Default empty.
  * @return array Merged user defined values with defaults.
  */
 function wp_parse_args( $args, $defaults = '' ) {
@@ -4951,6 +4952,7 @@ function send_frame_options_header() {
  *
  * @since 3.3.0
  * @since 4.3.0 Added 'webcal' to the protocols array.
+ * @since 4.7.0 Added 'urn' to the protocols array.
  *
  * @see wp_kses()
  * @see esc_url()
@@ -4959,13 +4961,13 @@ function send_frame_options_header() {
  *
  * @return array Array of allowed protocols. Defaults to an array containing 'http', 'https',
  *               'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet',
- *               'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', and 'webcal'.
+ *               'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal', and 'urn'.
  */
 function wp_allowed_protocols() {
 	static $protocols = array();
 
 	if ( empty( $protocols ) ) {
-		$protocols = array( 'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal' );
+		$protocols = array( 'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal', 'urn' );
 
 		/**
 		 * Filters the list of protocols allowed in HTML attributes.
