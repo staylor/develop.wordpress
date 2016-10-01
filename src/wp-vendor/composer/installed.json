@@ -1,323 +1,5 @@
 [
     {
-        "name": "schlessera/composer-wp-autoload",
-        "version": "v1.0.0",
-        "version_normalized": "1.0.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/schlessera/composer-wp-autoload.git",
-            "reference": "922dfb27e57ae09b9541de2463fda592110e4f27"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/schlessera/composer-wp-autoload/zipball/922dfb27e57ae09b9541de2463fda592110e4f27",
-            "reference": "922dfb27e57ae09b9541de2463fda592110e4f27",
-            "shasum": ""
-        },
-        "time": "2016-08-30 10:56:09",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "WordPress\\ComposerAutoload\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "WordPress Core Autoloader for Composer."
-    },
-    {
-        "name": "simplepie/simplepie",
-        "version": "1.4.2",
-        "version_normalized": "1.4.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/simplepie/simplepie.git",
-            "reference": "9b775e88ba1128fa14c69ff94ab954d86067de2a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/simplepie/simplepie/zipball/9b775e88ba1128fa14c69ff94ab954d86067de2a",
-            "reference": "9b775e88ba1128fa14c69ff94ab954d86067de2a",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "time": "2016-06-14 05:48:16",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "SimplePie": "library"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Ryan Parman",
-                "homepage": "http://ryanparman.com/",
-                "role": "Creator, alumnus developer"
-            },
-            {
-                "name": "Geoffrey Sneddon",
-                "homepage": "http://gsnedders.com/",
-                "role": "Alumnus developer"
-            },
-            {
-                "name": "Ryan McCue",
-                "email": "me@ryanmccue.info",
-                "homepage": "http://ryanmccue.info/",
-                "role": "Developer"
-            }
-        ],
-        "description": "A simple Atom/RSS parsing library for PHP",
-        "homepage": "http://simplepie.org/",
-        "keywords": [
-            "atom",
-            "feeds",
-            "rss"
-        ]
-    },
-    {
-        "name": "rmccue/requests",
-        "version": "v1.6.1",
-        "version_normalized": "1.6.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/rmccue/Requests.git",
-            "reference": "6aac485666c2955077d77b796bbdd25f0013a4ea"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/rmccue/Requests/zipball/6aac485666c2955077d77b796bbdd25f0013a4ea",
-            "reference": "6aac485666c2955077d77b796bbdd25f0013a4ea",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2"
-        },
-        "require-dev": {
-            "satooshi/php-coveralls": "dev-master"
-        },
-        "time": "2014-05-18 04:59:02",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Requests": "library/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "ISC"
-        ],
-        "authors": [
-            {
-                "name": "Ryan McCue",
-                "homepage": "http://ryanmccue.info"
-            }
-        ],
-        "description": "A HTTP library written in PHP, for human beings.",
-        "homepage": "http://github.com/rmccue/Requests",
-        "keywords": [
-            "curl",
-            "fsockopen",
-            "http",
-            "idna",
-            "ipv6",
-            "iri",
-            "sockets"
-        ]
-    },
-    {
-        "name": "james-heinrich/getid3",
-        "version": "v1.9.12",
-        "version_normalized": "1.9.12.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/JamesHeinrich/getID3.git",
-            "reference": "41c05612d532d30f07680cad3a4a6efbec7fc7f5"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/JamesHeinrich/getID3/zipball/41c05612d532d30f07680cad3a4a6efbec7fc7f5",
-            "reference": "41c05612d532d30f07680cad3a4a6efbec7fc7f5",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "time": "2016-03-02 13:13:30",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "getid3/getid3.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL"
-        ],
-        "description": "PHP script that extracts useful information from popular multimedia file formats",
-        "homepage": "http://www.getid3.org/",
-        "keywords": [
-            "codecs",
-            "php",
-            "tags"
-        ]
-    },
-    {
-        "name": "pear/text_diff",
-        "version": "dev-stable",
-        "version_normalized": "dev-stable",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/pear/Text_Diff.git",
-            "reference": "6d3bab9cfc9a7970d814bbdcfed417d836569746"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/pear/Text_Diff/zipball/6d3bab9cfc9a7970d814bbdcfed417d836569746",
-            "reference": "6d3bab9cfc9a7970d814bbdcfed417d836569746",
-            "shasum": ""
-        },
-        "time": "2015-09-19 20:35:07",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "classmap": [
-                "Text/"
-            ]
-        },
-        "license": [
-            "LGPL-3.0"
-        ],
-        "description": "Engine for performing and rendering text diffs",
-        "homepage": "http://pear.php.net/package/Text_Diff",
-        "keywords": [
-            "diff",
-            "pear",
-            "text"
-        ],
-        "support": {
-            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Text_Diff",
-            "source": "https://github.com/pear/Text_Diff"
-        }
-    },
-    {
-        "name": "pomo/pomo",
-        "version": "v1.2.4",
-        "version_normalized": "1.2.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/LeoColomb/pomo.git",
-            "reference": "8193f7aa5d0c7586d3b923b9b7c8afcd30fa80bf"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/LeoColomb/pomo/zipball/8193f7aa5d0c7586d3b923b9b7c8afcd30fa80bf",
-            "reference": "8193f7aa5d0c7586d3b923b9b7c8afcd30fa80bf",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "require-dev": {
-            "codeclimate/php-test-reporter": "dev-master",
-            "phpunit/phpunit": ">=4.0"
-        },
-        "time": "2014-07-22 17:09:48",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "POMO\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL-2.0+"
-        ],
-        "authors": [
-            {
-                "name": "WordPress",
-                "homepage": "http://wordpress.org",
-                "role": "Author"
-            },
-            {
-                "name": "Leo Colombaro",
-                "homepage": "http://colombaro.fr",
-                "role": "Maintainer"
-            }
-        ],
-        "description": "Gettext library to translate with I18n",
-        "homepage": "https://github.com/LeoColomb/pomo",
-        "keywords": [
-            "gettext",
-            "i18n",
-            "internationalization",
-            "localization",
-            "translation"
-        ]
-    },
-    {
-        "name": "paragonie/random_compat",
-        "version": "v2.0.2",
-        "version_normalized": "2.0.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/paragonie/random_compat.git",
-            "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/paragonie/random_compat/zipball/088c04e2f261c33bed6ca5245491cfca69195ccf",
-            "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.*|5.*"
-        },
-        "suggest": {
-            "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-        },
-        "time": "2016-04-03 06:00:07",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "lib/random.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Paragon Initiative Enterprises",
-                "email": "security@paragonie.com",
-                "homepage": "https://paragonie.com"
-            }
-        ],
-        "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-        "keywords": [
-            "csprng",
-            "pseudorandom",
-            "random"
-        ]
-    },
-    {
         "name": "pear/pear_exception",
         "version": "v1.0.0",
         "version_normalized": "1.0.0.0",
@@ -423,5 +105,294 @@
             "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Services_JSON",
             "source": "https://github.com/pear/Services_JSON"
         }
+    },
+    {
+        "name": "pear/text_diff",
+        "version": "dev-stable",
+        "version_normalized": "dev-stable",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pear/Text_Diff.git",
+            "reference": "6d3bab9cfc9a7970d814bbdcfed417d836569746"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pear/Text_Diff/zipball/6d3bab9cfc9a7970d814bbdcfed417d836569746",
+            "reference": "6d3bab9cfc9a7970d814bbdcfed417d836569746",
+            "shasum": ""
+        },
+        "time": "2015-09-19 20:35:07",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "Text/"
+            ]
+        },
+        "license": [
+            "LGPL-3.0"
+        ],
+        "description": "Engine for performing and rendering text diffs",
+        "homepage": "http://pear.php.net/package/Text_Diff",
+        "keywords": [
+            "diff",
+            "pear",
+            "text"
+        ],
+        "support": {
+            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Text_Diff",
+            "source": "https://github.com/pear/Text_Diff"
+        }
+    },
+    {
+        "name": "james-heinrich/getid3",
+        "version": "v1.9.12",
+        "version_normalized": "1.9.12.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/JamesHeinrich/getID3.git",
+            "reference": "41c05612d532d30f07680cad3a4a6efbec7fc7f5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/JamesHeinrich/getID3/zipball/41c05612d532d30f07680cad3a4a6efbec7fc7f5",
+            "reference": "41c05612d532d30f07680cad3a4a6efbec7fc7f5",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2016-03-02 13:13:30",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "getid3/getid3.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL"
+        ],
+        "description": "PHP script that extracts useful information from popular multimedia file formats",
+        "homepage": "http://www.getid3.org/",
+        "keywords": [
+            "codecs",
+            "php",
+            "tags"
+        ]
+    },
+    {
+        "name": "paragonie/random_compat",
+        "version": "v2.0.2",
+        "version_normalized": "2.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/paragonie/random_compat.git",
+            "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/paragonie/random_compat/zipball/088c04e2f261c33bed6ca5245491cfca69195ccf",
+            "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.*|5.*"
+        },
+        "suggest": {
+            "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+        },
+        "time": "2016-04-03 06:00:07",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "lib/random.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Paragon Initiative Enterprises",
+                "email": "security@paragonie.com",
+                "homepage": "https://paragonie.com"
+            }
+        ],
+        "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+        "keywords": [
+            "csprng",
+            "pseudorandom",
+            "random"
+        ]
+    },
+    {
+        "name": "pomo/pomo",
+        "version": "v1.2.4",
+        "version_normalized": "1.2.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/LeoColomb/pomo.git",
+            "reference": "8193f7aa5d0c7586d3b923b9b7c8afcd30fa80bf"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/LeoColomb/pomo/zipball/8193f7aa5d0c7586d3b923b9b7c8afcd30fa80bf",
+            "reference": "8193f7aa5d0c7586d3b923b9b7c8afcd30fa80bf",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "codeclimate/php-test-reporter": "dev-master",
+            "phpunit/phpunit": ">=4.0"
+        },
+        "time": "2014-07-22 17:09:48",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "POMO\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "WordPress",
+                "homepage": "http://wordpress.org",
+                "role": "Author"
+            },
+            {
+                "name": "Leo Colombaro",
+                "homepage": "http://colombaro.fr",
+                "role": "Maintainer"
+            }
+        ],
+        "description": "Gettext library to translate with I18n",
+        "homepage": "https://github.com/LeoColomb/pomo",
+        "keywords": [
+            "gettext",
+            "i18n",
+            "internationalization",
+            "localization",
+            "translation"
+        ]
+    },
+    {
+        "name": "rmccue/requests",
+        "version": "v1.6.1",
+        "version_normalized": "1.6.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rmccue/Requests.git",
+            "reference": "6aac485666c2955077d77b796bbdd25f0013a4ea"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/rmccue/Requests/zipball/6aac485666c2955077d77b796bbdd25f0013a4ea",
+            "reference": "6aac485666c2955077d77b796bbdd25f0013a4ea",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2"
+        },
+        "require-dev": {
+            "satooshi/php-coveralls": "dev-master"
+        },
+        "time": "2014-05-18 04:59:02",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Requests": "library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "ISC"
+        ],
+        "authors": [
+            {
+                "name": "Ryan McCue",
+                "homepage": "http://ryanmccue.info"
+            }
+        ],
+        "description": "A HTTP library written in PHP, for human beings.",
+        "homepage": "http://github.com/rmccue/Requests",
+        "keywords": [
+            "curl",
+            "fsockopen",
+            "http",
+            "idna",
+            "ipv6",
+            "iri",
+            "sockets"
+        ]
+    },
+    {
+        "name": "simplepie/simplepie",
+        "version": "1.4.2",
+        "version_normalized": "1.4.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplepie/simplepie.git",
+            "reference": "9b775e88ba1128fa14c69ff94ab954d86067de2a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplepie/simplepie/zipball/9b775e88ba1128fa14c69ff94ab954d86067de2a",
+            "reference": "9b775e88ba1128fa14c69ff94ab954d86067de2a",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2016-06-14 05:48:16",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "SimplePie": "library"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Ryan Parman",
+                "homepage": "http://ryanparman.com/",
+                "role": "Creator, alumnus developer"
+            },
+            {
+                "name": "Geoffrey Sneddon",
+                "homepage": "http://gsnedders.com/",
+                "role": "Alumnus developer"
+            },
+            {
+                "name": "Ryan McCue",
+                "email": "me@ryanmccue.info",
+                "homepage": "http://ryanmccue.info/",
+                "role": "Developer"
+            }
+        ],
+        "description": "A simple Atom/RSS parsing library for PHP",
+        "homepage": "http://simplepie.org/",
+        "keywords": [
+            "atom",
+            "feeds",
+            "rss"
+        ]
     }
 ]

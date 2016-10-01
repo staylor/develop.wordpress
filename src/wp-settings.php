@@ -17,8 +17,7 @@
  */
 define( 'WPINC', 'wp-includes' );
 
-// WordPress Core PHP 5.2-compatible Autoloader
-require_once( ABSPATH . 'wp-vendor/autoload_wordpress.php' );
+require_once( ABSPATH . 'wp-vendor/autoload.php' );
 
 // Include files required for initialization.
 require( ABSPATH . WPINC . '/load.php' );
@@ -95,7 +94,6 @@ wp_set_lang_dir();
 // Load early WordPress files.
 require( ABSPATH . WPINC . '/compat.php' );
 require( ABSPATH . WPINC . '/functions.php' );
-require( ABSPATH . WPINC . '/pomo/mo.php' );
 
 // Include the wpdb class and, if present, a db.php database drop-in.
 global $wpdb;

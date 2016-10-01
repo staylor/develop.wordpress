@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9f0bde34b876f552cdb8f3e313462cfc",
-    "content-hash": "4a0c5b29dc9061b880b9a66e26bb8926",
+    "hash": "5df2fb824014091946d842397b607ce1",
+    "content-hash": "b7ffa5e58e3c8589d6193536278bec99",
     "packages": [
         {
             "name": "james-heinrich/getid3",
@@ -332,33 +332,6 @@
                 "sockets"
             ],
             "time": "2014-05-18 04:59:02"
-        },
-        {
-            "name": "schlessera/composer-wp-autoload",
-            "version": "v1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schlessera/composer-wp-autoload.git",
-                "reference": "922dfb27e57ae09b9541de2463fda592110e4f27"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/schlessera/composer-wp-autoload/zipball/922dfb27e57ae09b9541de2463fda592110e4f27",
-                "reference": "922dfb27e57ae09b9541de2463fda592110e4f27",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "WordPress\\ComposerAutoload\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "WordPress Core Autoloader for Composer.",
-            "time": "2016-08-30 10:56:09"
         },
         {
             "name": "simplepie/simplepie",

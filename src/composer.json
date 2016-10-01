@@ -31,23 +31,6 @@
       "url": "https://github.com/pear/Services_JSON"
 	}
   ],
-  "scripts": {
-    "post-install-cmd": [
-      "WordPress\\ComposerAutoload\\Generator::dump"
-    ],
-    "post-update-cmd": [
-      "WordPress\\ComposerAutoload\\Generator::dump"
-    ],
-    "post-autoload-dump": [
-      "WordPress\\ComposerAutoload\\Generator::dump"
-    ]
-  },
-  "extra": {
-    "wordpress-autoloader": {
-      "class-root": "ABSPATH",
-      "case-sensitive": false
-	}
-  },
   "autoload": {
     "classmap": [
       "wp-includes/",
@@ -67,7 +50,6 @@
     ]
   },
   "config": {
-    "classmap-authoritative": true,
     "optimize-autoloader": true,
     "vendor-dir": "wp-vendor",
 	"sort-packages": true
@@ -79,7 +61,6 @@
     "pear/text_diff": "dev-stable",
     "pomo/pomo": "^1.2",
     "rmccue/requests": "^1.6",
-    "schlessera/composer-wp-autoload": "^1.0",
     "simplepie/simplepie": "^1.4"
   }
 }
