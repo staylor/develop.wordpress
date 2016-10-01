@@ -1,4 +1,5 @@
 <?php
+use POMO\Translations\EntryTranslations as Translation_Entry;
 
 class Tests_POMO_PO extends WP_UnitTestCase {
 	function setUp() {
