@@ -21,6 +21,9 @@ wp-tests-config.php
 /tests/phpunit/build
 /wp-cli.local.yml
 
+# Composer-generated files
+src/wp-vendor/*
+
 # Composer-generated files that do not pass the 5.2 linter
 src/wp-vendor/autoload.php
 src/wp-vendor/composer/autoload_real.php
