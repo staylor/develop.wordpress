@@ -13,9 +13,6 @@ require_once( dirname( __FILE__ ) . '/admin.php' );
 /** WordPress Translation Install API */
 require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
-if ( ! is_multisite() )
-	wp_die( __( 'Multisite support is not enabled.' ) );
-
 if ( ! current_user_can( 'manage_sites' ) )
 	wp_die( __( 'Sorry, you are not allowed to add sites to this network.' ) );
 
@@ -65,10 +62,14 @@ if ( isset($_REQUEST['action']) && 'add-site' == $_REQUEST['action'] ) {
 	);
 
 	// Handle translation install for the new site.
-	if ( ! empty( $_POST['WPLANG'] ) && wp_can_install_language_pack() ) {
-		$language = wp_download_language_pack( wp_unslash( $_POST['WPLANG'] ) );
-		if ( $language ) {
-			$meta['WPLANG'] = $language;
+	if ( isset( $_POST['WPLANG'] ) ) {
+		if ( '' === $_POST['WPLANG'] ) {
+			$meta['WPLANG'] = ''; // en_US
+		} elseif ( wp_can_install_language_pack() ) {
+			$language = wp_download_language_pack( wp_unslash( $_POST['WPLANG'] ) );
+			if ( $language ) {
+				$meta['WPLANG'] = $language;
+			}
 		}
 	}
 

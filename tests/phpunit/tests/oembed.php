@@ -8,7 +8,7 @@ class Tests_oEmbed extends WP_UnitTestCase {
 		'youtube-shorturl'     => '#https?://youtu\.be/.*#i',
 		'vimeo'                => '#https?://(.+\.)?vimeo\.com/.*#i',
 		'dailymotion'          => '#https?://(www\.)?dailymotion\.com/.*#i',
-		'dailymotion-shorturl' => '#https?://dai.ly/.*#i',
+		'dailymotion-shorturl' => '#https?://dai\.ly/.*#i',
 		'flickr'               => '#https?://(www\.)?flickr\.com/.*#i',
 		'flickr-shorturl'      => '#https?://flic\.kr/.*#i',
 		'smugmug'              => '#https?://(.+\.)?smugmug\.com/.*#i',
@@ -16,14 +16,17 @@ class Tests_oEmbed extends WP_UnitTestCase {
 		'photobucket-album'    => 'http://i*.photobucket.com/albums/*',
 		'photobucket-group'    => 'http://gi*.photobucket.com/groups/*',
 		'scribd'               => '#https?://(www\.)?scribd\.com/doc/.*#i',
-		'wordpress-tv'         => '#https?://wordpress.tv/.*#i',
+		'wordpress-tv'         => '#https?://wordpress\.tv/.*#i',
 		'polldaddy'            => '#https?://(.+\.)?polldaddy\.com/.*#i',
 		'polldaddy-shorturl'   => '#https?://poll\.fm/.*#i',
 		'funnyordie'           => '#https?://(www\.)?funnyordie\.com/videos/.*#i',
-		'twitter'              => '#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i',
-		'twitter-timeline'     => '#https?://(www\.)?twitter\.com/.+?/timelines/.*#i',
+		'twitter'              => '#https?://(www\.)?twitter\.com/\w{1,15}/status(es)?/.*#i',
+		'twitter-user'         => '#https?://(www\.)?twitter\.com/\w{1,15}$#i',
+		'twitter-likes'        => '#https?://(www\.)?twitter\.com/\w{1,15}/likes$#i',
+		'twitter-list'         => '#https?://(www\.)?twitter\.com/\w{1,15}/lists/.*#i',
+		'twitter-timeline'     => '#https?://(www\.)?twitter\.com/\w{1,15}/timelines/.*#i',
 		'twitter-moment'       => '#https?://(www\.)?twitter\.com/i/moments/.*#i',
-		'vine'                 => '#https?://vine.co/v/.*#i',
+		'vine'                 => '#https?://vine\.co/v/.*#i',
 		'soundcloud'           => '#https?://(www\.)?soundcloud\.com/.*#i',
 		'slideshare'           => '#https?://(.+?\.)?slideshare\.net/.*#i',
 		'instagram'            => '#https?://(www\.)?instagr(\.am|am\.com)/p/.*#i',
@@ -40,11 +43,12 @@ class Tests_oEmbed extends WP_UnitTestCase {
 		'kickstarter-shorturl' => '#https?://kck\.st/.*#i',
 		'cloudup'              => '#https?://cloudup\.com/.*#i',
 		'reverbnation'         => '#https?://(www\.)?reverbnation\.com/.*#i',
-		'videopress'           => '#https?://videopress.com/v/.*#',
+		'videopress'           => '#https?://videopress\.com/v/.*#',
 		'reddit-comments'      => '#https?://(www\.)?reddit\.com/r/[^/]+/comments/.*#i',
 		'speakerdeck'          => '#https?://(www\.)?speakerdeck\.com/.*#i',
-		'facebook-post'        => '#https?://www\.facebook\.com/.*/posts/.*#i',
-		'facebook-activity'    => '#https?://www\.facebook\.com/.*/activity/.*#i',
+		'facebook-u-post'      => '#https?://www\.facebook\.com/.*/posts/.*#i',
+		'facebook-u-activity'  => '#https?://www\.facebook\.com/.*/activity/.*#i',
+		'facebook-u-photo'     => '#https?://www\.facebook\.com/.*/photos/.*#i',
 		'facebook-photo'       => '#https?://www\.facebook\.com/photo(s/|\.php).*#i',
 		'facebook-permalink'   => '#https?://www\.facebook\.com/permalink\.php.*#i',
 		'facebook-media'       => '#https?://www\.facebook\.com/media/.*#i',
@@ -501,7 +505,7 @@ class Tests_oEmbed extends WP_UnitTestCase {
 			array(
 				$providers['dailymotion'],
 				array(
-					'http://www.dailymotion.com/video/x27bwvb_how-to-wake-up-better_news',
+					'http://www.dailymotion.com/video/x33exze_time-lapse-beautiful-meteor-shower-outside-las-vegas_fun',
 				),
 			),
 			array(
@@ -580,6 +584,24 @@ class Tests_oEmbed extends WP_UnitTestCase {
 				$providers['twitter'],
 				array(
 					'http://twitter.com/WordPress/status/633718182335922177',
+				),
+			),
+			array(
+				$providers['twitter-user'],
+				array(
+					'https://twitter.com/WordPress',
+				),
+			),
+			array(
+				$providers['twitter-likes'],
+				array(
+					'https://twitter.com/WordPress/likes',
+				),
+			),
+			array(
+				$providers['twitter-list'],
+				array(
+					'https://twitter.com/TwitterDev/lists/national-parks',
 				),
 			),
 			array(
@@ -720,27 +742,33 @@ class Tests_oEmbed extends WP_UnitTestCase {
 				),
 			),
 			array(
-				$providers['facebook-post'],
+				$providers['facebook-u-post'],
 				array(
 					'https://www.facebook.com/WordPress/posts/10154220015487911'
 				),
 			),
 			array(
-				$providers['facebook-activity'],
+				$providers['facebook-u-activity'],
 				array(
 					// ??
 				),
 			),
 			array(
-				$providers['facebook-photo'],
+				$providers['facebook-u-photo'],
 				array(
 					'https://www.facebook.com/WordPress/photos/a.111006762910.97747.6427302910/10153207719422911/'
 				),
 			),
 			array(
+				$providers['facebook-photo'],
+				array(
+					// ??
+				),
+			),
+			array(
 				$providers['facebook-permalink'],
 				array(
-					'https://www.facebook.com/permalink.php?story_fbid=10154220015487911'
+					// ??
 				),
 			),
 			array(
@@ -771,7 +799,6 @@ class Tests_oEmbed extends WP_UnitTestCase {
 				$providers['facebook-videophp'],
 				array(
 					'https://www.facebook.com/video.php?v=317622575398',
-					'https://www.facebook.com/video.php?id=317622575398',
 				),
 			),
 		);
@@ -812,4 +839,37 @@ class Tests_oEmbed extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test URLs that should not match any of the predefined providers.
+	 *
+	 * @group oembed
+	 * @ticket 38187
+	 *
+	 * @dataProvider dataShouldNotMatchOembedRegex
+	 */
+	public function testUrlShouldNotMatchOembedRegex( $url ) {
+
+		$this->assertSame( false, self::$oembed->get_provider( $url, array( 'discover' => false ) ) );
+
+	}
+
+	/**
+	 * Data provider for testUrlShouldNotMatchOembedRegex().
+	 *
+	 * @return array
+	 */
+	public function dataShouldNotMatchOembedRegex() {
+		$providers = self::$provider_map;
+
+		return array(
+			array( 'http://dairly/something' ),
+			array( 'https://daisly/' ),
+			array( 'http://wordpressstv/' ),
+			array( 'https://wordpressstv/somethingelse' ),
+			array( 'http://vinerco/v/andanother' ),
+			array( 'https://vineqco/v/' ),
+			array( 'http://videopressscom/v/' ),
+			array( 'https://videopresstcom/v/covered' ),
+		);
+	}
 }
