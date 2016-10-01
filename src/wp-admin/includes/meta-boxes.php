@@ -32,7 +32,7 @@ function post_submit_meta_box( $post, $args = array() ) {
 
 <?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key ?>
 <div style="display:none;">
-<?php submit_button( __( 'Save' ), 'button', 'save' ); ?>
+<?php submit_button( __( 'Save' ), '', 'save' ); ?>
 </div>
 
 <div id="minor-publishing-actions">
@@ -290,7 +290,7 @@ function attachment_submit_meta_box( $post ) {
 
 <?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key ?>
 <div style="display:none;">
-<?php submit_button( __( 'Save' ), 'button', 'save' ); ?>
+<?php submit_button( __( 'Save' ), '', 'save' ); ?>
 </div>
 
 
@@ -434,6 +434,8 @@ function post_tags_meta_box( $post, $box ) {
 		<input type="button" class="button tagadd" value="<?php esc_attr_e('Add'); ?>" /></p>
 	</div>
 	<p class="howto" id="new-tag-<?php echo $tax_name; ?>-desc"><?php echo $taxonomy->labels->separate_items_with_commas; ?></p>
+	<?php elseif ( empty( $terms_to_edit ) ): ?>
+		<p><?php echo $taxonomy->labels->no_terms; ?></p>
 	<?php endif; ?>
 	</div>
 	<div class="tagchecklist"></div>
@@ -875,7 +877,7 @@ function link_submit_meta_box($link) {
 
 <?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key ?>
 <div style="display:none;">
-<?php submit_button( __( 'Save' ), 'button', 'save', false ); ?>
+<?php submit_button( __( 'Save' ), '', 'save', false ); ?>
 </div>
 
 <div id="minor-publishing-actions">
