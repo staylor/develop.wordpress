@@ -339,4 +339,137 @@ class Tests_AdminBar extends WP_UnitTestCase {
 			),
 		);
 	}
+
+	/**
+	 * @ticket 22247
+	 */
+	public function test_admin_bar_has_edit_link_for_existing_posts() {
+		wp_set_current_user( self::$editor_id );
+
+		$post = array(
+			'post_author' => self::$editor_id,
+			'post_status' => 'publish',
+			'post_content' => rand_str(),
+			'post_title' => rand_str(),
+		);
+		$id = wp_insert_post( $post );
+
+		// Set queried object to the newly created post.
+		global $wp_the_query;
+		$wp_the_query->queried_object = (object) array( 'ID' => $id, 'post_type' => 'post' );
+
+		$wp_admin_bar = $this->get_standard_admin_bar();
+
+		$node_edit = $wp_admin_bar->get_node( 'edit' );
+		$this->assertNotNull( $node_edit );
+	}
+
+	/**
+	 * @ticket 22247
+	 */
+	public function test_admin_bar_has_no_edit_link_for_non_existing_posts() {
+		wp_set_current_user( self::$editor_id );
+
+		// Set queried object to a non-existing post.
+		global $wp_the_query;
+		$wp_the_query->queried_object = (object) array( 'ID' => 0, 'post_type' => 'post' );
+
+		$wp_admin_bar = $this->get_standard_admin_bar();
+
+		$node_edit = $wp_admin_bar->get_node( 'edit' );
+		$this->assertNull( $node_edit );
+	}
+
+	/**
+	 * @ticket 34113
+	 */
+	public function test_admin_bar_contains_view_archive_link() {
+		set_current_screen( 'edit-post' );
+
+		$wp_admin_bar = $this->get_standard_admin_bar();
+		$node         = $wp_admin_bar->get_node( 'archive' );
+
+		set_current_screen( 'front' );
+
+		$this->assertNotNull( $node );
+	}
+
+	/**
+	 * @ticket 34113
+	 */
+	public function test_admin_bar_has_no_archives_link_for_post_types_without_archive() {
+		set_current_screen( 'edit-page' );
+
+		$wp_admin_bar = $this->get_standard_admin_bar();
+		$node         = $wp_admin_bar->get_node( 'archive' );
+
+		set_current_screen( 'front' );
+
+		$this->assertNull( $node );
+	}
+
+	/**
+	 * @ticket 37949
+	 */
+	public function test_admin_bar_contains_correct_about_link_for_users_with_role() {
+		if ( is_multisite() ) {
+			$this->markTestSkipped( 'Test does not run in multisite' );
+		}
+
+		wp_set_current_user( self::$editor_id );
+
+		$wp_admin_bar = $this->get_standard_admin_bar();
+		$wp_logo_node = $wp_admin_bar->get_node( 'wp-logo' );
+		$about_node   = $wp_admin_bar->get_node( 'about' );
+
+		$this->assertNotNull( $wp_logo_node );
+		$this->assertSame( admin_url( 'about.php' ), $wp_logo_node->href );
+		$this->assertArrayNotHasKey( 'tabindex', $wp_logo_node->meta );
+		$this->assertNotNull( $about_node );
+	}
+
+	/**
+	 * @ticket 37949
+	 */
+	public function test_admin_bar_contains_correct_about_link_for_users_with_no_role() {
+		if ( is_multisite() ) {
+			$this->markTestSkipped( 'Test does not run in multisite' );
+		}
+
+		wp_set_current_user( self::$no_role_id );
+
+		$wp_admin_bar = $this->get_standard_admin_bar();
+		$wp_logo_node = $wp_admin_bar->get_node( 'wp-logo' );
+		$about_node   = $wp_admin_bar->get_node( 'about' );
+
+		$this->assertNotNull( $wp_logo_node );
+		$this->assertSame( false, $wp_logo_node->href );
+		$this->assertArrayHasKey( 'tabindex', $wp_logo_node->meta );
+		$this->assertSame( 0, $wp_logo_node->meta['tabindex'] );
+		$this->assertNull( $about_node );
+	}
+
+	/**
+	 * @ticket 37949
+	 * @group multisite
+	 */
+	public function test_admin_bar_contains_correct_about_link_for_users_with_no_role_in_multisite() {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'Test only runs in multisite' );
+		}
+
+		// User is not a member of a site.
+		remove_user_from_blog( self::$no_role_id, get_current_blog_id() );
+
+		wp_set_current_user( self::$no_role_id );
+
+		$wp_admin_bar = $this->get_standard_admin_bar();
+		$wp_logo_node = $wp_admin_bar->get_node( 'wp-logo' );
+		$about_node   = $wp_admin_bar->get_node( 'about' );
+
+		$this->assertNotNull( $wp_logo_node );
+		$this->assertSame( user_admin_url( 'about.php' ), $wp_logo_node->href );
+		$this->assertArrayNotHasKey( 'tabindex', $wp_logo_node->meta );
+		$this->assertNotNull( $about_node );
+	}
 }

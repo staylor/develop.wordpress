@@ -740,7 +740,6 @@ final class WP_Customize_Manager {
 		wp_enqueue_script( 'customize-preview' );
 		add_action( 'wp', array( $this, 'customize_preview_override_404_status' ) );
 		add_action( 'wp_head', array( $this, 'customize_preview_base' ) );
-		add_action( 'wp_head', array( $this, 'customize_preview_html5' ) );
 		add_action( 'wp_head', array( $this, 'customize_preview_loading_style' ) );
 		add_action( 'wp_footer', array( $this, 'customize_preview_settings' ), 20 );
 		add_action( 'shutdown', array( $this, 'customize_preview_signature' ), 1000 );
@@ -787,18 +786,10 @@ final class WP_Customize_Manager {
 	 * Print a workaround to handle HTML5 tags in IE < 9.
 	 *
 	 * @since 3.4.0
+	 * @deprecated 4.7.0 Customizer no longer supports IE8, so all supported browsers recognize HTML5.
 	 */
-	public function customize_preview_html5() { ?>
-		<!--[if lt IE 9]>
-		<script type="text/javascript">
-			var e = [ 'abbr', 'article', 'aside', 'audio', 'canvas', 'datalist', 'details',
-				'figure', 'footer', 'header', 'hgroup', 'mark', 'menu', 'meter', 'nav',
-				'output', 'progress', 'section', 'time', 'video' ];
-			for ( var i = 0; i < e.length; i++ ) {
-				document.createElement( e[i] );
-			}
-		</script>
-		<![endif]--><?php
+	public function customize_preview_html5() {
+		_deprecated_function( __FUNCTION__, '4.7.0' );
 	}
 
 	/**
@@ -1046,17 +1037,9 @@ final class WP_Customize_Manager {
 		if ( is_wp_error( $validity ) ) {
 			$notification = array();
 			foreach ( $validity->errors as $error_code => $error_messages ) {
-				$error_data = $validity->get_error_data( $error_code );
-				if ( is_null( $error_data ) ) {
-					$error_data = array();
-				}
-				$error_data = array_merge(
-					$error_data,
-					array( 'from_server' => true )
-				);
 				$notification[ $error_code ] = array(
 					'message' => join( ' ', $error_messages ),
-					'data' => $error_data,
+					'data' => $validity->get_error_data( $error_code ),
 				);
 			}
 			return $notification;
@@ -2262,59 +2245,80 @@ final class WP_Customize_Manager {
 			}
 		}
 
-		/* Static Front Page */
-		// #WP19627
+		/*
+		 * Static Front Page
+		 * See also https://core.trac.wordpress.org/ticket/19627 which introduces the the static-front-page theme_support.
+		 * The following replicates behavior from options-reading.php.
+		 */
 
-		// Replicate behavior from options-reading.php and hide front page options if there are no pages
-		if ( get_pages() ) {
-			$this->add_section( 'static_front_page', array(
-				'title'          => __( 'Static Front Page' ),
-			//	'theme_supports' => 'static-front-page',
-				'priority'       => 120,
-				'description'    => __( 'Your theme supports a static front page.' ),
-			) );
+		$this->add_section( 'static_front_page', array(
+			'title' => __( 'Static Front Page' ),
+			'priority' => 120,
+			'description' => __( 'Your theme supports a static front page.' ),
+			'active_callback' => array( $this, 'has_published_pages' ),
+		) );
 
-			$this->add_setting( 'show_on_front', array(
-				'default'        => get_option( 'show_on_front' ),
-				'capability'     => 'manage_options',
-				'type'           => 'option',
-			//	'theme_supports' => 'static-front-page',
-			) );
+		$this->add_setting( 'show_on_front', array(
+			'default' => get_option( 'show_on_front' ),
+			'capability' => 'manage_options',
+			'type' => 'option',
+		) );
 
-			$this->add_control( 'show_on_front', array(
-				'label'   => __( 'Front page displays' ),
-				'section' => 'static_front_page',
-				'type'    => 'radio',
-				'choices' => array(
-					'posts' => __( 'Your latest posts' ),
-					'page'  => __( 'A static page' ),
-				),
-			) );
+		$this->add_control( 'show_on_front', array(
+			'label' => __( 'Front page displays' ),
+			'section' => 'static_front_page',
+			'type' => 'radio',
+			'choices' => array(
+				'posts' => __( 'Your latest posts' ),
+				'page'  => __( 'A static page' ),
+			),
+		) );
 
-			$this->add_setting( 'page_on_front', array(
-				'type'       => 'option',
-				'capability' => 'manage_options',
-			//	'theme_supports' => 'static-front-page',
-			) );
+		$this->add_setting( 'page_on_front', array(
+			'type'       => 'option',
+			'capability' => 'manage_options',
+		) );
 
-			$this->add_control( 'page_on_front', array(
-				'label'      => __( 'Front page' ),
-				'section'    => 'static_front_page',
-				'type'       => 'dropdown-pages',
-			) );
+		$this->add_control( 'page_on_front', array(
+			'label' => __( 'Front page' ),
+			'section' => 'static_front_page',
+			'type' => 'dropdown-pages',
+		) );
 
-			$this->add_setting( 'page_for_posts', array(
-				'type'           => 'option',
-				'capability'     => 'manage_options',
-			//	'theme_supports' => 'static-front-page',
-			) );
+		$this->add_setting( 'page_for_posts', array(
+			'type' => 'option',
+			'capability' => 'manage_options',
+		) );
 
-			$this->add_control( 'page_for_posts', array(
-				'label'      => __( 'Posts page' ),
-				'section'    => 'static_front_page',
-				'type'       => 'dropdown-pages',
-			) );
+		$this->add_control( 'page_for_posts', array(
+			'label' => __( 'Posts page' ),
+			'section' => 'static_front_page',
+			'type' => 'dropdown-pages',
+		) );
+	}
+
+	/**
+	 * Return whether there are published pages.
+	 *
+	 * Used as active callback for static front page section and controls.
+	 *
+	 * @access private
+	 * @since 4.7.0
+	 *
+	 * @returns bool Whether there are published (or to be published) pages.
+	 */
+	public function has_published_pages() {
+
+		$setting = $this->get_setting( 'nav_menus_created_posts' );
+		if ( $setting ) {
+			foreach ( $setting->value() as $post_id ) {
+				if ( 'page' === get_post_type( $post_id ) ) {
+					return true;
+				}
+			}
 		}
+
+		return 0 !== count( get_pages() );
 	}
 
 	/**

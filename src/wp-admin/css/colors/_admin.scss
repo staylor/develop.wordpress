@@ -3,7 +3,7 @@
 @import 'mixins';
 
 
-html {
+body {
 	background: $body-background;
 }
 
@@ -324,6 +324,7 @@ ul#adminmenu > li.current > a.current:after {
 #wpadminbar li:hover .ab-item:before,
 #wpadminbar li a:focus .ab-icon:before,
 #wpadminbar li .ab-item:focus:before,
+#wpadminbar li .ab-item:focus .ab-icon:before,
 #wpadminbar li.hover .ab-icon:before,
 #wpadminbar li.hover .ab-item:before,
 #wpadminbar li:hover #adminbarsearch:before,
@@ -483,6 +484,15 @@ body.more-filters-opened .more-filters:focus:before {
 
 #customize-footer-actions .devices button:focus {
 	border-bottom-color: $highlight-color;
+}
+
+#customize-controls .control-section:hover > .accordion-section-title,
+#customize-controls .control-section .accordion-section-title:hover,
+#customize-controls .control-section.open .accordion-section-title,
+#customize-controls .control-section .accordion-section-title:focus,
+#available-widgets .widget-tpl:hover,
+#available-widgets .widget-tpl.selected {
+	border-left-color: $highlight-color;
 }
 
 /* Responsive Component */

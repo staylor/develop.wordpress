@@ -48,19 +48,10 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		return $meta_value;
 	}
 
-	protected function _getSingleSiteCaps() {
+	final private function _getSingleSitePrimitiveCaps() {
 		return array(
 
 			'unfiltered_html'        => array( 'administrator', 'editor' ),
-
-			'create_sites'           => array(),
-			'delete_sites'           => array(),
-			'manage_network'         => array(),
-			'manage_sites'           => array(),
-			'manage_network_users'   => array(),
-			'manage_network_plugins' => array(),
-			'manage_network_themes'  => array(),
-			'manage_network_options' => array(),
 
 			'activate_plugins'       => array( 'administrator' ),
 			'create_users'           => array( 'administrator' ),
@@ -73,19 +64,14 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 			'edit_users'             => array( 'administrator' ),
 			'install_plugins'        => array( 'administrator' ),
 			'install_themes'         => array( 'administrator' ),
-			'upload_plugins'         => array( 'administrator' ),
-			'upload_themes'          => array( 'administrator' ),
 			'update_core'            => array( 'administrator' ),
 			'update_plugins'         => array( 'administrator' ),
 			'update_themes'          => array( 'administrator' ),
 			'edit_theme_options'     => array( 'administrator' ),
-			'customize'              => array( 'administrator' ),
 			'export'                 => array( 'administrator' ),
 			'import'                 => array( 'administrator' ),
 			'list_users'             => array( 'administrator' ),
 			'manage_options'         => array( 'administrator' ),
-			'delete_site'            => array( 'administrator' ),
-			'add_users'              => array( 'administrator' ),
 			'promote_users'          => array( 'administrator' ),
 			'remove_users'           => array( 'administrator' ),
 			'switch_themes'          => array( 'administrator' ),
@@ -141,19 +127,11 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 	}
 
-	protected function _getMultiSiteCaps() {
+	final private function _getMultiSitePrimitiveCaps() {
 		return array(
 
 			'unfiltered_html'        => array(),
 
-			'create_sites'           => array(),
-			'delete_sites'           => array(),
-			'manage_network'         => array(),
-			'manage_sites'           => array(),
-			'manage_network_users'   => array(),
-			'manage_network_plugins' => array(),
-			'manage_network_themes'  => array(),
-			'manage_network_options' => array(),
 			'activate_plugins'       => array(),
 			'create_users'           => array(),
 			'delete_plugins'         => array(),
@@ -165,20 +143,15 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 			'edit_users'             => array(),
 			'install_plugins'        => array(),
 			'install_themes'         => array(),
-			'upload_plugins'         => array(),
-			'upload_themes'          => array(),
 			'update_core'            => array(),
 			'update_plugins'         => array(),
 			'update_themes'          => array(),
 
 			'edit_theme_options'     => array( 'administrator' ),
-			'customize'              => array( 'administrator' ),
 			'export'                 => array( 'administrator' ),
 			'import'                 => array( 'administrator' ),
 			'list_users'             => array( 'administrator' ),
 			'manage_options'         => array( 'administrator' ),
-			'delete_site'            => array( 'administrator' ),
-			'add_users'              => array( 'administrator' ),
 			'promote_users'          => array( 'administrator' ),
 			'remove_users'           => array( 'administrator' ),
 			'switch_themes'          => array( 'administrator' ),
@@ -234,24 +207,96 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 	}
 
-	protected function getCapsAndRoles() {
+	final private function _getSingleSiteMetaCaps() {
+		return array(
+			'create_sites'           => array(),
+			'delete_sites'           => array(),
+			'manage_network'         => array(),
+			'manage_sites'           => array(),
+			'manage_network_users'   => array(),
+			'manage_network_plugins' => array(),
+			'manage_network_themes'  => array(),
+			'manage_network_options' => array(),
+
+			'upload_plugins'         => array( 'administrator' ),
+			'upload_themes'          => array( 'administrator' ),
+			'customize'              => array( 'administrator' ),
+			'delete_site'            => array( 'administrator' ),
+			'add_users'              => array( 'administrator' ),
+
+			'edit_categories'        => array( 'administrator', 'editor' ),
+			'delete_categories'      => array( 'administrator', 'editor' ),
+			'manage_post_tags'       => array( 'administrator', 'editor' ),
+			'edit_post_tags'         => array( 'administrator', 'editor' ),
+			'delete_post_tags'       => array( 'administrator', 'editor' ),
+
+			'assign_categories'      => array( 'administrator', 'editor', 'author', 'contributor' ),
+			'assign_post_tags'       => array( 'administrator', 'editor', 'author', 'contributor' ),
+		);
+	}
+
+	final private function _getMultiSiteMetaCaps() {
+		return array(
+			'create_sites'           => array(),
+			'delete_sites'           => array(),
+			'manage_network'         => array(),
+			'manage_sites'           => array(),
+			'manage_network_users'   => array(),
+			'manage_network_plugins' => array(),
+			'manage_network_themes'  => array(),
+			'manage_network_options' => array(),
+			'upload_plugins'         => array(),
+			'upload_themes'          => array(),
+
+			'customize'              => array( 'administrator' ),
+			'delete_site'            => array( 'administrator' ),
+			'add_users'              => array( 'administrator' ),
+
+			'edit_categories'        => array( 'administrator', 'editor' ),
+			'delete_categories'      => array( 'administrator', 'editor' ),
+			'manage_post_tags'       => array( 'administrator', 'editor' ),
+			'edit_post_tags'         => array( 'administrator', 'editor' ),
+			'delete_post_tags'       => array( 'administrator', 'editor' ),
+
+			'assign_categories'      => array( 'administrator', 'editor', 'author', 'contributor' ),
+			'assign_post_tags'       => array( 'administrator', 'editor', 'author', 'contributor' ),
+		);
+	}
+
+	protected function getAllCapsAndRoles() {
+		return $this->getPrimitiveCapsAndRoles() + $this->getMetaCapsAndRoles();
+	}
+
+	protected function getPrimitiveCapsAndRoles() {
 		if ( is_multisite() ) {
-			return $this->_getMultiSiteCaps();
+			return $this->_getMultiSitePrimitiveCaps();
 		} else {
-			return $this->_getSingleSiteCaps();
+			return $this->_getSingleSitePrimitiveCaps();
+		}
+	}
+
+	protected function getMetaCapsAndRoles() {
+		if ( is_multisite() ) {
+			return $this->_getMultiSiteMetaCaps();
+		} else {
+			return $this->_getSingleSiteMetaCaps();
 		}
 	}
 
 	// test the tests
 	function test_single_and_multisite_cap_tests_match() {
-		$single = $this->_getSingleSiteCaps();
-		$multi  = $this->_getMultiSiteCaps();
+		$single = $this->_getSingleSitePrimitiveCaps();
+		$multi  = $this->_getMultiSitePrimitiveCaps();
+		$this->assertEquals( array_keys( $single ), array_keys( $multi ) );
+
+		$single = $this->_getSingleSiteMetaCaps();
+		$multi  = $this->_getMultiSiteMetaCaps();
 		$this->assertEquals( array_keys( $single ), array_keys( $multi ) );
 	}
 
 	// test the tests
 	function test_all_caps_of_users_are_being_tested() {
-		$caps = $this->getCapsAndRoles();
+		$caps = $this->getPrimitiveCapsAndRoles();
 
 		// `manage_links` is a special case
 		$this->assertSame( '0', get_option( 'link_manager_enabled' ) );
@@ -280,9 +325,117 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test the tests. The administrator role has all primitive capabilities, therefore the
+	 * primitive capabilitity tests can be tested by checking that the list of tested
+	 * capabilities matches those of the administrator role.
+	 *
+	 * @group capTestTests
+	 */
+	public function testPrimitiveCapsTestsAreCorrect() {
+		$actual   = $this->getPrimitiveCapsAndRoles();
+		$admin    = get_role( 'administrator' );
+		$expected = $admin->capabilities;
+
+		unset(
+			// Role names as capabilities are a special case:
+			$actual['administrator'],
+			$actual['editor'],
+			$actual['author'],
+			$actual['subscriber'],
+			$actual['contributor']
+		);
+
+		unset(
+			// `manage_links` is a special case in the caps tests:
+			$expected['manage_links'],
+			// `unfiltered_upload` is a special case in the caps tests:
+			$expected['unfiltered_upload']
+		);
+
+		$expected = array_keys( $expected );
+		$actual   = array_keys( $actual );
+
+		$missing_primitive_cap_checks = array_diff( $expected, $actual );
+		$this->assertSame( array(), $missing_primitive_cap_checks, 'These primitive capabilities are not tested' );
+
+		$incorrect_primitive_cap_checks = array_diff( $actual, $expected );
+		$this->assertSame( array(), $incorrect_primitive_cap_checks, 'These capabilities are not primitive' );
+	}
+
+	/**
+	 * Test the tests. All meta capabilities should have a condition in the `map_meta_cap()`
+	 * function that handles the capability.
+	 *
+	 * @group capTestTests
+	 */
+	public function testMetaCapsTestsAreCorrect() {
+		$actual = $this->getMetaCapsAndRoles();
+		$file   = file_get_contents( ABSPATH . WPINC . '/capabilities.php' );
+
+		$matched = preg_match( '/^function map_meta_cap\((.*?)^\}/ms', $file, $function );
+		$this->assertSame( 1, $matched );
+		$this->assertNotEmpty( $function );
+
+		$matched = preg_match_all( '/^[\t]case \'([^\']+)/m', $function[0], $cases );
+		$this->assertNotEmpty( $matched );
+		$this->assertNotEmpty( $cases );
+
+		$expected = array_flip( $cases[1] );
+
+		unset(
+			// These primitive capabilities have a 'case' in `map_meta_cap()` but aren't meta capabilities:
+			$expected['unfiltered_upload'],
+			$expected['unfiltered_html'],
+			$expected['edit_files'],
+			$expected['edit_plugins'],
+			$expected['edit_themes'],
+			$expected['update_plugins'],
+			$expected['delete_plugins'],
+			$expected['install_plugins'],
+			$expected['update_themes'],
+			$expected['delete_themes'],
+			$expected['install_themes'],
+			$expected['update_core'],
+			$expected['activate_plugins'],
+			$expected['edit_users'],
+			$expected['delete_users'],
+			$expected['create_users'],
+			$expected['manage_links'],
+			// Singular object meta capabilities (where an object ID is passed) are not tested:
+			$expected['remove_user'],
+			$expected['promote_user'],
+			$expected['edit_user'],
+			$expected['delete_post'],
+			$expected['delete_page'],
+			$expected['edit_post'],
+			$expected['edit_page'],
+			$expected['read_post'],
+			$expected['read_page'],
+			$expected['publish_post'],
+			$expected['edit_post_meta'],
+			$expected['delete_post_meta'],
+			$expected['add_post_meta'],
+			$expected['edit_comment'],
+			$expected['edit_term'],
+			$expected['delete_term'],
+			$expected['assign_term'],
+			$expected['delete_user']
+		);
+
+		$expected = array_keys( $expected );
+		$actual   = array_keys( $actual );
+
+		$missing_meta_cap_checks = array_diff( $expected, $actual );
+		$this->assertSame( array(), $missing_meta_cap_checks, 'These meta capabilities are not tested' );
+
+		$incorrect_meta_cap_checks = array_diff( $actual, $expected );
+		$this->assertSame( array(), $incorrect_meta_cap_checks, 'These capabilities are not meta' );
+	}
+
 	// test the default roles and caps
 	function test_all_roles_and_caps() {
-		$caps = $this->getCapsAndRoles();
+		$caps = $this->getAllCapsAndRoles();
 
 		foreach ( self::$users as $role => $user ) {
 
@@ -362,7 +515,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 			$this->markTestSkipped( 'Test only runs in multisite' );
 			return;
 		}
-		$caps = $this->getCapsAndRoles();
+		$caps = $this->getAllCapsAndRoles();
 
 		$user = self::$users['administrator'];
 		grant_super_admin( $user->ID );
@@ -392,7 +545,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		// make sure the role name is correct
 		$this->assertEquals( array(), $user->roles, "User should not have any roles" );
 
-		$caps = $this->getCapsAndRoles();
+		$caps = $this->getAllCapsAndRoles();
 
 		foreach ( $caps as $cap => $roles ) {
 			$this->assertFalse( $user->has_cap( $cap ), "User with an invalid role should not have the {$cap} capability" );
@@ -412,7 +565,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		// user should have two roles now
 		$this->assertEquals( array( 'subscriber', 'contributor' ), $user->roles );
 
-		$caps = $this->getCapsAndRoles();
+		$caps = $this->getAllCapsAndRoles();
 
 		foreach ( $caps as $cap => $roles ) {
 			if ( array_intersect( $user->roles, $roles ) ) {
@@ -448,7 +601,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		// make sure the role name is correct
 		$this->assertEquals( array( $role_name ), $user->roles );
 
-		$caps = $this->getCapsAndRoles();
+		$caps = $this->getAllCapsAndRoles();
 
 		foreach ( $caps as $cap => $roles ) {
 			$this->assertFalse( $user->has_cap( $cap ), "User should not have the {$cap} capability" );
@@ -485,7 +638,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		// make sure the role name is correct
 		$this->assertEquals( array( $role_name ), $user->roles );
 
-		$caps = $this->getCapsAndRoles();
+		$caps = $this->getPrimitiveCapsAndRoles();
 
 		foreach ( $caps as $cap => $roles ) {
 			// the user should have all the above caps
@@ -918,6 +1071,132 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	}
 
 	/**
+	 * @dataProvider dataTaxonomies
+	 *
+	 * @ticket 35614
+	 */
+	public function test_taxonomy_capabilities_are_correct( $taxonomy ) {
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			register_taxonomy( $taxonomy, 'post' );
+		}
+
+		$tax  = get_taxonomy( $taxonomy );
+		$user = self::$users['administrator'];
+
+		// Primitive capabilities for all taxonomies should match this:
+		$expected = array(
+			'manage_terms' => 'manage_categories',
+			'edit_terms'   => 'manage_categories',
+			'delete_terms' => 'manage_categories',
+			'assign_terms' => 'edit_posts',
+		);
+
+		foreach ( $expected as $meta_cap => $primitive_cap ) {
+			$caps = map_meta_cap( $tax->cap->$meta_cap, $user->ID );
+			$this->assertEquals( array(
+				$primitive_cap,
+			), $caps, "Meta cap: {$meta_cap}" );
+		}
+	}
+
+	/**
+	 * @dataProvider dataTaxonomies
+	 *
+	 * @ticket 35614
+	 */
+	public function test_default_taxonomy_term_cannot_be_deleted( $taxonomy ) {
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			register_taxonomy( $taxonomy, 'post' );
+		}
+
+		$tax  = get_taxonomy( $taxonomy );
+		$user = self::$users['administrator'];
+		$term = self::factory()->term->create_and_get( array(
+			'taxonomy' => $taxonomy,
+		) );
+
+		update_option( "default_{$taxonomy}", $term->term_id );
+
+		$this->assertTrue( user_can( $user->ID, $tax->cap->delete_terms ) );
+		$this->assertFalse( user_can( $user->ID, 'delete_term', $term->term_id ) );
+	}
+
+	/**
+	 * @dataProvider dataTaxonomies
+	 *
+	 * @ticket 35614
+	 */
+	public function test_taxonomy_caps_map_correctly_to_their_meta_cap( $taxonomy ) {
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			register_taxonomy( $taxonomy, 'post' );
+		}
+
+		$tax  = get_taxonomy( $taxonomy );
+		$term = self::factory()->term->create_and_get( array(
+			'taxonomy' => $taxonomy,
+		) );
+
+		foreach ( self::$users as $role => $user ) {
+			$this->assertSame(
+				user_can( $user->ID, 'edit_term', $term->term_id ),
+				user_can( $user->ID, $tax->cap->edit_terms ),
+				"Role: {$role}"
+			);
+			$this->assertSame(
+				user_can( $user->ID, 'delete_term', $term->term_id ),
+				user_can( $user->ID, $tax->cap->delete_terms ),
+				"Role: {$role}"
+			);
+			$this->assertSame(
+				user_can( $user->ID, 'assign_term', $term->term_id ),
+				user_can( $user->ID, $tax->cap->assign_terms ),
+				"Role: {$role}"
+			);
+		}
+
+	}
+
+	public function dataTaxonomies() {
+		return array(
+			array(
+				'post_tag',
+			),
+			array(
+				'category',
+			),
+			array(
+				'standard_custom_taxo',
+			),
+		);
+	}
+
+	/**
+	 * @ticket 35614
+	 */
+	public function test_taxonomy_capabilities_with_custom_caps_are_correct() {
+		$expected = array(
+			'manage_terms' => 'one',
+			'edit_terms'   => 'two',
+			'delete_terms' => 'three',
+			'assign_terms' => 'four',
+		);
+		$taxonomy = 'custom_cap_taxo';
+		register_taxonomy( $taxonomy, 'post', array(
+			'capabilities' => $expected,
+		) );
+
+		$tax  = get_taxonomy( $taxonomy );
+		$user = self::$users['administrator'];
+
+		foreach ( $expected as $meta_cap => $primitive_cap ) {
+			$caps = map_meta_cap( $tax->cap->$meta_cap, $user->ID );
+			$this->assertEquals( array(
+				$primitive_cap,
+			), $caps, "Meta cap: {$meta_cap}" );
+		}
+	}
+
+	/**
 	 * @ticket 21786
 	 */
 	function test_negative_caps() {
@@ -1185,7 +1464,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 		$this->assertFalse( is_user_logged_in() );
 
-		$caps = $this->getCapsAndRoles();
+		$caps = $this->getAllCapsAndRoles();
 
 		foreach ( $caps as $cap => $roles ) {
 			$this->assertFalse( current_user_can( $cap ), "Non-logged-in user should not have the {$cap} capability" );

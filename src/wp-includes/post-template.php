@@ -779,19 +779,35 @@ function get_body_class( $class = '' ) {
 function post_password_required( $post = null ) {
 	$post = get_post($post);
 
-	if ( empty( $post->post_password ) )
-		return false;
+	if ( empty( $post->post_password ) ) {
+		/** This filter is documented in wp-includes/post.php */
+		return apply_filters( 'post_password_required', false, $post );
+	}
 
-	if ( ! isset( $_COOKIE['wp-postpass_' . COOKIEHASH] ) )
-		return true;
+	if ( ! isset( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] ) ) {
+		/** This filter is documented in wp-includes/post.php */
+		return apply_filters( 'post_password_required', true, $post );
+	}
 
 	$hasher = new PasswordHash( 8, true );
 
 	$hash = wp_unslash( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
-	if ( 0 !== strpos( $hash, '$P$B' ) )
-		return true;
+	if ( 0 !== strpos( $hash, '$P$B' ) ) {
+		$required = true;
+	} else {
+		$required = ! $hasher->CheckPassword( $post->post_password, $hash );
+	}
 
-	return ! $hasher->CheckPassword( $post->post_password, $hash );
+	/**
+	 * Filters whether a post requires the user to supply a password.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param bool    $required Whether the user needs to supply a password. True if password has not been
+	 *                          provided or is incorrect, false if password has been supplied or is not required.
+	 * @param WP_Post $post     Post data.
+	 */
+	return apply_filters( 'post_password_required', $required, $post );
 }
 
 //
@@ -1109,6 +1125,7 @@ function wp_dropdown_pages( $args = '' ) {
  * Retrieve or display list of pages in list (li) format.
  *
  * @since 1.5.0
+ * @since 4.7.0 Added the `item_spacing` argument.
  *
  * @see get_pages()
  *
@@ -1138,6 +1155,7 @@ function wp_dropdown_pages( $args = '' ) {
  *                                'menu_order', 'post_parent', 'ID', 'rand', or 'comment_count'. Default 'post_title'.
  *     @type string $title_li     List heading. Passing a null or empty value will result in no heading, and the list
  *                                will not be wrapped with unordered list `<ul>` tags. Default 'Pages'.
+ *     @type string $item_spacing Whether to preserve whitespace within the menu's HTML. Accepts 'preserve' or 'discard'. Default 'preserve'.
  *     @type Walker $walker       Walker instance to use for listing pages. Default empty (Walker_Page).
  * }
  * @return string|void HTML list of pages.
@@ -1149,10 +1167,15 @@ function wp_list_pages( $args = '' ) {
 		'child_of' => 0, 'exclude' => '',
 		'title_li' => __( 'Pages' ), 'echo' => 1,
 		'authors' => '', 'sort_column' => 'menu_order, post_title',
-		'link_before' => '', 'link_after' => '', 'walker' => '',
+		'link_before' => '', 'link_after' => '', 'item_spacing' => 'preserve', 'walker' => '',
 	);
 
 	$r = wp_parse_args( $args, $defaults );
+
+	if ( ! in_array( $r['item_spacing'], array( 'preserve', 'discard' ), true ) ) {
+		// invalid value, fall back to default.
+		$r['item_spacing'] = $defaults['item_spacing'];
+	}
 
 	$output = '';
 	$current_page = 0;
@@ -1226,41 +1249,57 @@ function wp_list_pages( $args = '' ) {
  *
  * @since 2.7.0
  * @since 4.4.0 Added `menu_id`, `container`, `before`, `after`, and `walker` arguments.
+ * @since 4.7.0 Added the `item_spacing` argument.
  *
  * @param array|string $args {
  *     Optional. Arguments to generate a page menu. See wp_list_pages() for additional arguments.
  *
- *     @type string          $sort_column How to short the list of pages. Accepts post column names.
- *                                        Default 'menu_order, post_title'.
- *     @type string          $menu_id     ID for the div containing the page list. Default is empty string.
- *     @type string          $menu_class  Class to use for the element containing the page list. Default 'menu'.
- *     @type string          $container   Element to use for the element containing the page list. Default 'div'.
- *     @type bool            $echo        Whether to echo the list or return it. Accepts true (echo) or false (return).
- *                                        Default true.
- *     @type int|bool|string $show_home   Whether to display the link to the home page. Can just enter the text
- *                                        you'd like shown for the home link. 1|true defaults to 'Home'.
- *     @type string          $link_before The HTML or text to prepend to $show_home text. Default empty.
- *     @type string          $link_after  The HTML or text to append to $show_home text. Default empty.
- *     @type string          $before      The HTML or text to prepend to the menu. Default is '<ul>'.
- *     @type string          $after       The HTML or text to append to the menu. Default is '</ul>'.
- *     @type Walker          $walker      Walker instance to use for listing pages. Default empty (Walker_Page).
+ *     @type string          $sort_column  How to short the list of pages. Accepts post column names.
+ *                                         Default 'menu_order, post_title'.
+ *     @type string          $menu_id      ID for the div containing the page list. Default is empty string.
+ *     @type string          $menu_class   Class to use for the element containing the page list. Default 'menu'.
+ *     @type string          $container    Element to use for the element containing the page list. Default 'div'.
+ *     @type bool            $echo         Whether to echo the list or return it. Accepts true (echo) or false (return).
+ *                                         Default true.
+ *     @type int|bool|string $show_home    Whether to display the link to the home page. Can just enter the text
+ *                                         you'd like shown for the home link. 1|true defaults to 'Home'.
+ *     @type string          $link_before  The HTML or text to prepend to $show_home text. Default empty.
+ *     @type string          $link_after   The HTML or text to append to $show_home text. Default empty.
+ *     @type string          $before       The HTML or text to prepend to the menu. Default is '<ul>'.
+ *     @type string          $after        The HTML or text to append to the menu. Default is '</ul>'.
+ *     @type string          $item_spacing Whether to preserve whitespace within the menu's HTML. Accepts 'preserve' or 'discard'. Default 'discard'.
+ *     @type Walker          $walker       Walker instance to use for listing pages. Default empty (Walker_Page).
  * }
  * @return string|void HTML menu
  */
 function wp_page_menu( $args = array() ) {
 	$defaults = array(
-		'sort_column' => 'menu_order, post_title',
-		'menu_id'     => '',
-		'menu_class'  => 'menu',
-		'container'   => 'div',
-		'echo'        => true,
-		'link_before' => '',
-		'link_after'  => '',
-		'before'      => '<ul>',
-		'after'       => '</ul>',
-		'walker'      => '',
+		'sort_column'  => 'menu_order, post_title',
+		'menu_id'      => '',
+		'menu_class'   => 'menu',
+		'container'    => 'div',
+		'echo'         => true,
+		'link_before'  => '',
+		'link_after'   => '',
+		'before'       => '<ul>',
+		'after'        => '</ul>',
+		'item_spacing' => 'discard',
+		'walker'       => '',
 	);
 	$args = wp_parse_args( $args, $defaults );
+
+	if ( ! in_array( $args['item_spacing'], array( 'preserve', 'discard' ) ) ) {
+		// invalid value, fall back to default.
+		$args['item_spacing'] = $defaults['item_spacing'];
+	}
+
+	if ( 'preserve' === $args['item_spacing'] ) {
+		$t = "\t";
+		$n = "\n";
+	} else {
+		$t = '';
+		$n = '';
+	}
 
 	/**
 	 * Filters the arguments used to generate a page-based menu.
@@ -1300,7 +1339,7 @@ function wp_page_menu( $args = array() ) {
 
 	$list_args['echo'] = false;
 	$list_args['title_li'] = '';
-	$menu .= str_replace( array( "\r", "\n", "\t" ), '', wp_list_pages($list_args) );
+	$menu .= wp_list_pages( $list_args );
 
 	$container = sanitize_text_field( $args['container'] );
 
@@ -1315,7 +1354,7 @@ function wp_page_menu( $args = array() ) {
 		if ( isset( $args['fallback_cb'] ) &&
 			'wp_page_menu' === $args['fallback_cb'] &&
 			'ul' !== $container ) {
-			$args['before'] = '<ul>';
+			$args['before'] = "<ul>{$n}";
 			$args['after'] = '</ul>';
 		}
 
@@ -1331,7 +1370,7 @@ function wp_page_menu( $args = array() ) {
 		$attrs .= ' class="' . esc_attr( $args['menu_class'] ) . '"';
 	}
 
-	$menu = "<{$container}{$attrs}>" . $menu . "</{$container}>\n";
+	$menu = "<{$container}{$attrs}>" . $menu . "</{$container}>{$n}";
 
 	/**
 	 * Filters the HTML output of a page-based menu.

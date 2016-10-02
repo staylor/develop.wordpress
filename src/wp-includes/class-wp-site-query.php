@@ -134,12 +134,10 @@ class WP_Site_Query {
 	 *                                           include all networks. Default 0.
 	 *     @type array        $network__in       Array of network IDs to include affiliated sites for. Default empty.
 	 *     @type array        $network__not_in   Array of network IDs to exclude affiliated sites for. Default empty.
-	 *     @type string       $domain            Limit results to those affiliated with a given domain.
-	 *                                           Default empty.
+	 *     @type string       $domain            Limit results to those affiliated with a given domain. Default empty.
 	 *     @type array        $domain__in        Array of domains to include affiliated sites for. Default empty.
 	 *     @type array        $domain__not_in    Array of domains to exclude affiliated sites for. Default empty.
-	 *     @type string       $path              Limit results to those affiliated with a given path.
-	 *                                           Default empty.
+	 *     @type string       $path              Limit results to those affiliated with a given path. Default empty.
 	 *     @type array        $path__in          Array of paths to include affiliated sites for. Default empty.
 	 *     @type array        $path__not_in      Array of paths to exclude affiliated sites for. Default empty.
 	 *     @type int          $public            Limit results to public sites. Accepts '1' or '0'. Default empty.
@@ -515,6 +513,8 @@ class WP_Site_Query {
 			$this->date_query = new WP_Date_Query( $date_query, 'registered' );
 			$this->sql_clauses['where']['date_query'] = preg_replace( '/^\s*AND\s*/', '', $this->date_query->get_sql() );
 		}
+
+		$join = '';
 
 		$where = implode( ' AND ', $this->sql_clauses['where'] );
 

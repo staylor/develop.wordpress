@@ -1070,6 +1070,7 @@ function update_site_option( $option, $value ) {
  * @see get_option()
  *
  * @global wpdb   $wpdb
+ * @global object $current_site
  *
  * @param int      $network_id ID of the network. Can be null to default to the current network ID.
  * @param string   $option     Name of option to retrieve. Expected to not be SQL-escaped.
@@ -1077,7 +1078,7 @@ function update_site_option( $option, $value ) {
  * @return mixed Value set for the option.
  */
 function get_network_option( $network_id, $option, $default = false ) {
-	global $wpdb;
+	global $wpdb, $current_site;
 
 	if ( $network_id && ! is_numeric( $network_id ) ) {
 		return false;
@@ -1087,7 +1088,7 @@ function get_network_option( $network_id, $option, $default = false ) {
 
 	// Fallback to the current network if a network ID is not specified.
 	if ( ! $network_id && is_multisite() ) {
-		$network_id = get_current_site()->id;
+		$network_id = $current_site->id;
 	}
 
 	/**
@@ -1186,6 +1187,7 @@ function get_network_option( $network_id, $option, $default = false ) {
  * @see add_option()
  *
  * @global wpdb   $wpdb
+ * @global object $current_site
  *
  * @param int    $network_id ID of the network. Can be null to default to the current network ID.
  * @param string $option     Name of option to add. Expected to not be SQL-escaped.
@@ -1193,7 +1195,7 @@ function get_network_option( $network_id, $option, $default = false ) {
  * @return bool False if option was not added and true if option was added.
  */
 function add_network_option( $network_id, $option, $value ) {
-	global $wpdb;
+	global $wpdb, $current_site;
 
 	if ( $network_id && ! is_numeric( $network_id ) ) {
 		return false;
@@ -1203,7 +1205,7 @@ function add_network_option( $network_id, $option, $value ) {
 
 	// Fallback to the current network if a network ID is not specified.
 	if ( ! $network_id && is_multisite() ) {
-		$network_id = get_current_site()->id;
+		$network_id = $current_site->id;
 	}
 
 	wp_protect_special_option( $option );
@@ -1295,13 +1297,14 @@ function add_network_option( $network_id, $option, $value ) {
  * @see delete_option()
  *
  * @global wpdb   $wpdb
+ * @global object $current_site
  *
  * @param int    $network_id ID of the network. Can be null to default to the current network ID.
  * @param string $option     Name of option to remove. Expected to not be SQL-escaped.
  * @return bool True, if succeed. False, if failure.
  */
 function delete_network_option( $network_id, $option ) {
-	global $wpdb;
+	global $wpdb, $current_site;
 
 	if ( $network_id && ! is_numeric( $network_id ) ) {
 		return false;
@@ -1311,7 +1314,7 @@ function delete_network_option( $network_id, $option ) {
 
 	// Fallback to the current network if a network ID is not specified.
 	if ( ! $network_id && is_multisite() ) {
-		$network_id = get_current_site()->id;
+		$network_id = $current_site->id;
 	}
 
 	/**
@@ -1376,6 +1379,7 @@ function delete_network_option( $network_id, $option ) {
  * @see update_option()
  *
  * @global wpdb   $wpdb
+ * @global object $current_site
  *
  * @param int      $network_id ID of the network. Can be null to default to the current network ID.
  * @param string   $option     Name of option. Expected to not be SQL-escaped.
@@ -1383,7 +1387,7 @@ function delete_network_option( $network_id, $option ) {
  * @return bool False if value was not updated and true if value was updated.
  */
 function update_network_option( $network_id, $option, $value ) {
-	global $wpdb;
+	global $wpdb, $current_site;
 
 	if ( $network_id && ! is_numeric( $network_id ) ) {
 		return false;
@@ -1393,7 +1397,7 @@ function update_network_option( $network_id, $option, $value ) {
 
 	// Fallback to the current network if a network ID is not specified.
 	if ( ! $network_id && is_multisite() ) {
-		$network_id = get_current_site()->id;
+		$network_id = $current_site->id;
 	}
 
 	wp_protect_special_option( $option );
@@ -1681,4 +1685,139 @@ function set_site_transient( $transient, $value, $expiration = 0 ) {
 		do_action( 'setted_site_transient', $transient, $value, $expiration );
 	}
 	return $result;
+}
+
+/**
+ * Register a setting and its data.
+ *
+ * @since 2.7.0
+ * @since 4.7.0 `$args` can be passed to set flags on the setting, similar to `register_meta()`.
+ *
+ * @global array $new_whitelist_options
+ * @global array $wp_registered_settings
+ *
+ * @param string $option_group A settings group name. Should correspond to a whitelisted option key name.
+ * 	Default whitelisted option key names include "general," "discussion," and "reading," among others.
+ * @param string $option_name The name of an option to sanitize and save.
+ * @param array  $args {
+ *     Data used to describe the setting when registered.
+ *
+ *     @type string   $type              The type of data associated with this setting.
+ *     @type string   $description       A description of the data attached to this setting.
+ *     @type callable $sanitize_callback A callback function that sanitizes the option's value.
+ *     @type bool     $show_in_rest      Whether data associated with this setting should be included in the REST API.
+ * }
+ */
+function register_setting( $option_group, $option_name, $args = array() ) {
+	global $new_whitelist_options, $wp_registered_settings;
+
+	$defaults = array(
+		'type'              => 'string',
+		'group'             => $option_group,
+		'description'       => '',
+		'sanitize_callback' => null,
+		'show_in_rest'      => false,
+	);
+
+	// Back-compat: old sanitize callback is added.
+	if ( is_callable( $args ) ) {
+		$args = array(
+			'sanitize_callback' => $args,
+		);
+	}
+
+	/**
+	 * Filters the registration arguments when registering a setting.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param array  $args         Array of setting registration arguments.
+	 * @param array  $defaults     Array of default arguments.
+	 * @param string $option_group Setting group.
+	 * @param string $option_name  Setting name.
+	 */
+	$args = apply_filters( 'register_setting_args', $args, $defaults, $option_group, $option_name );
+	$args = wp_parse_args( $args, $defaults );
+
+	if ( ! is_array( $wp_registered_settings ) ) {
+		$wp_registered_settings = array();
+	}
+
+	if ( 'misc' == $option_group ) {
+		_deprecated_argument( __FUNCTION__, '3.0.0', sprintf( __( 'The "%s" options group has been removed. Use another settings group.' ), 'misc' ) );
+		$option_group = 'general';
+	}
+
+	if ( 'privacy' == $option_group ) {
+		_deprecated_argument( __FUNCTION__, '3.5.0', sprintf( __( 'The "%s" options group has been removed. Use another settings group.' ), 'privacy' ) );
+		$option_group = 'reading';
+	}
+
+	$new_whitelist_options[ $option_group ][] = $option_name;
+	if ( ! empty( $args['sanitize_callback'] ) ) {
+		add_filter( "sanitize_option_{$option_name}", $args['sanitize_callback'] );
+	}
+
+	$wp_registered_settings[ $option_name ] = $args;
+}
+
+/**
+ * Unregister a setting.
+ *
+ * @since 2.7.0
+ * @since 4.7.0 `$sanitize_callback` was deprecated. The callback from `register_setting()` is now used instead.
+ *
+ * @global array $new_whitelist_options
+ *
+ * @param string   $option_group      The settings group name used during registration.
+ * @param string   $option_name       The name of the option to unregister.
+ * @param callable $deprecated        Deprecated.
+ */
+function unregister_setting( $option_group, $option_name, $deprecated = '' ) {
+	global $new_whitelist_options, $wp_registered_settings;
+
+	if ( 'misc' == $option_group ) {
+		_deprecated_argument( __FUNCTION__, '3.0.0', sprintf( __( 'The "%s" options group has been removed. Use another settings group.' ), 'misc' ) );
+		$option_group = 'general';
+	}
+
+	if ( 'privacy' == $option_group ) {
+		_deprecated_argument( __FUNCTION__, '3.5.0', sprintf( __( 'The "%s" options group has been removed. Use another settings group.' ), 'privacy' ) );
+		$option_group = 'reading';
+	}
+
+	$pos = array_search( $option_name, (array) $new_whitelist_options[ $option_group ] );
+	if ( $pos !== false ) {
+		unset( $new_whitelist_options[ $option_group ][ $pos ] );
+	}
+	if ( '' !== $deprecated ) {
+		_deprecated_argument( __FUNCTION__, '4.7.0', __( '$sanitize_callback is deprecated. The callback from register_setting() is used instead.' ) );
+		remove_filter( "sanitize_option_{$option_name}", $deprecated );
+	}
+
+	if ( isset( $wp_registered_settings[ $option_name ] ) ) {
+		// Remove the sanitize callback if one was set during registration.
+		if ( ! empty( $wp_registered_settings[ $option_name ]['sanitize_callback'] ) ) {
+			remove_filter( "sanitize_option_{$option_name}", $wp_registered_settings[ $option_name ]['sanitize_callback'] );
+		}
+
+		unset( $wp_registered_settings[ $option_name ] );
+	}
+}
+
+/**
+ * Retrieves an array of registered settings.
+ *
+ * @since 4.7.0
+ *
+ * @return array List of registered settings, keyed by option name.
+ */
+function get_registered_settings() {
+	global $wp_registered_settings;
+
+	if ( ! is_array( $wp_registered_settings ) ) {
+		return array();
+	}
+
+	return $wp_registered_settings;
 }

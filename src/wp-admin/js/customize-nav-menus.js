@@ -104,6 +104,23 @@
 				deferred.resolve( response );
 				api.Menus.insertedAutoDrafts.push( response.post_id );
 				api( 'nav_menus_created_posts' ).set( _.clone( api.Menus.insertedAutoDrafts ) );
+
+				if ( 'page' === params.post_type ) {
+
+					// Activate static front page controls as this could be the first page created.
+					if ( api.section.has( 'static_front_page' ) ) {
+						api.section( 'static_front_page' ).activate();
+					}
+
+					// Add new page to dropdown-pages controls.
+					api.control.each( function( control ) {
+						var select;
+						if ( 'dropdown-pages' === control.params.type ) {
+							select = control.container.find( 'select[name^="_customize-dropdown-pages-"]' );
+							select.append( new Option( params.post_title, response.post_id ) );
+						}
+					} );
+				}
 			}
 		} );
 
@@ -834,7 +851,7 @@
 
 			api.bind( 'pane-contents-reflowed', function() {
 				// Skip menus that have been removed.
-				if ( ! section.container.parent().length ) {
+				if ( ! section.contentContainer.parent().length ) {
 					return;
 				}
 				section.container.find( '.menu-item .menu-item-reorder-nav button' ).attr({ 'tabindex': '0', 'aria-hidden': 'false' });
@@ -952,7 +969,7 @@
 			var section = this;
 
 			if ( expanded ) {
-				wpNavMenu.menuList = section.container.find( '.accordion-section-content:first' );
+				wpNavMenu.menuList = section.contentContainer;
 				wpNavMenu.targetList = wpNavMenu.menuList;
 
 				// Add attributes needed by wpNavMenu
@@ -1014,8 +1031,8 @@
 		onChangeExpanded: function( expanded ) {
 			var section = this,
 				button = section.container.find( '.add-menu-toggle' ),
-				content = section.container.find( '.new-menu-section-content' ),
-				customizer = section.container.closest( '.wp-full-overlay-sidebar-content' );
+				content = section.contentContainer,
+				customizer = section.headContainer.closest( '.wp-full-overlay-sidebar-content' );
 			if ( expanded ) {
 				button.addClass( 'open' );
 				button.attr( 'aria-expanded', 'true' );
@@ -1028,6 +1045,17 @@
 				content.slideUp( 'fast' );
 				content.find( '.menu-name-field' ).removeClass( 'invalid' );
 			}
+		},
+
+		/**
+		 * Find the content element.
+		 *
+		 * @since 4.7.0
+		 *
+		 * @returns {jQuery} Content UL element.
+		 */
+		getContent: function() {
+			return this.container.find( 'ul:first' );
 		}
 	});
 
@@ -1397,14 +1425,14 @@
 				}
 
 				var titleEl = control.container.find( '.menu-item-title' ),
-				    titleText = item.title || api.Menus.data.l10n.untitled;
+				    titleText = item.title || item.original_title || api.Menus.data.l10n.untitled;
 
 				if ( item._invalid ) {
 					titleText = api.Menus.data.l10n.invalidTitleTpl.replace( '%s', titleText );
 				}
 
 				// Don't update to an empty title.
-				if ( item.title ) {
+				if ( item.title || item.original_title ) {
 					titleEl
 						.text( titleText )
 						.removeClass( 'no-title' );
@@ -1501,7 +1529,6 @@
 		 */
 		expandControlSection: function() {
 			var $section = this.container.closest( '.accordion-section' );
-
 			if ( ! $section.hasClass( 'open' ) ) {
 				$section.find( '.accordion-section-title:first' ).trigger( 'click' );
 			}
@@ -1655,23 +1682,33 @@
 		 */
 		focus: function( params ) {
 			params = params || {};
-			var control = this, originalCompleteCallback = params.completeCallback;
+			var control = this, originalCompleteCallback = params.completeCallback, focusControl;
 
-			control.expandControlSection();
+			focusControl = function() {
+				control.expandControlSection();
 
-			params.completeCallback = function() {
-				var focusable;
+				params.completeCallback = function() {
+					var focusable;
 
-				// Note that we can't use :focusable due to a jQuery UI issue. See: https://github.com/jquery/jquery-ui/pull/1583
-				focusable = control.container.find( '.menu-item-settings' ).find( 'input, select, textarea, button, object, a[href], [tabindex]' ).filter( ':visible' );
-				focusable.first().focus();
+					// Note that we can't use :focusable due to a jQuery UI issue. See: https://github.com/jquery/jquery-ui/pull/1583
+					focusable = control.container.find( '.menu-item-settings' ).find( 'input, select, textarea, button, object, a[href], [tabindex]' ).filter( ':visible' );
+					focusable.first().focus();
 
-				if ( originalCompleteCallback ) {
-					originalCompleteCallback();
-				}
+					if ( originalCompleteCallback ) {
+						originalCompleteCallback();
+					}
+				};
+
+				control.expandForm( params );
 			};
 
-			control.expandForm( params );
+			if ( api.section.has( control.section() ) ) {
+				api.section( control.section() ).expand( {
+					completeCallback: focusControl
+				} );
+			} else {
+				focusControl();
+			}
 		},
 
 		/**
@@ -1984,6 +2021,7 @@
 		 */
 		ready: function() {
 			var control = this,
+				section = api.section( control.section() ),
 				menuId = control.params.menu_id,
 				menu = control.setting(),
 				name,
@@ -2000,7 +2038,7 @@
 			 * being deactivated.
 			 */
 			control.active.validate = function() {
-				var value, section = api.section( control.section() );
+				var value;
 				if ( section ) {
 					value = section.active();
 				} else {
@@ -2009,7 +2047,7 @@
 				return value;
 			};
 
-			control.$controlSection = control.container.closest( '.control-section' );
+			control.$controlSection = section.headContainer;
 			control.$sectionContent = control.container.closest( '.accordion-section-content' );
 
 			this._setupModel();
@@ -2283,11 +2321,11 @@
 					return;
 				}
 
-				var section = control.container.closest( '.accordion-section' ),
+				var section = api.section( control.section() ),
 					menuId = control.params.menu_id,
-					controlTitle = section.find( '.accordion-section-title' ),
-					sectionTitle = section.find( '.customize-section-title h3' ),
-					location = section.find( '.menu-in-location' ),
+					controlTitle = section.headContainer.find( '.accordion-section-title' ),
+					sectionTitle = section.contentContainer.find( '.customize-section-title h3' ),
+					location = section.headContainer.find( '.menu-in-location' ),
 					action = sectionTitle.find( '.customize-action' ),
 					name = displayNavMenuName( menu.name );
 
@@ -2311,7 +2349,7 @@
 				} );
 
 				// Update the nav menu name in all location checkboxes.
-				section.find( '.customize-control-checkbox input' ).each( function() {
+				section.contentContainer.find( '.customize-control-checkbox input' ).each( function() {
 					if ( $( this ).prop( 'checked' ) ) {
 						$( '.current-menu-location-name-' + $( this ).data( 'location-id' ) ).text( name );
 					}
@@ -2625,9 +2663,6 @@
 
 			// Focus on the new menu section.
 			api.section( customizeId ).focus(); // @todo should we focus on the new menu's control and open the add-items panel? Thinking user flow...
-
-			// Fix an issue with extra space at top immediately after creating new menu.
-			$( '#menu-to-edit' ).css( 'margin-top', 0 );
 		}
 	});
 
@@ -2929,7 +2964,6 @@
 	 */
 	api.Menus.focusMenuItemControl = function( menuItemId ) {
 		var control = api.Menus.getMenuItemControl( menuItemId );
-
 		if ( control ) {
 			control.focus();
 		}

@@ -587,6 +587,10 @@ final class WP_Customize_Nav_Menus {
 				$menu_item_setting_id = 'nav_menu_item[' . $item->ID . ']';
 
 				$value = (array) $item;
+				if ( empty( $value['post_title'] ) ) {
+					$value['title'] = '';
+				}
+
 				$value['nav_menu_term_id'] = $menu_id;
 				$this->manager->add_setting( new WP_Customize_Nav_Menu_Item_Setting( $this->manager, $menu_item_setting_id, array(
 					'value'     => $value,
@@ -910,7 +914,7 @@ final class WP_Customize_Nav_Menus {
 					</p>
 					<p class="button-controls">
 						<span class="add-to-menu">
-							<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' ); ?>" name="add-custom-menu-item" id="custom-menu-item-submit">
+							<input type="submit" class="button submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' ); ?>" name="add-custom-menu-item" id="custom-menu-item-submit">
 							<span class="spinner"></span>
 						</span>
 					</p>

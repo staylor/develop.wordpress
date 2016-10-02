@@ -10,9 +10,6 @@
 /** Load WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
-if ( ! is_multisite() )
-	wp_die( __( 'Multisite support is not enabled.' ) );
-
 if ( ! current_user_can('manage_sites') )
 	wp_die(__('Sorry, you are not allowed to edit this site.'));
 
@@ -117,8 +114,10 @@ if ( $action ) {
 			break;
 
 		case 'remove':
-			if ( ! current_user_can( 'remove_users' )  )
-				die(__('You can&#8217;t remove users.'));
+			if ( ! current_user_can( 'remove_users' ) ) {
+				wp_die( __( 'Sorry, you are not allowed to remove users.' ) );
+			}
+
 			check_admin_referer( 'bulk-users' );
 
 			$update = 'remove';
@@ -139,8 +138,9 @@ if ( $action ) {
 		case 'promote':
 			check_admin_referer( 'bulk-users' );
 			$editable_roles = get_editable_roles();
-			if ( empty( $editable_roles[$_REQUEST['new_role']] ) )
-				wp_die(__('You can&#8217;t give users that role.'));
+			if ( empty( $editable_roles[ $_REQUEST['new_role'] ] ) ) {
+				wp_die( __( 'Sorry, you are not allowed to give users that role.' ) );
+			}
 
 			if ( isset( $_REQUEST['users'] ) ) {
 				$userids = $_REQUEST['users'];
@@ -163,6 +163,28 @@ if ( $action ) {
 			} else {
 				$update = 'err_promote';
 			}
+			break;
+		default:
+			if ( ! isset( $_REQUEST['users'] ) ) {
+				break;
+			}
+			check_admin_referer( 'bulk-users' );
+			$userids = $_REQUEST['users'];
+			/**
+			 * Fires when a custom bulk action should be handled.
+			 *
+			 * The redirect link should be modified with success or failure feedback
+			 * from the action to be used to display feedback to the user.
+			 *
+			 * @since 4.7.0
+			 *
+			 * @param string $referer The redirect URL.
+			 * @param string $action  The action being taken.
+			 * @param array  $userids The users to take the action on.
+			 * @param int    $id      The id of the current site
+			 */
+			$referer = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $referer, $action, $userids, $id );
+			$update = $action;
 			break;
 	}
 

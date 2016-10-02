@@ -72,36 +72,38 @@ function get_blogaddress_by_name( $blogname ) {
 }
 
 /**
- * Given a blog's (subdomain or directory) slug, retrieve its id.
+ * Retrieves a sites ID given its (subdomain or directory) slug.
  *
  * @since MU
+ * @since 4.7.0 Converted to use get_sites().
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
- * @param string $slug
- * @return int A blog id
+ * @param string $slug A site's slug.
+ * @return int|null The site ID, or null if no site is found for the given slug.
  */
 function get_id_from_blogname( $slug ) {
-	global $wpdb;
-
 	$current_site = get_current_site();
 	$slug = trim( $slug, '/' );
 
-	$blog_id = wp_cache_get( 'get_id_from_blogname_' . $slug, 'blog-details' );
-	if ( $blog_id )
-		return $blog_id;
-
 	if ( is_subdomain_install() ) {
-		$domain = $slug . '.' . $current_site->domain;
+		$domain = $slug . '.' . preg_replace( '|^www\.|', '', $current_site->domain );
 		$path = $current_site->path;
 	} else {
 		$domain = $current_site->domain;
 		$path = $current_site->path . $slug . '/';
 	}
 
-	$blog_id = $wpdb->get_var( $wpdb->prepare("SELECT blog_id FROM {$wpdb->blogs} WHERE domain = %s AND path = %s", $domain, $path) );
-	wp_cache_set( 'get_id_from_blogname_' . $slug, $blog_id, 'blog-details' );
-	return $blog_id;
+	$site_ids = get_sites( array(
+		'number' => 1,
+		'fields' => 'ids',
+		'domain' => $domain,
+		'path' => $path,
+	) );
+
+	if ( empty( $site_ids ) ) {
+		return null;
+	}
+
+	return array_shift( $site_ids );
 }
 
 /**
@@ -453,7 +455,6 @@ function clean_blog_cache( $blog ) {
 	wp_cache_delete(  $domain_path_key, 'blog-lookup' );
 	wp_cache_delete( 'current_blog_' . $blog->domain, 'site-options' );
 	wp_cache_delete( 'current_blog_' . $blog->domain . $blog->path, 'site-options' );
-	wp_cache_delete( 'get_id_from_blogname_' . trim( $blog->path, '/' ), 'blog-details' );
 	wp_cache_delete( $domain_path_key, 'blog-id-cache' );
 
 	/**
@@ -566,10 +567,10 @@ function update_site_cache( $sites ) {
  *                                           Default false.
  *     @type array        $date_query        Date query clauses to limit sites by. See WP_Date_Query.
  *                                           Default null.
- *     @type string       $fields            Site fields to return. Accepts 'ids' for site IDs only or empty
- *                                           for all fields. Default empty.
+ *     @type string       $fields            Site fields to return. Accepts 'ids' (returns an array of site IDs)
+ *                                           or empty (returns an array of complete site objects). Default empty.
  *     @type int          $ID                A site ID to only return that site. Default empty.
- *     @type int          $number            Maximum number of sites to retrieve. Default null (no limit).
+ *     @type int          $number            Maximum number of sites to retrieve. Default 100.
  *     @type int          $offset            Number of sites to offset the query. Used to build LIMIT clause.
  *                                           Default 0.
  *     @type bool         $no_found_rows     Whether to disable the `SQL_CALC_FOUND_ROWS` query. Default true.
@@ -579,16 +580,14 @@ function update_site_cache( $sites ) {
  *                                           an empty array, or 'none' to disable `ORDER BY` clause.
  *                                           Default 'id'.
  *     @type string       $order             How to order retrieved sites. Accepts 'ASC', 'DESC'. Default 'ASC'.
- *     @type int          $network_id        Limit results to those affiliated with a given network ID.
- *                                           Default current network ID.
+ *     @type int          $network_id        Limit results to those affiliated with a given network ID. If 0,
+ *                                           include all networks. Default 0.
  *     @type array        $network__in       Array of network IDs to include affiliated sites for. Default empty.
  *     @type array        $network__not_in   Array of network IDs to exclude affiliated sites for. Default empty.
- *     @type string       $domain            Limit results to those affiliated with a given domain.
- *                                           Default empty.
+ *     @type string       $domain            Limit results to those affiliated with a given domain. Default empty.
  *     @type array        $domain__in        Array of domains to include affiliated sites for. Default empty.
  *     @type array        $domain__not_in    Array of domains to exclude affiliated sites for. Default empty.
- *     @type string       $path              Limit results to those affiliated with a given path.
- *                                           Default empty.
+ *     @type string       $path              Limit results to those affiliated with a given path. Default empty.
  *     @type array        $path__in          Array of paths to include affiliated sites for. Default empty.
  *     @type array        $path__not_in      Array of paths to exclude affiliated sites for. Default empty.
  *     @type int          $public            Limit results to public sites. Accepts '1' or '0'. Default empty.
@@ -597,6 +596,8 @@ function update_site_cache( $sites ) {
  *     @type int          $spam              Limit results to spam sites. Accepts '1' or '0'. Default empty.
  *     @type int          $deleted           Limit results to deleted sites. Accepts '1' or '0'. Default empty.
  *     @type string       $search            Search term(s) to retrieve matching sites for. Default empty.
+ *     @type array        $search_columns    Array of column names to be searched. Accepts 'domain' and 'path'.
+ *                                           Default empty array.
  *     @type bool         $update_site_cache Whether to prime the cache for found sites. Default false.
  * }
  * @return array List of sites.
@@ -1088,11 +1089,13 @@ function get_networks( $args = array() ) {
  *
  * @since 4.6.0
  *
+ * @global WP_Network $current_site
+ *
  * @param WP_Network|int|null $network Optional. Network to retrieve. Default is the current network.
  * @return WP_Network|null The network object or null if not found.
  */
 function get_network( $network = null ) {
-	$current_site = get_current_site();
+	global $current_site;
 	if ( empty( $network ) && isset( $current_site ) ) {
 		$network = $current_site;
 	}

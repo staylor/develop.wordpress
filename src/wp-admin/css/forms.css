@@ -386,7 +386,7 @@ textarea.large-text {
 	width: 99%;
 }
 
-input.regular-text {
+.regular-text {
 	width: 25em;
 }
 
@@ -456,21 +456,6 @@ fieldset label,
 .options-media-php label[for*="_size_"],
 #misc-publishing-actions label {
 	vertical-align: baseline;
-}
-
-#misc-publishing-actions label[for="post_status"]:before {
-	content: "\f173";
-	display: inline-block;
-	font: normal 20px/1 dashicons;
-	speak: none;
-	left: -1px;
-	padding: 0 5px 0 0;
-	position: relative;
-	top: 0;
-	text-decoration: none !important;
-	vertical-align: top;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
 }
 
 #pass-strength-result {

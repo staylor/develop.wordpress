@@ -129,21 +129,8 @@ input#link_url {
 	float: left;
 }
 
-.submitbox .submitdelete {
-	text-decoration: none;
-	padding: 1px 2px;
-}
-
 body.post-new-php .submitbox .submitdelete {
 	display: none;
-}
-
-/* @todo: do we really need this? word on the street is we don't and this
-stray rule may actually be compensated for elsewhere. */
-#normal-sortables .submitbox .submitdelete:hover {
-	color: #000;
-	background-color: #f00;
-	border-bottom-color: #f00;
 }
 
 .submitbox .submit a:hover {
@@ -464,7 +451,7 @@ form#tags-filter {
 	height: auto !important;
 }
 
-#misc-publishing-actions label[for="post_status"]:before,
+#post-body .misc-pub-post-status:before,
 #post-body #visibility:before,
 .curtime #timestamp:before,
 #post-body .misc-pub-revisions:before,
@@ -472,20 +459,22 @@ span.wp-media-buttons-icon:before {
 	color: #82878c;
 }
 
+#post-body .misc-pub-post-status:before,
 #post-body #visibility:before,
 .curtime #timestamp:before,
 #post-body .misc-pub-revisions:before {
 	font: normal 20px/1 dashicons;
 	speak: none;
 	display: inline-block;
-	padding: 0 2px 0 0;
-	top: 0;
-	left: -1px;
-	position: relative;
+	margin-left: -1px;
+	padding-right: 3px;
 	vertical-align: top;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	text-decoration: none !important;
+}
+
+#post-body .misc-pub-post-status:before {
+	content: "\f173";
 }
 
 #post-body #visibility:before {
@@ -494,6 +483,7 @@ span.wp-media-buttons-icon:before {
 
 .curtime #timestamp:before {
 	content: "\f145";
+	position: relative;
 	top: -1px;
 }
 
@@ -644,6 +634,7 @@ span.wp-media-buttons-icon:before {
 	margin-top: 3px;
 }
 
+#linksubmitdiv .inside, /* Old Link Manager back-compat. */
 #poststuff #submitdiv .inside {
 	margin: 0;
 	padding: 0;

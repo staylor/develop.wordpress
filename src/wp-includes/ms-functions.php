@@ -1092,7 +1092,10 @@ function wpmu_create_user( $user_name, $password, $email ) {
  * @return int|WP_Error Returns WP_Error object on failure, int $blog_id on success
  */
 function wpmu_create_blog( $domain, $path, $title, $user_id, $meta = array(), $site_id = 1 ) {
-	$defaults = array( 'public' => 0 );
+	$defaults = array(
+		'public' => 0,
+		'WPLANG' => get_site_option( 'WPLANG' ),
+	);
 	$meta = wp_parse_args( $meta, $defaults );
 
 	$domain = preg_replace( '/\s+/', '', sanitize_user( $domain, true ) );
@@ -1130,7 +1133,6 @@ function wpmu_create_blog( $domain, $path, $title, $user_id, $meta = array(), $s
 			update_option( $key, $value );
 	}
 
-	add_option( 'WPLANG', get_site_option( 'WPLANG' ) );
 	update_option( 'blog_public', (int) $meta['public'] );
 
 	if ( ! is_super_admin( $user_id ) && ! get_user_meta( $user_id, 'primary_blog', true ) )
@@ -1332,7 +1334,8 @@ function insert_blog($domain, $path, $site_id) {
  * @param string $blog_title The title of the new site.
  */
 function install_blog( $blog_id, $blog_title = '' ) {
-	global $wpdb, $wp_roles;
+	global $wpdb, $wp_roles, $current_site;
+
 	// Cast for security
 	$blog_id = (int) $blog_id;
 
@@ -1360,7 +1363,7 @@ function install_blog( $blog_id, $blog_title = '' ) {
  		if ( 'https' === parse_url( get_site_option( 'siteurl' ), PHP_URL_SCHEME ) ) {
  			$siteurl = set_url_scheme( $siteurl, 'https' );
  		}
- 		if ( 'https' === parse_url( get_home_url( get_current_site()->blog_id ), PHP_URL_SCHEME ) ) {
+ 		if ( 'https' === parse_url( get_home_url( $current_site->blog_id ), PHP_URL_SCHEME ) ) {
  			$home = set_url_scheme( $home, 'https' );
  		}
 
@@ -1497,9 +1500,8 @@ We hope you enjoy your new site. Thanks!
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 	$message = $welcome_email;
 
-	if ( empty( $current_site->site_name ) ) {
+	if ( empty( $current_site->site_name ) )
 		$current_site->site_name = 'WordPress';
-	}
 
 	/**
 	 * Filters the subject of the welcome email after site activation.
@@ -1589,6 +1591,25 @@ function wpmu_welcome_user_notification( $user_id, $password, $meta = array() ) 
 	$subject = apply_filters( 'update_welcome_user_subject', sprintf( __( 'New %1$s User: %2$s' ), $current_site->site_name, $user->user_login) );
 	wp_mail( $user->user_email, wp_specialchars_decode( $subject ), $message, $message_headers );
 	return true;
+}
+
+/**
+ * Get the current network.
+ *
+ * Returns an object containing the 'id', 'domain', 'path', and 'site_name'
+ * properties of the network being viewed.
+ *
+ * @see wpmu_current_site()
+ *
+ * @since MU
+ *
+ * @global WP_Network $current_site
+ *
+ * @return WP_Network
+ */
+function get_current_site() {
+	global $current_site;
+	return $current_site;
 }
 
 /**

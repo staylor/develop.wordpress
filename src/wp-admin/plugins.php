@@ -327,13 +327,13 @@ if ( $action ) {
 						}
 					?>
 					<?php wp_nonce_field('bulk-plugins') ?>
-					<?php submit_button( $data_to_delete ? __( 'Yes, delete these files and data' ) : __( 'Yes, delete these files' ), 'button', 'submit', false ); ?>
+					<?php submit_button( $data_to_delete ? __( 'Yes, delete these files and data' ) : __( 'Yes, delete these files' ), '', 'submit', false ); ?>
 				</form>
 				<?php
 				$referer = wp_get_referer();
 				?>
 				<form method="post" action="<?php echo $referer ? esc_url( $referer ) : ''; ?>" style="display:inline;">
-					<?php submit_button( __( 'No, return me to the plugin list' ), 'button', 'submit', false ); ?>
+					<?php submit_button( __( 'No, return me to the plugin list' ), '', 'submit', false ); ?>
 				</form>
 			</div>
 				<?php
@@ -356,7 +356,33 @@ if ( $action ) {
 				update_site_option( 'recently_activated', array() );
 			}
 			break;
+
+		default:
+			if ( isset( $_POST['checked'] ) ) {
+				check_admin_referer('bulk-plugins');
+				$plugins = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : array();
+				$sendback = wp_get_referer();
+
+				/**
+				 * Fires when a custom bulk action should be handled.
+				 *
+				 * The sendback link should be modified with success or failure feedback
+				 * from the action to be used to display feedback to the user.
+				 *
+				 * @since 4.7.0
+				 *
+				 * @param string $sendback The redirect URL.
+				 * @param string $action   The action being taken.
+				 * @param array  $plugins  The plugins to take the action on.
+				 */
+				$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $action, $plugins );
+
+				wp_safe_redirect( $sendback );
+				exit;
+			}
+			break;
 	}
+
 }
 
 $wp_list_table->prepare_items();

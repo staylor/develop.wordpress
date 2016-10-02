@@ -134,35 +134,17 @@ function get_network_by_path( $domain, $path, $segments = null ) {
 }
 
 /**
- * Retrieve an object containing information about the requested network.
- *
- * @since 3.9.0
- *
- * @internal In 4.6.0, converted to use get_network()
- *
- * @param object|int $network The network's database row or ID.
- * @return WP_Network|false Object containing network information if found, false if not.
- */
-function wp_get_network( $network ) {
-	$network = get_network( $network );
-	if ( null === $network ) {
-		return false;
-	}
-
-	return $network;
-}
-
-/**
  * Retrieve a site object by its domain and path.
  *
  * @since 3.9.0
+ * @since 4.7.0 Updated to always return a `WP_Site` object.
  *
  * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string   $domain   Domain to check.
  * @param string   $path     Path to check.
  * @param int|null $segments Path segments to use. Defaults to null, or the full path.
- * @return object|false Site object if successful. False when no site is found.
+ * @return WP_Site|false Site object if successful. False when no site is found.
  */
 function get_site_by_path( $domain, $path, $segments = null ) {
 	$path_segments = array_filter( explode( '/', trim( $path, '/' ) ) );
@@ -205,15 +187,18 @@ function get_site_by_path( $domain, $path, $segments = null ) {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param null|bool|object $site     Site value to return by path.
-	 * @param string           $domain   The requested domain.
-	 * @param string           $path     The requested path, in full.
-	 * @param int|null         $segments The suggested number of paths to consult.
-	 *                                   Default null, meaning the entire path was to be consulted.
-	 * @param array            $paths    The paths to search for, based on $path and $segments.
+	 * @param null|bool|WP_Site $site     Site value to return by path.
+	 * @param string            $domain   The requested domain.
+	 * @param string            $path     The requested path, in full.
+	 * @param int|null          $segments The suggested number of paths to consult.
+	 *                                    Default null, meaning the entire path was to be consulted.
+	 * @param array             $paths    The paths to search for, based on $path and $segments.
 	 */
 	$pre = apply_filters( 'pre_get_site_by_path', null, $domain, $path, $segments, $paths );
 	if ( null !== $pre ) {
+		if ( false !== $pre && ! $pre instanceof WP_Site ) {
+			$pre = new WP_Site( $pre );
+		}
 		return $pre;
 	}
 
@@ -541,4 +526,27 @@ function wpmu_current_site() {
 	global $current_site;
 	_deprecated_function( __FUNCTION__, '3.9.0' );
 	return $current_site;
+}
+
+/**
+ * Retrieve an object containing information about the requested network.
+ *
+ * @since 3.9.0
+ * @deprecated 4.7.0 Use `get_network()`
+ * @see get_network()
+ *
+ * @internal In 4.6.0, converted to use get_network()
+ *
+ * @param object|int $network The network's database row or ID.
+ * @return WP_Network|false Object containing network information if found, false if not.
+ */
+function wp_get_network( $network ) {
+	_deprecated_function( __FUNCTION__, '4.7.0', 'get_network()' );
+
+	$network = get_network( $network );
+	if ( null === $network ) {
+		return false;
+	}
+
+	return $network;
 }
