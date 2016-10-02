@@ -6,5 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'WP\\' => array($baseDir . '/lib/php'),
     'POMO\\' => array($vendorDir . '/pomo/pomo/src'),
 );

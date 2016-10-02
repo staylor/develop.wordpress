@@ -1,65 +1,68 @@
 {
-  "name": "wordpress/wordpress",
-  "description": "WordPress is web software you can use to create a beautiful website or blog.",
-  "keywords": [
-    "blog",
-    "cms"
-  ],
-  "type": "wordpress-core",
-  "homepage": "https://wordpress.org/",
-  "license": "GPL-2.0+",
-  "authors": [
-    {
-      "name": "WordPress Community",
-      "homepage": "https://wordpress.org/about/"
-    }
-  ],
-  "support": {
-    "issues": "https://core.trac.wordpress.org/",
-    "forum": "https://wordpress.org/support/",
-    "wiki": "https://codex.wordpress.org/",
-    "irc": "irc://irc.freenode.net/wordpress",
-    "source": "https://core.trac.wordpress.org/browser"
-  },
-  "repositories": [
-	{
-      "type": "vcs",
-      "url": "https://github.com/pear/Text_Diff"
+	"name": "wordpress/wordpress",
+	"description": "WordPress is web software you can use to create a beautiful website or blog.",
+	"keywords": [
+		"blog",
+		"cms"
+	],
+	"type": "wordpress-core",
+	"homepage": "https://wordpress.org/",
+	"license": "GPL-2.0+",
+	"authors": [
+		{
+			"name": "WordPress Community",
+			"homepage": "https://wordpress.org/about/"
+		}
+	],
+	"support": {
+		"issues": "https://core.trac.wordpress.org/",
+		"forum": "https://wordpress.org/support/",
+		"wiki": "https://codex.wordpress.org/",
+		"irc": "irc://irc.freenode.net/wordpress",
+		"source": "https://core.trac.wordpress.org/browser"
 	},
-	{
-      "type": "vcs",
-      "url": "https://github.com/pear/Services_JSON"
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/pear/Text_Diff"
+		},
+		{
+			"type": "vcs",
+			"url": "https://github.com/pear/Services_JSON"
+		}
+	],
+	"autoload": {
+		"classmap": [
+			"wp-includes/",
+			"wp-admin/"
+		],
+		"exclude-from-classmap": [
+			"wp-admin/includes/deprecated.php",
+			"wp-includes/atomlib.php",
+			"wp-includes/cache.php",
+			"wp-includes/class-phpmailer.php",
+			"wp-includes/class-snoopy.php",
+			"wp-includes/compat.php",
+			"wp-includes/pluggable-deprecated.php",
+			"wp-includes/rss.php",
+			"wp-includes/widgets/"
+		],
+		"psr-4": {
+			"WP\\": "lib/php/"
+		}
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"vendor-dir": "wp-vendor",
+		"sort-packages": true
+	},
+	"require": {
+		"james-heinrich/getid3": "^1.9",
+		"paragonie/random_compat": "^2.0",
+		"pear/services_json": "dev-trunk",
+		"pear/text_diff": "dev-stable",
+		"pomo/pomo": "^1.2",
+		"rmccue/requests": "^1.6",
+		"simplepie/simplepie": "^1.4"
 	}
-  ],
-  "autoload": {
-    "classmap": [
-      "wp-includes/",
-      "wp-admin/"
-    ],
-    "exclude-from-classmap": [
-      "wp-admin/includes/deprecated.php",
-      "wp-includes/atomlib.php",
-      "wp-includes/cache.php",
-      "wp-includes/class-phpmailer.php",
-      "wp-includes/class-snoopy.php",
-      "wp-includes/compat.php",
-      "wp-includes/pluggable-deprecated.php",
-      "wp-includes/rss.php",
-      "wp-includes/widgets/"
-    ]
-  },
-  "config": {
-    "optimize-autoloader": true,
-    "vendor-dir": "wp-vendor",
-	"sort-packages": true
-  },
-  "require": {
-    "james-heinrich/getid3": "^1.9",
-    "paragonie/random_compat": "^2.0",
-    "pear/services_json": "dev-trunk",
-    "pear/text_diff": "dev-stable",
-    "pomo/pomo": "^1.2",
-    "rmccue/requests": "^1.6",
-    "simplepie/simplepie": "^1.4"
-  }
 }
