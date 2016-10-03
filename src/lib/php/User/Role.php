@@ -1,6 +1,8 @@
 <?php
 namespace WP\User;
 
+use function WP\getApp;
+
 /**
  * User API: WP\User\Role class
  *
@@ -34,11 +36,6 @@ class Role {
 	public $capabilities;
 
 	/**
-	 * @var Roles
-	 */
-	protected $roles;
-
-	/**
 	 * Constructor - Set up object properties.
 	 *
 	 * The list of capabilities, must have the key as the name of the capability
@@ -51,10 +48,8 @@ class Role {
 	 * @param array $capabilities List of capabilities.
 	 */
 	public function __construct( $role, $capabilities ) {
-		$app = getApp();
 		$this->name = $role;
 		$this->capabilities = $capabilities;
-		$this->roles = $app['roles'];
 	}
 
 	/**
@@ -67,8 +62,9 @@ class Role {
 	 * @param bool $grant Whether role has capability privilege.
 	 */
 	public function add_cap( $cap, $grant = true ) {
+		$app = getApp();
 		$this->capabilities[ $cap ] = $grant;
-		$this->roles->add_cap( $this->name, $cap, $grant );
+		$app['roles']->add_cap( $this->name, $cap, $grant );
 	}
 
 	/**
@@ -85,8 +81,9 @@ class Role {
 	 * @param string $cap Capability name.
 	 */
 	public function remove_cap( $cap ) {
-		unset( $this->capabilities[$cap] );
-		$this->roles->remove_cap( $this->name, $cap );
+		$app = getApp();
+		unset( $this->capabilities[ $cap ] );
+		$app['roles']->remove_cap( $this->name, $cap );
 	}
 
 	/**

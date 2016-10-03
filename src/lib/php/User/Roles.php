@@ -1,5 +1,8 @@
 <?php
 namespace WP\User;
+
+use function WP\getApp;
+
 /**
  * User API: WP\User\Roles class
  *
@@ -83,8 +86,6 @@ class Roles {
 	 * @since 2.0.0
 	 */
 	public function __construct() {
-		$this->db = $GLOBALS['wpdb'];
-
 		$this->_init();
 	}
 
@@ -97,25 +98,18 @@ class Roles {
 	 *
 	 * @since 2.1.0
 	 * @access protected
-	 *
-	 * @global array $wp_user_roles Used to set the 'roles' property value.
 	 */
 	protected function _init() {
-		global $wp_user_roles;
-		$this->role_key = $this->db->get_blog_prefix() . 'user_roles';
-		if ( ! empty( $wp_user_roles ) ) {
-			$this->roles = $wp_user_roles;
-			$this->use_db = false;
-		} else {
-			$this->roles = get_option( $this->role_key );
-		}
+		$app = getApp();
+		$this->role_key = $app['db']->get_blog_prefix() . 'user_roles';
+		$this->roles = get_option( $this->role_key );
 
 		if ( empty( $this->roles ) ) {
 			return;
 		}
 
 		$this->role_objects = [];
-		$this->role_names =  [];
+		$this->role_names = [];
 		foreach ( array_keys( $this->roles ) as $role ) {
 			$this->role_objects[ $role ] = new Role( $role, $this->roles[ $role ]['capabilities'] );
 			$this->role_names[ $role ] = $this->roles[ $role ]['name'];
@@ -136,16 +130,16 @@ class Roles {
 		if ( ! $this->use_db ) {
 			return;
 		}
-
+		$app = getApp();
 		// Duplicated from _init() to avoid an extra function call.
-		$this->role_key = $this->db->get_blog_prefix() . 'user_roles';
+		$this->role_key = $app['db']->get_blog_prefix() . 'user_roles';
 		$this->roles = get_option( $this->role_key );
 		if ( empty( $this->roles ) ) {
 			return;
 		}
 
 		$this->role_objects = [];
-		$this->role_names =  [];
+		$this->role_names = [];
 		foreach ( array_keys( $this->roles ) as $role ) {
 			$this->role_objects[ $role ] = new Role( $role, $this->roles[ $role ]['capabilities'] );
 			$this->role_names[ $role ] = $this->roles[ $role ]['name'];
@@ -207,6 +201,7 @@ class Roles {
 		if ( $this->use_db ) {
 			update_option( $this->role_key, $this->roles );
 		}
+
 		if ( get_option( 'default_role' ) === $role ) {
 			update_option( 'default_role', 'subscriber' );
 		}
