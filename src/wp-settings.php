@@ -17,7 +17,7 @@
  */
 define( 'WPINC', 'wp-includes' );
 
-require_once( ABSPATH . 'wp-vendor/autoload.php' );
+require_once( ABSPATH . 'vendor/autoload.php' );
 
 $app = WP\getApp();
 $app->register( new WP\Provider() );
