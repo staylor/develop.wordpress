@@ -6,6 +6,8 @@
  * @subpackage Template
  */
 
+use WP\User\User;
+
 /**
  * Displays the permalink for the current post.
  *
@@ -3770,7 +3772,7 @@ function the_shortlink( $text = '', $title = '', $before = '', $after = '' ) {
  * @since 4.2.0
  *
  * @param mixed $id_or_email The Gravatar to retrieve a URL for. Accepts a user_id, gravatar md5 hash,
- *                           user email, WP_User object, WP_Post object, or WP_Comment object.
+ *                           user email, User object, WP_Post object, or WP_Comment object.
  * @param array $args {
  *     Optional. Arguments to return instead of the default arguments.
  *
@@ -3802,7 +3804,7 @@ function get_avatar_url( $id_or_email, $args = null ) {
  * @since 4.2.0
  *
  * @param mixed $id_or_email The Gravatar to retrieve. Accepts a user_id, gravatar md5 hash,
- *                            user email, WP_User object, WP_Post object, or WP_Comment object.
+ *                            user email, User object, WP_Post object, or WP_Comment object.
  * @param array $args {
  *     Optional. Arguments to return instead of the default arguments.
  *
@@ -3904,7 +3906,7 @@ function get_avatar_data( $id_or_email, $args = null ) {
 	 *
 	 * @param array  $args        Arguments passed to get_avatar_data(), after processing.
 	 * @param mixed  $id_or_email The Gravatar to retrieve. Accepts a user_id, gravatar md5 hash,
-	 *                            user email, WP_User object, WP_Post object, or WP_Comment object.
+	 *                            user email, User object, WP_Post object, or WP_Comment object.
 	 */
 	$args = apply_filters( 'pre_get_avatar_data', $args, $id_or_email );
 
@@ -3931,7 +3933,7 @@ function get_avatar_data( $id_or_email, $args = null ) {
 			// email address
 			$email = $id_or_email;
 		}
-	} elseif ( $id_or_email instanceof WP_User ) {
+	} elseif ( $id_or_email instanceof User ) {
 		// User Object
 		$user = $id_or_email;
 	} elseif ( $id_or_email instanceof WP_Post ) {
@@ -4002,7 +4004,7 @@ function get_avatar_data( $id_or_email, $args = null ) {
 	 *
 	 * @param string $url         The URL of the avatar.
 	 * @param mixed  $id_or_email The Gravatar to retrieve. Accepts a user_id, gravatar md5 hash,
-	 *                            user email, WP_User object, WP_Post object, or WP_Comment object.
+	 *                            user email, User object, WP_Post object, or WP_Comment object.
 	 * @param array  $args        Arguments passed to get_avatar_data(), after processing.
 	 */
 	$args['url'] = apply_filters( 'get_avatar_url', $url, $id_or_email, $args );
@@ -4014,7 +4016,7 @@ function get_avatar_data( $id_or_email, $args = null ) {
 	 *
 	 * @param array  $args        Arguments passed to get_avatar_data(), after processing.
 	 * @param mixed  $id_or_email The Gravatar to retrieve. Accepts a user_id, gravatar md5 hash,
-	 *                            user email, WP_User object, WP_Post object, or WP_Comment object.
+	 *                            user email, User object, WP_Post object, or WP_Comment object.
 	 */
 	return apply_filters( 'get_avatar_data', $args, $id_or_email );
 }

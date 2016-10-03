@@ -6,6 +6,7 @@
  * @subpackage Users
  */
 
+use WP\User\User;
 use function WP\getApp;
 
 /**
@@ -25,7 +26,7 @@ use function WP\getApp;
  *
  * @param array       $credentials   Optional. User info in order to sign on.
  * @param string|bool $secure_cookie Optional. Whether to use secure cookie.
- * @return WP_User|WP_Error WP_User on success, WP_Error on failure.
+ * @return User|WP_Error User on success, WP_Error on failure.
  */
 function wp_signon( $credentials = array(), $secure_cookie = '' ) {
 	if ( empty($credentials) ) {
@@ -101,7 +102,7 @@ function wp_signon( $credentials = array(), $secure_cookie = '' ) {
 	 * @since 1.5.0
 	 *
 	 * @param string  $user_login Username.
-	 * @param WP_User $user       WP_User object of the logged-in user.
+	 * @param User    $user       User object of the logged-in user.
 	 */
 	do_action( 'wp_login', $user->user_login, $user );
 	return $user;
@@ -112,13 +113,13 @@ function wp_signon( $credentials = array(), $secure_cookie = '' ) {
  *
  * @since 2.8.0
  *
- * @param WP_User|WP_Error|null $user     WP_User or WP_Error object from a previous callback. Default null.
- * @param string                $username Username for authentication.
- * @param string                $password Password for authentication.
- * @return WP_User|WP_Error WP_User on success, WP_Error on failure.
+ * @param User|WP_Error|null  $user     User or WP_Error object from a previous callback. Default null.
+ * @param string              $username Username for authentication.
+ * @param string              $password Password for authentication.
+ * @return User|WP_Error User on success, WP_Error on failure.
  */
 function wp_authenticate_username_password($user, $username, $password) {
-	if ( $user instanceof WP_User ) {
+	if ( $user instanceof User ) {
 		return $user;
 	}
 
@@ -153,9 +154,9 @@ function wp_authenticate_username_password($user, $username, $password) {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param WP_User|WP_Error $user     WP_User or WP_Error object if a previous
+	 * @param User|WP_Error $user     User or WP_Error object if a previous
 	 *                                   callback failed authentication.
-	 * @param string           $password Password to check against the user.
+	 * @param string        $password Password to check against the user.
 	 */
 	$user = apply_filters( 'wp_authenticate_user', $user, $password );
 	if ( is_wp_error($user) )
@@ -182,14 +183,14 @@ function wp_authenticate_username_password($user, $username, $password) {
  *
  * @since 4.5.0
  *
- * @param WP_User|WP_Error|null $user     WP_User or WP_Error object if a previous
+ * @param User|WP_Error|null $user     User or WP_Error object if a previous
  *                                        callback failed authentication.
- * @param string                $email    Email address for authentication.
- * @param string                $password Password for authentication.
- * @return WP_User|WP_Error WP_User on success, WP_Error on failure.
+ * @param string             $email    Email address for authentication.
+ * @param string             $password Password for authentication.
+ * @return User|WP_Error User on success, WP_Error on failure.
  */
 function wp_authenticate_email_password( $user, $email, $password ) {
-	if ( $user instanceof WP_User ) {
+	if ( $user instanceof User ) {
 		return $user;
 	}
 
@@ -256,20 +257,20 @@ function wp_authenticate_email_password( $user, $email, $password ) {
  *
  * @global string $auth_secure_cookie
  *
- * @param WP_User|WP_Error|null $user     WP_User or WP_Error object from a previous callback. Default null.
- * @param string                $username Username. If not empty, cancels the cookie authentication.
- * @param string                $password Password. If not empty, cancels the cookie authentication.
- * @return WP_User|WP_Error WP_User on success, WP_Error on failure.
+ * @param User|WP_Error|null $user     User or WP_Error object from a previous callback. Default null.
+ * @param string             $username Username. If not empty, cancels the cookie authentication.
+ * @param string             $password Password. If not empty, cancels the cookie authentication.
+ * @return User|WP_Error User on success, WP_Error on failure.
  */
 function wp_authenticate_cookie($user, $username, $password) {
-	if ( $user instanceof WP_User ) {
+	if ( $user instanceof User ) {
 		return $user;
 	}
 
 	if ( empty($username) && empty($password) ) {
 		$user_id = wp_validate_auth_cookie();
 		if ( $user_id )
-			return new WP_User($user_id);
+			return new User($user_id);
 
 		global $auth_secure_cookie;
 
@@ -293,18 +294,18 @@ function wp_authenticate_cookie($user, $username, $password) {
  *
  * @since 3.7.0
  *
- * @param WP_User|WP_Error|null $user WP_User or WP_Error object from a previous callback. Default null.
- * @return WP_User|WP_Error WP_User on success, WP_Error if the user is considered a spammer.
+ * @param User|WP_Error|null $user User or WP_Error object from a previous callback. Default null.
+ * @return User|WP_Error User on success, WP_Error if the user is considered a spammer.
  */
 function wp_authenticate_spam_check( $user ) {
-	if ( $user instanceof WP_User && is_multisite() ) {
+	if ( $user instanceof User && is_multisite() ) {
 		/**
 		 * Filters whether the user has been marked as a spammer.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param bool    $spammed Whether the user is considered a spammer.
-		 * @param WP_User $user    User to check against.
+		 * @param bool $spammed Whether the user is considered a spammer.
+		 * @param User $user    User to check against.
 		 */
 		$spammed = apply_filters( 'check_is_user_spammed', is_user_spammy( $user ), $user );
 
@@ -479,7 +480,7 @@ function get_user_option( $option, $user = 0, $deprecated = '' ) {
 	 *
 	 * @param mixed   $result Value for the user's option.
 	 * @param string  $option Name of the option being retrieved.
-	 * @param WP_User $user   WP_User object of the user whose option is being retrieved.
+	 * @param User    $user   User object of the user whose option is being retrieved.
 	 */
 	return apply_filters( "get_user_option_{$option}", $result, $option, $user );
 }
@@ -711,7 +712,7 @@ function is_user_member_of_blog( $user_id = 0, $blog_id = 0 ) {
 		return false;
 	} else {
 		$user = get_userdata( $user_id );
-		if ( ! $user instanceof WP_User ) {
+		if ( ! $user instanceof User ) {
 			return false;
 		}
 	}
@@ -1244,11 +1245,11 @@ function sanitize_user_field($field, $value, $user_id, $context) {
  *
  * @since 3.0.0
  *
- * @param object|WP_User $user User object to be cached
+ * @param object|User $user User object to be cached
  * @return bool|null Returns false on failure.
  */
 function update_user_caches( $user ) {
-	if ( $user instanceof WP_User ) {
+	if ( $user instanceof User ) {
 		if ( ! $user->exists() ) {
 			return false;
 		}
@@ -1268,11 +1269,11 @@ function update_user_caches( $user ) {
  * @since 3.0.0
  * @since 4.4.0 'clean_user_cache' action was added.
  *
- * @param WP_User|int $user User object or ID to be cleaned from the cache
+ * @param User|int $user User object or ID to be cleaned from the cache
  */
 function clean_user_cache( $user ) {
 	if ( is_numeric( $user ) )
-		$user = new WP_User( $user );
+		$user = new User( $user );
 
 	if ( ! $user->exists() )
 		return;
@@ -1287,8 +1288,8 @@ function clean_user_cache( $user ) {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int     $user_id User ID.
-	 * @param WP_User $user    User object.
+	 * @param int  $user_id User ID.
+	 * @param User $user    User object.
 	 */
 	do_action( 'clean_user_cache', $user->ID, $user );
 }
@@ -1363,8 +1364,8 @@ function validate_username( $username ) {
  *
  * @global wpdb $wpdb WordPress database abstraction object.
  *
- * @param array|object|WP_User $userdata {
- *     An array, object, or WP_User object of user data arguments.
+ * @param array|object|User $userdata {
+ *     An array, object, or User object of user data arguments.
  *
  *     @type int         $ID                   User ID. If supplied, the user will be updated.
  *     @type string      $user_pass            The plain-text user password.
@@ -1404,7 +1405,7 @@ function wp_insert_user( $userdata ) {
 
 	if ( $userdata instanceof stdClass ) {
 		$userdata = get_object_vars( $userdata );
-	} elseif ( $userdata instanceof WP_User ) {
+	} elseif ( $userdata instanceof User ) {
 		$userdata = $userdata->to_array();
 	}
 
@@ -1639,7 +1640,7 @@ function wp_insert_user( $userdata ) {
 		$user_id = (int) $wpdb->insert_id;
 	}
 
-	$user = new WP_User( $user_id );
+	$user = new User( $user_id );
 
 	/**
  	 * Filters a user's meta values and keys before the user is created or updated.
@@ -1663,8 +1664,8 @@ function wp_insert_user( $userdata ) {
 	 *     @type bool     $show_admin_bar_front Whether to show the admin bar on the front end for the user.
 	 *                                          Default true.
  	 * }
-	 * @param WP_User $user   User object.
-	 * @param bool    $update Whether the user is being updated rather than created.
+	 * @param User $user   User object.
+	 * @param bool $update Whether the user is being updated rather than created.
  	 */
 	$meta = apply_filters( 'insert_user_meta', $meta, $user, $update );
 
@@ -1724,13 +1725,13 @@ function wp_insert_user( $userdata ) {
  *
  * @see wp_insert_user() For what fields can be set in $userdata.
  *
- * @param mixed $userdata An array of user data or a user object of type stdClass or WP_User.
+ * @param mixed $userdata An array of user data or a user object of type stdClass or User.
  * @return int|WP_Error The updated user's ID or a WP_Error object if the user could not be updated.
  */
 function wp_update_user($userdata) {
 	if ( $userdata instanceof stdClass ) {
 		$userdata = get_object_vars( $userdata );
-	} elseif ( $userdata instanceof WP_User ) {
+	} elseif ( $userdata instanceof User ) {
 		$userdata = $userdata->to_array();
 	}
 
@@ -1966,7 +1967,7 @@ function wp_create_user($username, $password, $email = '') {
  * @since 3.3.0
  * @access private
  *
- * @param WP_User $user WP_User instance.
+ * @param User $user User instance.
  * @return array List of user keys to be populated in wp_update_user().
  */
 function _get_additional_user_keys( $user ) {
@@ -1981,7 +1982,7 @@ function _get_additional_user_keys( $user ) {
  *
  * @since 3.7.0
  *
- * @param WP_User $user Optional. WP_User object.
+ * @param User $user Optional. User object.
  * @return array Array of contact methods and their labels.
  */
 function wp_get_user_contact_methods( $user = null ) {
@@ -1999,8 +2000,8 @@ function wp_get_user_contact_methods( $user = null ) {
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param array   $methods Array of contact methods and their labels.
- 	 * @param WP_User $user    WP_User object.
+	 * @param array  $methods Array of contact methods and their labels.
+ 	 * @param User   $user    User object.
 	 */
 	return apply_filters( 'user_contactmethods', $methods, $user );
 }
@@ -2013,7 +2014,7 @@ function wp_get_user_contact_methods( $user = null ) {
  * @since 2.9.0
  * @access private
  *
- * @param WP_User $user Optional. WP_User object. Default null.
+ * @param User $user Optional. User object. Default null.
  * @return array Array of contact methods and their labels.
  */
 function _wp_get_user_contactmethods( $user = null ) {
@@ -2048,7 +2049,7 @@ function wp_get_password_hint() {
  * @global wpdb         $wpdb      WordPress database abstraction object.
  * @global PasswordHash $wp_hasher Portable PHP password hashing framework.
  *
- * @param WP_User $user User to retrieve password reset key for.
+ * @param User $user User to retrieve password reset key for.
  *
  * @return string|WP_Error Password reset key on success. WP_Error on error.
  */
@@ -2138,7 +2139,7 @@ function get_password_reset_key( $user ) {
  *
  * @param string $key       Hash to validate sending user's password.
  * @param string $login     The user login.
- * @return WP_User|WP_Error WP_User object on success, WP_Error object for invalid or expired keys.
+ * @return User|WP_Error    User object on success, WP_Error object for invalid or expired keys.
  */
 function check_password_reset_key($key, $login) {
 	global $wpdb, $wp_hasher;
@@ -2201,7 +2202,7 @@ function check_password_reset_key($key, $login) {
 		 * @since 4.3.0 Previously key hashes were stored without an expiration time.
 		 *
 		 * @param WP_Error $return  A WP_Error object denoting an expired key.
-		 *                          Return a WP_User object to validate the key.
+		 *                          Return a User object to validate the key.
 		 * @param int      $user_id The matched user ID.
 		 */
 		return apply_filters( 'password_reset_key_expired', $return, $user_id );
@@ -2469,19 +2470,19 @@ function wp_get_users_with_no_role() {
  * @access private
  *
  * @see wp_get_current_user()
- * @global WP_User $current_user Checks if the current user is set.
+ * @global User $current_user Checks if the current user is set.
  *
- * @return WP_User Current WP_User instance.
+ * @return User Current User instance.
  */
 function _wp_get_current_user() {
 	global $current_user;
 
 	if ( ! empty( $current_user ) ) {
-		if ( $current_user instanceof WP_User ) {
+		if ( $current_user instanceof User ) {
 			return $current_user;
 		}
 
-		// Upgrade stdClass to WP_User
+		// Upgrade stdClass to User
 		if ( is_object( $current_user ) && isset( $current_user->ID ) ) {
 			$cur_id = $current_user->ID;
 			$current_user = null;
@@ -2489,7 +2490,7 @@ function _wp_get_current_user() {
 			return $current_user;
 		}
 
-		// $current_user has a junk value. Force to WP_User with ID 0.
+		// $current_user has a junk value. Force to User with ID 0.
 		$current_user = null;
 		wp_set_current_user( 0 );
 		return $current_user;

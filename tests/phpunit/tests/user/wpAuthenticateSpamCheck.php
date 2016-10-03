@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * @group user
  */
@@ -10,7 +10,7 @@ class Tests_User_WpAuthenticateSpamCheck extends WP_UnitTestCase {
 		}
 
 		$user_id = self::factory()->user->create( array( 'role' => 'contributor' ) );
-		$user = new WP_User( $user_id );
+		$user = new User( $user_id );
 		$actual_user = wp_authenticate_spam_check( $user );
 		wp_delete_user( $user_id );
 
@@ -23,7 +23,7 @@ class Tests_User_WpAuthenticateSpamCheck extends WP_UnitTestCase {
 		}
 
 		$user_id = self::factory()->user->create( array( 'role' => 'contributor' ) );
-		$user = new WP_User( $user_id );
+		$user = new User( $user_id );
 		$actual_user = wp_authenticate_spam_check( $user );
 		wpmu_delete_user( $user_id );
 
@@ -37,7 +37,7 @@ class Tests_User_WpAuthenticateSpamCheck extends WP_UnitTestCase {
 
 		$user_id = self::factory()->user->create( array( 'role' => 'contributor' ) );
 		update_user_status( $user_id, 'spam', 1 );
-		$user = new WP_User( $user_id );
+		$user = new User( $user_id );
 		$actual_user = wp_authenticate_spam_check( $user );
 		wpmu_delete_user( $user_id );
 

@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * Test the Atom feed by generating a feed, parsing it, and checking that the
  * parsed contents match the contents of the posts stored in the database.  Since
@@ -143,7 +143,7 @@ class Tests_Feeds_Atom extends WP_UnitTestCase {
 
 			// Author
 			$author = xml_find( $entries[$key]['child'], 'author', 'name' );
-			$user = new WP_User( $post->post_author );
+			$user = new User( $post->post_author );
 			$this->assertEquals( $user->display_name, $author[0]['content'] );
 
 			// Title

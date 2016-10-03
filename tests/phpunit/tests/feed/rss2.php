@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * Test the RSS 2.0 feed by generating a feed, parsing it, and checking that the
  * parsed contents match the contents of the posts stored in the database.  Since
@@ -168,7 +168,7 @@ class Tests_Feeds_RSS2 extends WP_UnitTestCase {
 
 			// Author
 			$creator = xml_find( $items[$key]['child'], 'dc:creator' );
-			$user = new WP_User( $post->post_author );
+			$user = new User( $post->post_author );
 			$this->assertEquals( $user->display_name, $creator[0]['content'] );
 
 			// Categories (perhaps multiple)

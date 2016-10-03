@@ -2,6 +2,7 @@
 namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\Error;
+use WP\User\User as WP_User;
 
 trait User {
 	/**

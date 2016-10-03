@@ -8,6 +8,8 @@
  * @package WordPress
  */
 
+use WP\User\User;
+
 /** Make sure that the WordPress bootstrap has run before continuing. */
 require( dirname(__FILE__) . '/wp-load.php' );
 
@@ -356,7 +358,7 @@ function retrieve_password() {
 	 *
 	 * @param string  $title      Default email title.
 	 * @param string  $user_login The username for the user.
-	 * @param WP_User $user_data  WP_User object.
+	 * @param User    $user_data  User object.
 	 */
 	$title = apply_filters( 'retrieve_password_title', $title, $user_login, $user_data );
 
@@ -369,7 +371,7 @@ function retrieve_password() {
 	 * @param string  $message    Default mail message.
 	 * @param string  $key        The activation key.
 	 * @param string  $user_login The username for the user.
-	 * @param WP_User $user_data  WP_User object.
+	 * @param User    $user_data  User object.
 	 */
 	$message = apply_filters( 'retrieve_password_message', $message, $key, $user_login, $user_data );
 
@@ -485,7 +487,7 @@ case 'logout' :
 	 *
 	 * @param string  $redirect_to           The redirect destination URL.
 	 * @param string  $requested_redirect_to The requested redirect destination URL passed as a parameter.
-	 * @param WP_User $user                  The WP_User object for the user that's logging out.
+	 * @param User    $user                  The User object for the user that's logging out.
 	 */
 	$redirect_to = apply_filters( 'logout_redirect', $redirect_to, $requested_redirect_to, $user );
 	wp_safe_redirect( $redirect_to );
@@ -607,7 +609,7 @@ case 'rp' :
 	 * @since 3.5.0
 	 *
 	 * @param object           $errors WP Error object.
-	 * @param WP_User|WP_Error $user   WP_User object if the login and reset key match. WP_Error object otherwise.
+	 * @param User|WP_Error    $user   User object if the login and reset key match. WP_Error object otherwise.
 	 */
 	do_action( 'validate_password_reset', $errors, $user );
 
@@ -655,7 +657,7 @@ case 'rp' :
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param WP_User $user User object of the user whose password is being reset.
+	 * @param User $user User object of the user whose password is being reset.
 	 */
 	do_action( 'resetpass_form', $user );
 	?>
@@ -809,7 +811,7 @@ default:
 	 *
 	 * @param string           $redirect_to           The redirect destination URL.
 	 * @param string           $requested_redirect_to The requested redirect destination URL passed as a parameter.
-	 * @param WP_User|WP_Error $user                  WP_User object if login was successful, WP_Error object otherwise.
+	 * @param User|WP_Error    $user                  User object if login was successful, WP_Error object otherwise.
 	 */
 	$redirect_to = apply_filters( 'login_redirect', $redirect_to, $requested_redirect_to, $user );
 

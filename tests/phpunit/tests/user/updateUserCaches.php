@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * @group user
  */
@@ -59,7 +59,7 @@ class Tests_User_UpdateUserCaches extends WP_UnitTestCase {
 
 		$u = self::factory()->user->create();
 		$raw_userdata = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->users WHERE ID = %d", $u ) );
-		$user_object = new WP_User( $u );
+		$user_object = new User( $u );
 
 		update_user_caches( $user_object );
 

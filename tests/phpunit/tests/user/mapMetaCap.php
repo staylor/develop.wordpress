@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * @group user
  * @group capabilities
@@ -17,7 +17,7 @@ class Tests_User_MapMetaCap extends WP_UnitTestCase {
 
 		if ( isset( $GLOBALS['super_admins'] ) )
 			$this->super_admins = $GLOBALS['super_admins'];
-		$user = new WP_User( $this->user_id );
+		$user = new User( $this->user_id );
 		$GLOBALS['super_admins'] = array( $user->user_login );
 
 		$this->post_type = rand_str( 20 );

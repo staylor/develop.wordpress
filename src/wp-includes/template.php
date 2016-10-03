@@ -6,6 +6,8 @@
  * @subpackage Template
  */
 
+use WP\User\User;
+
 /**
  * Retrieve path to a template
  *
@@ -158,7 +160,7 @@ function get_author_template() {
 
 	$templates = array();
 
-	if ( $author instanceof WP_User ) {
+	if ( $author instanceof User ) {
 		$templates[] = "author-{$author->user_nicename}.php";
 		$templates[] = "author-{$author->ID}.php";
 	}

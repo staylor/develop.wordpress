@@ -113,14 +113,14 @@ class Tests_User_Query extends WP_UnitTestCase {
 		// +1 for the default user created during installation.
 		$this->assertEquals( 13, count( $users ) );
 		foreach ( $users as $user ) {
-			$this->assertInstanceOf( 'WP_User', $user );
+			$this->assertInstanceOf( 'WP\User\User', $user );
 		}
 
 		$users = new WP_User_Query( array( 'blog_id' => get_current_blog_id(), 'fields' => 'all_with_meta' ) );
 		$users = $users->get_results();
 		$this->assertEquals( 13, count( $users ) );
 		foreach ( $users as $user ) {
-			$this->assertInstanceOf( 'WP_User', $user );
+			$this->assertInstanceOf( 'WP\User\User', $user );
 		}
 	}
 
@@ -994,7 +994,7 @@ class Tests_User_Query extends WP_UnitTestCase {
 		$this->assertEquals( 2, count( $users ) );
 
 		foreach ( $users as $user ) {
-			$this->assertInstanceOf( 'WP_User', $user );
+			$this->assertInstanceOf( 'WP\User\User', $user );
 		}
 	}
 
@@ -1008,7 +1008,7 @@ class Tests_User_Query extends WP_UnitTestCase {
 		// +1 for the default user created during installation.
 		$this->assertEquals( 8, count( $users ) );
 		foreach ( $users as $user ) {
-			$this->assertInstanceOf( 'WP_User', $user );
+			$this->assertInstanceOf( 'WP\User\User', $user );
 		}
 	}
 

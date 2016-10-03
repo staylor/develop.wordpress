@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use WP\User\User;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -307,7 +309,7 @@ endif;
  *
  * @since 2.7.0
  *
- * @param WP_User $profileuser The current WP_User object.
+ * @param User $profileuser The current User object.
  */
 do_action( 'personal_options', $profileuser );
 ?>
@@ -322,7 +324,7 @@ do_action( 'personal_options', $profileuser );
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param WP_User $profileuser The current WP_User object.
+		 * @param User $profileuser The current User object.
 		 */
 		do_action( 'profile_personal_options', $profileuser );
 	}
@@ -508,7 +510,7 @@ if ( is_multisite() && is_network_admin() && ! IS_PROFILE_PAGE && current_user_c
 			 * @since 4.7.0 Added the `$profileuser` parameter.
 			 *
 			 * @param string  $description The description that will be printed.
-			 * @param WP_User $profileuser The current WP_User object.
+			 * @param User $profileuser The current User object.
 			 */
 			echo apply_filters( 'user_profile_picture_description', $description, $profileuser );
 		?></p>
@@ -525,7 +527,7 @@ if ( is_multisite() && is_network_admin() && ! IS_PROFILE_PAGE && current_user_c
  * @since 4.4.0 Now evaluated only in user-edit.php.
  *
  * @param bool    $show        Whether to show the password fields. Default true.
- * @param WP_User $profileuser User object for the current user to edit.
+ * @param User    $profileuser User object for the current user to edit.
  */
 if ( $show_password_fields = apply_filters( 'show_password_fields', true, $profileuser ) ) :
 ?>
@@ -618,7 +620,7 @@ if ( IS_PROFILE_PAGE && count( $sessions->get_all() ) === 1 ) : ?>
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param WP_User $profileuser The current WP_User object.
+		 * @param User $profileuser The current User object.
 		 */
 		do_action( 'show_user_profile', $profileuser );
 	} else {
@@ -627,7 +629,7 @@ if ( IS_PROFILE_PAGE && count( $sessions->get_all() ) === 1 ) : ?>
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param WP_User $profileuser The current WP_User object.
+		 * @param User $profileuser The current User object.
 		 */
 		do_action( 'edit_user_profile', $profileuser );
 	}
@@ -644,7 +646,7 @@ if ( IS_PROFILE_PAGE && count( $sessions->get_all() ) === 1 ) : ?>
  * @since 2.8.0
  *
  * @param bool    $enable      Whether to display the capabilities. Default true.
- * @param WP_User $profileuser The current WP_User object.
+ * @param User    $profileuser The current User object.
  */
 if ( count( $profileuser->caps ) > count( $profileuser->roles )
 	&& apply_filters( 'additional_capabilities_display', true, $profileuser )

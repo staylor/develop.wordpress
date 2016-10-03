@@ -50,7 +50,7 @@ class Tests_XMLRPC_wp_editProfile extends WP_XMLRPC_UnitTestCase {
 
         $auth_old = wp_authenticate( 'author', 'author' );
         $auth_new = wp_authenticate( 'author', $new_pass );
-        $this->assertInstanceOf( 'WP_User', $auth_old );
+        $this->assertInstanceOf( 'WP\User\User', $auth_old );
         $this->assertTrue( is_wp_error( $auth_new ) );
     }
 

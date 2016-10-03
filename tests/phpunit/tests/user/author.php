@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * Test functions in wp-includes/author-template.php
  *
@@ -20,7 +20,7 @@ class Tests_User_Author_Template extends WP_UnitTestCase {
 			'user_login' => 'test_author',
 			'description' => 'test_author',
 		) );
-		$user = new WP_User( $this->author_id );
+		$user = new User( $this->author_id );
 
 		$post = array(
 			'post_author' => $this->author_id,
@@ -43,7 +43,7 @@ class Tests_User_Author_Template extends WP_UnitTestCase {
 
 	function test_get_the_author() {
 		$author_name = get_the_author();
-		$user = new WP_User( $this->author_id );
+		$user = new User( $this->author_id );
 
 		$this->assertEquals( $user->display_name, $author_name );
 		$this->assertEquals( 'test_author', $author_name );

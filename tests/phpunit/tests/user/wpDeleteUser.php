@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * @group user
  */
@@ -21,7 +21,7 @@ class Tests_User_WpDeleteUser extends WP_UnitTestCase {
 		// Non-existent users don't have blogs.
 		self::delete_user( $user_id );
 
-		$user = new WP_User( $user_id );
+		$user = new User( $user_id );
 		$this->assertFalse( $user->exists(), 'WP_User->exists' );
 		$this->assertEquals( array(), get_blogs_of_user( $user_id ) );
 	}
@@ -55,7 +55,7 @@ class Tests_User_WpDeleteUser extends WP_UnitTestCase {
 
 	function test_delete_user() {
 		$user_id = self::factory()->user->create( array( 'role' => 'author' ) );
-		$user = new WP_User( $user_id );
+		$user = new User( $user_id );
 
 		$post = array(
 			'post_author' => $user_id,
@@ -90,7 +90,7 @@ class Tests_User_WpDeleteUser extends WP_UnitTestCase {
 		$this->assertEquals( $nav_id, $post->ID );
 
 		wp_delete_user( $user_id );
-		$user = new WP_User( $user_id );
+		$user = new User( $user_id );
 		if ( is_multisite() )
 			$this->assertTrue( $user->exists() );
 		else

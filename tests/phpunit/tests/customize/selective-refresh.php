@@ -4,7 +4,7 @@
  *
  * @package WordPress
  */
-
+use WP\User\User;
 /**
  * Tests for the WP_Customize_Selective_Refresh class.
  *
@@ -139,7 +139,7 @@ class Test_WP_Customize_Selective_Refresh extends WP_UnitTestCase {
 	function test_export_preview_data() {
 		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $user_id );
-		$user = new WP_User( $user_id );
+		$user = new User( $user_id );
 		do_action( 'customize_register', $this->wp_customize );
 		$user->remove_cap( 'top_secret_clearance' );
 		$this->wp_customize->add_setting( 'top_secret_message', array(

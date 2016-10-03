@@ -79,7 +79,7 @@ class Tests_Auth extends WP_UnitTestCase {
 			wp_set_password( $password_to_test, $this->user->ID );
 			$authed_user = wp_authenticate( $this->user->user_login, $password_to_test );
 
-			$this->assertInstanceOf( 'WP_User', $authed_user );
+			$this->assertInstanceOf( 'WP\User\User', $authed_user );
 			$this->assertEquals( $this->user->ID, $authed_user->ID );
 		}
 	}
@@ -189,7 +189,7 @@ class Tests_Auth extends WP_UnitTestCase {
 		$this->assertInstanceOf( 'WP_Error', $user );
 
 		$user = wp_authenticate( $this->user->user_login, $limit );
-		$this->assertInstanceOf( 'WP_User', $user );
+		$this->assertInstanceOf( 'WP\User\User', $user );
 		$this->assertEquals( self::$user_id, $user->ID );
 
 		// one char too many
@@ -239,7 +239,7 @@ class Tests_Auth extends WP_UnitTestCase {
 
 		// A valid key should be accepted
 		$check = check_password_reset_key( $key, $this->user->user_login );
-		$this->assertInstanceOf( 'WP_User', $check );
+		$this->assertInstanceOf( 'WP\User\User', $check );
 		$this->assertSame( $this->user->ID, $check->ID );
 
 		// An invalid key should be rejected
@@ -349,7 +349,7 @@ class Tests_Auth extends WP_UnitTestCase {
 		);
 		$this->factory->user->create( $user_args );
 
-		$this->assertInstanceOf( 'WP_User', wp_authenticate( $user_args['user_email'], $user_args['user_pass'] ) );
-		$this->assertInstanceOf( 'WP_User', wp_authenticate( $user_args['user_login'], $user_args['user_pass'] ) );
+		$this->assertInstanceOf( 'WP\User\User', wp_authenticate( $user_args['user_email'], $user_args['user_pass'] ) );
+		$this->assertInstanceOf( 'WP\User\User', wp_authenticate( $user_args['user_login'], $user_args['user_pass'] ) );
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * @group post
  * @group revision
@@ -236,7 +236,7 @@ class Tests_Post_Revisions extends WP_UnitTestCase {
 		) );
 
 		// The minimum extra caps needed for this test normally you would give the role all the relevant caps.
-		$editor_user = new WP_User( self::$editor_user_id );
+		$editor_user = new User( self::$editor_user_id );
 		$editor_user->add_cap( 'edit_published_events' );
 
 		//create a post as Editor

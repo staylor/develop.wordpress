@@ -2,6 +2,8 @@
 
 // Test roles and capabilities via the WP_User class
 
+use WP\User\User;
+
 /**
  * @group user
  * @group capabilities
@@ -673,7 +675,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$wp_roles->add_cap($role_name, 'sweep_floor');
 		$this->_flush_roles();
 
-		$user = new WP_User($id);
+		$user = new User($id);
 		$this->assertTrue($user->exists(), "Problem getting user $id");
 		$this->assertEquals(array($role_name), $user->roles);
 
@@ -711,7 +713,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$wp_roles->remove_cap($role_name, 'polish_doorknobs');
 		$this->_flush_roles();
 
-		$user = new WP_User($id);
+		$user = new User($id);
 		$this->assertTrue($user->exists(), "Problem getting user $id");
 		$this->assertEquals(array($role_name), $user->roles);
 
@@ -738,14 +740,14 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$id_2 = self::factory()->user->create( array( 'role' => 'contributor' ) );
 
 		// user 1 has an extra capability
-		$user_1 = new WP_User($id_1);
+		$user_1 = new User($id_1);
 		$this->assertTrue($user_1->exists(), "Problem getting user $id_1");
 		$user_1->add_cap('publish_posts');
 
 		// re-fetch both users from the db
-		$user_1 = new WP_User($id_1);
+		$user_1 = new User($id_1);
 		$this->assertTrue($user_1->exists(), "Problem getting user $id_1");
-		$user_2 = new WP_User($id_2);
+		$user_2 = new User($id_2);
 		$this->assertTrue($user_2->exists(), "Problem getting user $id_2");
 
 		// make sure they're both still contributors
@@ -775,7 +777,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$id_2 = self::factory()->user->create( array( 'role' => 'contributor' ) );
 
 		// user 1 has an extra capability
-		$user_1 = new WP_User($id_1);
+		$user_1 = new User($id_1);
 		$this->assertTrue($user_1->exists(), "Problem getting user $id_1");
 		$user_1->add_cap('publish_posts');
 
@@ -783,9 +785,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$user_1->remove_cap('publish_posts');
 
 		// re-fetch both users from the db
-		$user_1 = new WP_User($id_1);
+		$user_1 = new User($id_1);
 		$this->assertTrue($user_1->exists(), "Problem getting user $id_1");
-		$user_2 = new WP_User($id_2);
+		$user_2 = new User($id_2);
 		$this->assertTrue($user_2->exists(), "Problem getting user $id_2");
 
 		// make sure they're both still contributors
@@ -803,7 +805,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 		// user starts as an author
 		$id = self::factory()->user->create( array( 'role' => 'author' ) );
-		$user = new WP_User($id);
+		$user = new User($id);
 		$this->assertTrue($user->exists(), "Problem getting user $id");
 
 		// author = user level 2
@@ -826,7 +828,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	function test_user_remove_all_caps() {
 		// user starts as an author
 		$id = self::factory()->user->create( array( 'role' => 'author' ) );
-		$user = new WP_User($id);
+		$user = new User($id);
 		$this->assertTrue($user->exists(), "Problem getting user $id");
 
 		// add some extra capabilities
@@ -834,7 +836,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$user->add_cap('drink_coffee');
 
 		// re-fetch
-		$user = new WP_User($id);
+		$user = new User($id);
 		$this->assertTrue($user->exists(), "Problem getting user $id");
 
 		$this->assertTrue($user->has_cap('make_coffee'));
@@ -844,7 +846,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$user->remove_all_caps();
 
 		// re-fetch
-		$user = new WP_User($id);
+		$user = new User($id);
 		$this->assertTrue($user->exists(), "Problem getting user $id");
 
 		// capabilities for the author role should be gone
@@ -876,10 +878,10 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$this->assertTrue($author->exists(), "Problem getting user $author->ID");
 
 		// add some other users
-		$admin = new WP_User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
-		$author_2 = new WP_User( self::factory()->user->create( array( 'role' => 'author' ) ) );
-		$editor = new WP_User( self::factory()->user->create( array( 'role' => 'editor' ) ) );
-		$contributor = new WP_User( self::factory()->user->create( array( 'role' => 'contributor' ) ) );
+		$admin = new User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$author_2 = new User( self::factory()->user->create( array( 'role' => 'author' ) ) );
+		$editor = new User( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+		$contributor = new User( self::factory()->user->create( array( 'role' => 'contributor' ) ) );
 
 		// administrators, editors and the post owner can edit it
 		$this->assertTrue($admin->has_cap('edit_post', $post));
@@ -974,11 +976,11 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	 * @ticket 16714
 	 */
 	function test_create_posts_caps() {
-		$author = new WP_User( self::factory()->user->create( array( 'role' => 'author' ) ) );
-		$admin = new WP_User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
-		$author_2 = new WP_User( self::factory()->user->create( array( 'role' => 'author' ) ) );
-		$editor = new WP_User( self::factory()->user->create( array( 'role' => 'editor' ) ) );
-		$contributor = new WP_User( self::factory()->user->create( array( 'role' => 'contributor' ) ) );
+		$author = new User( self::factory()->user->create( array( 'role' => 'author' ) ) );
+		$admin = new User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$author_2 = new User( self::factory()->user->create( array( 'role' => 'author' ) ) );
+		$editor = new User( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+		$contributor = new User( self::factory()->user->create( array( 'role' => 'contributor' ) ) );
 
 		// create_posts isn't a real cap.
 		$this->assertFalse($admin->has_cap('create_posts'));
@@ -1016,7 +1018,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 		// Add edit_foobars primitive cap to a user.
 		$admin->add_cap( 'edit_foobars', true );
-		$admin = new WP_User( $admin->ID );
+		$admin = new User( $admin->ID );
 		$this->assertTrue($admin->has_cap( $cap->create_posts ));
 		$this->assertFalse($author->has_cap( $cap->create_posts ));
 		$this->assertFalse($editor->has_cap( $cap->create_posts ));
@@ -1049,7 +1051,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 		// add some other users
 		$admin = self::$users['administrator'];
-		$author_2 = new WP_User( self::factory()->user->create( array( 'role' => 'author' ) ) );
+		$author_2 = new User( self::factory()->user->create( array( 'role' => 'author' ) ) );
 		$editor = self::$users['editor'];
 		$contributor = self::$users['contributor'];
 
@@ -1200,7 +1202,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	 * @ticket 21786
 	 */
 	function test_negative_caps() {
-		$author = new WP_User( self::factory()->user->create( array( 'role' => 'author' ) ) );
+		$author = new User( self::factory()->user->create( array( 'role' => 'author' ) ) );
 		$author->add_cap( 'foo', false );
 		$this->assertTrue ( isset( $author->caps['foo'] ) );
 		$author->remove_cap( 'foo' );
@@ -1211,7 +1213,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	 * @ticket 18932
 	 */
 	function test_set_role_same_role() {
-		$user = new WP_User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$user = new User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 		$caps = $user->caps;
 		$this->assertNotEmpty( $user->caps );
 		$user->set_role( 'administrator' );
@@ -1222,7 +1224,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	function test_current_user_can_for_blog() {
 		global $wpdb;
 
-		$user = new WP_User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$user = new User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 		$old_uid = get_current_user_id();
 		wp_set_current_user( $user->ID );
 
@@ -1279,7 +1281,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	 * @ticket 28374
 	 */
 	function test_current_user_edit_caps() {
-		$user = new WP_User( self::factory()->user->create( array( 'role' => 'contributor' ) ) );
+		$user = new User( self::factory()->user->create( array( 'role' => 'contributor' ) ) );
 		wp_set_current_user( $user->ID );
 
 		$user->add_cap( 'publish_posts' );
@@ -1366,9 +1368,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 			return;
 		}
 
-		$user = new WP_User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$user = new User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 		$user->add_cap( 'manage_network_users' );
-		$other_user = new WP_User( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
+		$other_user = new User( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
 
 		wp_set_current_user( $user->ID );
 
@@ -1381,9 +1383,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 			return;
 		}
 
-		$user = new WP_User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$user = new User( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 		$user->add_cap( 'manage_network_users' );
-		$super_admin = new WP_User( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
+		$super_admin = new User( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
 		grant_super_admin( $super_admin->ID );
 
 		wp_set_current_user( $user->ID );

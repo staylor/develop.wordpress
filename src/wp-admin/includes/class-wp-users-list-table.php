@@ -7,6 +7,7 @@
  * @since 3.1.0
  */
 
+use WP\User\User;
 use function WP\getApp;
 
 /**
@@ -382,7 +383,7 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @return string Output for a single row.
 	 */
 	public function single_row( $user_object, $style = '', $role = '', $numposts = 0 ) {
-		if ( ! ( $user_object instanceof WP_User ) ) {
+		if ( ! ( $user_object instanceof User ) ) {
 			$user_object = get_userdata( (int) $user_object );
 		}
 		$user_object->filter = 'display';
@@ -423,7 +424,7 @@ class WP_Users_List_Table extends WP_List_Table {
 			 * @param array   $actions     An array of action links to be displayed.
 			 *                             Default 'Edit', 'Delete' for single site, and
 			 *                             'Edit', 'Remove' for Multisite.
-			 * @param WP_User $user_object WP_User object for the currently-listed user.
+			 * @param User    $user_object User object for the currently-listed user.
 			 */
 			$actions = apply_filters( 'user_row_actions', $actions, $user_object );
 
@@ -532,7 +533,7 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @since 4.4.0
 	 * @access protected
 	 *
-	 * @param WP_User $user_object The WP_User object.
+	 * @param User $user_object The User object.
 	 * @return array An array of user roles.
 	 */
 	protected function get_role_list( $user_object ) {
@@ -556,7 +557,7 @@ class WP_Users_List_Table extends WP_List_Table {
 		 * @since 4.4.0
 		 *
 		 * @param array   $role_list   An array of user roles.
-		 * @param WP_User $user_object A WP_User object.
+		 * @param User    $user_object A User object.
 		 */
 		return apply_filters( 'get_role_list', $role_list, $user_object );
 	}

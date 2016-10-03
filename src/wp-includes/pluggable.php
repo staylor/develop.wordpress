@@ -6,6 +6,8 @@
  * @package WordPress
  */
 
+use WP\User\User;
+
 if ( !function_exists('wp_set_current_user') ) :
 /**
  * Changes the current user by ID or name.
@@ -17,25 +19,25 @@ if ( !function_exists('wp_set_current_user') ) :
  * actions on users who aren't signed in.
  *
  * @since 2.0.3
- * @global WP_User $current_user The current user object which holds the user data.
+ * @global User $current_user The current user object which holds the user data.
  *
  * @param int    $id   User ID
  * @param string $name User's username
- * @return WP_User Current user User object
+ * @return User Current user User object
  */
 function wp_set_current_user($id, $name = '') {
 	global $current_user;
 
 	// If `$id` matches the user who's already current, there's nothing to do.
 	if ( isset( $current_user )
-		&& ( $current_user instanceof WP_User )
+		&& ( $current_user instanceof User )
 		&& ( $id == $current_user->ID )
 		&& ( null !== $id )
 	) {
 		return $current_user;
 	}
 
-	$current_user = new WP_User( $id, $name );
+	$current_user = new User( $id, $name );
 
 	setup_userdata( $current_user->ID );
 
@@ -61,9 +63,9 @@ if ( !function_exists('wp_get_current_user') ) :
  * @since 2.0.3
  *
  * @see _wp_get_current_user()
- * @global WP_User $current_user Checks if the current user is set.
+ * @global User $current_user Checks if the current user is set.
  *
- * @return WP_User Current WP_User instance.
+ * @return User Current User instance.
  */
 function wp_get_current_user() {
 	return _wp_get_current_user();
@@ -77,7 +79,7 @@ if ( !function_exists('get_userdata') ) :
  * @since 0.71
  *
  * @param int $user_id User ID
- * @return WP_User|false WP_User object on success, false on failure.
+ * @return User|false User object on success, false on failure.
  */
 function get_userdata( $user_id ) {
 	return get_user_by( 'id', $user_id );
@@ -93,15 +95,15 @@ if ( !function_exists('get_user_by') ) :
  *
  * @param string     $field The field to retrieve the user with. id | ID | slug | email | login.
  * @param int|string $value A value for $field. A user ID, slug, email address, or login name.
- * @return WP_User|false WP_User object on success, false on failure.
+ * @return User|false User object on success, false on failure.
  */
 function get_user_by( $field, $value ) {
-	$userdata = WP_User::get_data_by( $field, $value );
+	$userdata = User::get_data_by( $field, $value );
 
 	if ( !$userdata )
 		return false;
 
-	$user = new WP_User;
+	$user = new User;
 	$user->init( $userdata );
 
 	return $user;
@@ -496,7 +498,7 @@ if ( !function_exists('wp_authenticate') ) :
  *
  * @param string $username User's username or email address.
  * @param string $password User's password.
- * @return WP_User|WP_Error WP_User object if the credentials are valid,
+ * @return User|WP_Error User object if the credentials are valid,
  *                          otherwise WP_Error.
  */
 function wp_authenticate($username, $password) {
@@ -506,16 +508,16 @@ function wp_authenticate($username, $password) {
 	/**
 	 * Filters whether a set of user login credentials are valid.
 	 *
-	 * A WP_User object is returned if the credentials authenticate a user.
+	 * A User object is returned if the credentials authenticate a user.
 	 * WP_Error or null otherwise.
 	 *
 	 * @since 2.8.0
 	 * @since 4.5.0 `$username` now accepts an email address.
 	 *
-	 * @param null|WP_User|WP_Error $user     WP_User if the user is authenticated.
+	 * @param null|User|WP_Error $user     User if the user is authenticated.
 	 *                                        WP_Error or null otherwise.
-	 * @param string                $username Username or email address.
-	 * @param string                $password User password
+	 * @param string             $username Username or email address.
+	 * @param string             $password User password
 	 */
 	$user = apply_filters( 'authenticate', null, $username, $password );
 
@@ -669,7 +671,7 @@ function wp_validate_auth_cookie($cookie = '', $scheme = '') {
 	 * @since 2.7.0
 	 *
 	 * @param array   $cookie_elements An array of data for the authentication cookie.
-	 * @param WP_User $user            User object.
+	 * @param User    $user            User object.
 	 */
 	do_action( 'auth_cookie_valid', $cookie_elements, $user );
 
@@ -1673,7 +1675,7 @@ if ( !function_exists('wp_password_change_notification') ) :
  *
  * @since 2.7.0
  *
- * @param WP_User $user User object.
+ * @param User $user User object.
  */
 function wp_password_change_notification( $user ) {
 	// send a copy of password change notification to the admin
@@ -1838,7 +1840,7 @@ function wp_verify_nonce( $nonce, $action = -1 ) {
 	 *
 	 * @param string     $nonce  The invalid nonce.
 	 * @param string|int $action The nonce action.
-	 * @param WP_User    $user   The current user object.
+	 * @param User       $user   The current user object.
 	 * @param string     $token  The user's session token.
 	 */
 	do_action( 'wp_verify_nonce_failed', $nonce, $action, $user, $token );
@@ -2236,7 +2238,7 @@ if ( !function_exists( 'get_avatar' ) ) :
  * @since 4.2.0 Optional `$args` parameter added.
  *
  * @param mixed $id_or_email The Gravatar to retrieve. Accepts a user_id, gravatar md5 hash,
- *                           user email, WP_User object, WP_Post object, or WP_Comment object.
+ *                           user email, User object, WP_Post object, or WP_Comment object.
  * @param int    $size       Optional. Height and width of the avatar image file in pixels. Default 96.
  * @param string $default    Optional. URL for the default image or a default type. Accepts '404'
  *                           (return a 404 instead of a default image), 'retro' (8bit), 'monsterid'
@@ -2310,7 +2312,7 @@ function get_avatar( $id_or_email, $size = 96, $default = '', $alt = '', $args =
 	 *
 	 * @param string $avatar      HTML for the user's avatar. Default null.
 	 * @param mixed  $id_or_email The Gravatar to retrieve. Accepts a user_id, gravatar md5 hash,
-	 *                            user email, WP_User object, WP_Post object, or WP_Comment object.
+	 *                            user email, User object, WP_Post object, or WP_Comment object.
 	 * @param array  $args        Arguments passed to get_avatar_url(), after processing.
 	 */
 	$avatar = apply_filters( 'pre_get_avatar', null, $id_or_email, $args );
@@ -2367,7 +2369,7 @@ function get_avatar( $id_or_email, $size = 96, $default = '', $alt = '', $args =
 	 *
 	 * @param string $avatar      &lt;img&gt; tag for the user's avatar.
 	 * @param mixed  $id_or_email The Gravatar to retrieve. Accepts a user_id, gravatar md5 hash,
-	 *                            user email, WP_User object, WP_Post object, or WP_Comment object.
+	 *                            user email, User object, WP_Post object, or WP_Comment object.
 	 * @param int    $size        Square avatar width and height in pixels to retrieve.
 	 * @param string $alt         Alternative text to use in the avatar image tag.
 	 *                                       Default empty.

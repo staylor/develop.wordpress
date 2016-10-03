@@ -8,6 +8,8 @@
  * @subpackage Administration
  */
 
+use WP\User\User;
+
 /** Include user install customize script. */
 if ( file_exists(WP_CONTENT_DIR . '/install.php') )
 	require (WP_CONTENT_DIR . '/install.php');
@@ -83,7 +85,7 @@ function wp_install( $blog_title, $user_name, $user_email, $public, $deprecated 
 		$message = __('User already exists. Password inherited.');
 	}
 
-	$user = new WP_User($user_id);
+	$user = new User($user_id);
 	$user->set_role('administrator');
 
 	wp_install_defaults($user_id);
@@ -101,7 +103,7 @@ function wp_install( $blog_title, $user_name, $user_email, $public, $deprecated 
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param WP_User $user The site owner.
+	 * @param User $user The site owner.
 	 */
 	do_action( 'wp_install', $user );
 
@@ -265,7 +267,7 @@ As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to d
 		$wp_rewrite->init();
 		$wp_rewrite->flush_rules();
 
-		$user = new WP_User($user_id);
+		$user = new User( $user_id );
 		$wpdb->update( $wpdb->options, array('option_value' => $user->user_email), array('option_name' => 'admin_email') );
 
 		// Remove all perms except for the login user.
@@ -369,7 +371,7 @@ if ( !function_exists('wp_new_blog_notification') ) :
  * @param string $password   User's Password.
  */
 function wp_new_blog_notification($blog_title, $blog_url, $user_id, $password) {
-	$user = new WP_User( $user_id );
+	$user = new User( $user_id );
 	$email = $user->user_email;
 	$name = $user->user_login;
 	$login_url = wp_login_url();

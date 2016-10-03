@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 if ( is_multisite() ) :
 
 /**
@@ -25,7 +25,7 @@ class Tests_Multisite extends WP_UnitTestCase {
 	function test_wpmu_log_new_registrations() {
 		global $wpdb;
 
-		$user = new WP_User( 1 );
+		$user = new User( 1 );
 		$ip = preg_replace( '/[^0-9., ]/', '',$_SERVER['REMOTE_ADDR'] );
 
 		wpmu_log_new_registrations(1,1);

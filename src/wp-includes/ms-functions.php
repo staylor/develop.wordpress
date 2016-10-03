@@ -7,6 +7,8 @@
  * @since 3.0.0
  */
 
+use WP\User\User;
+
 /**
  * Gets the network's site and user counts.
  *
@@ -540,7 +542,7 @@ function wpmu_validate_user_signup($user_name, $user_email) {
  *
  * @param string         $blogname   The blog name provided by the user. Must be unique.
  * @param string         $blog_title The blog title provided by the user.
- * @param WP_User|string $user       Optional. The user object to check against the new site name.
+ * @param User|string    $user       Optional. The user object to check against the new site name.
  * @return array Contains the new site data and error messages.
  */
 function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
@@ -645,7 +647,7 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 	 *     @type string         $path       Path for the site. Used in subdirectory installs.
 	 *     @type string         $blogname   The unique site name (slug).
 	 *     @type string         $blog_title Blog title.
-	 *     @type string|WP_User $user       By default, an empty string. A user object if provided.
+	 *     @type string|User    $user       By default, an empty string. A user object if provided.
 	 *     @type WP_Error       $errors     WP_Error containing any errors found.
 	 * }
 	 */
@@ -1239,7 +1241,7 @@ Disable these notifications: %3$s'), $user->user_login, wp_unslash( $_SERVER['RE
 	 * @since MU
 	 *
 	 * @param string  $msg  Email body.
-	 * @param WP_User $user WP_User instance of the new user.
+	 * @param User    $user User instance of the new user.
 	 */
 	$msg = apply_filters( 'newuser_notify_siteadmin', $msg, $user );
 	wp_mail( $email, sprintf(__('New User Registration: %s'), $user->user_login), $msg );
@@ -2048,12 +2050,12 @@ function fix_phpmailer_messageid( $phpmailer ) {
  *
  * @since MU
  *
- * @param string|WP_User $user Optional. Defaults to current user. WP_User object,
+ * @param string|User $user Optional. Defaults to current user. User object,
  * 	                           or user login name as a string.
  * @return bool
  */
 function is_user_spammy( $user = null ) {
-    if ( ! ( $user instanceof WP_User ) ) {
+    if ( ! ( $user instanceof User ) ) {
 		if ( $user ) {
 			$user = get_user_by( 'login', $user );
 		} else {

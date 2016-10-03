@@ -5,6 +5,8 @@
  * @package WordPress
  */
 
+use WP\User\User;
+
 if ( 'POST' != $_SERVER['REQUEST_METHOD'] ) {
 	$protocol = $_SERVER['SERVER_PROTOCOL'];
 	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0' ) ) ) {
@@ -40,7 +42,7 @@ $user = wp_get_current_user();
  * @since 3.4.0
  *
  * @param WP_Comment $comment Comment object.
- * @param WP_User    $user    User object. The user may not exist.
+ * @param User       $user    User object. The user may not exist.
  */
 do_action( 'set_comment_cookies', $comment, $user );
 

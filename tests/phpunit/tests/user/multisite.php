@@ -1,5 +1,7 @@
 <?php
 
+use WP\User\User;
+
 if ( is_multisite() ) :
 
 /**
@@ -186,7 +188,7 @@ class Tests_Multisite_User extends WP_UnitTestCase {
 		}
 
 		wpmu_delete_user( $user1_id );
-		$user = new WP_User( $user1_id );
+		$user = new User( $user1_id );
 		$this->assertFalse( $user->exists() );
 		$this->assertFalse( is_user_member_of_blog( $user1_id ) );
 
@@ -282,7 +284,7 @@ class Tests_Multisite_User extends WP_UnitTestCase {
 		grant_super_admin( $user_id );
 		revoke_super_admin( $user_id );
 		wpmu_delete_user( $user_id );
-		$user = new WP_User( $user_id );
+		$user = new User( $user_id );
 
 		$this->assertFalse( $user->exists(), 'WP_User->exists' );
 

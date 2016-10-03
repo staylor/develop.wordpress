@@ -6,6 +6,8 @@
  * @subpackage Media
  */
 
+use WP\User\User;
+
 /**
  * Retrieve additional image sizes.
  *
@@ -3079,7 +3081,7 @@ function wp_prepare_attachment_for_js( $attachment ) {
 		'meta'       => false,
 	);
 
-	$author = new WP_User( $attachment->post_author );
+	$author = new User( $attachment->post_author );
 	$response['authorName'] = $author->display_name;
 
 	if ( $attachment->post_parent ) {

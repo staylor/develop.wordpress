@@ -380,10 +380,6 @@ class Tests_DB extends WP_UnitTestCase {
 		);
 	}
 
-	/**
-	 * @expectedDeprecated supports_collation
-	 */
-
 	function test_check_database_version() {
 		global $wpdb;
 		$this->assertEmpty( $wpdb->check_database_version() );

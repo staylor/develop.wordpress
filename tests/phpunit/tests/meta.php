@@ -1,5 +1,5 @@
 <?php
-
+use WP\User\User;
 /**
  * @group meta
  */
@@ -8,7 +8,7 @@ class Tests_Meta extends WP_UnitTestCase {
 
 	function setUp() {
 		parent::setUp();
-		$this->author = new WP_User( self::factory()->user->create( array( 'role' => 'author' ) ) );
+		$this->author = new User( self::factory()->user->create( array( 'role' => 'author' ) ) );
 		$this->meta_id = add_metadata( 'user', $this->author->ID, 'meta_key', 'meta_value' );
 		$this->delete_meta_id = add_metadata( 'user', $this->author->ID, 'delete_meta_key', 'delete_meta_value' );
 	}
