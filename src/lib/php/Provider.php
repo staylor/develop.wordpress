@@ -8,5 +8,9 @@ class Provider implements ServiceProviderInterface {
 		$app['db'] = function () {
 			return $GLOBALS['wpdb'];
 		};
+
+		$app['roles'] = function () {
+			return new User\Roles();
+		};
 	}
 }

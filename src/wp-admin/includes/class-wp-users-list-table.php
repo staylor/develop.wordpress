@@ -7,6 +7,8 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement displaying users in a list table.
  *
@@ -172,7 +174,7 @@ class WP_Users_List_Table extends WP_List_Table {
 	protected function get_views() {
 		global $role;
 
-		$wp_roles = wp_roles();
+		$app = getApp();
 
 		if ( $this->is_site_users ) {
 			$url = 'site-users.php?id=' . $this->site_id;
@@ -191,7 +193,7 @@ class WP_Users_List_Table extends WP_List_Table {
 		$class = empty($role) ? ' class="current"' : '';
 		$role_links = array();
 		$role_links['all'] = "<a href='$url'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users, 'users' ), number_format_i18n( $total_users ) ) . '</a>';
-		foreach ( $wp_roles->get_names() as $this_role => $name ) {
+		foreach ( $app['roles']->get_names() as $this_role => $name ) {
 			if ( !isset($avail_roles[$this_role]) )
 				continue;
 
@@ -534,13 +536,13 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @return array An array of user roles.
 	 */
 	protected function get_role_list( $user_object ) {
-		$wp_roles = wp_roles();
+		$app = getApp();
 
 		$role_list = array();
 
 		foreach ( $user_object->roles as $role ) {
-			if ( isset( $wp_roles->role_names[ $role ] ) ) {
-				$role_list[ $role ] = translate_user_role( $wp_roles->role_names[ $role ] );
+			if ( isset( $app['roles']->role_names[ $role ] ) ) {
+				$role_list[ $role ] = translate_user_role( $app['roles']->role_names[ $role ] );
 			}
 		}
 
