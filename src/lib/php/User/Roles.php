@@ -99,7 +99,7 @@ class Roles {
 	 * @since 2.1.0
 	 * @access protected
 	 */
-	protected function _init() {
+	public function _init() {
 		$app = getApp();
 		$this->role_key = $app['db']->get_blog_prefix() . 'user_roles';
 		$this->roles = get_option( $this->role_key );
