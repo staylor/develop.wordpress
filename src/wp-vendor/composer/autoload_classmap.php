@@ -267,6 +267,8 @@ return array(
     'WP\\IXR\\Value' => $baseDir . '/lib/php/IXR/Value.php',
     'WP\\Provider' => $baseDir . '/lib/php/Provider.php',
     'WP\\Symfony\\Provider' => $baseDir . '/lib/php/Symfony/Provider.php',
+    'WP\\User\\Role' => $baseDir . '/lib/php/User/Role.php',
+    'WP\\User\\Roles' => $baseDir . '/lib/php/User/Roles.php',
     'WP\\XMLRPC\\Provider\\Blogger' => $baseDir . '/lib/php/XMLRPC/Provider/Blogger.php',
     'WP\\XMLRPC\\Provider\\Demo' => $baseDir . '/lib/php/XMLRPC/Provider/Demo.php',
     'WP\\XMLRPC\\Provider\\MetaWeblog' => $baseDir . '/lib/php/XMLRPC/Provider/MetaWeblog.php',
