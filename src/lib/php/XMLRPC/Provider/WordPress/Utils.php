@@ -13,10 +13,10 @@ trait Utils {
 	 */
 	protected function _prepare_post( $post, $fields ) {
 		// Holds the data for this post. built up based on $fields.
-		$_post = array( 'post_id' => strval( $post['ID'] ) );
+		$_post = [ 'post_id' => strval( $post['ID'] ) ];
 
 		// Prepare common post fields.
-		$post_fields = array(
+		$post_fields = [
 			'post_title'        => $post['post_title'],
 			'post_date'         => $this->_convert_date( $post['post_date'] ),
 			'post_date_gmt'     => $this->_convert_date_gmt( $post['post_date_gmt'], $post['post_date'] ),
@@ -37,10 +37,10 @@ trait Utils {
 			'comment_status'    => $post['comment_status'],
 			'ping_status'       => $post['ping_status'],
 			'sticky'            => ( $post['post_type'] === 'post' && is_sticky( $post['ID'] ) ),
-		);
+		];
 
 		// Thumbnail.
-		$post_fields['post_thumbnail'] = array();
+		$post_fields['post_thumbnail'] = [];
 		$thumbnail_id = get_post_thumbnail_id( $post['ID'] );
 		if ( $thumbnail_id ) {
 			$thumbnail_size = current_theme_supports('post-thumbnail') ? 'post-thumbnail' : 'thumbnail';
@@ -48,14 +48,15 @@ trait Utils {
 		}
 
 		// Consider future posts as published.
-		if ( $post_fields['post_status'] === 'future' )
+		if ( $post_fields['post_status'] === 'future' ) {
 			$post_fields['post_status'] = 'publish';
+		}
 
 		// Fill in blank post format.
 		$post_fields['post_format'] = get_post_format( $post['ID'] );
-		if ( empty( $post_fields['post_format'] ) )
+		if ( empty( $post_fields['post_format'] ) ) {
 			$post_fields['post_format'] = 'standard';
-
+		}
 		// Merge requested $post_fields fields into $_post.
 		if ( in_array( 'post', $fields ) ) {
 			$_post = array_merge( $_post, $post_fields );
@@ -69,17 +70,18 @@ trait Utils {
 		if ( $all_taxonomy_fields || in_array( 'terms', $fields ) ) {
 			$post_type_taxonomies = get_object_taxonomies( $post['post_type'], 'names' );
 			$terms = wp_get_object_terms( $post['ID'], $post_type_taxonomies );
-			$_post['terms'] = array();
+			$_post['terms'] = [];
 			foreach ( $terms as $term ) {
 				$_post['terms'][] = $this->_prepare_term( $term );
 			}
 		}
 
-		if ( in_array( 'custom_fields', $fields ) )
+		if ( in_array( 'custom_fields', $fields ) ) {
 			$_post['custom_fields'] = $this->get_custom_fields( $post['ID'] );
+		}
 
 		if ( in_array( 'enclosure', $fields ) ) {
-			$_post['enclosure'] = array();
+			$_post['enclosure'] = [];
 			$enclosures = (array) get_post_meta( $post['ID'], 'enclosure' );
 			if ( ! empty( $enclosures ) ) {
 				$encdata = explode( "\n", $enclosures[0] );
@@ -111,9 +113,9 @@ trait Utils {
 	 */
 	protected function _prepare_term( $term ) {
 		$_term = $term;
-		if ( ! is_array( $_term ) )
+		if ( ! is_array( $_term ) ) {
 			$_term = get_object_vars( $_term );
-
+		}
 		// For integers which may be larger than XML-RPC supports ensure we return strings.
 		$_term['term_id'] = strval( $_term['term_id'] );
 		$_term['term_group'] = strval( $_term['term_group'] );

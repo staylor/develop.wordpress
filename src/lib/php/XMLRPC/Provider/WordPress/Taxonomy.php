@@ -14,27 +14,27 @@ trait Taxonomy {
 	 * @return array The prepared taxonomy data.
 	 */
 	protected function _prepare_taxonomy( $taxonomy, $fields ) {
-		$_taxonomy = array(
+		$_taxonomy = [
 			'name' => $taxonomy->name,
 			'label' => $taxonomy->label,
 			'hierarchical' => (bool) $taxonomy->hierarchical,
 			'public' => (bool) $taxonomy->public,
 			'show_ui' => (bool) $taxonomy->show_ui,
 			'_builtin' => (bool) $taxonomy->_builtin,
-		);
+		];
 
-		if ( in_array( 'labels', $fields ) )
+		if ( in_array( 'labels', $fields ) ) {
 			$_taxonomy['labels'] = (array) $taxonomy->labels;
-
-		if ( in_array( 'cap', $fields ) )
+		}
+		if ( in_array( 'cap', $fields ) ) {
 			$_taxonomy['cap'] = (array) $taxonomy->cap;
-
-		if ( in_array( 'menu', $fields ) )
+		}
+		if ( in_array( 'menu', $fields ) ) {
 			$_taxonomy['show_in_menu'] = (bool) $_taxonomy->show_in_menu;
-
-		if ( in_array( 'object_type', $fields ) )
+		}
+		if ( in_array( 'object_type', $fields ) ) {
 			$_taxonomy['object_type'] = array_unique( (array) $taxonomy->object_type );
-
+		}
 		/**
 		 * Filters XML-RPC-prepared data for the given taxonomy.
 		 *
@@ -67,14 +67,17 @@ trait Taxonomy {
 	 * @return array|Error An array of taxonomy data on success, Error instance otherwise.
 	 */
 	public function wp_getTaxonomy( $args ) {
-		if ( ! $this->minimum_args( $args, 4 ) )
+		if ( ! $this->minimum_args( $args, 4 ) ) {
 			return $this->error;
-
+		}
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
-		$taxonomy = $args[3];
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+			$taxonomy
+		) = $args;
 
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
@@ -87,24 +90,30 @@ trait Taxonomy {
 			 * @param array  $fields An array of taxonomy fields to retrieve.
 			 * @param string $method The method name.
 			 */
-			$fields = apply_filters( 'xmlrpc_default_taxonomy_fields', array( 'labels', 'cap', 'object_type' ), 'wp.getTaxonomy' );
+			$fields = apply_filters( 'xmlrpc_default_taxonomy_fields', [
+				'labels',
+				'cap',
+				'object_type',
+			], 'wp.getTaxonomy' );
 		}
 
-		if ( ! $user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
+		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getTaxonomy' );
 
-		if ( ! taxonomy_exists( $taxonomy ) )
+		if ( ! taxonomy_exists( $taxonomy ) ) {
 			return new Error( 403, __( 'Invalid taxonomy.' ) );
+		}
+		$tax = get_taxonomy( $taxonomy );
 
-		$taxonomy = get_taxonomy( $taxonomy );
-
-		if ( ! current_user_can( $taxonomy->cap->assign_terms ) )
+		if ( ! current_user_can( $tax->cap->assign_terms ) ) {
 			return new Error( 401, __( 'Sorry, you are not allowed to assign terms in this taxonomy.' ) );
-
-		return $this->_prepare_taxonomy( $taxonomy, $fields );
+		}
+		return $this->_prepare_taxonomy( $tax, $fields );
 	}
 
 	/**
@@ -127,24 +136,35 @@ trait Taxonomy {
 	 *                         by `$fields`, or an Error instance on failure.
 	 */
 	public function wp_getTaxonomies( $args ) {
-		if ( ! $this->minimum_args( $args, 3 ) )
+		if ( ! $this->minimum_args( $args, 3 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
-		$filter   = isset( $args[3] ) ? $args[3] : array( 'public' => true );
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+		) = $args;
+
+		$filter = $args[3] ?? [ 'public' => true ];
 
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
 		} else {
 			/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
-			$fields = apply_filters( 'xmlrpc_default_taxonomy_fields', array( 'labels', 'cap', 'object_type' ), 'wp.getTaxonomies' );
+			$fields = apply_filters( 'xmlrpc_default_taxonomy_fields', [
+				'labels',
+				'cap',
+				'object_type'
+			], 'wp.getTaxonomies' );
 		}
 
-		if ( ! $user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
+		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getTaxonomies' );
@@ -152,12 +172,13 @@ trait Taxonomy {
 		$taxonomies = get_taxonomies( $filter, 'objects' );
 
 		// holds all the taxonomy data
-		$struct = array();
+		$struct = [];
 
 		foreach ( $taxonomies as $taxonomy ) {
 			// capability check for post_types
-			if ( ! current_user_can( $taxonomy->cap->assign_terms ) )
+			if ( ! current_user_can( $taxonomy->cap->assign_terms ) ) {
 				continue;
+			}
 
 			$struct[] = $this->_prepare_taxonomy( $taxonomy, $fields );
 		}

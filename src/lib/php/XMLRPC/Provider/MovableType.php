@@ -49,8 +49,12 @@ class MovableType implements ProviderInterface {
 	public function mt_getRecentPostTitles( $args ) {
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
+
 		if ( isset( $args[3] ) ) {
 			$query = [ 'numberposts' => absint( $args[3] ) ];
 		} else {
@@ -111,8 +115,11 @@ class MovableType implements ProviderInterface {
 	public function mt_getCategoryList( $args ) {
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -161,9 +168,11 @@ class MovableType implements ProviderInterface {
 	public function mt_getPostCategories( $args ) {
 		$this->escape( $args );
 
-		$post_ID  = (int) $args[0];
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			$post_ID,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -215,10 +224,12 @@ class MovableType implements ProviderInterface {
 	public function mt_setPostCategories( $args ) {
 		$this->escape( $args );
 
-		$post_ID    = (int) $args[0];
-		$username   = $args[1];
-		$password   = $args[2];
-		$categories = $args[3];
+		list(
+			$post_ID,
+			$username,
+			$password,
+			$categories
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -328,18 +339,20 @@ class MovableType implements ProviderInterface {
 	 * @param array  $args {
 	 *     Method arguments. Note: arguments must be ordered as documented.
 	 *
-	 *     @type integer     $post_ID
-	 *     @type string $username
-	 *     @type string $password
+	 *     @type integer $post_ID
+	 *     @type string  $username
+	 *     @type string  $password
 	 * }
 	 * @return int|Error
 	 */
 	public function mt_publishPost( $args ) {
 		$this->escape( $args );
 
-		$post_ID  = (int) $args[0];
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			$post_ID,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {

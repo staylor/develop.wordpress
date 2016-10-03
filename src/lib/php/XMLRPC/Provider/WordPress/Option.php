@@ -30,18 +30,24 @@ trait Option {
 	public function wp_getOptions( $args ) {
 		$this->escape( $args );
 
-		$username	= $args[1];
-		$password	= $args[2];
-		$options	= isset( $args[3] ) ? (array) $args[3] : array();
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
 
-		if ( !$user = $this->login($username, $password) )
+		$options = isset( $args[3] ) ? (array) $args[3] : [];
+
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
+		}
 
 		// If no specific options where asked for, return all of them
-		if ( count( $options ) == 0 )
-			$options = array_keys($this->get_blog_options());
-
-		return $this->_getOptions($options);
+		if ( 0 === count( $options ) ) {
+			$options = array_keys( $this->get_blog_options() );
+		}
+		return $this->_getOptions( $options );
 	}
 
 	/**
@@ -52,22 +58,25 @@ trait Option {
 	 * @param array $options Options to retrieve.
 	 * @return array
 	 */
-	public function _getOptions($options) {
-		$data = array();
+	public function _getOptions( $options ) {
+		$data = [];
 		$can_manage = current_user_can( 'manage_options' );
 		$blog_options = $this->get_blog_options();
 
 		foreach ( $options as $option ) {
-			if ( array_key_exists( $option, $blog_options ) ) {
-				$data[$option] = $blog_options[$option];
-				//Is the value static or dynamic?
-				if ( isset( $data[$option]['option'] ) ) {
-					$data[$option]['value'] = get_option( $data[$option]['option'] );
-					unset($data[$option]['option']);
-				}
+			if ( ! array_key_exists( $option, $blog_options ) ) {
+				continue;
+			}
 
-				if ( ! $can_manage )
-					$data[$option]['readonly'] = true;
+			$data[ $option ] = $blog_options[ $option ];
+			//Is the value static or dynamic?
+			if ( isset( $data[ $option ]['option'] ) ) {
+				$data[ $option ]['value'] = get_option( $data[ $option ]['option'] );
+				unset( $data[ $option ]['option'] );
+			}
+
+			if ( ! $can_manage ) {
+				$data[ $option ]['readonly'] = true;
 			}
 		}
 
@@ -92,32 +101,39 @@ trait Option {
 	public function wp_setOptions( $args ) {
 		$this->escape( $args );
 
-		$username	= $args[1];
-		$password	= $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
+
 		$options	= (array) $args[3];
 
-		if ( !$user = $this->login($username, $password) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
-
-		if ( !current_user_can( 'manage_options' ) )
+		}
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return new Error( 403, __( 'Sorry, you are not allowed to update options.' ) );
-
-		$option_names = array();
+		}
+		$option_names = [];
 		$blog_options = $this->get_blog_options();
 
 		foreach ( $options as $o_name => $o_value ) {
 			$option_names[] = $o_name;
-			if ( !array_key_exists( $o_name, $blog_options ) )
+			if ( ! array_key_exists( $o_name, $blog_options ) ) {
 				continue;
+			}
 
-			if ( $blog_options[$o_name]['readonly'] == true )
+			if ( $blog_options[ $o_name ]['readonly'] == true ) {
 				continue;
+			}
 
-			update_option( $blog_options[$o_name]['option'], wp_unslash( $o_value ) );
+			update_option( $blog_options[ $o_name ]['option'], wp_unslash( $o_value ) );
 		}
 
 		//Now return the updated values
-		return $this->_getOptions($option_names);
+		return $this->_getOptions( $option_names );
 	}
 
 	/**

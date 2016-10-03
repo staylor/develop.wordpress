@@ -16,7 +16,7 @@ trait Post {
 	 * @return array The prepared post type data.
 	 */
 	protected function _prepare_post_type( $post_type, $fields ) {
-		$_post_type = array(
+		$_post_type = [
 			'name' => $post_type->name,
 			'label' => $post_type->label,
 			'hierarchical' => (bool) $post_type->hierarchical,
@@ -25,7 +25,7 @@ trait Post {
 			'_builtin' => (bool) $post_type->_builtin,
 			'has_archive' => (bool) $post_type->has_archive,
 			'supports' => get_all_post_type_supports( $post_type->name ),
-		);
+		];
 
 		if ( in_array( 'labels', $fields ) ) {
 			$_post_type['labels'] = (array) $post_type->labels;
@@ -42,9 +42,9 @@ trait Post {
 			$_post_type['show_in_menu'] = (bool) $post_type->show_in_menu;
 		}
 
-		if ( in_array( 'taxonomies', $fields ) )
+		if ( in_array( 'taxonomies', $fields ) ) {
 			$_post_type['taxonomies'] = get_object_taxonomies( $post_type->name, 'names' );
-
+		}
 		/**
 		 * Filters XML-RPC-prepared date for the given post type.
 		 *
@@ -104,17 +104,23 @@ trait Post {
 	 * @return int|Error Post ID on success, Error instance otherwise.
 	 */
 	public function wp_newPost( $args ) {
-		if ( ! $this->minimum_args( $args, 4 ) )
+		if ( ! $this->minimum_args( $args, 4 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 
-		$username       = $args[1];
-		$password       = $args[2];
-		$content_struct = $args[3];
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+			$content_struct
+		) = $args;
 
-		if ( ! $user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
+		}
 
 		// convert the date field back to IXR form
 		if ( isset( $content_struct['post_date'] ) && ! ( $content_struct['post_date'] instanceof Date ) ) {
@@ -159,26 +165,33 @@ trait Post {
 	 * @return true|Error True on success, Error on failure.
 	 */
 	public function wp_editPost( $args ) {
-		if ( ! $this->minimum_args( $args, 5 ) )
+		if ( ! $this->minimum_args( $args, 5 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 
-		$username       = $args[1];
-		$password       = $args[2];
-		$post_id        = (int) $args[3];
-		$content_struct = $args[4];
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+			$post_id,
+			$content_struct
+		) = $args;
 
-		if ( ! $user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
+		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.editPost' );
 
 		$post = get_post( $post_id, ARRAY_A );
 
-		if ( empty( $post['ID'] ) )
+		if ( empty( $post['ID'] ) ) {
 			return new Error( 404, __( 'Invalid post ID.' ) );
+		}
 
 		if ( isset( $content_struct['if_not_modified_since'] ) ) {
 			// If the post has been modified since the date provided, return an error.
@@ -194,17 +207,19 @@ trait Post {
 		 * Ignore the existing GMT date if it is empty or a non-GMT date was supplied in $content_struct,
 		 * since _insert_post() will ignore the non-GMT date if the GMT date is set.
 		 */
-		if ( $post['post_date_gmt'] == '0000-00-00 00:00:00' || isset( $content_struct['post_date'] ) )
+		if ( $post['post_date_gmt'] == '0000-00-00 00:00:00' || isset( $content_struct['post_date'] ) ) {
 			unset( $post['post_date_gmt'] );
-		else
+		} else {
 			$post['post_date_gmt'] = $this->_convert_date( $post['post_date_gmt'] );
+		}
 
 		$this->escape( $post );
 		$merged_content_struct = array_merge( $post, $content_struct );
 
 		$retval = $this->_insert_post( $user, $merged_content_struct );
-		if ( $retval instanceof Error )
+		if ( $retval instanceof Error ) {
 			return $retval;
+		}
 
 		return true;
 	}
@@ -227,18 +242,23 @@ trait Post {
 	 * @return true|Error True on success, Error instance on failure.
 	 */
 	public function wp_deletePost( $args ) {
-		if ( ! $this->minimum_args( $args, 4 ) )
+		if ( ! $this->minimum_args( $args, 4 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 
-		$username   = $args[1];
-		$password   = $args[2];
-		$post_id    = (int) $args[3];
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+			$post_id
+		) = $args;
 
-		if ( ! $user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
-
+		}
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.deletePost' );
 
@@ -309,14 +329,18 @@ trait Post {
 	 *  - 'enclosure'
 	 */
 	public function wp_getPost( $args ) {
-		if ( ! $this->minimum_args( $args, 4 ) )
+		if ( ! $this->minimum_args( $args, 4 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
-		$post_id  = (int) $args[3];
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+			$post_id
+		) = $args;
 
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
@@ -329,23 +353,29 @@ trait Post {
 			 * @param array  $fields Array of post fields. Default array contains 'post', 'terms', and 'custom_fields'.
 			 * @param string $method Method name.
 			 */
-			$fields = apply_filters( 'xmlrpc_default_post_fields', array( 'post', 'terms', 'custom_fields' ), 'wp.getPost' );
+			$fields = apply_filters( 'xmlrpc_default_post_fields', [
+				'post',
+				'terms',
+				'custom_fields'
+			], 'wp.getPost' );
 		}
 
-		if ( ! $user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
-
+		}
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPost' );
 
 		$post = get_post( $post_id, ARRAY_A );
 
-		if ( empty( $post['ID'] ) )
+		if ( empty( $post['ID'] ) ) {
 			return new Error( 404, __( 'Invalid post ID.' ) );
+		}
 
-		if ( ! current_user_can( 'edit_post', $post_id ) )
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return new Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
-
+		}
 		return $this->_prepare_post( $post, $fields );
 	}
 
@@ -372,57 +402,69 @@ trait Post {
 	 * @return array|Error Array contains a collection of posts.
 	 */
 	public function wp_getPosts( $args ) {
-		if ( ! $this->minimum_args( $args, 3 ) )
+		if ( ! $this->minimum_args( $args, 3 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
-		$filter   = isset( $args[3] ) ? $args[3] : array();
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
+
+		$filter = $args[3] ?? [];
 
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
 		} else {
 			/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
-			$fields = apply_filters( 'xmlrpc_default_post_fields', array( 'post', 'terms', 'custom_fields' ), 'wp.getPosts' );
+			$fields = apply_filters( 'xmlrpc_default_post_fields', [
+				'post',
+				'terms',
+				'custom_fields'
+			], 'wp.getPosts' );
 		}
 
-		if ( ! $user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
-
+		}
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPosts' );
 
-		$query = array();
+		$query = [];
 
 		if ( isset( $filter['post_type'] ) ) {
 			$post_type = get_post_type_object( $filter['post_type'] );
-			if ( ! ( (bool) $post_type ) )
+			if ( ! ( (bool) $post_type ) ) {
 				return new Error( 403, __( 'Invalid post type.' ) );
+			}
 		} else {
 			$post_type = get_post_type_object( 'post' );
 		}
 
-		if ( ! current_user_can( $post_type->cap->edit_posts ) )
+		if ( ! current_user_can( $post_type->cap->edit_posts ) ) {
 			return new Error( 401, __( 'Sorry, you are not allowed to edit posts in this post type.' ));
-
+		}
 		$query['post_type'] = $post_type->name;
 
-		if ( isset( $filter['post_status'] ) )
+		if ( isset( $filter['post_status'] ) ) {
 			$query['post_status'] = $filter['post_status'];
-
-		if ( isset( $filter['number'] ) )
+		}
+		if ( isset( $filter['number'] ) ) {
 			$query['numberposts'] = absint( $filter['number'] );
-
-		if ( isset( $filter['offset'] ) )
+		}
+		if ( isset( $filter['offset'] ) ) {
 			$query['offset'] = absint( $filter['offset'] );
-
+		}
 		if ( isset( $filter['orderby'] ) ) {
 			$query['orderby'] = $filter['orderby'];
 
-			if ( isset( $filter['order'] ) )
+			if ( isset( $filter['order'] ) ) {
 				$query['order'] = $filter['order'];
+			}
 		}
 
 		if ( isset( $filter['s'] ) ) {
@@ -431,15 +473,15 @@ trait Post {
 
 		$posts_list = wp_get_recent_posts( $query );
 
-		if ( ! $posts_list )
-			return array();
-
+		if ( ! $posts_list ) {
+			return [];
+		}
 		// Holds all the posts data.
-		$struct = array();
-
+		$struct = [];
 		foreach ( $posts_list as $post ) {
-			if ( ! current_user_can( 'edit_post', $post['ID'] ) )
+			if ( ! current_user_can( 'edit_post', $post['ID'] ) ) {
 				continue;
+			}
 
 			$struct[] = $this->_prepare_post( $post, $fields );
 		}
@@ -464,15 +506,20 @@ trait Post {
 	public function wp_getPostFormats( $args ) {
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
 
-		if ( !$user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
+		}
 
-		if ( !current_user_can( 'edit_posts' ) )
+		if ( ! current_user_can( 'edit_posts' ) ) {
 			return new Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
-
+		}
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostFormats' );
 
@@ -480,16 +527,14 @@ trait Post {
 
 		// find out if they want a list of currently supports formats
 		if ( isset( $args[3] ) && is_array( $args[3] ) ) {
-			if ( $args[3]['show-supported'] ) {
-				if ( current_theme_supports( 'post-formats' ) ) {
-					$supported = get_theme_support( 'post-formats' );
+			if ( $args[3]['show-supported'] && current_theme_supports( 'post-formats' ) ) {
+				$supported = get_theme_support( 'post-formats' );
 
-					$data = array();
-					$data['all'] = $formats;
-					$data['supported'] = $supported[0];
+				$data = [];
+				$data['all'] = $formats;
+				$data['supported'] = $supported[0];
 
-					$formats = $data;
-				}
+				$formats = $data;
 			}
 		}
 
@@ -524,14 +569,18 @@ trait Post {
 	 *  - 'supports'
 	 */
 	public function wp_getPostType( $args ) {
-		if ( ! $this->minimum_args( $args, 4 ) )
+		if ( ! $this->minimum_args( $args, 4 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 
-		$username       = $args[1];
-		$password       = $args[2];
-		$post_type_name = $args[3];
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+			$post_type_name
+		) = $args;
 
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
@@ -544,23 +593,28 @@ trait Post {
 			 * @param array  $fields An array of post type query fields for the given method.
 			 * @param string $method The method name.
 			 */
-			$fields = apply_filters( 'xmlrpc_default_posttype_fields', array( 'labels', 'cap', 'taxonomies' ), 'wp.getPostType' );
+			$fields = apply_filters( 'xmlrpc_default_posttype_fields', [
+				'labels',
+				'cap',
+				'taxonomies'
+			], 'wp.getPostType' );
 		}
 
-		if ( !$user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
-
+		}
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostType' );
 
-		if ( ! post_type_exists( $post_type_name ) )
+		if ( ! post_type_exists( $post_type_name ) ) {
 			return new Error( 403, __( 'Invalid post type.' ) );
-
+		}
 		$post_type = get_post_type_object( $post_type_name );
 
-		if ( ! current_user_can( $post_type->cap->edit_posts ) )
+		if ( ! current_user_can( $post_type->cap->edit_posts ) ) {
 			return new Error( 401, __( 'Sorry, you are not allowed to edit this post type.' ) );
-
+		}
 		return $this->_prepare_post_type( $post_type, $fields );
 	}
 
@@ -583,37 +637,47 @@ trait Post {
 	 * @return array|Error
 	 */
 	public function wp_getPostTypes( $args ) {
-		if ( ! $this->minimum_args( $args, 3 ) )
+		if ( ! $this->minimum_args( $args, 3 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
-		$filter   = isset( $args[3] ) ? $args[3] : array( 'public' => true );
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
+
+		$filter   = $args[3] ?? [ 'public' => true ];
 
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
 		} else {
 			/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
-			$fields = apply_filters( 'xmlrpc_default_posttype_fields', array( 'labels', 'cap', 'taxonomies' ), 'wp.getPostTypes' );
+			$fields = apply_filters( 'xmlrpc_default_posttype_fields', [
+				'labels',
+				'cap',
+				'taxonomies'
+			], 'wp.getPostTypes' );
 		}
 
-		if ( ! $user = $this->login( $username, $password ) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
-
+		}
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostTypes' );
 
 		$post_types = get_post_types( $filter, 'objects' );
 
-		$struct = array();
+		$struct = [];
 
 		foreach ( $post_types as $post_type ) {
-			if ( ! current_user_can( $post_type->cap->edit_posts ) )
+			if ( ! current_user_can( $post_type->cap->edit_posts ) ) {
 				continue;
-
-			$struct[$post_type->name] = $this->_prepare_post_type( $post_type, $fields );
+			}
+			$struct[ $post_type->name ] = $this->_prepare_post_type( $post_type, $fields );
 		}
 
 		return $struct;
@@ -636,15 +700,19 @@ trait Post {
 	public function wp_getPostStatusList( $args ) {
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
 
-		if ( !$user = $this->login($username, $password) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
-
-		if ( !current_user_can( 'edit_posts' ) )
+		}
+		if ( ! current_user_can( 'edit_posts' ) ) {
 			return new Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
-
+		}
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostStatusList' );
 

@@ -30,22 +30,29 @@ trait Media {
 	public function wp_getMediaItem( $args ) {
 		$this->escape( $args );
 
-		$username		= $args[1];
-		$password		= $args[2];
-		$attachment_id	= (int) $args[3];
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+			$attachment_id
+		) = $args;
 
-		if ( !$user = $this->login($username, $password) )
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
+		}
 
-		if ( !current_user_can( 'upload_files' ) )
+		if ( ! current_user_can( 'upload_files' ) ) {
 			return new Error( 403, __( 'Sorry, you are not allowed to upload files.' ) );
+		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getMediaItem' );
 
-		if ( ! $attachment = get_post($attachment_id) )
+		$attachment = get_post( $attachment_id );
+		if ( ! $attachment ) {
 			return new Error( 404, __( 'Invalid attachment ID.' ) );
-
+		}
 		return $this->_prepare_media_item( $attachment );
 	}
 
@@ -75,34 +82,39 @@ trait Media {
 	 * }
 	 * @return array|Error Contains a collection of media items. See wp_xmlrpc_server::wp_getMediaItem() for a description of each item contents
 	 */
-	public function wp_getMediaLibrary($args) {
-		$this->escape($args);
+	public function wp_getMediaLibrary( $args ) {
+		$this->escape( $args );
 
-		$username	= $args[1];
-		$password	= $args[2];
-		$struct		= isset( $args[3] ) ? $args[3] : array() ;
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
 
-		if ( !$user = $this->login($username, $password) )
+		$struct = $args[3] ?? [];
+
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
-
-		if ( !current_user_can( 'upload_files' ) )
+		}
+		if ( ! current_user_can( 'upload_files' ) ) {
 			return new Error( 401, __( 'Sorry, you are not allowed to upload files.' ) );
-
+		}
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getMediaLibrary' );
 
-		$parent_id = ( isset($struct['parent_id']) ) ? absint($struct['parent_id']) : '' ;
-		$mime_type = ( isset($struct['mime_type']) ) ? $struct['mime_type'] : '' ;
-		$offset = ( isset($struct['offset']) ) ? absint($struct['offset']) : 0 ;
-		$number = ( isset($struct['number']) ) ? absint($struct['number']) : -1 ;
+		$attachments = get_posts( [
+			'post_type' => 'attachment',
+			'post_parent' => absint( $struct['parent_id'] ?? 0 ),
+			'offset' => absint( $struct['offset'] ?? 0 ),
+			'numberposts' => isset( $struct['number'] ) ? absint( $struct['number'] ) : -1,
+			'post_mime_type' => $struct['mime_type'] ?? ''
+		] );
 
-		$attachments = get_posts( array('post_type' => 'attachment', 'post_parent' => $parent_id, 'offset' => $offset, 'numberposts' => $number, 'post_mime_type' => $mime_type ) );
-
-		$attachments_struct = array();
-
-		foreach ($attachments as $attachment )
-			$attachments_struct[] = $this->_prepare_media_item( $attachment );
-
-		return $attachments_struct;
+		$data = [];
+		foreach ( $attachments as $attachment ) {
+			$data[] = $this->_prepare_media_item( $attachment );
+		}
+		return $data;
 	}
 }

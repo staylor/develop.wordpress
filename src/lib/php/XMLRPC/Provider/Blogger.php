@@ -54,8 +54,11 @@ class Blogger implements ProviderInterface {
 
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -134,8 +137,11 @@ class Blogger implements ProviderInterface {
 	public function blogger_getUserInfo( $args ) {
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -175,9 +181,12 @@ class Blogger implements ProviderInterface {
 	public function blogger_getPost( $args ) {
 		$this->escape( $args );
 
-		$post_ID  = (int) $args[1];
-		$username = $args[2];
-		$password = $args[3];
+		list(
+			/* $blog_id */,
+			$post_ID,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -229,9 +238,13 @@ class Blogger implements ProviderInterface {
 
 		$this->escape($args);
 
-		// $args[0] = appkey - ignored
-		$username = $args[2];
-		$password = $args[3];
+		list(
+			/* $appkey */
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
+
 		if ( isset( $args[4] ) ) {
 			$query = array( 'numberposts' => absint( $args[4] ) );
 		} else {
@@ -326,10 +339,14 @@ class Blogger implements ProviderInterface {
 	public function blogger_newPost( $args ) {
 		$this->escape( $args );
 
-		$username = $args[2];
-		$password = $args[3];
-		$content  = $args[4];
-		$publish  = $args[5];
+		list(
+			/* $appkey */
+			/* $blog_id */,
+			$username,
+			$password,
+			$content,
+			$publish
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -406,11 +423,14 @@ class Blogger implements ProviderInterface {
 
 		$this->escape( $args );
 
-		$post_ID  = (int) $args[1];
-		$username = $args[2];
-		$password = $args[3];
-		$content  = $args[4];
-		$publish  = $args[5];
+		list(
+			/* $blog_id */,
+			$post_ID,
+			$username,
+			$password,
+			$content,
+			$publish
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -482,9 +502,12 @@ class Blogger implements ProviderInterface {
 	public function blogger_deletePost( $args ) {
 		$this->escape( $args );
 
-		$post_ID  = (int) $args[1];
-		$username = $args[2];
-		$password = $args[3];
+		list(
+			/* $blog_id */,
+			$post_ID,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {

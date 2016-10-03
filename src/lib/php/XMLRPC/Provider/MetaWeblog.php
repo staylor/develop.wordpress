@@ -66,10 +66,14 @@ class MetaWeblog implements ProviderInterface {
 	public function mw_newPost( $args) {
 		$this->escape( $args);
 
-		$username       = $args[1];
-		$password       = $args[2];
-		$content_struct = $args[3];
-		$publish        = $args[4] ?? 0;
+		list(
+			/* $blog_id */,
+			$username,
+			$password,
+			$content_struct
+		) = $args;
+
+		$publish = $args[4] ?? 0;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -382,11 +386,14 @@ class MetaWeblog implements ProviderInterface {
 	public function mw_editPost( $args ) {
 		$this->escape( $args );
 
-		$post_ID        = (int) $args[0];
-		$username       = $args[1];
-		$password       = $args[2];
-		$content_struct = $args[3];
-		$publish        = $args[4] ?? 0;
+		list(
+			$post_ID,
+			$username,
+			$password,
+			$content_struct
+		) = $args;
+
+		$publish = $args[4] ?? 0;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -688,9 +695,11 @@ class MetaWeblog implements ProviderInterface {
 	public function mw_getPost( $args ) {
 		$this->escape( $args );
 
-		$post_ID  = (int) $args[0];
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			$post_ID,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -823,8 +832,12 @@ class MetaWeblog implements ProviderInterface {
 	public function mw_getRecentPosts( $args ) {
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
+
 		if ( isset( $args[3] ) ) {
 			$query = [ 'numberposts' => absint( $args[3] ) ];
 		} else {
@@ -930,8 +943,11 @@ class MetaWeblog implements ProviderInterface {
 	public function mw_getCategories( $args ) {
 		$this->escape( $args );
 
-		$username = $args[1];
-		$password = $args[2];
+		list(
+			/* $blog_id */,
+			$username,
+			$password
+		) = $args;
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
