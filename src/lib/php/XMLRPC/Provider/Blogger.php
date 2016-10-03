@@ -236,7 +236,7 @@ class Blogger implements ProviderInterface {
 	 */
 	public function blogger_getRecentPosts( $args ) {
 
-		$this->escape($args);
+		$this->escape( $args );
 
 		list(
 			/* $appkey */
@@ -246,7 +246,7 @@ class Blogger implements ProviderInterface {
 		) = $args;
 
 		if ( isset( $args[4] ) ) {
-			$query = array( 'numberposts' => absint( $args[4] ) );
+			$query = [ 'numberposts' => absint( $args[4] ) ];
 		} else {
 			$query = [];
 		}
@@ -302,8 +302,8 @@ class Blogger implements ProviderInterface {
 	 * @param array $args Unused.
 	 * @return Error Error object.
 	 */
-	public function blogger_getTemplate($args) {
-		return new Error( 403, __('Sorry, that file cannot be edited.' ) );
+	public function blogger_getTemplate( $args ) {
+		return new Error( 403, __( 'Sorry, that file cannot be edited.' ) );
 	}
 
 	/**
@@ -315,8 +315,8 @@ class Blogger implements ProviderInterface {
 	 * @param array $args Unused.
 	 * @return Error Error object.
 	 */
-	public function blogger_setTemplate($args) {
-		return new Error( 403, __('Sorry, that file cannot be edited.' ) );
+	public function blogger_setTemplate( $args ) {
+		return new Error( 403, __( 'Sorry, that file cannot be edited.' ) );
 	}
 
 	/**

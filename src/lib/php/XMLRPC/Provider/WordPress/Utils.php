@@ -43,7 +43,7 @@ trait Utils {
 		$post_fields['post_thumbnail'] = [];
 		$thumbnail_id = get_post_thumbnail_id( $post['ID'] );
 		if ( $thumbnail_id ) {
-			$thumbnail_size = current_theme_supports('post-thumbnail') ? 'post-thumbnail' : 'thumbnail';
+			$thumbnail_size = current_theme_supports( 'post-thumbnail' ) ? 'post-thumbnail' : 'thumbnail';
 			$post_fields['post_thumbnail'] = $this->_prepare_media_item( get_post( $thumbnail_id ), $thumbnail_size );
 		}
 

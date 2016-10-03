@@ -335,8 +335,7 @@ class MetaWeblog implements ProviderInterface {
 		}
 
 		// Handle enclosures
-		$thisEnclosure = isset( $content_struct['enclosure'] ) ? $content_struct['enclosure'] : null;
-		$this->add_enclosure_if_new( $post_ID, $thisEnclosure);
+		$this->add_enclosure_if_new( $post_ID, $content_struct['enclosure'] ?? null );
 
 		$this->attach_uploads( $post_ID, $post_content );
 
@@ -348,11 +347,11 @@ class MetaWeblog implements ProviderInterface {
 
 		$new_ID = wp_insert_post( $postdata, true );
 		if ( is_wp_error( $new_ID ) ) {
-			return new Error(500, $new_ID->get_error_message() );
+			return new Error( 500, $new_ID->get_error_message() );
 		}
 
 		if ( ! $new_ID ) {
-			return new Error(500, __( 'Sorry, your entry could not be posted.' ) );
+			return new Error( 500, __( 'Sorry, your entry could not be posted.' ) );
 		}
 		/**
 		 * Fires after a new post has been successfully created via the XML-RPC MovableType API.

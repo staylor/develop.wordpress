@@ -25,14 +25,6 @@ trait Page {
 			$parent_title = $parent->post_title;
 		}
 
-		// Determine comment and ping settings.
-		$allow_comments = comments_open( $page->ID ) ? 1 : 0;
-		$allow_pings = pings_open( $page->ID ) ? 1 : 0;
-
-		// Format page date.
-		$page_date = $this->_convert_date( $page->post_date );
-		$page_date_gmt = $this->_convert_date_gmt( $page->post_date_gmt, $page->post_date );
-
 		// Pull the categories info together.
 		$categories = [];
 		if ( is_object_in_taxonomy( 'page', 'category' ) ) {
@@ -50,7 +42,7 @@ trait Page {
 		}
 
 		$_page = [
-			'dateCreated'            => $page_date,
+			'dateCreated'            => $this->_convert_date( $page->post_date ),
 			'userid'                 => $page->post_author,
 			'page_id'                => $page->ID,
 			'page_status'            => $page->post_status,
@@ -61,8 +53,8 @@ trait Page {
 			'categories'             => $categories,
 			'excerpt'                => $page->post_excerpt,
 			'text_more'              => $full_page['extended'],
-			'mt_allow_comments'      => $allow_comments,
-			'mt_allow_pings'         => $allow_pings,
+			'mt_allow_comments'      => comments_open( $page->ID ) ? 1 : 0,
+			'mt_allow_pings'         => pings_open( $page->ID ) ? 1 : 0,
 			'wp_slug'                => $page->post_name,
 			'wp_password'            => $page->post_password,
 			'wp_author'              => $author->display_name,
@@ -71,7 +63,10 @@ trait Page {
 			'wp_page_order'          => $page->menu_order,
 			'wp_author_id'           => (string) $author->ID,
 			'wp_author_display_name' => $author->display_name,
-			'date_created_gmt'       => $page_date_gmt,
+			'date_created_gmt'       => $this->_convert_date_gmt(
+				$page->post_date_gmt,
+				$page->post_date
+			),
 			'custom_fields'          => $this->get_custom_fields( $page->ID ),
 			'wp_page_template'       => $page_template
 		];
@@ -336,7 +331,7 @@ trait Page {
 		}
 
 		// Make sure the user is allowed to edit pages.
-		if ( ! current_user_can('edit_page', $page_id ) ) {
+		if ( ! current_user_can( 'edit_page', $page_id ) ) {
 			return new Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
 		}
 		// Mark this as content for a page.

@@ -176,7 +176,7 @@ class Pingback implements ProviderInterface {
 
 		$matchtitle = null;
 		preg_match( '|<title>([^<]*?)</title>|is', $no_tags, $matchtitle );
-		$title = isset( $matchtitle[1] ) ? $matchtitle[1] : '';
+		$title = $matchtitle[1] ?? '';
 		if ( empty( $title ) ) {
 			return $this->pingback_error( 32, __( 'We cannot find a title on that page.' ) );
 		}

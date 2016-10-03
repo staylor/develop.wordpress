@@ -57,7 +57,8 @@ trait Revision {
 			], 'wp.getRevisions' );
 		}
 
-		if ( ! $user = $this->login( $username, $password ) ) {
+		$user = $this->login( $username, $password );
+		if ( ! $user ) {
 			return $this->error;
 		}
 

@@ -542,7 +542,7 @@ trait Term {
 			'category_description'	=> $category['description']
 		];
 
-		$cat_id = wp_insert_category($new_category, true);
+		$cat_id = wp_insert_category( $new_category, true );
 		if ( is_wp_error( $cat_id ) ) {
 			if ( 'term_exists' == $cat_id->get_error_code() ) {
 				return (int) $cat_id->get_error_data();
