@@ -657,7 +657,7 @@ if ( count( $profileuser->caps ) > count( $profileuser->roles )
 <?php
 	$output = '';
 	foreach ( $profileuser->caps as $cap => $value ) {
-		if ( ! $wp_roles->is_role( $cap ) ) {
+		if ( ! $app['roles']->is_role( $cap ) ) {
 			if ( '' != $output )
 				$output .= ', ';
 			$output .= $value ? $cap : sprintf( __( 'Denied: %s' ), $cap );

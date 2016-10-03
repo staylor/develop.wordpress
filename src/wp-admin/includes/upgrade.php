@@ -1654,15 +1654,17 @@ function upgrade_431() {
  * @global wpdb $wpdb                  WordPress database abstraction object.
  */
 function upgrade_440() {
-	global $wp_current_db_version, $wpdb;
+	global $wp_current_db_version;
+
+	$app = WP\getApp;
+	$wpdb = $app['db'];
 
 	if ( $wp_current_db_version < 34030 ) {
 		$wpdb->query( "ALTER TABLE {$wpdb->options} MODIFY option_name VARCHAR(191)" );
 	}
 
 	// Remove the unused 'add_users' role.
-	$roles = wp_roles();
-	foreach ( $roles->role_objects as $role ) {
+	foreach ( $app['roles']->role_objects as $role ) {
 		if ( $role->has_cap( 'add_users' ) ) {
 			$role->remove_cap( 'add_users' );
 		}

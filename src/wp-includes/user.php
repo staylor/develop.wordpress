@@ -6,6 +6,8 @@
  * @subpackage Users
  */
 
+use function WP\getApp;
+
 /**
  * Authenticates and logs a user in with 'remember' capability.
  *
@@ -832,13 +834,12 @@ function update_user_meta($user_id, $meta_key, $meta_value, $prev_value = '') {
  * @since 3.0.0
  * @since 4.4.0 The number of users with no role is now included in the `none` element.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $strategy 'time' or 'memory'
  * @return array Includes a grand total and an array of counts indexed by role strings.
  */
 function count_users($strategy = 'time') {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// Initialize
 	$id = get_current_blog_id();
@@ -846,7 +847,7 @@ function count_users($strategy = 'time') {
 	$result = array();
 
 	if ( 'time' == $strategy ) {
-		$avail_roles = wp_roles()->get_names();
+		$avail_roles = $app['roles']->get_names();
 
 		// Build a CPU-intensive query that will return concise information.
 		$select_count = array();
@@ -2433,14 +2434,15 @@ function wp_destroy_all_sessions() {
  * @return array Array of user IDs.
  */
 function wp_get_users_with_no_role() {
-	global $wpdb;
-
 	if ( is_multisite() ) {
 		return array();
 	}
 
+	$app = getApp();
+	$wpdb = $app['db'];
+
 	$prefix = $wpdb->get_blog_prefix();
-	$regex  = implode( '|', wp_roles()->get_names() );
+	$regex  = implode( '|', $app['roles']->get_names() );
 	$regex  = preg_replace( '/[^a-zA-Z_\|-]/', '', $regex );
 	$users  = $wpdb->get_col( $wpdb->prepare( "
 		SELECT user_id

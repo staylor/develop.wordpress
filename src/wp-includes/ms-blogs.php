@@ -8,6 +8,8 @@
  * @since MU
  */
 
+use function WP\getApp;
+
 /**
  * Update the last_updated field for the current site.
  *
@@ -821,7 +823,8 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
 	}
 
 	if ( did_action( 'init' ) ) {
-		wp_roles()->reinit();
+		$app = getApp();
+		$app['roles']->reinit();
 		$current_user = wp_get_current_user();
 		$current_user->for_blog( $new_blog );
 	}
@@ -895,7 +898,8 @@ function restore_current_blog() {
 	}
 
 	if ( did_action( 'init' ) ) {
-		wp_roles()->reinit();
+		$app = getApp();
+		$app['roles']->reinit();
 		$current_user = wp_get_current_user();
 		$current_user->for_blog( $blog );
 	}

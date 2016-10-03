@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement the WP_User object.
  *
@@ -481,16 +483,16 @@ class WP_User {
 	 * @return array List of all capabilities for the user.
 	 */
 	public function get_role_caps() {
-		$wp_roles = wp_roles();
+		$app = getApp();
 
 		//Filter out caps that are not role names and assign to $this->roles
-		if ( is_array( $this->caps ) )
-			$this->roles = array_filter( array_keys( $this->caps ), array( $wp_roles, 'is_role' ) );
-
+		if ( is_array( $this->caps ) ) {
+			$this->roles = array_filter( array_keys( $this->caps ), array( $app['roles'], 'is_role' ) );
+		}
 		//Build $allcaps from role caps, overlay user's $caps
 		$this->allcaps = array();
 		foreach ( (array) $this->roles as $role ) {
-			$the_role = $wp_roles->get_role( $role );
+			$the_role = $app['roles']->get_role( $role );
 			$this->allcaps = array_merge( (array) $this->allcaps, (array) $the_role->capabilities );
 		}
 		$this->allcaps = array_merge( (array) $this->allcaps, (array) $this->caps );

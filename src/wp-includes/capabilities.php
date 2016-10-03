@@ -5,6 +5,9 @@
  * @package WordPress
  * @subpackage Users
  */
+use WP\User\Role;
+use WP\User\Roles;
+use function WP\getApp;
 
 /**
  * Map meta capabilities to primitive capabilities.
@@ -588,33 +591,16 @@ function user_can( $user, $capability ) {
 }
 
 /**
- * Retrieves the global WP_Roles instance and instantiates it if necessary.
- *
- * @since 4.3.0
- *
- * @global WP_Roles $wp_roles WP_Roles global instance.
- *
- * @return WP_Roles WP_Roles global instance if not already instantiated.
- */
-function wp_roles() {
-	global $wp_roles;
-
-	if ( ! isset( $wp_roles ) ) {
-		$wp_roles = new WP_Roles();
-	}
-	return $wp_roles;
-}
-
-/**
  * Retrieve role object.
  *
  * @since 2.0.0
  *
  * @param string $role Role name.
- * @return WP_Role|null WP_Role object if found, null if the role does not exist.
+ * @return Role|null Role object if found, null if the role does not exist.
  */
 function get_role( $role ) {
-	return wp_roles()->get_role( $role );
+	$app = getApp();
+	return $app['roles']->get_role( $role );
 }
 
 /**
@@ -625,13 +611,14 @@ function get_role( $role ) {
  * @param string $role Role name.
  * @param string $display_name Display name for role.
  * @param array $capabilities List of capabilities, e.g. array( 'edit_posts' => true, 'delete_posts' => false );
- * @return WP_Role|null WP_Role object if role is added, null if already exists.
+ * @return Role|null Role object if role is added, null if already exists.
  */
 function add_role( $role, $display_name, $capabilities = array() ) {
 	if ( empty( $role ) ) {
 		return;
 	}
-	return wp_roles()->add_role( $role, $display_name, $capabilities );
+	$app = getApp();
+	return $app['roles']->add_role( $role, $display_name, $capabilities );
 }
 
 /**
@@ -642,7 +629,8 @@ function add_role( $role, $display_name, $capabilities = array() ) {
  * @param string $role Role name.
  */
 function remove_role( $role ) {
-	wp_roles()->remove_role( $role );
+	$app = getApp();
+	$app['roles']->remove_role( $role );
 }
 
 /**

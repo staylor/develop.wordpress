@@ -1327,14 +1327,16 @@ function insert_blog($domain, $path, $site_id) {
  *
  * @since MU
  *
- * @global wpdb     $wpdb
- * @global WP_Roles $wp_roles
+ * @global WP\User\Roles $wp_roles
  *
  * @param int    $blog_id    The value returned by insert_blog().
  * @param string $blog_title The title of the new site.
  */
 function install_blog( $blog_id, $blog_title = '' ) {
-	global $wpdb, $wp_roles, $current_site;
+	global $wp_roles, $current_site;
+
+	$app = WP\getApp();
+	$wpdb = $app['db'];
 
 	// Cast for security
 	$blog_id = (int) $blog_id;
@@ -1354,7 +1356,7 @@ function install_blog( $blog_id, $blog_title = '' ) {
 	populate_roles();
 
 	// populate_roles() clears previous role definitions so we start over.
-	$wp_roles = new WP_Roles();
+	$wp_roles = new WP\User\Roles();
 
 	$siteurl = $home = untrailingslashit( $url );
 

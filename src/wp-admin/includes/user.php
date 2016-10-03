@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Creates a new user from the "Users" form using $_POST information.
  *
@@ -28,7 +30,8 @@ function add_user() {
  * @return int|WP_Error user id of the updated user
  */
 function edit_user( $user_id = 0 ) {
-	$wp_roles = wp_roles();
+	$app = getApp();
+
 	$user = new stdClass;
 	if ( $user_id ) {
 		$update = true;
@@ -50,7 +53,7 @@ function edit_user( $user_id = 0 ) {
 
 	if ( isset( $_POST['role'] ) && current_user_can( 'edit_users' ) ) {
 		$new_role = sanitize_text_field( $_POST['role'] );
-		$potential_role = isset($wp_roles->role_objects[$new_role]) ? $wp_roles->role_objects[$new_role] : false;
+		$potential_role = isset( $app['roles']->role_objects[ $new_role ] ) ? $app['roles']->role_objects[ $new_role ] : false;
 		// Don't let anyone with 'edit_users' (admins) edit their own role to something without it.
 		// Multisite super admins can freely edit their blog roles -- they possess all caps.
 		if ( ( is_multisite() && current_user_can( 'manage_sites' ) ) || $user_id != get_current_user_id() || ($potential_role && $potential_role->has_cap( 'edit_users' ) ) )
@@ -225,7 +228,7 @@ function edit_user( $user_id = 0 ) {
  * @return array
  */
 function get_editable_roles() {
-	$all_roles = wp_roles()->roles;
+	$app = getApp();
 
 	/**
 	 * Filters the list of editable roles.
@@ -234,7 +237,7 @@ function get_editable_roles() {
 	 *
 	 * @param array $all_roles List of roles.
 	 */
-	$editable_roles = apply_filters( 'editable_roles', $all_roles );
+	$editable_roles = apply_filters( 'editable_roles', $app['roles']->roles );
 
 	return $editable_roles;
 }

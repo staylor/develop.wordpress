@@ -309,10 +309,10 @@ $GLOBALS['wp_widget_factory'] = new WP_Widget_Factory();
 
 /**
  * WordPress User Roles
- * @global WP_Roles $wp_roles
+ * @global WP\User\Roles $wp_roles
  * @since 2.0.0
  */
-$GLOBALS['wp_roles'] = new WP_Roles();
+$GLOBALS['wp_roles'] = $app['roles'];
 
 /**
  * Fires before the theme is loaded.
