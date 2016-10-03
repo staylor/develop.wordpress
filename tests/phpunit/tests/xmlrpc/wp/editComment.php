@@ -19,7 +19,7 @@ class Tests_XMLRPC_wp_editComment extends WP_XMLRPC_UnitTestCase {
 			'comment_approved' => 1,
 		));
 
-		$result = $this->myxmlrpcserver->wp_editComment( array( 1, 'author', 'author', $comment_id, array(
+		$result = $this->myxmlrpcserver->call( 'wp.editComment', array( 1, 'author', 'author', $comment_id, array(
 			'status' => 'hold'
 		) ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
@@ -41,7 +41,7 @@ class Tests_XMLRPC_wp_editComment extends WP_XMLRPC_UnitTestCase {
 			'comment_approved' => 0,
 		) );
 
-		$result = $this->myxmlrpcserver->wp_editComment( array( 1, 'author', 'author', $comment_id, array( 'status' => 'hold' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editComment', array( 1, 'author', 'author', $comment_id, array( 'status' => 'hold' ) ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'Sorry, you are not allowed to moderate or edit this comment.' ), $result->message );
@@ -63,7 +63,7 @@ class Tests_XMLRPC_wp_editComment extends WP_XMLRPC_UnitTestCase {
 
 		$this->assertEquals( '1', get_comment( $comment_id )->comment_approved );
 
-		$this->myxmlrpcserver->wp_editComment( array( 1, 'administrator', 'administrator', $comment_id, array(
+		$this->myxmlrpcserver->call( 'wp.editComment', array( 1, 'administrator', 'administrator', $comment_id, array(
 			'status' => 'trash'
 		) ) );
 

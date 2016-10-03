@@ -14,7 +14,7 @@ class Tests_XMLRPC_wp_setOptions extends WP_XMLRPC_UnitTestCase {
 
 		update_option( 'default_comment_status', 'closed' );
 		$this->assertEquals( 'closed', get_option( 'default_comment_status' ) );
-		$result = $this->myxmlrpcserver->wp_setOptions( array( 1, 'administrator', 'administrator', array(
+		$result = $this->myxmlrpcserver->call( 'wp.setOptions', array( 1, 'administrator', 'administrator', array(
 			'blog_title' => $string_with_quote,
 			'default_comment_status' => 'open',
 		) ) );

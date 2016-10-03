@@ -12,7 +12,7 @@ class Tests_XMLRPC_wp_newComment extends WP_XMLRPC_UnitTestCase {
 
 		$this->assertEquals( 'closed', $post->comment_status );
 
-		$result = $this->myxmlrpcserver->wp_newComment( array( 1, 'administrator', 'administrator', $post->ID, array(
+		$result = $this->myxmlrpcserver->call( 'wp.newComment', array( 1, 'administrator', 'administrator', $post->ID, array(
 			'comment_content' => rand_str( 100 ),
 			'status' => 'approved'
 		) ) );

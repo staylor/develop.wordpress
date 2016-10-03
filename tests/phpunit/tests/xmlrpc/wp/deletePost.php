@@ -6,7 +6,7 @@
 class Tests_XMLRPC_wp_deletePost extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_deletePost( array( 1, 'username', 'password', 0 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.deletePost', array( 1, 'username', 'password', 0 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -14,7 +14,7 @@ class Tests_XMLRPC_wp_deletePost extends WP_XMLRPC_UnitTestCase {
 	function test_invalid_post() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_deletePost( array( 1, 'editor', 'editor', 340982340 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.deletePost', array( 1, 'editor', 'editor', 340982340 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 404, $result->code );
 	}
@@ -23,7 +23,7 @@ class Tests_XMLRPC_wp_deletePost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'subscriber' );
 		$post_id = self::factory()->post->create();
 
-		$result = $this->myxmlrpcserver->wp_deletePost( array( 1, 'subscriber', 'subscriber', $post_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.deletePost', array( 1, 'subscriber', 'subscriber', $post_id ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
@@ -32,7 +32,7 @@ class Tests_XMLRPC_wp_deletePost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'editor' );
 		$post_id = self::factory()->post->create();
 
-		$result = $this->myxmlrpcserver->wp_deletePost( array( 1, 'editor', 'editor', $post_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.deletePost', array( 1, 'editor', 'editor', $post_id ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue( $result );
 

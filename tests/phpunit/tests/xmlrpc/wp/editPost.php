@@ -6,7 +6,7 @@
 class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'username', 'password', 0, array() ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'username', 'password', 0, array() ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -19,7 +19,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 		$new_title = 'Post test (updated)';
 		$post2 = array( 'post_title' => $new_title );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'contributor', 'contributor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'contributor', 'contributor', $post_id, $post2 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
@@ -36,7 +36,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 		$new_title = 'Post test (updated)';
 		$post2 = array( 'post_title' => $new_title );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $post2 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
@@ -54,7 +54,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 		$new_title = 'Post test (updated)';
 		$post2 = array( 'post_title' => $new_title );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'contributor', 'contributor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'contributor', 'contributor', $post_id, $post2 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 
@@ -71,7 +71,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 		$post_id = wp_insert_post( $post );
 
 		$post2 = array( 'post_author' => $author_id );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $post2 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
@@ -87,7 +87,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 		$post_id = wp_insert_post( $post );
 
 		$post2 = array( 'post_author' => $author_id );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'contributor', 'contributor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'contributor', 'contributor', $post_id, $post2 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 
@@ -106,7 +106,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 		$post_id = wp_insert_post( $post );
 
 		$post2 = array( 'post_author' => $editor_id );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $post2 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
@@ -130,12 +130,12 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 		// add post thumbnail to post that does not have one
 		$post2 = array( 'post_thumbnail' => $attachment_id );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'author', 'author', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'author', 'author', $post_id, $post2 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $attachment_id, get_post_meta( $post_id, '_thumbnail_id', true ) );
 
 		// fetch the post to verify that it appears
-		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $post_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPost', array( 1, 'author', 'author', $post_id ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertArrayHasKey( 'post_thumbnail', $result );
 		$this->assertInternalType( 'array', $result['post_thumbnail'] );
@@ -143,7 +143,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 		// edit the post without supplying a post_thumbnail and check that it didn't change
 		$post3 = array( 'post_content' => 'Updated post' );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'author', 'author', $post_id, $post3 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'author', 'author', $post_id, $post3 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $attachment_id, get_post_meta( $post_id, '_thumbnail_id', true ) );
 
@@ -152,19 +152,19 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 		// change the post's post_thumbnail
 		$post4 = array( 'post_thumbnail' => $attachment2_id );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'author', 'author', $post_id, $post4 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'author', 'author', $post_id, $post4 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $attachment2_id, get_post_meta( $post_id, '_thumbnail_id', true ) );
 
 		// unset the post's post_thumbnail
 		$post5 = array( 'post_thumbnail' => '' );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'author', 'author', $post_id, $post5 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'author', 'author', $post_id, $post5 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( '', get_post_meta( $post_id, '_thumbnail_id', true ) );
 
 		// use invalid ID
 		$post6 = array( 'post_thumbnail' => 398420983409 );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'author', 'author', $post_id, $post6 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'author', 'author', $post_id, $post6 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 404, $result->code );
 
@@ -190,7 +190,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 				)
 		);
 
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'contributor', 'contributor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'contributor', 'contributor', $post_id, $post2 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
@@ -212,7 +212,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 		stick_post( $post_id );
 
 		$post2 = array( 'sticky' => false );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $post2 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertFalse( is_sticky( $post_id ) );
 	}
@@ -224,7 +224,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 		stick_post( $post_id );
 
 		$post2 = array( 'post_password' => 'foobar',  'sticky' => false );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $post2 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $post2 ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertFalse( is_sticky( $post_id ) );
 	}
@@ -244,7 +244,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 		// Modify the day old post. In this case, we think it was last modified yesterday.
 		$struct = array( 'post_content' => 'First edit', 'if_not_modified_since' => new IXR_Date( $yesterday ) );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $struct ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $struct ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Make sure the edit went through.
@@ -252,7 +252,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 
 		// Modify it again. We think it was last modified yesterday, but we actually just modified it above.
 		$struct = array( 'post_content' => 'Second edit', 'if_not_modified_since' => new IXR_Date( $yesterday ) );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $struct ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $struct ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 409, $result->code );
 
@@ -272,7 +272,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 		) );
 
 		$struct = array( 'post_content' => 'First edit' );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $struct ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $struct ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Make sure that the post status is still inherit
@@ -289,7 +289,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 		) );
 
 		$struct = array( 'post_status' => 'doesnt_exists' );
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $struct ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $struct ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Make sure that the post status is still inherit
@@ -308,7 +308,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 		$term_ids = wp_list_pluck( get_the_category( $post_id ), 'term_id' );
 		$this->assertContains( $term_id, $term_ids );
 
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, array( 'ID' => $post_id, 'post_title' => 'Updated' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, array( 'ID' => $post_id, 'post_title' => 'Updated' ) ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 'Updated', get_post( $post_id )->post_title );
 
@@ -335,7 +335,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 				'category' => array()
 			)
 		);
-		$result = $this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $new_post_content ) );
+		$result = $this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $new_post_content ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 'Updated', get_post( $post_id )->post_title );
 
@@ -417,7 +417,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 			'post_title'  => 'Test',
 			'post_status' => 'draft',
 		);
-		$post_id = $this->myxmlrpcserver->wp_newPost( array( 1, 'editor', 'editor', $post ) );
+		$post_id = $this->myxmlrpcserver->call( 'wp.newPost', array( 1, 'editor', 'editor', $post ) );
 
 		// Change the post's status to publish and date to future.
 		$future_time = strtotime( '+1 day' );
@@ -429,7 +429,7 @@ class Tests_XMLRPC_wp_editPost extends WP_XMLRPC_UnitTestCase {
 			'post_date'   => $future_date,
 		);
 
-		$this->myxmlrpcserver->wp_editPost( array( 1, 'editor', 'editor', $post_id, $new_post_content ) );
+		$this->myxmlrpcserver->call( 'wp.editPost', array( 1, 'editor', 'editor', $post_id, $new_post_content ) );
 
 		$after = get_post( $post_id );
 		$this->assertEquals( 'future', $after->post_status );

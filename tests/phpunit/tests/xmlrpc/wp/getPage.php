@@ -24,7 +24,7 @@ class Tests_XMLRPC_wp_getPage extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_getPage( array( 1, $this->post_id, 'username', 'password' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPage', array( 1, $this->post_id, 'username', 'password' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -35,7 +35,7 @@ class Tests_XMLRPC_wp_getPage extends WP_XMLRPC_UnitTestCase {
 	function test_invalid_pageid() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getPage( array( 1, 9999, 'editor', 'editor' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPage', array( 1, 9999, 'editor', 'editor' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 404, $result->code );
 	}
@@ -43,7 +43,7 @@ class Tests_XMLRPC_wp_getPage extends WP_XMLRPC_UnitTestCase {
 	function test_valid_page() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getPage( array( 1, $this->post_id, 'editor', 'editor' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPage', array( 1, $this->post_id, 'editor', 'editor' ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Check data types
@@ -82,7 +82,7 @@ class Tests_XMLRPC_wp_getPage extends WP_XMLRPC_UnitTestCase {
 	function test_date() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getPage( array( 1, $this->post_id, 'editor', 'editor' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPage', array( 1, $this->post_id, 'editor', 'editor' ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		$this->assertInstanceOf( 'WP\IXR\Date', $result['dateCreated'] );

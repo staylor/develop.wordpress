@@ -26,7 +26,7 @@ class Tests_XMLRPC_wp_getPages extends WP_XMLRPC_UnitTestCase {
     }
 
     function test_invalid_username_password() {
-        $result = $this->myxmlrpcserver->wp_getPages( array( 1, 'username', 'password' ) );
+        $result = $this->myxmlrpcserver->call( 'wp.getPages', array( 1, 'username', 'password' ) );
         $this->assertInstanceOf( 'WP\IXR\Error', $result );
         $this->assertEquals( 403, $result->code );
     }
@@ -34,13 +34,13 @@ class Tests_XMLRPC_wp_getPages extends WP_XMLRPC_UnitTestCase {
     function test_incapable_user() {
 		$this->make_user_by_role( 'contributor' );
 
-        $result = $this->myxmlrpcserver->wp_getPages( array( 1, 'contributor', 'contributor' ) );
+        $result = $this->myxmlrpcserver->call( 'wp.getPages', array( 1, 'contributor', 'contributor' ) );
         $this->assertInstanceOf( 'WP\IXR\Error', $result );
         $this->assertEquals( 401, $result->code );
     }
 
     function test_capable_user() {
-        $results = $this->myxmlrpcserver->wp_getPages( array( 1, 'administrator', 'administrator' ) );
+        $results = $this->myxmlrpcserver->call( 'wp.getPages', array( 1, 'administrator', 'administrator' ) );
         $this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
         foreach( $results as $result ) {
@@ -65,7 +65,7 @@ class Tests_XMLRPC_wp_getPages extends WP_XMLRPC_UnitTestCase {
 	function test_semi_capable_user() {
         add_filter( 'map_meta_cap', array( $this, 'remove_editor_edit_page_cap') , 10, 4 );
 
-        $results = $this->myxmlrpcserver->wp_getPages( array( 1, 'editor', 'editor' ) );
+        $results = $this->myxmlrpcserver->call( 'wp.getPages', array( 1, 'editor', 'editor' ) );
         $this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
         $found_incapable = false;

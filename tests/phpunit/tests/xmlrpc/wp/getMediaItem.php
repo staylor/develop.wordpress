@@ -38,7 +38,7 @@ class Tests_XMLRPC_wp_getMediaItem extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_getMediaItem( array( 1, 'username', 'password', 0 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getMediaItem', array( 1, 'username', 'password', 0 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -47,7 +47,7 @@ class Tests_XMLRPC_wp_getMediaItem extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'author' );
 
 		$fields = array( 'post' );
-		$result = $this->myxmlrpcserver->wp_getMediaItem( array( 1, 'author', 'author', $this->attachment_id, $fields ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getMediaItem', array( 1, 'author', 'author', $this->attachment_id, $fields ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Check data types

@@ -858,7 +858,8 @@ class MetaWeblog implements ProviderInterface {
 			$post_modified_gmt = $this->_convert_date_gmt( $entry['post_modified_gmt'], $entry['post_modified'] );
 
 			$categories = wp_get_post_categories( $entry['ID'], [ 'fields' => 'names' ] );
-			$tagnames = wp_get_post_tags( $entry['ID'], [ 'fields' => 'names' ] );
+			$tags = wp_get_post_tags( $entry['ID'], [ 'fields' => 'names' ] );
+			$tagnames = implode( ', ', $tags );
 
 			$post = get_extended( $entry['post_content'] );
 			$link = get_permalink( $entry['ID'] );

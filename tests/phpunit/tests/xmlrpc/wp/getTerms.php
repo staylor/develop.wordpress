@@ -6,7 +6,7 @@
 class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_getTerms( array( 1, 'username', 'password', 'category' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'username', 'password', 'category' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -14,7 +14,7 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 	function test_empty_taxonomy() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', '' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', '' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'Invalid taxonomy.' ), $result->message );
@@ -23,7 +23,7 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 	function test_invalid_taxonomy() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', 'not_existing' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', 'not_existing' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'Invalid taxonomy.' ), $result->message );
@@ -32,7 +32,7 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 	function test_incapable_user() {
 		$this->make_user_by_role( 'subscriber' );
 
-		$result = $this->myxmlrpcserver->wp_getTerms( array( 1, 'subscriber', 'subscriber', 'category' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'subscriber', 'subscriber', 'category' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 		$this->assertEquals( __( 'Sorry, you are not allowed to assign terms in this taxonomy.' ), $result->message );
@@ -44,7 +44,7 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 		// make sure there's at least one category
 		$cat = wp_insert_term( 'term' . rand_str() , 'category' );
 
-		$results = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', 'category' ) );
+		$results = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', 'category' ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
 		foreach( $results as $term ) {
@@ -70,7 +70,7 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 
 
 		// test fetching all terms
-		$results = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', $tax_name ) );
+		$results = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', $tax_name ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
 		$this->assertEquals( $num_terms, count( $results ) );
@@ -80,20 +80,20 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 
 		// test paged results
 		$filter = array( 'number' => 5 );
-		$results2 = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', $tax_name, $filter ) );
+		$results2 = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', $tax_name, $filter ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 		$this->assertEquals( 5, count( $results2 ) );
 		$this->assertEquals( $results[1]['term_id'], $results2[1]['term_id'] ); // check one of the terms
 
 		$filter['offset'] = 10;
-		$results3 = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', $tax_name, $filter ) );
+		$results3 = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', $tax_name, $filter ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results3 );
 		$this->assertEquals( $num_terms - 10, count( $results3 ) );
 		$this->assertEquals( $results[11]['term_id'], $results3[1]['term_id'] );
 
 		// test hide_empty (since none have been attached to posts yet, all should be hidden
 		$filter = array( 'hide_empty' => true );
-		$results4 = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', $tax_name, $filter ) );
+		$results4 = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', $tax_name, $filter ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results4 );
 		$this->assertEquals( 0, count( $results4 ) );
 
@@ -110,7 +110,7 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 		self::factory()->post->create_many( 3, array( 'post_category' => array( $cat2 ) ) );
 
 		$filter = array( 'orderby' => 'count', 'order' => 'DESC' );
-		$results = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', 'category', $filter ) );
+		$results = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', 'category', $filter ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 		$this->assertNotEquals( 0, count( $results ) );
 
@@ -132,7 +132,7 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 
 		// search by full name
 		$filter = array( 'search' => $name );
-		$results = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', 'category', $filter ) );
+		$results = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', 'category', $filter ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 		$this->assertEquals( 1, count( $results ) );
 		$this->assertEquals( $name, $results[0]['name'] );
@@ -140,7 +140,7 @@ class Tests_XMLRPC_wp_getTerms extends WP_XMLRPC_UnitTestCase {
 
 		// search by partial name
 		$filter = array( 'search' => substr( $name, 0, 10 ) );
-		$results2 = $this->myxmlrpcserver->wp_getTerms( array( 1, 'editor', 'editor', 'category', $filter ) );
+		$results2 = $this->myxmlrpcserver->call( 'wp.getTerms', array( 1, 'editor', 'editor', 'category', $filter ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results2 );
 		$this->assertEquals( 1, count( $results2 ) );
 		$this->assertEquals( $name, $results2[0]['name'] );

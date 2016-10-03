@@ -26,7 +26,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'username', 'password', 1 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPost', array( 1, 'username', 'password', 1 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -35,7 +35,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 		add_theme_support( 'post-thumbnails' );
 
 		$fields = array( 'post', 'custom_fields' );
-		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $this->post_id, $fields ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPost', array( 1, 'author', 'author', $this->post_id, $fields ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Check data types
@@ -78,7 +78,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 
 	function test_no_fields() {
 		$fields = array();
-		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $this->post_id, $fields ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPost', array( 1, 'author', 'author', $this->post_id, $fields ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// when no fields are requested, only the IDs should be returned
@@ -87,7 +87,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_default_fields() {
-		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $this->post_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPost', array( 1, 'author', 'author', $this->post_id ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		$this->assertArrayHasKey( 'post_id', $result );
@@ -98,7 +98,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 
 	function test_date() {
 		$fields = array( 'post' );
-		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $this->post_id, $fields ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPost', array( 1, 'author', 'author', $this->post_id, $fields ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_date'] );
@@ -129,7 +129,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 			'menu_order' => 2
 		) );
 
-		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'editor', 'editor', $child_page_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPost', array( 1, 'editor', 'editor', $child_page_id ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		$this->assertInternalType( 'string', $result['post_id'] );

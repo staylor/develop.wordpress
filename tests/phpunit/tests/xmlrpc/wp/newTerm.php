@@ -15,7 +15,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'username', 'password', array() ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'username', 'password', array() ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -23,7 +23,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_empty_taxonomy() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', array( 'taxonomy' => '' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', array( 'taxonomy' => '' ) ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'Invalid taxonomy.' ), $result->message );
@@ -32,7 +32,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_invalid_taxonomy() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', array( 'taxonomy' => 'not_existing' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', array( 'taxonomy' => 'not_existing' ) ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'Invalid taxonomy.' ), $result->message );
@@ -41,7 +41,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_incapable_user() {
 		$this->make_user_by_role( 'subscriber' );
 
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'subscriber', 'subscriber', array( 'taxonomy' => 'category' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'subscriber', 'subscriber', array( 'taxonomy' => 'category' ) ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 		$this->assertEquals( __( 'Sorry, you are not allowed to create terms in this taxonomy.' ), $result->message );
@@ -50,7 +50,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_empty_term() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'name' => '' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'name' => '' ) ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'The term name cannot be empty.' ), $result->message );
@@ -59,7 +59,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_parent_for_nonhierarchical() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', array( 'taxonomy' => 'post_tag', 'parent' => $this->parent_term, 'name' => 'test' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', array( 'taxonomy' => 'post_tag', 'parent' => $this->parent_term, 'name' => 'test' ) ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'This taxonomy is not hierarchical.' ), $result->message );
@@ -68,7 +68,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_parent_invalid() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'parent' => 'dasda', 'name' => 'test' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'parent' => 'dasda', 'name' => 'test' ) ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 500, $result->code );
 	}
@@ -76,7 +76,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_parent_not_existing() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'parent' => 9999, 'name' => 'test' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'parent' => 9999, 'name' => 'test' ) ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'Parent term does not exist.' ), $result->message );
@@ -86,7 +86,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_add_term() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'name' => 'test' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'name' => 'test' ) ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertStringMatchesFormat( '%d', $result );
 	}
@@ -94,7 +94,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 	function test_add_term_with_parent() {
 		$this->make_user_by_role( 'editor' );
 
-		$result  = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'parent' => $this->parent_term, 'name' => 'test' ) ) );
+		$result  = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', array( 'taxonomy' => 'category', 'parent' => $this->parent_term, 'name' => 'test' ) ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertStringMatchesFormat( '%d', $result );
 	}
@@ -103,7 +103,7 @@ class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'editor' );
 
 		$taxonomy = array( 'taxonomy' => 'category', 'parent' => $this->parent_term, 'name' => 'test_all', 'description' => 'Test all', 'slug' => 'test_all' );
-		$result  = $this->myxmlrpcserver->wp_newTerm( array( 1, 'editor', 'editor', $taxonomy ) );
+		$result  = $this->myxmlrpcserver->call( 'wp.newTerm', array( 1, 'editor', 'editor', $taxonomy ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertStringMatchesFormat( '%d', $result );
 	}

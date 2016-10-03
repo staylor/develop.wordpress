@@ -7,7 +7,7 @@
 class Tests_XMLRPC_wp_getProfile extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_getProfile( array( 1, 'username', 'password' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getProfile', array( 1, 'username', 'password' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -15,7 +15,7 @@ class Tests_XMLRPC_wp_getProfile extends WP_XMLRPC_UnitTestCase {
 	function test_subscriber() {
 		$subscriber_id = $this->make_user_by_role( 'subscriber' );
 
-		$result = $this->myxmlrpcserver->wp_getProfile( array( 1, 'subscriber', 'subscriber' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getProfile', array( 1, 'subscriber', 'subscriber' ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $subscriber_id, $result['user_id'] );
 		$this->assertContains( 'subscriber', $result['roles'] );
@@ -24,7 +24,7 @@ class Tests_XMLRPC_wp_getProfile extends WP_XMLRPC_UnitTestCase {
 	function test_administrator() {
 		$administrator_id = $this->make_user_by_role( 'administrator' );
 
-		$result = $this->myxmlrpcserver->wp_getProfile( array( 1, 'administrator', 'administrator' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getProfile', array( 1, 'administrator', 'administrator' ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $administrator_id, $result['user_id'] );
 		$this->assertContains( 'administrator', $result['roles'] );
@@ -35,7 +35,7 @@ class Tests_XMLRPC_wp_getProfile extends WP_XMLRPC_UnitTestCase {
 
 		$fields = array( 'email', 'bio', 'user_contacts' );
 
-		$result = $this->myxmlrpcserver->wp_getProfile( array( 1, 'editor', 'editor', $fields ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getProfile', array( 1, 'editor', 'editor', $fields ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $editor_id, $result['user_id'] );
 

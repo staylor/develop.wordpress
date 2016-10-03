@@ -24,13 +24,13 @@ class Tests_XMLRPC_wp_getUser extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_getUser( array( 1, 'username', 'password', 1 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getUser', array( 1, 'username', 'password', 1 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
 	function test_invalid_user() {
-		$result = $this->myxmlrpcserver->wp_getUser( array( 1, 'administrator', 'administrator', 34902348908234 ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getUser', array( 1, 'administrator', 'administrator', 34902348908234 ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 404, $result->code );
 	}
@@ -39,7 +39,7 @@ class Tests_XMLRPC_wp_getUser extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'subscriber' );
 		$editor_id = $this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getUser( array( 1, 'subscriber', 'subscriber', $editor_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getUser', array( 1, 'subscriber', 'subscriber', $editor_id ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
@@ -47,7 +47,7 @@ class Tests_XMLRPC_wp_getUser extends WP_XMLRPC_UnitTestCase {
 	function test_subscriber_self() {
 		$subscriber_id = $this->make_user_by_role( 'subscriber' );
 
-		$result = $this->myxmlrpcserver->wp_getUser( array( 1, 'subscriber', 'subscriber', $subscriber_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getUser', array( 1, 'subscriber', 'subscriber', $subscriber_id ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $subscriber_id, $result['user_id'] );
 	}
@@ -71,7 +71,7 @@ class Tests_XMLRPC_wp_getUser extends WP_XMLRPC_UnitTestCase {
 		);
 		$user_id = wp_insert_user( $user_data );
 
-		$result = $this->myxmlrpcserver->wp_getUser( array( 1, 'administrator', 'administrator', $user_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getUser', array( 1, 'administrator', 'administrator', $user_id ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// check data types
@@ -110,7 +110,7 @@ class Tests_XMLRPC_wp_getUser extends WP_XMLRPC_UnitTestCase {
 	function test_no_fields() {
 		$editor_id = $this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getUser( array( 1, 'administrator', 'administrator', $editor_id, array() ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getUser', array( 1, 'administrator', 'administrator', $editor_id, array() ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $editor_id, $result['user_id'] );
 
@@ -121,7 +121,7 @@ class Tests_XMLRPC_wp_getUser extends WP_XMLRPC_UnitTestCase {
 	function test_basic_fields() {
 		$editor_id = $this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getUser( array( 1, 'administrator', 'administrator', $editor_id, array( 'basic' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getUser', array( 1, 'administrator', 'administrator', $editor_id, array( 'basic' ) ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $editor_id, $result['user_id'] );
 
@@ -137,7 +137,7 @@ class Tests_XMLRPC_wp_getUser extends WP_XMLRPC_UnitTestCase {
 
 		$fields = array( 'email', 'bio', 'user_contacts' );
 
-		$result = $this->myxmlrpcserver->wp_getUser( array( 1, 'administrator', 'administrator', $editor_id, $fields ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getUser', array( 1, 'administrator', 'administrator', $editor_id, $fields ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $editor_id, $result['user_id'] );
 

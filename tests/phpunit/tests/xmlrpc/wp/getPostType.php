@@ -30,7 +30,7 @@ class Tests_XMLRPC_wp_getPostType extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_getPostType( array( 1, 'username', 'password', 'post' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPostType', array( 1, 'username', 'password', 'post' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -38,7 +38,7 @@ class Tests_XMLRPC_wp_getPostType extends WP_XMLRPC_UnitTestCase {
 	function test_invalid_post_type_name() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getPostType( array( 1, 'editor', 'editor', 'foobar' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPostType', array( 1, 'editor', 'editor', 'foobar' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -46,14 +46,14 @@ class Tests_XMLRPC_wp_getPostType extends WP_XMLRPC_UnitTestCase {
 	function test_valid_post_type_name() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getPostType( array( 1, 'editor', 'editor', 'post' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPostType', array( 1, 'editor', 'editor', 'post' ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 	}
 
 	function test_incapable_user() {
 		$this->make_user_by_role( 'subscriber' );
 
-		$result = $this->myxmlrpcserver->wp_getPostType( array( 1, 'subscriber', 'subscriber', 'post' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPostType', array( 1, 'subscriber', 'subscriber', 'post' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
@@ -61,7 +61,7 @@ class Tests_XMLRPC_wp_getPostType extends WP_XMLRPC_UnitTestCase {
 	function test_valid_type() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_getPostType( array( 1, 'editor', 'editor', $this->cpt_name, array( 'labels', 'cap', 'menu', 'taxonomies' ) ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPostType', array( 1, 'editor', 'editor', $this->cpt_name, array( 'labels', 'cap', 'menu', 'taxonomies' ) ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// check data types

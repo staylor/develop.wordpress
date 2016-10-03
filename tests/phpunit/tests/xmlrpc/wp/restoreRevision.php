@@ -22,7 +22,7 @@ class Tests_XMLRPC_wp_restoreRevision extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_restoreRevision( array( 1, 'username', 'password', $this->revision_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.restoreRevision', array( 1, 'username', 'password', $this->revision_id ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -30,7 +30,7 @@ class Tests_XMLRPC_wp_restoreRevision extends WP_XMLRPC_UnitTestCase {
 	function test_incapable_user() {
 		$this->make_user_by_role( 'subscriber' );
 
-		$result = $this->myxmlrpcserver->wp_restoreRevision( array( 1, 'subscriber', 'subscriber', $this->revision_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.restoreRevision', array( 1, 'subscriber', 'subscriber', $this->revision_id ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
@@ -38,14 +38,14 @@ class Tests_XMLRPC_wp_restoreRevision extends WP_XMLRPC_UnitTestCase {
 	function test_capable_user() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_restoreRevision( array( 1, 'editor', 'editor', $this->revision_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.restoreRevision', array( 1, 'editor', 'editor', $this->revision_id ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 	}
 
 	function test_revision_restored() {
 		$this->make_user_by_role( 'editor' );
 
-		$result = $this->myxmlrpcserver->wp_restoreRevision( array( 1, 'editor', 'editor', $this->revision_id ) );
+		$result = $this->myxmlrpcserver->call( 'wp.restoreRevision', array( 1, 'editor', 'editor', $this->revision_id ) );
 		$this->assertTrue( $result );
 		$this->assertEquals( 'edit2', get_post( $this->post_id )->post_content );
 	}

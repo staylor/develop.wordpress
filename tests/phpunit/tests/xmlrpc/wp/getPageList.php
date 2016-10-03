@@ -24,7 +24,7 @@ class Tests_XMLRPC_wp_getPageList extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->wp_getPageList( array( 1, 'username', 'password' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPageList', array( 1, 'username', 'password' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
@@ -32,7 +32,7 @@ class Tests_XMLRPC_wp_getPageList extends WP_XMLRPC_UnitTestCase {
 	function test_incapable_user() {
 		$this->make_user_by_role( 'contributor' );
 
-		$result = $this->myxmlrpcserver->wp_getPageList( array( 1, 'contributor', 'contributor' ) );
+		$result = $this->myxmlrpcserver->call( 'wp.getPageList', array( 1, 'contributor', 'contributor' ) );
 		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
@@ -40,7 +40,7 @@ class Tests_XMLRPC_wp_getPageList extends WP_XMLRPC_UnitTestCase {
 	function test_date() {
 		$this->make_user_by_role( 'editor' );
 
-		$results = $this->myxmlrpcserver->wp_getPageList( array( 1, 'editor', 'editor' ) );
+		$results = $this->myxmlrpcserver->call( 'wp.getPageList', array( 1, 'editor', 'editor' ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
 		foreach( $results as $result ) {
