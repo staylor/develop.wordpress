@@ -20,12 +20,17 @@ class Client {
     // Storage place for an error message
     protected $error = false;
 
-    public function __construct( $server, string $path = '', int $port = 80, int $timeout = 15 ) {
+    public function __construct(
+		$server,
+		string $path = '',
+		int $port = 80,
+		int $timeout = 15
+	) {
         if ( ! $path ) {
             // Assume we have been given a URL instead
             $bits = parse_url( $server );
             $this->server = $bits['host'];
-            $this->port = $bits['port'] ?? 80;
+            $this->port = $bits['port'] ?? $port;
             $this->path = $bits['path'] ?? '/';
 
             // Make absolutely sure we have a path
@@ -46,7 +51,8 @@ class Client {
         $this->timeout = $timeout;
     }
 
-    function query() {
+    function query(): bool
+	{
         $args = func_get_args();
         $method = array_shift( $args );
 

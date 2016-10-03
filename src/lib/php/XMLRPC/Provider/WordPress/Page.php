@@ -1,0 +1,452 @@
+<?php
+namespace WP\XMLRPC\Provider\WordPress;
+
+trait Page {
+	/**
+	 * Prepares page data for return in an XML-RPC object.
+	 *
+	 * @access protected
+	 *
+	 * @param object $page The unprepared page data.
+	 * @return array The prepared page data.
+	 */
+	protected function _prepare_page( $page ) {
+		// Get all of the page content and link.
+		$full_page = get_extended( $page->post_content );
+		$link = get_permalink( $page->ID );
+
+		// Get info the page parent if there is one.
+		$parent_title = "";
+		if ( ! empty( $page->post_parent ) ) {
+			$parent = get_post( $page->post_parent );
+			$parent_title = $parent->post_title;
+		}
+
+		// Determine comment and ping settings.
+		$allow_comments = comments_open( $page->ID ) ? 1 : 0;
+		$allow_pings = pings_open( $page->ID ) ? 1 : 0;
+
+		// Format page date.
+		$page_date = $this->_convert_date( $page->post_date );
+		$page_date_gmt = $this->_convert_date_gmt( $page->post_date_gmt, $page->post_date );
+
+		// Pull the categories info together.
+		$categories = array();
+		if ( is_object_in_taxonomy( 'page', 'category' ) ) {
+			foreach ( wp_get_post_categories( $page->ID ) as $cat_id ) {
+				$categories[] = get_cat_name( $cat_id );
+			}
+		}
+
+		// Get the author info.
+		$author = get_userdata( $page->post_author );
+
+		$page_template = get_page_template_slug( $page->ID );
+		if ( empty( $page_template ) )
+			$page_template = 'default';
+
+		$_page = array(
+			'dateCreated'            => $page_date,
+			'userid'                 => $page->post_author,
+			'page_id'                => $page->ID,
+			'page_status'            => $page->post_status,
+			'description'            => $full_page['main'],
+			'title'                  => $page->post_title,
+			'link'                   => $link,
+			'permaLink'              => $link,
+			'categories'             => $categories,
+			'excerpt'                => $page->post_excerpt,
+			'text_more'              => $full_page['extended'],
+			'mt_allow_comments'      => $allow_comments,
+			'mt_allow_pings'         => $allow_pings,
+			'wp_slug'                => $page->post_name,
+			'wp_password'            => $page->post_password,
+			'wp_author'              => $author->display_name,
+			'wp_page_parent_id'      => $page->post_parent,
+			'wp_page_parent_title'   => $parent_title,
+			'wp_page_order'          => $page->menu_order,
+			'wp_author_id'           => (string) $author->ID,
+			'wp_author_display_name' => $author->display_name,
+			'date_created_gmt'       => $page_date_gmt,
+			'custom_fields'          => $this->get_custom_fields( $page->ID ),
+			'wp_page_template'       => $page_template
+		);
+
+		/**
+		 * Filters XML-RPC-prepared data for the given page.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param array   $_page An array of page data.
+		 * @param WP_Post $page  Page object.
+		 */
+		return apply_filters( 'xmlrpc_prepare_page', $_page, $page );
+	}
+	/**
+	 * Retrieve page.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param array  $args {
+	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *
+	 *     @type int    $blog_id (unused)
+	 *     @type int    $page_id
+	 *     @type string $username
+	 *     @type string $password
+	 * }
+	 * @return array|IXR_Error
+	 */
+	public function wp_getPage( $args ) {
+		$this->escape( $args );
+
+		$page_id  = (int) $args[1];
+		$username = $args[2];
+		$password = $args[3];
+
+		if ( !$user = $this->login($username, $password) ) {
+			return $this->error;
+		}
+
+		$page = get_post($page_id);
+		if ( ! $page )
+			return new IXR_Error( 404, __( 'Invalid post ID.' ) );
+
+		if ( !current_user_can( 'edit_page', $page_id ) )
+			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
+
+		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		do_action( 'xmlrpc_call', 'wp.getPage' );
+
+		// If we found the page then format the data.
+		if ( $page->ID && ($page->post_type == 'page') ) {
+			return $this->_prepare_page( $page );
+		}
+		// If the page doesn't exist indicate that.
+		else {
+			return new IXR_Error( 404, __( 'Sorry, no such page.' ) );
+		}
+	}
+
+	/**
+	 * Retrieve Pages.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param array  $args {
+	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *
+	 *     @type int    $blog_id (unused)
+	 *     @type string $username
+	 *     @type string $password
+	 *     @type int    $num_pages
+	 * }
+	 * @return array|IXR_Error
+	 */
+	public function wp_getPages( $args ) {
+		$this->escape( $args );
+
+		$username  = $args[1];
+		$password  = $args[2];
+		$num_pages = isset($args[3]) ? (int) $args[3] : 10;
+
+		if ( !$user = $this->login($username, $password) )
+			return $this->error;
+
+		if ( !current_user_can( 'edit_pages' ) )
+			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit pages.' ) );
+
+		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		do_action( 'xmlrpc_call', 'wp.getPages' );
+
+		$pages = get_posts( array('post_type' => 'page', 'post_status' => 'any', 'numberposts' => $num_pages) );
+		$num_pages = count($pages);
+
+		// If we have pages, put together their info.
+		if ( $num_pages >= 1 ) {
+			$pages_struct = array();
+
+			foreach ($pages as $page) {
+				if ( current_user_can( 'edit_page', $page->ID ) )
+					$pages_struct[] = $this->_prepare_page( $page );
+			}
+
+			return $pages_struct;
+		}
+
+		return array();
+	}
+
+	/**
+	 * Create new page.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @see wp_xmlrpc_server::mw_newPost()
+	 *
+	 * @param array  $args {
+	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *
+	 *     @type int    $blog_id (unused)
+	 *     @type string $username
+	 *     @type string $password
+	 *     @type array  $content_struct
+	 * }
+	 * @return int|IXR_Error
+	 */
+	public function wp_newPage( $args ) {
+		// Items not escaped here will be escaped in newPost.
+		$username = $this->escape( $args[1] );
+		$password = $this->escape( $args[2] );
+
+		if ( !$user = $this->login($username, $password) )
+			return $this->error;
+
+		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		do_action( 'xmlrpc_call', 'wp.newPage' );
+
+		// Mark this as content for a page.
+		$args[3]["post_type"] = 'page';
+
+		// Let mw_newPost do all of the heavy lifting.
+		return $this->mw_newPost( $args );
+	}
+
+	/**
+	 * Delete page.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param array  $args {
+	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *
+	 *     @type int    $blog_id (unused)
+	 *     @type string $username
+	 *     @type string $password
+	 *     @type int    $page_id
+	 * }
+	 * @return true|IXR_Error True, if success.
+	 */
+	public function wp_deletePage( $args ) {
+		$this->escape( $args );
+
+		$username = $args[1];
+		$password = $args[2];
+		$page_id  = (int) $args[3];
+
+		if ( !$user = $this->login($username, $password) )
+			return $this->error;
+
+		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		do_action( 'xmlrpc_call', 'wp.deletePage' );
+
+		// Get the current page based on the page_id and
+		// make sure it is a page and not a post.
+		$actual_page = get_post($page_id, ARRAY_A);
+		if ( !$actual_page || ($actual_page['post_type'] != 'page') )
+			return new IXR_Error( 404, __( 'Sorry, no such page.' ) );
+
+		// Make sure the user can delete pages.
+		if ( !current_user_can('delete_page', $page_id) )
+			return new IXR_Error( 401, __( 'Sorry, you are not allowed to delete this page.' ) );
+
+		// Attempt to delete the page.
+		$result = wp_delete_post($page_id);
+		if ( !$result )
+			return new IXR_Error( 500, __( 'Failed to delete the page.' ) );
+
+		/**
+		 * Fires after a page has been successfully deleted via XML-RPC.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param int   $page_id ID of the deleted page.
+		 * @param array $args    An array of arguments to delete the page.
+		 */
+		do_action( 'xmlrpc_call_success_wp_deletePage', $page_id, $args );
+
+		return true;
+	}
+
+	/**
+	 * Edit page.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param array  $args {
+	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *
+	 *     @type int    $blog_id (unused)
+	 *     @type int    $page_id
+	 *     @type string $username
+	 *     @type string $password
+	 *     @type string $content
+	 *     @type string $publish
+	 * }
+	 * @return array|IXR_Error
+	 */
+	public function wp_editPage( $args ) {
+		// Items will be escaped in mw_editPost.
+		$page_id  = (int) $args[1];
+		$username = $args[2];
+		$password = $args[3];
+		$content  = $args[4];
+		$publish  = $args[5];
+
+		$escaped_username = $this->escape( $username );
+		$escaped_password = $this->escape( $password );
+
+		if ( !$user = $this->login( $escaped_username, $escaped_password ) ) {
+			return $this->error;
+		}
+
+		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		do_action( 'xmlrpc_call', 'wp.editPage' );
+
+		// Get the page data and make sure it is a page.
+		$actual_page = get_post($page_id, ARRAY_A);
+		if ( !$actual_page || ($actual_page['post_type'] != 'page') )
+			return new IXR_Error( 404, __( 'Sorry, no such page.' ) );
+
+		// Make sure the user is allowed to edit pages.
+		if ( !current_user_can('edit_page', $page_id) )
+			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
+
+		// Mark this as content for a page.
+		$content['post_type'] = 'page';
+
+		// Arrange args in the way mw_editPost understands.
+		$args = array(
+			$page_id,
+			$username,
+			$password,
+			$content,
+			$publish
+		);
+
+		// Let mw_editPost do all of the heavy lifting.
+		return $this->mw_editPost( $args );
+	}
+
+	/**
+	 * Retrieve page list.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param array  $args {
+	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *
+	 *     @type int    $blog_id (unused)
+	 *     @type string $username
+	 *     @type string $password
+	 * }
+	 * @return array|IXR_Error
+	 */
+	public function wp_getPageList( $args ) {
+		$this->escape( $args );
+
+		$username = $args[1];
+		$password = $args[2];
+
+		if ( !$user = $this->login($username, $password) )
+			return $this->error;
+
+		if ( !current_user_can( 'edit_pages' ) )
+			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit pages.' ) );
+
+		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		do_action( 'xmlrpc_call', 'wp.getPageList' );
+
+		$db = $GLOBALS['wpdb'];
+		// Get list of pages ids and titles
+		$page_list = $db->get_results("
+			SELECT ID page_id,
+				post_title page_title,
+				post_parent page_parent_id,
+				post_date_gmt,
+				post_date,
+				post_status
+			FROM {$db->posts}
+			WHERE post_type = 'page'
+			ORDER BY ID
+		");
+
+		// The date needs to be formatted properly.
+		$num_pages = count($page_list);
+		for ( $i = 0; $i < $num_pages; $i++ ) {
+			$page_list[$i]->dateCreated = $this->_convert_date(  $page_list[$i]->post_date );
+			$page_list[$i]->date_created_gmt = $this->_convert_date_gmt( $page_list[$i]->post_date_gmt, $page_list[$i]->post_date );
+
+			unset($page_list[$i]->post_date_gmt);
+			unset($page_list[$i]->post_date);
+			unset($page_list[$i]->post_status);
+		}
+
+		return $page_list;
+	}
+
+	/**
+	 * Retrieve page statuses.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param array  $args {
+	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *
+	 *     @type int    $blog_id (unused)
+	 *     @type string $username
+	 *     @type string $password
+	 * }
+	 * @return array|IXR_Error
+	 */
+	public function wp_getPageStatusList( $args ) {
+		$this->escape( $args );
+
+		$username = $args[1];
+		$password = $args[2];
+
+		if ( !$user = $this->login($username, $password) )
+			return $this->error;
+
+		if ( !current_user_can( 'edit_pages' ) )
+			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+
+		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		do_action( 'xmlrpc_call', 'wp.getPageStatusList' );
+
+		return get_page_statuses();
+	}
+
+	/**
+	 * Retrieve page templates.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param array  $args {
+	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *
+	 *     @type int    $blog_id (unused)
+	 *     @type string $username
+	 *     @type string $password
+	 * }
+	 * @return array|IXR_Error
+	 */
+	public function wp_getPageTemplates( $args ) {
+		$this->escape( $args );
+
+		$username = $args[1];
+		$password = $args[2];
+
+		if ( !$user = $this->login($username, $password) )
+			return $this->error;
+
+		if ( !current_user_can( 'edit_pages' ) )
+			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+
+		$templates = get_page_templates();
+		$templates['Default'] = 'default';
+
+		return $templates;
+	}
+
+}

@@ -11,9 +11,9 @@ class Server {
 	protected $message;
 	protected $capabilities;
 
-	public function __construct( $callbacks = false, $data = false, $wait = false ) {
+	public function __construct( $callbacks = [], $data = false, $wait = false ) {
 		$this->setCapabilities();
-		if ( $callbacks ) {
+		if ( ! empty( $callbacks ) ) {
 			$this->callbacks = $callbacks;
 		}
 		$this->setCallbacks();
