@@ -95,11 +95,9 @@ class Server {
 			$result = $this->{$method}( $args );
 		} else {
 			// It's a function - does it exist?
-			if ( is_array( $method ) ) {
-				if ( ! is_callable( [ $method[0], $method[1] ] ) ) {
-					return new Error( -32601, "server error. requested object method \"{$method[1]}\" does not exist." );
-				}
-			} elseif ( ! function_exists( $method ) ) {
+			if ( is_array( $method ) && ! is_callable( $method ) ) {
+				return new Error( -32601, "server error. requested object method \"{$method[1]}\" does not exist." );
+			} elseif ( ! is_array( $method ) && ! function_exists( $method ) ) {
 				return new Error( -32601, "server error. requested function \"{$method}\" does not exist." );
 			}
 
@@ -122,15 +120,16 @@ class Server {
 		if ( $charset ) {
 			$xml = '<?xml version="1.0" encoding="' . $charset . '"?>' . "\n" . $xml;
 		} else {
-			$xml = '<?xml version="1.0"?>'."\n" . $xml;
+			$xml = '<?xml version="1.0"?>' . "\n" . $xml;
 		}
 
 		header( 'Connection: close' );
+
+		$type = [ 'Content-Type: text/xml' ];
 		if ( $charset ) {
-			header( "Content-Type: text/xml; charset={$charset}" );
-		} else {
-			header( 'Content-Type: text/xml' );
+			$type[] = "charset={$charset}";
 		}
+		header( join( '; ', $type ) );
 		header( 'Date: ' . date( 'r' ) );
 		echo $xml;
 		exit();

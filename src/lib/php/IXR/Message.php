@@ -80,16 +80,16 @@ class Message {
         xml_set_character_data_handler( $this->_parser, 'cdata' );
 
         // 256Kb, parse in chunks to avoid the RAM usage on very large messages
-        $chunk_size = 262144;
+        $xmlrpc_chunk_parsing_size = 262144;
 
         /**
          * Filters the chunk size that can be used to parse an XML-RPC reponse message.
          *
          * @since 4.4.0
          *
-         * @param int $chunk_size Chunk size to parse in bytes.
+         * @param int $xmlrpc_chunk_parsing_size Chunk size to parse in bytes.
          */
-        $chunk_size = apply_filters( 'xmlrpc_chunk_parsing_size', $chunk_size );
+        $chunk_size = apply_filters( 'xmlrpc_chunk_parsing_size', $xmlrpc_chunk_parsing_size );
 
         $final = false;
         do {
@@ -105,7 +105,7 @@ class Message {
             if ( $final ) {
                 break;
             }
-        } while (true );
+        } while ( true );
         xml_parser_free( $this->_parser );
 
         // Grab the error messages, if any

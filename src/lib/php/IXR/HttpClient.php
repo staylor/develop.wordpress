@@ -46,7 +46,7 @@ class HttpClient extends Client {
 
 		$port = $this->port ? ":$this->port" : '';
 		$url = $this->scheme . '://' . $this->server . $port . $this->path;
-		$args = [
+		$params = [
 			'headers'    => [ 'Content-Type' => 'text/xml' ],
 			'user-agent' => $this->useragent,
 			'body'       => $xml,
@@ -54,7 +54,7 @@ class HttpClient extends Client {
 
 		// Merge Custom headers ala #8145
 		foreach ( $this->headers as $header => $value ) {
-			$args['headers'][ $header ] = $value;
+			$params['headers'][ $header ] = $value;
 		}
 
 		/**
@@ -64,10 +64,10 @@ class HttpClient extends Client {
 		 *
 		 * @param array $headers Array of headers to be sent.
 		 */
-		$args['headers'] = apply_filters( 'wp_http_ixr_client_headers', $args['headers'] );
+		$params['headers'] = apply_filters( 'wp_http_ixr_client_headers', $params['headers'] );
 
 		if ( false !== $this->timeout ) {
-			$args['timeout'] = $this->timeout;
+			$params['timeout'] = $this->timeout;
 		}
 
 		// Now send the request
@@ -75,7 +75,7 @@ class HttpClient extends Client {
 			echo '<pre class="ixr_request">' . htmlspecialchars( $xml ) . "\n</pre>\n\n";
 		}
 
-		$response = wp_remote_post( $url, $args );
+		$response = wp_remote_post( $url, $params );
 
 		if ( is_wp_error( $response ) ) {
 			$errno    = $response->get_error_code();

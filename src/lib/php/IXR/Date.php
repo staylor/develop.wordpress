@@ -67,6 +67,13 @@ class Date {
 
     public function getTimestamp(): int
     {
-        return mktime( $this->hour, $this->minute, $this->second, $this->month, $this->day, $this->year );
+        return mktime(
+			$this->hour,
+			$this->minute,
+			$this->second,
+			$this->month,
+			$this->day, 
+			$this->year
+		);
     }
 }
