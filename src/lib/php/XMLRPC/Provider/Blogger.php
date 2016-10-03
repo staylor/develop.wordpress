@@ -3,6 +3,7 @@ namespace WP\XMLRPC\Provider;
 
 use WP\IXR\{Client,Error};
 use WP\XMLRPC\{Server,Utils};
+use function WP\getApp;
 
 /**
  * Blogger API functions.
@@ -106,12 +107,14 @@ class Blogger implements ProviderInterface {
 			return new Error( $blogs['faultCode'], $blogs['faultString'] );
 		}
 
-		if ( $domain === $_SERVER['HTTP_HOST'] && $path === $_SERVER['REQUEST_URI'] ) {
+		$app = getApp();
+		$host = $app['request']->getHttpHost();
+		if ( $domain === $host && $path === $app['request']->getRequestUri() ) {
 			return $blogs;
 		}
 
 		foreach ( (array) $blogs as $blog ) {
-			if ( strpos( $blog['url'], $_SERVER['HTTP_HOST'] ) ) {
+			if ( strpos( $blog['url'], $host ) ) {
 				return [ $blog ];
 			}
 		}

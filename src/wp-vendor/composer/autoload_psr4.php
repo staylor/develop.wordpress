@@ -7,5 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'WP\\' => array($baseDir . '/lib/php'),
+    'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
+    'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
     'POMO\\' => array($vendorDir . '/pomo/pomo/src'),
 );

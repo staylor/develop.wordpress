@@ -3,6 +3,7 @@ namespace WP\XMLRPC\Provider;
 
 use WP\IXR\Error;
 use WP\XMLRPC\Server;
+use function WP\getApp;
 /**
  * PingBack functions
  * specs on www.hixie.ch/specs/pingback/pingback
@@ -137,7 +138,8 @@ class Pingback implements ProviderInterface {
 		// very stupid, but gives time to the 'from' server to publish !
 		sleep( 1 );
 
-		$remote_ip = preg_replace( '/[^0-9a-fA-F:., ]/', '', $_SERVER['REMOTE_ADDR'] );
+		$app = getApp();
+		$remote_ip = preg_replace( '/[^0-9a-fA-F:., ]/', '', $app['request']->server->get( 'REMOTE_ADDR' ) );
 
 		/** This filter is documented in wp-includes/class-http.php */
 		$user_agent = apply_filters( 'http_headers_useragent', 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ) );

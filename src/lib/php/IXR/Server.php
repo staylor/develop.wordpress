@@ -1,5 +1,8 @@
 <?php
 namespace WP\IXR;
+
+use function WP\getApp;
+
 /**
  * @package IXR
  * @since 1.5.0
@@ -25,7 +28,8 @@ class Server {
 
 	private function serve( $data = false ) {
 		if ( ! $data ) {
-			if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+			$app = getApp();
+			if ( 'POST' !== $app['request']->getMethod() ) {
 				if ( function_exists( 'status_header' ) ) {
 					status_header( 405 ); // WP #20986
 					header( 'Allow: POST' );

@@ -19,6 +19,9 @@ define( 'WPINC', 'wp-includes' );
 
 require_once( ABSPATH . 'wp-vendor/autoload.php' );
 
+$app = WP\getApp();
+$app->register( new WP\Symfony\Provider() );
+
 // Include files required for initialization.
 require( ABSPATH . WPINC . '/load.php' );
 require( ABSPATH . WPINC . '/default-constants.php' );
