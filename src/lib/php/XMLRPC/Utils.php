@@ -2,6 +2,7 @@
 namespace WP\XMLRPC;
 
 use WP\IXR\{Date,Error};
+use function WP\getApp;
 
 trait Utils {
 	public $error;

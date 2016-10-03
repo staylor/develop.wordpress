@@ -3,6 +3,7 @@ namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\Error;
 use WP\XMLRPC\Provider\MetaWeblog;
+use function WP\getApp;
 
 trait Page {
 	/**
