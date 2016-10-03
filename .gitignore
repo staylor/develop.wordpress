@@ -22,7 +22,7 @@ wp-tests-config.php
 /wp-cli.local.yml
 
 # All composer files
-/src/wp-vendor/*
+/src/vendor/*
 
 # Files and folders that get created in wp-content
 /src/wp-content/blogs.dir
