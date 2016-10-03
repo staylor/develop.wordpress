@@ -1,7 +1,11 @@
 <?php
 namespace WP\XMLRPC;
 
+use WP\IXR\{Date,Error};
+
 trait Utils {
+	public $error;
+
 	/**
 	 * Flags that the user authentication has failed in this instance of wp_xmlrpc_server.
 	 *
@@ -69,18 +73,18 @@ trait Utils {
 		$enabled = apply_filters( 'xmlrpc_enabled', $enabled );
 
 		if ( ! $enabled ) {
-			$this->error = new IXR_Error( 405, sprintf( __( 'XML-RPC services are disabled on this site.' ) ) );
+			$this->error = new Error( 405, sprintf( __( 'XML-RPC services are disabled on this site.' ) ) );
 			return false;
 		}
 
 		if ( $this->auth_failed ) {
-			$user = new WP_Error( 'login_prevented' );
+			$user = new \WP_Error( 'login_prevented' );
 		} else {
 			$user = wp_authenticate( $username, $password );
 		}
 
 		if ( is_wp_error( $user ) ) {
-			$this->error = new IXR_Error( 403, __( 'Incorrect username or password.' ) );
+			$this->error = new Error( 403, __( 'Incorrect username or password.' ) );
 
 			// Flag that authentication has failed once on this wp_xmlrpc_server instance
 			$this->auth_failed = true;
@@ -140,7 +144,7 @@ trait Utils {
 	 *
 	 * @param array $post_data
 	 * @param bool  $update
-	 * @return void|IXR_Error
+	 * @return void|Error
 	 */
 	private function _toggle_sticky( $post_data, $update = false ) {
 		$post_type = get_post_type_object( $post_data['post_type'] );
@@ -149,7 +153,7 @@ trait Utils {
 		if ( 'private' === $post_data['post_status'] || ! empty( $post_data['post_password'] ) ) {
 			// Error if the client tried to stick the post, otherwise, silently unstick.
 			if ( ! empty( $post_data['sticky'] ) ) {
-				return new IXR_Error( 401, __( 'Sorry, you cannot stick a private post.' ) );
+				return new Error( 401, __( 'Sorry, you cannot stick a private post.' ) );
 			}
 
 			if ( $update ) {
@@ -157,7 +161,7 @@ trait Utils {
 			}
 		} elseif ( isset( $post_data['sticky'] ) )  {
 			if ( ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-				return new IXR_Error( 401, __( 'Sorry, you are not allowed to stick this post.' ) );
+				return new Error( 401, __( 'Sorry, you are not allowed to stick this post.' ) );
 			}
 
 			$sticky = wp_validate_boolean( $post_data['sticky'] );
@@ -178,8 +182,8 @@ trait Utils {
 	 * @see wp_insert_post()
 	 *
 	 * @param WP_User         $user           The post author if post_author isn't set in $content_struct.
-	 * @param array|IXR_Error $content_struct Post data to insert.
-	 * @return IXR_Error|string
+	 * @param array|Error $content_struct Post data to insert.
+	 * @return Error|string
 	 */
 	protected function _insert_post( $user, $content_struct ) {
 		$defaults = array( 'post_status' => 'draft', 'post_type' => 'post', 'post_author' => 0,
@@ -189,20 +193,20 @@ trait Utils {
 
 		$post_type = get_post_type_object( $post_data['post_type'] );
 		if ( ! $post_type )
-			return new IXR_Error( 403, __( 'Invalid post type.' ) );
+			return new Error( 403, __( 'Invalid post type.' ) );
 
 		$update = ! empty( $post_data['ID'] );
 
 		if ( $update ) {
 			if ( ! get_post( $post_data['ID'] ) )
-				return new IXR_Error( 401, __( 'Invalid post ID.' ) );
+				return new Error( 401, __( 'Invalid post ID.' ) );
 			if ( ! current_user_can( 'edit_post', $post_data['ID'] ) )
-				return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
+				return new Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
 			if ( $post_data['post_type'] != get_post_type( $post_data['ID'] ) )
-				return new IXR_Error( 401, __( 'The post type may not be changed.' ) );
+				return new Error( 401, __( 'The post type may not be changed.' ) );
 		} else {
 			if ( ! current_user_can( $post_type->cap->create_posts ) || ! current_user_can( $post_type->cap->edit_posts ) )
-				return new IXR_Error( 401, __( 'Sorry, you are not allowed to post on this site.' ) );
+				return new Error( 401, __( 'Sorry, you are not allowed to post on this site.' ) );
 		}
 
 		switch ( $post_data['post_status'] ) {
@@ -211,12 +215,12 @@ trait Utils {
 				break;
 			case 'private':
 				if ( ! current_user_can( $post_type->cap->publish_posts ) )
-					return new IXR_Error( 401, __( 'Sorry, you are not allowed to create private posts in this post type.' ) );
+					return new Error( 401, __( 'Sorry, you are not allowed to create private posts in this post type.' ) );
 				break;
 			case 'publish':
 			case 'future':
 				if ( ! current_user_can( $post_type->cap->publish_posts ) )
-					return new IXR_Error( 401, __( 'Sorry, you are not allowed to publish posts in this post type.' ) );
+					return new Error( 401, __( 'Sorry, you are not allowed to publish posts in this post type.' ) );
 				break;
 			default:
 				if ( ! get_post_status_object( $post_data['post_status'] ) )
@@ -225,17 +229,17 @@ trait Utils {
 		}
 
 		if ( ! empty( $post_data['post_password'] ) && ! current_user_can( $post_type->cap->publish_posts ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to create password protected posts in this post type.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to create password protected posts in this post type.' ) );
 
 		$post_data['post_author'] = absint( $post_data['post_author'] );
 		if ( ! empty( $post_data['post_author'] ) && $post_data['post_author'] != $user->ID ) {
 			if ( ! current_user_can( $post_type->cap->edit_others_posts ) )
-				return new IXR_Error( 401, __( 'Sorry, you are not allowed to create posts as this user.' ) );
+				return new Error( 401, __( 'Sorry, you are not allowed to create posts as this user.' ) );
 
 			$author = get_userdata( $post_data['post_author'] );
 
 			if ( ! $author )
-				return new IXR_Error( 404, __( 'Invalid author ID.' ) );
+				return new Error( 404, __( 'Invalid author ID.' ) );
 		} else {
 			$post_data['post_author'] = $user->ID;
 		}
@@ -281,7 +285,7 @@ trait Utils {
 			if ( ! $post_data['post_thumbnail'] )
 				delete_post_thumbnail( $post_ID );
 			elseif ( ! get_post( absint( $post_data['post_thumbnail'] ) ) )
-				return new IXR_Error( 404, __( 'Invalid attachment ID.' ) );
+				return new Error( 404, __( 'Invalid attachment ID.' ) );
 			set_post_thumbnail( $post_ID, $post_data['post_thumbnail'] );
 			unset( $content_struct['post_thumbnail'] );
 		}
@@ -302,10 +306,10 @@ trait Utils {
 				// Validating term ids.
 				foreach ( $taxonomies as $taxonomy ) {
 					if ( ! array_key_exists( $taxonomy , $post_type_taxonomies ) )
-						return new IXR_Error( 401, __( 'Sorry, one of the given taxonomies is not supported by the post type.' ) );
+						return new Error( 401, __( 'Sorry, one of the given taxonomies is not supported by the post type.' ) );
 
 					if ( ! current_user_can( $post_type_taxonomies[$taxonomy]->cap->assign_terms ) )
-						return new IXR_Error( 401, __( 'Sorry, you are not allowed to assign a term to one of the given taxonomies.' ) );
+						return new Error( 401, __( 'Sorry, you are not allowed to assign a term to one of the given taxonomies.' ) );
 
 					$term_ids = $post_data['terms'][$taxonomy];
 					$terms[ $taxonomy ] = array();
@@ -313,7 +317,7 @@ trait Utils {
 						$term = get_term_by( 'id', $term_id, $taxonomy );
 
 						if ( ! $term )
-							return new IXR_Error( 403, __( 'Invalid term ID.' ) );
+							return new Error( 403, __( 'Invalid term ID.' ) );
 
 						$terms[$taxonomy][] = (int) $term_id;
 					}
@@ -326,10 +330,10 @@ trait Utils {
 
 				foreach ( $taxonomies as $taxonomy ) {
 					if ( ! array_key_exists( $taxonomy , $post_type_taxonomies ) )
-						return new IXR_Error( 401, __( 'Sorry, one of the given taxonomies is not supported by the post type.' ) );
+						return new Error( 401, __( 'Sorry, one of the given taxonomies is not supported by the post type.' ) );
 
 					if ( ! current_user_can( $post_type_taxonomies[$taxonomy]->cap->assign_terms ) )
-						return new IXR_Error( 401, __( 'Sorry, you are not allowed to assign a term to one of the given taxonomies.' ) );
+						return new Error( 401, __( 'Sorry, you are not allowed to assign a term to one of the given taxonomies.' ) );
 
 					/*
 					 * For hierarchical taxonomies, we can't assign a term when multiple terms
@@ -351,19 +355,19 @@ trait Utils {
 					$term_names = $post_data['terms_names'][$taxonomy];
 					foreach ( $term_names as $term_name ) {
 						if ( in_array( $term_name, $ambiguous_terms ) )
-							return new IXR_Error( 401, __( 'Ambiguous term name used in a hierarchical taxonomy. Please use term ID instead.' ) );
+							return new Error( 401, __( 'Ambiguous term name used in a hierarchical taxonomy. Please use term ID instead.' ) );
 
 						$term = get_term_by( 'name', $term_name, $taxonomy );
 
 						if ( ! $term ) {
 							// Term doesn't exist, so check that the user is allowed to create new terms.
 							if ( ! current_user_can( $post_type_taxonomies[$taxonomy]->cap->edit_terms ) )
-								return new IXR_Error( 401, __( 'Sorry, you are not allowed to add a term to one of the given taxonomies.' ) );
+								return new Error( 401, __( 'Sorry, you are not allowed to add a term to one of the given taxonomies.' ) );
 
 							// Create the new term.
 							$term_info = wp_insert_term( $term_name, $taxonomy );
 							if ( is_wp_error( $term_info ) )
-								return new IXR_Error( 500, $term_info->get_error_message() );
+								return new Error( 500, $term_info->get_error_message() );
 
 							$terms[$taxonomy][] = (int) $term_info['term_id'];
 						} else {
@@ -384,7 +388,7 @@ trait Utils {
 			$format = set_post_format( $post_ID, $post_data['post_format'] );
 
 			if ( is_wp_error( $format ) )
-				return new IXR_Error( 500, $format->get_error_message() );
+				return new Error( 500, $format->get_error_message() );
 
 			unset( $post_data['post_format'] );
 		}
@@ -407,10 +411,10 @@ trait Utils {
 
 		$post_ID = $update ? wp_update_post( $post_data, true ) : wp_insert_post( $post_data, true );
 		if ( is_wp_error( $post_ID ) )
-			return new IXR_Error( 500, $post_ID->get_error_message() );
+			return new Error( 500, $post_ID->get_error_message() );
 
 		if ( ! $post_ID )
-			return new IXR_Error( 401, __( 'Sorry, your entry could not be posted.' ) );
+			return new Error( 401, __( 'Sorry, your entry could not be posted.' ) );
 
 		return strval( $post_ID );
 	}
@@ -456,34 +460,34 @@ trait Utils {
 	}
 
 	/**
-	 * Convert a WordPress GMT date string to an IXR_Date object.
+	 * Convert a WordPress GMT date string to an Date object.
 	 *
 	 * @access protected
 	 *
 	 * @param string $date_gmt WordPress GMT date string.
 	 * @param string $date     Date string.
-	 * @return IXR_Date IXR_Date object.
+	 * @return Date Date object.
 	 */
 	protected function _convert_date_gmt( $date_gmt, $date ) {
 		if ( $date !== '0000-00-00 00:00:00' && $date_gmt === '0000-00-00 00:00:00' ) {
-			return new IXR_Date( get_gmt_from_date( mysql2date( 'Y-m-d H:i:s', $date, false ), 'Ymd\TH:i:s' ) );
+			return new Date( get_gmt_from_date( mysql2date( 'Y-m-d H:i:s', $date, false ), 'Ymd\TH:i:s' ) );
 		}
 		return $this->_convert_date( $date_gmt );
 	}
 
 	/**
-	 * Convert a WordPress date string to an IXR_Date object.
+	 * Convert a WordPress date string to an Date object.
 	 *
 	 * @access protected
 	 *
 	 * @param string $date Date string to convert.
-	 * @return IXR_Date IXR_Date object.
+	 * @return Date Date object.
 	 */
 	protected function _convert_date( $date ) {
 		if ( $date === '0000-00-00 00:00:00' ) {
-			return new IXR_Date( '00000000T00:00:00Z' );
+			return new Date( '00000000T00:00:00Z' );
 		}
-		return new IXR_Date( mysql2date( 'Ymd\TH:i:s', $date, false ) );
+		return new Date( mysql2date( 'Ymd\TH:i:s', $date, false ) );
 	}
 
 	/**
@@ -498,7 +502,7 @@ trait Utils {
 	 */
 	protected function minimum_args( $args, $count ) {
 		if ( count( $args ) < $count ) {
-			$this->error = new IXR_Error( 400, __( 'Insufficient arguments passed to this XML-RPC method.' ) );
+			$this->error = new Error( 400, __( 'Insufficient arguments passed to this XML-RPC method.' ) );
 			return false;
 		}
 
@@ -599,12 +603,14 @@ trait Utils {
 	 * @param string $post_content Post Content for attachment.
 	 */
 	public function attach_uploads( $post_ID, $post_content ) {
+		$db = $GLOBALS['wpdb'];
+
 		// find any unattached files
-		$attachments = $this->db->get_results( "SELECT ID, guid FROM {$this->db->posts} WHERE post_parent = '0' AND post_type = 'attachment'" );
+		$attachments = $db->get_results( "SELECT ID, guid FROM {$db->posts} WHERE post_parent = '0' AND post_type = 'attachment'" );
 		if ( is_array( $attachments ) ) {
 			foreach ( $attachments as $file ) {
 				if ( ! empty( $file->guid ) && strpos( $post_content, $file->guid ) !== false ) {
-					$this->db->update( $this->db->posts, array( 'post_parent' => $post_ID ), array( 'ID' => $file->ID ) );
+					$db->update( $db->posts, array( 'post_parent' => $post_ID ), array( 'ID' => $file->ID ) );
 				}
 			}
 		}

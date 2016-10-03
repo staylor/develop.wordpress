@@ -1,6 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
+use WP\IXR\Error;
+
 trait Page {
 	/**
 	 * Prepares page data for return in an XML-RPC object.
@@ -95,7 +97,7 @@ trait Page {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getPage( $args ) {
 		$this->escape( $args );
@@ -110,10 +112,10 @@ trait Page {
 
 		$page = get_post($page_id);
 		if ( ! $page )
-			return new IXR_Error( 404, __( 'Invalid post ID.' ) );
+			return new Error( 404, __( 'Invalid post ID.' ) );
 
 		if ( !current_user_can( 'edit_page', $page_id ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPage' );
@@ -124,7 +126,7 @@ trait Page {
 		}
 		// If the page doesn't exist indicate that.
 		else {
-			return new IXR_Error( 404, __( 'Sorry, no such page.' ) );
+			return new Error( 404, __( 'Sorry, no such page.' ) );
 		}
 	}
 
@@ -141,7 +143,7 @@ trait Page {
 	 *     @type string $password
 	 *     @type int    $num_pages
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getPages( $args ) {
 		$this->escape( $args );
@@ -154,7 +156,7 @@ trait Page {
 			return $this->error;
 
 		if ( !current_user_can( 'edit_pages' ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit pages.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit pages.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPages' );
@@ -192,7 +194,7 @@ trait Page {
 	 *     @type string $password
 	 *     @type array  $content_struct
 	 * }
-	 * @return int|IXR_Error
+	 * @return int|Error
 	 */
 	public function wp_newPage( $args ) {
 		// Items not escaped here will be escaped in newPost.
@@ -225,7 +227,7 @@ trait Page {
 	 *     @type string $password
 	 *     @type int    $page_id
 	 * }
-	 * @return true|IXR_Error True, if success.
+	 * @return true|Error True, if success.
 	 */
 	public function wp_deletePage( $args ) {
 		$this->escape( $args );
@@ -244,16 +246,16 @@ trait Page {
 		// make sure it is a page and not a post.
 		$actual_page = get_post($page_id, ARRAY_A);
 		if ( !$actual_page || ($actual_page['post_type'] != 'page') )
-			return new IXR_Error( 404, __( 'Sorry, no such page.' ) );
+			return new Error( 404, __( 'Sorry, no such page.' ) );
 
 		// Make sure the user can delete pages.
 		if ( !current_user_can('delete_page', $page_id) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to delete this page.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to delete this page.' ) );
 
 		// Attempt to delete the page.
 		$result = wp_delete_post($page_id);
 		if ( !$result )
-			return new IXR_Error( 500, __( 'Failed to delete the page.' ) );
+			return new Error( 500, __( 'Failed to delete the page.' ) );
 
 		/**
 		 * Fires after a page has been successfully deleted via XML-RPC.
@@ -283,7 +285,7 @@ trait Page {
 	 *     @type string $content
 	 *     @type string $publish
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_editPage( $args ) {
 		// Items will be escaped in mw_editPost.
@@ -306,11 +308,11 @@ trait Page {
 		// Get the page data and make sure it is a page.
 		$actual_page = get_post($page_id, ARRAY_A);
 		if ( !$actual_page || ($actual_page['post_type'] != 'page') )
-			return new IXR_Error( 404, __( 'Sorry, no such page.' ) );
+			return new Error( 404, __( 'Sorry, no such page.' ) );
 
 		// Make sure the user is allowed to edit pages.
 		if ( !current_user_can('edit_page', $page_id) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
 
 		// Mark this as content for a page.
 		$content['post_type'] = 'page';
@@ -340,7 +342,7 @@ trait Page {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getPageList( $args ) {
 		$this->escape( $args );
@@ -352,7 +354,7 @@ trait Page {
 			return $this->error;
 
 		if ( !current_user_can( 'edit_pages' ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit pages.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit pages.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPageList' );
@@ -397,7 +399,7 @@ trait Page {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getPageStatusList( $args ) {
 		$this->escape( $args );
@@ -409,7 +411,7 @@ trait Page {
 			return $this->error;
 
 		if ( !current_user_can( 'edit_pages' ) )
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPageStatusList' );
@@ -429,7 +431,7 @@ trait Page {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getPageTemplates( $args ) {
 		$this->escape( $args );
@@ -441,7 +443,7 @@ trait Page {
 			return $this->error;
 
 		if ( !current_user_can( 'edit_pages' ) )
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
 
 		$templates = get_page_templates();
 		$templates['Default'] = 'default';

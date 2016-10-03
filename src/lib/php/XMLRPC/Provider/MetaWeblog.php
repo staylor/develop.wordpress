@@ -728,15 +728,11 @@ class MetaWeblog implements ProviderInterface {
 			$categories[] = get_cat_name( $catid );
 		}
 
-		$tagnames = [];
+		$tagnames = '';
 		$tags = wp_get_post_tags( $post_ID );
 		if ( ! empty( $tags ) ) {
-			foreach ( $tags as $tag ) {
-				$tagnames[] = $tag->name;
-			}
-			$tagnames = implode( ', ', $tagnames );
-		} else {
-			$tagnames = '';
+			$names = wp_list_pluck( $tags, 'name' );
+			$tagnames = implode( ', ', $names );
 		}
 
 		$post = get_extended( $postdata['post_content'] );
@@ -765,6 +761,11 @@ class MetaWeblog implements ProviderInterface {
 			}
 		}
 
+		$format = get_post_format( $post_ID );
+		if ( ! $format ) {
+			$format = null;
+		}
+
 		$resp = [
 			'dateCreated' => $post_date,
 			'userid' => $postdata['post_author'],
@@ -789,7 +790,7 @@ class MetaWeblog implements ProviderInterface {
 			'date_created_gmt' => $post_date_gmt,
 			'post_status' => $postdata['post_status'],
 			'custom_fields' => $this->get_custom_fields( $post_ID),
-			'wp_post_format' => get_post_format( $post_ID ) ?? 'standard',
+			'wp_post_format' => $format ?? 'standard',
 			'sticky' => is_sticky( $post_ID ),
 			'date_modified' => $post_modified,
 			'date_modified_gmt' => $post_modified_gmt

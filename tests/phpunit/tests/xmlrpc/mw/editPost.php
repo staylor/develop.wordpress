@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @group xmlrpc
  */
@@ -7,8 +6,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
 		$post = array();
-		$result = $this->myxmlrpcserver->mw_editPost( array( 1, 'username', 'password', $post ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( 1, 'username', 'password', $post ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
@@ -19,8 +18,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 
 		$new_title = 'Post test (updated)';
 		$post2 = array( 'title' => $new_title );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'contributor', 'contributor', $post2 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'contributor', 'contributor', $post2 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
 		$out = get_post( $post_id );
@@ -36,8 +35,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 
 		$new_title = 'Post test (updated)';
 		$post2 = array( 'title' => $new_title );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'editor', 'editor', $post2 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'editor', 'editor', $post2 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
 		$out = get_post( $post_id );
@@ -54,8 +53,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 
 		$new_title = 'Post test (updated)';
 		$post2 = array( 'title' => $new_title );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'contributor', 'contributor', $post2 ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'contributor', 'contributor', $post2 ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 
 		$out = get_post( $post_id );
@@ -71,8 +70,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		$post_id = wp_insert_post( $post );
 
 		$post2 = array( 'wp_author_id' => $author_id );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'editor', 'editor', $post2 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'editor', 'editor', $post2 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
 		$out = get_post( $post_id );
@@ -87,8 +86,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		$post_id = wp_insert_post( $post );
 
 		$post2 = array( 'wp_author_id' => $author_id );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'contributor', 'contributor', $post2 ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'contributor', 'contributor', $post2 ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 
 		$out = get_post( $post_id );
@@ -106,8 +105,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		$post_id = wp_insert_post( $post );
 
 		$post2 = array( 'wp_author_id' => $editor_id );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'editor', 'editor', $post2 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'editor', 'editor', $post2 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
 		$out = get_post( $post_id );
@@ -130,14 +129,14 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 
 		// add post thumbnail to post that does not have one
 		$post2 = array( 'wp_post_thumbnail' => $attachment_id );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'author', 'author', $post2 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'author', 'author', $post2 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $attachment_id, get_post_meta( $post_id, '_thumbnail_id', true ) );
 
 		// edit the post without supplying a post_thumbnail and check that it didn't change
 		$post3 = array( 'post_content' => 'Updated post' );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'author', 'author', $post3 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'author', 'author', $post3 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $attachment_id, get_post_meta( $post_id, '_thumbnail_id', true ) );
 
 		// create another attachment
@@ -145,14 +144,14 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 
 		// change the post's post_thumbnail
 		$post4 = array( 'wp_post_thumbnail' => $attachment2_id );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'author', 'author', $post4 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'author', 'author', $post4 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $attachment2_id, get_post_meta( $post_id, '_thumbnail_id', true ) );
 
 		// unset the post's post_thumbnail
 		$post5 = array( 'wp_post_thumbnail' => '' );
-		$result = $this->myxmlrpcserver->mw_editPost( array($post_id, 'author', 'author', $post5 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array($post_id, 'author', 'author', $post5 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( '', get_post_meta( $post_id, '_thumbnail_id', true ) );
 
 		remove_theme_support( 'post-thumbnails' );
@@ -165,16 +164,16 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		$post_id = wp_insert_post( $post );
 
 		$post2 = array( 'title' => 'New Title', 'post_author' => $contributor_id );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'contributor', 'contributor', $post2 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'contributor', 'contributor', $post2 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
 		$out = get_post( $post_id );
 		$this->assertEquals( $post2['title'], $out->post_title );
 
 		$post3 = array( 'description' => 'New Content', 'post_author' => $contributor_id );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'contributor', 'contributor', $post3 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'contributor', 'contributor', $post3 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
 		$out = get_post( $post_id );
@@ -182,8 +181,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		$this->assertEquals( $post3['description'], $out->post_content );
 
 		$post4 = array( 'mt_excerpt' => 'New Excerpt', 'post_author' => $contributor_id );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'contributor', 'contributor', $post4 ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'contributor', 'contributor', $post4 ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue($result);
 
 		$out = get_post( $post_id );
@@ -201,8 +200,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		$post = array( 'post_title' => 'Title', 'post_content' => 'Content', 'post_author' => $author_id, 'post_status' => 'publish' );
 		$post_id = wp_insert_post( $post );
 
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'editor', 'editor', array( 'sticky' => '1' ) ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'editor', 'editor', array( 'sticky' => '1' ) ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue( $result );
 	}
 
@@ -214,8 +213,8 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		$post_id = wp_insert_post( $post );
 
 		$post2 = array( 'post_type' => 'page' );
-		$result = $this->myxmlrpcserver->mw_editPost( array( $post_id, 'contributor', 'contributor', $post2 ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'contributor', 'contributor', $post2 ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $result->code, 401 );
 	}
 
@@ -234,7 +233,7 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		$tags1 = get_the_tags( $post_id );
 		$this->assertNotEmpty( $tags1 );
 
-		$this->myxmlrpcserver->mw_editPost( array( $post_id, 'editor', 'editor', array(
+		$this->myxmlrpcserver->call( 'metaWeblog.editPost', array( $post_id, 'editor', 'editor', array(
 			'mt_keywords' => ''
 		) ) );
 
@@ -257,12 +256,12 @@ class Tests_XMLRPC_mw_editPost extends WP_XMLRPC_UnitTestCase {
 		 * post->create method to create the database conditions that exhibit
 		 * the bug.
 		 */
-		$post_id = $this->myxmlrpcserver->mw_newPost( array( 1, 'editor', 'editor', $post ) );
+		$post_id = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'editor', 'editor', $post ) );
 
 		// Change the post's status to publish and date to future.
 		$future_time = strtotime( '+1 day' );
 		$future_date = new IXR_Date( $future_time );
-		$this->myxmlrpcserver->mw_editPost( array(
+		$this->myxmlrpcserver->call( 'metaWeblog.editPost', array(
 			$post_id,
 			'editor',
 			'editor',

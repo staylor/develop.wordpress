@@ -27,7 +27,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
 		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'username', 'password', 1 ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
@@ -36,15 +36,15 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 
 		$fields = array( 'post', 'custom_fields' );
 		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $this->post_id, $fields ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Check data types
 		$this->assertInternalType( 'string', $result['post_id'] );
 		$this->assertInternalType( 'string', $result['post_title'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['post_date'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['post_date_gmt'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['post_modified'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['post_modified_gmt'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_date'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_date_gmt'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_modified'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_modified_gmt'] );
 		$this->assertInternalType( 'string', $result['post_status'] );
 		$this->assertInternalType( 'string', $result['post_type'] );
 		$this->assertInternalType( 'string', $result['post_name'] );
@@ -79,7 +79,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 	function test_no_fields() {
 		$fields = array();
 		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $this->post_id, $fields ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// when no fields are requested, only the IDs should be returned
 		$this->assertEquals( 1, count( $result ) );
@@ -88,7 +88,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 
 	function test_default_fields() {
 		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $this->post_id ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		$this->assertArrayHasKey( 'post_id', $result );
 		$this->assertArrayHasKey( 'link', $result ); // random field from 'posts' group
@@ -99,12 +99,12 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 	function test_date() {
 		$fields = array( 'post' );
 		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'author', 'author', $this->post_id, $fields ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
-		$this->assertInstanceOf( 'IXR_Date', $result['post_date'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['post_date_gmt'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['post_modified'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['post_modified_gmt'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_date'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_date_gmt'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_modified'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['post_modified_gmt'] );
 
 		$this->assertEquals( $this->post_date_ts, $result['post_date']->getTimestamp() );
 		$this->assertEquals( $this->post_date_ts, $result['post_modified']->getTimestamp() );
@@ -130,7 +130,7 @@ class Tests_XMLRPC_wp_getPost extends WP_XMLRPC_UnitTestCase {
 		) );
 
 		$result = $this->myxmlrpcserver->wp_getPost( array( 1, 'editor', 'editor', $child_page_id ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		$this->assertInternalType( 'string', $result['post_id'] );
 		$this->assertInternalType( 'string', $result['post_parent'] );

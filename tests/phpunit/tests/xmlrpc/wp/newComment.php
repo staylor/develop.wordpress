@@ -17,7 +17,7 @@ class Tests_XMLRPC_wp_newComment extends WP_XMLRPC_UnitTestCase {
 			'status' => 'approved'
 		) ) );
 
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 }

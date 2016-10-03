@@ -7,8 +7,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
 		$post = array();
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'username', 'password', $post ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'username', 'password', $post ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
@@ -16,8 +16,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'subscriber' );
 
 		$post = array();
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'subscriber', 'subscriber', $post ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'subscriber', 'subscriber', $post ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
 
@@ -25,8 +25,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'author' );
 
 		$post = array();
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'author', 'author', $post ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'author', 'author', $post ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 500, $result->code );
 		$this->assertEquals( 'Content, title, and excerpt are empty.', $result->message );
 	}
@@ -35,8 +35,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'author' );
 
 		$post = array( 'title' => 'Test' );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'author', 'author', $post ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'author', 'author', $post ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertStringMatchesFormat( '%d', $result );
 	}
 
@@ -44,8 +44,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'author' );
 
 		$post = array( 'title' => 'Test', 'ID' => 103948 );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'author', 'author', $post ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'author', 'author', $post ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertNotEquals( '103948', $result );
 	}
 
@@ -53,16 +53,16 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'author' );
 
 		$post = array( 'title' => 'Test', 'post_status' => 'publish' );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'author', 'author', $post ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'author', 'author', $post ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 	}
 
 	function test_incapable_publish() {
 		$this->make_user_by_role( 'contributor' );
 
 		$post = array( 'title' => 'Test', 'post_status' => 'publish' );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'contributor', 'contributor', $post ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'contributor', 'contributor', $post ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
 
@@ -71,8 +71,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$other_author_id = $this->make_user_by_role( 'author' );
 
 		$post = array( 'title' => 'Test', 'wp_author_id' => $other_author_id );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'editor', 'editor', $post ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'editor', 'editor', $post ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 	}
 
 	function test_incapable_other_author() {
@@ -80,8 +80,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$other_author_id = $this->make_user_by_role( 'author' );
 
 		$post = array( 'title' => 'Test', 'wp_author_id' => $other_author_id );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'contributor', 'contributor', $post ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'contributor', 'contributor', $post ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
 
@@ -92,8 +92,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'editor' );
 
 		$post = array( 'title' => 'Test', 'wp_author_id' => 99999999 );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'editor', 'editor', $post ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'editor', 'editor', $post ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 404, $result->code );
 	}
 
@@ -101,8 +101,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$my_author_id = $this->make_user_by_role( 'author' );
 
 		$post = array( 'title' => 'Test' );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'author', 'author', $post ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'author', 'author', $post ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertStringMatchesFormat( '%d', $result );
 
 		$out = get_post( $result );
@@ -120,8 +120,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$attachment_id = self::factory()->attachment->create_upload_object( $filename );
 
 		$post = array( 'title' => 'Post Thumbnail Test', 'wp_post_thumbnail' => $attachment_id );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'author', 'author', $post ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'author', 'author', $post ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( $attachment_id, get_post_meta( $result, '_thumbnail_id', true ) );
 
 		remove_theme_support( 'post-thumbnails' );
@@ -131,8 +131,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'author' );
 
 		$post = array( 'title' => 'Test', 'post_type' => 'page' );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'author', 'author', $post ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'author', 'author', $post ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
 
@@ -140,8 +140,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'editor' );
 
 		$post = array( 'title' => 'Test', 'post_type' => 'page' );
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'editor', 'editor', $post ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'editor', 'editor', $post ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertStringMatchesFormat( '%d', $result );
 
 		$out = get_post( $result );
@@ -161,8 +161,8 @@ class Tests_XMLRPC_mw_newPost extends WP_XMLRPC_UnitTestCase {
 			'post_type' => 'post',
 			'post_status' => 'draft'
 		);
-		$result = $this->myxmlrpcserver->mw_newPost( array( 1, 'editor', 'editor', $post ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newPost', array( 1, 'editor', 'editor', $post ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertStringMatchesFormat( '%d', $result );
 
 		$out = get_post( $result );

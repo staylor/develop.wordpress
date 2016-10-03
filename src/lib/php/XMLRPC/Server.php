@@ -60,6 +60,7 @@ class Server extends IXRServer {
 	 * @since 1.5.0
 	 */
 	public function __construct() {
+		$this->register( new Provider\Demo() );
 		$this->register( new Provider\WordPress() );
 		$blogger = $this->register( new Provider\Blogger() );
 		$mw = $this->register( new Provider\MetaWeblog() );
@@ -95,7 +96,7 @@ class Server extends IXRServer {
 	 * @since 2.9.0
 	 * @access public
 	 */
-	public function serve_request() {
-		parent::__construct( $this->methods );
+	public function serve_request( $null, $data = false, $wait = false ) {
+		parent::__construct( $this->methods, $data, $wait );
 	}
 }

@@ -24,8 +24,8 @@ class Tests_XMLRPC_mw_getRecentPosts extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->mw_getRecentPosts( array( 1, 'username', 'password' ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getRecentPosts', array( 1, 'username', 'password' ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
@@ -35,16 +35,16 @@ class Tests_XMLRPC_mw_getRecentPosts extends WP_XMLRPC_UnitTestCase {
 	function test_no_editing_privileges() {
 		$this->make_user_by_role( 'subscriber' );
 
-		$result = $this->myxmlrpcserver->mw_getRecentPosts( array( 1, 'subscriber', 'subscriber' ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getRecentPosts', array( 1, 'subscriber', 'subscriber' ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
 
 	function test_no_editable_posts() {
 		wp_delete_post( $this->post_id, true );
 
-		$result = $this->myxmlrpcserver->mw_getRecentPosts( array( 1, 'author', 'author' ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getRecentPosts', array( 1, 'author', 'author' ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 0, count( $result ) );
 	}
 
@@ -52,8 +52,8 @@ class Tests_XMLRPC_mw_getRecentPosts extends WP_XMLRPC_UnitTestCase {
 		add_theme_support( 'post-thumbnails' );
 
 		$fields = array( 'post' );
-		$results = $this->myxmlrpcserver->mw_getRecentPosts( array( 1, 'author', 'author' ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $results );
+		$results = $this->myxmlrpcserver->call( 'metaWeblog.getRecentPosts', array( 1, 'author', 'author' ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
 		foreach( $results as $result ) {
 			$post = get_post( $result['postid'] );
@@ -103,8 +103,8 @@ class Tests_XMLRPC_mw_getRecentPosts extends WP_XMLRPC_UnitTestCase {
 		$attachment_id = self::factory()->attachment->create_upload_object( $filename, $this->post_id );
 		set_post_thumbnail( $this->post_id, $attachment_id );
 
-		$results = $this->myxmlrpcserver->mw_getRecentPosts( array( $this->post_id, 'author', 'author' ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $results );
+		$results = $this->myxmlrpcserver->call( 'metaWeblog.getRecentPosts', array( $this->post_id, 'author', 'author' ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
 		foreach( $results as $result ) {
 			$this->assertInternalType( 'string', $result['wp_post_thumbnail'] );
@@ -123,18 +123,18 @@ class Tests_XMLRPC_mw_getRecentPosts extends WP_XMLRPC_UnitTestCase {
 	function test_date() {
 		$this->make_user_by_role( 'editor' );
 
-		$results = $this->myxmlrpcserver->mw_getRecentPosts( array( 1, 'editor', 'editor' ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $results );
+		$results = $this->myxmlrpcserver->call( 'metaWeblog.getRecentPosts', array( 1, 'editor', 'editor' ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
 		foreach( $results as $result ) {
 			$post = get_post( $result['postid'] );
 			$date_gmt = strtotime( get_gmt_from_date( mysql2date( 'Y-m-d H:i:s', $post->post_date, false ), 'Ymd\TH:i:s' ) );
 			$date_modified_gmt = strtotime( get_gmt_from_date( mysql2date( 'Y-m-d H:i:s', $post->post_modified, false ), 'Ymd\TH:i:s' ) );
 
-			$this->assertInstanceOf( 'IXR_Date', $result['dateCreated'] );
-			$this->assertInstanceOf( 'IXR_Date', $result['date_created_gmt'] );
-			$this->assertInstanceOf( 'IXR_Date', $result['date_modified'] );
-			$this->assertInstanceOf( 'IXR_Date', $result['date_modified_gmt'] );
+			$this->assertInstanceOf( 'WP\IXR\Date', $result['dateCreated'] );
+			$this->assertInstanceOf( 'WP\IXR\Date', $result['date_created_gmt'] );
+			$this->assertInstanceOf( 'WP\IXR\Date', $result['date_modified'] );
+			$this->assertInstanceOf( 'WP\IXR\Date', $result['date_modified_gmt'] );
 
 			$this->assertEquals( strtotime( $post->post_date ), $result['dateCreated']->getTimestamp() );
 			$this->assertEquals( $date_gmt, $result['date_created_gmt']->getTimestamp() );

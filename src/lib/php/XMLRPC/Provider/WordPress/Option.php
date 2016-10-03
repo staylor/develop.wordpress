@@ -1,6 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
+use WP\IXR\Error;
+
 trait Option {
 	/**
 	 * Blog options.
@@ -23,7 +25,7 @@ trait Option {
 	 *     @type string $password
 	 *     @type array  $options
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getOptions( $args ) {
 		$this->escape( $args );
@@ -85,7 +87,7 @@ trait Option {
 	 *     @type string $password
 	 *     @type array  $options
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_setOptions( $args ) {
 		$this->escape( $args );
@@ -98,7 +100,7 @@ trait Option {
 			return $this->error;
 
 		if ( !current_user_can( 'manage_options' ) )
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed to update options.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed to update options.' ) );
 
 		$option_names = array();
 		$blog_options = $this->get_blog_options();

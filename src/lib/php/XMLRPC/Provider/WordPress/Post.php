@@ -1,6 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
+use WP\IXR\{Date,Error};
+
 trait Post {
 	/**
 	 * Prepares post data for return in an XML-RPC object.
@@ -99,7 +101,7 @@ trait Post {
 	 *         }
 	 *     }
 	 * }
-	 * @return int|IXR_Error Post ID on success, IXR_Error instance otherwise.
+	 * @return int|Error Post ID on success, Error instance otherwise.
 	 */
 	public function wp_newPost( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) )
@@ -115,13 +117,13 @@ trait Post {
 			return $this->error;
 
 		// convert the date field back to IXR form
-		if ( isset( $content_struct['post_date'] ) && ! ( $content_struct['post_date'] instanceof IXR_Date ) ) {
+		if ( isset( $content_struct['post_date'] ) && ! ( $content_struct['post_date'] instanceof Date ) ) {
 			$content_struct['post_date'] = $this->_convert_date( $content_struct['post_date'] );
 		}
 
 		// ignore the existing GMT date if it is empty or a non-GMT date was supplied in $content_struct,
 		// since _insert_post will ignore the non-GMT date if the GMT date is set
-		if ( isset( $content_struct['post_date_gmt'] ) && ! ( $content_struct['post_date_gmt'] instanceof IXR_Date ) ) {
+		if ( isset( $content_struct['post_date_gmt'] ) && ! ( $content_struct['post_date_gmt'] instanceof Date ) ) {
 			if ( $content_struct['post_date_gmt'] == '0000-00-00 00:00:00' || isset( $content_struct['post_date'] ) ) {
 				unset( $content_struct['post_date_gmt'] );
 			} else {
@@ -154,7 +156,7 @@ trait Post {
 	 *     @type int    $post_id        Post ID.
 	 *     @type array  $content_struct Extra content arguments.
 	 * }
-	 * @return true|IXR_Error True on success, IXR_Error on failure.
+	 * @return true|Error True on success, Error on failure.
 	 */
 	public function wp_editPost( $args ) {
 		if ( ! $this->minimum_args( $args, 5 ) )
@@ -176,12 +178,12 @@ trait Post {
 		$post = get_post( $post_id, ARRAY_A );
 
 		if ( empty( $post['ID'] ) )
-			return new IXR_Error( 404, __( 'Invalid post ID.' ) );
+			return new Error( 404, __( 'Invalid post ID.' ) );
 
 		if ( isset( $content_struct['if_not_modified_since'] ) ) {
 			// If the post has been modified since the date provided, return an error.
 			if ( mysql2date( 'U', $post['post_modified_gmt'] ) > $content_struct['if_not_modified_since']->getTimestamp() ) {
-				return new IXR_Error( 409, __( 'There is a revision of this post that is more recent.' ) );
+				return new Error( 409, __( 'There is a revision of this post that is more recent.' ) );
 			}
 		}
 
@@ -201,7 +203,7 @@ trait Post {
 		$merged_content_struct = array_merge( $post, $content_struct );
 
 		$retval = $this->_insert_post( $user, $merged_content_struct );
-		if ( $retval instanceof IXR_Error )
+		if ( $retval instanceof Error )
 			return $retval;
 
 		return true;
@@ -222,7 +224,7 @@ trait Post {
 	 *     @type string $password Password.
 	 *     @type int    $post_id  Post ID.
 	 * }
-	 * @return true|IXR_Error True on success, IXR_Error instance on failure.
+	 * @return true|Error True on success, Error instance on failure.
 	 */
 	public function wp_deletePost( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) )
@@ -242,17 +244,17 @@ trait Post {
 
 		$post = get_post( $post_id, ARRAY_A );
 		if ( empty( $post['ID'] ) ) {
-			return new IXR_Error( 404, __( 'Invalid post ID.' ) );
+			return new Error( 404, __( 'Invalid post ID.' ) );
 		}
 
 		if ( ! current_user_can( 'delete_post', $post_id ) ) {
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to delete this post.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to delete this post.' ) );
 		}
 
 		$result = wp_delete_post( $post_id );
 
 		if ( ! $result ) {
-			return new IXR_Error( 500, __( 'The post cannot be deleted.' ) );
+			return new Error( 500, __( 'The post cannot be deleted.' ) );
 		}
 
 		return true;
@@ -282,7 +284,7 @@ trait Post {
 	 *     @type int    $post_id  Post ID.
 	 *     @type array  $fields   The subset of post type fields to return.
 	 * }
-	 * @return array|IXR_Error Array contains (based on $fields parameter):
+	 * @return array|Error Array contains (based on $fields parameter):
 	 *  - 'post_id'
 	 *  - 'post_title'
 	 *  - 'post_date'
@@ -339,10 +341,10 @@ trait Post {
 		$post = get_post( $post_id, ARRAY_A );
 
 		if ( empty( $post['ID'] ) )
-			return new IXR_Error( 404, __( 'Invalid post ID.' ) );
+			return new Error( 404, __( 'Invalid post ID.' ) );
 
 		if ( ! current_user_can( 'edit_post', $post_id ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
 
 		return $this->_prepare_post( $post, $fields );
 	}
@@ -367,7 +369,7 @@ trait Post {
 	 *                            Default empty array.
 	 *     @type array  $fields   Optional. The subset of post type fields to return in the response array.
 	 * }
-	 * @return array|IXR_Error Array contains a collection of posts.
+	 * @return array|Error Array contains a collection of posts.
 	 */
 	public function wp_getPosts( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) )
@@ -397,13 +399,13 @@ trait Post {
 		if ( isset( $filter['post_type'] ) ) {
 			$post_type = get_post_type_object( $filter['post_type'] );
 			if ( ! ( (bool) $post_type ) )
-				return new IXR_Error( 403, __( 'Invalid post type.' ) );
+				return new Error( 403, __( 'Invalid post type.' ) );
 		} else {
 			$post_type = get_post_type_object( 'post' );
 		}
 
 		if ( ! current_user_can( $post_type->cap->edit_posts ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit posts in this post type.' ));
+			return new Error( 401, __( 'Sorry, you are not allowed to edit posts in this post type.' ));
 
 		$query['post_type'] = $post_type->name;
 
@@ -457,7 +459,7 @@ trait Post {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|IXR_Error List of post formats, otherwise IXR_Error object.
+	 * @return array|Error List of post formats, otherwise Error object.
 	 */
 	public function wp_getPostFormats( $args ) {
 		$this->escape( $args );
@@ -469,7 +471,7 @@ trait Post {
 			return $this->error;
 
 		if ( !current_user_can( 'edit_posts' ) )
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostFormats' );
@@ -510,7 +512,7 @@ trait Post {
 	 *     @type string $post_type_name
 	 *     @type array  $fields (optional)
 	 * }
-	 * @return array|IXR_Error Array contains:
+	 * @return array|Error Array contains:
 	 *  - 'labels'
 	 *  - 'description'
 	 *  - 'capability_type'
@@ -552,12 +554,12 @@ trait Post {
 		do_action( 'xmlrpc_call', 'wp.getPostType' );
 
 		if ( ! post_type_exists( $post_type_name ) )
-			return new IXR_Error( 403, __( 'Invalid post type.' ) );
+			return new Error( 403, __( 'Invalid post type.' ) );
 
 		$post_type = get_post_type_object( $post_type_name );
 
 		if ( ! current_user_can( $post_type->cap->edit_posts ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this post type.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit this post type.' ) );
 
 		return $this->_prepare_post_type( $post_type, $fields );
 	}
@@ -578,7 +580,7 @@ trait Post {
 	 *     @type array  $filter (optional)
 	 *     @type array  $fields (optional)
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getPostTypes( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) )
@@ -629,7 +631,7 @@ trait Post {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getPostStatusList( $args ) {
 		$this->escape( $args );
@@ -641,7 +643,7 @@ trait Post {
 			return $this->error;
 
 		if ( !current_user_can( 'edit_posts' ) )
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostStatusList' );

@@ -24,8 +24,8 @@ class Tests_XMLRPC_wp_uploadFile extends WP_XMLRPC_UnitTestCase {
 		);
 
 
-		$result = $this->myxmlrpcserver->mw_newMediaObject( array( 0, 'editor', 'editor', $data ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.newMediaObject', array( 0, 'editor', 'editor', $data ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// check data types
 		$this->assertInternalType( 'string', $result['id'] );

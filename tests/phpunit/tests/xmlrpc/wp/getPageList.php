@@ -25,7 +25,7 @@ class Tests_XMLRPC_wp_getPageList extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
 		$result = $this->myxmlrpcserver->wp_getPageList( array( 1, 'username', 'password' ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
@@ -33,7 +33,7 @@ class Tests_XMLRPC_wp_getPageList extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'contributor' );
 
 		$result = $this->myxmlrpcserver->wp_getPageList( array( 1, 'contributor', 'contributor' ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
 
@@ -41,14 +41,14 @@ class Tests_XMLRPC_wp_getPageList extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'editor' );
 
 		$results = $this->myxmlrpcserver->wp_getPageList( array( 1, 'editor', 'editor' ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $results );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
 		foreach( $results as $result ) {
 			$page = get_post( $result->page_id );
 			$date_gmt = strtotime( get_gmt_from_date( mysql2date( 'Y-m-d H:i:s', $page->post_date, false ), 'Ymd\TH:i:s' ) );
 
-			$this->assertInstanceOf( 'IXR_Date', $result->dateCreated );
-			$this->assertInstanceOf( 'IXR_Date', $result->date_created_gmt );
+			$this->assertInstanceOf( 'WP\IXR\Date', $result->dateCreated );
+			$this->assertInstanceOf( 'WP\IXR\Date', $result->date_created_gmt );
 
 			$this->assertEquals( strtotime( $page->post_date ), $result->dateCreated->getTimestamp() );
 			$this->assertEquals( $date_gmt, $result->date_created_gmt->getTimestamp() );

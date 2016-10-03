@@ -1,6 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
+use WP\IXR\Error;
+
 trait Comment {
 	/**
 	 * Prepares comment data for return in an XML-RPC object.
@@ -63,7 +65,7 @@ trait Comment {
 	 *     @type string $password
 	 *     @type int    $comment_id
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getComment($args) {
 		$this->escape($args);
@@ -80,11 +82,11 @@ trait Comment {
 		do_action( 'xmlrpc_call', 'wp.getComment' );
 
 		if ( ! $comment = get_comment( $comment_id ) ) {
-			return new IXR_Error( 404, __( 'Invalid comment ID.' ) );
+			return new Error( 404, __( 'Invalid comment ID.' ) );
 		}
 
 		if ( ! current_user_can( 'edit_comment', $comment_id ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed to moderate or edit this comment.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed to moderate or edit this comment.' ) );
 		}
 
 		return $this->_prepare_comment( $comment );
@@ -114,7 +116,7 @@ trait Comment {
 	 *     @type string $password
 	 *     @type array  $struct
 	 * }
-	 * @return array|IXR_Error Contains a collection of comments. See wp_xmlrpc_server::wp_getComment() for a description of each item contents
+	 * @return array|Error Contains a collection of comments. See wp_xmlrpc_server::wp_getComment() for a description of each item contents
 	 */
 	public function wp_getComments( $args ) {
 		$this->escape( $args );
@@ -137,7 +139,7 @@ trait Comment {
 		}
 
 		if ( ! current_user_can( 'moderate_comments' ) && 'approve' !== $status ) {
-			return new IXR_Error( 401, __( 'Invalid comment status.' ) );
+			return new Error( 401, __( 'Invalid comment status.' ) );
 		}
 
 		$post_id = '';
@@ -149,7 +151,7 @@ trait Comment {
 		if ( isset( $struct['post_type'] ) ) {
 			$post_type_object = get_post_type_object( $struct['post_type'] );
 			if ( ! $post_type_object || ! post_type_supports( $post_type_object->name, 'comments' ) ) {
-				return new IXR_Error( 404, __( 'Invalid post type.' ) );
+				return new Error( 404, __( 'Invalid post type.' ) );
 			}
 			$post_type = $struct['post_type'];
 		}
@@ -198,7 +200,7 @@ trait Comment {
 	 *     @type string $password
 	 *     @type int    $comment_ID
 	 * }
-	 * @return bool|IXR_Error See wp_delete_comment().
+	 * @return bool|Error See wp_delete_comment().
 	 */
 	public function wp_deleteComment( $args ) {
 		$this->escape($args);
@@ -212,11 +214,11 @@ trait Comment {
 		}
 
 		if ( ! get_comment( $comment_ID ) ) {
-			return new IXR_Error( 404, __( 'Invalid comment ID.' ) );
+			return new Error( 404, __( 'Invalid comment ID.' ) );
 		}
 
 		if ( !current_user_can( 'edit_comment', $comment_ID ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed to moderate or edit this comment.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed to moderate or edit this comment.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
@@ -264,7 +266,7 @@ trait Comment {
 	 *     @type int    $comment_ID
 	 *     @type array  $content_struct
 	 * }
-	 * @return true|IXR_Error True, on success.
+	 * @return true|Error True, on success.
 	 */
 	public function wp_editComment( $args ) {
 		$this->escape( $args );
@@ -279,11 +281,11 @@ trait Comment {
 		}
 
 		if ( ! get_comment( $comment_ID ) ) {
-			return new IXR_Error( 404, __( 'Invalid comment ID.' ) );
+			return new Error( 404, __( 'Invalid comment ID.' ) );
 		}
 
 		if ( ! current_user_can( 'edit_comment', $comment_ID ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed to moderate or edit this comment.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed to moderate or edit this comment.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
@@ -294,7 +296,7 @@ trait Comment {
 			$statuses = array_keys($statuses);
 
 			if ( ! in_array($content_struct['status'], $statuses) )
-				return new IXR_Error( 401, __( 'Invalid comment status.' ) );
+				return new Error( 401, __( 'Invalid comment status.' ) );
 			$comment_approved = $content_struct['status'];
 		}
 
@@ -323,10 +325,10 @@ trait Comment {
 
 		$result = wp_update_comment($comment);
 		if ( is_wp_error( $result ) )
-			return new IXR_Error(500, $result->get_error_message());
+			return new Error(500, $result->get_error_message());
 
 		if ( !$result )
-			return new IXR_Error(500, __('Sorry, the comment could not be edited.'));
+			return new Error(500, __('Sorry, the comment could not be edited.'));
 
 		/**
 		 * Fires after a comment has been successfully updated via XML-RPC.
@@ -355,7 +357,7 @@ trait Comment {
 	 *     @type string|int $post
 	 *     @type array      $content_struct
 	 * }
-	 * @return int|IXR_Error See wp_new_comment().
+	 * @return int|Error See wp_new_comment().
 	 */
 	public function wp_newComment($args) {
 		$this->escape($args);
@@ -380,7 +382,7 @@ trait Comment {
 		if ( !$user ) {
 			$logged_in = false;
 			if ( $allow_anon && get_option('comment_registration') ) {
-				return new IXR_Error( 403, __( 'You must be registered to comment.' ) );
+				return new Error( 403, __( 'You must be registered to comment.' ) );
 			} elseif ( ! $allow_anon ) {
 				return $this->error;
 			}
@@ -394,15 +396,15 @@ trait Comment {
 			$post_id = url_to_postid($post);
 
 		if ( ! $post_id ) {
-			return new IXR_Error( 404, __( 'Invalid post ID.' ) );
+			return new Error( 404, __( 'Invalid post ID.' ) );
 		}
 
 		if ( ! get_post( $post_id ) ) {
-			return new IXR_Error( 404, __( 'Invalid post ID.' ) );
+			return new Error( 404, __( 'Invalid post ID.' ) );
 		}
 
 		if ( ! comments_open( $post_id ) ) {
-			return new IXR_Error( 403, __( 'Sorry, comments are closed for this item.' ) );
+			return new Error( 403, __( 'Sorry, comments are closed for this item.' ) );
 		}
 
 		$comment = array();
@@ -434,9 +436,9 @@ trait Comment {
 
 			if ( get_option('require_name_email') ) {
 				if ( 6 > strlen($comment['comment_author_email']) || '' == $comment['comment_author'] )
-					return new IXR_Error( 403, __( 'Comment author name and email are required.' ) );
+					return new Error( 403, __( 'Comment author name and email are required.' ) );
 				elseif ( !is_email($comment['comment_author_email']) )
-					return new IXR_Error( 403, __( 'A valid email address is required.' ) );
+					return new Error( 403, __( 'A valid email address is required.' ) );
 			}
 		}
 
@@ -474,7 +476,7 @@ trait Comment {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getCommentStatusList( $args ) {
 		$this->escape( $args );
@@ -487,7 +489,7 @@ trait Comment {
 		}
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
@@ -509,7 +511,7 @@ trait Comment {
 	 *     @type string $password
 	 *     @type int    $post_id
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getCommentCount( $args ) {
 		$this->escape( $args );
@@ -524,11 +526,11 @@ trait Comment {
 
 		$post = get_post( $post_id, ARRAY_A );
 		if ( empty( $post['ID'] ) ) {
-			return new IXR_Error( 404, __( 'Invalid post ID.' ) );
+			return new Error( 404, __( 'Invalid post ID.' ) );
 		}
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details of this post.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed access to details of this post.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */

@@ -37,7 +37,7 @@ class Tests_XMLRPC_wp_getComment extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
 		$result = $this->myxmlrpcserver->wp_getComment( array( 1, 'username', 'password', $this->parent_comment_id ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
@@ -45,7 +45,7 @@ class Tests_XMLRPC_wp_getComment extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'contributor' );
 
 		$result = $this->myxmlrpcserver->wp_getComment( array( 1, 'contributor', 'contributor', $this->parent_comment_id ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
@@ -53,12 +53,12 @@ class Tests_XMLRPC_wp_getComment extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'editor' );
 
 		$result = $this->myxmlrpcserver->wp_getComment( array( 1, 'editor', 'editor', $this->parent_comment_id ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Check data types
 		$this->assertInternalType( 'string', $result['user_id'] );
 		$this->assertInternalType( 'string', $result['comment_id'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['date_created_gmt'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['date_created_gmt'] );
 		$this->assertInternalType( 'string', $result['parent'] );
 		$this->assertInternalType( 'string', $result['status'] );
 		$this->assertInternalType( 'string', $result['content'] );
@@ -89,7 +89,7 @@ class Tests_XMLRPC_wp_getComment extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'editor' );
 
 		$result = $this->myxmlrpcserver->wp_getComment( array( 1, 'editor', 'editor', $this->child_comment_id ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		$this->assertEquals( $this->child_comment_id, $result['comment_id'] );
 		$this->assertEquals( $this->parent_comment_id, $result['parent'] );
@@ -99,7 +99,7 @@ class Tests_XMLRPC_wp_getComment extends WP_XMLRPC_UnitTestCase {
 		$this->make_user_by_role( 'editor' );
 
 		$result = $this->myxmlrpcserver->wp_getComment( array( 1, 'editor', 'editor', 123456789 ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 404, $result->code );
 	}
 }

@@ -22,7 +22,7 @@ class Tests_XMLRPC_wp_editComment extends WP_XMLRPC_UnitTestCase {
 		$result = $this->myxmlrpcserver->wp_editComment( array( 1, 'author', 'author', $comment_id, array(
 			'status' => 'hold'
 		) ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertTrue( $result );
 	}
 
@@ -42,7 +42,7 @@ class Tests_XMLRPC_wp_editComment extends WP_XMLRPC_UnitTestCase {
 		) );
 
 		$result = $this->myxmlrpcserver->wp_editComment( array( 1, 'author', 'author', $comment_id, array( 'status' => 'hold' ) ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 		$this->assertEquals( __( 'Sorry, you are not allowed to moderate or edit this comment.' ), $result->message );
 	}

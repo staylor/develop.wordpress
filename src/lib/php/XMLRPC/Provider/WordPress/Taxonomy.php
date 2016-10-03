@@ -1,6 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
+use WP\IXR\Error;
+
 trait Taxonomy {
 	/**
 	 * Prepares taxonomy data for return in an XML-RPC object.
@@ -62,7 +64,7 @@ trait Taxonomy {
 	 *                            Accepts 'labels', 'cap', 'menu', and 'object_type'.
 	 *                            Default empty array.
 	 * }
-	 * @return array|IXR_Error An array of taxonomy data on success, IXR_Error instance otherwise.
+	 * @return array|Error An array of taxonomy data on success, Error instance otherwise.
 	 */
 	public function wp_getTaxonomy( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) )
@@ -95,12 +97,12 @@ trait Taxonomy {
 		do_action( 'xmlrpc_call', 'wp.getTaxonomy' );
 
 		if ( ! taxonomy_exists( $taxonomy ) )
-			return new IXR_Error( 403, __( 'Invalid taxonomy.' ) );
+			return new Error( 403, __( 'Invalid taxonomy.' ) );
 
 		$taxonomy = get_taxonomy( $taxonomy );
 
 		if ( ! current_user_can( $taxonomy->cap->assign_terms ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to assign terms in this taxonomy.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to assign terms in this taxonomy.' ) );
 
 		return $this->_prepare_taxonomy( $taxonomy, $fields );
 	}
@@ -121,8 +123,8 @@ trait Taxonomy {
 	 *     @type array  $filter   Optional. An array of arguments for retrieving taxonomies.
 	 *     @type array  $fields   Optional. The subset of taxonomy fields to return.
 	 * }
-	 * @return array|IXR_Error An associative array of taxonomy data with returned fields determined
-	 *                         by `$fields`, or an IXR_Error instance on failure.
+	 * @return array|Error An associative array of taxonomy data with returned fields determined
+	 *                         by `$fields`, or an Error instance on failure.
 	 */
 	public function wp_getTaxonomies( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) )

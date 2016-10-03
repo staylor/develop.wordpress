@@ -1,6 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
+use WP\IXR\Error;
+
 trait User {
 	/**
 	 * Prepares user data for return in an XML-RPC object.
@@ -72,7 +74,7 @@ trait User {
 	 *     @type int    $user_id
 	 *     @type array  $fields (optional)
 	 * }
-	 * @return array|IXR_Error Array contains (based on $fields parameter):
+	 * @return array|Error Array contains (based on $fields parameter):
 	 *  - 'user_id'
 	 *  - 'username'
 	 *  - 'first_name'
@@ -117,12 +119,12 @@ trait User {
 		do_action( 'xmlrpc_call', 'wp.getUser' );
 
 		if ( ! current_user_can( 'edit_user', $user_id ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this user.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit this user.' ) );
 
 		$user_data = get_userdata( $user_id );
 
 		if ( ! $user_data )
-			return new IXR_Error( 404, __( 'Invalid user ID.' ) );
+			return new Error( 404, __( 'Invalid user ID.' ) );
 
 		return $this->_prepare_user( $user_data, $fields );
 	}
@@ -149,7 +151,7 @@ trait User {
 	 *     @type array  $filter (optional)
 	 *     @type array  $fields (optional)
 	 * }
-	 * @return array|IXR_Error users data
+	 * @return array|Error users data
 	 */
 	public function wp_getUsers( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) )
@@ -175,7 +177,7 @@ trait User {
 		do_action( 'xmlrpc_call', 'wp.getUsers' );
 
 		if ( ! current_user_can( 'list_users' ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to browse users.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to browse users.' ) );
 
 		$query = array( 'fields' => 'all_with_meta' );
 
@@ -191,7 +193,7 @@ trait User {
 
 		if ( isset( $filter['role'] ) ) {
 			if ( get_role( $filter['role'] ) === null )
-				return new IXR_Error( 403, __( 'Invalid role.' ) );
+				return new Error( 403, __( 'Invalid role.' ) );
 
 			$query['role'] = $filter['role'];
 		}
@@ -223,7 +225,7 @@ trait User {
 	 *     @type string $password
 	 *     @type array  $fields (optional)
 	 * }
-	 * @return array|IXR_Error (@see wp_getUser)
+	 * @return array|Error (@see wp_getUser)
 	 */
 	public function wp_getProfile( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) )
@@ -248,7 +250,7 @@ trait User {
 		do_action( 'xmlrpc_call', 'wp.getProfile' );
 
 		if ( ! current_user_can( 'edit_user', $user->ID ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit your profile.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit your profile.' ) );
 
 		$user_data = get_userdata( $user->ID );
 
@@ -275,7 +277,7 @@ trait User {
 	 *      - 'nicename'
 	 *      - 'bio'
 	 * }
-	 * @return true|IXR_Error True, on success.
+	 * @return true|Error True, on success.
 	 */
 	public function wp_editProfile( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) )
@@ -294,7 +296,7 @@ trait User {
 		do_action( 'xmlrpc_call', 'wp.editProfile' );
 
 		if ( ! current_user_can( 'edit_user', $user->ID ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit your profile.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit your profile.' ) );
 
 		// holds data of the user
 		$user_data = array();
@@ -325,10 +327,10 @@ trait User {
 		$result = wp_update_user( $user_data );
 
 		if ( is_wp_error( $result ) )
-			return new IXR_Error( 500, $result->get_error_message() );
+			return new Error( 500, $result->get_error_message() );
 
 		if ( ! $result )
-			return new IXR_Error( 500, __( 'Sorry, the user cannot be updated.' ) );
+			return new Error( 500, __( 'Sorry, the user cannot be updated.' ) );
 
 		return true;
 	}
@@ -345,7 +347,7 @@ trait User {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|IXR_Error
+	 * @return array|Error
 	 */
 	public function wp_getAuthors( $args ) {
 		$this->escape( $args );
@@ -357,7 +359,7 @@ trait User {
 			return $this->error;
 
 		if ( !current_user_can('edit_posts') )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit posts.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to edit posts.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getAuthors' );

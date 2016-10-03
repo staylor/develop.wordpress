@@ -1,6 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
+use WP\IXR\Error;
+
 trait Media {
 	/**
 	 * Retrieve a media item by ID
@@ -15,7 +17,7 @@ trait Media {
 	 *     @type string $password
 	 *     @type int    $attachment_id
 	 * }
-	 * @return array|IXR_Error Associative array contains:
+	 * @return array|Error Associative array contains:
 	 *  - 'date_created_gmt'
 	 *  - 'parent'
 	 *  - 'link'
@@ -36,13 +38,13 @@ trait Media {
 			return $this->error;
 
 		if ( !current_user_can( 'upload_files' ) )
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed to upload files.' ) );
+			return new Error( 403, __( 'Sorry, you are not allowed to upload files.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getMediaItem' );
 
 		if ( ! $attachment = get_post($attachment_id) )
-			return new IXR_Error( 404, __( 'Invalid attachment ID.' ) );
+			return new Error( 404, __( 'Invalid attachment ID.' ) );
 
 		return $this->_prepare_media_item( $attachment );
 	}
@@ -71,7 +73,7 @@ trait Media {
 	 *     @type string $password
 	 *     @type array  $struct
 	 * }
-	 * @return array|IXR_Error Contains a collection of media items. See wp_xmlrpc_server::wp_getMediaItem() for a description of each item contents
+	 * @return array|Error Contains a collection of media items. See wp_xmlrpc_server::wp_getMediaItem() for a description of each item contents
 	 */
 	public function wp_getMediaLibrary($args) {
 		$this->escape($args);
@@ -84,7 +86,7 @@ trait Media {
 			return $this->error;
 
 		if ( !current_user_can( 'upload_files' ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to upload files.' ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to upload files.' ) );
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getMediaLibrary' );

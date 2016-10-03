@@ -2,26 +2,28 @@
 namespace WP\XMLRPC\Provider;
 
 use WP\IXR\Error;
-use WP\XMLRPC\Server;
+use WP\XMLRPC\{Server,Utils};
 
 /**
  * MovableType API functions
  * specs on http://www.movabletype.org/docs/mtmanual_programmatic.html
  */
 class MovableType implements ProviderInterface {
+	use Utils;
+
 	protected $server;
 
 	public function register( Server $server ): ProviderInterface
 	{
 		$server->addMethods( [
-			'mt.getCategoryList' => 'this:mt_getCategoryList',
-			'mt.getRecentPostTitles' => 'this:mt_getRecentPostTitles',
-			'mt.getPostCategories' => 'this:mt_getPostCategories',
-			'mt.setPostCategories' => 'this:mt_setPostCategories',
-			'mt.supportedMethods' => 'this:mt_supportedMethods',
-			'mt.supportedTextFilters' => 'this:mt_supportedTextFilters',
-			'mt.getTrackbackPings' => 'this:mt_getTrackbackPings',
-			'mt.publishPost' => 'this:mt_publishPost',
+			'mt.getCategoryList' => [ $this, 'mt_getCategoryList' ],
+			'mt.getRecentPostTitles' => [ $this, 'mt_getRecentPostTitles' ],
+			'mt.getPostCategories' => [ $this, 'mt_getPostCategories' ],
+			'mt.setPostCategories' => [ $this, 'mt_setPostCategories' ],
+			'mt.supportedMethods' => [ $this, 'mt_supportedMethods' ],
+			'mt.supportedTextFilters' => [ $this, 'mt_supportedTextFilters' ],
+			'mt.getTrackbackPings' => [ $this, 'mt_getTrackbackPings' ],
+			'mt.publishPost' => [ $this, 'mt_publishPost' ],
 		] );
 
 		$this->server = $server;

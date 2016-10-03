@@ -39,7 +39,7 @@ class Tests_XMLRPC_wp_getMediaItem extends WP_XMLRPC_UnitTestCase {
 
 	function test_invalid_username_password() {
 		$result = $this->myxmlrpcserver->wp_getMediaItem( array( 1, 'username', 'password', 0 ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
@@ -48,13 +48,13 @@ class Tests_XMLRPC_wp_getMediaItem extends WP_XMLRPC_UnitTestCase {
 
 		$fields = array( 'post' );
 		$result = $this->myxmlrpcserver->wp_getMediaItem( array( 1, 'author', 'author', $this->attachment_id, $fields ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Check data types
 		$this->assertInternalType( 'string', $result['attachment_id'] );
 		$this->assertInternalType( 'int', $result['parent'] );
 		$this->assertInternalType( 'string', $result['title'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['date_created_gmt'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['date_created_gmt'] );
 		$this->assertInternalType( 'string', $result['caption'] );
 		$this->assertInternalType( 'string', $result['description'] );
 		$this->assertInternalType( 'string', $result['link'] );

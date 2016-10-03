@@ -1,6 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
+use WP\IXR\Error;
+
 trait Multisite {
 	/**
 	 * Retrieve the blogs of the user.
@@ -13,7 +15,7 @@ trait Multisite {
 	 *     @type string $username Username.
 	 *     @type string $password Password.
 	 * }
-	 * @return array|IXR_Error Array contains:
+	 * @return array|Error Array contains:
 	 *  - 'isAdmin'
 	 *  - 'isPrimary' - whether the blog is the user's primary blog
 	 *  - 'url'

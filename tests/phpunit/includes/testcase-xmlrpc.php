@@ -10,6 +10,7 @@ class WP_XMLRPC_UnitTestCase extends WP_UnitTestCase {
 		add_filter( 'pre_option_enable_xmlrpc', '__return_true' );
 
 		$this->myxmlrpcserver = new wp_xmlrpc_server();
+		$this->myxmlrpcserver->serve_request( null, false, true );
 	}
 
 	function tearDown() {

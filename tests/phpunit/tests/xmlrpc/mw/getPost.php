@@ -24,16 +24,16 @@ class Tests_XMLRPC_mw_getPost extends WP_XMLRPC_UnitTestCase {
 	}
 
 	function test_invalid_username_password() {
-		$result = $this->myxmlrpcserver->mw_getPost( array( $this->post_id, 'username', 'password' ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getPost', array( $this->post_id, 'username', 'password' ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 403, $result->code );
 	}
 
 	function test_incapable_user() {
 		$this->make_user_by_role( 'subscriber' );
 
-		$result = $this->myxmlrpcserver->mw_getPost( array( $this->post_id, 'subscriber', 'subscriber' ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getPost', array( $this->post_id, 'subscriber', 'subscriber' ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 401, $result->code );
 	}
 
@@ -41,8 +41,8 @@ class Tests_XMLRPC_mw_getPost extends WP_XMLRPC_UnitTestCase {
 	 * @ticket 20336
 	 */
 	function test_invalid_postid() {
-		$result = $this->myxmlrpcserver->mw_getPost( array( 9999, 'author', 'author' ) );
-		$this->assertInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getPost', array( 9999, 'author', 'author' ) );
+		$this->assertInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertEquals( 404, $result->code );
 	}
 
@@ -50,8 +50,8 @@ class Tests_XMLRPC_mw_getPost extends WP_XMLRPC_UnitTestCase {
 		add_theme_support( 'post-thumbnails' );
 
 		$fields = array( 'post' );
-		$result = $this->myxmlrpcserver->mw_getPost( array( $this->post_id, 'author', 'author' ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getPost', array( $this->post_id, 'author', 'author' ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		// Check data types
 		$this->assertInternalType( 'string', $result['userid'] );
@@ -100,8 +100,8 @@ class Tests_XMLRPC_mw_getPost extends WP_XMLRPC_UnitTestCase {
 		set_post_thumbnail( $this->post_id, $attachment_id );
 
 		$fields = array( 'post' );
-		$result = $this->myxmlrpcserver->mw_getPost( array( $this->post_id, 'author', 'author' ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getPost', array( $this->post_id, 'author', 'author' ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
 		$this->assertInternalType( 'string', $result['wp_post_thumbnail'] );
 		$this->assertStringMatchesFormat( '%d', $result['wp_post_thumbnail'] );
@@ -112,13 +112,13 @@ class Tests_XMLRPC_mw_getPost extends WP_XMLRPC_UnitTestCase {
 
 	function test_date() {
 		$fields = array( 'post' );
-		$result = $this->myxmlrpcserver->mw_getPost( array( $this->post_id, 'author', 'author' ) );
-		$this->assertNotInstanceOf( 'IXR_Error', $result );
+		$result = $this->myxmlrpcserver->call( 'metaWeblog.getPost', array( $this->post_id, 'author', 'author' ) );
+		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
-		$this->assertInstanceOf( 'IXR_Date', $result['dateCreated'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['date_created_gmt'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['date_modified'] );
-		$this->assertInstanceOf( 'IXR_Date', $result['date_modified_gmt'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['dateCreated'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['date_created_gmt'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['date_modified'] );
+		$this->assertInstanceOf( 'WP\IXR\Date', $result['date_modified_gmt'] );
 
 		$this->assertEquals( $this->post_date_ts, $result['dateCreated']->getTimestamp() );
 		$this->assertEquals( $this->post_date_ts, $result['date_modified']->getTimestamp() );
