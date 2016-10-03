@@ -8,5 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'SimplePie' => array($vendorDir . '/simplepie/simplepie/library'),
     'Requests' => array($vendorDir . '/rmccue/requests/library'),
+    'Pimple' => array($vendorDir . '/pimple/pimple/src'),
     'PEAR' => array($vendorDir . '/pear/pear_exception'),
 );

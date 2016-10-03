@@ -33,6 +33,7 @@
 	],
 	"autoload": {
 		"classmap": [
+			"lib/php/",
 			"wp-includes/",
 			"wp-admin/"
 		],
@@ -49,7 +50,10 @@
 		],
 		"psr-4": {
 			"WP\\": "lib/php/"
-		}
+		},
+		"files": [
+			"lib/php/functions.php"
+		]
 	},
 	"config": {
 		"optimize-autoloader": true,
@@ -61,6 +65,7 @@
 		"paragonie/random_compat": "^2.0",
 		"pear/services_json": "dev-trunk",
 		"pear/text_diff": "dev-stable",
+		"pimple/pimple": "^3.0",
 		"pomo/pomo": "^1.2",
 		"rmccue/requests": "^1.6",
 		"simplepie/simplepie": "^1.4"
