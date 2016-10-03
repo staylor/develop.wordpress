@@ -72,7 +72,8 @@ class Pingback implements ProviderInterface {
 			return $this->pingback_error( 0, __( 'Is there no link to us?' ) );
 		}
 
-		$db = $GLOBALS['wpdb'];
+		$app = getApp();
+		$db = $app['db'];
 
 		// let's find which post is linked to
 		// FIXME: does url_to_postid() cover all these cases already?
@@ -302,7 +303,8 @@ class Pingback implements ProviderInterface {
 	  		return $this->pingback_error( 32, __( 'The specified target URL does not exist.' ) );
 		}
 
-		$db = $GLOBALS['wpdb'];
+		$app = getApp();
+		$db = $app['db'];
 		$sql = "SELECT comment_author_url, comment_content, comment_author_IP, comment_type FROM {$db->comments} WHERE comment_post_ID = %d";
 		$comments = $db->get_results( $db->prepare( $sql, $id ) );
 

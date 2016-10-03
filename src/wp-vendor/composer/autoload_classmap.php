@@ -265,6 +265,7 @@ return array(
     'WP\\IXR\\Request' => $baseDir . '/lib/php/IXR/Request.php',
     'WP\\IXR\\Server' => $baseDir . '/lib/php/IXR/Server.php',
     'WP\\IXR\\Value' => $baseDir . '/lib/php/IXR/Value.php',
+    'WP\\Provider' => $baseDir . '/lib/php/Provider.php',
     'WP\\Symfony\\Provider' => $baseDir . '/lib/php/Symfony/Provider.php',
     'WP\\XMLRPC\\Provider\\Blogger' => $baseDir . '/lib/php/XMLRPC/Provider/Blogger.php',
     'WP\\XMLRPC\\Provider\\Demo' => $baseDir . '/lib/php/XMLRPC/Provider/Demo.php',

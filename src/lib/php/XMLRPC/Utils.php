@@ -642,7 +642,8 @@ trait Utils {
 	 * @param string $post_content Post Content for attachment.
 	 */
 	public function attach_uploads( $post_ID, $post_content ) {
-		$db = $GLOBALS['wpdb'];
+		$app = getApp();
+		$db = $app['db'];
 
 		// find any unattached files
 		$attachments = $db->get_results( "SELECT ID, guid FROM {$db->posts} WHERE post_parent = '0' AND post_type = 'attachment'" );

@@ -382,7 +382,8 @@ trait Page {
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPageList' );
 
-		$db = $GLOBALS['wpdb'];
+		$app = getApp();
+		$db = $app['db'];
 		// Get list of pages ids and titles
 		$pages = $db->get_results("
 			SELECT ID page_id,
