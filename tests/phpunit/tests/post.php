@@ -540,7 +540,7 @@ class Tests_Post extends WP_UnitTestCase {
 	 * @ticket 15665
 	 */
 	function test_get_page_by_path_priority() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$attachment = self::factory()->post->create_and_get( array( 'post_title' => 'some-page', 'post_type' => 'attachment' ) );
 		$page       = self::factory()->post->create_and_get( array( 'post_title' => 'some-page', 'post_type' => 'page' ) );
@@ -955,7 +955,7 @@ class Tests_Post extends WP_UnitTestCase {
 	 * @ticket 21212
 	 */
 	function test_utf8mb3_post_saves_with_emoji() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$_wpdb = new wpdb_exposed_methods_for_testing();
 
 		if ( 'utf8' !== $_wpdb->get_col_charset( $wpdb->posts, 'post_title' ) ) {

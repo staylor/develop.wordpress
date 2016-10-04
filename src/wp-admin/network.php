@@ -10,6 +10,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 define( 'WP_INSTALLING_NETWORK', true );
 
 /** WordPress Administration Bootstrap */
@@ -29,6 +31,9 @@ if ( is_multisite() ) {
 		wp_die( __( 'The Network creation panel is not for WordPress MU networks.' ) );
 	}
 }
+
+$app = getApp();
+$wpdb = $app['db'];
 
 require_once( dirname( __FILE__ ) . '/includes/network.php' );
 

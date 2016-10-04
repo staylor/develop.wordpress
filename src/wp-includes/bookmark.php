@@ -6,12 +6,12 @@
  * @subpackage Bookmark
  */
 
+use function WP\getApp;
+
 /**
  * Retrieve Bookmark data
  *
  * @since 2.1.0
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param int|stdClass $bookmark
  * @param string $output Optional. Either OBJECT, ARRAY_N, or ARRAY_A constant
@@ -19,7 +19,8 @@
  * @return array|object|null Type returned depends on $output value.
  */
 function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( empty($bookmark) ) {
 		if ( isset($GLOBALS['link']) )
@@ -92,8 +93,6 @@ function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
  *
  * @since 2.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string|array $args {
  *     Optional. String or array of arguments to retrieve bookmarks.
  *
@@ -115,7 +114,8 @@ function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
  * @return array List of bookmark row objects.
  */
 function get_bookmarks( $args = '' ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$defaults = array(
 		'orderby' => 'name', 'order' => 'ASC',

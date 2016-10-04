@@ -125,8 +125,6 @@ class WP_Automatic_Updater {
 	 * @since 3.7.0
 	 * @access public
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param string $type    The type of update being checked: 'core', 'theme',
 	 *                        'plugin', 'translation'.
 	 * @param object $item    The update offer.
@@ -188,7 +186,8 @@ class WP_Automatic_Updater {
 
 		// If it's a core update, are we actually compatible with its requirements?
 		if ( 'core' == $type ) {
-			global $wpdb;
+			$app = getApp();
+			$wpdb = $app['db'];
 
 			$php_compat = version_compare( phpversion(), $item->php_version, '>=' );
 			if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) )

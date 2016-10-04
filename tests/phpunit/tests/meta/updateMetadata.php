@@ -19,8 +19,6 @@ class Tests_Meta_UpdateMetadata extends WP_UnitTestCase {
 	 * @ticket 35795
 	 */
 	public function test_slashed_key_for_existing_metadata() {
-		global $wpdb;
-
 		add_metadata( 'post', 123, wp_slash( 'foo\foo' ), 'bar' );
 		update_metadata( 'post', 123, wp_slash( 'foo\foo' ), 'baz' );
 

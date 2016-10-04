@@ -138,7 +138,7 @@ class Tests_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_space_separated() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Query( array(
 			'orderby' => 'title date',

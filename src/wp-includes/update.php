@@ -16,7 +16,6 @@ use function WP\getApp;
  * isn't installing.
  *
  * @since 2.3.0
- * @global wpdb   $wpdb
  * @global string $wp_local_package
  *
  * @param array $extra_stats Extra statistics to report to the WordPress.org API.
@@ -27,10 +26,11 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 		return;
 	}
 
-	global $wpdb, $wp_local_package;
+	global $wp_local_package;
 	$php_version = phpversion();
 
 	$app = getApp();
+	$wpdb = $app['db'];
 
 	$current = get_site_transient( 'update_core' );
 	$translations = wp_get_installed_translations( 'core' );

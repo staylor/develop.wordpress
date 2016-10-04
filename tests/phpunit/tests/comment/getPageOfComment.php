@@ -60,7 +60,7 @@ class Tests_Comment_GetPageOfComment extends WP_UnitTestCase {
 	 * @ticket 11334
 	 */
 	public function test_subsequent_calls_should_hit_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create();
 		$c = self::factory()->comment->create( array( 'comment_post_ID' => $p ) );
@@ -79,7 +79,7 @@ class Tests_Comment_GetPageOfComment extends WP_UnitTestCase {
 	 * @ticket 11334
 	 */
 	public function test_cache_hits_should_be_sensitive_to_comment_type() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create();
 		$comment = self::factory()->comment->create( array( 'comment_post_ID' => $p, 'comment_type' => 'comment' ) );

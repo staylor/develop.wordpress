@@ -1,4 +1,5 @@
 <?php
+use function WP\getApp;
 
 require_once dirname( __FILE__ ) . '/class-basic-object.php';
 require_once dirname( __FILE__ ) . '/class-basic-subclass.php';
@@ -52,7 +53,8 @@ function _test_filter_build_unique_id($tag, $function, $priority) {
 }
 
 function _delete_all_data() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	foreach ( array(
 		$wpdb->posts,
@@ -79,7 +81,8 @@ function _delete_all_data() {
 }
 
 function _delete_all_posts() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$all_posts = $wpdb->get_results( "SELECT ID, post_type from {$wpdb->posts}", ARRAY_A );
 	if ( ! $all_posts ) {

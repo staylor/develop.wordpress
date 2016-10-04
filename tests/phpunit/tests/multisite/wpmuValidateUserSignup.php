@@ -90,7 +90,7 @@ class Tests_Multisite_WpmuValidateUserSignup extends WP_UnitTestCase {
 		wpmu_signup_user( 'foo123', 'foo@example.com' );
 		remove_filter( 'wpmu_signup_user_notification', '__return_true' );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$date = date( 'Y-m-d H:i:s', time() - ( 2 * DAY_IN_SECONDS ) - 60 );
 		$wpdb->update( $wpdb->signups, array( 'registered' => $date ), array( 'user_login' => 'foo123' ) );
 
@@ -114,7 +114,7 @@ class Tests_Multisite_WpmuValidateUserSignup extends WP_UnitTestCase {
 		wpmu_signup_user( 'foo123', 'foo@example.com' );
 		remove_filter( 'wpmu_signup_user_notification', '__return_true' );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$date = date( 'Y-m-d H:i:s', time() - ( 2 * DAY_IN_SECONDS ) - 60 );
 		$wpdb->update( $wpdb->signups, array( 'registered' => $date ), array( 'user_login' => 'foo123' ) );
 

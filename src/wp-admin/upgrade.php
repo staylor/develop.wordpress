@@ -20,6 +20,7 @@ define( 'WP_INSTALLING', true );
 require( dirname( dirname( __FILE__ ) ) . '/wp-load.php' );
 
 $app = getApp();
+$wpdb = $app['db'];
 
 nocache_headers();
 
@@ -38,10 +39,6 @@ if ( 'upgrade_db' === $step ) {
 	wp_upgrade();
 	die( '0' );
 }
-
-/**
- * @global wpdb   $wpdb
- */
 
 $step = (int) $step;
 

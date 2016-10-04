@@ -15,7 +15,7 @@ class Tests_Multisite_MS_Files_Rewriting extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 
@@ -24,7 +24,7 @@ class Tests_Multisite_MS_Files_Rewriting extends WP_UnitTestCase {
 	}
 
 	function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		update_site_option( 'ms_files_rewriting', 0 );
 		$wpdb->suppress_errors( $this->suppress );

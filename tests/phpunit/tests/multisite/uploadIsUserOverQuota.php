@@ -14,7 +14,7 @@ class Tests_Multisite_Upload_Is_User_Over_Quota extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	public function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 
@@ -22,7 +22,7 @@ class Tests_Multisite_Upload_Is_User_Over_Quota extends WP_UnitTestCase {
 	}
 
 	public function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->suppress_errors( $this->suppress );
 		parent::tearDown();
 	}

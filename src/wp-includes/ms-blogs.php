@@ -14,11 +14,10 @@ use function WP\getApp;
  * Update the last_updated field for the current site.
  *
  * @since MU
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  */
 function wpmu_update_blogs_date() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	update_blog_details( $wpdb->blogid, array('last_updated' => current_time('mysql', true)) );
 	/**
@@ -113,8 +112,6 @@ function get_id_from_blogname( $slug ) {
  *
  * @since MU
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int|string|array $fields  Optional. A blog ID, a blog slug, or an array of fields to query against.
  *                                  If not specified the current blog ID is used.
  * @param bool             $get_all Whether to retrieve all details or only the details in the blogs table.
@@ -122,7 +119,8 @@ function get_id_from_blogname( $slug ) {
  * @return WP_Site|false Blog details on success. False on failure.
  */
 function get_blog_details( $fields = null, $get_all = true ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( is_array($fields ) ) {
 		if ( isset($fields['blog_id']) ) {
@@ -297,14 +295,13 @@ function refresh_blog_details( $blog_id = 0 ) {
  *
  * @since MU
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int   $blog_id Blog ID
  * @param array $details Array of details keyed by blogs table field names.
  * @return bool True if update succeeds, false otherwise.
  */
 function update_blog_details( $blog_id, $details = array() ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( empty($details) )
 		return false;
@@ -520,12 +517,12 @@ function get_site( $site = null ) {
  * @access private
  *
  * @see update_site_cache()
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param array $ids ID list.
  */
 function _prime_site_caches( $ids ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$non_cached_ids = _get_non_cached_ids( $ids, 'sites' );
 	if ( ! empty( $non_cached_ids ) ) {
@@ -755,7 +752,6 @@ function update_blog_option( $id, $option, $value, $deprecated = null ) {
  * @see restore_current_blog()
  * @since MU
  *
- * @global wpdb            $wpdb
  * @global int             $blog_id
  * @global array           $_wp_switched_stack
  * @global bool            $switched
@@ -767,7 +763,8 @@ function update_blog_option( $id, $option, $value, $deprecated = null ) {
  * @return true Always returns True.
  */
 function switch_to_blog( $new_blog, $deprecated = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$blog_id = get_current_blog_id();
 	if ( empty( $new_blog ) ) {
@@ -842,7 +839,6 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
  * @see switch_to_blog()
  * @since MU
  *
- * @global wpdb            $wpdb
  * @global array           $_wp_switched_stack
  * @global int             $blog_id
  * @global bool            $switched
@@ -852,7 +848,8 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
  * @return bool True on success, false if we're already on the current blog
  */
 function restore_current_blog() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( empty( $GLOBALS['_wp_switched_stack'] ) ) {
 		return false;
@@ -957,8 +954,6 @@ function update_archived( $id, $archived ) {
  *
  * @since MU
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int    $blog_id BLog ID
  * @param string $pref    A field name
  * @param string $value   Value for $pref
@@ -966,7 +961,8 @@ function update_archived( $id, $archived ) {
  * @return string|false $value
  */
 function update_blog_status( $blog_id, $pref, $value, $deprecated = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( null !== $deprecated  )
 		_deprecated_argument( __FUNCTION__, '3.1.0' );
@@ -1033,14 +1029,13 @@ function update_blog_status( $blog_id, $pref, $value, $deprecated = null ) {
  *
  * @since MU
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int    $id   The blog id
  * @param string $pref A field name
  * @return bool|string|null $value
  */
 function get_blog_status( $id, $pref ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$details = get_blog_details( $id, false );
 	if ( $details )
@@ -1054,15 +1049,14 @@ function get_blog_status( $id, $pref ) {
  *
  * @since MU
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param mixed $deprecated Not used
  * @param int   $start      The offset
  * @param int   $quantity   The maximum number of blogs to retrieve. Default is 40.
  * @return array The list of blogs
  */
 function get_last_updated( $deprecated = '', $start = 0, $quantity = 40 ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! empty( $deprecated ) )
 		_deprecated_argument( __FUNCTION__, 'MU' ); // never used
@@ -1176,12 +1170,12 @@ function update_network_cache( $networks ) {
  * @access private
  *
  * @see update_network_cache()
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param array $network_ids Array of network IDs.
  */
 function _prime_network_caches( $network_ids ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$non_cached_ids = _get_non_cached_ids( $network_ids, 'networks' );
 	if ( !empty( $non_cached_ids ) ) {

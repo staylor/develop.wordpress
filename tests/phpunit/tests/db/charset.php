@@ -378,26 +378,24 @@ class Tests_DB_Charset extends WP_UnitTestCase {
 	 * @ticket 21212
 	 */
 	function test_process_fields_failure() {
-		global $wpdb;
-
-		$charset = $wpdb->get_col_charset( $wpdb->posts, 'post_content' );
+		$charset = $this->app['db']->get_col_charset( $this->app['db']->posts, 'post_content' );
 		if ( 'utf8' !== $charset && 'utf8mb4' !== $charset ) {
 			$this->markTestSkipped( 'This test requires a utf8 character set' );
 		}
 
 		// \xf0\xff\xff\xff is invalid in utf8 and utf8mb4.
 		$data = array( 'post_content' => "H€llo\xf0\xff\xff\xffWorld¢" );
-		$this->assertFalse( self::$_wpdb->process_fields( $wpdb->posts, $data, null ) );
+		$this->assertFalse( self::$_wpdb->process_fields( $this->app['db']->posts, $data, null ) );
 	}
 
 	/**
 	 * @ticket 21212
 	 */
 	function data_process_field_charsets() {
-		if ( $GLOBALS['wpdb']->charset ) {
-			$charset = $GLOBALS['wpdb']->charset;
+		if ( $this->app['db']->charset ) {
+			$charset = $this->app['db']->charset;
 		} else {
-			$charset = $GLOBALS['wpdb']->get_col_charset( $GLOBALS['wpdb']->posts, 'post_content' );
+			$charset = $this->app['db']->get_col_charset( $this->app['db']->posts, 'post_content' );
 		}
 
 		// 'value' and 'format' are $data, 'charset' ends up as part of $expected
@@ -475,9 +473,7 @@ class Tests_DB_Charset extends WP_UnitTestCase {
 	 * @ticket 21212
 	 */
 	function test_strip_invalid_text_for_column() {
-		global $wpdb;
-
-		$charset = $wpdb->get_col_charset( $wpdb->posts, 'post_content' );
+		$charset = $this->app['db']->get_col_charset( $this->app['db']->posts, 'post_content' );
 		if ( 'utf8' !== $charset && 'utf8mb4' !== $charset ) {
 			$this->markTestSkipped( 'This test requires a utf8 character set' );
 		}
@@ -485,7 +481,7 @@ class Tests_DB_Charset extends WP_UnitTestCase {
 		// Invalid 3-byte and 4-byte sequences
 		$value = "H€llo\xe0\x80\x80World\xf0\xff\xff\xff¢";
 		$expected = "H€lloWorld¢";
-		$actual = $wpdb->strip_invalid_text_for_column( $wpdb->posts, 'post_content', $value );
+		$actual = $this->app['db']->strip_invalid_text_for_column( $this->app['db']->posts, 'post_content', $value );
 		$this->assertEquals( $expected, $actual );
 	}
 
@@ -756,14 +752,12 @@ class Tests_DB_Charset extends WP_UnitTestCase {
 	 * @ticket 21212
 	 */
 	function test_invalid_characters_in_query() {
-		global $wpdb;
-
-		$charset = $wpdb->get_col_charset( $wpdb->posts, 'post_content' );
+		$charset = $this->app['db']->get_col_charset( $this->app['db']->posts, 'post_content' );
 		if ( 'utf8' !== $charset && 'utf8mb4' !== $charset ) {
 			$this->markTestSkipped( 'This test requires a utf8 character set' );
 		}
 
-		$this->assertFalse( $wpdb->query( "INSERT INTO {$wpdb->posts} (post_content) VALUES ('foo\xf0\xff\xff\xffbar')" ) );
+		$this->assertFalse( $this->app['db']->query( "INSERT INTO {$this->app['db']->posts} (post_content) VALUES ('foo\xf0\xff\xff\xffbar')" ) );
 	}
 
 	/**
@@ -842,14 +836,12 @@ class Tests_DB_Charset extends WP_UnitTestCase {
 	}
 
 	function test_strip_invalid_text_for_column_bails_if_ascii_input_too_long() {
-		global $wpdb;
-
 		// TEXT column
-		$stripped = $wpdb->strip_invalid_text_for_column( $wpdb->comments, 'comment_content', str_repeat( 'A', 65536 ) );
+		$stripped = $this->app['db']->strip_invalid_text_for_column( $this->app['db']->comments, 'comment_content', str_repeat( 'A', 65536 ) );
 		$this->assertEquals( 65535, strlen( $stripped ) );
 
 		// VARCHAR column
-		$stripped = $wpdb->strip_invalid_text_for_column( $wpdb->comments, 'comment_agent', str_repeat( 'A', 256 ) );
+		$stripped = $this->app['db']->strip_invalid_text_for_column( $this->app['db']->comments, 'comment_agent', str_repeat( 'A', 256 ) );
 		$this->assertEquals( 255, strlen( $stripped ) );
 	}
 

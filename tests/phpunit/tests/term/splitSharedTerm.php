@@ -20,7 +20,7 @@ class Tests_Term_SplitSharedTerm extends WP_UnitTestCase {
 	 *   after term splitting.
 	 */
 	public function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		parent::setUp();
 
@@ -106,7 +106,7 @@ class Tests_Term_SplitSharedTerm extends WP_UnitTestCase {
 	 * @ticket 30335
 	 */
 	public function test_should_rebuild_split_term_taxonomy_hierarchy() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax_3', 'post' );
 		register_taxonomy( 'wptests_tax_4', 'post', array(
@@ -138,7 +138,7 @@ class Tests_Term_SplitSharedTerm extends WP_UnitTestCase {
 	 * @ticket 30335
 	 */
 	public function test_should_update_default_category_on_term_split() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$t1 = wp_insert_term( 'Foo Default', 'category' );
 
 		update_option( 'default_category', $t1['term_id'] );
@@ -166,7 +166,7 @@ class Tests_Term_SplitSharedTerm extends WP_UnitTestCase {
 	 * @ticket 30335
 	 */
 	public function test_should_update_menus_on_term_split() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$t1 = wp_insert_term( 'Foo Menu', 'category' );
 
@@ -200,7 +200,7 @@ class Tests_Term_SplitSharedTerm extends WP_UnitTestCase {
 	 * @group navmenus
 	 */
 	public function test_nav_menu_locations_should_be_updated_on_split() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$cat_term = wp_insert_term( 'Foo Menu', 'category' );
 		$shared_term_id = $cat_term['term_id'];
@@ -228,7 +228,7 @@ class Tests_Term_SplitSharedTerm extends WP_UnitTestCase {
 	 * @group navmenus
 	 */
 	public function test_nav_menu_term_should_retain_menu_items_on_split() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$cat_term = wp_insert_term( 'Foo Menu', 'category' );
 		$shared_term_id = $cat_term['term_id'];

@@ -10,13 +10,13 @@ class Tests_Multisite_Get_Space_Used extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 	}
 
 	function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->suppress_errors( $this->suppress );
 		parent::tearDown();
 	}

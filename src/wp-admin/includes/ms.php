@@ -55,13 +55,12 @@ function check_upload_size( $file ) {
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int  $blog_id Site ID.
  * @param bool $drop    True if site's database tables should be dropped. Default is false.
  */
 function wpmu_delete_blog( $blog_id, $drop = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$switch = false;
 	if ( get_current_blog_id() != $blog_id ) {
@@ -185,13 +184,12 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
  *
  * @todo Merge with wp_delete_user() ?
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $id The user ID.
  * @return bool True if the user was deleted, otherwise false.
  */
 function wpmu_delete_user( $id ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! is_numeric( $id ) ) {
 		return false;
@@ -326,10 +324,12 @@ All at ###SITENAME###
  * @since 3.0.0
  *
  * @global WP_Error $errors WP_Error object.
- * @global wpdb     $wpdb   WordPress database object.
  */
 function send_confirmation_on_profile_email() {
-	global $errors, $wpdb;
+	global $errors;
+	$app = getApp();
+	$wpdb = $app['db'];
+
 	$current_user = wp_get_current_user();
 	if ( ! is_object($errors) )
 		$errors = new WP_Error();
@@ -518,8 +518,6 @@ function upload_space_setting( $id ) {
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int    $id         The user ID.
  * @param string $pref       The column in the wp_users table to update the user's status
  *                           in (presumably user_status, spam, or deleted).
@@ -528,7 +526,8 @@ function upload_space_setting( $id ) {
  * @return int   The initially passed $value.
  */
 function update_user_status( $id, $pref, $value, $deprecated = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( null !== $deprecated )
 		_deprecated_argument( __FUNCTION__, '3.0.2' );
@@ -862,13 +861,12 @@ function choose_primary_blog() {
  *
  * @since 3.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $site_id The network/site ID to check.
  * @return bool True if network can be edited, otherwise false.
  */
 function can_edit_network( $site_id ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( $site_id == $wpdb->siteid )
 		$result = true;

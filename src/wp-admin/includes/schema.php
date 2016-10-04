@@ -13,11 +13,13 @@ use function WP\getApp;
 /**
  * Declare these as global in case schema.php is included from a function.
  *
- * @global wpdb   $wpdb
  * @global array  $wp_queries
  * @global string $charset_collate
  */
-global $wpdb, $wp_queries, $charset_collate;
+global $wp_queries, $charset_collate;
+
+$app = getApp();
+$wpdb = $app['db'];
 
 /**
  * The database character collate.
@@ -29,14 +31,13 @@ $charset_collate = $wpdb->get_charset_collate();
  *
  * @since 3.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $scope Optional. The tables for which to retrieve SQL. Can be all, global, ms_global, or blog tables. Defaults to all.
  * @param int $blog_id Optional. The site ID for which to retrieve SQL. Default is the current site ID.
  * @return string The SQL needed to create the requested tables.
  */
 function wp_get_db_schema( $scope = 'all', $blog_id = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$charset_collate = $wpdb->get_charset_collate();
 
@@ -345,13 +346,13 @@ $wp_queries = wp_get_db_schema( 'all' );
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
  * @global int  $wp_current_db_version
  */
 function populate_options() {
-	global $wpdb, $wp_current_db_version;
+	global $wp_current_db_version;
 
 	$app = getApp();
+	$wpdb = $app['db'];
 	$guessurl = wp_guess_url();
 	/**
 	 * Fires before creating WordPress options and populating their default values.
@@ -883,7 +884,6 @@ endif;
  *
  * @since 3.0.0
  *
- * @global wpdb       $wpdb
  * @global object     $current_site
  *
  * @param int    $network_id        ID of network to populate.
@@ -897,9 +897,10 @@ endif;
  *                       so the error code must be checked) or failure.
  */
 function populate_network( $network_id = 1, $domain = '', $email = '', $site_name = '', $path = '/', $subdomain_install = false ) {
-	global $wpdb, $current_site;
+	global $current_site;
 
 	$app = getApp();
+	$wpdb = $app['db'];
 
 	$errors = new WP_Error();
 	if ( '' == $domain )

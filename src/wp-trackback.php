@@ -15,6 +15,8 @@ if (empty($wp)) {
 	wp( array( 'tb' => '1' ) );
 }
 
+$app = getApp();
+$wpdb = $app['db'];
 /**
  * Response to a trackback.
  *
@@ -47,7 +49,6 @@ function trackback_response($error = 0, $error_message = '') {
 $request_array = 'HTTP_POST_VARS';
 
 if ( !isset($_GET['tb_id']) || !$_GET['tb_id'] ) {
-	$app = getApp();
 	$tb_id = explode( '/', $app['request.uri'] );
 	$tb_id = intval( $tb_id[ count($tb_id) - 1 ] );
 }

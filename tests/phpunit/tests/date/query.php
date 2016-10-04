@@ -201,49 +201,49 @@ class Tests_WP_Date_Query extends WP_UnitTestCase {
 	}
 
 	public function test_validate_column_post_date() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$q = new WP_Date_Query( array() );
 
 		$this->assertSame( $wpdb->posts . '.post_date', $q->validate_column( 'post_date' ) );
 	}
 
 	public function test_validate_column_post_date_gmt() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$q = new WP_Date_Query( array() );
 
 		$this->assertSame( $wpdb->posts . '.post_date_gmt', $q->validate_column( 'post_date_gmt' ) );
 	}
 
 	public function test_validate_column_post_modified() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$q = new WP_Date_Query( array() );
 
 		$this->assertSame( $wpdb->posts . '.post_modified', $q->validate_column( 'post_modified' ) );
 	}
 
 	public function test_validate_column_post_modified_gmt() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$q = new WP_Date_Query( array() );
 
 		$this->assertSame( $wpdb->posts . '.post_modified_gmt', $q->validate_column( 'post_modified_gmt' ) );
 	}
 
 	public function test_validate_column_comment_date() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$q = new WP_Date_Query( array() );
 
 		$this->assertSame( $wpdb->comments . '.comment_date', $q->validate_column( 'comment_date' ) );
 	}
 
 	public function test_validate_column_comment_date_gmt() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$q = new WP_Date_Query( array() );
 
 		$this->assertSame( $wpdb->comments . '.comment_date_gmt', $q->validate_column( 'comment_date_gmt' ) );
 	}
 
 	public function test_validate_column_invalid() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$q = new WP_Date_Query( array() );
 
 		$this->assertSame( $wpdb->posts . '.post_date', $q->validate_column( 'foo' ) );
@@ -281,7 +281,7 @@ class Tests_WP_Date_Query extends WP_UnitTestCase {
 	}
 
 	public function test_build_value_value_null() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$q = new WP_Date_Query( array() );
 
 		$this->assertFalse( $q->build_value( 'foo', null ) );

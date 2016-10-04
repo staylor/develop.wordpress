@@ -269,7 +269,7 @@ class Tests_Term_Tax_Query extends WP_UnitTestCase {
 			),
 		) );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$sql = $tq->get_sql( $wpdb->posts, 'ID' );
 
 		// Only one JOIN is required with OR + IN.
@@ -313,7 +313,7 @@ class Tests_Term_Tax_Query extends WP_UnitTestCase {
 			),
 		) );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$sql = $tq->get_sql( $wpdb->posts, 'ID' );
 
 		$this->assertSame( 3, substr_count( $sql['join'], 'JOIN' ) );
@@ -359,7 +359,7 @@ class Tests_Term_Tax_Query extends WP_UnitTestCase {
 			),
 		) );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$sql = $tq->get_sql( $wpdb->posts, 'ID' );
 
 		$this->assertSame( 2, substr_count( $sql['join'], 'JOIN' ) );
@@ -383,7 +383,7 @@ class Tests_Term_Tax_Query extends WP_UnitTestCase {
 			),
 		) );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$expected = array(
 			'join' => '',
 			'where' => '',
@@ -410,7 +410,7 @@ class Tests_Term_Tax_Query extends WP_UnitTestCase {
 			),
 		) );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$expected = array(
 			'join' => '',
 			'where' => '',

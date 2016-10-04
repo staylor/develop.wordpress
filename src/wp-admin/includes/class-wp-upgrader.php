@@ -809,7 +809,8 @@ class WP_Upgrader {
  	 * @return bool False if a lock couldn't be created or if the lock is still valid. True otherwise.
  	 */
 	public static function create_lock( $lock_name, $release_timeout = null ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];	
 		if ( ! $release_timeout ) {
 			$release_timeout = HOUR_IN_SECONDS;
 		}

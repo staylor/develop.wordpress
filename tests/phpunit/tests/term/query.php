@@ -43,7 +43,7 @@ class Tests_Term_Query extends WP_UnitTestCase {
 	 * @ticket 37074
 	 */
 	public function test_term_taxonomy_id_single() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 
@@ -69,7 +69,7 @@ class Tests_Term_Query extends WP_UnitTestCase {
 	 * @ticket 37074
 	 */
 	public function test_term_taxonomy_id_array() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 

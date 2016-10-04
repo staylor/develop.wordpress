@@ -117,12 +117,11 @@ if ( !function_exists('cache_users') ) :
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array $user_ids User ID numbers list
  */
 function cache_users( $user_ids ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$clean = _get_non_cached_ids( $user_ids, 'users' );
 
@@ -1537,8 +1536,6 @@ if ( !function_exists('wp_notify_moderator') ) :
  *
  * @since 1.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * Uses the {@see 'notify_moderator'} filter to determine whether the site moderator
  * should be notified, overriding the site setting.
  *
@@ -1546,7 +1543,8 @@ if ( !function_exists('wp_notify_moderator') ) :
  * @return true Always returns true.
  */
 function wp_notify_moderator($comment_id) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$maybe_notify = get_option( 'moderation_notify' );
 
@@ -1707,7 +1705,6 @@ if ( !function_exists('wp_new_user_notification') ) :
  * @since 4.3.1 The `$plaintext_pass` parameter was deprecated. `$notify` added as a third parameter.
  * @since 4.6.0 The `$notify` parameter accepts 'user' for sending notification only to the user created.
  *
- * @global wpdb         $wpdb      WordPress database object for queries.
  * @global PasswordHash $wp_hasher Portable PHP password hashing framework instance.
  *
  * @param int    $user_id    User ID.
@@ -1720,7 +1717,9 @@ function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) 
 		_deprecated_argument( __FUNCTION__, '4.3.1' );
 	}
 
-	global $wpdb, $wp_hasher;
+	global $wp_hasher;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$user = get_userdata( $user_id );
 
 	// The blogname option is escaped with esc_html on the way into the database in sanitize_option
@@ -2219,13 +2218,12 @@ if ( !function_exists('wp_set_password') ) :
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $password The plaintext new user password
  * @param int    $user_id  User ID
  */
 function wp_set_password( $password, $user_id ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$hash = wp_hash_password( $password );
 	$wpdb->update($wpdb->users, array('user_pass' => $hash, 'user_activation_key' => ''), array('ID' => $user_id) );

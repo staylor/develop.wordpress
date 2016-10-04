@@ -16,7 +16,7 @@ class Tests_Update_Comment_Count_Now extends WP_UnitTestCase {
 	}
 
 	public function test_regular_post_updates_comment_count() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$post_id = self::factory()->post->create();
 
@@ -31,7 +31,7 @@ class Tests_Update_Comment_Count_Now extends WP_UnitTestCase {
 	}
 
 	public function test_using_filter_adjusts_comment_count_without_an_additional_database_query() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		add_filter( 'pre_wp_update_comment_count_now', array( $this, '_return_100' ) );
 

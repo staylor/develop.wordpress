@@ -7,6 +7,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /**
  * Rename $_POST data from form names to DB post columns.
@@ -182,13 +183,12 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array $post_data Optional.
  * @return int Post ID.
  */
 function edit_post( $post_data = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( empty($post_data) )
 		$post_data = &$_POST;
@@ -412,13 +412,12 @@ function edit_post( $post_data = null ) {
  *
  * @since 2.7.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array $post_data Optional, the array of post data to process if not provided will use $_POST superglobal.
  * @return array
  */
 function bulk_edit_posts( $post_data = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( empty($post_data) )
 		$post_data = &$_POST;
@@ -668,15 +667,14 @@ function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) 
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $title Post title
  * @param string $content Optional post content
  * @param string $date Optional post date
  * @return int Post ID if post exists, 0 otherwise.
  */
 function post_exists($title, $content = '', $date = '') {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$post_title = wp_unslash( sanitize_post_field( 'post_title', $title, 0, 'db' ) );
 	$post_content = wp_unslash( sanitize_post_field( 'post_content', $content, 0, 'db' ) );
@@ -852,12 +850,11 @@ function delete_meta( $mid ) {
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return mixed
  */
 function get_meta_keys() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$keys = $wpdb->get_col( "
 			SELECT meta_key
@@ -885,13 +882,12 @@ function get_post_meta_by_id( $mid ) {
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $postid
  * @return mixed
  */
 function has_meta( $postid ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	return $wpdb->get_results( $wpdb->prepare("SELECT meta_key, meta_value, meta_id, post_id
 			FROM $wpdb->postmeta WHERE post_id = %d
@@ -1079,13 +1075,12 @@ function wp_edit_posts_query( $q = false ) {
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $type
  * @return mixed
  */
 function get_available_post_mime_types($type = 'attachment') {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$types = $wpdb->get_col($wpdb->prepare("SELECT DISTINCT post_mime_type FROM $wpdb->posts WHERE post_type = %s", $type));
 	return $types;
@@ -1163,7 +1158,8 @@ function wp_edit_attachments_query_vars( $q = false ) {
  * @return array The modified clauses.
  */
 function _filter_query_attachment_filenames( $clauses ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	remove_filter( 'posts_clauses', __FUNCTION__ );
 
 	$clauses['join'] = " INNER JOIN {$wpdb->postmeta} ON ( {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id )";

@@ -1,4 +1,5 @@
 <?php
+use function WP\getApp;
 
 /** Sets up the WordPress Environment. */
 require( dirname(__FILE__) . '/wp-load.php' );
@@ -354,7 +355,10 @@ function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
  *                   The function halts all execution if the user is not logged in.
  */
 function validate_another_blog_signup() {
-	global $wpdb, $blogname, $blog_title, $errors, $domain, $path;
+	global $blogname, $blog_title, $errors, $domain, $path;
+	$app = getApp();
+	$wpdb = $app['db'];
+
 	$current_user = wp_get_current_user();
 	if ( ! is_user_logged_in() ) {
 		die();

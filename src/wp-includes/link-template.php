@@ -1551,8 +1551,6 @@ function get_next_post( $in_same_term = false, $excluded_terms = '', $taxonomy =
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param bool         $in_same_term   Optional. Whether post should be in a same taxonomy term. Default false.
  * @param array|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs. Default empty.
  * @param bool         $previous       Optional. Whether to retrieve previous post. Default true
@@ -1561,7 +1559,8 @@ function get_next_post( $in_same_term = false, $excluded_terms = '', $taxonomy =
  *                             corresponding post exists.
  */
 function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previous = true, $taxonomy = 'category' ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ( ! $post = get_post() ) || ! taxonomy_exists( $taxonomy ) )
 		return null;

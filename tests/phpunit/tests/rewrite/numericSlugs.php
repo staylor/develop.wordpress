@@ -20,7 +20,7 @@ class Tests_Rewrite_NumericSlugs extends WP_UnitTestCase {
 	}
 
 	public function test_go_to_year_segment_collision_without_title() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$this->set_permalink_structure( '/%postname%/' );
 
 		$id = self::factory()->post->create( array(
@@ -48,7 +48,7 @@ class Tests_Rewrite_NumericSlugs extends WP_UnitTestCase {
 	}
 
 	public function test_url_to_postid_year_segment_collision_without_title() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$this->set_permalink_structure( '/%postname%/' );
 
 		$id = self::factory()->post->create( array(

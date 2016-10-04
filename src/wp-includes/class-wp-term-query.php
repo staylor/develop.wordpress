@@ -8,6 +8,8 @@
  * @since 4.6.0
  */
 
+use function WP\getApp;
+
 /**
  * Class used for querying terms.
  *
@@ -85,13 +87,6 @@ class WP_Term_Query {
 	 * @var array
 	 */
 	public $terms;
-
-	/**
-	 * @since 4.7.0
-	 * @access protected
-	 * @var wpdb
-	 */
-	protected $db;
 
 	/**
 	 * Constructor.
@@ -186,8 +181,6 @@ class WP_Term_Query {
 	 * }
 	 */
 	public function __construct( $query = '' ) {
-		$this->db = $GLOBALS['wpdb'];
-
 		$this->query_var_defaults = array(
 			'taxonomy'               => null,
 			'object_ids'             => null,
@@ -317,6 +310,9 @@ class WP_Term_Query {
 	 * @return array
 	 */
 	public function get_terms() {
+		$app = getApp();
+		$wpdb = $app['db'];
+
 		$this->parse_query( $this->query_vars );
 		$args = $this->query_vars;
 
@@ -509,16 +505,16 @@ class WP_Term_Query {
 				$tt_ids = implode( ',', array_map( 'intval', $args['term_taxonomy_id'] ) );
 				$this->sql_clauses['where']['term_taxonomy_id'] = "tt.term_taxonomy_id IN ({$tt_ids})";
 			} else {
-				$this->sql_clauses['where']['term_taxonomy_id'] = $this->db->prepare( "tt.term_taxonomy_id = %d", $args['term_taxonomy_id'] );
+				$this->sql_clauses['where']['term_taxonomy_id'] = $wpdb->prepare( "tt.term_taxonomy_id = %d", $args['term_taxonomy_id'] );
 			}
 		}
 
 		if ( ! empty( $args['name__like'] ) ) {
-			$this->sql_clauses['where']['name__like'] = $this->db->prepare( "t.name LIKE %s", '%' . $this->db->esc_like( $args['name__like'] ) . '%' );
+			$this->sql_clauses['where']['name__like'] = $wpdb->prepare( "t.name LIKE %s", '%' . $wpdb->esc_like( $args['name__like'] ) . '%' );
 		}
 
 		if ( ! empty( $args['description__like'] ) ) {
-			$this->sql_clauses['where']['description__like'] = $this->db->prepare( "tt.description LIKE %s", '%' . $this->db->esc_like( $args['description__like'] ) . '%' );
+			$this->sql_clauses['where']['description__like'] = $wpdb->prepare( "tt.description LIKE %s", '%' . $wpdb->esc_like( $args['description__like'] ) . '%' );
 		}
 
 		if ( ! empty( $args['object_ids'] ) ) {
@@ -638,10 +634,10 @@ class WP_Term_Query {
 		 */
 		$fields = implode( ', ', apply_filters( 'get_terms_fields', $selects, $args, $taxonomies ) );
 
-		$join .= " INNER JOIN {$this->db->term_taxonomy} AS tt ON t.term_id = tt.term_id";
+		$join .= " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
 
 		if ( ! empty( $this->query_vars['object_ids'] ) ) {
-			$join .= " INNER JOIN {$this->db->term_relationships} AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id";
+			$join .= " INNER JOIN {$wpdb->term_relationships} AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id";
 		}
 
 		$where = implode( ' AND ', $this->sql_clauses['where'] );
@@ -670,7 +666,7 @@ class WP_Term_Query {
 		}
 
 		$this->sql_clauses['select']  = "SELECT $distinct $fields";
-		$this->sql_clauses['from']    = "FROM {$this->db->terms} AS t $join";
+		$this->sql_clauses['from']    = "FROM {$wpdb->terms} AS t $join";
 		$this->sql_clauses['orderby'] = $orderby ? "$orderby $order" : '';
 		$this->sql_clauses['limits']  = $limits;
 
@@ -695,10 +691,10 @@ class WP_Term_Query {
 		}
 
 		if ( 'count' == $_fields ) {
-			return $this->db->get_var( $this->request );
+			return $wpdb->get_var( $this->request );
 		}
 
-		$terms = $this->db->get_results( $this->request );
+		$terms = $wpdb->get_results( $this->request );
 		if ( 'all' == $_fields || 'all_with_object_id' === $_fields ) {
 			update_term_cache( $terms );
 		}
@@ -970,8 +966,11 @@ class WP_Term_Query {
 	 * @return string
 	 */
 	protected function get_search_sql( $string ) {
-		$like = '%' . $this->db->esc_like( $string ) . '%';
+		$app = getApp();
+		$wpdb = $app['db'];
 
-		return $this->db->prepare( '((t.name LIKE %s) OR (t.slug LIKE %s))', $like, $like );
+		$like = '%' . $wpdb->esc_like( $string ) . '%';
+
+		return $wpdb->prepare( '((t.name LIKE %s) OR (t.slug LIKE %s))', $like, $like );
 	}
 }

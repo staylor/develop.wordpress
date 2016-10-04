@@ -5,9 +5,14 @@
  * @package WordPress
  * @subpackage Database
  */
+use function WP\getApp;
+
 define('WP_REPAIRING', true);
 
 require_once( dirname( dirname( dirname( __FILE__ ) ) ) . '/wp-load.php' );
+
+$app = getApp();
+$wpdb = $app['db'];
 
 header( 'Content-Type: text/html; charset=utf-8' );
 ?>

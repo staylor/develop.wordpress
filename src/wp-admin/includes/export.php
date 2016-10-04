@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Version number for the export format.
  *
@@ -24,7 +26,6 @@ define( 'WXR_VERSION', '1.2' );
  *
  * @since 2.1.0
  *
- * @global wpdb    $wpdb WordPress database abstraction object.
  * @global WP_Post $post Global `$post`.
  *
  * @param array $args {
@@ -54,7 +55,9 @@ define( 'WXR_VERSION', '1.2' );
  * }
  */
 function export_wp( $args = array() ) {
-	global $wpdb, $post;
+	global $post;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$defaults = array( 'content' => 'all', 'author' => false, 'category' => false,
 		'start_date' => false, 'end_date' => false, 'status' => false,
@@ -291,7 +294,8 @@ function export_wp( $args = array() ) {
 	 * @param WP_Term $term Term object.
 	 */
 	function wxr_term_meta( $term ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$termmeta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->termmeta WHERE term_id = %d", $term->term_id ) );
 
@@ -319,12 +323,11 @@ function export_wp( $args = array() ) {
 	 *
 	 * @since 3.1.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param array $post_ids Array of post IDs to filter the query by. Optional.
 	 */
 	function wxr_authors_list( array $post_ids = null ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		if ( !empty( $post_ids ) ) {
 			$post_ids = array_map( 'absint', $post_ids );

@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -24,6 +26,9 @@ if ( is_multisite() ) {
 		403
 	);
 }
+
+$app = getApp();
+$wpdb = $app['db'];
 
 if ( is_multisite() ) {
 	add_filter( 'wpmu_signup_user_notification_email', 'admin_created_user_email' );

@@ -3244,7 +3244,6 @@ function wp_prepare_attachment_for_js( $attachment ) {
  * @since 3.5.0
  *
  * @global int       $content_width
- * @global wpdb      $wpdb
  * @global WP_Locale $wp_locale
  *
  * @param array $args {
@@ -3258,7 +3257,9 @@ function wp_enqueue_media( $args = array() ) {
 	if ( did_action( 'wp_enqueue_media' ) )
 		return;
 
-	global $content_width, $wpdb, $wp_locale;
+	global $content_width, $wp_locale;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$defaults = array(
 		'post' => null,
@@ -3771,13 +3772,12 @@ function wp_maybe_generate_attachment_metadata( $attachment ) {
  *
  * @since 4.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $url The URL to resolve.
  * @return int The found post ID, or 0 on failure.
  */
 function attachment_url_to_postid( $url ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$dir = wp_get_upload_dir();
 	$path = $url;

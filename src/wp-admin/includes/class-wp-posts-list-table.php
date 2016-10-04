@@ -7,6 +7,8 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement displaying posts in a list table.
  *
@@ -73,12 +75,13 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @see WP_List_Table::__construct() for more information on default arguments.
 	 *
 	 * @global WP_Post_Type $post_type_object
-	 * @global wpdb         $wpdb
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
 	public function __construct( $args = array() ) {
-		global $post_type_object, $wpdb;
+		global $post_type_object;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		parent::__construct( array(
 			'plural' => 'posts',
@@ -657,14 +660,14 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global wpdb    $wpdb
 	 * @global WP_Post $post
 	 * @param array $pages
 	 * @param int $pagenum
 	 * @param int $per_page
 	 */
 	private function _display_rows_hierarchical( $pages, $pagenum = 1, $per_page = 20 ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$level = 0;
 

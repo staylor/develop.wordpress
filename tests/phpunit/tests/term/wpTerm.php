@@ -12,7 +12,7 @@ class Tests_Term_WpTerm extends WP_UnitTestCase {
 	}
 
 	public static function wpSetUpBeforeClass( $factory ) {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 

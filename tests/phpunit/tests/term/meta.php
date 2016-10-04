@@ -107,7 +107,7 @@ class Tests_Term_Meta extends WP_UnitTestCase {
 	}
 
 	public function test_term_meta_should_be_lazy_loaded_for_all_terms_in_wp_query_loop() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create( array( 'post_status' => 'publish' ) );
 
@@ -171,7 +171,7 @@ class Tests_Term_Meta extends WP_UnitTestCase {
 	 * @ticket 36593
 	 */
 	public function test_lazy_load_term_meta_false() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create( array( 'post_status' => 'publish' ) );
 
@@ -316,7 +316,7 @@ class Tests_Term_Meta extends WP_UnitTestCase {
 	 * @ticket 34544
 	 */
 	public function test_add_term_meta_should_return_error_when_term_id_is_shared() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		update_option( 'finished_splitting_shared_terms', false );
 
@@ -352,7 +352,7 @@ class Tests_Term_Meta extends WP_UnitTestCase {
 	 * @ticket 34544
 	 */
 	public function test_update_term_meta_should_return_error_when_term_id_is_shared() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		update_option( 'finished_splitting_shared_terms', false );
 

@@ -226,7 +226,7 @@ class Tests_Post_Query extends WP_UnitTestCase {
 	 * @ticket 17065
 	 */
 	function test_orderby_array() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q1 = new WP_Query( array(
 			'orderby' => array(
@@ -261,7 +261,7 @@ class Tests_Post_Query extends WP_UnitTestCase {
 	 * @ticket 17065
 	 */
 	function test_order() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q1 = new WP_Query( array(
 			'orderby' => array(
@@ -393,7 +393,7 @@ class Tests_Post_Query extends WP_UnitTestCase {
 	 * @ticket 36687
 	 */
 	public function test_posts_pre_query_filter_should_bypass_database_query() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		add_filter( 'posts_pre_query', array( __CLASS__, 'filter_posts_pre_query' ) );
 
@@ -417,7 +417,7 @@ class Tests_Post_Query extends WP_UnitTestCase {
 	 * @ticket 36687
 	 */
 	public function test_posts_pre_query_filter_should_respect_set_found_posts() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$this->post_id = self::factory()->post->create();
 

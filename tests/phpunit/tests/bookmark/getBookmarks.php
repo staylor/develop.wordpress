@@ -5,7 +5,7 @@
  */
 class Tests_Bookmark_GetBookmarks extends WP_UnitTestCase {
 	public function test_should_hit_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$bookmarks = self::factory()->bookmark->create_many( 2 );
 
@@ -24,7 +24,7 @@ class Tests_Bookmark_GetBookmarks extends WP_UnitTestCase {
 	}
 
 	public function test_adding_bookmark_should_bust_get_bookmarks_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$bookmarks = self::factory()->bookmark->create_many( 2 );
 
@@ -52,7 +52,7 @@ class Tests_Bookmark_GetBookmarks extends WP_UnitTestCase {
 	 * @ticket 18356
 	 */
 	public function test_orderby_rand_should_not_be_cached() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$bookmarks = self::factory()->bookmark->create_many( 2 );
 

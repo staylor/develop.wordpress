@@ -7,7 +7,12 @@
  * @since 3.0.0
  */
 
+use function WP\getApp;
+
 require_once( dirname( __FILE__ ) . '/admin.php' );
+
+$app = getApp();
+$wpdb = $app['db'];
 
 if ( !is_multisite() )
 	wp_die( __( 'Multisite support is not enabled.' ) );

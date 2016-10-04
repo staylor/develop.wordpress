@@ -95,7 +95,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	}
 
 	public function test_get_term_should_update_term_cache_when_passed_an_object() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$term = self::factory()->term->create( array(
@@ -121,7 +121,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	}
 
 	public function test_get_term_should_update_term_cache_when_passed_a_valid_term_identifier() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$term = self::factory()->term->create( array(
@@ -148,7 +148,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	}
 
 	public function test_get_term_by_should_update_term_cache_when_passed_a_valid_term_identifier() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$term = self::factory()->term->create( array(
@@ -178,7 +178,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	 * @ticket 30749
 	 */
 	public function test_get_terms_should_update_cache_for_located_terms() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 
@@ -224,7 +224,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	 * @ticket 21760
 	 */
 	function test_get_term_by_slug_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id = $this->factory->term->create( array( 'slug' => 'burrito', 'name' => 'Taco', 'taxonomy' => 'post_tag' ) );
 
@@ -249,7 +249,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	 * @ticket 21760
 	 */
 	function test_get_term_by_slug_cache_update() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id = $this->factory->term->create( array( 'slug' => 'burrito', 'name' => 'Taco', 'taxonomy' => 'post_tag' ) );
 
@@ -281,7 +281,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	 * @ticket 21760
 	 */
 	function test_get_term_by_name_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id = $this->factory->term->create( array( 'name' => 'Burrito', 'slug' => 'noburrito', 'taxonomy' => 'post_tag' ) );
 
@@ -304,7 +304,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	 * @ticket 21760
 	 */
 	function test_get_term_by_name_cache_update() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id = $this->factory->term->create( array( 'name' => 'Burrito', 'slug' => 'noburrito', 'taxonomy' => 'post_tag' ) );
 
@@ -333,7 +333,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	 * @ticket 21760
 	 */
 	function test_invalidating_term_caches_should_fail_when_invalidation_is_suspended() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id = $this->factory->term->create( array( 'name' => 'Burrito', 'taxonomy' => 'post_tag' ) );
 
@@ -371,7 +371,7 @@ class Tests_Term_Cache extends WP_UnitTestCase {
 	 * @ticket 21760
 	 */
 	public function test_get_term_by_does_not_prime_term_meta_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id = $this->factory->term->create( array( 'name' => 'Burrito', 'taxonomy' => 'post_tag' ) );
 		add_term_meta( $term_id, 'foo', 'bar' );

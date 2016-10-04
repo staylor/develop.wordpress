@@ -8,6 +8,8 @@
  * @subpackage Deprecated
  */
 
+use function WP\getApp;
+
 /*
  * Deprecated functions come here to die.
  */
@@ -2210,7 +2212,8 @@ function unregister_widget_control($id) {
  */
 function delete_usermeta( $user_id, $meta_key, $meta_value = '' ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'delete_user_meta()' );
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	if ( !is_numeric( $user_id ) )
 		return false;
 	$meta_key = preg_replace('|[^a-z0-9_]|i', '', $meta_key);
@@ -2256,7 +2259,8 @@ function delete_usermeta( $user_id, $meta_key, $meta_value = '' ) {
  */
 function get_usermeta( $user_id, $meta_key = '' ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'get_user_meta()' );
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$user_id = (int) $user_id;
 
 	if ( !$user_id )
@@ -2309,7 +2313,8 @@ function get_usermeta( $user_id, $meta_key = '' ) {
  */
 function update_usermeta( $user_id, $meta_key, $meta_value ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'update_user_meta()' );
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	if ( !is_numeric( $user_id ) )
 		return false;
 	$meta_key = preg_replace('|[^a-z0-9_]|i', '', $meta_key);
@@ -2356,15 +2361,14 @@ function update_usermeta( $user_id, $meta_key, $meta_value ) {
  * @deprecated 3.1.0 Use get_users()
  * @see get_users()
  *
- * @global wpdb $wpdb    WordPress database abstraction object.
- *
  * @param int $id Site ID.
  * @return array List of users that are part of that site ID
  */
 function get_users_of_blog( $id = '' ) {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
 
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	if ( empty( $id ) ) {
 		$id = get_current_blog_id();
 	}

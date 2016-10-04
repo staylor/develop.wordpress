@@ -200,7 +200,7 @@ class Tests_Post_Objects extends WP_UnitTestCase {
 	 * @ticket 22223
 	 */
 	function test_get_post_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$id = self::factory()->post->create();
 		wp_cache_delete( $id, 'posts' );

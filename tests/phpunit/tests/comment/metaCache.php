@@ -8,7 +8,7 @@ class Tests_Comment_Meta_Cache extends WP_UnitTestCase {
 	 * @ticket 16894
 	 */
 	public function test_update_comment_meta_cache_should_default_to_true() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create( array( 'post_status' => 'publish' ) );
 		$comment_ids = self::factory()->comment->create_post_comments( $p, 3 );
@@ -36,7 +36,7 @@ class Tests_Comment_Meta_Cache extends WP_UnitTestCase {
 	 * @ticket 16894
 	 */
 	public function test_update_comment_meta_cache_true() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create( array( 'post_status' => 'publish' ) );
 		$comment_ids = self::factory()->comment->create_post_comments( $p, 3 );
@@ -65,7 +65,7 @@ class Tests_Comment_Meta_Cache extends WP_UnitTestCase {
 	 * @ticket 16894
 	 */
 	public function test_update_comment_meta_cache_false() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create( array( 'post_status' => 'publish' ) );
 		$comment_ids = self::factory()->comment->create_post_comments( $p, 3 );
@@ -91,7 +91,7 @@ class Tests_Comment_Meta_Cache extends WP_UnitTestCase {
 	 * @ticket 16894
 	 */
 	public function test_comment_meta_should_be_lazy_loaded_for_all_comments_in_comments_template() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create( array( 'post_status' => 'publish' ) );
 		$comment_ids = self::factory()->comment->create_post_comments( $p, 3 );
@@ -126,7 +126,7 @@ class Tests_Comment_Meta_Cache extends WP_UnitTestCase {
 	 * @ticket 34047
 	 */
 	public function test_comment_meta_should_be_lazy_loaded_in_comment_feed_queries() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$posts = self::factory()->post->create_many( 2, array( 'post_status' => 'publish' ) );
 
@@ -170,7 +170,7 @@ class Tests_Comment_Meta_Cache extends WP_UnitTestCase {
 	 * @ticket 34047
 	 */
 	public function test_comment_meta_should_be_lazy_loaded_in_single_post_comment_feed_queries() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$posts = self::factory()->post->create_many( 2, array( 'post_status' => 'publish' ) );
 

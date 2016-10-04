@@ -1,4 +1,5 @@
 <?php
+use function WP\getApp;
 
 if ( is_multisite() ) :
 
@@ -46,7 +47,8 @@ class Tests_Multisite_Bootstrap extends WP_UnitTestCase {
 	}
 
 	public static function wpTearDownAfterClass() {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		foreach( self::$site_ids as $id ) {
 			wpmu_delete_blog( $id, true );

@@ -50,7 +50,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	 */
 	public function test_single_inner_join_for_keys_only() {
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array( 'key' => 'abc' ),
@@ -465,7 +465,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	 * @ticket 22096
 	 */
 	public function test_empty_value_sql() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query();
 
@@ -486,7 +486,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	 * @ticket 22967
 	 */
 	public function test_null_value_sql() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array( 'key' => 'abc', 'value' => null, 'compare' => '=' )
@@ -501,7 +501,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	 * they can be grouped together into a single clause without JOINs
 	 */
 	public function test_get_sql_key_only_queries() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query1 = new WP_Meta_Query( array(
 			'relation' => 'OR',
@@ -571,7 +571,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	 * Key-only and regular queries should have the key trimmed
 	 */
 	public function test_get_sql_trim_key() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -590,7 +590,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_convert_null_value_to_empty_string() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -605,7 +605,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_get_sql_convert_lowercase_compare_to_uppercase() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -621,7 +621,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_get_sql_empty_meta_compare_with_array_value() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -636,7 +636,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_get_sql_empty_meta_compare_with_non_array_value() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -651,7 +651,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_get_sql_invalid_meta_compare() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -670,7 +670,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	 * This is the clause that ensures that empty arrays are not valid queries.
 	 */
 	public function test_get_sql_null_value_and_empty_key_should_not_have_table_join() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -687,7 +687,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_get_sql_compare_array_comma_separated_values() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		// Single value.
 		$query = new WP_Meta_Query( array(
@@ -730,7 +730,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_get_sql_compare_array() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -749,7 +749,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	 * Non-array values are trimmed. @todo Why?
 	 */
 	public function test_get_sql_trim_string_value() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			array(
@@ -764,7 +764,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_not_exists() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			'relation' => 'OR',
@@ -785,7 +785,7 @@ class Tests_Meta_Query extends WP_UnitTestCase {
 	}
 
 	public function test_empty_compare() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$query = new WP_Meta_Query( array(
 			'relation' => 'OR',

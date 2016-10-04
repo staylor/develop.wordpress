@@ -35,6 +35,7 @@ if ( defined( 'SUNRISE' ) ) {
 }
 
 $app = getApp();
+$wpdb = $app['db'];
 
 /** Check for and define SUBDOMAIN_INSTALL and the deprecated VHOST constant. */
 ms_subdomain_constants();

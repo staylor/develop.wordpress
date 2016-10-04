@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement the WP_Post object.
  *
@@ -202,13 +204,12 @@ final class WP_Post {
 	 * @static
 	 * @access public
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param int $post_id Post ID.
 	 * @return WP_Post|false Post object, false otherwise.
 	 */
 	public static function get_instance( $post_id ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];;
 
 		if ( ! is_numeric( $post_id ) || $post_id != floor( $post_id ) || ! $post_id ) {
 			return false;

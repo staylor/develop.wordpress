@@ -75,7 +75,7 @@ class Tests_Term_GetTermBy extends WP_UnitTestCase {
 	 * @ticket 30620
 	 */
 	public function test_taxonomy_should_be_ignored_if_matching_by_term_taxonomy_id() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$t = self::factory()->term->create( array( 'taxonomy' => 'wptests_tax' ) );
@@ -98,7 +98,7 @@ class Tests_Term_GetTermBy extends WP_UnitTestCase {
 	 * @ticket 14162
 	 */
 	public function test_should_prime_term_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$t = self::factory()->term->create( array(
@@ -173,7 +173,7 @@ class Tests_Term_GetTermBy extends WP_UnitTestCase {
 	 * @ticket 21760
 	 */
 	public function test_query_should_not_contain_order_by_clause() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id = $this->factory->term->create( array( 'name' => 'burrito', 'taxonomy' => 'post_tag' ) );
 		$found = get_term_by( 'name', 'burrito', 'post_tag' );
@@ -185,7 +185,7 @@ class Tests_Term_GetTermBy extends WP_UnitTestCase {
 	 * @ticket 21760
 	 */
 	public function test_query_should_contain_limit_clause() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id = $this->factory->term->create( array( 'name' => 'burrito', 'taxonomy' => 'post_tag' ) );
 		$found = get_term_by( 'name', 'burrito', 'post_tag' );

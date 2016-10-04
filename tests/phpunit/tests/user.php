@@ -379,7 +379,8 @@ class Tests_User extends WP_UnitTestCase {
 	 * ticket 19595
 	 */
 	function test_global_userdata() {
-		global $userdata, $wpdb;
+		global $userdata;
+		$wpdb = $this->app['db'];
 
 		wp_set_current_user( self::$sub_id );
 
@@ -893,7 +894,7 @@ class Tests_User extends WP_UnitTestCase {
 	 * @ticket 28004
 	 */
 	public function test_wp_insert_user_with_invalid_user_id() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$max_user = $wpdb->get_var( "SELECT MAX(ID) FROM $wpdb->users" );
 
 		$u = wp_insert_user( array(
@@ -924,7 +925,7 @@ class Tests_User extends WP_UnitTestCase {
 	}
 
 	function test_changing_email_invalidates_password_reset_key() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$user = $this->author;
 		$wpdb->update( $wpdb->users, array( 'user_activation_key' => 'key' ), array( 'ID' => $user->ID ) );

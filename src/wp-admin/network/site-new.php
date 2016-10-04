@@ -7,6 +7,8 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /** Load WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -15,6 +17,9 @@ require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
 if ( ! current_user_can( 'manage_sites' ) )
 	wp_die( __( 'Sorry, you are not allowed to add sites to this network.' ) );
+
+$app = getApp();
+$wpdb = $app['db'];
 
 get_current_screen()->add_help_tab( array(
 	'id'      => 'overview',

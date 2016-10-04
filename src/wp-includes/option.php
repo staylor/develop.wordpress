@@ -21,14 +21,13 @@
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $option  Name of option to retrieve. Expected to not be SQL-escaped.
  * @param mixed  $default Optional. Default value to return if the option does not exist.
  * @return mixed Value set for the option.
  */
 function get_option( $option, $default = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$option = trim( $option );
 	if ( empty( $option ) )
@@ -167,12 +166,11 @@ function form_option( $option ) {
  *
  * @since 2.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return array List of all options.
  */
 function wp_load_alloptions() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! wp_installing() || ! is_multisite() )
 		$alloptions = wp_cache_get( 'alloptions', 'options' );
@@ -200,12 +198,11 @@ function wp_load_alloptions() {
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $site_id Optional site ID for which to query the options. Defaults to the current site.
  */
 function wp_load_core_site_options( $site_id = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! is_multisite() || wp_using_ext_object_cache() || wp_installing() )
 		return;
@@ -240,8 +237,6 @@ function wp_load_core_site_options( $site_id = null ) {
  * @since 1.0.0
  * @since 4.2.0 The `$autoload` parameter was added.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string      $option   Option name. Expected to not be SQL-escaped.
  * @param mixed       $value    Option value. Must be serializable if non-scalar. Expected to not be SQL-escaped.
  * @param string|bool $autoload Optional. Whether to load the option when WordPress starts up. For existing options,
@@ -251,7 +246,8 @@ function wp_load_core_site_options( $site_id = null ) {
  * @return bool False if value was not updated and true if value was updated.
  */
 function update_option( $option, $value, $autoload = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$option = trim($option);
 	if ( empty($option) )
@@ -386,8 +382,6 @@ function update_option( $option, $value, $autoload = null ) {
  *
  * @since 1.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string         $option      Name of option to add. Expected to not be SQL-escaped.
  * @param mixed          $value       Optional. Option value. Must be serializable if non-scalar. Expected to not be SQL-escaped.
  * @param string         $deprecated  Optional. Description. Not used anymore.
@@ -396,7 +390,8 @@ function update_option( $option, $value, $autoload = null ) {
  * @return bool False if option was not added and true if option was added.
  */
 function add_option( $option, $value = '', $deprecated = '', $autoload = 'yes' ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( !empty( $deprecated ) )
 		_deprecated_argument( __FUNCTION__, '2.3.0' );
@@ -483,13 +478,12 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = 'yes' )
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $option Name of option to remove. Expected to not be SQL-escaped.
  * @return bool True, if option is successfully deleted. False on failure.
  */
 function delete_option( $option ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$option = trim( $option );
 	if ( empty( $option ) )
@@ -1069,7 +1063,6 @@ function update_site_option( $option, $value ) {
  *
  * @see get_option()
  *
- * @global wpdb   $wpdb
  * @global object $current_site
  *
  * @param int      $network_id ID of the network. Can be null to default to the current network ID.
@@ -1078,7 +1071,9 @@ function update_site_option( $option, $value ) {
  * @return mixed Value set for the option.
  */
 function get_network_option( $network_id, $option, $default = false ) {
-	global $wpdb, $current_site;
+	global $current_site;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( $network_id && ! is_numeric( $network_id ) ) {
 		return false;
@@ -1186,7 +1181,6 @@ function get_network_option( $network_id, $option, $default = false ) {
  *
  * @see add_option()
  *
- * @global wpdb   $wpdb
  * @global object $current_site
  *
  * @param int    $network_id ID of the network. Can be null to default to the current network ID.
@@ -1195,7 +1189,9 @@ function get_network_option( $network_id, $option, $default = false ) {
  * @return bool False if option was not added and true if option was added.
  */
 function add_network_option( $network_id, $option, $value ) {
-	global $wpdb, $current_site;
+	global $current_site;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( $network_id && ! is_numeric( $network_id ) ) {
 		return false;
@@ -1296,7 +1292,6 @@ function add_network_option( $network_id, $option, $value ) {
  *
  * @see delete_option()
  *
- * @global wpdb   $wpdb
  * @global object $current_site
  *
  * @param int    $network_id ID of the network. Can be null to default to the current network ID.
@@ -1304,7 +1299,9 @@ function add_network_option( $network_id, $option, $value ) {
  * @return bool True, if succeed. False, if failure.
  */
 function delete_network_option( $network_id, $option ) {
-	global $wpdb, $current_site;
+	global $current_site;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( $network_id && ! is_numeric( $network_id ) ) {
 		return false;
@@ -1378,7 +1375,6 @@ function delete_network_option( $network_id, $option ) {
  *
  * @see update_option()
  *
- * @global wpdb   $wpdb
  * @global object $current_site
  *
  * @param int      $network_id ID of the network. Can be null to default to the current network ID.
@@ -1387,7 +1383,9 @@ function delete_network_option( $network_id, $option ) {
  * @return bool False if value was not updated and true if value was updated.
  */
 function update_network_option( $network_id, $option, $value ) {
-	global $wpdb, $current_site;
+	global $current_site;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( $network_id && ! is_numeric( $network_id ) ) {
 		return false;

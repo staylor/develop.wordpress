@@ -6,6 +6,8 @@
  */
 error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
 
+use function WP\getApp;
+
 $config_file_path = $argv[1];
 $multisite = ! empty( $argv[2] );
 
@@ -25,6 +27,9 @@ require_once ABSPATH . '/wp-admin/includes/upgrade.php';
 global $phpmailer;
 require_once( dirname( __FILE__ ) . '/mock-mailer.php' );
 $phpmailer = new MockPHPMailer();
+
+$app = getApp();
+$wpdb = $app['db'];
 
 /*
  * default_storage_engine and storage_engine are the same option, but storage_engine

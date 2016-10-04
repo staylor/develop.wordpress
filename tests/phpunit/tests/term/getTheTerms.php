@@ -169,7 +169,7 @@ class Tests_Term_GetTheTerms extends WP_UnitTestCase {
 	 * @ticket 36814
 	 */
 	public function test_uncached_terms_should_be_primed_with_a_single_query() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 

@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 if ( ! current_user_can( 'edit_posts' ) ) {
@@ -15,6 +17,9 @@ if ( ! current_user_can( 'edit_posts' ) ) {
 		403
 	);
 }
+
+$app = getApp();
+$wpdb = $app['db'];
 
 $wp_list_table = _get_list_table('WP_Comments_List_Table');
 $pagenum = $wp_list_table->get_pagenum();

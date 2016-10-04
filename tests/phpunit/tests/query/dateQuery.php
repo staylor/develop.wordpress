@@ -781,7 +781,7 @@ class Tests_Query_DateQuery extends WP_UnitTestCase {
 	}
 
 	public function test_date_params_monthnum_m_duplicate() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p1 = self::factory()->post->create( array( 'post_date' => '2006-05-18 13:42:29', ) );
 		$p2 = self::factory()->post->create( array( 'post_date' => '2007-09-18 14:34:29', ) );
@@ -801,7 +801,7 @@ class Tests_Query_DateQuery extends WP_UnitTestCase {
 	}
 
 	public function test_date_params_week_w_duplicate() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p1 = self::factory()->post->create( array( 'post_date' => '2014-10-01 13:42:29', ) );
 		$p2 = self::factory()->post->create( array( 'post_date' => '2014-10-22 14:34:29', ) );
@@ -1005,7 +1005,7 @@ class Tests_Query_DateQuery extends WP_UnitTestCase {
 	 * There's no way to change post_modified through the API.
 	 */
 	protected function update_post_modified( $post_id, $date ) {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		return $wpdb->update(
 			$wpdb->posts,
 			array(

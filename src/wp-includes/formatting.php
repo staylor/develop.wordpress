@@ -3730,13 +3730,12 @@ function _deep_replace( $search, $subject ) {
  *
  * @since 2.8.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string|array $data Unescaped data
  * @return string|array Escaped data
  */
 function esc_sql( $data ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	return $wpdb->_escape( $data );
 }
 
@@ -4025,14 +4024,13 @@ function wp_make_link_relative( $link ) {
  *
  * @since 2.0.5
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $option The name of the option.
  * @param string $value  The unsanitised value.
  * @return string Sanitized value.
  */
 function sanitize_option( $option, $value ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$original_value = $value;
 	$error = '';

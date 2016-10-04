@@ -523,7 +523,7 @@ class Tests_WP_Customize_Setting extends WP_UnitTestCase {
 	 * @ticket 33499
 	 */
 	function test_option_autoloading() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 
 		$name = 'autoloaded1';

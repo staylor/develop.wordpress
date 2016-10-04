@@ -6,6 +6,8 @@
  * @subpackage Post_Revisions
  */
 
+use function WP\getApp;
+
 /**
  * Determines which fields of posts are to be saved in revisions.
  *
@@ -639,14 +641,13 @@ function _wp_get_post_revision_version( $revision ) {
  * @since 3.6.0
  * @access private
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param WP_Post $post      Post object
  * @param array   $revisions Current revisions of the post
  * @return bool true if the revisions were upgraded, false if problems
  */
 function _wp_upgrade_revisions_of_post( $post, $revisions ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// Add post option exclusively
 	$lock = "revision-upgrade-{$post->ID}";

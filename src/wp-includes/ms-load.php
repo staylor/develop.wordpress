@@ -8,6 +8,8 @@
  * @subpackage Multisite
  */
 
+use function WP\getApp;
+
 /**
  * Whether a subdomain configuration is enabled.
  *
@@ -139,8 +141,6 @@ function get_network_by_path( $domain, $path, $segments = null ) {
  * @since 3.9.0
  * @since 4.7.0 Updated to always return a `WP_Site` object.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string   $domain   Domain to check.
  * @param string   $path     Path to check.
  * @param int|null $segments Path segments to use. Defaults to null, or the full path.
@@ -262,7 +262,6 @@ function get_site_by_path( $domain, $path, $segments = null ) {
  * @since 4.6.0
  * @access private
  *
- * @global wpdb       $wpdb         WordPress database abstraction object.
  * @global WP_Network $current_site The current network.
  * @global WP_Site    $current_blog The current site.
  *
@@ -275,7 +274,10 @@ function get_site_by_path( $domain, $path, $segments = null ) {
  *                     Redirect URL if parts exist, but the request as a whole can not be fulfilled.
  */
 function ms_load_current_site_and_network( $domain, $path, $subdomain = false ) {
-	global $wpdb, $current_site, $current_blog;
+	global $current_site, $current_blog;
+
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// If the network is defined in wp-config.php, we can simply use that.
 	if ( defined( 'DOMAIN_CURRENT_SITE' ) && defined( 'PATH_CURRENT_SITE' ) ) {
@@ -439,13 +441,12 @@ function ms_load_current_site_and_network( $domain, $path, $subdomain = false ) 
  * @since 3.0.0
  * @since 4.4.0 The `$domain` and `$path` parameters were added.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $domain The requested domain for the error to reference.
  * @param string $path   The requested path for the error to reference.
  */
 function ms_not_installed( $domain, $path ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! is_admin() ) {
 		dead_db();

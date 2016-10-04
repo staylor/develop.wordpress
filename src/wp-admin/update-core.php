@@ -27,17 +27,17 @@ if ( ! current_user_can( 'update_core' ) && ! current_user_can( 'update_themes' 
 /**
  *
  * @global string $wp_local_package
- * @global wpdb   $wpdb
  *
  * @staticvar bool $first_pass
  *
  * @param object $update
  */
 function list_core_update( $update ) {
- 	global $wp_local_package, $wpdb;
+ 	global $wp_local_package;
   	static $first_pass = true;
 
 	$app = getApp();
+	$wpdb = $app['db'];
 
  	if ( 'en_US' == $update->locale && 'en_US' == get_locale() )
  		$version_string = $update->current;

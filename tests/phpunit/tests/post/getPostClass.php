@@ -106,7 +106,7 @@ class Tests_Post_GetPostClass extends WP_UnitTestCase {
 	 * @group cache
 	 */
 	public function test_taxonomy_classes_hit_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		wp_set_post_terms( $this->post_id, array( 'foo', 'bar' ), 'wptests_tax' );

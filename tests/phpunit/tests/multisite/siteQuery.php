@@ -15,13 +15,13 @@ class Tests_Multisite_Site_Query extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 	}
 
 	function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->suppress_errors( $this->suppress );
 		parent::tearDown();
 	}
@@ -57,7 +57,7 @@ class Tests_Multisite_Site_Query extends WP_UnitTestCase {
 	}
 
 	public static function wpTearDownAfterClass() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		foreach( self::$site_ids as $id ) {
 			wpmu_delete_blog( $id, true );

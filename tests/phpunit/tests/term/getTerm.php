@@ -15,7 +15,7 @@ class Tests_Term_GetTerm extends WP_UnitTestCase {
 	 * @return array Array of term_id/old_term_id/term_taxonomy_id triplets.
 	 */
 	protected function generate_shared_terms() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax_2', 'post' );
 
@@ -57,7 +57,7 @@ class Tests_Term_GetTerm extends WP_UnitTestCase {
 	}
 
 	public function test_passing_term_object_should_skip_database_query_when_filter_property_is_empty() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'wptests_tax' ) );
 		clean_term_cache( $term->term_id, 'wptests_tax' );
@@ -79,7 +79,7 @@ class Tests_Term_GetTerm extends WP_UnitTestCase {
 	}
 
 	public function test_cache_should_be_populated_by_successful_fetch() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$t = self::factory()->term->create( array( 'taxonomy' => 'wptests_tax' ) );
 		clean_term_cache( $t, 'wptests_tax' );
@@ -125,7 +125,7 @@ class Tests_Term_GetTerm extends WP_UnitTestCase {
 	 * @ticket 14162
 	 */
 	public function test_numeric_properties_should_be_cast_to_ints() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$t = self::factory()->term->create( array( 'taxonomy' => 'wptests_tax' ) );
 
@@ -188,7 +188,7 @@ class Tests_Term_GetTerm extends WP_UnitTestCase {
 	 * @ticket 34533
 	 */
 	public function test_shared_term_in_cache_should_be_ignored_when_specifying_a_different_taxonomy() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$terms = $this->generate_shared_terms();
 

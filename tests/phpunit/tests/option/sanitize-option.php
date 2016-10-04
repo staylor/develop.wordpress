@@ -106,7 +106,7 @@ class Tests_Sanitize_Option extends WP_UnitTestCase {
 	 * @ticket 36122
 	 */
 	public function test_emoji_in_blogname_and_description() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$value = "whee\xf0\x9f\x98\x88";
 

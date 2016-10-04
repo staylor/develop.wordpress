@@ -113,8 +113,6 @@ final class WP_Term {
 	 * @access public
 	 * @static
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param int    $term_id  Term ID.
 	 * @param string $taxonomy Optional. Limit matched terms to those matching `$taxonomy`. Only used for
 	 *                         disambiguating potentially shared terms.
@@ -123,7 +121,8 @@ final class WP_Term {
 	 *                                False for other failures.
 	 */
 	public static function get_instance( $term_id, $taxonomy = null ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		if ( ! is_numeric( $term_id ) || $term_id != floor( $term_id ) || ! $term_id ) {
 			return false;

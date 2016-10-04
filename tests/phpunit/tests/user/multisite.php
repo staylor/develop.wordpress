@@ -15,13 +15,13 @@ class Tests_Multisite_User extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 	}
 
 	function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->suppress_errors( $this->suppress );
 		parent::tearDown();
 	}
@@ -114,7 +114,7 @@ class Tests_Multisite_User extends WP_UnitTestCase {
 	 * @expectedDeprecated is_blog_user
 	 */
 	function test_is_blog_user() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$user1_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
 
@@ -138,7 +138,7 @@ class Tests_Multisite_User extends WP_UnitTestCase {
 	}
 
 	function test_is_user_member_of_blog() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$user1_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
 		$user2_id = self::factory()->user->create( array( 'role' => 'administrator' ) );

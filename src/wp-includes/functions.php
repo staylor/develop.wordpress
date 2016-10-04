@@ -557,13 +557,12 @@ function wp_extract_urls( $content ) {
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $content Post Content.
  * @param int    $post_ID Post ID.
  */
 function do_enclose( $content, $post_ID ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	//TODO: Tidy this ghetto code up and make the debug code optional
 	$post_links = array();
@@ -1185,12 +1184,11 @@ function cache_javascript_headers() {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return int Number of database queries.
  */
 function get_num_queries() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	return $wpdb->num_queries;
 }
 
@@ -1355,12 +1353,11 @@ function do_robots() {
  *
  * @since 2.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return bool Whether the site is already installed.
  */
 function is_blog_installed() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	/*
 	 * Check cache first. If options table goes away and we have true
@@ -3680,11 +3677,10 @@ function wp_ob_end_flush_all() {
  * in WordPress 2.5.0.
  *
  * @since 2.3.2
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  */
 function dead_db() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	wp_load_translations_early();
 
@@ -4652,11 +4648,10 @@ function _cleanup_header_comment( $str ) {
  * The default value of `EMPTY_TRASH_DAYS` is 30 (days).
  *
  * @since 2.9.0
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  */
 function wp_scheduled_delete() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$delete_timestamp = time() - ( DAY_IN_SECONDS * EMPTY_TRASH_DAYS );
 

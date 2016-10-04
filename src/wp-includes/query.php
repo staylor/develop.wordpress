@@ -11,6 +11,8 @@
  * @subpackage Query
  */
 
+use function WP\getApp;
+
 /**
  * Retrieve variable in the WP_Query class.
  *
@@ -843,12 +845,11 @@ function the_comment() {
  * Attempts to find the current slug from the past slugs.
  *
  * @since 2.1.0
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  */
 function wp_old_slug_redirect() {
 	if ( is_404() && '' !== get_query_var( 'name' ) ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		// Guess the current post_type based on the query vars.
 		if ( get_query_var( 'post_type' ) ) {

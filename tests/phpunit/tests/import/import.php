@@ -23,7 +23,7 @@ class Tests_Import_Import extends WP_Import_UnitTestCase {
 
 		require_once DIR_TESTDATA . '/plugins/wordpress-importer/wordpress-importer.php';
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		// crude but effective: make sure there's no residual data in the main tables
 		foreach ( array('posts', 'postmeta', 'comments', 'terms', 'term_taxonomy', 'term_relationships', 'users', 'usermeta') as $table)
 			$wpdb->query("DELETE FROM {$wpdb->$table}");
@@ -36,8 +36,6 @@ class Tests_Import_Import extends WP_Import_UnitTestCase {
 	}
 
 	function test_small_import() {
-		global $wpdb;
-
 		$authors = array( 'admin' => false, 'editor' => false, 'author' => false );
 		$this->_import_wp( DIR_TESTDATA . '/export/small-export.xml', $authors );
 
@@ -253,7 +251,7 @@ class Tests_Import_Import extends WP_Import_UnitTestCase {
 	 * @ticket 21007
 	 */
 	public function test_slashes_should_not_be_stripped() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$authors = array( 'admin' => false );
 		$this->_import_wp( DIR_TESTDATA . '/export/slashes.xml', $authors );

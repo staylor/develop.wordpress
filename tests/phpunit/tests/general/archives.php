@@ -14,7 +14,7 @@ class Tests_General_Archives extends WP_UnitTestCase {
 	 * @ticket 23206
 	 */
 	function test_get_archives_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		self::factory()->post->create_many( 3, array( 'post_type' => 'post' ) );
 		wp_cache_delete( 'last_changed', 'posts' );

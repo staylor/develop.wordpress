@@ -15,12 +15,17 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
 $title = __('Settings');
 $this_file = 'options.php';
 $parent_file = 'options-general.php';
+
+$app = getApp();
+$wpdb = $app['db'];
 
 wp_reset_vars(array('action', 'option_page'));
 

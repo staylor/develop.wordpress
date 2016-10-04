@@ -1623,7 +1623,6 @@ function get_archives_link($url, $text, $format = 'html', $before = '', $after =
  *
  * @see get_archives_link()
  *
- * @global wpdb      $wpdb
  * @global WP_Locale $wp_locale
  *
  * @param string|array $args {
@@ -1651,7 +1650,9 @@ function get_archives_link($url, $text, $format = 'html', $before = '', $after =
  * @return string|void String when retrieving.
  */
 function wp_get_archives( $args = '' ) {
-	global $wpdb, $wp_locale;
+	global $wp_locale;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$defaults = array(
 		'type' => 'monthly', 'limit' => '',
@@ -1869,7 +1870,6 @@ function calendar_week_mod($num) {
  *
  * @since 1.0.0
  *
- * @global wpdb      $wpdb
  * @global int       $m
  * @global int       $monthnum
  * @global int       $year
@@ -1881,7 +1881,10 @@ function calendar_week_mod($num) {
  * @return string|void String when retrieving.
  */
 function get_calendar( $initial = true, $echo = true ) {
-	global $wpdb, $m, $monthnum, $year, $wp_locale, $posts;
+	global $m, $monthnum, $year, $wp_locale, $posts;
+
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$key = md5( $m . $monthnum . $year );
 	$cache = wp_cache_get( 'get_calendar', 'calendar' );

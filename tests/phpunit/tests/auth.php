@@ -228,7 +228,7 @@ class Tests_Auth extends WP_UnitTestCase {
 	 * @ticket 32429
 	 */
 	function test_user_activation_key_is_checked() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$key  = wp_generate_password( 20, false );
 		$wpdb->update( $wpdb->users, array(
@@ -260,7 +260,7 @@ class Tests_Auth extends WP_UnitTestCase {
 	 * @ticket 32429
 	 */
 	function test_expired_user_activation_key_is_rejected() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$key  = wp_generate_password( 20, false );
 		$wpdb->update( $wpdb->users, array(
@@ -291,7 +291,7 @@ class Tests_Auth extends WP_UnitTestCase {
 	 * @ticket 32429
 	 */
 	function test_legacy_user_activation_key_is_rejected() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		// A legacy user_activation_key is one without the `time()` prefix introduced in WordPress 4.3.
 
@@ -316,7 +316,7 @@ class Tests_Auth extends WP_UnitTestCase {
 	 * @ticket 24783
 	 */
 	function test_plaintext_user_activation_key_is_rejected() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		// A plaintext user_activation_key is one stored before hashing was introduced in WordPress 3.7.
 

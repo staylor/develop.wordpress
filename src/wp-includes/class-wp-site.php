@@ -7,6 +7,8 @@
  * @since 4.5.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used for interacting with a multisite site.
  *
@@ -161,13 +163,12 @@ final class WP_Site {
 	 * @since 4.5.0
 	 * @access public
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param int $site_id The ID of the site to retrieve.
 	 * @return WP_Site|false The site's object if found. False if not.
 	 */
 	public static function get_instance( $site_id ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$site_id = (int) $site_id;
 		if ( ! $site_id ) {

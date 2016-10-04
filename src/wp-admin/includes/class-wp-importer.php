@@ -1,4 +1,6 @@
 <?php
+use function WP\getApp;
+
 /**
  * WP_Importer base class
  */
@@ -12,14 +14,13 @@ class WP_Importer {
 	/**
 	 * Returns array with imported permalinks from WordPress database
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param string $importer_name
 	 * @param string $bid
 	 * @return array
 	 */
 	public function get_imported_posts( $importer_name, $bid ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$hashtable = array();
 
@@ -52,14 +53,13 @@ class WP_Importer {
 	/**
 	 * Return count of imported permalinks from WordPress database
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param string $importer_name
 	 * @param string $bid
 	 * @return int
 	 */
 	public function count_imported_posts( $importer_name, $bid ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$count = 0;
 
@@ -81,13 +81,12 @@ class WP_Importer {
 	/**
 	 * Set array with imported comments from WordPress database
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param string $bid
 	 * @return array
 	 */
 	public function get_imported_comments( $bid ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$hashtable = array();
 
@@ -248,11 +247,13 @@ class WP_Importer {
 	/**
 	 * Reset global variables that grow out of control during imports
 	 *
-	 * @global wpdb  $wpdb
 	 * @global array $wp_actions
 	 */
 	public function stop_the_insanity() {
-		global $wpdb, $wp_actions;
+		global $wp_actions;
+		$app = getApp();
+		$wpdb = $app['db'];
+
 		// Or define( 'WP_IMPORTING', true );
 		$wpdb->queries = array();
 		// Reset $wp_actions to keep it from growing out of control

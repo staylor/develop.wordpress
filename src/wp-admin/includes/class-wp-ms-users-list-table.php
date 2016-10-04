@@ -8,6 +8,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /**
  * Core class used to implement displaying users in a list table for the network admin.
@@ -30,11 +31,13 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 *
 	 * @global string $usersearch
 	 * @global string $role
-	 * @global wpdb   $wpdb
 	 * @global string $mode
 	 */
 	public function prepare_items() {
-		global $usersearch, $role, $wpdb, $mode;
+		global $usersearch, $role, $mode;
+
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$usersearch = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST['s'] ) ) : '';
 

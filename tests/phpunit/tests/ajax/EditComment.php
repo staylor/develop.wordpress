@@ -78,7 +78,7 @@ class Tests_Ajax_EditComment extends WP_Ajax_UnitTestCase {
 	 * @ticket 33154
 	 */
 	function test_editor_can_edit_orphan_comments() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		// Become an editor
 		$this->_setRole( 'editor' );

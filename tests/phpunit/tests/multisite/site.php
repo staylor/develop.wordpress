@@ -12,19 +12,21 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 	}
 
 	function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->suppress_errors( $this->suppress );
 		parent::tearDown();
 	}
 
 	function test_switch_restore_blog() {
-		global $_wp_switched_stack, $wpdb;
+		global $_wp_switched_stack;
+
+		$wpdb = $this->app['db'];
 
 		$this->assertEquals( array(), $_wp_switched_stack );
 		$this->assertFalse( ms_is_switched() );
@@ -72,7 +74,7 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 	 * Test the cache keys and database tables setup through the creation of a site.
 	 */
 	function test_created_site_details() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$blog_id = self::factory()->blog->create();
 
@@ -144,7 +146,7 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 	 * When a site is flagged as 'deleted', its data should remain in the database.
 	 */
 	function test_data_in_tables_after_wpmu_delete_blog_drop_false() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$blog_id = self::factory()->blog->create();
 
@@ -182,7 +184,7 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 	 * When a site is fully deleted, its data should be removed from the database.
 	 */
 	function test_data_in_tables_after_wpmu_delete_blog_drop_true() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$blog_id = self::factory()->blog->create();
 
@@ -220,7 +222,7 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 	 * When the main site of a network is fully deleted, its data should remain in the database.
 	 */
 	function test_data_in_tables_after_wpmu_delete_blog_main_site_drop_true() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$blog_id = 1; // The main site in our test suite has an ID of 1.
 
@@ -296,7 +298,7 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 	}
 
 	function test_wpmu_update_blogs_date() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		wpmu_update_blogs_date();
 

@@ -8,7 +8,7 @@ class Tests_Post_GetPageByPath extends WP_UnitTestCase {
 	 * @ticket 15665
 	 */
 	public function test_get_page_by_path_priority() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$attachment = self::factory()->post->create_and_get( array( 'post_title' => 'some-page', 'post_type' => 'attachment' ) );
 		$page       = self::factory()->post->create_and_get( array( 'post_title' => 'some-page', 'post_type' => 'page' ) );
@@ -128,7 +128,7 @@ class Tests_Post_GetPageByPath extends WP_UnitTestCase {
 	 * @ticket 36711
 	 */
 	public function test_should_hit_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$page = self::factory()->post->create( array(
 			'post_type' => 'page',
@@ -150,7 +150,7 @@ class Tests_Post_GetPageByPath extends WP_UnitTestCase {
 	 * @ticket 36711
 	 */
 	public function test_bad_path_should_be_cached() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		// Prime cache.
 		$found = get_page_by_path( 'foo' );
@@ -189,7 +189,7 @@ class Tests_Post_GetPageByPath extends WP_UnitTestCase {
 	 * @ticket 36711
 	 */
 	public function test_cache_should_not_match_post_in_different_post_type_with_same_path() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_post_type( 'wptests_pt' );
 
@@ -219,7 +219,7 @@ class Tests_Post_GetPageByPath extends WP_UnitTestCase {
 	 * @ticket 36711
 	 */
 	public function test_cache_should_be_invalidated_when_post_name_is_edited() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$page = self::factory()->post->create( array(
 			'post_type' => 'page',

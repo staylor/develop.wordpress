@@ -13,7 +13,7 @@ class Tests_Post_getPages extends WP_UnitTestCase {
 	 * @ticket 23167
 	 */
 	function test_get_pages_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		self::factory()->post->create_many( 3, array( 'post_type' => 'page' ) );
 		wp_cache_delete( 'last_changed', 'posts' );
@@ -188,7 +188,7 @@ class Tests_Post_getPages extends WP_UnitTestCase {
 	 * @ticket 25750
 	 */
 	function test_get_pages_hierarchical_and_no_parent() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$page_1 = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		$page_2 = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $page_1 ) );
 		$page_3 = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $page_1 ) );

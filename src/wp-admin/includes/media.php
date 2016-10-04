@@ -38,13 +38,12 @@ function media_upload_tabs() {
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array $tabs
  * @return array $tabs with gallery if post has image attachment
  */
 function update_gallery_tab($tabs) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( !isset($_REQUEST['post_id']) ) {
 		unset($tabs['gallery']);
@@ -2339,7 +2338,6 @@ jQuery(function($){
  *
  * @since 2.5.0
  *
- * @global wpdb      $wpdb
  * @global WP_Query  $wp_query
  * @global WP_Locale $wp_locale
  * @global string    $type
@@ -2349,7 +2347,9 @@ jQuery(function($){
  * @param array $errors
  */
 function media_upload_library_form($errors) {
-	global $wpdb, $wp_query, $wp_locale, $type, $tab, $post_mime_types;
+	global $wp_query, $wp_locale, $type, $tab, $post_mime_types;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	media_upload_header();
 
@@ -3106,14 +3106,13 @@ function wp_read_audio_metadata( $file ) {
  *
  * @since 4.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int    $parent_id Attachment parent ID.
  * @param string $action    Optional. Attach/detach action. Accepts 'attach' or 'detach'.
  *                          Default 'attach'.
  */
 function wp_media_attach_action( $parent_id, $action = 'attach' ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! $parent_id ) {
 		return;

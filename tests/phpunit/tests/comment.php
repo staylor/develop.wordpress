@@ -683,8 +683,6 @@ class Tests_Comment extends WP_UnitTestCase {
 	}
 
 	public function test_update_should_invalidate_comment_cache() {
-		global $wpdb;
-
 		$c = self::factory()->comment->create( array( 'comment_author' => 'Foo' ) );
 
 		$comment = get_comment( $c );
@@ -701,8 +699,6 @@ class Tests_Comment extends WP_UnitTestCase {
 	}
 
 	public function test_trash_should_invalidate_comment_cache() {
-		global $wpdb;
-
 		$c = self::factory()->comment->create();
 
 		$comment = get_comment( $c );
@@ -715,8 +711,6 @@ class Tests_Comment extends WP_UnitTestCase {
 	}
 
 	public function test_untrash_should_invalidate_comment_cache() {
-		global $wpdb;
-
 		$c = self::factory()->comment->create();
 		wp_trash_comment( $c );
 
@@ -731,8 +725,6 @@ class Tests_Comment extends WP_UnitTestCase {
 	}
 
 	public function test_spam_should_invalidate_comment_cache() {
-		global $wpdb;
-
 		$c = self::factory()->comment->create();
 
 		$comment = get_comment( $c );
@@ -745,8 +737,6 @@ class Tests_Comment extends WP_UnitTestCase {
 	}
 
 	public function test_unspam_should_invalidate_comment_cache() {
-		global $wpdb;
-
 		$c = self::factory()->comment->create();
 		wp_spam_comment( $c );
 

@@ -105,7 +105,7 @@ class Tests_IsObjectInTerm extends WP_UnitTestCase {
 	 * @ticket 32044
 	 */
 	public function test_should_populate_and_hit_relationships_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 2, array( 'taxonomy' => 'wptests_tax' ) );
@@ -126,7 +126,7 @@ class Tests_IsObjectInTerm extends WP_UnitTestCase {
 	 * @ticket 32044
 	 */
 	public function test_should_not_be_fooled_by_a_stale_relationship_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 2, array( 'taxonomy' => 'wptests_tax' ) );

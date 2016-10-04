@@ -1,4 +1,5 @@
 <?php
+use function WP\getApp;
 
 /**
  * @group comment
@@ -7,7 +8,8 @@ class Tests_Term_WpComment extends WP_UnitTestCase {
 	protected static $comment_id;
 
 	public static function wpSetUpBeforeClass( $factory ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		// Ensure that there is a comment with ID 1.
 		$comment_1 = WP_Comment::get_instance( 1 );

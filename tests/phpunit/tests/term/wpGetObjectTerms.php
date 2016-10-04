@@ -179,7 +179,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 		) );
 
 		// No great way to do this in the API.
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->update( $wpdb->terms, array( 'term_group' => 1 ), array( 'term_id' => $t1 ) );
 		$wpdb->update( $wpdb->terms, array( 'term_group' => 3 ), array( 'term_id' => $t2 ) );
 		$wpdb->update( $wpdb->terms, array( 'term_group' => 2 ), array( 'term_id' => $t3 ) );
@@ -214,7 +214,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 		$term_2 = get_term( $t2, $this->taxonomy );
 		$term_3 = get_term( $t3, $this->taxonomy );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->update( $wpdb->term_relationships, array( 'term_order' => 1 ), array( 'term_taxonomy_id' => $term_1->term_taxonomy_id, 'object_id' => $p ) );
 		$wpdb->update( $wpdb->term_relationships, array( 'term_order' => 3 ), array( 'term_taxonomy_id' => $term_2->term_taxonomy_id, 'object_id' => $p ) );
 		$wpdb->update( $wpdb->term_relationships, array( 'term_order' => 2 ), array( 'term_taxonomy_id' => $term_3->term_taxonomy_id, 'object_id' => $p ) );
@@ -249,7 +249,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 		$term_2 = get_term( $t2, $this->taxonomy );
 		$term_3 = get_term( $t3, $this->taxonomy );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->update( $wpdb->term_taxonomy, array( 'parent' => 1 ), array( 'term_taxonomy_id' => $term_1->term_taxonomy_id ) );
 		$wpdb->update( $wpdb->term_taxonomy, array( 'parent' => 3 ), array( 'term_taxonomy_id' => $term_2->term_taxonomy_id ) );
 		$wpdb->update( $wpdb->term_taxonomy, array( 'parent' => 2 ), array( 'term_taxonomy_id' => $term_3->term_taxonomy_id ) );
@@ -314,7 +314,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 		$term_2 = get_term( $t2, $this->taxonomy );
 		$term_3 = get_term( $t3, $this->taxonomy );
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->update( $wpdb->term_taxonomy, array( 'term_taxonomy_id' => 100004 ), array( 'term_taxonomy_id' => $term_1->term_taxonomy_id ) );
 		$wpdb->update( $wpdb->term_taxonomy, array( 'term_taxonomy_id' => 100006 ), array( 'term_taxonomy_id' => $term_2->term_taxonomy_id ) );
 		$wpdb->update( $wpdb->term_taxonomy, array( 'term_taxonomy_id' => 100005 ), array( 'term_taxonomy_id' => $term_3->term_taxonomy_id ) );
@@ -426,7 +426,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 	 * @ticket 10142
 	 */
 	public function test_termmeta_cache_should_be_primed_by_default() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 3, array( 'taxonomy' => 'wptests_tax' ) );
@@ -452,7 +452,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 	 * @ticket 10142
 	 */
 	public function test_termmeta_cache_should_not_be_primed_when_update_term_meta_cache_is_false() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 3, array( 'taxonomy' => 'wptests_tax' ) );
@@ -480,7 +480,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 	 * @ticket 36932
 	 */
 	public function test_termmeta_cache_should_be_primed_when_fields_is_all_with_object_id() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 3, array( 'taxonomy' => 'wptests_tax' ) );
@@ -509,7 +509,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 	 * @ticket 36932
 	 */
 	public function test_termmeta_cache_should_be_primed_when_fields_is_ids() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 3, array( 'taxonomy' => 'wptests_tax' ) );
@@ -602,7 +602,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 	 * @ticket 14162
 	 */
 	public function test_should_prime_cache_for_found_terms() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$p = self::factory()->post->create();
@@ -643,7 +643,7 @@ class Tests_Term_WpGetObjectTerms extends WP_UnitTestCase {
 	 * @ticket 14162
 	 */
 	public function test_term_cache_should_be_primed_for_all_taxonomies() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax1', 'post' );
 		register_taxonomy( 'wptests_tax2', 'post' );

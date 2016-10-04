@@ -26,8 +26,6 @@ use function WP\getApp;
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $author       Comment author name.
  * @param string $email        Comment author email.
  * @param string $url          Comment author URL.
@@ -39,7 +37,8 @@ use function WP\getApp;
  * @return bool If all checks pass, true, otherwise false.
  */
 function check_comment($author, $email, $url, $comment, $user_ip, $user_agent, $comment_type) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// If manual moderation is enabled, skip all checks and return false.
 	if ( 1 == get_option('comment_moderation') )
@@ -289,7 +288,6 @@ function get_default_comment_status( $post_type = 'post', $comment_type = 'comme
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
  * @staticvar array $cache_lastcommentmodified
  *
  * @param string $timezone Which timezone to use in reference to 'gmt', 'blog',
@@ -297,7 +295,8 @@ function get_default_comment_status( $post_type = 'post', $comment_type = 'comme
  * @return string Last comment modified date.
  */
 function get_lastcommentmodified($timezone = 'server') {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	static $cache_lastcommentmodified = array();
 
 	if ( isset($cache_lastcommentmodified[$timezone]) )
@@ -330,13 +329,12 @@ function get_lastcommentmodified($timezone = 'server') {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $post_id Optional. Comment amount in post if > 0, else total comments blog wide.
  * @return array The amount of spam, approved, awaiting moderation, and total comments.
  */
 function get_comment_count( $post_id = 0 ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$post_id = (int) $post_id;
 
@@ -584,13 +582,12 @@ function sanitize_comment_cookies() {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array $commentdata Contains information on the comment
  * @return int|string Signifies the approval status (0|1|'spam')
  */
 function wp_allow_comment( $commentdata ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// Simple duplicate check
 	// expected_slashed ($comment_post_ID, $comment_author, $comment_author_email, $comment_content)
@@ -717,14 +714,13 @@ function wp_allow_comment( $commentdata ) {
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $ip Comment IP.
  * @param string $email Comment author email address.
  * @param string $date MySQL time string.
  */
 function check_comment_flood_db( $ip, $email, $date ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	// don't throttle admins or moderators
 	if ( current_user_can( 'manage_options' ) || current_user_can( 'moderate_comments' ) ) {
 		return;
@@ -856,8 +852,6 @@ function get_comment_pages_count( $comments = null, $per_page = null, $threaded 
  *
  * @since 2.7.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int   $comment_ID Comment ID.
  * @param array $args {
  *      Array of optional arguments.
@@ -872,7 +866,8 @@ function get_comment_pages_count( $comments = null, $per_page = null, $threaded 
  * @return int|null Comment page number or null on error.
  */
 function get_page_of_comment( $comment_ID, $args = array() ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$page = null;
 
@@ -978,12 +973,11 @@ function get_page_of_comment( $comment_ID, $args = array() ) {
  *
  * @since 4.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return array Maximum character length for the comment form fields.
  */
 function wp_get_comment_fields_max_lengths() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$lengths = array(
 		'comment_author'       => 245,
@@ -1148,14 +1142,13 @@ function wp_count_comments( $post_id = 0 ) {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int|WP_Comment $comment_id   Comment ID or WP_Comment object.
  * @param bool           $force_delete Whether to bypass trash and force deletion. Default is false.
  * @return bool True on success, false on failure.
  */
 function wp_delete_comment($comment_id, $force_delete = false) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	if (!$comment = get_comment($comment_id))
 		return false;
 
@@ -1536,8 +1529,6 @@ function wp_get_current_commenter() {
  * @since 2.0.0
  * @since 4.4.0 Introduced `$comment_meta` argument.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array $commentdata {
  *     Array of arguments for inserting a new comment.
  *
@@ -1566,7 +1557,8 @@ function wp_get_current_commenter() {
  * @return int|false The new comment's ID on success, false on failure.
  */
 function wp_insert_comment( $commentdata ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$data = wp_unslash( $commentdata );
 
 	$comment_author       = ! isset( $data['comment_author'] )       ? '' : $data['comment_author'];
@@ -1721,7 +1713,6 @@ function wp_throttle_comment_flood($block, $time_lastcomment, $time_newcomment) 
  * @since 4.3.0 'comment_agent' and 'comment_author_IP' can be set via `$commentdata`.
  *
  * @see wp_insert_comment()
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param array $commentdata {
  *     Comment data.
@@ -1745,9 +1736,8 @@ function wp_throttle_comment_flood($block, $time_lastcomment, $time_newcomment) 
  * @return int|false The ID of the comment on success, false on failure.
  */
 function wp_new_comment( $commentdata ) {
-	global $wpdb;
-
 	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( isset( $commentdata['user_ID'] ) ) {
 		$commentdata['user_id'] = $commentdata['user_ID'] = (int) $commentdata['user_ID'];
@@ -1907,15 +1897,14 @@ function wp_new_comment_notify_postauthor( $comment_ID ) {
  *
  * @since 1.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int|WP_Comment $comment_id     Comment ID or WP_Comment object.
  * @param string         $comment_status New comment status, either 'hold', 'approve', 'spam', or 'trash'.
  * @param bool           $wp_error       Whether to return a WP_Error object if there is a failure. Default is false.
  * @return bool|WP_Error True on success, false or WP_Error on failure.
  */
 function wp_set_comment_status($comment_id, $comment_status, $wp_error = false) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	switch ( $comment_status ) {
 		case 'hold':
@@ -1976,13 +1965,12 @@ function wp_set_comment_status($comment_id, $comment_status, $wp_error = false) 
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array $commentarr Contains information on the comment.
  * @return int Comment was updated if value is 1, or was not updated if value is 0.
  */
 function wp_update_comment($commentarr) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// First, get all of the original fields
 	$comment = get_comment($commentarr['comment_ID'], ARRAY_A);
@@ -2145,13 +2133,12 @@ function wp_update_comment_count($post_id, $do_deferred=false) {
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $post_id Post ID
  * @return bool True on success, false on '0' $post_id or if post with ID does not exist.
  */
 function wp_update_comment_count_now($post_id) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$post_id = (int) $post_id;
 	if ( !$post_id )
 		return false;
@@ -2280,11 +2267,10 @@ function discover_pingback_server_uri( $url, $deprecated = '' ) {
  * Perform all pingbacks, enclosures, trackbacks, and send to pingback services.
  *
  * @since 2.1.0
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  */
 function do_all_pings() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// Do pingbacks
 	while ($ping = $wpdb->get_row("SELECT ID, post_content, meta_id FROM {$wpdb->posts}, {$wpdb->postmeta} WHERE {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id AND {$wpdb->postmeta}.meta_key = '_pingme' LIMIT 1")) {
@@ -2313,12 +2299,11 @@ function do_all_pings() {
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $post_id Post ID to do trackbacks on.
  */
 function do_trackbacks($post_id) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$post = get_post( $post_id );
 	$to_ping = get_to_ping($post_id);
@@ -2484,8 +2469,6 @@ function privacy_ping_filter($sites) {
  *
  * @since 0.71
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $trackback_url URL to send trackbacks.
  * @param string $title Title of post.
  * @param string $excerpt Excerpt of post.
@@ -2493,7 +2476,8 @@ function privacy_ping_filter($sites) {
  * @return int|false|void Database query from update.
  */
 function trackback($trackback_url, $title, $excerpt, $ID) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( empty($trackback_url) )
 		return;
@@ -2630,13 +2614,13 @@ function update_comment_cache( $comments, $update_meta_cache = true ) {
  * @access private
  *
  * @see update_comment_cache()
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param array $comment_ids       Array of comment IDs.
  * @param bool  $update_meta_cache Optional. Whether to update the meta cache. Default true.
  */
 function _prime_comment_caches( $comment_ids, $update_meta_cache = true ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$non_cached_ids = _get_non_cached_ids( $comment_ids, 'comment' );
 	if ( !empty( $non_cached_ids ) ) {

@@ -9,6 +9,8 @@
  * @since 3.0.0
  */
 
+use function WP\getApp;
+
 /*
  * Deprecated functions come here to die.
  */
@@ -185,7 +187,8 @@ function validate_email( $email, $check_domain = true) {
 function get_blog_list( $start = 0, $num = 10, $deprecated = '' ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'wp_get_sites()' );
 
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$blogs = $wpdb->get_results( $wpdb->prepare("SELECT blog_id, domain, path FROM $wpdb->blogs WHERE site_id = %d AND public = '1' AND archived = '0' AND mature = '0' AND spam = '0' AND deleted = '0' ORDER BY registered DESC", $wpdb->siteid), ARRAY_A );
 
 	$blog_list = array();
@@ -417,8 +420,6 @@ function create_empty_blog( $domain, $path, $weblog_title, $site_id = 1 ) {
  * @since MU 1.0
  * @deprecated 4.4.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $sitedomain Optional. Site domain.
  * @param string $path       Optional. Site path.
  * @return array|false The network admins
@@ -426,7 +427,8 @@ function create_empty_blog( $domain, $path, $weblog_title, $site_id = 1 ) {
 function get_admin_users_for_domain( $sitedomain = '', $path = '' ) {
 	_deprecated_function( __FUNCTION__, '4.4.0' );
 
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! $sitedomain )
 		$site_id = $wpdb->siteid;
@@ -445,8 +447,6 @@ function get_admin_users_for_domain( $sitedomain = '', $path = '' ) {
  * @since 3.7.0
  * @deprecated 4.6.0
  * @see get_sites()
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param array $args {
  *     Array of default arguments. Optional.
@@ -467,7 +467,8 @@ function get_admin_users_for_domain( $sitedomain = '', $path = '' ) {
  *               values for whether the site is public, archived, mature, spam, and/or deleted.
  */
 function wp_get_sites( $args = array() ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	_deprecated_function( __FUNCTION__, '4.6.0', 'get_sites()' );
 

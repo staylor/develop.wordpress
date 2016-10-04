@@ -101,7 +101,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 23326
 	 */
 	public function test_get_terms_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$this->set_up_three_posts_and_tags();
 
@@ -127,7 +127,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 23326
 	 */
 	public function test_get_terms_cache_should_be_missed_when_passing_number() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$this->set_up_three_posts_and_tags();
 
@@ -155,7 +155,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 23326
 	 */
 	public function test_wp_delete_term_should_invalidate_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$this->set_up_three_posts_and_tags();
 
@@ -232,7 +232,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 11823
  	 */
 	function test_get_terms_include_exclude() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$term_id1 = self::factory()->tag->create();
 		$term_id2 = self::factory()->tag->create();
@@ -465,7 +465,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 31118
 	 */
 	public function test_child_of_should_skip_query_when_specified_parent_is_not_found_in_hierarchy_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post', array( 'hierarchical' => true, ) );
 
@@ -1763,7 +1763,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 31118
 	 */
 	public function test_parent_should_skip_query_when_specified_parent_is_not_found_in_hierarchy_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post', array( 'hierarchical' => true, ) );
 
@@ -1940,7 +1940,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 10142
 	 */
 	public function test_termmeta_cache_should_be_primed_by_default() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 3, array( 'taxonomy' => 'wptests_tax' ) );
@@ -1966,7 +1966,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 10142
 	 */
 	public function test_termmeta_cache_should_not_be_primed_when_update_term_meta_cache_is_false() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 3, array( 'taxonomy' => 'wptests_tax' ) );
@@ -2062,7 +2062,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 34282
 	 */
 	public function test_should_return_wp_term_objects_when_pulling_from_the_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 2, array( 'taxonomy' => 'wptests_tax' ) );
@@ -2093,7 +2093,7 @@ class Tests_Term_getTerms extends WP_UnitTestCase {
 	 * @ticket 14162
 	 */
 	public function test_should_prime_individual_term_cache_when_fields_is_all() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		$terms = self::factory()->term->create_many( 2, array( 'taxonomy' => 'wptests_tax' ) );

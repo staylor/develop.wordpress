@@ -181,11 +181,10 @@ class Tests_Ajax_ReplytoComment extends WP_Ajax_UnitTestCase {
 	/**
 	 * Reply to a post with a simulated database failure
 	 * Expects test to fail
-	 * @global $wpdb
 	 * @return void
 	 */
 	public function test_blocked_comment() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		// Become an administrator
 		$this->_setRole( 'administrator' );
@@ -216,7 +215,7 @@ class Tests_Ajax_ReplytoComment extends WP_Ajax_UnitTestCase {
 	 * @return string
 	 */
 	public function _block_comments( $sql ) {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		if ( false !== strpos( $sql, $wpdb->comments ) && 0 === stripos( trim ( $sql ), 'INSERT INTO') ) {
 			return '';
 		}

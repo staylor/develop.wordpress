@@ -2,7 +2,7 @@
 /**
  * Installs WordPress for running the tests and loads WordPress and the test libraries
  */
-
+use function WP\getApp;
 
 $config_file_path = dirname( dirname( __FILE__ ) );
 if ( ! file_exists( $config_file_path . '/wp-tests-config.php' ) ) {
@@ -16,7 +16,10 @@ $config_file_path .= '/wp-tests-config.php';
  * Globalize some WordPress variables, because PHPUnit loads this file inside a function
  * See: https://github.com/sebastianbergmann/phpunit/issues/325
  */
-global $wpdb, $current_site, $current_blog, $shortcode_tags, $wp, $phpmailer;
+global $current_site, $current_blog, $shortcode_tags, $wp, $phpmailer;
+
+$app = getApp();
+$wpdb = $app['db'];
 
 if ( !is_readable( $config_file_path ) ) {
 	die( "ERROR: wp-tests-config.php is missing! Please use wp-tests-config-sample.php to create a config file.\n" );

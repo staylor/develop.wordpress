@@ -83,7 +83,7 @@ class Tests_Link_GetAdjacentPost extends WP_UnitTestCase {
 	 */
 	function test_get_adjacent_post_exclude_self_term() {
 		// Bump term_taxonomy to mimic shared term offsets.
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->insert( $wpdb->term_taxonomy, array( 'taxonomy' => 'foo', 'term_id' => 12345, 'description' => '' ) );
 
 		$include = self::factory()->term->create( array(

@@ -23,7 +23,7 @@ class Tests_Post_getPageUri extends WP_UnitTestCase {
 	 * @ticket 24491
 	 */
 	function test_get_page_uri_with_nonexistent_post() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$post_id = $wpdb->get_var( "SELECT MAX(ID) FROM $wpdb->posts" ) + 1;
 		$this->assertFalse( get_page_uri( $post_id ) );
 	}

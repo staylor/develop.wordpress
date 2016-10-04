@@ -8,6 +8,8 @@
  * @subpackage Deprecated
  */
 
+use function WP\getApp;
+
 /*
  * Deprecated functions come here to die.
  */
@@ -227,7 +229,9 @@ function use_codepress() {
 function get_author_user_ids() {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
 
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
+
 	if ( !is_multisite() )
 		$level_key = $wpdb->get_blog_prefix() . 'user_level';
 	else
@@ -247,7 +251,8 @@ function get_author_user_ids() {
 function get_editable_authors( $user_id ) {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
 
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$editable = get_editable_user_ids( $user_id );
 
@@ -273,7 +278,8 @@ function get_editable_authors( $user_id ) {
 function get_editable_user_ids( $user_id, $exclude_zeros = true, $post_type = 'post' ) {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
 
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! $user = get_userdata( $user_id ) )
 		return array();
@@ -306,7 +312,8 @@ function get_editable_user_ids( $user_id, $exclude_zeros = true, $post_type = 'p
 function get_nonauthor_user_ids() {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
 
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( !is_multisite() )
 		$level_key = $wpdb->get_blog_prefix() . 'user_level';
@@ -513,7 +520,8 @@ class WP_User_Search {
 	 * @access public
 	 */
 	public function prepare_query() {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 		$this->first_user = ($this->page - 1) * $this->users_per_page;
 
 		$this->query_limit = $wpdb->prepare(" LIMIT %d, %d", $this->first_user, $this->users_per_page);
@@ -551,7 +559,8 @@ class WP_User_Search {
 	 * @access public
 	 */
 	public function query() {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$this->results = $wpdb->get_col("SELECT DISTINCT($wpdb->users.ID)" . $this->query_from . $this->query_where . $this->query_orderby . $this->query_limit);
 
@@ -672,7 +681,8 @@ endif;
 function get_others_unpublished_posts( $user_id, $type = 'any' ) {
 	_deprecated_function( __FUNCTION__, '3.1.0' );
 
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$editable = get_editable_user_ids( $user_id );
 

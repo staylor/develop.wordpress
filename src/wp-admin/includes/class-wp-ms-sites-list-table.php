@@ -7,6 +7,8 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement displaying sites in a list table for the network admin.
  *
@@ -65,10 +67,12 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 *
 	 * @global string $s
 	 * @global string $mode
-	 * @global wpdb   $wpdb
 	 */
 	public function prepare_items() {
-		global $s, $mode, $wpdb;
+		global $s, $mode;
+
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		if ( ! empty( $_REQUEST['mode'] ) ) {
 			$mode = $_REQUEST['mode'] === 'excerpt' ? 'excerpt' : 'list';

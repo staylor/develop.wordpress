@@ -6,11 +6,16 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
 if ( !current_user_can('upload_files') )
 	wp_die( __( 'Sorry, you are not allowed to upload files.' ) );
+
+$app = getApp();
+$wpdb = $app['db'];
 
 $mode = get_user_option( 'media_library_mode', get_current_user_id() ) ? get_user_option( 'media_library_mode', get_current_user_id() ) : 'grid';
 $modes = array( 'grid', 'list' );

@@ -8,6 +8,8 @@ namespace WP\Rewrite;
  * @since 1.5.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement a rewrite component API.
  *
@@ -451,12 +453,11 @@ class Rewrite {
 	 * @since 2.5.0
 	 * @access public
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @return array Array of page URIs as first element and attachment URIs as second element.
 	 */
 	public function page_uri_index() {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		// Get pages in order of hierarchy, i.e. children after parents.
 		$pages = $wpdb->get_results("SELECT ID, post_name, post_parent FROM $wpdb->posts WHERE post_type = 'page' AND post_status != 'auto-draft'");

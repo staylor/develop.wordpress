@@ -266,7 +266,7 @@ class Tests_Term_WpUpdateTerm extends WP_UnitTestCase {
 	 * @ticket 5809
 	 */
 	public function test_wp_update_term_should_split_shared_term() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		register_taxonomy( 'wptests_tax_2', 'post' );

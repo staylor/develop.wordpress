@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to organize comments as instantiated objects with defined members.
  *
@@ -183,13 +185,12 @@ final class WP_Comment {
 	 * @access public
 	 * @static
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param int $id Comment ID.
 	 * @return WP_Comment|false Comment object, otherwise false.
 	 */
 	public static function get_instance( $id ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		if ( ! is_numeric( $id ) || $id != floor( $id ) || ! $id ) {
 			return false;

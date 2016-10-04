@@ -7,11 +7,16 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /** Load WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
 if ( ! current_user_can( 'manage_sites' ) )
 	wp_die( __( 'Sorry, you are not allowed to edit this site.' ) );
+
+$app = getApp();
+$wpdb = $app['db'];
 
 get_current_screen()->add_help_tab( array(
 	'id'      => 'overview',

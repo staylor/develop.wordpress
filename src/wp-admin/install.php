@@ -89,7 +89,8 @@ function display_header( $body_classes = '' ) {
  * @param string|null $error
  */
 function display_setup_form( $error = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$sql = $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->esc_like( $wpdb->users ) );
 	$user_table = ( $wpdb->get_var( $sql ) != null );
@@ -217,10 +218,6 @@ if ( is_blog_installed() ) {
 		'</body></html>'
 	);
 }
-
-/**
- * @global wpdb   $wpdb
- */
 
 $php_version    = phpversion();
 $mysql_version  = $wpdb->db_version();

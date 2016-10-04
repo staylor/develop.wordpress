@@ -337,8 +337,6 @@ function get_author_posts_url( $author_id, $author_nicename = '' ) {
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string|array $args {
  *     Optional. Array or string of default arguments.
  *
@@ -366,7 +364,8 @@ function get_author_posts_url( $author_id, $author_nicename = '' ) {
  * @return string|void The output, if echo is set to false.
  */
 function wp_list_authors( $args = '' ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$defaults = array(
 		'orderby' => 'name', 'order' => 'ASC', 'number' => '',
@@ -476,12 +475,11 @@ function wp_list_authors( $args = '' ) {
  *
  * @since 3.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return bool Whether or not we have more than one author
  */
 function is_multi_author() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( false === ( $is_multi_author = get_transient( 'is_multi_author' ) ) ) {
 		$rows = (array) $wpdb->get_col("SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' LIMIT 2");

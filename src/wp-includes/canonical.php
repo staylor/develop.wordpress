@@ -32,7 +32,6 @@ use function WP\getApp;
  *
  * @global bool $is_IIS
  * @global WP_Query $wp_query
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string $requested_url Optional. The URL that was requested, used to
  *		figure if redirect is needed.
@@ -40,9 +39,10 @@ use function WP\getApp;
  * @return string|void The string of the URL, if redirect needed.
  */
 function redirect_canonical( $requested_url = null, $do_redirect = true ) {
-	global $is_IIS, $wp_query, $wpdb, $wp;
+	global $is_IIS, $wp_query, $wp;
 
 	$app = getApp();
+	$wpdb = $app['db'];
 	if ( isset( $app['request.method'] ) && ! in_array( strtoupper( $app['request.method'] ), array( 'GET', 'HEAD' ) ) ) {
 		return;
 	}
@@ -583,12 +583,11 @@ function strip_fragment_from_url( $url ) {
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return false|string The correct URL if one is found. False on failure.
  */
 function redirect_guess_404_permalink() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( get_query_var('name') ) {
 		$where = $wpdb->prepare("post_name LIKE %s", $wpdb->esc_like( get_query_var('name') ) . '%');

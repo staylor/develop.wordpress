@@ -7,6 +7,8 @@
  * @since 3.0.0
  */
 
+use function WP\getApp;
+
 /**
  * Prints the appropriate response to a menu quick search.
  *
@@ -980,11 +982,10 @@ function wp_nav_menu_manage_columns() {
  *
  * @access private
  * @since 3.0.0
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  */
 function _wp_delete_orphaned_draft_menu_items() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$delete_timestamp = time() - ( DAY_IN_SECONDS * EMPTY_TRASH_DAYS );
 
 	// Delete orphaned draft menu items.

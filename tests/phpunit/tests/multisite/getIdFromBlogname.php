@@ -39,7 +39,7 @@ class Tests_Multisite_Get_Id_From_Blogname extends WP_UnitTestCase {
 	}
 
 	public static function wpTearDownAfterClass() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		foreach( self::$site_ids as $id ) {
 			wpmu_delete_blog( $id, true );

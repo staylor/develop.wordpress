@@ -7,17 +7,18 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Check for an existing network.
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return Whether a network exists.
  */
 function network_domain_check() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$sql = $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->esc_like( $wpdb->site ) );
 	if ( $wpdb->get_var( $sql ) ) {
@@ -45,19 +46,18 @@ function allow_subdomain_install() {
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @return bool Whether subdirectory install is allowed
  */
 function allow_subdirectory_install() {
-	global $wpdb;
-        /**
-         * Filters whether to enable the subdirectory install feature in Multisite.
-         *
-         * @since 3.0.0
-         *
-         * @param bool $allow Whether to enable the subdirectory install feature in Multisite. Default is false.
-         */
+	$app = getApp();
+	$wpdb = $app['db'];
+	/**
+	 * Filters whether to enable the subdirectory install feature in Multisite.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param bool $allow Whether to enable the subdirectory install feature in Multisite. Default is false.
+	 */
 	if ( apply_filters( 'allow_subdirectory_install', false ) )
 		return true;
 
@@ -329,12 +329,11 @@ function network_step1( $errors = false ) {
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param WP_Error $errors
  */
 function network_step2( $errors = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$hostname          = get_clean_basedomain();
 	$slashed_home      = trailingslashit( get_option( 'home' ) );

@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -21,6 +23,9 @@ if ( 'attachment' === $typenow ) {
 		exit;
 	}
 }
+
+$app = getApp();
+$wpdb = $app['db'];
 
 /**
  * @global string       $post_type
@@ -173,7 +178,7 @@ if ( $doaction ) {
 			 *
 			 * @param string $sendback The redirect URL.
 			 * @param string $doaction The action being taken.
-			 * @param array  $post_ids The post IDs to take the action on. 
+			 * @param array  $post_ids The post IDs to take the action on.
 			 */
 			$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $doaction, $post_ids );
 			break;

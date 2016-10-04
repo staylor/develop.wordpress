@@ -10,12 +10,12 @@
  * @subpackage Meta
  */
 
+use function WP\getApp;
+
 /**
  * Add metadata for the specified object.
  *
  * @since 2.9.0
- *
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string $meta_type  Type of object metadata is for (e.g., comment, post, or user)
  * @param int    $object_id  ID of the object metadata is for
@@ -28,7 +28,8 @@
  * @return int|false The meta ID on success, false on failure.
  */
 function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = false) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! $meta_type || ! $meta_key || ! is_numeric( $object_id ) ) {
 		return false;
@@ -130,8 +131,6 @@ function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = 
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $meta_type  Type of object metadata is for (e.g., comment, post, or user)
  * @param int    $object_id  ID of the object metadata is for
  * @param string $meta_key   Metadata key
@@ -141,7 +140,8 @@ function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = 
  * @return int|bool Meta ID if the key didn't exist, true on successful update, false on failure.
  */
 function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_value = '') {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! $meta_type || ! $meta_key || ! is_numeric( $object_id ) ) {
 		return false;
@@ -289,8 +289,6 @@ function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_v
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $meta_type  Type of object metadata is for (e.g., comment, post, or user)
  * @param int    $object_id  ID of the object metadata is for
  * @param string $meta_key   Metadata key
@@ -305,7 +303,8 @@ function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_v
  * @return bool True on successful delete, false on failure.
  */
 function delete_metadata($meta_type, $object_id, $meta_key, $meta_value = '', $delete_all = false) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! $meta_type || ! $meta_key || ! is_numeric( $object_id ) && ! $delete_all ) {
 		return false;
@@ -558,14 +557,13 @@ function metadata_exists( $meta_type, $object_id, $meta_key ) {
  *
  * @since 3.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $meta_type Type of object metadata is for (e.g., comment, post, term, or user).
  * @param int    $meta_id   ID for a specific meta row
  * @return object|false Meta object or false.
  */
 function get_metadata_by_mid( $meta_type, $meta_id ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! $meta_type || ! is_numeric( $meta_id ) || floor( $meta_id ) != $meta_id ) {
 		return false;
@@ -599,8 +597,6 @@ function get_metadata_by_mid( $meta_type, $meta_id ) {
  *
  * @since 3.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $meta_type  Type of object metadata is for (e.g., comment, post, or user)
  * @param int    $meta_id    ID for a specific meta row
  * @param string $meta_value Metadata value
@@ -608,7 +604,8 @@ function get_metadata_by_mid( $meta_type, $meta_id ) {
  * @return bool True on successful update, false on failure.
  */
 function update_metadata_by_mid( $meta_type, $meta_id, $meta_value, $meta_key = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// Make sure everything is valid.
 	if ( ! $meta_type || ! is_numeric( $meta_id ) || floor( $meta_id ) != $meta_id ) {
@@ -692,14 +689,13 @@ function update_metadata_by_mid( $meta_type, $meta_id, $meta_value, $meta_key = 
  *
  * @since 3.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $meta_type Type of object metadata is for (e.g., comment, post, term, or user).
  * @param int    $meta_id   ID for a specific meta row
  * @return bool True on successful delete, false on failure.
  */
 function delete_metadata_by_mid( $meta_type, $meta_id ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	// Make sure everything is valid.
 	if ( ! $meta_type || ! is_numeric( $meta_id ) || floor( $meta_id ) != $meta_id ) {
@@ -779,14 +775,13 @@ function delete_metadata_by_mid( $meta_type, $meta_id ) {
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string    $meta_type  Type of object metadata is for (e.g., comment, post, or user)
  * @param int|array $object_ids Array or comma delimited list of object IDs to update cache for
  * @return array|false Metadata cache for the specified objects, or false on failure.
  */
 function update_meta_cache($meta_type, $object_ids) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! $meta_type || ! $object_ids ) {
 		return false;
@@ -892,13 +887,12 @@ function get_meta_sql( $meta_query, $type, $primary_table, $primary_id_column, $
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $type Type of object to get metadata table for (e.g., comment, post, or user)
  * @return string|false Metadata table name, or false if no metadata table exists
  */
 function _get_meta_table($type) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$table_name = $type . 'meta';
 

@@ -533,13 +533,14 @@ class WP_List_Table {
 	 * @since 3.1.0
 	 * @access protected
 	 *
-	 * @global wpdb      $wpdb
 	 * @global WP_Locale $wp_locale
 	 *
 	 * @param string $post_type
 	 */
 	protected function months_dropdown( $post_type ) {
-		global $wpdb, $wp_locale;
+		global $wp_locale;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		/**
 		 * Filters whether to remove the 'Months' drop-down from the post list table.

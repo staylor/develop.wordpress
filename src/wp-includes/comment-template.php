@@ -1277,7 +1277,6 @@ function wp_comment_form_unfiltered_html_nonce() {
  *
  * @global WP_Query   $wp_query
  * @global WP_Post    $post
- * @global wpdb       $wpdb
  * @global int        $id
  * @global WP_Comment $comment
  * @global string     $user_login
@@ -1295,6 +1294,9 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 
 	if ( !(is_single() || is_page() || $withcomments) || empty($post) )
 		return;
+
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( empty($file) )
 		$file = '/comments.php';

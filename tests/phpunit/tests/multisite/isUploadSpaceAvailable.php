@@ -24,7 +24,7 @@ class Tests_Multisite_Is_Upload_Space_Available extends WP_UnitTestCase {
 	}
 
 	public function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 
@@ -32,7 +32,7 @@ class Tests_Multisite_Is_Upload_Space_Available extends WP_UnitTestCase {
 	}
 
 	public function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		/**
 		 * Reset the two `blog_upload_space` options to their original values so

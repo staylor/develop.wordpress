@@ -421,11 +421,13 @@ function require_wp_db() {
  * @since 3.0.0
  * @access private
  *
- * @global wpdb   $wpdb         The WordPress database class.
  * @global string $table_prefix The database table prefix.
  */
 function wp_set_wpdb_vars() {
-	global $wpdb, $table_prefix;
+	$app = getApp();
+	$wpdb = $app['db'];
+
+	global $table_prefix;
 	if ( !empty( $wpdb->error ) )
 		dead_db();
 

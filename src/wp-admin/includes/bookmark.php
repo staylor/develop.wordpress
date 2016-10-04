@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Add a link to using values provided in $_POST.
  *
@@ -79,13 +81,12 @@ function get_default_link_to_edit() {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $link_id ID of the link to delete
  * @return true Always true.
  */
 function wp_delete_link( $link_id ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	/**
 	 * Fires before a link is deleted.
 	 *
@@ -143,14 +144,13 @@ function get_link_to_edit( $link ) {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array $linkdata Elements that make up the link to insert.
  * @param bool  $wp_error Optional. Whether to return a WP_Error object on failure. Default false.
  * @return int|WP_Error Value 0 or WP_Error on failure. The link ID on success.
  */
 function wp_insert_link( $linkdata, $wp_error = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$defaults = array( 'link_id' => 0, 'link_name' => '', 'link_url' => '', 'link_rating' => 0 );
 

@@ -15,13 +15,13 @@ class Tests_Multisite_Network_Query extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 	}
 
 	function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->suppress_errors( $this->suppress );
 		parent::tearDown();
 	}
@@ -41,7 +41,7 @@ class Tests_Multisite_Network_Query extends WP_UnitTestCase {
 	}
 
 	public static function wpTearDownAfterClass() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		foreach( self::$network_ids as $id ) {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->sitemeta} WHERE site_id = %d", $id ) );

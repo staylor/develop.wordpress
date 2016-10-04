@@ -797,16 +797,16 @@ if ( ! defined( 'CORE_UPGRADE_SKIP_NEW_BUNDLED' ) || CORE_UPGRADE_SKIP_NEW_BUNDL
  * @global WP_Filesystem_Base $wp_filesystem
  * @global array              $_old_files
  * @global array              $_new_bundled_files
- * @global wpdb               $wpdb
  *
  * @param string $from New release unzipped path.
  * @param string $to   Path to old WordPress installation.
  * @return WP_Error|null WP_Error on failure, null on success.
  */
 function update_core($from, $to) {
-	global $wp_filesystem, $_old_files, $_new_bundled_files, $wpdb;
+	global $wp_filesystem, $_old_files, $_new_bundled_files;
 
 	$app = getApp();
+	$wpdb = $app['db'];
 
 	@set_time_limit( 300 );
 

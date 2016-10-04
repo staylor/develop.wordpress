@@ -307,7 +307,7 @@ class Tests_User_Query extends WP_UnitTestCase {
 	 * @ticket 30064
 	 */
 	public function test_orderby_include() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_User_Query( array(
 			'orderby' => 'include',
@@ -326,7 +326,7 @@ class Tests_User_Query extends WP_UnitTestCase {
 	 * @ticket 30064
 	 */
 	public function test_orderby_include_duplicate_values() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_User_Query( array(
 			'orderby' => 'include',

@@ -25,7 +25,7 @@ class Tests_List_Pages extends WP_UnitTestCase {
 	*/
 	function setUp() {
 		parent::setUp();
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->query( 'TRUNCATE ' . $wpdb->prefix . 'posts' );
 		$pages = array();
 		self::factory()->user->create();

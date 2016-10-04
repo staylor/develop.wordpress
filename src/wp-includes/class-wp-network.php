@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used for interacting with a multisite network.
  *
@@ -93,13 +95,12 @@ class WP_Network {
 	 * @since 4.4.0
 	 * @access public
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @param int $network_id The ID of the network to retrieve.
 	 * @return WP_Network|bool The network's object if found. False if not.
 	 */
 	public static function get_instance( $network_id ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$network_id = (int) $network_id;
 		if ( ! $network_id ) {
@@ -267,7 +268,8 @@ class WP_Network {
 	 * @return WP_Network|bool Network object if successful. False when no network is found.
 	 */
 	public static function get_by_path( $domain = '', $path = '', $segments = null ) {
-		global $wpdb;
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		$domains = array( $domain );
 		$pieces  = explode( '.', $domain );

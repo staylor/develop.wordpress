@@ -350,15 +350,14 @@ function wp_validate_logged_in_cookie( $user_id ) {
  * @since 4.3.0 Added `$public_only` argument. Added the ability to pass an array
  *              of post types to `$post_type`.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int          $userid      User ID.
  * @param array|string $post_type   Optional. Single post type or array of post types to count the number of posts for. Default 'post'.
  * @param bool         $public_only Optional. Whether to only return counts for public posts. Default false.
  * @return string Number of posts the user has written in this post type.
  */
 function count_user_posts( $userid, $post_type = 'post', $public_only = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$where = get_posts_by_author_sql( $post_type, true, $userid, $public_only );
 
@@ -384,15 +383,14 @@ function count_user_posts( $userid, $post_type = 'post', $public_only = false ) 
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array        $users       Array of user IDs.
  * @param string|array $post_type   Optional. Single post type or array of post types to check. Defaults to 'post'.
  * @param bool         $public_only Optional. Only return counts for public posts.  Defaults to false.
  * @return array Amount of posts each user has written.
  */
 function count_many_users_posts( $users, $post_type = 'post', $public_only = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$count = array();
 	if ( empty( $users ) || ! is_array( $users ) )
@@ -444,15 +442,14 @@ function get_current_user_id() {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $option     User option name.
  * @param int    $user       Optional. User ID.
  * @param string $deprecated Use get_option() to check for an option in the options table.
  * @return mixed User option value on success, false on failure.
  */
 function get_user_option( $option, $user = 0, $deprecated = '' ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( !empty( $deprecated ) )
 		_deprecated_argument( __FUNCTION__, '3.0.0' );
@@ -496,8 +493,6 @@ function get_user_option( $option, $user = 0, $deprecated = '' ) {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int    $user_id     User ID.
  * @param string $option_name User option name.
  * @param mixed  $newvalue    User option value.
@@ -507,7 +502,8 @@ function get_user_option( $option, $user = 0, $deprecated = '' ) {
  *                  false on failure.
  */
 function update_user_option( $user_id, $option_name, $newvalue, $global = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( !$global )
 		$option_name = $wpdb->get_blog_prefix() . $option_name;
@@ -524,8 +520,6 @@ function update_user_option( $user_id, $option_name, $newvalue, $global = false 
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int    $user_id     User ID
  * @param string $option_name User option name.
  * @param bool   $global      Optional. Whether option name is global or blog specific.
@@ -533,7 +527,8 @@ function update_user_option( $user_id, $option_name, $newvalue, $global = false 
  * @return bool True on success, false on failure.
  */
 function delete_user_option( $user_id, $option_name, $global = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( !$global )
 		$option_name = $wpdb->get_blog_prefix() . $option_name;
@@ -567,8 +562,6 @@ function get_users( $args = array() ) {
  * @since 3.0.0
  * @since 4.7.0 Converted to use get_sites().
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int  $user_id User ID
  * @param bool $all     Whether to retrieve all sites, or only sites that are not
  *                      marked as deleted, archived, or spam.
@@ -576,7 +569,8 @@ function get_users( $args = array() ) {
  *               or belongs to no sites.
  */
 function get_blogs_of_user( $user_id, $all = false ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$user_id = (int) $user_id;
 
@@ -697,7 +691,8 @@ function get_blogs_of_user( $user_id, $all = false ) {
  * @return bool
  */
 function is_user_member_of_blog( $user_id = 0, $blog_id = 0 ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$user_id = (int) $user_id;
 	$blog_id = (int) $blog_id;
@@ -1362,8 +1357,6 @@ function validate_username( $username ) {
  *              methods for new installs. See wp_get_user_contact_methods().
  * @since 4.7.0 The user's locale can be passed to `$userdata`.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param array|object|User $userdata {
  *     An array, object, or User object of user data arguments.
  *
@@ -1401,7 +1394,8 @@ function validate_username( $username ) {
  *                      be created.
  */
 function wp_insert_user( $userdata ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( $userdata instanceof stdClass ) {
 		$userdata = get_object_vars( $userdata );
@@ -2046,7 +2040,6 @@ function wp_get_password_hint() {
  *
  * @since 4.4.0
  *
- * @global wpdb         $wpdb      WordPress database abstraction object.
  * @global PasswordHash $wp_hasher Portable PHP password hashing framework.
  *
  * @param User $user User to retrieve password reset key for.
@@ -2054,7 +2047,9 @@ function wp_get_password_hint() {
  * @return string|WP_Error Password reset key on success. WP_Error on error.
  */
 function get_password_reset_key( $user ) {
-	global $wpdb, $wp_hasher;
+	global $wp_hasher;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	/**
 	 * Fires before a new password is retrieved.
@@ -2134,7 +2129,6 @@ function get_password_reset_key( $user ) {
  *
  * @since 3.1.0
  *
- * @global wpdb         $wpdb      WordPress database object for queries.
  * @global PasswordHash $wp_hasher Portable PHP password hashing framework instance.
  *
  * @param string $key       Hash to validate sending user's password.
@@ -2142,7 +2136,9 @@ function get_password_reset_key( $user ) {
  * @return User|WP_Error    User object on success, WP_Error object for invalid or expired keys.
  */
 function check_password_reset_key($key, $login) {
-	global $wpdb, $wp_hasher;
+	global $wp_hasher;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$key = preg_replace('/[^a-z0-9]/i', '', $key);
 

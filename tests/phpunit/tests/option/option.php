@@ -130,7 +130,7 @@ class Tests_Option_Option extends WP_UnitTestCase {
 	 * @dataProvider data_option_autoloading
 	 */
 	function test_option_autoloading( $name, $autoload_value, $expected ) {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$added = add_option( $name, 'Autoload test', '', $autoload_value );
 		$this->assertTrue( $added );
 

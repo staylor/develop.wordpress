@@ -567,12 +567,11 @@ function _list_meta_row( $entry, &$count ) {
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param WP_Post $post Optional. The post being edited.
  */
 function meta_form( $post = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$post = get_post( $post );
 
 	/**
@@ -773,8 +772,6 @@ function page_template_dropdown( $default = '' ) {
  * @since 1.5.0
  * @since 4.4.0 `$post` argument was added.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int         $default Optional. The default page ID to be pre-selected. Default 0.
  * @param int         $parent  Optional. The parent page ID. Default 0.
  * @param int         $level   Optional. Page depth level. Default 0.
@@ -783,7 +780,8 @@ function page_template_dropdown( $default = '' ) {
  * @return null|false Boolean False if page has no children, otherwise print out html elements
  */
 function parent_dropdown( $default = 0, $parent = 0, $level = 0, $post = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$post = get_post( $post );
 	$items = $wpdb->get_results( $wpdb->prepare("SELECT ID, post_parent, post_title FROM $wpdb->posts WHERE post_parent = %d AND post_type = 'page' ORDER BY menu_order", $parent) );
 

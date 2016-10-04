@@ -9,6 +9,8 @@
  * @subpackage HTTP
  */
 
+use function WP\getApp;
+
 /**
  * Returns the initialized WP_Http Object
  *
@@ -602,7 +604,6 @@ function allowed_http_request_hosts( $is_external, $host ) {
  *
  * @since 3.6.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
  * @staticvar array $queried
  *
  * @param bool   $is_external
@@ -610,7 +611,8 @@ function allowed_http_request_hosts( $is_external, $host ) {
  * @return bool
  */
 function ms_allowed_http_request_hosts( $is_external, $host ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	static $queried = array();
 	if ( $is_external )
 		return $is_external;

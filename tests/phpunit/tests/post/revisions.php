@@ -327,9 +327,7 @@ class Tests_Post_Revisions extends WP_UnitTestCase {
 	/**
 	 * @ticket 26042
 	 */
-	function test_wp_get_post_revisions_should_order_by_post_date() {
-		global $wpdb;
-
+	function test_wp_get_post_revisions_should_order_by_post_date() {;
 		$post = self::factory()->post->create_and_get( array( 'post_title' => 'some-post', 'post_type' => 'post', 'post_content' => 'some_content' ) );
 
 		$post = (array) $post;

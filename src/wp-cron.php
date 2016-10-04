@@ -9,6 +9,8 @@
  * @package WordPress
  */
 
+use function WP\getApp;
+
 ignore_user_abort(true);
 
 if ( !empty($_POST) || defined('DOING_AJAX') || defined('DOING_CRON') )
@@ -37,7 +39,8 @@ if ( !defined('ABSPATH') ) {
  * @return string|false Value of the `doing_cron` transient, 0|false otherwise.
  */
 function _get_cron_lock() {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$value = 0;
 	if ( wp_using_ext_object_cache() ) {

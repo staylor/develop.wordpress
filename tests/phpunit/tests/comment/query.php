@@ -1237,7 +1237,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_default() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$q->query( array() );
@@ -1246,7 +1246,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_single() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$q->query( array(
@@ -1257,7 +1257,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_single_invalid() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$q->query( array(
@@ -1268,7 +1268,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_space_separated() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$q->query( array(
@@ -1279,7 +1279,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_comma_separated() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$q->query( array(
@@ -1290,7 +1290,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_flat_array() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$q->query( array(
@@ -1301,7 +1301,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_array_contains_invalid_item() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$q->query( array(
@@ -1312,7 +1312,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_orderby_array_contains_all_invalid_items() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$q->query( array(
@@ -1362,7 +1362,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 30478
 	 */
 	public function test_orderby_array() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$found = $q->query( array(
@@ -1381,7 +1381,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 30478
 	 */
 	public function test_orderby_array_should_discard_invalid_columns() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$found = $q->query( array(
@@ -1400,7 +1400,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 30478
 	 */
 	public function test_orderby_array_should_convert_invalid_order_to_DESC() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$found = $q->query( array(
@@ -1419,7 +1419,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 30478
 	 */
 	public function test_orderby_array_should_sort_by_comment_ID_as_fallback_and_should_inherit_order_from_comment_date_gmt() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$found = $q->query( array(
@@ -1437,7 +1437,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 30478
 	 */
 	public function test_orderby_array_should_sort_by_comment_ID_as_fallback_and_should_inherit_order_from_comment_date() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$found = $q->query( array(
@@ -1455,7 +1455,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 30478
 	 */
 	public function test_orderby_array_should_sort_by_comment_ID_DESC_as_fallback_when_not_sorted_by_date() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query();
 		$found = $q->query( array(
@@ -1847,7 +1847,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 22400
 	 */
 	public function test_comment_cache_key_should_ignore_custom_params() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create();
 		$c = self::factory()->comment->create( array( 'comment_post_ID' => $p ) );
@@ -1874,7 +1874,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 35677
 	 */
 	public function test_cache_should_be_sensitive_to_parent__in() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q1 = new WP_Comment_Query( array(
 			'parent__in' => array( 1, 2, 3 ),
@@ -1893,7 +1893,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 35677
 	 */
 	public function test_cache_should_be_sensitive_to_parent__not_in() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q1 = new WP_Comment_Query( array(
 			'parent__not_in' => array( 1, 2, 3 ),
@@ -2399,7 +2399,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function prepend_exclusions( $clauses ) {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$clauses['where'] = $wpdb->prepare( 'comment_ID != %d AND comment_ID != %d AND ', $this->to_exclude[0], $this->to_exclude[1] ) . $clauses['where'];
 		return $clauses;
 	}
@@ -2445,7 +2445,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function append_exclusions( $clauses ) {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$clauses['where'] .= $wpdb->prepare( ' AND comment_ID != %d AND comment_ID != %d', $this->to_exclude[0], $this->to_exclude[1] );
 		return $clauses;
 	}
@@ -2454,7 +2454,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 36487
 	 */
 	public function test_cache_should_be_hit_when_querying_descendants() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create();
 		$comment_1 = self::factory()->comment->create( array(
@@ -2498,8 +2498,6 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 37696
 	 */
 	public function test_hierarchy_should_be_filled_when_cache_is_incomplete() {
-		global $wpdb;
-
 		$p = self::factory()->post->create();
 		$comment_1 = self::factory()->comment->create( array(
 			'comment_post_ID' => $p,
@@ -2547,7 +2545,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 27571
 	 */
 	public function test_update_comment_post_cache_should_be_disabled_by_default() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create();
 		$c = self::factory()->comment->create( array( 'comment_post_ID' => $p ) );
@@ -2565,7 +2563,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 27571
 	 */
 	public function test_should_respect_update_comment_post_cache_true() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$p = self::factory()->post->create();
 		$c = self::factory()->comment->create( array( 'comment_post_ID' => $p ) );
@@ -2584,7 +2582,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	 * @ticket 34138
 	 */
 	public function test_comment_objects_should_be_filled_from_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$comments = self::factory()->comment->create_many( 3, array( 'comment_post_ID' => self::$post_id ) );
 		clean_comment_cache( $comments );
@@ -2626,7 +2624,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_comment_query_should_be_cached() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$q = new WP_Comment_Query( array(
 			'post_id' => self::$post_id,
@@ -2643,7 +2641,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_created_comment_should_invalidate_query_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$c = self::factory()->comment->create( array(
 			'comment_post_ID' => self::$post_id,
@@ -2667,7 +2665,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_updated_comment_should_invalidate_query_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$c = self::factory()->comment->create( array(
 			'comment_post_ID' => self::$post_id,
@@ -2699,7 +2697,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_deleted_comment_should_invalidate_query_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$c = self::factory()->comment->create( array(
 			'comment_post_ID' => self::$post_id,
@@ -2726,7 +2724,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_trashed_comment_should_invalidate_query_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$c = self::factory()->comment->create( array(
 			'comment_post_ID' => self::$post_id,
@@ -2753,7 +2751,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_untrashed_comment_should_invalidate_query_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$c = self::factory()->comment->create( array(
 			'comment_post_ID' => self::$post_id,
@@ -2782,7 +2780,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_spammed_comment_should_invalidate_query_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$c = self::factory()->comment->create( array(
 			'comment_post_ID' => self::$post_id,
@@ -2809,7 +2807,7 @@ class Tests_Comment_Query extends WP_UnitTestCase {
 	}
 
 	public function test_unspammed_comment_should_invalidate_query_cache() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$c = self::factory()->comment->create( array(
 			'comment_post_ID' => self::$post_id,

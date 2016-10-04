@@ -7,7 +7,7 @@ class Tests_Post_WpPost extends WP_UnitTestCase {
 	protected static $post_id;
 
 	public static function wpSetUpBeforeClass( $factory ) {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		// Ensure that there is a post with ID 1.
 		if ( ! get_post( 1 ) ) {

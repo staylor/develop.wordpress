@@ -265,13 +265,12 @@ function get_user_to_edit( $user_id ) {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $user_id User ID.
  * @return array
  */
 function get_users_drafts( $user_id ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 	$query = $wpdb->prepare("SELECT ID, post_title FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'draft' AND post_author = %d ORDER BY post_modified DESC", $user_id);
 
 	/**
@@ -295,14 +294,13 @@ function get_users_drafts( $user_id ) {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int $id User ID.
  * @param int $reassign Optional. Reassign posts and links to new User ID.
  * @return bool True when finished.
  */
 function wp_delete_user( $id, $reassign = null ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	if ( ! is_numeric( $id ) ) {
 		return false;

@@ -8,6 +8,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
@@ -19,6 +20,9 @@ if ( ! current_user_can( 'list_users' ) ) {
 		403
 	);
 }
+
+$app = getApp();
+$wpdb = $app['db'];
 
 $wp_list_table = _get_list_table('WP_Users_List_Table');
 $pagenum = $wp_list_table->get_pagenum();

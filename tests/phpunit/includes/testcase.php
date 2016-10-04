@@ -102,7 +102,7 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 			$this->_backup_hooks();
 		}
 
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->suppress_errors = false;
 		$wpdb->show_errors = true;
 		$wpdb->db_connect();
@@ -152,7 +152,8 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	 * After a test method runs, reset any state in WordPress the test method might have changed.
 	 */
 	function tearDown() {
-		global $wpdb, $wp_query, $wp;
+		global $wp_query, $wp;
+		$wpdb = $this->app['db'];
 		$wpdb->query( 'ROLLBACK' );
 		if ( is_multisite() ) {
 			while ( ms_is_switched() ) {
@@ -290,7 +291,7 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	}
 
 	function start_transaction() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->query( 'SET autocommit = 0;' );
 		$wpdb->query( 'START TRANSACTION;' );
 		add_filter( 'query', array( $this, '_create_temporary_tables' ) );
@@ -303,7 +304,7 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	 * @since 4.1.0
 	 */
 	public static function commit_transaction() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		$wpdb->query( 'COMMIT;' );
 	}
 

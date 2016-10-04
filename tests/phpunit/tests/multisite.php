@@ -11,19 +11,19 @@ class Tests_Multisite extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	function setUp() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::setUp();
 		$this->suppress = $wpdb->suppress_errors();
 	}
 
 	function tearDown() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 		parent::tearDown();
 		$wpdb->suppress_errors( $this->suppress );
 	}
 
 	function test_wpmu_log_new_registrations() {
-		global $wpdb;
+		$wpdb = $this->app['db'];
 
 		$user = new User( 1 );
 		$ip = preg_replace( '/[^0-9., ]/', '',$_SERVER['REMOTE_ADDR'] );

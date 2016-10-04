@@ -7,6 +7,8 @@
  * @since 2.3.0
  */
 
+use function WP\getApp;
+
 /**
  * Determine if a comment exists based on author and date.
  *
@@ -16,8 +18,6 @@
  * @since 2.0.0
  * @since 4.4.0 Added the `$timezone` parameter.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param string $comment_author Author of the comment.
  * @param string $comment_date   Date of the comment.
  * @param string $timezone       Timezone. Accepts 'blog' or 'gmt'. Default 'blog'.
@@ -25,7 +25,8 @@
  * @return mixed Comment post ID on success.
  */
 function comment_exists( $comment_author, $comment_date, $timezone = 'blog' ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$date_field = 'comment_date';
 	if ( 'gmt' === $timezone ) {
@@ -123,13 +124,12 @@ function get_comment_to_edit( $id ) {
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- *
  * @param int|array $post_id Either a single Post ID or an array of Post IDs
  * @return int|array Either a single Posts pending comments as an int or an array of ints keyed on the Post IDs
  */
 function get_pending_comments_num( $post_id ) {
-	global $wpdb;
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$single = false;
 	if ( !is_array($post_id) ) {
