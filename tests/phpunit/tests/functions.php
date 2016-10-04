@@ -237,7 +237,8 @@ class Tests_Functions extends WP_UnitTestCase {
 	 * @group add_query_arg
 	 */
 	function test_add_query_arg() {
-		$old_req_uri = $_SERVER['REQUEST_URI'];
+		$old_req_uri = $this->app->raw( 'request.uri' );
+		unset( $this->app['request.uri'] );
 
 		$urls = array(
 			'/',
@@ -256,14 +257,14 @@ class Tests_Functions extends WP_UnitTestCase {
 		);
 
 		foreach ( $urls as $url ) {
-			$_SERVER['REQUEST_URI'] = 'nothing';
+			$this->app['request.uri'] = 'nothing';
 
 			$this->assertEquals( "$url?foo=1", add_query_arg( 'foo', '1', $url ) );
 			$this->assertEquals( "$url?foo=1", add_query_arg( array( 'foo' => '1' ), $url ) );
 			$this->assertEquals( "$url?foo=2", add_query_arg( array( 'foo' => '1', 'foo' => '2' ), $url ) );
 			$this->assertEquals( "$url?foo=1&bar=2", add_query_arg( array( 'foo' => '1', 'bar' => '2' ), $url ) );
 
-			$_SERVER['REQUEST_URI'] = $url;
+			$this->app['request.uri'] = $url;
 
 			$this->assertEquals( "$url?foo=1", add_query_arg( 'foo', '1' ) );
 			$this->assertEquals( "$url?foo=1", add_query_arg( array( 'foo' => '1' ) ) );
@@ -272,7 +273,7 @@ class Tests_Functions extends WP_UnitTestCase {
 		}
 
 		foreach ( $frag_urls as $frag_url ) {
-			$_SERVER['REQUEST_URI'] = 'nothing';
+			$this->app['request.uri'] = 'nothing';
 			$url = str_replace( '#frag', '', $frag_url );
 
 			$this->assertEquals( "$url?foo=1#frag", add_query_arg( 'foo', '1', $frag_url ) );
@@ -280,7 +281,7 @@ class Tests_Functions extends WP_UnitTestCase {
 			$this->assertEquals( "$url?foo=2#frag", add_query_arg( array( 'foo' => '1', 'foo' => '2' ), $frag_url ) );
 			$this->assertEquals( "$url?foo=1&bar=2#frag", add_query_arg( array( 'foo' => '1', 'bar' => '2' ), $frag_url ) );
 
-			$_SERVER['REQUEST_URI'] = $frag_url;
+			$this->app['request.uri'] = $frag_url;
 
 			$this->assertEquals( "$url?foo=1#frag", add_query_arg( 'foo', '1' ) );
 			$this->assertEquals( "$url?foo=1#frag", add_query_arg( array( 'foo' => '1' ) ) );
@@ -301,14 +302,14 @@ class Tests_Functions extends WP_UnitTestCase {
 		);
 
 		foreach ( $qs_urls as $url ) {
-			$_SERVER['REQUEST_URI'] = 'nothing';
+			$this->app['request.uri'] = 'nothing';
 
 			$this->assertEquals( "$url&foo=1", add_query_arg( 'foo', '1', $url ) );
 			$this->assertEquals( "$url&foo=1", add_query_arg( array( 'foo' => '1' ), $url ) );
 			$this->assertEquals( "$url&foo=2", add_query_arg( array( 'foo' => '1', 'foo' => '2' ), $url ) );
 			$this->assertEquals( "$url&foo=1&bar=2", add_query_arg( array( 'foo' => '1', 'bar' => '2' ), $url ) );
 
-			$_SERVER['REQUEST_URI'] = $url;
+			$this->app['request.uri'] = $url;
 
 			$this->assertEquals( "$url&foo=1", add_query_arg( 'foo', '1' ) );
 			$this->assertEquals( "$url&foo=1", add_query_arg( array( 'foo' => '1' ) ) );
@@ -316,7 +317,7 @@ class Tests_Functions extends WP_UnitTestCase {
 			$this->assertEquals( "$url&foo=1&bar=2", add_query_arg( array( 'foo' => '1', 'bar' => '2' ) ) );
 		}
 
-		$_SERVER['REQUEST_URI'] = $old_req_uri;
+		$this->app['request.uri'] = $old_req_uri;
 	}
 
 	/**
@@ -445,9 +446,12 @@ class Tests_Functions extends WP_UnitTestCase {
 	 * @dataProvider data_device_can_upload
 	 */
 	function test_device_can_upload( $user_agent, $expected ) {
-		$_SERVER['HTTP_USER_AGENT'] = $user_agent;
+		$old = $this->app->raw( 'request.useragent' );
+		unset( $this->app['request.useragent'] );
+		$this->app['request.useragent'] = $user_agent;
 		$actual = _device_can_upload();
-		unset( $_SERVER['HTTP_USER_AGENT'] );
+		unset( $this->app['request.useragent'] );
+		$this->app['request.useragent'] = $old;
 		$this->assertEquals( $expected, $actual );
 	}
 
