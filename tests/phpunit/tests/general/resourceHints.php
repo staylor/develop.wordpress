@@ -5,26 +5,21 @@
  * @ticket 34292
  */
 class Tests_WP_Resource_Hints extends WP_UnitTestCase {
-	private $old_wp_scripts;
-	private $old_wp_styles;
 
 	function setUp() {
 		parent::setUp();
-		$this->old_wp_scripts = isset( $GLOBALS['wp_scripts'] ) ? $GLOBALS['wp_scripts'] : null;
-		$this->old_wp_styles = isset( $GLOBALS['wp_styles'] ) ? $GLOBALS['wp_styles'] : null;
-
 		remove_action( 'wp_default_scripts', 'wp_default_scripts' );
 		remove_action( 'wp_default_styles', 'wp_default_styles' );
 
-		$GLOBALS['wp_scripts'] = new WP_Scripts();
-		$GLOBALS['wp_scripts']->default_version = get_bloginfo( 'version' );
-		$GLOBALS['wp_styles'] = new WP_Styles();
-		$GLOBALS['wp_styles']->default_version = get_bloginfo( 'version' );
+		$this->app['scripts.global'] = $this->app['scripts.factory'];
+		$this->app['scripts.global']->default_version = get_bloginfo( 'version' );
+		$this->app['styles.global'] = $this->app['styles.factory'];
+		$this->app['styles.global']->default_version = get_bloginfo( 'version' );
 	}
 
 	function tearDown() {
-		$GLOBALS['wp_scripts'] = $this->old_wp_scripts;
-		$GLOBALS['wp_styles']  = $this->old_wp_styles;
+		$this->app['scripts.global'] = null;
+		$this->app['styles.global'] = null;
 		add_action( 'wp_default_scripts', 'wp_default_scripts' );
 		add_action( 'wp_default_styles', 'wp_default_styles' );
 		parent::tearDown();

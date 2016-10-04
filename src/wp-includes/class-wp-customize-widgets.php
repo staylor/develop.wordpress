@@ -7,6 +7,8 @@
  * @since 3.9.0
  */
 
+use function WP\getApp;
+
 /**
  * Customize Widgets class.
  *
@@ -667,12 +669,11 @@ final class WP_Customize_Widgets {
 	 * @since 3.9.0
 	 * @access public
 	 *
-	 * @global WP_Scripts $wp_scripts
 	 * @global array $wp_registered_sidebars
 	 * @global array $wp_registered_widgets
 	 */
 	public function enqueue_scripts() {
-		global $wp_scripts, $wp_registered_sidebars, $wp_registered_widgets;
+		global $wp_registered_sidebars, $wp_registered_widgets;
 
 		wp_enqueue_style( 'customize-widgets' );
 		wp_enqueue_script( 'customize-widgets' );
@@ -747,7 +748,8 @@ final class WP_Customize_Widgets {
 			unset( $registered_widget['callback'] ); // may not be JSON-serializeable
 		}
 
-		$wp_scripts->add_data(
+		$app = getApp();
+		$app['scripts.global']->add_data(
 			'customize-widgets',
 			'data',
 			sprintf( 'var _wpCustomizeWidgetsSettings = %s;', wp_json_encode( $settings ) )

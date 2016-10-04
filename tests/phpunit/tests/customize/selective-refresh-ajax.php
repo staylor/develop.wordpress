@@ -501,7 +501,6 @@ class Test_WP_Customize_Selective_Refresh_Ajax extends WP_UnitTestCase {
 		$this->expected_partial_ids = null;
 		$this->wp_customize = null;
 		unset( $GLOBALS['wp_customize'] );
-		unset( $GLOBALS['wp_scripts'] );
 		parent::tearDown();
 	}
 }

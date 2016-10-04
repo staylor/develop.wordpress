@@ -7,6 +7,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /**
  * Retrieve additional image sizes.
@@ -2953,7 +2954,8 @@ function _wp_image_editor_choose( $args = array() ) {
  * @since 3.4.0
  */
 function wp_plupload_default_settings() {
-	$wp_scripts = wp_scripts();
+	$app = getApp();
+	$wp_scripts = $app['scripts.global'];
 
 	$data = $wp_scripts->get_data( 'wp-plupload', 'data' );
 	if ( $data && false !== strpos( $data, '_wpPluploadSettings' ) )

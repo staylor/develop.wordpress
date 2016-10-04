@@ -20,6 +20,8 @@ if ( ! current_user_can( 'customize' ) ) {
 	);
 }
 
+$app = WP\getApp();
+
 wp_reset_vars( array( 'url', 'return', 'autofocus' ) );
 if ( ! empty( $url ) ) {
 	$wp_customize->set_preview_url( wp_unslash( $url ) );
@@ -32,14 +34,13 @@ if ( ! empty( $autofocus ) && is_array( $autofocus ) ) {
 }
 
 /**
- * @global WP_Scripts           $wp_scripts
  * @global WP_Customize_Manager $wp_customize
  */
-global $wp_scripts, $wp_customize;
+global $wp_customize;
 
-$registered = $wp_scripts->registered;
-$wp_scripts = new WP_Scripts;
-$wp_scripts->registered = $registered;
+$registered = $app['scripts.global']->registered;
+$app['scripts.global'] = $app['scripts.factory'];
+$app['scripts.global']->registered = $registered;
 
 add_action( 'customize_controls_print_scripts',        'print_head_scripts', 20 );
 add_action( 'customize_controls_print_footer_scripts', '_wp_footer_scripts'     );

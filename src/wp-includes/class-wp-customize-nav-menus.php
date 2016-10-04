@@ -7,6 +7,8 @@
  * @since 4.3.0
  */
 
+use function WP\getApp;
+
 /**
  * Customize Nav Menus class.
  *
@@ -403,7 +405,8 @@ final class WP_Customize_Nav_Menus {
 		);
 
 		$data = sprintf( 'var _wpCustomizeNavMenusSettings = %s;', wp_json_encode( $settings ) );
-		wp_scripts()->add_data( 'customize-nav-menus', 'data', $data );
+		$app = getApp();
+		$app['scripts.global']->add_data( 'customize-nav-menus', 'data', $data );
 
 		// This is copied from nav-menus.php, and it has an unfortunate object name of `menus`.
 		$nav_menus_l10n = array(

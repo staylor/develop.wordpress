@@ -6,6 +6,8 @@
  * @subpackage Theme
  */
 
+use function WP\getApp;
+
 /**
  * Returns an array of WP_Theme objects based on the arguments.
  *
@@ -2110,11 +2112,13 @@ function _wp_customize_loader_settings() {
 
 	$script = 'var _wpCustomizeLoaderSettings = ' . wp_json_encode( $settings ) . ';';
 
-	$wp_scripts = wp_scripts();
-	$data = $wp_scripts->get_data( 'customize-loader', 'data' );
-	if ( $data )
-		$script = "$data\n$script";
+	$app = getApp();
+	$wp_scripts = $app['scripts.global'];
 
+	$data = $wp_scripts->get_data( 'customize-loader', 'data' );
+	if ( $data ) {
+		$script = "$data\n$script";
+	}
 	$wp_scripts->add_data( 'customize-loader', 'data', $script );
 }
 

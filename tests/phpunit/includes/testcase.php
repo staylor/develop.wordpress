@@ -1,4 +1,5 @@
 <?php
+use function WP\getApp;
 
 require_once dirname( __FILE__ ) . '/factory.php';
 require_once dirname( __FILE__ ) . '/trac.php';
@@ -13,6 +14,7 @@ require_once dirname( __FILE__ ) . '/trac.php';
  * All WordPress unit tests should inherit from this class.
  */
 class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
+	protected $app;
 
 	protected static $forced_tickets = array();
 	protected $expected_deprecated = array();
@@ -88,6 +90,8 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	}
 
 	function setUp() {
+		$this->app = getApp();
+
 		set_time_limit(0);
 
 		if ( ! self::$ignore_files ) {
@@ -125,6 +129,12 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 		$this->start_transaction();
 		$this->expectDeprecated();
 		add_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
+
+		$this->app['styles.global'] = $this->app['styles.factory'];
+		$this->app['scripts.global'] = $this->app['scripts.factory'];
+		remove_action( 'wp_default_styles', 'wp_default_styles' );
+		remove_action( 'wp_print_styles', 'print_emoji_styles' );
+		remove_action( 'wp_default_scripts', 'wp_default_scripts' );
 	}
 
 	/**

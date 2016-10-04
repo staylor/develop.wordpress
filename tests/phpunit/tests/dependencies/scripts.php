@@ -4,18 +4,15 @@
  * @group scripts
  */
 class Tests_Dependencies_Scripts extends WP_UnitTestCase {
-	var $old_wp_scripts;
-
 	function setUp() {
 		parent::setUp();
-		$this->old_wp_scripts = isset( $GLOBALS['wp_scripts'] ) ? $GLOBALS['wp_scripts'] : null;
+		$this->app['scripts.global'] = $this->app['scripts.factory'];
 		remove_action( 'wp_default_scripts', 'wp_default_scripts' );
-		$GLOBALS['wp_scripts'] = new WP_Scripts();
-		$GLOBALS['wp_scripts']->default_version = get_bloginfo( 'version' );
+		$this->app['scripts.global']->default_version = get_bloginfo( 'version' );
 	}
 
 	function tearDown() {
-		$GLOBALS['wp_scripts'] = $this->old_wp_scripts;
+		unset( $this->app['scripts.global'] );
 		add_action( 'wp_default_scripts', 'wp_default_scripts' );
 		parent::tearDown();
 	}
@@ -43,12 +40,11 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 
 	/**
 	 * Test the different protocol references in wp_enqueue_script
-	 * @global WP_Scripts $wp_scripts
 	 * @ticket 16560
 	 */
 	public function test_protocols() {
 		// Init
-		global $wp_scripts;
+		$wp_scripts = $this->app['scripts.global'];
 		$base_url_backup = $wp_scripts->base_url;
 		$wp_scripts->base_url = 'http://example.com/wordpress';
 		$expected = '';
@@ -89,8 +85,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * Test script concatenation.
 	 */
 	public function test_script_concatenation() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		$wp_scripts->do_concat = true;
 		$wp_scripts->default_dirs = array( '/directory/' );
 
@@ -437,8 +432,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 14853
 	 */
 	public function test_wp_add_inline_script_before_with_concat() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		$wp_scripts->do_concat = true;
 		$wp_scripts->default_dirs = array( '/directory/' );
 
@@ -463,8 +457,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 14853
 	 */
 	public function test_wp_add_inline_script_before_with_concat2() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		$wp_scripts->do_concat = true;
 		$wp_scripts->default_dirs = array( '/directory/' );
 
@@ -487,8 +480,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 14853
 	 */
 	public function test_wp_add_inline_script_after_with_concat() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		$wp_scripts->do_concat = true;
 		$wp_scripts->default_dirs = array( '/directory/' );
 
@@ -515,8 +507,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 14853
 	 */
 	public function test_wp_add_inline_script_after_and_before_with_concat_and_conditional() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		$wp_scripts->do_concat = true;
 		$wp_scripts->default_dirs = array('/wp-admin/js/', '/wp-includes/js/'); // Default dirs as in wp-includes/script-loader.php
 
@@ -545,8 +536,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 36392
 	 */
 	public function test_wp_add_inline_script_after_with_concat_and_core_dependency() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		wp_default_scripts( $wp_scripts );
 
 		$wp_scripts->base_url  = '';
@@ -570,8 +560,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 36392
 	 */
 	public function test_wp_add_inline_script_after_with_concat_and_conditional_and_core_dependency() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		wp_default_scripts( $wp_scripts );
 
 		$wp_scripts->base_url  = '';
@@ -598,8 +587,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 36392
 	 */
 	public function test_wp_add_inline_script_before_with_concat_and_core_dependency() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		wp_default_scripts( $wp_scripts );
 
 		$wp_scripts->base_url  = '';
@@ -623,8 +611,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 36392
 	 */
 	public function test_wp_add_inline_script_before_after_concat_with_core_dependency() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		wp_default_scripts( $wp_scripts );
 
 		$wp_scripts->base_url  = '';
@@ -652,8 +639,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 36392
 	 */
 	public function test_wp_add_inline_script_customize_dependency() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		wp_default_scripts( $wp_scripts );
 
 		$wp_scripts->base_url  = '';
@@ -680,8 +666,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 36392
 	 */
 	public function test_wp_add_inline_script_after_for_core_scripts_with_concat_is_limited_and_falls_back_to_no_concat() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		$wp_scripts->do_concat    = true;
 		$wp_scripts->default_dirs = array( '/wp-admin/js/', '/wp-includes/js/' ); // Default dirs as in wp-includes/script-loader.php
 
@@ -705,8 +690,7 @@ class Tests_Dependencies_Scripts extends WP_UnitTestCase {
 	 * @ticket 36392
 	 */
 	public function test_wp_add_inline_script_before_third_core_script_prints_two_concat_scripts() {
-		global $wp_scripts;
-
+		$wp_scripts = $this->app['scripts.global'];
 		$wp_scripts->do_concat    = true;
 		$wp_scripts->default_dirs = array( '/wp-admin/js/', '/wp-includes/js/' ); // Default dirs as in wp-includes/script-loader.php
 

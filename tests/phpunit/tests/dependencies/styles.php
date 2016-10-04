@@ -4,21 +4,16 @@
  * @group scripts
  */
 class Tests_Dependencies_Styles extends WP_UnitTestCase {
-	var $old_wp_styles;
-
 	function setUp() {
 		parent::setUp();
-		if ( empty( $GLOBALS['wp_styles'] ) )
-			$GLOBALS['wp_styles'] = null;
-		$this->old_wp_styles = $GLOBALS['wp_styles'];
+		$this->app['styles.global'] = $this->app['styles.factory'];
+		$this->app['styles.global']->default_version = get_bloginfo( 'version' );
 		remove_action( 'wp_default_styles', 'wp_default_styles' );
 		remove_action( 'wp_print_styles', 'print_emoji_styles' );
-		$GLOBALS['wp_styles'] = new WP_Styles();
-		$GLOBALS['wp_styles']->default_version = get_bloginfo( 'version' );
 	}
 
 	function tearDown() {
-		$GLOBALS['wp_styles'] = $this->old_wp_styles;
+		unset( $this->app['styles.global'] );
 		add_action( 'wp_default_styles', 'wp_default_styles' );
 		add_action( 'wp_print_styles', 'print_emoji_styles' );
 		parent::tearDown();
@@ -47,12 +42,11 @@ class Tests_Dependencies_Styles extends WP_UnitTestCase {
 
 	/**
 	 * Test the different protocol references in wp_enqueue_style
-	 * @global WP_Styles $wp_styles
 	 * @ticket 16560
 	 */
 	public function test_protocols() {
 		// Init
-		global $wp_styles;
+		$wp_styles = $this->app['styles.global'];
 		$base_url_backup = $wp_styles->base_url;
 		$wp_styles->base_url = 'http://example.com/wordpress';
 		$expected = '';
@@ -94,7 +88,6 @@ class Tests_Dependencies_Styles extends WP_UnitTestCase {
 	 * @ticket 24813
 	 */
 	public function test_inline_styles() {
-
 		$style  = ".thing {\n";
 		$style .= "\tbackground: red;\n";
 		$style .= "}";
@@ -113,15 +106,11 @@ class Tests_Dependencies_Styles extends WP_UnitTestCase {
 
 	/**
 	 * Test if inline styles work with concatination
-	 * @global WP_Styles $wp_styles
 	 * @ticket 24813
 	 */
 	public function test_inline_styles_concat() {
-
-		global $wp_styles;
-
-		$wp_styles->do_concat = true;
-		$wp_styles->default_dirs = array( '/wp-admin/', '/wp-includes/css/' ); // Default dirs as in wp-includes/script-loader.php
+		$this->app['styles.global']->do_concat = true;
+		$this->app['styles.global']->default_dirs = array( '/wp-admin/', '/wp-includes/css/' ); // Default dirs as in wp-includes/script-loader.php
 
 		$style  = ".thing {\n";
 		$style .= "\tbackground: red;\n";
@@ -136,7 +125,8 @@ class Tests_Dependencies_Styles extends WP_UnitTestCase {
 		wp_add_inline_style( 'handle', $style );
 
 		wp_print_styles();
-		$this->assertEquals( $expected, $wp_styles->print_html );
+
+		$this->assertEquals( $expected, $this->app['styles.global']->print_html );
 
 	}
 
@@ -265,7 +255,7 @@ CSS;
 	 * @ticket 35921
 	 * @dataProvider data_styles_with_media
 	 */
-	function test_wp_enqueue_style_with_media( $expected, $media ) {
+	function test_wp_enqueue_style_with_media() {
 		wp_enqueue_style( 'handle', 'http://example.com', array(), 1, $media );
 		$this->assertContains( $expected, get_echo( 'wp_print_styles' ) );
 	}

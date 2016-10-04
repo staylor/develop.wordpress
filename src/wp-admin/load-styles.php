@@ -14,7 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'WPINC', 'wp-includes' );
 
-require( ABSPATH . 'wp-vendor/autoload_wordpress.php' );
+require( ABSPATH . 'vendor/autoload.php' );
+
+$app = WP\getApp();
+
 require( ABSPATH . 'wp-admin/includes/noop.php' );
 require( ABSPATH . WPINC . '/script-loader.php' );
 require( ABSPATH . WPINC . '/version.php' );
@@ -35,8 +38,8 @@ $rtl = ( isset($_GET['dir']) && 'rtl' == $_GET['dir'] );
 $expires_offset = 31536000; // 1 year
 $out = '';
 
-$wp_styles = new WP_Styles();
-wp_default_styles($wp_styles);
+$wp_styles = $app['styles.factory'];
+wp_default_styles( $wp_styles );
 
 if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) && stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] ) === $wp_version ) {
 	$protocol = $_SERVER['SERVER_PROTOCOL'];

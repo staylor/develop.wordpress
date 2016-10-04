@@ -5,9 +5,8 @@
  * @group scripts
  */
 class Tests_Dependencies_jQuery extends WP_UnitTestCase {
-
 	function test_location_of_jquery() {
-		$scripts = new WP_Scripts;
+		$scripts = $this->app['scripts.factory'];
 		wp_default_scripts( $scripts );
 
 		$jquery_scripts = array(
@@ -19,11 +18,11 @@ class Tests_Dependencies_jQuery extends WP_UnitTestCase {
 			$jquery_scripts['jquery-migrate'] = '/wp-includes/js/jquery/jquery-migrate.min.js';
 
 		$object = $scripts->query( 'jquery', 'registered' );
-		$this->assertInstanceOf( '_WP_Dependency', $object );
+		$this->assertInstanceOf( 'WP\Dependency\Dependency', $object );
         $this->assertEqualSets( $object->deps, array_keys( $jquery_scripts ) );
         foreach( $object->deps as $dep ) {
             $o = $scripts->query( $dep, 'registered' );
-            $this->assertInstanceOf( '_WP_Dependency', $object );
+            $this->assertInstanceOf( 'WP\Dependency\Dependency', $object );
             $this->assertTrue( isset( $jquery_scripts[ $dep ] ) );
             $this->assertEquals( $jquery_scripts[ $dep ], $o->src );
         }
@@ -79,7 +78,7 @@ class Tests_Dependencies_jQuery extends WP_UnitTestCase {
 		$this->assertTrue( wp_script_is( 'jquery', 'enqueued' ) );
 		$this->assertFalse( wp_script_is( 'underscore', 'enqueued' ) );
 
-		unset( $GLOBALS['wp_scripts'] );
+		$this->app['scripts.global'] = null;
 	}
 
 	/**
@@ -88,7 +87,7 @@ class Tests_Dependencies_jQuery extends WP_UnitTestCase {
 	 * @ticket 25247
 	 */
 	function test_jquery_in_footer() {
-		$scripts = new WP_Scripts;
+		$scripts = $this->app['scripts.factory'];
 		$scripts->add( 'jquery', false, array( 'jquery-core', 'jquery-migrate' ) );
 		$scripts->add( 'jquery-core', '/jquery.js', array() );
 		$scripts->add( 'jquery-migrate', '/jquery-migrate.js', array() );

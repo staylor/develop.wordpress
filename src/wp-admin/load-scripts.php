@@ -24,18 +24,21 @@ $load = array_unique( explode( ',', $load ) );
 if ( empty($load) )
 	exit;
 
-require( ABSPATH . 'wp-vendor/autoload_wordpress.php' );
+require( ABSPATH . 'vendor/autoload.php' );
+
 require( ABSPATH . 'wp-admin/includes/noop.php' );
 require( ABSPATH . WPINC . '/script-loader.php' );
 require( ABSPATH . WPINC . '/version.php' );
+
+$app = WP\getApp();
 
 $compress = ( isset($_GET['c']) && $_GET['c'] );
 $force_gzip = ( $compress && 'gzip' == $_GET['c'] );
 $expires_offset = 31536000; // 1 year
 $out = '';
 
-$wp_scripts = new WP_Scripts();
-wp_default_scripts($wp_scripts);
+$wp_scripts = $app['scripts.factory'];
+wp_default_scripts( $wp_scripts );
 
 if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) && stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] ) === $wp_version ) {
 	$protocol = $_SERVER['SERVER_PROTOCOL'];

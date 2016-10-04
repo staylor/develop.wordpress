@@ -7,6 +7,8 @@
  * @since 2.1.0
  */
 
+use function WP\getApp;
+
 //
 // No-privilege Ajax handlers.
 //
@@ -2926,7 +2928,6 @@ function wp_ajax_query_themes() {
  *
  * @global WP_Post    $post       Global $post.
  * @global WP_Embed   $wp_embed   Embed API instance.
- * @global WP_Scripts $wp_scripts
  */
 function wp_ajax_parse_embed() {
 	global $post, $wp_embed;
@@ -2987,10 +2988,8 @@ function wp_ajax_parse_embed() {
 
 		$html = do_shortcode( $parsed );
 
-		global $wp_scripts;
-		if ( ! empty( $wp_scripts ) ) {
-			$wp_scripts->done = array();
-		}
+		$app = getApp();
+		$app['scripts.global']->done = [];
 		ob_start();
 		wp_print_scripts( 'wp-mediaelement' );
 		$scripts = ob_get_clean();
@@ -3018,10 +3017,9 @@ function wp_ajax_parse_embed() {
  * @since 4.0.0
  *
  * @global WP_Post    $post
- * @global WP_Scripts $wp_scripts
  */
 function wp_ajax_parse_media_shortcode() {
-	global $post, $wp_scripts;
+	global $post;
 
 	if ( empty( $_POST['shortcode'] ) ) {
 		wp_send_json_error();
@@ -3058,9 +3056,8 @@ function wp_ajax_parse_media_shortcode() {
 		$head .= '<link type="text/css" rel="stylesheet" href="' . $style . '">';
 	}
 
-	if ( ! empty( $wp_scripts ) ) {
-		$wp_scripts->done = array();
-	}
+	$app = getApp();
+	$app['scripts.global']->done = [];
 
 	ob_start();
 

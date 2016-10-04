@@ -16,6 +16,10 @@
  * @package WordPress
  */
 
+use WP\Dependency\Scripts;
+use WP\Dependency\Styles;
+use function WP\getApp;
+
 /** WordPress Scripts Functions */
 require( ABSPATH . WPINC . '/functions.wp-scripts.php' );
 
@@ -31,7 +35,7 @@ require( ABSPATH . WPINC . '/functions.wp-styles.php' );
  *
  * @since 2.6.0
  *
- * @param WP_Scripts $scripts WP_Scripts object.
+ * @param Scripts $scripts Scripts object.
  */
 function wp_default_scripts( &$scripts ) {
 	include( ABSPATH . WPINC . '/version.php' ); // include an unmodified $wp_version
@@ -741,7 +745,7 @@ function wp_default_scripts( &$scripts ) {
  *
  * @since 2.6.0
  *
- * @param WP_Styles $styles
+ * @param Styles $styles
  */
 function wp_default_styles( &$styles ) {
 	include( ABSPATH . WPINC . '/version.php' ); // include an unmodified $wp_version
@@ -1029,7 +1033,8 @@ function print_head_scripts() {
 		do_action( 'wp_print_scripts' );
 	}
 
-	$wp_scripts = wp_scripts();
+	$app = getApp();
+	$wp_scripts = $app['scripts.global'];
 
 	script_concat_settings();
 	$wp_scripts->do_concat = $concatenate_scripts;
@@ -1055,17 +1060,16 @@ function print_head_scripts() {
  *
  * @since 2.8.0
  *
- * @global WP_Scripts $wp_scripts
  * @global bool       $concatenate_scripts
  *
  * @return array
  */
 function print_footer_scripts() {
-	global $wp_scripts, $concatenate_scripts;
+	global $concatenate_scripts;
 
-	if ( ! ( $wp_scripts instanceof WP_Scripts ) ) {
-		return array(); // No need to run if not instantiated.
-	}
+	$app = getApp();
+	$wp_scripts = $app['scripts.global'];
+
 	script_concat_settings();
 	$wp_scripts->do_concat = $concatenate_scripts;
 	$wp_scripts->do_footer_items();
@@ -1090,11 +1094,13 @@ function print_footer_scripts() {
  *
  * @ignore
  *
- * @global WP_Scripts $wp_scripts
  * @global bool       $compress_scripts
  */
 function _print_scripts() {
-	global $wp_scripts, $compress_scripts;
+	global $compress_scripts;
+
+	$app = getApp();
+	$wp_scripts = $app['scripts.global'];
 
 	$zip = $compress_scripts ? 1 : 0;
 	if ( $zip && defined('ENFORCE_GZIP') && ENFORCE_GZIP )
@@ -1129,21 +1135,14 @@ function _print_scripts() {
  *
  * @since 2.8.0
  *
- * @global WP_Scripts $wp_scripts
- *
  * @return array
  */
 function wp_print_head_scripts() {
-	if ( ! did_action('wp_print_scripts') ) {
+	if ( ! did_action( 'wp_print_scripts' ) ) {
 		/** This action is documented in wp-includes/functions.wp-scripts.php */
 		do_action( 'wp_print_scripts' );
 	}
 
-	global $wp_scripts;
-
-	if ( ! ( $wp_scripts instanceof WP_Scripts ) ) {
-		return array(); // no need to run if nothing is queued
-	}
 	return print_head_scripts();
 }
 
@@ -1200,7 +1199,8 @@ function wp_enqueue_scripts() {
 function print_admin_styles() {
 	global $concatenate_scripts;
 
-	$wp_styles = wp_styles();
+	$app = getApp();
+	$wp_styles = $app['styles.global'];
 
 	script_concat_settings();
 	$wp_styles->do_concat = $concatenate_scripts;
@@ -1226,17 +1226,15 @@ function print_admin_styles() {
  *
  * @since 3.3.0
  *
- * @global WP_Styles $wp_styles
  * @global bool      $concatenate_scripts
  *
  * @return array|void
  */
 function print_late_styles() {
-	global $wp_styles, $concatenate_scripts;
+	global $concatenate_scripts;
 
-	if ( ! ( $wp_styles instanceof WP_Styles ) ) {
-		return;
-	}
+	$app = getApp();
+	$wp_styles = $app['styles.global'];
 
 	script_concat_settings();
 	$wp_styles->do_concat = $concatenate_scripts;
@@ -1268,7 +1266,8 @@ function print_late_styles() {
 function _print_styles() {
 	global $compress_css;
 
-	$wp_styles = wp_styles();
+	$app = WP\getApp();
+	$wp_styles = $app['styles.global'];
 
 	$zip = $compress_css ? 1 : 0;
 	if ( $zip && defined('ENFORCE_GZIP') && ENFORCE_GZIP )

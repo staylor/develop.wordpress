@@ -56,7 +56,7 @@ class Test_WP_Customize_Selective_Refresh extends WP_UnitTestCase {
 	 * @see WP_Customize_Selective_Refresh::register_scripts()
 	 */
 	function test_register_scripts() {
-		$scripts = new WP_Scripts();
+		$scripts = $this->app['scripts.global'];
 		$handles = array(
 			'customize-selective-refresh',
 			'customize-preview-nav-menus',
@@ -124,10 +124,9 @@ class Test_WP_Customize_Selective_Refresh extends WP_UnitTestCase {
 	 * @see WP_Customize_Selective_Refresh::enqueue_preview_scripts()
 	 */
 	function test_enqueue_preview_scripts() {
-		$scripts = wp_scripts();
-		$this->assertNotContains( 'customize-selective-refresh', $scripts->queue );
+		$this->assertNotContains( 'customize-selective-refresh', $this->app['scripts.global']->queue );
 		$this->selective_refresh->enqueue_preview_scripts();
-		$this->assertContains( 'customize-selective-refresh', $scripts->queue );
+		$this->assertContains( 'customize-selective-refresh', $this->app['scripts.global']->queue );
 		$this->assertEquals( 1000, has_action( 'wp_footer', array( $this->selective_refresh, 'export_preview_data' ) ) );
 	}
 
@@ -251,7 +250,7 @@ class Test_WP_Customize_Selective_Refresh extends WP_UnitTestCase {
 	function tearDown() {
 		$this->wp_customize = null;
 		unset( $GLOBALS['wp_customize'] );
-		unset( $GLOBALS['wp_scripts'] );
+		$this->app['scripts.global'] = null;
 		parent::tearDown();
 	}
 }

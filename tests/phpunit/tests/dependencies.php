@@ -10,8 +10,8 @@ class Tests_Dependencies extends WP_UnitTestCase {
 		$this->assertTrue($dep->add( 'one', '' ));
 		$this->assertTrue($dep->add( 'two', '' ));
 
-		$this->assertInstanceOf('_WP_Dependency', $dep->query( 'one' ));
-		$this->assertInstanceOf('_WP_Dependency', $dep->query( 'two' ));
+		$this->assertInstanceOf('WP\Dependency\Dependency', $dep->query( 'one' ));
+		$this->assertInstanceOf('WP\Dependency\Dependency', $dep->query( 'two' ));
 
 		//Cannot reuse names
 		$this->assertFalse($dep->add( 'one', '' ));
@@ -26,7 +26,7 @@ class Tests_Dependencies extends WP_UnitTestCase {
 		$dep->remove( 'one' );
 
 		$this->assertFalse($dep->query( 'one'));
-		$this->assertInstanceOf('_WP_Dependency', $dep->query( 'two' ));
+		$this->assertInstanceOf('WP\Dependency\Dependency', $dep->query( 'two' ));
 
 	}
 
@@ -115,9 +115,9 @@ class Tests_Dependencies extends WP_UnitTestCase {
 		$dep = new WP_Dependencies;
 
 		$this->assertTrue( $dep->add( 'one', '' ) );
-		$this->assertInstanceOf( '_WP_Dependency', $dep->query( 'one' ) );
-		$this->assertInstanceOf( '_WP_Dependency', $dep->query( 'one', 'registered' ) );
-		$this->assertInstanceOf( '_WP_Dependency', $dep->query( 'one', 'scripts' ) );
+		$this->assertInstanceOf( 'WP\Dependency\Dependency', $dep->query( 'one' ) );
+		$this->assertInstanceOf( 'WP\Dependency\Dependency', $dep->query( 'one', 'registered' ) );
+		$this->assertInstanceOf( 'WP\Dependency\Dependency', $dep->query( 'one', 'scripts' ) );
 
 		$this->assertFalse( $dep->query( 'one', 'enqueued' ) );
 		$this->assertFalse( $dep->query( 'one', 'queue' ) );
@@ -130,7 +130,7 @@ class Tests_Dependencies extends WP_UnitTestCase {
 		$dep->dequeue( 'one' );
 
 		$this->assertFalse( $dep->query( 'one', 'queue' ) );
-		$this->assertInstanceOf( '_WP_Dependency', $dep->query( 'one' ) );
+		$this->assertInstanceOf( 'WP\Dependency\Dependency', $dep->query( 'one' ) );
 
 		$dep->remove( 'one' );
 		$this->assertFalse( $dep->query( 'one' ) );

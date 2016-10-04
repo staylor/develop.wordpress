@@ -8,22 +8,9 @@
  * @subpackage Dependencies
  */
 
-/**
- * Initialize $wp_styles if it has not been set.
- *
- * @global WP_Styles $wp_styles
- *
- * @since 4.2.0
- *
- * @return WP_Styles WP_Styles instance.
- */
-function wp_styles() {
-	global $wp_styles;
-	if ( ! ( $wp_styles instanceof WP_Styles ) ) {
-		$wp_styles = new WP_Styles();
-	}
-	return $wp_styles;
-}
+use WP\Dependency\Dependencies;
+use WP\Dependency\Styles;
+use function WP\getApp;
 
 /**
  * Display styles that are in the $handles queue.
@@ -32,12 +19,10 @@ function wp_styles() {
  * passing an array with one string prints that style,
  * and passing an array of strings prints those styles.
  *
- * @global WP_Styles $wp_styles The WP_Styles object for printing styles.
- *
  * @since 2.6.0
  *
  * @param string|bool|array $handles Styles to be printed. Default 'false'.
- * @return array On success, a processed array of WP_Dependencies items; otherwise, an empty array.
+ * @return array On success, a processed array of Dependencies items; otherwise, an empty array.
  */
 function wp_print_styles( $handles = false ) {
 	if ( '' === $handles ) { // for wp_head
@@ -54,14 +39,8 @@ function wp_print_styles( $handles = false ) {
 
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
 
-	global $wp_styles;
-	if ( ! ( $wp_styles instanceof WP_Styles ) ) {
-		if ( ! $handles ) {
-			return array(); // No need to instantiate if nothing is there.
-		}
-	}
-
-	return wp_styles()->do_items( $handles );
+	$app = getApp();
+	return $app['styles.global']->do_items( $handles );
 }
 
 /**
@@ -72,7 +51,7 @@ function wp_print_styles( $handles = false ) {
  * are added to the same stylesheet $handle, they will be printed in the order
  * they were added, i.e. the latter added styles can redeclare the previous.
  *
- * @see WP_Styles::add_inline_style()
+ * @see Styles::add_inline_style()
  *
  * @since 3.3.0
  *
@@ -93,13 +72,14 @@ function wp_add_inline_style( $handle, $data ) {
 		$data = trim( preg_replace( '#<style[^>]*>(.*)</style>#is', '$1', $data ) );
 	}
 
-	return wp_styles()->add_inline_style( $handle, $data );
+	$app = getApp();
+	return $app['styles.global']->add_inline_style( $handle, $data );
 }
 
 /**
  * Register a CSS stylesheet.
  *
- * @see WP_Dependencies::add()
+ * @see Dependencies::add()
  * @link https://www.w3.org/TR/CSS2/media.html#media-types List of CSS media types.
  *
  * @since 2.6.0
@@ -120,13 +100,14 @@ function wp_add_inline_style( $handle, $data ) {
 function wp_register_style( $handle, $src, $deps = array(), $ver = false, $media = 'all' ) {
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
 
-	return wp_styles()->add( $handle, $src, $deps, $ver, $media );
+	$app = getApp();
+	return $app['styles.global']->add( $handle, $src, $deps, $ver, $media );
 }
 
 /**
  * Remove a registered stylesheet.
  *
- * @see WP_Dependencies::remove()
+ * @see Dependencies::remove()
  *
  * @since 2.1.0
  *
@@ -135,7 +116,8 @@ function wp_register_style( $handle, $src, $deps = array(), $ver = false, $media
 function wp_deregister_style( $handle ) {
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
 
-	wp_styles()->remove( $handle );
+	$app = getApp();
+	return $app['styles.global']->remove( $handle );
 }
 
 /**
@@ -143,8 +125,8 @@ function wp_deregister_style( $handle ) {
  *
  * Registers the style if source provided (does NOT overwrite) and enqueues.
  *
- * @see WP_Dependencies::add()
- * @see WP_Dependencies::enqueue()
+ * @see Dependencies::add()
+ * @see Dependencies::enqueue()
  * @link https://www.w3.org/TR/CSS2/media.html#media-types List of CSS media types.
  *
  * @since 2.6.0
@@ -164,19 +146,20 @@ function wp_deregister_style( $handle ) {
 function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
 
-	$wp_styles = wp_styles();
+	$app = getApp();
+	$app['styles.global'];
 
 	if ( $src ) {
 		$_handle = explode('?', $handle);
-		$wp_styles->add( $_handle[0], $src, $deps, $ver, $media );
+		$app['styles.global']->add( $_handle[0], $src, $deps, $ver, $media );
 	}
-	$wp_styles->enqueue( $handle );
+	$app['styles.global']->enqueue( $handle );
 }
 
 /**
  * Remove a previously enqueued CSS stylesheet.
  *
- * @see WP_Dependencies::dequeue()
+ * @see Dependencies::dequeue()
  *
  * @since 3.1.0
  *
@@ -185,7 +168,8 @@ function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $m
 function wp_dequeue_style( $handle ) {
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
 
-	wp_styles()->dequeue( $handle );
+	$app = getApp();
+	$app['styles.global']->dequeue( $handle );
 }
 
 /**
@@ -201,7 +185,8 @@ function wp_dequeue_style( $handle ) {
 function wp_style_is( $handle, $list = 'enqueued' ) {
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
 
-	return (bool) wp_styles()->query( $handle, $list );
+	$app = getApp();
+	return (bool) $app['styles.global']->query( $handle, $list );
 }
 
 /**
@@ -227,5 +212,6 @@ function wp_style_is( $handle, $list = 'enqueued' ) {
  * @return bool True on success, false on failure.
  */
 function wp_style_add_data( $handle, $key, $value ) {
-	return wp_styles()->add_data( $handle, $key, $value );
+	$app = getApp();
+	return $app['styles.global']->add_data( $handle, $key, $value );
 }

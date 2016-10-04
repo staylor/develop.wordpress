@@ -6,6 +6,11 @@
  * @subpackage Template
  */
 
+use WP\Dependency\Dependency;
+use WP\Dependency\Dependencies;
+use WP\Dependency\Styles;
+use function WP\getApp;
+
 /**
  * Load header template.
  *
@@ -2873,24 +2878,29 @@ function wp_resource_hints() {
  * @return array A list of unique hosts of enqueued scripts and styles.
  */
 function wp_dependencies_unique_hosts() {
-	global $wp_scripts, $wp_styles;
+	$app = getApp();
 
 	$unique_hosts = array();
 
-	foreach ( array( $wp_scripts, $wp_styles ) as $dependencies ) {
-		if ( $dependencies instanceof WP_Dependencies && ! empty( $dependencies->queue ) ) {
-			foreach ( $dependencies->queue as $handle ) {
-				if ( ! isset( $dependencies->registered[ $handle ] ) ) {
-					continue;
-				}
+	foreach ( array(
+		$app['scripts.global'],
+		$app['styles.global']
+	) as $dependencies ) {
+		if ( ! ( $dependencies instanceof Dependencies ) || empty( $dependencies->queue ) ) {
+			continue;
+		}
 
-				/* @var _WP_Dependency $dependency */
-				$dependency = $dependencies->registered[ $handle ];
-				$parsed     = wp_parse_url( $dependency->src );
+		foreach ( $dependencies->queue as $handle ) {
+			if ( ! isset( $dependencies->registered[ $handle ] ) ) {
+				continue;
+			}
 
-				if ( ! empty( $parsed['host'] ) && ! in_array( $parsed['host'], $unique_hosts ) && $parsed['host'] !== $_SERVER['SERVER_NAME'] ) {
-					$unique_hosts[] = $parsed['host'];
-				}
+			/* @var Dependency $dependency */
+			$dependency = $dependencies->registered[ $handle ];
+			$parsed     = wp_parse_url( $dependency->src );
+
+			if ( ! empty( $parsed['host'] ) && ! in_array( $parsed['host'], $unique_hosts ) && $parsed['host'] !== $_SERVER['SERVER_NAME'] ) {
+				$unique_hosts[] = $parsed['host'];
 			}
 		}
 	}
@@ -3414,7 +3424,7 @@ function register_admin_color_schemes() {
 /**
  * Displays the URL of a WordPress admin CSS file.
  *
- * @see WP_Styles::_css_href and its {@see 'style_loader_src'} filter.
+ * @see Styles::_css_href and its {@see 'style_loader_src'} filter.
  *
  * @since 2.3.0
  *

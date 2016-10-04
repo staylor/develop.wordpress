@@ -16,11 +16,15 @@ class Provider implements ServiceProviderInterface {
 		$app['scripts.factory'] = $app->factory( function () {
 			return new Dependency\Scripts();
 		} );
-		$app['scripts.global'] = $app['scripts.factory'];
-
-		$app['styles.factory'] = function () {
-			return new Dependency\Styles();
+		$app['scripts.global'] = function ( $app ) {
+			return $app['scripts.factory'];
 		};
-		$app['styles.global'] = $app['styles.factory'];
+
+		$app['styles.factory'] = $app->factory( function () {
+			return new Dependency\Styles();
+		} );
+		$app['styles.global'] = function ( $app ) {
+			return $app['styles.factory'];
+		};
 	}
 }

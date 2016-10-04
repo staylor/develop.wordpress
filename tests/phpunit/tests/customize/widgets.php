@@ -66,7 +66,7 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 	function tearDown() {
 		$this->manager = null;
 		unset( $GLOBALS['wp_customize'] );
-		unset( $GLOBALS['wp_scripts'] );
+		$this->app['scripts.global'] = null;
 		$GLOBALS['wp_registered_sidebars'] = $this->backup_registered_sidebars;
 		parent::tearDown();
 	}
@@ -571,7 +571,7 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 		$this->manager->widgets->customize_preview_enqueue();
 		$this->assertTrue( wp_script_is( 'customize-preview-widgets', 'enqueued' ) );
 		$this->assertTrue( wp_style_is( 'customize-preview', 'enqueued' ) );
-		$script = wp_scripts()->registered['customize-preview-widgets'];
+		$script = $this->app['scripts.global']->registered['customize-preview-widgets'];
 		$this->assertContains( 'customize-selective-refresh', $script->deps );
 	}
 
