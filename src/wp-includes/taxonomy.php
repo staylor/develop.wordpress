@@ -6,7 +6,7 @@
  * @subpackage Taxonomy
  */
 
-use function NYT\getApp;
+use function WP\getApp;
 
 //
 // Taxonomy Registration
