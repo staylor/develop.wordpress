@@ -48,7 +48,10 @@
 			"WP\\": "lib/php/"
 		},
 		"files": [
-			"lib/php/functions.php"
+			"lib/php/functions.php",
+			"wp-includes/load.php",
+			"wp-includes/default-constants.php",
+			"wp-includes/plugin.php"
 		]
 	},
 	"config": {

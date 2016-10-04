@@ -21,11 +21,6 @@ require_once( ABSPATH . 'vendor/autoload.php' );
 
 $app = WP\getApp();
 
-// Include files required for initialization.
-require( ABSPATH . WPINC . '/load.php' );
-require( ABSPATH . WPINC . '/default-constants.php' );
-require_once( ABSPATH . WPINC . '/plugin.php' );
-
 /*
  * These can't be directly globalized in version.php. When updating,
  * we're including version.php from another install and don't want
