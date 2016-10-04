@@ -453,10 +453,8 @@ class Tests_Query extends WP_UnitTestCase {
 	 * @ticket 31355
 	 */
 	public function test_custom_hierarchical_post_types_404_when_queried_post_id_is_modified() {
-		global $wp_rewrite;
-
 		register_post_type( 'guide', array( 'name' => 'Guide', 'public' => true, 'hierarchical' => true ) );
-		$wp_rewrite->flush_rules();
+		$this->app['rewrite']->flush_rules();
 		$post_id = self::factory()->post->create( array( 'post_title' => 'A Test Guide', 'post_type' => 'guide' ) );
 
 		add_action( 'parse_query', array( $this, 'filter_parse_query_to_modify_queried_post_id' ) );

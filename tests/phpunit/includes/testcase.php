@@ -102,7 +102,7 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 			$this->_backup_hooks();
 		}
 
-		global $wpdb, $wp_rewrite;
+		global $wpdb;
 		$wpdb->suppress_errors = false;
 		$wpdb->show_errors = true;
 		$wpdb->db_connect();
@@ -121,7 +121,7 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 			$this->reset_post_statuses();
 			$this->reset__SERVER();
 
-			if ( $wp_rewrite->permalink_structure ) {
+			if ( $this->app['rewrite']->permalink_structure ) {
 				$this->set_permalink_structure( '' );
 			}
 		}
@@ -174,6 +174,7 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 		remove_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
 		$this->_restore_hooks();
 		wp_set_current_user( 0 );
+
 	}
 
 	function clean_up_global_scope() {
@@ -473,7 +474,9 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 			$parts['query'] = '';
 		}
 
-		$_SERVER['REQUEST_URI'] = $req;
+		$uri = $this->app->raw( 'request.uri' );
+		unset( $this->app['request.uri'] );
+		$this->app['request.uri'] = $req;
 		unset($_SERVER['PATH_INFO']);
 
 		self::flush_cache();
@@ -491,6 +494,8 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 		_cleanup_query_vars();
 
 		$GLOBALS['wp']->main($parts['query']);
+		unset( $this->app['request.uri'] );
+		$this->app['request.uri'] = $uri;
 	}
 
 	protected function checkRequirements() {
@@ -750,16 +755,12 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @global WP_Rewrite $wp_rewrite
-	 *
 	 * @param string $structure Optional. Permalink structure to set. Default empty.
 	 */
 	public function set_permalink_structure( $structure = '' ) {
-		global $wp_rewrite;
-
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $structure );
-		$wp_rewrite->flush_rules();
+		$this->app['rewrite']->init();
+		$this->app['rewrite']->set_permalink_structure( $structure );
+		$this->app['rewrite']->flush_rules();
 	}
 
 	function _make_attachment($upload, $parent_post_id = 0) {

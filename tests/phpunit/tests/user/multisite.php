@@ -219,7 +219,7 @@ class Tests_Multisite_User extends WP_UnitTestCase {
 	 * @ticket 20601
 	 */
 	function test_user_member_of_blog() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		self::factory()->blog->create();
 		$user_id = self::factory()->user->create();

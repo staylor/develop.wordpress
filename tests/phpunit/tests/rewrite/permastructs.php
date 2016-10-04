@@ -12,8 +12,6 @@ class Tests_Rewrite_Permastructs extends WP_UnitTestCase {
 	}
 
 	public function test_add_permastruct(  ) {
-		global $wp_rewrite;
-
 		add_permastruct( 'foo', 'bar/%foo%' );
 		$this->assertEqualSetsWithIndex( array(
 			'with_front'  => true,
@@ -24,11 +22,11 @@ class Tests_Rewrite_Permastructs extends WP_UnitTestCase {
 			'endpoints'   => true,
 			'forcomments' => false,
 			'struct'      => '/bar/%foo%',
-		), $wp_rewrite->extra_permastructs['foo'] );
+		), $this->app['rewrite']->extra_permastructs['foo'] );
 	}
 
 	public function test_remove_permastruct(  ) {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		add_permastruct( 'foo', 'bar/%foo%' );
 		$this->assertInternalType( 'array', $wp_rewrite->extra_permastructs['foo'] );

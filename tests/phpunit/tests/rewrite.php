@@ -18,8 +18,7 @@ class Tests_Rewrite extends WP_UnitTestCase {
 	}
 
 	function tearDown() {
-		global $wp_rewrite;
-		$wp_rewrite->init();
+		$this->app['rewrite']->init();
 
 		update_option( 'home', $this->home_url );
 		parent::tearDown();
@@ -29,7 +28,7 @@ class Tests_Rewrite extends WP_UnitTestCase {
 	 * @ticket 16840
 	 */
 	public function test_add_rule() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		$pattern  = 'path/to/rewrite/([^/]+)/?$';
 		$redirect = 'index.php?test_var1=$matches[1]&test_var2=1';
@@ -47,7 +46,7 @@ class Tests_Rewrite extends WP_UnitTestCase {
 	 * @ticket 16840
 	 */
 	public function test_add_rule_redirect_array() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		$pattern  = 'path/to/rewrite/([^/]+)/?$';
 		$redirect = 'index.php?test_var1=$matches[1]&test_var2=1';
@@ -68,7 +67,7 @@ class Tests_Rewrite extends WP_UnitTestCase {
 	 * @ticket 16840
 	 */
 	public function test_add_rule_top() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		$pattern  = 'path/to/rewrite/([^/]+)/?$';
 		$redirect = 'index.php?test_var1=$matches[1]&test_var2=1';

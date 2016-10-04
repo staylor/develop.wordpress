@@ -12,13 +12,11 @@ class Tests_Canonical_NoRewrite extends WP_Canonical_UnitTestCase {
 	// These test cases are run against the test handler in WP_Canonical
 
 	public function setUp() {
-		global $wp_rewrite;
-
 		parent::setUp();
 
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( '' );
-		$wp_rewrite->flush_rules();
+		$this->app['rewrite']->init();
+		$this->app['rewrite']->set_permalink_structure( '' );
+		$this->app['rewrite']->flush_rules();
 	}
 
 	/**

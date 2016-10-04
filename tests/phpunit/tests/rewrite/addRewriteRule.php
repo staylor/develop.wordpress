@@ -15,15 +15,13 @@ class Tests_Rewrite_AddRewriteRule extends WP_UnitTestCase {
 	 * @ticket 16840
 	 */
 	public function test_add_rewrite_rule_redirect() {
-		global $wp_rewrite;
-
 		$pattern  = 'path/to/rewrite/([^/]+)/?$';
 		$redirect = 'index.php?test_var1=$matches[1]&test_var2=1';
 		add_rewrite_rule( $pattern, $redirect );
 
 		flush_rewrite_rules();
 
-		$rewrite_rules = $wp_rewrite->rewrite_rules();
+		$rewrite_rules = $this->app['rewrite']->rewrite_rules();
 
 		$this->assertSame( $redirect, $rewrite_rules[ $pattern ] );
 	}
@@ -32,8 +30,6 @@ class Tests_Rewrite_AddRewriteRule extends WP_UnitTestCase {
 	 * @ticket 16840
 	 */
 	public function test_add_rewrite_rule_redirect_array() {
-		global $wp_rewrite;
-
 		$pattern  = 'path/to/rewrite/([^/]+)/?$';
 		$redirect = 'index.php?test_var1=$matches[1]&test_var2=1';
 
@@ -44,7 +40,7 @@ class Tests_Rewrite_AddRewriteRule extends WP_UnitTestCase {
 
 		flush_rewrite_rules();
 
-		$rewrite_rules = $wp_rewrite->rewrite_rules();
+		$rewrite_rules = $this->app['rewrite']->rewrite_rules();
 
 		$this->assertSame( $redirect, $rewrite_rules[ $pattern ] );
 	}

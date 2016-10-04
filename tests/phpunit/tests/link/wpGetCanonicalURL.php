@@ -100,8 +100,6 @@ class Tests_WpGetCanonicalURL extends WP_UnitTestCase {
 	 * Test permalink structure comment page usage.
 	 */
 	public function test_comments_paged_with_pretty_permalink_structure() {
-		global $wp_rewrite;
-
 		$this->set_permalink_structure( '/%postname%/' );
 		$cpage = 2;
 
@@ -112,7 +110,7 @@ class Tests_WpGetCanonicalURL extends WP_UnitTestCase {
 
 		$this->go_to( $link );
 
-		$expected = user_trailingslashit( trailingslashit( get_permalink( self::$post_id ) ) . $wp_rewrite->comments_pagination_base . '-' . $cpage, 'commentpaged' ) . '#comments';
+		$expected = user_trailingslashit( trailingslashit( get_permalink( self::$post_id ) ) . $this->app['rewrite']->comments_pagination_base . '-' . $cpage, 'commentpaged' ) . '#comments';
 
 		$this->assertEquals( $expected , wp_get_canonical_url( self::$post_id ) );
 	}

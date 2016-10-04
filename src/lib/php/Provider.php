@@ -5,7 +5,12 @@ use Pimple\{Container,ServiceProviderInterface};
 
 class Provider implements ServiceProviderInterface {
 	public function register( Container $app ) {
-		$app['wp_version'] = '4.7-alpha-38178-src';
+		$app['wp_version'] = function () {
+			$version = '4.7-alpha-38178-src';
+			// themes!
+			$GLOBALS['wp_version'] = $version;
+			return $version;
+		};
 		$app['wp_db_version'] = 38590;
 		$app['tinymce_version'] = '4401-20160726';
 		$app['required_php_version'] = '7.0';
@@ -15,8 +20,11 @@ class Provider implements ServiceProviderInterface {
 			return $GLOBALS['wpdb'];
 		};
 
-		$app['rewrite'] = function () {
+		$app['rewrite.factory'] = $app->factory( function () {
 			return new Rewrite\Rewrite();
+		} );
+		$app['rewrite'] = function ( $app ) {
+			return $app['rewrite.factory'];
 		};
 
 		$app['roles'] = function () {

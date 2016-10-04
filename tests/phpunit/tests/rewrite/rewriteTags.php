@@ -10,19 +10,16 @@ class Tests_Rewrite_Tags extends WP_UnitTestCase {
 	protected $wp_rewrite;
 
 	public function setUp() {
-		global $wp_rewrite;
-		$this->wp_rewrite = $wp_rewrite;
-		$wp_rewrite       = new WP_Rewrite();
-		$wp_rewrite->init();
+		parent::setUp();
+
+		unset( $this->app['rewrite'] );
+		$this->app['rewrite'] = $this->app['rewrite.factory'];
+		$wp_rewrite = $this->app['rewrite'];
+		$this->app['rewrite']->init();
 
 		$this->rewritecode    = $wp_rewrite->rewritecode;
 		$this->rewritereplace = $wp_rewrite->rewritereplace;
 		$this->queryreplace   = $wp_rewrite->queryreplace;
-	}
-
-	public function tearDown() {
-		global $wp_rewrite;
-		$wp_rewrite = $this->wp_rewrite;
 	}
 
 	public function _invalid_rewrite_tags() {
@@ -43,16 +40,14 @@ class Tests_Rewrite_Tags extends WP_UnitTestCase {
 	 * @param string $regex Regex.
 	 */
 	public function test_add_rewrite_tag_invalid( $tag, $regex ) {
-		global $wp_rewrite;
-
 		add_rewrite_tag( $tag, $regex );
-		$this->assertEqualSets( $this->rewritecode, $wp_rewrite->rewritecode );
-		$this->assertEqualSets( $this->rewritereplace, $wp_rewrite->rewritereplace );
-		$this->assertEqualSets( $this->queryreplace, $wp_rewrite->queryreplace );
+		$this->assertEqualSets( $this->rewritecode, $this->app['rewrite']->rewritecode );
+		$this->assertEqualSets( $this->rewritereplace, $this->app['rewrite']->rewritereplace );
+		$this->assertEqualSets( $this->queryreplace, $this->app['rewrite']->queryreplace );
 	}
 
 	public function test_add_rewrite_tag_empty_query() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		$rewritecode   = $wp_rewrite->rewritecode;
 		$rewritecode[] = '%foo%';
@@ -64,7 +59,7 @@ class Tests_Rewrite_Tags extends WP_UnitTestCase {
 	}
 
 	public function test_add_rewrite_tag_custom_query() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		$rewritecode   = $wp_rewrite->rewritecode;
 		$rewritecode[] = '%foo%';
@@ -76,7 +71,7 @@ class Tests_Rewrite_Tags extends WP_UnitTestCase {
 	}
 
 	public function test_add_rewrite_tag_updates_existing() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		add_rewrite_tag( '%pagename%', 'foo', 'bar=' );
 		$this->assertContains( '%pagename%', $wp_rewrite->rewritecode );
@@ -87,7 +82,7 @@ class Tests_Rewrite_Tags extends WP_UnitTestCase {
 	}
 
 	public function test_remove_rewrite_tag() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		$rewritecode   = $wp_rewrite->rewritecode;
 		$rewritecode[] = '%foo%';
@@ -103,7 +98,7 @@ class Tests_Rewrite_Tags extends WP_UnitTestCase {
 	}
 
 	public function test_remove_rewrite_tag_internal_tag() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		$this->assertContains( '%post_id%', $wp_rewrite->rewritecode );
 		$this->assertContains( '([0-9]+)', $wp_rewrite->rewritereplace );
@@ -117,7 +112,7 @@ class Tests_Rewrite_Tags extends WP_UnitTestCase {
 	}
 
 	public function test_remove_rewrite_tag_only_removes_one_array_value() {
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		$rewritecode      = $wp_rewrite->rewritecode;
 		$rewritecode[]    = '%foo%';

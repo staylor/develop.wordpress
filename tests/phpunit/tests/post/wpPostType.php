@@ -89,17 +89,14 @@ class Tests_WP_Post_Type extends WP_UnitTestCase {
 	public function test_adds_rewrite_rules() {
 		$this->set_permalink_structure( '/%postname%' );
 
-		/* @var WP_Rewrite $wp_rewrite */
-		global $wp_rewrite;
-
 		$post_type        = rand_str();
 		$post_type_object = new WP_Post_Type( $post_type, array( 'public' => true, 'rewrite' => true ) );
 
 		$post_type_object->add_rewrite_rules();
-		$rewrite_tags = $wp_rewrite->rewritecode;
+		$rewrite_tags = $this->app['rewrite']->rewritecode;
 
 		$post_type_object->remove_rewrite_rules();
-		$rewrite_tags_after = $wp_rewrite->rewritecode;
+		$rewrite_tags_after = $this->app['rewrite']->rewritecode;
 
 		$this->assertTrue( false !== array_search( "%$post_type%", $rewrite_tags ) );
 		$this->assertFalse( array_search( "%$post_type%", $rewrite_tags_after ) );

@@ -9,10 +9,10 @@ class Tests_Canonical_CustomRules extends WP_Canonical_UnitTestCase {
 
 	function setUp() {
 		parent::setUp();
-		global $wp_rewrite;
+
 		// Add a custom Rewrite rule to test category redirections.
-		$wp_rewrite->add_rule('ccr/(.+?)/sort/(asc|desc)', 'index.php?category_name=$matches[1]&order=$matches[2]', 'top'); // ccr = Custom_Cat_Rule
-		$wp_rewrite->flush_rules();
+		$this->app['rewrite']->add_rule('ccr/(.+?)/sort/(asc|desc)', 'index.php?category_name=$matches[1]&order=$matches[2]', 'top'); // ccr = Custom_Cat_Rule
+		$this->app['rewrite']->flush_rules();
 	}
 
 	/**

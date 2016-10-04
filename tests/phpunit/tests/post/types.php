@@ -210,11 +210,10 @@ class Tests_Post_Types extends WP_UnitTestCase {
 	 * @ticket 23302
 	 */
 	function test_post_type_with_no_feed() {
-		global $wp_rewrite;
 		$old_permastruct = get_option( 'permalink_structure' );
 		update_option( 'permalink_structure', '%postname%' );
 		register_post_type( 'foo', array( 'rewrite' => array( 'feeds' => false ) ) );
-		$this->assertFalse( $wp_rewrite->extra_permastructs['foo']['feed'] );
+		$this->assertFalse( $this->app['rewrite']->extra_permastructs['foo']['feed'] );
 		update_option( 'permalink_structure', $old_permastruct );
 		_unregister_post_type( 'foo' );
 	}
@@ -334,7 +333,7 @@ class Tests_Post_Types extends WP_UnitTestCase {
 	public function test_unregister_post_type_removes_rewrite_tags() {
 		$this->set_permalink_structure( '/%postname%' );
 
-		global $wp_rewrite;
+		$wp_rewrite = $this->app['rewrite'];
 
 		register_post_type( 'foo', array(
 			'public'    => true,
