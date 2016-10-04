@@ -684,7 +684,6 @@ function comment_ID() {
  *
  * @see get_page_of_comment()
  *
- * @global WP_Rewrite $wp_rewrite
  * @global bool       $in_comment_loop
  *
  * @param WP_Comment|int|null $comment Comment to retrieve. Default current comment.
@@ -702,8 +701,8 @@ function comment_ID() {
  * @return string The permalink to the given comment.
  */
 function get_comment_link( $comment = null, $args = array() ) {
-	global $wp_rewrite, $in_comment_loop;
-
+	global $in_comment_loop;
+	$app = getApp();
 	$comment = get_comment($comment);
 
 	// Back-compat.
@@ -758,9 +757,9 @@ function get_comment_link( $comment = null, $args = array() ) {
 	}
 
 	if ( $cpage && get_option( 'page_comments' ) ) {
-		if ( $wp_rewrite->using_permalinks() ) {
+		if ( $app['rewrite']->using_permalinks() ) {
 			if ( $cpage ) {
-				$link = trailingslashit( $link ) . $wp_rewrite->comments_pagination_base . '-' . $cpage;
+				$link = trailingslashit( $link ) . $app['rewrite']->comments_pagination_base . '-' . $cpage;
 			}
 
 			$link = user_trailingslashit( $link, 'comment' );
@@ -770,7 +769,7 @@ function get_comment_link( $comment = null, $args = array() ) {
 
 	}
 
-	if ( $wp_rewrite->using_permalinks() ) {
+	if ( $app['rewrite']->using_permalinks() ) {
 		$link = user_trailingslashit( $link, 'comment' );
 	}
 

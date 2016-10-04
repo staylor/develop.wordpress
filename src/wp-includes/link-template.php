@@ -40,16 +40,14 @@ function the_permalink( $post = 0 ) {
  *
  * @since 2.2.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string $string      URL with or without a trailing slash.
  * @param string $type_of_url Optional. The type of URL being considered (e.g. single, category, etc)
  *                            for use in the filter. Default empty string.
  * @return string The URL with the trailing slash appended or stripped.
  */
 function user_trailingslashit($string, $type_of_url = '') {
-	global $wp_rewrite;
-	if ( $wp_rewrite->use_trailing_slashes )
+	$app = getApp();
+	if ( $app['rewrite']->use_trailing_slashes )
 		$string = trailingslashit($string);
 	else
 		$string = untrailingslashit($string);
@@ -246,22 +244,19 @@ function get_permalink( $post = 0, $leavename = false ) {
  *
  * @since 3.0.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param int $id         Optional. Post ID. Default uses the global `$post`.
  * @param bool $leavename Optional, defaults to false. Whether to keep post name. Default false.
  * @param bool $sample    Optional, defaults to false. Is it a sample permalink. Default false.
  * @return string|WP_Error The post permalink.
  */
 function get_post_permalink( $id = 0, $leavename = false, $sample = false ) {
-	global $wp_rewrite;
-
 	$post = get_post($id);
 
 	if ( is_wp_error( $post ) )
 		return $post;
 
-	$post_link = $wp_rewrite->get_extra_permastruct($post->post_type);
+	$app = getApp();
+	$post_link = $app['rewrite']->get_extra_permastruct($post->post_type);
 
 	$slug = $post->post_name;
 
@@ -340,8 +335,6 @@ function get_page_link( $post = false, $leavename = false, $sample = false ) {
  * @since 2.1.0
  * @access private
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param int|WP_Post $post      Optional. Post ID or object. Default uses the global `$post`.
  * @param bool        $leavename Optional. Whether to keep the page name. Default false.
  * @param bool        $sample    Optional. Whether it should be treated as a sample permalink.
@@ -349,13 +342,13 @@ function get_page_link( $post = false, $leavename = false, $sample = false ) {
  * @return string The page permalink.
  */
 function _get_page_link( $post = false, $leavename = false, $sample = false ) {
-	global $wp_rewrite;
+	$app = getApp();
 
 	$post = get_post( $post );
 
 	$draft_or_pending = in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ) );
 
-	$link = $wp_rewrite->get_page_permastruct();
+	$link = $app['rewrite']->get_page_permastruct();
 
 	if ( !empty($link) && ( ( isset($post->post_status) && !$draft_or_pending ) || $sample ) ) {
 		if ( ! $leavename ) {
@@ -386,15 +379,12 @@ function _get_page_link( $post = false, $leavename = false, $sample = false ) {
  *
  * @since 2.0.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param int|object $post      Optional. Post ID or object. Default uses the global `$post`.
  * @param bool       $leavename Optional. Whether to keep the page name. Default false.
  * @return string The attachment permalink.
  */
 function get_attachment_link( $post = null, $leavename = false ) {
-	global $wp_rewrite;
-
+	$app = getApp();
 	$link = false;
 
 	$post = get_post( $post );
@@ -403,7 +393,7 @@ function get_attachment_link( $post = null, $leavename = false ) {
 		$parent = false;
 	}
 
-	if ( $wp_rewrite->using_permalinks() && $parent ) {
+	if ( $app['rewrite']->using_permalinks() && $parent ) {
 		if ( 'page' == $parent->post_type )
 			$parentlink = _get_page_link( $post->post_parent ); // Ignores page_on_front
 		else
@@ -419,7 +409,7 @@ function get_attachment_link( $post = null, $leavename = false ) {
 
 		if ( ! $leavename )
 			$link = str_replace( '%postname%', $name, $link );
-	} elseif ( $wp_rewrite->using_permalinks() && ! $leavename ) {
+	} elseif ( $app['rewrite']->using_permalinks() && ! $leavename ) {
 		$link = home_url( user_trailingslashit( $post->post_name ) );
 	}
 
@@ -442,16 +432,14 @@ function get_attachment_link( $post = null, $leavename = false ) {
  *
  * @since 1.5.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param int|bool $year False for current year or year for permalink.
  * @return string The permalink for the specified year archive.
  */
 function get_year_link( $year ) {
-	global $wp_rewrite;
+	$app = getApp();
 	if ( !$year )
 		$year = gmdate('Y', current_time('timestamp'));
-	$yearlink = $wp_rewrite->get_year_permastruct();
+	$yearlink = $app['rewrite']->get_year_permastruct();
 	if ( !empty($yearlink) ) {
 		$yearlink = str_replace('%year%', $year, $yearlink);
 		$yearlink = home_url( user_trailingslashit( $yearlink, 'year' ) );
@@ -475,19 +463,17 @@ function get_year_link( $year ) {
  *
  * @since 1.0.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param bool|int $year  False for current year. Integer of year.
  * @param bool|int $month False for current month. Integer of month.
  * @return string The permalink for the specified month and year archive.
  */
 function get_month_link($year, $month) {
-	global $wp_rewrite;
+	$app = getApp();
 	if ( !$year )
 		$year = gmdate('Y', current_time('timestamp'));
 	if ( !$month )
 		$month = gmdate('m', current_time('timestamp'));
-	$monthlink = $wp_rewrite->get_month_permastruct();
+	$monthlink = $app['rewrite']->get_month_permastruct();
 	if ( !empty($monthlink) ) {
 		$monthlink = str_replace('%year%', $year, $monthlink);
 		$monthlink = str_replace('%monthnum%', zeroise(intval($month), 2), $monthlink);
@@ -513,15 +499,13 @@ function get_month_link($year, $month) {
  *
  * @since 1.0.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param bool|int $year  False for current year. Integer of year.
  * @param bool|int $month False for current month. Integer of month.
  * @param bool|int $day   False for current day. Integer of day.
  * @return string The permalink for the specified day, month, and year archive.
  */
 function get_day_link($year, $month, $day) {
-	global $wp_rewrite;
+	$app = getApp();
 	if ( !$year )
 		$year = gmdate('Y', current_time('timestamp'));
 	if ( !$month )
@@ -529,7 +513,7 @@ function get_day_link($year, $month, $day) {
 	if ( !$day )
 		$day = gmdate('j', current_time('timestamp'));
 
-	$daylink = $wp_rewrite->get_day_permastruct();
+	$daylink = $app['rewrite']->get_day_permastruct();
 	if ( !empty($daylink) ) {
 		$daylink = str_replace('%year%', $year, $daylink);
 		$daylink = str_replace('%monthnum%', zeroise(intval($month), 2), $daylink);
@@ -580,19 +564,17 @@ function the_feed_link( $anchor, $feed = '' ) {
  *
  * @since 1.5.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string $feed Optional. Feed type. Default empty.
  * @return string The feed permalink.
  */
 function get_feed_link( $feed = '' ) {
-	global $wp_rewrite;
+	$app = getApp();
 
-	$permalink = $wp_rewrite->get_feed_permastruct();
+	$permalink = $app['rewrite']->get_feed_permastruct();
 	if ( '' != $permalink ) {
 		if ( false !== strpos($feed, 'comments_') ) {
 			$feed = str_replace('comments_', '', $feed);
-			$permalink = $wp_rewrite->get_comment_feed_permastruct();
+			$permalink = $app['rewrite']->get_comment_feed_permastruct();
 		}
 
 		if ( get_default_feed() == $feed )
@@ -1017,20 +999,16 @@ function edit_term_link( $link = '', $before = '', $after = '', $term = null, $e
  *
  * @since  3.0.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string $query Optional. The query string to use. If empty the current query is used. Default empty.
  * @return string The search permalink.
  */
 function get_search_link( $query = '' ) {
-	global $wp_rewrite;
-
 	if ( empty($query) )
 		$search = get_search_query( false );
 	else
 		$search = stripslashes($query);
 
-	$permastruct = $wp_rewrite->get_search_permastruct();
+	$permastruct = $app['rewrite']->get_search_permastruct();
 
 	if ( empty( $permastruct ) ) {
 		$link = home_url('?s=' . urlencode($search) );
@@ -1057,20 +1035,18 @@ function get_search_link( $query = '' ) {
  *
  * @since 2.5.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string $search_query Optional. Search query. Default empty.
  * @param string $feed         Optional. Feed type. Default empty.
  * @return string The search results feed permalink.
  */
 function get_search_feed_link($search_query = '', $feed = '') {
-	global $wp_rewrite;
 	$link = get_search_link($search_query);
 
 	if ( empty($feed) )
 		$feed = get_default_feed();
 
-	$permastruct = $wp_rewrite->get_search_permastruct();
+	$app = getApp();
+	$permastruct = $app['rewrite']->get_search_permastruct();
 
 	if ( empty($permastruct) ) {
 		$link = add_query_arg('feed', $feed, $link);
@@ -1096,21 +1072,18 @@ function get_search_feed_link($search_query = '', $feed = '') {
  *
  * @since 2.5.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string $search_query Optional. Search query. Default empty.
  * @param string $feed         Optional. Feed type. Default empty.
  * @return string The comments feed search results permalink.
  */
 function get_search_comments_feed_link($search_query = '', $feed = '') {
-	global $wp_rewrite;
-
 	if ( empty($feed) )
 		$feed = get_default_feed();
 
 	$link = get_search_feed_link($search_query, $feed);
 
-	$permastruct = $wp_rewrite->get_search_permastruct();
+	$app = getApp();
+	$permastruct = $app['rewrite']->get_search_permastruct();
 
 	if ( empty($permastruct) )
 		$link = add_query_arg('feed', 'comments-' . $feed, $link);
@@ -1127,13 +1100,11 @@ function get_search_comments_feed_link($search_query = '', $feed = '') {
  * @since 3.1.0
  * @since 4.5.0 Support for posts was added.
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string $post_type Post type.
  * @return string|false The post type archive permalink.
  */
 function get_post_type_archive_link( $post_type ) {
-	global $wp_rewrite;
+	$app = getApp();
 	if ( ! $post_type_obj = get_post_type_object( $post_type ) )
 		return false;
 
@@ -1156,9 +1127,9 @@ function get_post_type_archive_link( $post_type ) {
 	if ( get_option( 'permalink_structure' ) && is_array( $post_type_obj->rewrite ) ) {
 		$struct = ( true === $post_type_obj->has_archive ) ? $post_type_obj->rewrite['slug'] : $post_type_obj->has_archive;
 		if ( $post_type_obj->rewrite['with_front'] )
-			$struct = $wp_rewrite->front . $struct;
+			$struct = $app['rewrite']->front . $struct;
 		else
-			$struct = $wp_rewrite->root . $struct;
+			$struct = $app['rewrite']->root . $struct;
 		$link = home_url( user_trailingslashit( $struct, 'post_type_archive' ) );
 	} else {
 		$link = home_url( '?post_type=' . $post_type );
@@ -2078,16 +2049,12 @@ function adjacent_post_link( $format, $link, $in_same_term = false, $excluded_te
  *
  * @since 1.5.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param int  $pagenum Optional. Page ID. Default 1.
  * @param bool $escape  Optional. Whether to escape the URL for display, with esc_url(). Defaults to true.
  * 	                    Otherwise, prepares the URL with esc_url_raw().
  * @return string The link URL for the given page number.
  */
 function get_pagenum_link($pagenum = 1, $escape = true ) {
-	global $wp_rewrite;
-
 	$pagenum = (int) $pagenum;
 
 	$request = remove_query_arg( 'paged' );
@@ -2099,7 +2066,8 @@ function get_pagenum_link($pagenum = 1, $escape = true ) {
 	$request = preg_replace('|^'. $home_root . '|i', '', $request);
 	$request = preg_replace('|^/+|', '', $request);
 
-	if ( !$wp_rewrite->using_permalinks() || is_admin() ) {
+	$app = getApp();
+	if ( ! $app['rewrite']->using_permalinks() || is_admin() ) {
 		$base = trailingslashit( get_bloginfo( 'url' ) );
 
 		if ( $pagenum > 1 ) {
@@ -2118,17 +2086,17 @@ function get_pagenum_link($pagenum = 1, $escape = true ) {
 			$query_string = '';
 		}
 
-		$request = preg_replace( "|$wp_rewrite->pagination_base/\d+/?$|", '', $request);
-		$request = preg_replace( '|^' . preg_quote( $wp_rewrite->index, '|' ) . '|i', '', $request);
+		$request = preg_replace( "|{$app['rewrite']->pagination_base}/\d+/?$|", '', $request);
+		$request = preg_replace( '|^' . preg_quote( $app['rewrite']->index, '|' ) . '|i', '', $request);
 		$request = ltrim($request, '/');
 
 		$base = trailingslashit( get_bloginfo( 'url' ) );
 
-		if ( $wp_rewrite->using_index_permalinks() && ( $pagenum > 1 || '' != $request ) )
-			$base .= $wp_rewrite->index . '/';
+		if ( $app['rewrite']->using_index_permalinks() && ( $pagenum > 1 || '' != $request ) )
+			$base .= $app['rewrite']->index . '/';
 
 		if ( $pagenum > 1 ) {
-			$request = ( ( !empty( $request ) ) ? trailingslashit( $request ) : $request ) . user_trailingslashit( $wp_rewrite->pagination_base . "/" . $pagenum, 'paged' );
+			$request = ( ( !empty( $request ) ) ? trailingslashit( $request ) : $request ) . user_trailingslashit( $app['rewrite']->pagination_base . "/" . $pagenum, 'paged' );
 		}
 
 		$result = $base . $request . $query_string;
@@ -2615,29 +2583,25 @@ function _navigation_markup( $links, $class = 'posts-navigation', $screen_reader
  *
  * @since 2.7.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param int $pagenum  Optional. Page number. Default 1.
  * @param int $max_page Optional. The maximum number of comment pages. Default 0.
  * @return string The comments page number link URL.
  */
 function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
-	global $wp_rewrite;
-
 	$pagenum = (int) $pagenum;
-
+	$app = getApp();
 	$result = get_permalink();
 
 	if ( 'newest' == get_option('default_comments_page') ) {
 		if ( $pagenum != $max_page ) {
-			if ( $wp_rewrite->using_permalinks() )
-				$result = user_trailingslashit( trailingslashit($result) . $wp_rewrite->comments_pagination_base . '-' . $pagenum, 'commentpaged');
+			if ( $app['rewrite']->using_permalinks() )
+				$result = user_trailingslashit( trailingslashit($result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged');
 			else
 				$result = add_query_arg( 'cpage', $pagenum, $result );
 		}
 	} elseif ( $pagenum > 1 ) {
-		if ( $wp_rewrite->using_permalinks() )
-			$result = user_trailingslashit( trailingslashit($result) . $wp_rewrite->comments_pagination_base . '-' . $pagenum, 'commentpaged');
+		if ( $app['rewrite']->using_permalinks() )
+			$result = user_trailingslashit( trailingslashit($result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged');
 		else
 			$result = add_query_arg( 'cpage', $pagenum, $result );
 	}
@@ -2762,14 +2726,10 @@ function previous_comments_link( $label = '' ) {
  * @see paginate_links()
  * @since 2.7.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string|array $args Optional args. See paginate_links(). Default empty array.
  * @return string|void Markup for pagination links.
  */
 function paginate_comments_links( $args = array() ) {
-	global $wp_rewrite;
-
 	if ( ! is_singular() )
 		return;
 
@@ -2785,8 +2745,9 @@ function paginate_comments_links( $args = array() ) {
 		'echo' => true,
 		'add_fragment' => '#comments'
 	);
-	if ( $wp_rewrite->using_permalinks() )
-		$defaults['base'] = user_trailingslashit(trailingslashit(get_permalink()) . $wp_rewrite->comments_pagination_base . '-%#%', 'commentpaged');
+	$app = getApp();
+	if ( $app['rewrite']->using_permalinks() )
+		$defaults['base'] = user_trailingslashit(trailingslashit(get_permalink()) . $app['rewrite']->comments_pagination_base . '-%#%', 'commentpaged');
 
 	$args = wp_parse_args( $args, $defaults );
 	$page_links = paginate_links( $args );

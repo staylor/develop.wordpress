@@ -122,13 +122,14 @@ if ( !function_exists('wp_install_defaults') ) :
  * @since 2.1.0
  *
  * @global wpdb       $wpdb
- * @global WP_Rewrite $wp_rewrite
  * @global string     $table_prefix
  *
  * @param int $user_id User ID.
  */
 function wp_install_defaults( $user_id ) {
-	global $wpdb, $wp_rewrite, $table_prefix;
+	global $wpdb, $table_prefix;
+
+	$app = getApp();
 
 	// Default category
 	$cat_name = __('Uncategorized');
@@ -265,8 +266,8 @@ As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to d
 
 	if ( is_multisite() ) {
 		// Flush rules to pick up the new page.
-		$wp_rewrite->init();
-		$wp_rewrite->flush_rules();
+		$app['rewrite']->init();
+		$app['rewrite']->flush_rules();
 
 		$user = new User( $user_id );
 		$wpdb->update( $wpdb->options, array('option_value' => $user->user_email), array('option_name' => 'admin_email') );
@@ -289,12 +290,10 @@ endif;
  *
  * @since 4.2.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
- *
  * @return bool Whether pretty permalinks are enabled. False otherwise.
  */
 function wp_install_maybe_enable_pretty_permalinks() {
-	global $wp_rewrite;
+	$app = getApp();
 
 	// Bail if a permalink structure is already enabled.
 	if ( get_option( 'permalink_structure' ) ) {
@@ -315,13 +314,13 @@ function wp_install_maybe_enable_pretty_permalinks() {
 	);
 
 	foreach ( (array) $permalink_structures as $permalink_structure ) {
-		$wp_rewrite->set_permalink_structure( $permalink_structure );
+		$app['rewrite']->set_permalink_structure( $permalink_structure );
 
 		/*
 	 	 * Flush rules with the hard option to force refresh of the web-server's
 	 	 * rewrite config file (e.g. .htaccess or web.config).
 	 	 */
-		$wp_rewrite->flush_rules( true );
+		$app['rewrite']->flush_rules( true );
 
 		$test_url = '';
 
@@ -351,8 +350,8 @@ function wp_install_maybe_enable_pretty_permalinks() {
 	 * If it makes it this far, pretty permalinks failed.
 	 * Fallback to query-string permalinks.
 	 */
-	$wp_rewrite->set_permalink_structure( '' );
-	$wp_rewrite->flush_rules( true );
+	$app['rewrite']->set_permalink_structure( '' );
+	$app['rewrite']->flush_rules( true );
 
 	return false;
 }

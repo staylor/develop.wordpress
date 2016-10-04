@@ -171,19 +171,18 @@ function _post_format_request( $qvs ) {
  * @access private
  * @since 3.1.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string $link
  * @param object $term
  * @param string $taxonomy
  * @return string
  */
 function _post_format_link( $link, $term, $taxonomy ) {
-	global $wp_rewrite;
 	if ( 'post_format' != $taxonomy ) {
 		return $link;
 	}
-	if ( $wp_rewrite->get_extra_permastruct( $taxonomy ) ) {
+
+	$app = getApp();
+	if ( $app['rewrite']->get_extra_permastruct( $taxonomy ) ) {
 		return str_replace( "/{$term->slug}", '/' . str_replace( 'post-format-', '', $term->slug ), $link );
 	} else {
 		$link = remove_query_arg( 'post_format', $link );

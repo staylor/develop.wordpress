@@ -10,6 +10,8 @@
  * @subpackage Template
  */
 
+use function WP\getApp;
+
 /**
  * Retrieve the author of the current post.
  *
@@ -292,16 +294,14 @@ function the_author_posts_link( $deprecated = '' ) {
  *
  * @since 2.1.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param int    $author_id       Author ID.
  * @param string $author_nicename Optional. The author's nicename (slug). Default empty.
  * @return string The URL to the author's page.
  */
 function get_author_posts_url( $author_id, $author_nicename = '' ) {
-	global $wp_rewrite;
+	$app = getApp();
 	$auth_ID = (int) $author_id;
-	$link = $wp_rewrite->get_author_permastruct();
+	$link = $app['rewrite']->get_author_permastruct();
 
 	if ( empty($link) ) {
 		$file = home_url( '/' );

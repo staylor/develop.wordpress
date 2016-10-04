@@ -7,6 +7,8 @@
  * @since 4.6.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used for interacting with post types.
  *
@@ -525,11 +527,12 @@ final class WP_Post_Type {
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @global WP_Rewrite $wp_rewrite WordPress Rewrite Component.
 	 * @global WP         $wp         Current WordPress environment instance.
 	 */
 	public function add_rewrite_rules() {
-		global $wp_rewrite, $wp;
+		global $wp;
+
+		$app = getApp();
 
 		if ( false !== $this->query_var && $wp && is_post_type_viewable( $this ) ) {
 			$wp->add_query_var( $this->query_var );
@@ -545,19 +548,19 @@ final class WP_Post_Type {
 			if ( $this->has_archive ) {
 				$archive_slug = true === $this->has_archive ? $this->rewrite['slug'] : $this->has_archive;
 				if ( $this->rewrite['with_front'] ) {
-					$archive_slug = substr( $wp_rewrite->front, 1 ) . $archive_slug;
+					$archive_slug = substr( $app['rewrite']->front, 1 ) . $archive_slug;
 				} else {
-					$archive_slug = $wp_rewrite->root . $archive_slug;
+					$archive_slug = $app['rewrite']->root . $archive_slug;
 				}
 
 				add_rewrite_rule( "{$archive_slug}/?$", "index.php?post_type=$this->name", 'top' );
-				if ( $this->rewrite['feeds'] && $wp_rewrite->feeds ) {
-					$feeds = '(' . trim( implode( '|', $wp_rewrite->feeds ) ) . ')';
+				if ( $this->rewrite['feeds'] && $app['rewrite']->feeds ) {
+					$feeds = '(' . trim( implode( '|', $app['rewrite']->feeds ) ) . ')';
 					add_rewrite_rule( "{$archive_slug}/feed/$feeds/?$", "index.php?post_type=$this->name" . '&feed=$matches[1]', 'top' );
 					add_rewrite_rule( "{$archive_slug}/$feeds/?$", "index.php?post_type=$this->name" . '&feed=$matches[1]', 'top' );
 				}
 				if ( $this->rewrite['pages'] ) {
-					add_rewrite_rule( "{$archive_slug}/{$wp_rewrite->pagination_base}/([0-9]{1,})/?$", "index.php?post_type=$this->name" . '&paged=$matches[1]', 'top' );
+					add_rewrite_rule( "{$archive_slug}/{$app['rewrite']->pagination_base}/([0-9]{1,})/?$", "index.php?post_type=$this->name" . '&paged=$matches[1]', 'top' );
 				}
 			}
 
@@ -621,13 +624,13 @@ final class WP_Post_Type {
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @global WP_Rewrite $wp_rewrite          WordPress rewrite component.
 	 * @global WP         $wp                  Current WordPress environment instance.
 	 * @global array      $post_type_meta_caps Used to remove meta capabilities.
 	 */
 	public function remove_rewrite_rules() {
-		global $wp, $wp_rewrite, $post_type_meta_caps;
+		global $wp, $post_type_meta_caps;
 
+		$app = getApp();
 		// Remove query var.
 		if ( false !== $this->query_var ) {
 			$wp->remove_query_var( $this->query_var );
@@ -637,9 +640,9 @@ final class WP_Post_Type {
 		if ( false !== $this->rewrite ) {
 			remove_rewrite_tag( "%$this->name%" );
 			remove_permastruct( $this->name );
-			foreach ( $wp_rewrite->extra_rules_top as $regex => $query ) {
+			foreach ( $app['rewrite']->extra_rules_top as $regex => $query ) {
 				if ( false !== strpos( $query, "index.php?post_type=$this->name" ) ) {
-					unset( $wp_rewrite->extra_rules_top[ $regex ] );
+					unset( $app['rewrite']->extra_rules_top[ $regex ] );
 				}
 			}
 		}

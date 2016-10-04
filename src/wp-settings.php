@@ -279,13 +279,6 @@ $GLOBALS['wp_the_query'] = new WP_Query();
 $GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 
 /**
- * Holds the WordPress Rewrite object for creating pretty URLs
- * @global WP_Rewrite $wp_rewrite
- * @since 1.5.0
- */
-$GLOBALS['wp_rewrite'] = new WP_Rewrite();
-
-/**
  * WordPress Object
  * @global WP $wp
  * @since 2.0.0

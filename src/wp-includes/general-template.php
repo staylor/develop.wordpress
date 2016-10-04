@@ -3149,7 +3149,6 @@ function language_attributes( $doctype = 'html' ) {
  * @since 2.1.0
  *
  * @global WP_Query   $wp_query
- * @global WP_Rewrite $wp_rewrite
  *
  * @param string|array $args {
  *     Optional. Array or string of arguments for generating paginated links for archives.
@@ -3176,8 +3175,9 @@ function language_attributes( $doctype = 'html' ) {
  * @return array|string|void String of page links or array of page links.
  */
 function paginate_links( $args = '' ) {
-	global $wp_query, $wp_rewrite;
+	global $wp_query;
 
+	$app = getApp();
 	// Setting up default values based on the current URL.
 	$pagenum_link = html_entity_decode( get_pagenum_link() );
 	$url_parts    = explode( '?', $pagenum_link );
@@ -3190,8 +3190,8 @@ function paginate_links( $args = '' ) {
 	$pagenum_link = trailingslashit( $url_parts[0] ) . '%_%';
 
 	// URL base depends on permalink settings.
-	$format  = $wp_rewrite->using_index_permalinks() && ! strpos( $pagenum_link, 'index.php' ) ? 'index.php/' : '';
-	$format .= $wp_rewrite->using_permalinks() ? user_trailingslashit( $wp_rewrite->pagination_base . '/%#%', 'paged' ) : '?paged=%#%';
+	$format  = $app['rewrite']->using_index_permalinks() && ! strpos( $pagenum_link, 'index.php' ) ? 'index.php/' : '';
+	$format .= $app['rewrite']->using_permalinks() ? user_trailingslashit( $app['rewrite']->pagination_base . '/%#%', 'paged' ) : '?paged=%#%';
 
 	$defaults = array(
 		'base' => $pagenum_link, // http://example.com/all_posts.php%_% : %_% is replaced by format (below)

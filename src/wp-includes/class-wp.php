@@ -139,13 +139,9 @@ class WP {
 	 * @since 2.0.0
 	 * @access public
 	 *
-	 * @global WP_Rewrite $wp_rewrite
-	 *
 	 * @param array|string $extra_query_vars Set the extra query variables.
 	 */
 	public function parse_request($extra_query_vars = '') {
-		global $wp_rewrite;
-
 		/**
 		 * Filters whether to parse the request.
 		 *
@@ -158,6 +154,7 @@ class WP {
 		if ( ! apply_filters( 'do_parse_request', true, $this, $extra_query_vars ) )
 			return;
 
+		$app = getApp();
 		$this->query_vars = array();
 		$post_type_query_vars = array();
 
@@ -169,7 +166,7 @@ class WP {
 		// Process PATH_INFO, REQUEST_URI, and 404 for permalinks.
 
 		// Fetch the rewrite rules.
-		$rewrite = $wp_rewrite->wp_rewrite_rules();
+		$rewrite = $app['rewrite']->wp_rewrite_rules();
 
 		if ( ! empty($rewrite) ) {
 			// If we match a rewrite rule, this will be cleared.
@@ -203,11 +200,11 @@ class WP {
 
 			// The requested permalink is in $pathinfo for path info requests and
 			//  $req_uri for other requests.
-			if ( ! empty($pathinfo) && !preg_match('|^.*' . $wp_rewrite->index . '$|', $pathinfo) ) {
+			if ( ! empty($pathinfo) && !preg_match('|^.*' . $app['rewrite']->index . '$|', $pathinfo) ) {
 				$requested_path = $pathinfo;
 			} else {
 				// If the request uri is the index, blank it out so that we don't try to match it against a rule.
-				if ( $req_uri == $wp_rewrite->index )
+				if ( $req_uri == $app['rewrite']->index )
 					$req_uri = '';
 				$requested_path = $req_uri;
 			}
@@ -233,7 +230,7 @@ class WP {
 					if ( preg_match("#^$match#", $request_match, $matches) ||
 						preg_match("#^$match#", urldecode($request_match), $matches) ) {
 
-						if ( $wp_rewrite->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
+						if ( $app['rewrite']->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
 							// This is a verbose page match, let's check to be sure about it.
 							$page = get_page_by_path( $matches[ $varmatch[1] ] );
 							if ( ! $page ) {

@@ -6,6 +6,8 @@
  * @subpackage Taxonomy
  */
 
+use function NYT\getApp;
+
 //
 // Taxonomy Registration
 //
@@ -18,11 +20,9 @@
  * avoid registering rewrite rules before the {@see 'init'} action.
  *
  * @since 2.8.0
- *
- * @global WP_Rewrite $wp_rewrite The WordPress rewrite class.
  */
 function create_initial_taxonomies() {
-	global $wp_rewrite;
+	$app = getApp();
 
 	if ( ! did_action( 'init' ) ) {
 		$rewrite = array( 'category' => false, 'post_tag' => false, 'post_format' => false );
@@ -40,13 +40,13 @@ function create_initial_taxonomies() {
 			'category' => array(
 				'hierarchical' => true,
 				'slug' => get_option('category_base') ? get_option('category_base') : 'category',
-				'with_front' => ! get_option('category_base') || $wp_rewrite->using_index_permalinks(),
+				'with_front' => ! get_option('category_base') || $app['rewrite']->using_index_permalinks(),
 				'ep_mask' => EP_CATEGORIES,
 			),
 			'post_tag' => array(
 				'hierarchical' => false,
 				'slug' => get_option('tag_base') ? get_option('tag_base') : 'tag',
-				'with_front' => ! get_option('tag_base') || $wp_rewrite->using_index_permalinks(),
+				'with_front' => ! get_option('tag_base') || $app['rewrite']->using_index_permalinks(),
 				'ep_mask' => EP_TAGS,
 			),
 			'post_format' => $post_format_base ? array( 'slug' => $post_format_base ) : false,
@@ -3930,14 +3930,12 @@ function wp_term_is_shared( $term_id ) {
  *
  * @since 2.5.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param object|int|string $term     The term object, ID, or slug whose link will be retrieved.
  * @param string            $taxonomy Optional. Taxonomy. Default empty.
  * @return string|WP_Error HTML link to taxonomy term archive on success, WP_Error if term does not exist.
  */
 function get_term_link( $term, $taxonomy = '' ) {
-	global $wp_rewrite;
+	$app = getApp();
 
 	if ( !is_object($term) ) {
 		if ( is_int( $term ) ) {
@@ -3955,7 +3953,7 @@ function get_term_link( $term, $taxonomy = '' ) {
 
 	$taxonomy = $term->taxonomy;
 
-	$termlink = $wp_rewrite->get_extra_permastruct($taxonomy);
+	$termlink = $app['rewrite']->get_extra_permastruct($taxonomy);
 
 	$slug = $term->slug;
 	$t = get_taxonomy($taxonomy);

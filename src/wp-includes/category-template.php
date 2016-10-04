@@ -7,6 +7,8 @@
  * @since 1.2.0
  */
 
+use function WP\getApp;
+
 /**
  * Retrieve category link URL.
  *
@@ -161,15 +163,12 @@ function get_the_category_by_ID( $cat_ID ) {
  *
  * @since 1.5.1
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string $separator Optional, default is empty string. Separator for between the categories.
  * @param string $parents Optional. How to display the parents.
  * @param int $post_id Optional. Post ID to retrieve categories.
  * @return string
  */
 function get_the_category_list( $separator = '', $parents='', $post_id = false ) {
-	global $wp_rewrite;
 	if ( ! is_object_in_taxonomy( get_post_type( $post_id ), 'category' ) ) {
 		/** This filter is documented in wp-includes/category-template.php */
 		return apply_filters( 'the_category', '', $separator, $parents );
@@ -191,7 +190,8 @@ function get_the_category_list( $separator = '', $parents='', $post_id = false )
 		return apply_filters( 'the_category', __( 'Uncategorized' ), $separator, $parents );
 	}
 
-	$rel = ( is_object( $wp_rewrite ) && $wp_rewrite->using_permalinks() ) ? 'rel="category tag"' : 'rel="category"';
+	$app = getApp();
+	$rel = $app['rewrite']->using_permalinks() ? 'rel="category tag"' : 'rel="category"';
 
 	$thelist = '';
 	if ( '' == $separator ) {

@@ -15,6 +15,10 @@ class Provider implements ServiceProviderInterface {
 			return $GLOBALS['wpdb'];
 		};
 
+		$app['rewrite'] = function () {
+			return new Rewrite\Rewrite();
+		};
+
 		$app['roles'] = function () {
 			return new User\Roles();
 		};

@@ -264,12 +264,11 @@ function wp_nav_menu( $args = array() ) {
  * @since 3.0.0
  *
  * @global WP_Query   $wp_query
- * @global WP_Rewrite $wp_rewrite
  *
  * @param array $menu_items The current menu item objects to which to add the class property information.
  */
 function _wp_menu_item_classes_by_context( &$menu_items ) {
-	global $wp_query, $wp_rewrite;
+	global $wp_query;
 
 	$app = getApp();
 
@@ -394,7 +393,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 			$current_url = set_url_scheme( 'http://' . $app['request.host'] . $_root_relative_current );
 			$raw_item_url = strpos( $menu_item->url, '#' ) ? substr( $menu_item->url, 0, strpos( $menu_item->url, '#' ) ) : $menu_item->url;
 			$item_url = set_url_scheme( untrailingslashit( $raw_item_url ) );
-			$_indexless_current = untrailingslashit( preg_replace( '/' . preg_quote( $wp_rewrite->index, '/' ) . '$/', '', $current_url ) );
+			$_indexless_current = untrailingslashit( preg_replace( '/' . preg_quote( $app['rewrite']->index, '/' ) . '$/', '', $current_url ) );
 
 			if ( $raw_item_url && in_array( $item_url, array( $current_url, $_indexless_current, $_root_relative_current ) ) ) {
 				$classes[] = 'current-menu-item';

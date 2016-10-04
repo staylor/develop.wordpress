@@ -8,6 +8,8 @@
  * @subpackage Template
  */
 
+use function WP\getApp;
+
 /**
  * Display the ID of the current item in the WordPress Loop.
  *
@@ -944,13 +946,11 @@ function wp_link_pages( $args = '' ) {
  * @since 3.1.0
  * @access private
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param int $i Page number.
  * @return string Link.
  */
 function _wp_link_page( $i ) {
-	global $wp_rewrite;
+	$app = getApp();
 	$post = get_post();
 	$query_args = array();
 
@@ -960,7 +960,7 @@ function _wp_link_page( $i ) {
 		if ( '' == get_option('permalink_structure') || in_array($post->post_status, array('draft', 'pending')) )
 			$url = add_query_arg( 'page', $i, get_permalink() );
 		elseif ( 'page' == get_option('show_on_front') && get_option('page_on_front') == $post->ID )
-			$url = trailingslashit(get_permalink()) . user_trailingslashit("$wp_rewrite->pagination_base/" . $i, 'single_paged');
+			$url = trailingslashit(get_permalink()) . user_trailingslashit("{$app['rewrite']->pagination_base}/" . $i, 'single_paged');
 		else
 			$url = trailingslashit(get_permalink()) . user_trailingslashit($i, 'single_paged');
 	}

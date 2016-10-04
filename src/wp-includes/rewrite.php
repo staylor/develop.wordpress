@@ -6,6 +6,8 @@
  * @subpackage Rewrite
  */
 
+use function WP\getApp;
+
 /**
  * Endpoint Mask for default, which is nothing.
  *
@@ -127,17 +129,14 @@ define( 'EP_ALL', EP_PERMALINK | EP_ATTACHMENT | EP_ROOT | EP_COMMENTS | EP_SEAR
  * @since 2.1.0
  * @since 4.4.0 Array support was added to the `$query` parameter.
  *
- * @global WP_Rewrite $wp_rewrite WordPress Rewrite Component.
- *
  * @param string       $regex Regular expression to match request against.
  * @param string|array $query The corresponding query vars for this rewrite rule.
  * @param string       $after Optional. Priority of the new rule. Accepts 'top'
  *                            or 'bottom'. Default 'bottom'.
  */
 function add_rewrite_rule( $regex, $query, $after = 'bottom' ) {
-	global $wp_rewrite;
-
-	$wp_rewrite->add_rule( $regex, $query, $after );
+	$app = getApp();
+	$app['rewrite']->add_rule( $regex, $query, $after );
 }
 
 /**
@@ -149,7 +148,6 @@ function add_rewrite_rule( $regex, $query, $after = 'bottom' ) {
  *
  * @since 2.1.0
  *
- * @global WP_Rewrite $wp_rewrite
  * @global WP         $wp
  *
  * @param string $tag   Name of the new rewrite tag.
@@ -161,7 +159,7 @@ function add_rewrite_tag( $tag, $regex, $query = '' ) {
 	if ( strlen( $tag ) < 3 || $tag[0] != '%' || $tag[ strlen($tag) - 1 ] != '%' )
 		return;
 
-	global $wp_rewrite, $wp;
+	global $wp;
 
 	if ( empty( $query ) ) {
 		$qv = trim( $tag, '%' );
@@ -169,7 +167,8 @@ function add_rewrite_tag( $tag, $regex, $query = '' ) {
 		$query = $qv . '=';
 	}
 
-	$wp_rewrite->add_rewrite_tag( $tag, $regex, $query );
+	$app = getApp();
+	$app['rewrite']->add_rewrite_tag( $tag, $regex, $query );
 }
 
 /**
@@ -177,13 +176,11 @@ function add_rewrite_tag( $tag, $regex, $query = '' ) {
  *
  * @since 4.5.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
- *
  * @param string $tag Name of the rewrite tag.
  */
 function remove_rewrite_tag( $tag ) {
-	global $wp_rewrite;
-	$wp_rewrite->remove_rewrite_tag( $tag );
+	$app = getApp();
+	$app['rewrite']->remove_rewrite_tag( $tag );
 }
 
 /**
@@ -192,7 +189,6 @@ function remove_rewrite_tag( $tag ) {
  * @since 3.0.0
  *
  * @see WP_Rewrite::add_permastruct()
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
  *
  * @param string $name   Name for permalink structure.
  * @param string $struct Permalink structure.
@@ -200,15 +196,14 @@ function remove_rewrite_tag( $tag ) {
  *                       see WP_Rewrite::add_permastruct() for full details. Default empty array.
  */
 function add_permastruct( $name, $struct, $args = array() ) {
-	global $wp_rewrite;
-
 	// Back-compat for the old parameters: $with_front and $ep_mask.
 	if ( ! is_array( $args ) )
 		$args = array( 'with_front' => $args );
 	if ( func_num_args() == 4 )
 		$args['ep_mask'] = func_get_arg( 3 );
 
-	$wp_rewrite->add_permastruct( $name, $struct, $args );
+	$app = getApp();
+	$app['rewrite']->add_permastruct( $name, $struct, $args );
 }
 
 /**
@@ -220,14 +215,12 @@ function add_permastruct( $name, $struct, $args = array() ) {
  * @since 4.5.0
  *
  * @see WP_Rewrite::remove_permastruct()
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
  *
  * @param string $name Name for permalink structure.
  */
 function remove_permastruct( $name ) {
-	global $wp_rewrite;
-
-	$wp_rewrite->remove_permastruct( $name );
+	$app = getApp();
+	$app['rewrite']->remove_permastruct( $name );
 }
 
 /**
@@ -235,17 +228,15 @@ function remove_permastruct( $name ) {
  *
  * @since 2.1.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string   $feedname Feed name.
  * @param callable $function Callback to run on feed display.
  * @return string Feed action name.
  */
 function add_feed( $feedname, $function ) {
-	global $wp_rewrite;
+	$app = getApp();
 
-	if ( ! in_array( $feedname, $wp_rewrite->feeds ) ) {
-		$wp_rewrite->feeds[] = $feedname;
+	if ( ! in_array( $feedname, $app['rewrite']->feeds ) ) {
+		$app['rewrite']->feeds[] = $feedname;
 	}
 
 	$hook = 'do_feed_' . $feedname;
@@ -263,14 +254,12 @@ function add_feed( $feedname, $function ) {
  *
  * @since 3.0.0
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param bool $hard Whether to update .htaccess (hard flush) or just update
  * 	                 rewrite_rules transient (soft flush). Default is true (hard).
  */
 function flush_rewrite_rules( $hard = true ) {
-	global $wp_rewrite;
-	$wp_rewrite->flush_rules( $hard );
+	$app = getApp();
+	$app['rewrite']->flush_rules( $hard );
 }
 
 /**
@@ -298,16 +287,14 @@ function flush_rewrite_rules( $hard = true ) {
  * @since 2.1.0
  * @since 4.3.0 Added support for skipping query var registration by passing `false` to `$query_var`.
  *
- * @global WP_Rewrite $wp_rewrite
- *
  * @param string      $name      Name of the endpoint.
  * @param int         $places    Endpoint mask describing the places the endpoint should be added.
  * @param string|bool $query_var Name of the corresponding query variable. Pass `false` to skip registering a query_var
  *                               for this endpoint. Defaults to the value of `$name`.
  */
 function add_rewrite_endpoint( $name, $places, $query_var = true ) {
-	global $wp_rewrite;
-	$wp_rewrite->add_endpoint( $name, $places, $query_var );
+	$app = getApp();
+	$app['rewrite']->add_endpoint( $name, $places, $query_var );
 }
 
 /**
@@ -453,15 +440,12 @@ function wp_resolve_numeric_slug_conflicts( $query_vars = array() ) {
  *
  * @since 1.0.0
  *
- * @global WP_Rewrite $wp_rewrite
  * @global WP         $wp
  *
  * @param string $url Permalink to check.
  * @return int Post ID, or 0 on failure.
  */
 function url_to_postid( $url ) {
-	global $wp_rewrite;
-
 	/**
 	 * Filters the URL to derive the post ID from.
 	 *
@@ -506,16 +490,18 @@ function url_to_postid( $url ) {
 		}
 	}
 
+	$app = getApp();
 	// Check to see if we are using rewrite rules
-	$rewrite = $wp_rewrite->wp_rewrite_rules();
+	$rewrite = $app['rewrite']->wp_rewrite_rules();
 
 	// Not using rewrite rules, and 'p=N' and 'page_id=N' methods failed, so we're out of options
 	if ( empty($rewrite) )
 		return 0;
 
 	// Strip 'index.php/' if we're not using path info permalinks
-	if ( !$wp_rewrite->using_index_permalinks() )
-		$url = str_replace( $wp_rewrite->index . '/', '', $url );
+	if ( ! $app['rewrite']->using_index_permalinks() ) {
+		$url = str_replace( $app['rewrite']->index . '/', '', $url );
+	}
 
 	if ( false !== strpos( trailingslashit( $url ), home_url( '/' ) ) ) {
 		// Chop off http://domain.com/[path]
@@ -549,7 +535,7 @@ function url_to_postid( $url ) {
 
 		if ( preg_match("#^$match#", $request_match, $matches) ) {
 
-			if ( $wp_rewrite->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
+			if ( $app['rewrite']->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
 				// This is a verbose page match, let's check to be sure about it.
 				$page = get_page_by_path( $matches[ $varmatch[1] ] );
 				if ( ! $page ) {

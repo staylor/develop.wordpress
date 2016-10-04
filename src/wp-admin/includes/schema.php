@@ -885,7 +885,6 @@ endif;
  *
  * @global wpdb       $wpdb
  * @global object     $current_site
- * @global WP_Rewrite $wp_rewrite
  *
  * @param int    $network_id        ID of network to populate.
  * @param string $domain            The domain name for the network (eg. "example.com").
@@ -898,7 +897,7 @@ endif;
  *                       so the error code must be checked) or failure.
  */
 function populate_network( $network_id = 1, $domain = '', $email = '', $site_name = '', $path = '/', $subdomain_install = false ) {
-	global $wpdb, $current_site, $wp_rewrite;
+	global $wpdb, $current_site;
 
 	$app = getApp();
 
@@ -1063,9 +1062,9 @@ We hope you enjoy your new site. Thanks!
 		update_user_meta( $site_user->ID, 'primary_blog', $blog_id );
 
 		if ( $subdomain_install )
-			$wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
+			$app['rewrite']->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
 		else
-			$wp_rewrite->set_permalink_structure( '/blog/%year%/%monthnum%/%day%/%postname%/' );
+			$app['rewrite']->set_permalink_structure( '/blog/%year%/%monthnum%/%day%/%postname%/' );
 
 		flush_rewrite_rules();
 

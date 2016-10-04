@@ -30,7 +30,6 @@ use function WP\getApp;
  *
  * @since 2.3.0
  *
- * @global WP_Rewrite $wp_rewrite
  * @global bool $is_IIS
  * @global WP_Query $wp_query
  * @global wpdb $wpdb WordPress database abstraction object.
@@ -41,7 +40,7 @@ use function WP\getApp;
  * @return string|void The string of the URL, if redirect needed.
  */
 function redirect_canonical( $requested_url = null, $do_redirect = true ) {
-	global $wp_rewrite, $is_IIS, $wp_query, $wpdb, $wp;
+	global $is_IIS, $wp_query, $wpdb, $wp;
 
 	$app = getApp();
 	if ( isset( $app['request.method'] ) && ! in_array( strtoupper( $app['request.method'] ), array( 'GET', 'HEAD' ) ) ) {
@@ -153,7 +152,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 			$redirect_url = get_permalink( $wp_query->post->ID );
 		}
 
-	} elseif ( is_object($wp_rewrite) && $wp_rewrite->using_permalinks() ) {
+	} elseif ( $app['rewrite']->using_permalinks() ) {
 		// rewriting of old ?p=X, ?m=2004, ?m=200401, ?m=20040101
 		if ( is_attachment() &&
 			! array_diff( array_keys( $wp->query_vars ), array( 'attachment', 'attachment_id' ) ) &&
@@ -257,7 +256,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 				}
 
 			}
-		} elseif ( is_single() && strpos($wp_rewrite->permalink_structure, '%category%') !== false && $cat = get_query_var( 'category_name' ) ) {
+		} elseif ( is_single() && strpos($app['rewrite']->permalink_structure, '%category%') !== false && $cat = get_query_var( 'category_name' ) ) {
 			$category = get_category_by_path( $cat );
 			if ( ( ! $category || is_wp_error( $category ) ) || ! has_term( $category->term_id, 'category', $wp_query->get_queried_object_id() ) ) {
 				$redirect_url = get_permalink($wp_query->get_queried_object_id());
@@ -272,7 +271,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 			$page = get_query_var( 'page' );
 			if ( $page > 1 ) {
 				if ( is_front_page() ) {
-					$redirect_url = trailingslashit( $redirect_url ) . user_trailingslashit( "$wp_rewrite->pagination_base/$page", 'paged' );
+					$redirect_url = trailingslashit( $redirect_url ) . user_trailingslashit( "{$app['rewrite']->pagination_base}/$page", 'paged' );
 				} else {
 					$redirect_url = trailingslashit( $redirect_url ) . user_trailingslashit( $page, 'single_paged' );
 				}
@@ -282,15 +281,15 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 
 		// paging and feeds
 		if ( get_query_var('paged') || is_feed() || get_query_var('cpage') ) {
-			while ( preg_match( "#/$wp_rewrite->pagination_base/?[0-9]+?(/+)?$#", $redirect['path'] ) || preg_match( '#/(comments/?)?(feed|rss|rdf|atom|rss2)(/+)?$#', $redirect['path'] ) || preg_match( "#/{$wp_rewrite->comments_pagination_base}-[0-9]+(/+)?$#", $redirect['path'] ) ) {
+			while ( preg_match( "#/{$app['rewrite']->pagination_base}/?[0-9]+?(/+)?$#", $redirect['path'] ) || preg_match( '#/(comments/?)?(feed|rss|rdf|atom|rss2)(/+)?$#', $redirect['path'] ) || preg_match( "#/{$app['rewrite']->comments_pagination_base}-[0-9]+(/+)?$#", $redirect['path'] ) ) {
 				// Strip off paging and feed
-				$redirect['path'] = preg_replace("#/$wp_rewrite->pagination_base/?[0-9]+?(/+)?$#", '/', $redirect['path']); // strip off any existing paging
+				$redirect['path'] = preg_replace("#/{$app['rewrite']->pagination_base}/?[0-9]+?(/+)?$#", '/', $redirect['path']); // strip off any existing paging
 				$redirect['path'] = preg_replace('#/(comments/?)?(feed|rss2?|rdf|atom)(/+|$)#', '/', $redirect['path']); // strip off feed endings
-				$redirect['path'] = preg_replace("#/{$wp_rewrite->comments_pagination_base}-[0-9]+?(/+)?$#", '/', $redirect['path']); // strip off any existing comment paging
+				$redirect['path'] = preg_replace("#/{$app['rewrite']->comments_pagination_base}-[0-9]+?(/+)?$#", '/', $redirect['path']); // strip off any existing comment paging
 			}
 
 			$addl_path = '';
-			if ( is_feed() && in_array( get_query_var('feed'), $wp_rewrite->feeds ) ) {
+			if ( is_feed() && in_array( get_query_var('feed'), $app['rewrite']->feeds ) ) {
 				$addl_path = !empty( $addl_path ) ? trailingslashit($addl_path) : '';
 				if ( !is_singular() && get_query_var( 'withcomments' ) )
 					$addl_path .= 'comments/';
@@ -320,7 +319,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 				$redirect['query'] = remove_query_arg( 'paged', $redirect['query'] );
 				if ( !is_feed() ) {
 					if ( $paged > 1 && !is_single() ) {
-						$addl_path = ( !empty( $addl_path ) ? trailingslashit($addl_path) : '' ) . user_trailingslashit("$wp_rewrite->pagination_base/$paged", 'paged');
+						$addl_path = ( !empty( $addl_path ) ? trailingslashit($addl_path) : '' ) . user_trailingslashit("{$app['rewrite']->pagination_base}/$paged", 'paged');
 					} elseif ( !is_single() ) {
 						$addl_path = !empty( $addl_path ) ? trailingslashit($addl_path) : '';
 					}
@@ -333,13 +332,13 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 				( 'newest' == get_option( 'default_comments_page' ) && get_query_var( 'cpage' ) > 0 ) ||
 				( 'newest' != get_option( 'default_comments_page' ) && get_query_var( 'cpage' ) > 1 )
 			) ) {
-				$addl_path = ( !empty( $addl_path ) ? trailingslashit($addl_path) : '' ) . user_trailingslashit( $wp_rewrite->comments_pagination_base . '-' . get_query_var('cpage'), 'commentpaged' );
+				$addl_path = ( !empty( $addl_path ) ? trailingslashit($addl_path) : '' ) . user_trailingslashit( $app['rewrite']->comments_pagination_base . '-' . get_query_var('cpage'), 'commentpaged' );
 				$redirect['query'] = remove_query_arg( 'cpage', $redirect['query'] );
 			}
 
-			$redirect['path'] = user_trailingslashit( preg_replace('|/' . preg_quote( $wp_rewrite->index, '|' ) . '/?$|', '/', $redirect['path']) ); // strip off trailing /index.php/
-			if ( !empty( $addl_path ) && $wp_rewrite->using_index_permalinks() && strpos($redirect['path'], '/' . $wp_rewrite->index . '/') === false )
-				$redirect['path'] = trailingslashit($redirect['path']) . $wp_rewrite->index . '/';
+			$redirect['path'] = user_trailingslashit( preg_replace('|/' . preg_quote( $app['rewrite']->index, '|' ) . '/?$|', '/', $redirect['path']) ); // strip off trailing /index.php/
+			if ( !empty( $addl_path ) && $app['rewrite']->using_index_permalinks() && strpos($redirect['path'], '/' . $app['rewrite']->index . '/') === false )
+				$redirect['path'] = trailingslashit($redirect['path']) . $app['rewrite']->index . '/';
 			if ( !empty( $addl_path ) )
 				$redirect['path'] = trailingslashit($redirect['path']) . $addl_path;
 			$redirect_url = $redirect['scheme'] . '://' . $redirect['host'] . $redirect['path'];
@@ -392,7 +391,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		unset($redirect['port']);
 
 	// trailing /index.php
-	$redirect['path'] = preg_replace('|/' . preg_quote( $wp_rewrite->index, '|' ) . '/*?$|', '/', $redirect['path']);
+	$redirect['path'] = preg_replace('|/' . preg_quote( $app['rewrite']->index, '|' ) . '/*?$|', '/', $redirect['path']);
 
 	// Remove trailing spaces from the path
 	$redirect['path'] = preg_replace( '#(%20| )+$#', '', $redirect['path'] );
@@ -412,11 +411,11 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 	}
 
 	// strip /index.php/ when we're not using PATHINFO permalinks
-	if ( !$wp_rewrite->using_index_permalinks() )
-		$redirect['path'] = str_replace( '/' . $wp_rewrite->index . '/', '/', $redirect['path'] );
+	if ( !$app['rewrite']->using_index_permalinks() )
+		$redirect['path'] = str_replace( '/' . $app['rewrite']->index . '/', '/', $redirect['path'] );
 
 	// trailing slashes
-	if ( is_object($wp_rewrite) && $wp_rewrite->using_permalinks() && !is_404() && (!is_front_page() || ( is_front_page() && (get_query_var('paged') > 1) ) ) ) {
+	if ( $app['rewrite']->using_permalinks() && !is_404() && (!is_front_page() || ( is_front_page() && (get_query_var('paged') > 1) ) ) ) {
 		$user_ts_type = '';
 		if ( get_query_var('paged') > 0 ) {
 			$user_ts_type = 'paged';
@@ -628,12 +627,10 @@ function redirect_guess_404_permalink() {
  * Visiting /login redirects to /wp-login.php, and so on.
  *
  * @since 3.4.0
- *
- * @global WP_Rewrite $wp_rewrite
  */
 function wp_redirect_admin_locations() {
-	global $wp_rewrite;
-	if ( ! ( is_404() && $wp_rewrite->using_permalinks() ) )
+	$app = getApp();
+	if ( ! ( is_404() && $app['rewrite']->using_permalinks() ) )
 		return;
 
 	$app = getApp();

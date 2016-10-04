@@ -6,6 +6,8 @@
  * @subpackage Post
  */
 
+use function WP\getApp;
+
 //
 // Post Type Registration
 //
@@ -3562,7 +3564,6 @@ function check_and_publish_future_post( $post_id ) {
  * @since 2.8.0
  *
  * @global wpdb       $wpdb WordPress database abstraction object.
- * @global WP_Rewrite $wp_rewrite
  *
  * @param string $slug        The desired slug (post_name).
  * @param int    $post_ID     Post ID.
@@ -3575,11 +3576,13 @@ function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_p
 	if ( in_array( $post_status, array( 'draft', 'pending', 'auto-draft' ) ) || ( 'inherit' == $post_status && 'revision' == $post_type ) )
 		return $slug;
 
-	global $wpdb, $wp_rewrite;
+	global $wpdb;
+
+	$app = getApp();
 
 	$original_slug = $slug;
 
-	$feeds = $wp_rewrite->feeds;
+	$feeds = $app['rewrite']->feeds;
 	if ( ! is_array( $feeds ) )
 		$feeds = array();
 
@@ -3626,7 +3629,7 @@ function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_p
 		 * @param string $post_type   Post type.
 		 * @param int    $post_parent Post parent ID.
 		 */
-		if ( $post_name_check || in_array( $slug, $feeds ) || 'embed' === $slug || preg_match( "@^($wp_rewrite->pagination_base)?\d+$@", $slug )  || apply_filters( 'wp_unique_post_slug_is_bad_hierarchical_slug', false, $slug, $post_type, $post_parent ) ) {
+		if ( $post_name_check || in_array( $slug, $feeds ) || 'embed' === $slug || preg_match( "@^({$app['rewrite']->pagination_base})?\d+$@", $slug )  || apply_filters( 'wp_unique_post_slug_is_bad_hierarchical_slug', false, $slug, $post_type, $post_parent ) ) {
 			$suffix = 2;
 			do {
 				$alt_post_name = _truncate_post_slug( $slug, 200 - ( strlen( $suffix ) + 1 ) ) . "-$suffix";
