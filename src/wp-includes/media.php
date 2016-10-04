@@ -1085,11 +1085,12 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	$upload_dir = wp_get_upload_dir();
 	$image_baseurl = trailingslashit( $upload_dir['baseurl'] ) . $dirname;
 
+	$app = getApp();
 	/*
 	 * If currently on HTTPS, prefer HTTPS URLs when we know they're supported by the domain
 	 * (which is to say, when they share the domain name of the current request).
 	 */
-	if ( is_ssl() && 'https' !== substr( $image_baseurl, 0, 5 ) && parse_url( $image_baseurl, PHP_URL_HOST ) === $_SERVER['HTTP_HOST'] ) {
+	if ( is_ssl() && 'https' !== substr( $image_baseurl, 0, 5 ) && parse_url( $image_baseurl, PHP_URL_HOST ) === $app['request.host'] ) {
 		$image_baseurl = set_url_scheme( $image_baseurl, 'https' );
 	}
 
@@ -2980,10 +2981,11 @@ function wp_plupload_default_settings() {
 		),
 	);
 
+	$app = getApp();
 	// Currently only iOS Safari supports multiple files uploading but iOS 7.x has a bug that prevents uploading of videos
 	// when enabled. See #29602.
-	if ( wp_is_mobile() && strpos( $_SERVER['HTTP_USER_AGENT'], 'OS 7_' ) !== false &&
-		strpos( $_SERVER['HTTP_USER_AGENT'], 'like Mac OS X' ) !== false ) {
+	if ( wp_is_mobile() && strpos( $app['request.useragent'], 'OS 7_' ) !== false &&
+		strpos( $app['request.useragent'], 'like Mac OS X' ) !== false ) {
 
 		$defaults['multi_selection'] = false;
 	}

@@ -8,6 +8,8 @@
  * @subpackage Template
  */
 
+use function WP\getApp;
+
 /**
  * Retrieve the author of the current comment.
  *
@@ -1161,7 +1163,8 @@ function trackback_rdf( $deprecated = '' ) {
 		_deprecated_argument( __FUNCTION__, '2.5.0' );
 	}
 
-	if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && false !== stripos( $_SERVER['HTTP_USER_AGENT'], 'W3C_Validator' ) ) {
+	$app = getApp();
+	if ( false !== stripos( $app['request.useragent'], 'W3C_Validator' ) ) {
 		return;
 	}
 

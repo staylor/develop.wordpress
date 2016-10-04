@@ -7,6 +7,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 if ( !function_exists('wp_set_current_user') ) :
 /**
@@ -174,7 +175,7 @@ if ( !function_exists( 'wp_mail' ) ) :
  */
 function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
 	// Compact the input, apply the filters, and extract them back out
-
+	$app = getApp();
 	/**
 	 * Filters the wp_mail() arguments.
 	 *
@@ -324,7 +325,7 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
 
 	if ( !isset( $from_email ) ) {
 		// Get the site domain and get rid of www.
-		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+		$sitename = strtolower( $app['request.server_name'] );
 		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
 			$sitename = substr( $sitename, 4 );
 		}
@@ -603,8 +604,9 @@ function wp_validate_auth_cookie($cookie = '', $scheme = '') {
 	$token = $cookie_elements['token'];
 	$expired = $expiration = $cookie_elements['expiration'];
 
+	$app = getApp();
 	// Allow a grace period for POST and Ajax requests
-	if ( wp_doing_ajax() || 'POST' == $_SERVER['REQUEST_METHOD'] ) {
+	if ( wp_doing_ajax() || 'POST' == $app['request.method'] ) {
 		$expired += HOUR_IN_SECONDS;
 	}
 
@@ -955,6 +957,7 @@ if ( !function_exists('auth_redirect') ) :
  * @since 1.5.0
  */
 function auth_redirect() {
+	$app = getApp();
 	// Checks if a user is logged in, if not redirects them to the login page
 
 	$secure = ( is_ssl() || force_ssl_admin() );
@@ -969,12 +972,12 @@ function auth_redirect() {
 	$secure = apply_filters( 'secure_auth_redirect', $secure );
 
 	// If https is required and request is http, redirect
-	if ( $secure && !is_ssl() && false !== strpos($_SERVER['REQUEST_URI'], 'wp-admin') ) {
-		if ( 0 === strpos( $_SERVER['REQUEST_URI'], 'http' ) ) {
-			wp_redirect( set_url_scheme( $_SERVER['REQUEST_URI'], 'https' ) );
+	if ( $secure && !is_ssl() && false !== strpos( $app['request.uri'], 'wp-admin') ) {
+		if ( 0 === strpos( $app['request.uri'], 'http' ) ) {
+			wp_redirect( set_url_scheme( $app['request.uri'], 'https' ) );
 			exit();
 		} else {
-			wp_redirect( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+			wp_redirect( 'https://' . $app['request.host'] . $app['request.uri'] );
 			exit();
 		}
 	}
@@ -999,12 +1002,12 @@ function auth_redirect() {
 		do_action( 'auth_redirect', $user_id );
 
 		// If the user wants ssl but the session is not ssl, redirect.
-		if ( !$secure && get_user_option('use_ssl', $user_id) && false !== strpos($_SERVER['REQUEST_URI'], 'wp-admin') ) {
-			if ( 0 === strpos( $_SERVER['REQUEST_URI'], 'http' ) ) {
-				wp_redirect( set_url_scheme( $_SERVER['REQUEST_URI'], 'https' ) );
+		if ( !$secure && get_user_option('use_ssl', $user_id) && false !== strpos( $app['request.uri'], 'wp-admin' ) ) {
+			if ( 0 === strpos( $app['request.uri'], 'http' ) ) {
+				wp_redirect( set_url_scheme( $app['request.uri'], 'https' ) );
 				exit();
 			} else {
-				wp_redirect( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+				wp_redirect( 'https://' . $app['request.host'] . $app['request.uri'] );
 				exit();
 			}
 		}
@@ -1015,7 +1018,7 @@ function auth_redirect() {
 	// The cookie is no good so force login
 	nocache_headers();
 
-	$redirect = ( strpos( $_SERVER['REQUEST_URI'], '/options.php' ) && wp_get_referer() ) ? wp_get_referer() : set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	$redirect = ( strpos( $app['request.uri'], '/options.php' ) && wp_get_referer() ) ? wp_get_referer() : set_url_scheme( 'http://' . $app['request.host'] . $app['request.uri'] );
 
 	$login_url = wp_login_url($redirect, true);
 
@@ -1471,7 +1474,8 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 		$notify_message .= sprintf( __( 'Spam it: %s' ), admin_url( "comment.php?action=spam&c={$comment->comment_ID}#wpbody-content" ) ) . "\r\n";
 	}
 
-	$wp_email = 'wordpress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
+	$app = getApp();
+	$wp_email = 'wordpress@' . preg_replace('#^www\.#', '', strtolower( $app['request.server_name'] ));
 
 	if ( '' == $comment->comment_author ) {
 		$from = "From: \"$blogname\" <$wp_email>";

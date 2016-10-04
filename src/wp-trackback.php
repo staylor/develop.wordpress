@@ -8,6 +8,8 @@
  * @subpackage Trackbacks
  */
 
+use function WP\getApp;
+
 if (empty($wp)) {
 	require_once( dirname( __FILE__ ) . '/wp-load.php' );
 	wp( array( 'tb' => '1' ) );
@@ -45,7 +47,8 @@ function trackback_response($error = 0, $error_message = '') {
 $request_array = 'HTTP_POST_VARS';
 
 if ( !isset($_GET['tb_id']) || !$_GET['tb_id'] ) {
-	$tb_id = explode('/', $_SERVER['REQUEST_URI']);
+	$app = getApp();
+	$tb_id = explode( '/', $app['request.uri'] );
 	$tb_id = intval( $tb_id[ count($tb_id) - 1 ] );
 }
 

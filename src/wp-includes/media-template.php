@@ -7,6 +7,8 @@
  * @since 3.5.0
  */
 
+use function WP\getApp;
+
 /**
  * Output the markup for a audio tag to be used in an Underscore template
  * when data.model is passed.
@@ -133,25 +135,11 @@ function wp_underscore_video_template() {
  * Prints the templates used in the media manager.
  *
  * @since 3.5.0
- *
- * @global bool $is_IE
  */
 function wp_print_media_templates() {
-	global $is_IE;
+	$app = getApp();
 	$class = 'media-modal wp-core-ui';
-	if ( $is_IE && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 7') !== false )
-		$class .= ' ie7';
 	?>
-	<!--[if lte IE 8]>
-	<style>
-		.attachment:focus {
-			outline: #1e8cbe solid;
-		}
-		.selected.attachment {
-			outline: #1e8cbe solid;
-		}
-	</style>
-	<![endif]-->
 	<script type="text/html" id="tmpl-media-frame">
 		<div class="media-frame-menu"></div>
 		<div class="media-frame-title"></div>
@@ -248,10 +236,10 @@ function wp_print_media_templates() {
 	</script>
 
 	<script type="text/html" id="tmpl-media-library-view-switcher">
-		<a href="<?php echo esc_url( add_query_arg( 'mode', 'list', $_SERVER['REQUEST_URI'] ) ) ?>" class="view-list">
+		<a href="<?php echo esc_url( add_query_arg( 'mode', 'list', $app['request.uri'] ) ) ?>" class="view-list">
 			<span class="screen-reader-text"><?php _e( 'List View' ); ?></span>
 		</a>
-		<a href="<?php echo esc_url( add_query_arg( 'mode', 'grid', $_SERVER['REQUEST_URI'] ) ) ?>" class="view-grid current">
+		<a href="<?php echo esc_url( add_query_arg( 'mode', 'grid', $app['request.uri'] ) ) ?>" class="view-grid current">
 			<span class="screen-reader-text"><?php _e( 'Grid View' ); ?></span>
 		</a>
 	</script>

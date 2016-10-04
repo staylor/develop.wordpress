@@ -1747,6 +1747,8 @@ function wp_throttle_comment_flood($block, $time_lastcomment, $time_newcomment) 
 function wp_new_comment( $commentdata ) {
 	global $wpdb;
 
+	$app = getApp();
+
 	if ( isset( $commentdata['user_ID'] ) ) {
 		$commentdata['user_id'] = $commentdata['user_ID'] = (int) $commentdata['user_ID'];
 	}
@@ -1774,12 +1776,12 @@ function wp_new_comment( $commentdata ) {
 	$commentdata['comment_parent'] = ( 'approved' == $parent_status || 'unapproved' == $parent_status ) ? $commentdata['comment_parent'] : 0;
 
 	if ( ! isset( $commentdata['comment_author_IP'] ) ) {
-		$commentdata['comment_author_IP'] = $_SERVER['REMOTE_ADDR'];
+		$commentdata['comment_author_IP'] = $app['request.remote_addr'];
 	}
 	$commentdata['comment_author_IP'] = preg_replace( '/[^0-9a-fA-F:., ]/', '', $commentdata['comment_author_IP'] );
 
 	if ( ! isset( $commentdata['comment_agent'] ) ) {
-		$commentdata['comment_agent'] = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT']: '';
+		$commentdata['comment_agent'] = $app['request.useragent'] ?? '';
 	}
 	$commentdata['comment_agent'] = substr( $commentdata['comment_agent'], 0, 254 );
 

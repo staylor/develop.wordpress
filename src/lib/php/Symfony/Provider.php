@@ -9,5 +9,45 @@ class Provider implements ServiceProviderInterface {
 		$app['request'] = function () {
 			return Request::createFromGlobals();
 		};
+
+		$app['request.method'] = function ( $app ) {
+			return $app['request']->getMethod();
+		};
+
+		$app['request.host'] = function ( $app ) {
+			return $app['request']->getHttpHost();
+		};
+
+		$app['request.uri'] = function ( $app ) {
+			return $app['request']->getRequestUri();
+		};
+
+		$app['request.useragent'] = function ( $app ) {
+			return $app['request']->headers->get( 'User-Agent' );
+		};
+
+		$app['request.software'] = function ( $app ) {
+			return $app['request']->server->get( 'SERVER_SOFTWARE' );
+		};
+
+		$app['request.php_self'] = function ( $app ) {
+			return $app['request']->server->get( 'PHP_SELF' );
+		};
+
+		$app['request.path_info'] = function ( $app ) {
+			return $app['request']->server->get( 'PATH_INFO' );
+		};
+
+		$app['request.server_name'] = function ( $app ) {
+			return $app['request']->server->get( 'SERVER_NAME' );
+		};
+
+		$app['request.script_filename'] = function ( $app ) {
+			return $app['request']->server->get( 'SCRIPT_FILENAME' );
+		};
+
+		$app['request.remote_addr'] = function ( $app ) {
+			return $app['request']->server->get( 'REMOTE_ADDR' );
+		};
 	}
 }

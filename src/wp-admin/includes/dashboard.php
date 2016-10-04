@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Registers dashboard widgets.
  *
@@ -1396,15 +1398,16 @@ function dashboard_browser_nag_class( $classes ) {
  * @return array|bool False on failure, array of browser data on success.
  */
 function wp_check_browser_version() {
-	if ( empty( $_SERVER['HTTP_USER_AGENT'] ) )
+	$app = getApp();
+	if ( empty( $app['request.useragent'] ) )
 		return false;
 
-	$key = md5( $_SERVER['HTTP_USER_AGENT'] );
+	$key = md5( $app['request.useragent'] );
 
 	if ( false === ($response = get_site_transient('browser_' . $key) ) ) {
 		$options = array(
-			'body'			=> array( 'useragent' => $_SERVER['HTTP_USER_AGENT'] ),
-			'user-agent'	=> 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url()
+			'body'			=> array( 'useragent' => $app['request.useragent'] ),
+			'user-agent'	=> 'WordPress/' . $app['wp_version'] . '; ' . home_url()
 		);
 
 		$response = wp_remote_post( 'http://api.wordpress.org/core/browse-happy/1.1/', $options );

@@ -405,10 +405,11 @@ function wp_registration_url() {
  * @return string|void String when retrieving.
  */
 function wp_login_form( $args = array() ) {
+	$app = getApp();
 	$defaults = array(
 		'echo' => true,
 		// Default 'redirect' value takes the user back to the request URI.
-		'redirect' => ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+		'redirect' => ( is_ssl() ? 'https://' : 'http://' ) . $app['request.host'] . $app['request.uri'],
 		'form_id' => 'loginform',
 		'label_username' => __( 'Username or Email Address' ),
 		'label_password' => __( 'Password' ),
@@ -2898,7 +2899,7 @@ function wp_dependencies_unique_hosts() {
 			$dependency = $dependencies->registered[ $handle ];
 			$parsed     = wp_parse_url( $dependency->src );
 
-			if ( ! empty( $parsed['host'] ) && ! in_array( $parsed['host'], $unique_hosts ) && $parsed['host'] !== $_SERVER['SERVER_NAME'] ) {
+			if ( ! empty( $parsed['host'] ) && ! in_array( $parsed['host'], $unique_hosts ) && $parsed['host'] !== $app['request.server_name'] ) {
 				$unique_hosts[] = $parsed['host'];
 			}
 		}
@@ -2932,7 +2933,8 @@ function user_can_richedit() {
 
 		if ( get_user_option( 'rich_editing' ) == 'true' || ! is_user_logged_in() ) { // default to 'true' for logged out users
 			if ( $is_safari ) {
-				$wp_rich_edit = ! wp_is_mobile() || ( preg_match( '!AppleWebKit/(\d+)!', $_SERVER['HTTP_USER_AGENT'], $match ) && intval( $match[1] ) >= 534 );
+				$app = getApp();
+				$wp_rich_edit = ! wp_is_mobile() || ( preg_match( '!AppleWebKit/(\d+)!', $app['request.useragent'], $match ) && intval( $match[1] ) >= 534 );
 			} elseif ( $is_gecko || $is_chrome || $is_IE || $is_edge || ( $is_opera && !wp_is_mobile() ) ) {
 				$wp_rich_edit = true;
 			}

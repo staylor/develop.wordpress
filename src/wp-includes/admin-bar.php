@@ -7,6 +7,8 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /**
  * Instantiate the admin bar object and set it up as a global for access elsewhere.
  *
@@ -371,7 +373,8 @@ function wp_admin_bar_customize_menu( $wp_admin_bar ) {
 		return;
 	}
 
-	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	$app = getApp();
+	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $app['request.host'] . $app['request.uri'];
 	$customize_url = add_query_arg( 'url', urlencode( $current_url ), wp_customize_url() );
 
 	$wp_admin_bar->add_menu( array(

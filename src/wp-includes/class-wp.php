@@ -1,4 +1,5 @@
 <?php
+use function WP\getApp;
 /**
  * WordPress environment setup class.
  *
@@ -175,12 +176,13 @@ class WP {
 			$error = '404';
 			$this->did_permalink = true;
 
-			$pathinfo = isset( $_SERVER['PATH_INFO'] ) ? $_SERVER['PATH_INFO'] : '';
+			$app = getApp();
+			$pathinfo = $app['request.path_info'] ?? '';
 			list( $pathinfo ) = explode( '?', $pathinfo );
 			$pathinfo = str_replace( "%", "%25", $pathinfo );
 
-			list( $req_uri ) = explode( '?', $_SERVER['REQUEST_URI'] );
-			$self = $_SERVER['PHP_SELF'];
+			list( $req_uri ) = explode( '?', $app['request.uri'] );
+			$self = $app['request.php_self'];
 			$home_path = trim( parse_url( home_url(), PHP_URL_PATH ), '/' );
 			$home_path_regex = sprintf( '|^%s|i', preg_quote( $home_path, '|' ) );
 
@@ -270,10 +272,10 @@ class WP {
 			}
 
 			// If req_uri is empty or if it is a request for ourself, unset error.
-			if ( empty($requested_path) || $requested_file == $self || strpos($_SERVER['PHP_SELF'], 'wp-admin/') !== false ) {
+			if ( empty($requested_path) || $requested_file == $self || strpos($app['request.php_self'], 'wp-admin/') !== false ) {
 				unset( $error, $_GET['error'] );
 
-				if ( isset($perma_query_vars) && strpos($_SERVER['PHP_SELF'], 'wp-admin/') !== false )
+				if ( isset($perma_query_vars) && strpos($app['request.php_self'], 'wp-admin/') !== false )
 					unset( $perma_query_vars );
 
 				$this->did_permalink = false;

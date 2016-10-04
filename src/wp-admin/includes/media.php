@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Defines the default media upload tabs
  *
@@ -1871,10 +1873,12 @@ $plupload_init = array(
 	'multipart_params'    => $post_params,
 );
 
+$app = getApp();
+$ua = $app['request.useragent'];
 // Currently only iOS Safari supports multiple files uploading but iOS 7.x has a bug that prevents uploading of videos
 // when enabled. See #29602.
-if ( wp_is_mobile() && strpos( $_SERVER['HTTP_USER_AGENT'], 'OS 7_' ) !== false &&
-	strpos( $_SERVER['HTTP_USER_AGENT'], 'like Mac OS X' ) !== false ) {
+if ( wp_is_mobile() && strpos( $ua, 'OS 7_' ) !== false &&
+	strpos( $ua, 'like Mac OS X' ) !== false ) {
 
 	$plupload_init['multi_selection'] = false;
 }

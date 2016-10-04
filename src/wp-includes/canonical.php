@@ -9,6 +9,8 @@
  * @since 2.3.0
  */
 
+use function WP\getApp;
+
 /**
  * Redirects incoming links to the proper URL based on the site url.
  *
@@ -41,7 +43,8 @@
 function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 	global $wp_rewrite, $is_IIS, $wp_query, $wpdb, $wp;
 
-	if ( isset( $_SERVER['REQUEST_METHOD'] ) && ! in_array( strtoupper( $_SERVER['REQUEST_METHOD'] ), array( 'GET', 'HEAD' ) ) ) {
+	$app = getApp();
+	if ( isset( $app['request.method'] ) && ! in_array( strtoupper( $app['request.method'] ), array( 'GET', 'HEAD' ) ) ) {
 		return;
 	}
 
@@ -59,11 +62,11 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		return;
 	}
 
-	if ( ! $requested_url && isset( $_SERVER['HTTP_HOST'] ) ) {
+	if ( ! $requested_url && $app['request.host'] ) {
 		// build the URL in the address bar
 		$requested_url  = is_ssl() ? 'https://' : 'http://';
-		$requested_url .= $_SERVER['HTTP_HOST'];
-		$requested_url .= $_SERVER['REQUEST_URI'];
+		$requested_url .= $app['request.host'];
+		$requested_url .= $app['request.uri'];
 	}
 
 	$original = @parse_url($requested_url);
@@ -633,6 +636,7 @@ function wp_redirect_admin_locations() {
 	if ( ! ( is_404() && $wp_rewrite->using_permalinks() ) )
 		return;
 
+	$app = getApp();
 	$admins = array(
 		home_url( 'wp-admin', 'relative' ),
 		home_url( 'dashboard', 'relative' ),
@@ -640,7 +644,7 @@ function wp_redirect_admin_locations() {
 		site_url( 'dashboard', 'relative' ),
 		site_url( 'admin', 'relative' ),
 	);
-	if ( in_array( untrailingslashit( $_SERVER['REQUEST_URI'] ), $admins ) ) {
+	if ( in_array( untrailingslashit( $app['request.uri'] ), $admins ) ) {
 		wp_redirect( admin_url() );
 		exit;
 	}
@@ -650,7 +654,7 @@ function wp_redirect_admin_locations() {
 		home_url( 'login', 'relative' ),
 		site_url( 'login', 'relative' ),
 	);
-	if ( in_array( untrailingslashit( $_SERVER['REQUEST_URI'] ), $logins ) ) {
+	if ( in_array( untrailingslashit( $app['request.uri'] ), $logins ) ) {
 		wp_redirect( wp_login_url() );
 		exit;
 	}

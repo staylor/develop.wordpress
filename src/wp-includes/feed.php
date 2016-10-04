@@ -10,6 +10,8 @@
  * @since 2.1.0
  */
 
+use function WP\getApp;
+
 /**
  * RSS container for the bloginfo function.
  *
@@ -605,6 +607,7 @@ function rss2_site_icon() {
  * @since 2.5.0
  */
 function self_link() {
+	$app = getApp();
 	$host = @parse_url(home_url());
 	/**
 	 * Filters the current feed URL.
@@ -616,7 +619,7 @@ function self_link() {
 	 *
 	 * @param string $feed_link The link for the feed with set URL scheme.
 	 */
-	echo esc_url( apply_filters( 'self_link', set_url_scheme( 'http://' . $host['host'] . wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) );
+	echo esc_url( apply_filters( 'self_link', set_url_scheme( 'http://' . $host['host'] . wp_unslash( $app['request.uri'] ) ) ) );
 }
 
 /**

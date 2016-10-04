@@ -8,6 +8,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /**
  * Gets the network's site and user counts.
@@ -796,10 +797,11 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_ema
 	else
 		$activate_url = "http://{$domain}{$path}wp-activate.php?key=$key"; // @todo use *_url() API
 
+	$app = getApp();
 	$activate_url = esc_url($activate_url);
 	$admin_email = get_site_option( 'admin_email' );
 	if ( $admin_email == '' )
-		$admin_email = 'support@' . $_SERVER['SERVER_NAME'];
+		$admin_email = 'support@' . $app['request.server_name'];
 	$from_name = get_site_option( 'site_name' ) == '' ? 'WordPress' : esc_html( get_site_option( 'site_name' ) );
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 	$message = sprintf(
@@ -889,10 +891,11 @@ function wpmu_signup_user_notification( $user, $user_email, $key, $meta = array(
 	if ( ! apply_filters( 'wpmu_signup_user_notification', $user, $user_email, $key, $meta ) )
 		return false;
 
+	$app = getApp();
 	// Send email with activation link.
 	$admin_email = get_site_option( 'admin_email' );
 	if ( $admin_email == '' )
-		$admin_email = 'support@' . $_SERVER['SERVER_NAME'];
+		$admin_email = 'support@' . $app['request.server_name'];
 	$from_name = get_site_option( 'site_name' ) == '' ? 'WordPress' : esc_html( get_site_option( 'site_name' ) );
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 	$message = sprintf(
@@ -1180,6 +1183,7 @@ function newblog_notify_siteadmin( $blog_id, $deprecated = '' ) {
 	if ( is_email($email) == false )
 		return false;
 
+	$app = getApp();
 	$options_site_url = esc_url(network_admin_url('settings.php'));
 
 	switch_to_blog( $blog_id );
@@ -1191,7 +1195,7 @@ function newblog_notify_siteadmin( $blog_id, $deprecated = '' ) {
 URL: %2$s
 Remote IP: %3$s
 
-Disable these notifications: %4$s' ), $blogname, $siteurl, wp_unslash( $_SERVER['REMOTE_ADDR'] ), $options_site_url);
+Disable these notifications: %4$s' ), $blogname, $siteurl, wp_unslash( $app['request.remote_addr'] ), $options_site_url);
 	/**
 	 * Filters the message body of the new site activation email sent
 	 * to the network administrator.
@@ -1226,13 +1230,14 @@ function newuser_notify_siteadmin( $user_id ) {
 	if ( is_email($email) == false )
 		return false;
 
+	$app = getApp();
 	$user = get_userdata( $user_id );
 
 	$options_site_url = esc_url(network_admin_url('settings.php'));
 	$msg = sprintf(__('New User: %1$s
 Remote IP: %2$s
 
-Disable these notifications: %3$s'), $user->user_login, wp_unslash( $_SERVER['REMOTE_ADDR'] ), $options_site_url);
+Disable these notifications: %3$s'), $user->user_login, wp_unslash( $app['request.remote_addr'] ), $options_site_url);
 
 	/**
 	 * Filters the message body of the new user activation email sent
@@ -1452,6 +1457,7 @@ function wpmu_welcome_notification( $blog_id, $user_id, $password, $title, $meta
 	if ( ! apply_filters( 'wpmu_welcome_notification', $blog_id, $user_id, $password, $title, $meta ) )
 		return false;
 
+	$app = getApp();
 	$welcome_email = get_site_option( 'welcome_email' );
 	if ( $welcome_email == false ) {
 		/* translators: Do not translate USERNAME, SITE_NAME, BLOG_URL, PASSWORD: those are placeholders. */
@@ -1498,7 +1504,7 @@ We hope you enjoy your new site. Thanks!
 	$admin_email = get_site_option( 'admin_email' );
 
 	if ( $admin_email == '' )
-		$admin_email = 'support@' . $_SERVER['SERVER_NAME'];
+		$admin_email = 'support@' . $app['request.server_name'];
 
 	$from_name = get_site_option( 'site_name' ) == '' ? 'WordPress' : esc_html( get_site_option( 'site_name' ) );
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
@@ -1551,6 +1557,7 @@ function wpmu_welcome_user_notification( $user_id, $password, $meta = array() ) 
 	if ( ! apply_filters( 'wpmu_welcome_user_notification', $user_id, $password, $meta ) )
 		return false;
 
+	$app = getApp();
 	$welcome_email = get_site_option( 'welcome_user_email' );
 
 	$user = get_userdata( $user_id );
@@ -1576,7 +1583,7 @@ function wpmu_welcome_user_notification( $user_id, $password, $meta = array() ) 
 	$admin_email = get_site_option( 'admin_email' );
 
 	if ( $admin_email == '' )
-		$admin_email = 'support@' . $_SERVER['SERVER_NAME'];
+		$admin_email = 'support@' . $app['request.server_name'];
 
 	$from_name = get_site_option( 'site_name' ) == '' ? 'WordPress' : esc_html( get_site_option( 'site_name' ) );
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
@@ -1792,9 +1799,11 @@ function update_posts_count( $deprecated = '' ) {
  */
 function wpmu_log_new_registrations( $blog_id, $user_id ) {
 	global $wpdb;
+	$app = getApp();
 	$user = get_userdata( (int) $user_id );
-	if ( $user )
-		$wpdb->insert( $wpdb->registration_log, array('email' => $user->user_email, 'IP' => preg_replace( '/[^0-9., ]/', '', wp_unslash( $_SERVER['REMOTE_ADDR'] ) ), 'blog_id' => $blog_id, 'date_registered' => current_time('mysql')) );
+	if ( $user ) {
+		$wpdb->insert( $wpdb->registration_log, array('email' => $user->user_email, 'IP' => preg_replace( '/[^0-9., ]/', '', wp_unslash( $app['request.remote_addr'] ) ), 'blog_id' => $blog_id, 'date_registered' => current_time('mysql')) );
+	}
 }
 
 /**
@@ -1925,7 +1934,8 @@ function signup_nonce_fields() {
  * @return array
  */
 function signup_nonce_check( $result ) {
-	if ( !strpos( $_SERVER[ 'PHP_SELF' ], 'wp-signup.php' ) )
+	$app = getApp();
+	if ( !strpos( $app['request.php_self'], 'wp-signup.php' ) )
 		return $result;
 
 	if ( wp_create_nonce('signup_form_' . $_POST[ 'signup_form_id' ]) != $_POST['_signup_form'] )
@@ -1967,10 +1977,11 @@ function maybe_redirect_404() {
  * @since MU
  */
 function maybe_add_existing_user_to_blog() {
-	if ( false === strpos( $_SERVER[ 'REQUEST_URI' ], '/newbloguser/' ) )
+	$app = getApp();
+	if ( false === strpos( $app['request.uri'], '/newbloguser/' ) )
 		return;
 
-	$parts = explode( '/', $_SERVER[ 'REQUEST_URI' ] );
+	$parts = explode( '/', $app['request.uri'] );
 	$key = array_pop( $parts );
 
 	if ( $key == '' )

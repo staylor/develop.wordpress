@@ -2076,8 +2076,10 @@ function check_theme_switched() {
  * @global WP_Customize_Manager $wp_customize
  */
 function _wp_customize_include() {
+	$app = getApp();
+
 	if ( ! ( ( isset( $_REQUEST['wp_customize'] ) && 'on' == $_REQUEST['wp_customize'] )
-		|| ( is_admin() && 'customize.php' == basename( $_SERVER['PHP_SELF'] ) )
+		|| ( is_admin() && 'customize.php' == basename( $app['request.php_self'] ) )
 	) ) {
 		return;
 	}
@@ -2091,13 +2093,14 @@ function _wp_customize_include() {
  * @since 3.4.0
  */
 function _wp_customize_loader_settings() {
+	$app = getApp();
 	$admin_origin = parse_url( admin_url() );
 	$home_origin  = parse_url( home_url() );
 	$cross_domain = ( strtolower( $admin_origin[ 'host' ] ) != strtolower( $home_origin[ 'host' ] ) );
 
 	$browser = array(
 		'mobile' => wp_is_mobile(),
-		'ios'    => wp_is_mobile() && preg_match( '/iPad|iPod|iPhone/', $_SERVER['HTTP_USER_AGENT'] ),
+		'ios'    => wp_is_mobile() && preg_match( '/iPad|iPod|iPhone/', $app['request.useragent'] ),
 	);
 
 	$settings = array(
@@ -2112,7 +2115,7 @@ function _wp_customize_loader_settings() {
 
 	$script = 'var _wpCustomizeLoaderSettings = ' . wp_json_encode( $settings ) . ';';
 
-	$app = getApp();
+
 	$wp_scripts = $app['scripts.global'];
 
 	$data = $wp_scripts->get_data( 'customize-loader', 'data' );

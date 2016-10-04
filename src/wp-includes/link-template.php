@@ -7,6 +7,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /**
  * Displays the permalink for the current post.
@@ -2915,7 +2916,8 @@ function get_shortcut_link() {
 		 * Do update the version number so users do not get the "upgrade your
 		 * bookmarklet" notice when using PT in those browsers.
 		 */
-		$ua = $_SERVER['HTTP_USER_AGENT'];
+		$app = getApp();
+		$ua = $app['request.useragent'];
 
 		if ( ! empty( $ua ) && preg_match( '/\bMSIE (\d)/', $ua, $matches ) && (int) $matches[1] <= 8 ) {
 			$url = wp_json_encode( admin_url( 'press-this.php' ) );

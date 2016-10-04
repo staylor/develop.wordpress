@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Version number for our API.
  *
@@ -199,8 +201,9 @@ function get_rest_url( $blog_id = null, $path = '/', $scheme = 'rest' ) {
 	}
 
 	if ( is_ssl() ) {
+		$app = getApp();
 		// If the current host is the same as the REST URL host, force the REST URL scheme to HTTPS.
-		if ( $_SERVER['SERVER_NAME'] === parse_url( get_home_url( $blog_id ), PHP_URL_HOST ) ) {
+		if ( $app['request.server_name'] === parse_url( get_home_url( $blog_id ), PHP_URL_HOST ) ) {
 			$url = set_url_scheme( $url, 'https' );
 		}
 	}

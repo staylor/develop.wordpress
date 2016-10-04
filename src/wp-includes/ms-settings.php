@@ -10,6 +10,8 @@
  * @since 3.0.0
  */
 
+use function WP\getApp;
+
 /**
  * Objects representing the current network and current site.
  *
@@ -32,6 +34,8 @@ if ( defined( 'SUNRISE' ) ) {
 	include_once( WP_CONTENT_DIR . '/sunrise.php' );
 }
 
+$app = getApp();
+
 /** Check for and define SUBDOMAIN_INSTALL and the deprecated VHOST constant. */
 ms_subdomain_constants();
 
@@ -39,16 +43,16 @@ ms_subdomain_constants();
 // have not been populated in the global scope through something like `sunrise.php`.
 if ( !isset( $current_site ) || !isset( $current_blog ) ) {
 
-	$domain = strtolower( stripslashes( $_SERVER['HTTP_HOST'] ) );
+	$domain = strtolower( stripslashes( $app['request.host'] ) );
 	if ( substr( $domain, -3 ) == ':80' ) {
 		$domain = substr( $domain, 0, -3 );
-		$_SERVER['HTTP_HOST'] = substr( $_SERVER['HTTP_HOST'], 0, -3 );
+		$app['request.host'] = substr( $app['request.host'], 0, -3 );
 	} elseif ( substr( $domain, -4 ) == ':443' ) {
 		$domain = substr( $domain, 0, -4 );
-		$_SERVER['HTTP_HOST'] = substr( $_SERVER['HTTP_HOST'], 0, -4 );
+		$app['request.host'] = substr( $app['request.host'], 0, -4 );
 	}
 
-	$path = stripslashes( $_SERVER['REQUEST_URI'] );
+	$path = stripslashes( $app['request.uri']);
 	if ( is_admin() ) {
 		$path = preg_replace( '#(.*)/wp-admin/.*#', '$1/', $path );
 	}

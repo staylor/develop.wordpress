@@ -7,6 +7,8 @@
  * @since 3.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Customize Manager class.
  *
@@ -782,13 +784,15 @@ final class WP_Customize_Manager {
 		$setting_validities = $this->validate_setting_values( $this->unsanitized_post_values() );
 		$exported_setting_validities = array_map( array( $this, 'prepare_setting_validity_for_js' ), $setting_validities );
 
+		$app = getApp();
+
 		$settings = array(
 			'theme' => array(
 				'stylesheet' => $this->get_stylesheet(),
 				'active'     => $this->is_theme_active(),
 			),
 			'url' => array(
-				'self' => empty( $_SERVER['REQUEST_URI'] ) ? home_url( '/' ) : esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ),
+				'self' => empty( $app['request.uri'] ) ? home_url( '/' ) : esc_url_raw( wp_unslash( $app['request.uri'] ) ),
 			),
 			'channel' => wp_unslash( $_POST['customize_messenger_channel'] ),
 			'activePanels' => array(),
@@ -1589,7 +1593,8 @@ final class WP_Customize_Manager {
 	 * @return bool Whether the user agent is iOS.
 	 */
 	public function is_ios() {
-		return wp_is_mobile() && preg_match( '/iPad|iPod|iPhone/', $_SERVER['HTTP_USER_AGENT'] );
+		$app = getApp();
+		return wp_is_mobile() && preg_match( '/iPad|iPod|iPhone/', $app['request.useragent'] );
 	}
 
 	/**

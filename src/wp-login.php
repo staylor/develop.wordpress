@@ -9,17 +9,20 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /** Make sure that the WordPress bootstrap has run before continuing. */
 require( dirname(__FILE__) . '/wp-load.php' );
 
+$app = getApp();
+
 // Redirect to https login if forced to use SSL
 if ( force_ssl_admin() && ! is_ssl() ) {
-	if ( 0 === strpos($_SERVER['REQUEST_URI'], 'http') ) {
-		wp_redirect( set_url_scheme( $_SERVER['REQUEST_URI'], 'https' ) );
+	if ( 0 === strpos( $app['request.uri'], 'http') ) {
+		wp_redirect( set_url_scheme( $app['request.uri'], 'https' ) );
 		exit();
 	} else {
-		wp_redirect( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+		wp_redirect( 'https://' . $app['request.host'] . $app['request.uri'] );
 		exit();
 	}
 }
@@ -400,12 +403,14 @@ nocache_headers();
 header('Content-Type: '.get_bloginfo('html_type').'; charset='.get_bloginfo('charset'));
 
 if ( defined( 'RELOCATE' ) && RELOCATE ) { // Move flag is set
-	if ( isset( $_SERVER['PATH_INFO'] ) && ($_SERVER['PATH_INFO'] != $_SERVER['PHP_SELF']) )
-		$_SERVER['PHP_SELF'] = str_replace( $_SERVER['PATH_INFO'], '', $_SERVER['PHP_SELF'] );
+	if ( $app['request.path_info'] && ( $app['request.path_info'] !== $app['request.php_self'] ) ) {
+		$app['request.php_self'] = str_replace( $app['request.path_info'], '', $app['request.php_self'] );
+	}
 
-	$url = dirname( set_url_scheme( 'http://' .  $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] ) );
-	if ( $url != get_option( 'siteurl' ) )
+	$url = dirname( set_url_scheme( 'http://' .  $app['request.host'] . $app['request.php_self'] ) );
+	if ( $url != get_option( 'siteurl' ) ) {
 		update_option( 'siteurl', $url );
+	}
 }
 
 //Set a cookie now to see if they are supported by the browser.
@@ -431,7 +436,7 @@ do_action( 'login_init' );
  */
 do_action( "login_form_{$action}" );
 
-$http_post = ('POST' == $_SERVER['REQUEST_METHOD']);
+$http_post = ('POST' == $app['request.method']);
 $interim_login = isset($_REQUEST['interim-login']);
 
 switch ($action) {
@@ -570,7 +575,7 @@ break;
 
 case 'resetpass' :
 case 'rp' :
-	list( $rp_path ) = explode( '?', wp_unslash( $_SERVER['REQUEST_URI'] ) );
+	list( $rp_path ) = explode( '?', wp_unslash( $app['request.uri'] ) );
 	$rp_cookie = 'wp-resetpass-' . COOKIEHASH;
 	if ( isset( $_GET['key'] ) ) {
 		$value = sprintf( '%s:%s', wp_unslash( $_GET['login'] ), wp_unslash( $_GET['key'] ) );

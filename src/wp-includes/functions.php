@@ -6,6 +6,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 require( ABSPATH . WPINC . '/option.php' );
 
@@ -777,15 +778,16 @@ function _http_build_query( $data, $prefix = null, $sep = null, $key = '', $urle
  * @return string New URL query string (unescaped).
  */
 function add_query_arg() {
+	$app = getApp();
 	$args = func_get_args();
 	if ( is_array( $args[0] ) ) {
 		if ( count( $args ) < 2 || false === $args[1] )
-			$uri = $_SERVER['REQUEST_URI'];
+			$uri = $app['request.uri'];
 		else
 			$uri = $args[1];
 	} else {
 		if ( count( $args ) < 3 || false === $args[2] )
-			$uri = $_SERVER['REQUEST_URI'];
+			$uri = $app['request.uri'];
 		else
 			$uri = $args[2];
 	}
@@ -1493,7 +1495,8 @@ function wp_nonce_field( $action = -1, $name = "_wpnonce", $referer = true , $ec
  * @return string Referer field HTML markup.
  */
 function wp_referer_field( $echo = true ) {
-	$referer_field = '<input type="hidden" name="_wp_http_referer" value="'. esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) . '" />';
+	$app = getApp();
+	$referer_field = '<input type="hidden" name="_wp_http_referer" value="'. esc_attr( wp_unslash( $app['request.uri'] ) ) . '" />';
 
 	if ( $echo )
 		echo $referer_field;
@@ -1516,7 +1519,8 @@ function wp_referer_field( $echo = true ) {
  */
 function wp_original_referer_field( $echo = true, $jump_back_to = 'current' ) {
 	if ( ! $ref = wp_get_original_referer() ) {
-		$ref = 'previous' == $jump_back_to ? wp_get_referer() : wp_unslash( $_SERVER['REQUEST_URI'] );
+		$app = getApp();
+		$ref = 'previous' == $jump_back_to ? wp_get_referer() : wp_unslash( $app['request.uri'] );
 	}
 	$orig_referer_field = '<input type="hidden" name="_wp_original_http_referer" value="' . esc_attr( $ref ) . '" />';
 	if ( $echo )
@@ -1539,8 +1543,8 @@ function wp_get_referer() {
 	}
 
 	$ref = wp_get_raw_referer();
-
-	if ( $ref && $ref !== wp_unslash( $_SERVER['REQUEST_URI'] ) && $ref !== home_url() . wp_unslash( $_SERVER['REQUEST_URI'] ) ) {
+	$app = getApp();
+	if ( $ref && $ref !== wp_unslash( $app['request.uri'] ) && $ref !== home_url() . wp_unslash( $app['request.uri'] ) ) {
 		return wp_validate_redirect( $ref, false );
 	}
 
@@ -4084,7 +4088,8 @@ function _doing_it_wrong( $function, $message, $version ) {
  * @return bool Whether the server is running lighttpd < 1.5.0.
  */
 function is_lighttpd_before_150() {
-	$server_parts = explode( '/', isset( $_SERVER['SERVER_SOFTWARE'] )? $_SERVER['SERVER_SOFTWARE'] : '' );
+	$app = getApp();
+	$server_parts = explode( '/', $app['request.software'] ?? '' );
 	$server_parts[1] = isset( $server_parts[1] )? $server_parts[1] : '';
 	return  'lighttpd' == $server_parts[0] && -1 == version_compare( $server_parts[1], '1.5.0' );
 }
@@ -4222,36 +4227,38 @@ function wp_guess_url() {
 	if ( defined('WP_SITEURL') && '' != WP_SITEURL ) {
 		$url = WP_SITEURL;
 	} else {
+		$app = getApp();
 		$abspath_fix = str_replace( '\\', '/', ABSPATH );
-		$script_filename_dir = dirname( $_SERVER['SCRIPT_FILENAME'] );
+		$script_filename_dir = dirname( $app['request.script_filename'] );
 
 		// The request is for the admin
-		if ( strpos( $_SERVER['REQUEST_URI'], 'wp-admin' ) !== false || strpos( $_SERVER['REQUEST_URI'], 'wp-login.php' ) !== false ) {
-			$path = preg_replace( '#/(wp-admin/.*|wp-login.php)#i', '', $_SERVER['REQUEST_URI'] );
+		if ( strpos( $app['request.uri'], 'wp-admin' ) !== false || strpos( $app['request.uri'], 'wp-login.php' ) !== false ) {
+			$path = preg_replace( '#/(wp-admin/.*|wp-login.php)#i', '', $app['request.uri'] );
 
 		// The request is for a file in ABSPATH
 		} elseif ( $script_filename_dir . '/' == $abspath_fix ) {
 			// Strip off any file/query params in the path
-			$path = preg_replace( '#/[^/]*$#i', '', $_SERVER['PHP_SELF'] );
+			$path = preg_replace( '#/[^/]*$#i', '', $app['request.php_self'] );
 
 		} else {
-			if ( false !== strpos( $_SERVER['SCRIPT_FILENAME'], $abspath_fix ) ) {
+			if ( false !== strpos( $app['request.script_filename'], $abspath_fix ) ) {
 				// Request is hitting a file inside ABSPATH
 				$directory = str_replace( ABSPATH, '', $script_filename_dir );
 				// Strip off the sub directory, and any file/query params
-				$path = preg_replace( '#/' . preg_quote( $directory, '#' ) . '/[^/]*$#i', '' , $_SERVER['REQUEST_URI'] );
+				$path = preg_replace( '#/' . preg_quote( $directory, '#' ) . '/[^/]*$#i', '' , $app['request.uri'] );
 			} elseif ( false !== strpos( $abspath_fix, $script_filename_dir ) ) {
 				// Request is hitting a file above ABSPATH
 				$subdirectory = substr( $abspath_fix, strpos( $abspath_fix, $script_filename_dir ) + strlen( $script_filename_dir ) );
 				// Strip off any file/query params from the path, appending the sub directory to the install
-				$path = preg_replace( '#/[^/]*$#i', '' , $_SERVER['REQUEST_URI'] ) . $subdirectory;
+				$path = preg_replace( '#/[^/]*$#i', '' , $app['request.uri'] ) . $subdirectory;
 			} else {
-				$path = $_SERVER['REQUEST_URI'];
+				$path = $app['request.uri'];
 			}
 		}
 
+
 		$schema = is_ssl() ? 'https://' : 'http://'; // set_url_scheme() is not defined yet
-		$url = $schema . $_SERVER['HTTP_HOST'] . $path;
+		$url = $schema . $app['request.host'] . $path;
 	}
 
 	return rtrim($url, '/');
@@ -5070,7 +5077,8 @@ function _device_can_upload() {
 	if ( ! wp_is_mobile() )
 		return true;
 
-	$ua = $_SERVER['HTTP_USER_AGENT'];
+	$app = getApp();
+	$ua = $app['request.useragent'];
 
 	if ( strpos($ua, 'iPhone') !== false
 		|| strpos($ua, 'iPad') !== false
@@ -5167,8 +5175,9 @@ function wp_auth_check_load() {
  * @since 3.6.0
  */
 function wp_auth_check_html() {
+	$app = getApp();
 	$login_url = wp_login_url();
-	$current_domain = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'];
+	$current_domain = ( is_ssl() ? 'https://' : 'http://' ) . $app['request.host'];
 	$same_domain = ( strpos( $login_url, $current_domain ) === 0 );
 
 	/**

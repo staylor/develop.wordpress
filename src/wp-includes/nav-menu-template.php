@@ -7,6 +7,8 @@
  * @since 3.0.0
  */
 
+use function WP\getApp;
+
 /**
  * Displays a navigation menu.
  *
@@ -269,6 +271,8 @@ function wp_nav_menu( $args = array() ) {
 function _wp_menu_item_classes_by_context( &$menu_items ) {
 	global $wp_query, $wp_rewrite;
 
+	$app = getApp();
+
 	$queried_object = $wp_query->get_queried_object();
 	$queried_object_id = (int) $wp_query->queried_object_id;
 
@@ -385,9 +389,9 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 			$classes[] = 'current-menu-item';
 			$menu_items[$key]->current = true;
 		// if the menu item corresponds to the currently-requested URL
-		} elseif ( 'custom' == $menu_item->object && isset( $_SERVER['HTTP_HOST'] ) ) {
-			$_root_relative_current = untrailingslashit( $_SERVER['REQUEST_URI'] );
-			$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_root_relative_current );
+		} elseif ( 'custom' == $menu_item->object && isset( $app['request.host'] ) ) {
+			$_root_relative_current = untrailingslashit( $app['request.uri'] );
+			$current_url = set_url_scheme( 'http://' . $app['request.host'] . $_root_relative_current );
 			$raw_item_url = strpos( $menu_item->url, '#' ) ? substr( $menu_item->url, 0, strpos( $menu_item->url, '#' ) ) : $menu_item->url;
 			$item_url = set_url_scheme( untrailingslashit( $raw_item_url ) );
 			$_indexless_current = untrailingslashit( preg_replace( '/' . preg_quote( $wp_rewrite->index, '/' ) . '$/', '', $current_url ) );

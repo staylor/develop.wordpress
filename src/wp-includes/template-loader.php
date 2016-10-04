@@ -1,4 +1,8 @@
 <?php
+use function WP\getApp;
+
+$app = getApp();
+
 /**
  * Loads the correct template based on the visitor's url
  * @package WordPress
@@ -21,7 +25,7 @@ if ( defined('WP_USE_THEMES') && WP_USE_THEMES )
  *
  * @param bool $exit Whether to exit without generating any content for 'HEAD' requests. Default true.
  */
-if ( 'HEAD' === $_SERVER['REQUEST_METHOD'] && apply_filters( 'exit_on_http_head', true ) )
+if ( 'HEAD' === $app['request.method'] && apply_filters( 'exit_on_http_head', true ) )
 	exit();
 
 // Process feeds and trackbacks even if not using themes.

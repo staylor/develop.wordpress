@@ -5,6 +5,8 @@
  * @package WordPress
  */
 
+use function WP\getApp;
+
 /**
  * Schedules an event to run only once.
  *
@@ -282,7 +284,8 @@ function spawn_cron( $gmt_time = 0 ) {
 		return;
 
 	if ( defined( 'ALTERNATE_WP_CRON' ) && ALTERNATE_WP_CRON ) {
-		if ( 'GET' !== $_SERVER['REQUEST_METHOD'] || defined( 'DOING_AJAX' ) ||  defined( 'XMLRPC_REQUEST' ) ) {
+		$app = getApp();
+		if ( 'GET' !== $app['request.method'] || defined( 'DOING_AJAX' ) ||  defined( 'XMLRPC_REQUEST' ) ) {
 			return;
 		}
 
@@ -290,7 +293,7 @@ function spawn_cron( $gmt_time = 0 ) {
 		set_transient( 'doing_cron', $doing_wp_cron );
 
 		ob_start();
-		wp_redirect( add_query_arg( 'doing_wp_cron', $doing_wp_cron, wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+		wp_redirect( add_query_arg( 'doing_wp_cron', $doing_wp_cron, wp_unslash( $app['request.uri'] ) ) );
 		echo ' ';
 
 		// flush any buffers and send the headers
@@ -346,8 +349,9 @@ function spawn_cron( $gmt_time = 0 ) {
  * @since 2.1.0
  */
 function wp_cron() {
+	$app = getApp();
 	// Prevent infinite loops caused by lack of wp-cron.php
-	if ( strpos($_SERVER['REQUEST_URI'], '/wp-cron.php') !== false || ( defined('DISABLE_WP_CRON') && DISABLE_WP_CRON ) )
+	if ( strpos( $app['request.uri'], '/wp-cron.php') !== false || ( defined('DISABLE_WP_CRON') && DISABLE_WP_CRON ) )
 		return;
 
 	if ( false === $crons = _get_cron_array() )

@@ -7,6 +7,8 @@
  * @since 4.7.0
  */
 
+use function WP\getApp;
+
 /**
  * Abstract class for managing user session tokens.
  *
@@ -125,6 +127,7 @@ abstract class WP_Session_Tokens {
 	 * @return string Session token.
 	 */
 	final public function create( $expiration ) {
+		$app = getApp();
 		/**
 		 * Filters the information attached to the newly created session.
 		 *
@@ -140,13 +143,14 @@ abstract class WP_Session_Tokens {
 		$session['expiration'] = $expiration;
 
 		// IP address.
-		if ( !empty( $_SERVER['REMOTE_ADDR'] ) ) {
-			$session['ip'] = $_SERVER['REMOTE_ADDR'];
+		if ( !empty( $app['request.remote_addr'] ) ) {
+			$session['ip'] = $app['request.remote_addr'];
 		}
 
+		$ua = $app['request.useragent'];
 		// User-agent.
-		if ( ! empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$session['ua'] = wp_unslash( $_SERVER['HTTP_USER_AGENT'] );
+		if ( ! empty( $ua ) ) {
+			$session['ua'] = wp_unslash( $ua );
 		}
 
 		// Timestamp
