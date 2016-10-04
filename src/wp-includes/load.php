@@ -862,23 +862,17 @@ function get_current_network_id() {
 function wp_load_translations_early() {
 	global $text_direction, $wp_locale;
 
+	$app = getApp();
+
 	static $loaded = false;
 	if ( $loaded )
 		return;
 	$loaded = true;
 
 	if ( function_exists( 'did_action' ) && did_action( 'init' ) )
-		return;
+		return;;
 
-	// We need $wp_local_package
-	require ABSPATH . WPINC . '/version.php';
-
-	// Translation and localization
-	require_once ABSPATH . WPINC . '/pomo/mo.php';
 	require_once ABSPATH . WPINC . '/l10n.php';
-
-	// General libraries
-	require_once ABSPATH . WPINC . '/plugin.php';
 
 	$locales = $locations = array();
 
@@ -889,8 +883,9 @@ function wp_load_translations_early() {
 			$locales[] = WPLANG;
 		}
 
-		if ( isset( $wp_local_package ) )
-			$locales[] = $wp_local_package;
+		if ( isset( $app['wp_local_package'] ) ) {
+			$locales[] = $app['wp_local_package'];
+		}
 
 		if ( ! $locales )
 			break;

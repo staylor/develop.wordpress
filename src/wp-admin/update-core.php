@@ -25,19 +25,16 @@ if ( ! current_user_can( 'update_core' ) && ! current_user_can( 'update_themes' 
 	wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
 
 /**
- *
- * @global string $wp_local_package
- *
  * @staticvar bool $first_pass
  *
  * @param object $update
  */
 function list_core_update( $update ) {
- 	global $wp_local_package;
   	static $first_pass = true;
 
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_local_package = $app['wp_local_package'];
 
  	if ( 'en_US' == $update->locale && 'en_US' == get_locale() )
  		$version_string = $update->current;

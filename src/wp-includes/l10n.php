@@ -7,6 +7,8 @@
  * @since 1.2.0
  */
 
+use function WP\getApp;
+
 /**
  * Retrieves the current locale.
  *
@@ -30,6 +32,8 @@
 function get_locale() {
 	global $locale, $wp_local_package;
 
+	$app = getApp();
+
 	if ( isset( $locale ) ) {
 		/**
 		 * Filters WordPress install's locale ID.
@@ -41,8 +45,8 @@ function get_locale() {
 		return apply_filters( 'locale', $locale );
 	}
 
-	if ( isset( $wp_local_package ) ) {
-		$locale = $wp_local_package;
+	if ( isset( $app['wp_local_package'] ) ) {
+		$locale = $app['wp_local_package'];
 	}
 
 	// WPLANG was defined in wp-config.

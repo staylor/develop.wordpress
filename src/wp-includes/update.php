@@ -16,7 +16,6 @@ use function WP\getApp;
  * isn't installing.
  *
  * @since 2.3.0
- * @global string $wp_local_package
  *
  * @param array $extra_stats Extra statistics to report to the WordPress.org API.
  * @param bool  $force_check Whether to bypass the transient cache and force a fresh update check. Defaults to false, true if $extra_stats is set.
@@ -26,7 +25,6 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 		return;
 	}
 
-	global $wp_local_package;
 	$php_version = phpversion();
 
 	$app = getApp();
@@ -91,7 +89,7 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 		'php'                => $php_version,
 		'locale'             => $locale,
 		'mysql'              => $mysql_version,
-		'local_package'      => isset( $wp_local_package ) ? $wp_local_package : '',
+		'local_package'      => $app['wp_local_package'] ?? '',
 		'blogs'              => $num_blogs,
 		'users'              => $user_count,
 		'multisite_enabled'  => $multisite_enabled,

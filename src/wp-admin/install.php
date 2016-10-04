@@ -261,15 +261,16 @@ if ( defined( 'DO_NOT_UPGRADE_GLOBAL_TABLES' ) ) {
 	);
 }
 
+$app = getApp();
+
 /**
- * @global string    $wp_local_package
  * @global WP_Locale $wp_locale
  */
 $language = '';
 if ( ! empty( $_REQUEST['language'] ) ) {
 	$language = preg_replace( '/[^a-zA-Z_]/', '', $_REQUEST['language'] );
-} elseif ( isset( $GLOBALS['wp_local_package'] ) ) {
-	$language = $GLOBALS['wp_local_package'];
+} elseif ( isset( $app['wp_local_package'] ) ) {
+	$language = $app['wp_local_package'];
 }
 
 $scripts_to_print = array( 'jquery' );

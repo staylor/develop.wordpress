@@ -336,14 +336,10 @@ class Core_Upgrader extends WP_Upgrader {
 	 * @since 3.7.0
 	 * @access public
 	 *
-	 * @global string $wp_local_package
-	 *
 	 * @return bool True if the checksums match, otherwise false.
 	 */
 	public function check_files() {
-		global $wp_local_package;
-
-		$checksums = get_core_checksums( $this->app['wp_version'], isset( $wp_local_package ) ? $wp_local_package : 'en_US' );
+		$checksums = get_core_checksums( $this->app['wp_version'], $this->app['wp_local_package'] ?? 'en_US' );
 
 		if ( ! is_array( $checksums ) )
 			return false;

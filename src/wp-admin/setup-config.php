@@ -11,6 +11,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * We are installing.
  */
@@ -77,7 +79,6 @@ $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : -1;
  * @ignore
  * @since 2.3.0
  *
- * @global string    $wp_local_package
  * @global WP_Locale $wp_locale
  *
  * @param string|array $body_classes
@@ -105,11 +106,13 @@ function setup_config_display_header( $body_classes = array() ) {
 <?php
 } // end function setup_config_display_header();
 
+$app = getApp();
+
 $language = '';
 if ( ! empty( $_REQUEST['language'] ) ) {
 	$language = preg_replace( '/[^a-zA-Z_]/', '', $_REQUEST['language'] );
-} elseif ( isset( $GLOBALS['wp_local_package'] ) ) {
-	$language = $GLOBALS['wp_local_package'];
+} elseif ( isset( $app['wp_local_package'] ) ) {
+	$language = $app['wp_local_package'];
 }
 
 switch($step) {

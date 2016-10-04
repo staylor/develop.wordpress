@@ -21,13 +21,6 @@ require_once( ABSPATH . 'vendor/autoload.php' );
 
 $app = WP\getApp();
 
-/*
- * These can't be directly globalized in version.php. When updating,
- * we're including version.php from another install and don't want
- * these values to be overridden if already set.
- */
-global $wp_local_package;
-
 /**
  * If not already configured, `$blog_id` will default to 1 in a single site
  * configuration. In multisite, it will be overridden by default in ms-settings.php.
