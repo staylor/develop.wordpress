@@ -7,6 +7,8 @@
  * @since 4.2.0
  */
 
+use function WP\getApp;
+
 /**
  * Press This class.
  *
@@ -29,7 +31,9 @@ class WP_Press_This {
 	 * @since 4.2.0
 	 * @access public
 	 */
-	public function __construct() {}
+	public function __construct() {
+		$this->app = getApp();
+	}
 
 	/**
 	 * App and site settings data, including i18n strings for the client-side.
@@ -274,7 +278,7 @@ class WP_Press_This {
 		$remote_url = wp_safe_remote_get( $url, array(
 			'timeout' => 30,
 			// Use an explicit user-agent for Press This
-			'user-agent' => 'Press This (WordPress/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' )
+			'user-agent' => 'Press This (WordPress/' . $this->app['wp_version'] . '); ' . get_bloginfo( 'url' )
 		) );
 
 		if ( is_wp_error( $remote_url ) ) {
@@ -1192,8 +1196,6 @@ class WP_Press_This {
 	public function html() {
 		global $wp_locale;
 
-		$wp_version = get_bloginfo( 'version' );
-
 		// Get data, new (POST) and old (GET).
 		$data = $this->merge_or_fetch_data();
 
@@ -1309,8 +1311,8 @@ class WP_Press_This {
 
 	$admin_body_class  = 'press-this';
 	$admin_body_class .= ( is_rtl() ) ? ' rtl' : '';
-	$admin_body_class .= ' branch-' . str_replace( array( '.', ',' ), '-', floatval( $wp_version ) );
-	$admin_body_class .= ' version-' . str_replace( '.', '-', preg_replace( '/^([.0-9]+).*/', '$1', $wp_version ) );
+	$admin_body_class .= ' branch-' . str_replace( array( '.', ',' ), '-', floatval( $this->app['wp_version'] ) );
+	$admin_body_class .= ' version-' . str_replace( '.', '-', preg_replace( '/^([.0-9]+).*/', '$1', $this->app['wp_version'] ) );
 	$admin_body_class .= ' admin-color-' . sanitize_html_class( get_user_option( 'admin_color' ), 'fresh' );
 	$admin_body_class .= ' locale-' . sanitize_html_class( strtolower( str_replace( '_', '-', get_user_locale() ) ) );
 

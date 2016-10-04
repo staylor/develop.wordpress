@@ -7,6 +7,8 @@
  * @since 2.7.0
  */
 
+use function WP\getApp;
+
 if ( ! class_exists( 'Requests' ) ) {
 	require( ABSPATH . WPINC . '/class-requests.php' );
 
@@ -146,6 +148,8 @@ class WP_Http {
 	 *                        A WP_Error instance upon error.
 	 */
 	public function request( $url, $args = array() ) {
+		$app = getApp();
+
 		$defaults = array(
 			'method' => 'GET',
 			/**
@@ -181,7 +185,7 @@ class WP_Http {
 			 *
 			 * @param string $user_agent WordPress user agent string.
 			 */
-			'user-agent' => apply_filters( 'http_headers_useragent', 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ) ),
+			'user-agent' => apply_filters( 'http_headers_useragent', 'WordPress/' . $app['wp_version'] . '; ' . get_bloginfo( 'url' ) ),
 			/**
 			 * Filters whether to pass URLs through wp_http_validate_url() in an HTTP request.
 			 *

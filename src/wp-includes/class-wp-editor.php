@@ -8,6 +8,8 @@
  * Private, not included by default. See wp_editor() in wp-includes/general-template.php.
  */
 
+use function WP\getApp;
+
 final class _WP_Editors {
 	public static $mce_locale;
 
@@ -296,13 +298,11 @@ final class _WP_Editors {
 	/**
 	 * @static
 	 *
-	 * @global string $tinymce_version
-	 *
 	 * @param string $editor_id
 	 * @param array  $set
 	 */
 	public static function editor_settings($editor_id, $set) {
-		global $tinymce_version;
+		$app = getApp();
 
 		if ( empty(self::$first_init) ) {
 			if ( is_admin() ) {
@@ -541,7 +541,7 @@ final class _WP_Editors {
 					'entities' => '38,amp,60,lt,62,gt',
 					'entity_encoding' => 'raw',
 					'keep_styles' => false,
-					'cache_suffix' => 'wp-mce-' . $tinymce_version,
+					'cache_suffix' => 'wp-mce-' . $app['tinymce_version'],
 
 					// Limit the preview styles in the menu/toolbar
 					'preview_styles' => 'font-family font-size font-weight font-style text-decoration text-transform',
@@ -557,8 +557,9 @@ final class _WP_Editors {
 					self::$first_init['external_plugins'] = wp_json_encode( $mce_external_plugins );
 				}
 
+				$app = getApp();
 				$suffix = SCRIPT_DEBUG ? '' : '.min';
-				$version = 'ver=' . get_bloginfo( 'version' );
+				$version = 'ver=' . $app['wp_version'];
 				$dashicons = includes_url( "css/dashicons$suffix.css?$version" );
 
 				// WordPress default stylesheet and dashicons
@@ -1130,13 +1131,12 @@ final class _WP_Editors {
 	/**
 	 *
 	 * @static
-	 * @global string $tinymce_version
 	 * @global bool   $concatenate_scripts
 	 * @global bool   $compress_scripts
 	 */
 	public static function editor_js() {
-		global $tinymce_version, $concatenate_scripts, $compress_scripts;
-
+		global $$concatenate_scripts, $compress_scripts;
+		$app = getApp();
 		/**
 		 * Filters "tiny_mce_version" is deprecated
 		 *
@@ -1144,7 +1144,7 @@ final class _WP_Editors {
 		 * These plugins can be refreshed by appending query string to the URL passed to "mce_external_plugins" filter.
 		 * If the plugin has a popup dialog, a query string can be added to the button action that opens it (in the plugin's code).
 		 */
-		$version = 'ver=' . $tinymce_version;
+		$version = 'ver=' . $app['tinymce_version'];
 		$tmce_on = !empty(self::$mce_settings);
 
 		if ( ! isset($concatenate_scripts) )
@@ -1213,7 +1213,7 @@ final class _WP_Editors {
 
 		$baseurl = self::$baseurl;
 		// Load tinymce.js when running from /src, else load wp-tinymce.js.gz (production) or tinymce.min.js (SCRIPT_DEBUG)
-		$mce_suffix = false !== strpos( get_bloginfo( 'version' ), '-src' ) ? '' : '.min';
+		$mce_suffix = false !== strpos( $app['wp_version'], '-src' ) ? '' : '.min';
 
 		if ( $tmce_on ) {
 			if ( $compressed ) {

@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Retrieves plugin installer pages from the WordPress.org Plugins API.
  *
@@ -629,11 +631,11 @@ function install_plugin_information() {
 	</div>
 	<div id="section-holder" class="wrap">
 	<?php
-	$wp_version = get_bloginfo( 'version' );
+	$app = getApp();
 
-	if ( ! empty( $api->tested ) && version_compare( substr( $wp_version, 0, strlen( $api->tested ) ), $api->tested, '>' ) ) {
+	if ( ! empty( $api->tested ) && version_compare( substr( $app['wp_version'], 0, strlen( $api->tested ) ), $api->tested, '>' ) ) {
 		echo '<div class="notice notice-warning notice-alt"><p>' . __( '<strong>Warning:</strong> This plugin has <strong>not been tested</strong> with your current version of WordPress.' ) . '</p></div>';
-	} elseif ( ! empty( $api->requires ) && version_compare( substr( $wp_version, 0, strlen( $api->requires ) ), $api->requires, '<' ) ) {
+	} elseif ( ! empty( $api->requires ) && version_compare( substr( $app['wp_version'], 0, strlen( $api->requires ) ), $api->requires, '<' ) ) {
 		echo '<div class="notice notice-warning notice-alt"><p>' . __( '<strong>Warning:</strong> This plugin has <strong>not been marked as compatible</strong> with your version of WordPress.' ) . '</p></div>';
 	}
 

@@ -9,6 +9,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /** Include user install customize script. */
 if ( file_exists(WP_CONTENT_DIR . '/install.php') )
@@ -404,16 +405,18 @@ if ( !function_exists('wp_upgrade') ) :
  * @since 2.1.0
  *
  * @global int  $wp_current_db_version
- * @global int  $wp_db_version
  * @global wpdb $wpdb WordPress database abstraction object.
  */
 function wp_upgrade() {
-	global $wp_current_db_version, $wp_db_version, $wpdb;
+	global $wp_current_db_version;
+
+	$app = getApp();
+	$wpdb = $app['db'];
 
 	$wp_current_db_version = __get_option('db_version');
 
 	// We are up-to-date. Nothing to do.
-	if ( $wp_db_version == $wp_current_db_version )
+	if ( $app['wp_db_version'] == $wp_current_db_version )
 		return;
 
 	if ( ! is_blog_installed() )
@@ -430,9 +433,9 @@ function wp_upgrade() {
 
 	if ( is_multisite() ) {
 		if ( $wpdb->get_row( "SELECT blog_id FROM {$wpdb->blog_versions} WHERE blog_id = '{$wpdb->blogid}'" ) )
-			$wpdb->query( "UPDATE {$wpdb->blog_versions} SET db_version = '{$wp_db_version}' WHERE blog_id = '{$wpdb->blogid}'" );
+			$wpdb->query( "UPDATE {$wpdb->blog_versions} SET db_version = '{$app['wp_db_version']}' WHERE blog_id = '{$wpdb->blogid}'" );
 		else
-			$wpdb->query( "INSERT INTO {$wpdb->blog_versions} ( `blog_id` , `db_version` , `last_updated` ) VALUES ( '{$wpdb->blogid}', '{$wp_db_version}', NOW());" );
+			$wpdb->query( "INSERT INTO {$wpdb->blog_versions} ( `blog_id` , `db_version` , `last_updated` ) VALUES ( '{$wpdb->blogid}', '{$app['wp_db_version']}', NOW());" );
 	}
 
 	/**
@@ -443,7 +446,7 @@ function wp_upgrade() {
 	 * @param int $wp_db_version         The new $wp_db_version.
 	 * @param int $wp_current_db_version The old (current) $wp_db_version.
 	 */
-	do_action( 'wp_upgrade', $wp_db_version, $wp_current_db_version );
+	do_action( 'wp_upgrade', $app['wp_db_version'], $wp_current_db_version );
 }
 endif;
 
@@ -457,14 +460,15 @@ endif;
  * @since 1.0.1
  *
  * @global int $wp_current_db_version
- * @global int $wp_db_version
  */
 function upgrade_all() {
-	global $wp_current_db_version, $wp_db_version;
+	global $wp_current_db_version;
 	$wp_current_db_version = __get_option('db_version');
 
+	$app = getApp();
+
 	// We are up-to-date. Nothing to do.
-	if ( $wp_db_version == $wp_current_db_version )
+	if ( $app['wp_db_version'] == $wp_current_db_version )
 		return;
 
 	// If the version is not set in the DB, try to guess the version.
@@ -565,7 +569,7 @@ function upgrade_all() {
 
 	maybe_disable_automattic_widgets();
 
-	update_option( 'db_version', $wp_db_version );
+	update_option( 'db_version', $app['wp_db_version'] );
 	update_option( 'db_upgraded', true );
 }
 

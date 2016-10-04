@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -35,12 +37,12 @@ function list_core_update( $update ) {
  	global $wp_local_package, $wpdb;
   	static $first_pass = true;
 
-	$wp_version = get_bloginfo( 'version' );
+	$app = getApp();
 
  	if ( 'en_US' == $update->locale && 'en_US' == get_locale() )
  		$version_string = $update->current;
  	// If the only available update is a partial builds, it doesn't need a language-specific version string.
- 	elseif ( 'en_US' == $update->locale && $update->packages->partial && $wp_version == $update->partial_version && ( $updates = get_core_updates() ) && 1 == count( $updates ) )
+ 	elseif ( 'en_US' == $update->locale && $update->packages->partial && $app['wp_version'] == $update->partial_version && ( $updates = get_core_updates() ) && 1 == count( $updates ) )
  		$version_string = $update->current;
  	else
  		$version_string = sprintf( "%s&ndash;<strong>%s</strong>", $update->current, $update->locale );
@@ -108,7 +110,7 @@ function list_core_update( $update ) {
 	if ( 'en_US' != $update->locale && ( !isset($wp_local_package) || $wp_local_package != $update->locale ) )
 	    echo '<p class="hint">'.__('This localized version contains both the translation and various other localization fixes. You can skip upgrading if you want to keep your current translation.').'</p>';
 	// Partial builds don't need language-specific warnings.
-	elseif ( 'en_US' == $update->locale && get_locale() != 'en_US' && ( ! $update->packages->partial && $wp_version == $update->partial_version ) ) {
+	elseif ( 'en_US' == $update->locale && get_locale() != 'en_US' && ( ! $update->packages->partial && $app['wp_version'] == $update->partial_version ) ) {
 	    echo '<p class="hint">'.sprintf( __('You are about to install WordPress %s <strong>in English (US).</strong> There is a chance this update will break your translation. You may prefer to wait for the localized version to be released.'), $update->response != 'development' ? $update->current : '' ).'</p>';
 	}
 	echo '</form>';
@@ -149,14 +151,10 @@ function dismissed_updates() {
  * Display upgrade WordPress for downloading latest or upgrading automatically form.
  *
  * @since 2.7.0
- *
- * @global string $required_php_version
- * @global string $required_mysql_version
  */
 function core_upgrade_preamble() {
-	global $required_php_version, $required_mysql_version;
+	$app = getApp();
 
-	$wp_version = get_bloginfo( 'version' );
 	$updates = get_core_updates();
 
 	if ( !isset($updates[0]->response) || 'latest' == $updates[0]->response ) {
@@ -166,10 +164,10 @@ function core_upgrade_preamble() {
 		if ( wp_http_supports( array( 'ssl' ) ) ) {
 			$upgrader = new WP_Automatic_Updater;
 			$future_minor_update = (object) array(
-				'current'       => $wp_version . '.1.next.minor',
-				'version'       => $wp_version . '.1.next.minor',
-				'php_version'   => $required_php_version,
-				'mysql_version' => $required_mysql_version,
+				'current'       => $app['wp_version'] . '.1.next.minor',
+				'version'       => $app['wp_version'] . '.1.next.minor',
+				'php_version'   => $app['required_php_version'],
+				'mysql_version' => $app['required_mysql_version'],
 			);
 			$should_auto_update = $upgrader->should_update( 'core', $future_minor_update, ABSPATH );
 			if ( $should_auto_update )
@@ -206,15 +204,15 @@ function core_upgrade_preamble() {
 	if ( $updates && ( count( $updates ) > 1 || $updates[0]->response != 'latest' ) ) {
 		echo '<p>' . __( 'While your site is being updated, it will be in maintenance mode. As soon as your updates are complete, your site will return to normal.' ) . '</p>';
 	} elseif ( ! $updates ) {
-		list( $normalized_version ) = explode( '-', $wp_version );
+		list( $normalized_version ) = explode( '-', $app['wp_version'] );
 		echo '<p>' . sprintf( __( '<a href="%s">Learn more about WordPress %s</a>.' ), esc_url( self_admin_url( 'about.php' ) ), $normalized_version ) . '</p>';
 	}
 	dismissed_updates();
 }
 
 function list_plugin_updates() {
-	$wp_version = get_bloginfo( 'version' );
-	$cur_wp_version = preg_replace( '/-.*$/', '', $wp_version );
+	$app = getApp();
+	$cur_wp_version = preg_replace( '/-.*$/', '', $app['wp_version'] );
 
 	require_once(ABSPATH . 'wp-admin/includes/plugin-install.php');
 	$plugins = get_plugin_updates();

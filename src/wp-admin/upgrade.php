@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * We are upgrading WordPress.
  *
@@ -16,6 +18,8 @@ define( 'WP_INSTALLING', true );
 
 /** Load WordPress Bootstrap */
 require( dirname( dirname( __FILE__ ) ) . '/wp-load.php' );
+
+$app = getApp();
 
 nocache_headers();
 
@@ -36,22 +40,18 @@ if ( 'upgrade_db' === $step ) {
 }
 
 /**
- * @global string $wp_version
- * @global string $required_php_version
- * @global string $required_mysql_version
  * @global wpdb   $wpdb
  */
-global $wp_version, $required_php_version, $required_mysql_version;
 
 $step = (int) $step;
 
 $php_version    = phpversion();
 $mysql_version  = $wpdb->db_version();
-$php_compat     = version_compare( $php_version, $required_php_version, '>=' );
+$php_compat     = version_compare( $php_version, $app['required_php_version'], '>=' );
 if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) )
 	$mysql_compat = true;
 else
-	$mysql_compat = version_compare( $mysql_version, $required_mysql_version, '>=' );
+	$mysql_compat = version_compare( $mysql_version, $app['required_mysql_version'], '>=' );
 
 @header( 'Content-Type: ' . get_option( 'html_type' ) . '; charset=' . get_option( 'blog_charset' ) );
 ?>
@@ -70,7 +70,7 @@ else
 <body class="wp-core-ui">
 <p id="logo"><a href="<?php echo esc_url( __( 'https://wordpress.org/' ) ); ?>" tabindex="-1"><?php _e( 'WordPress' ); ?></a></p>
 
-<?php if ( get_option( 'db_version' ) == $wp_db_version || !is_blog_installed() ) : ?>
+<?php if ( get_option( 'db_version' ) == $app['wp_db_version'] || !is_blog_installed() ) : ?>
 
 <h1><?php _e( 'No Update Required' ); ?></h1>
 <p><?php _e( 'Your WordPress database is already up-to-date!' ); ?></p>
@@ -78,11 +78,11 @@ else
 
 <?php elseif ( !$php_compat || !$mysql_compat ) :
 	if ( !$mysql_compat && !$php_compat )
-		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s.'), $wp_version, $required_php_version, $required_mysql_version, $php_version, $mysql_version );
+		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s.'), $app['wp_version'], $app['required_php_version'], $app['required_mysql_version'], $php_version, $mysql_version );
 	elseif ( !$php_compat )
-		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher. You are running version %3$s.'), $wp_version, $required_php_version, $php_version );
+		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher. You are running version %3$s.'), $app['wp_version'], $app['required_php_version'], $php_version );
 	elseif ( !$mysql_compat )
-		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires MySQL version %2$s or higher. You are running version %3$s.'), $wp_version, $required_mysql_version, $mysql_version );
+		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires MySQL version %2$s or higher. You are running version %3$s.'), $app['wp_version'], $app['required_mysql_version'], $mysql_version );
 ?>
 <?php else :
 switch ( $step ) :

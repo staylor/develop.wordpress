@@ -8,6 +8,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Declare these as global in case schema.php is included from a function.
  *
@@ -344,12 +346,12 @@ $wp_queries = wp_get_db_schema( 'all' );
  * @since 1.5.0
  *
  * @global wpdb $wpdb WordPress database abstraction object.
- * @global int  $wp_db_version
  * @global int  $wp_current_db_version
  */
 function populate_options() {
-	global $wpdb, $wp_db_version, $wp_current_db_version;
+	global $wpdb, $wp_current_db_version;
 
+	$app = getApp();
 	$guessurl = wp_guess_url();
 	/**
 	 * Fires before creating WordPress options and populating their default values.
@@ -449,7 +451,7 @@ function populate_options() {
 
 	// 2.0
 	'default_role' => 'subscriber',
-	'db_version' => $wp_db_version,
+	'db_version' => $app['wp_db_version'],
 
 	// 2.0.1
 	'uploads_use_yearmonth_folders' => $uploads_use_yearmonth_folders,
@@ -520,8 +522,8 @@ function populate_options() {
 
 	// 3.3
 	if ( ! is_multisite() ) {
-		$options['initial_db_version'] = ! empty( $wp_current_db_version ) && $wp_current_db_version < $wp_db_version
-			? $wp_current_db_version : $wp_db_version;
+		$options['initial_db_version'] = ! empty( $wp_current_db_version ) && $wp_current_db_version < $app['wp_db_version']
+			? $wp_current_db_version : $app['wp_db_version'];
 	}
 
 	// 3.0 multisite
@@ -883,7 +885,6 @@ endif;
  *
  * @global wpdb       $wpdb
  * @global object     $current_site
- * @global int        $wp_db_version
  * @global WP_Rewrite $wp_rewrite
  *
  * @param int    $network_id        ID of network to populate.
@@ -897,7 +898,9 @@ endif;
  *                       so the error code must be checked) or failure.
  */
 function populate_network( $network_id = 1, $domain = '', $email = '', $site_name = '', $path = '/', $subdomain_install = false ) {
-	global $wpdb, $current_site, $wp_db_version, $wp_rewrite;
+	global $wpdb, $current_site, $wp_rewrite;
+
+	$app = getApp();
 
 	$errors = new WP_Error();
 	if ( '' == $domain )
@@ -1004,7 +1007,7 @@ We hope you enjoy your new site. Thanks!
 		'site_admins' => $site_admins,
 		'allowedthemes' => $allowed_themes,
 		'illegal_names' => array( 'www', 'web', 'root', 'admin', 'main', 'invite', 'administrator', 'files' ),
-		'wpmu_upgrade_site' => $wp_db_version,
+		'wpmu_upgrade_site' => $app['wp_db_version'],
 		'welcome_email' => $welcome_email,
 		/* translators: %s: site link */
 		'first_post' => __( 'Welcome to %s. This is your first post. Edit or delete it, then start blogging!' ),

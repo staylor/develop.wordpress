@@ -7,6 +7,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /**
  * Retrieve path to a template
@@ -604,6 +605,10 @@ function locate_template($template_names, $load = false, $require_once = true ) 
  */
 function load_template( $_template_file, $require_once = true ) {
 	global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+
+	$app = getApp();
+	$wp_version = $app['wp_version'];
+	$wpdb = $app['db'];
 
 	if ( is_array( $wp_query->query_vars ) ) {
 		extract( $wp_query->query_vars, EXTR_SKIP );

@@ -41,7 +41,7 @@ $out = '';
 $wp_styles = $app['styles.factory'];
 wp_default_styles( $wp_styles );
 
-if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) && stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] ) === $wp_version ) {
+if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) && stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] ) === $app['wp_version'] ) {
 	$protocol = $_SERVER['SERVER_PROTOCOL'];
 	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0' ) ) ) {
 		$protocol = 'HTTP/1.0';
@@ -79,7 +79,7 @@ foreach ( $load as $handle ) {
 	}
 }
 
-header("Etag: $wp_version");
+header("Etag: {$app['wp_version']}");
 header('Content-Type: text/css; charset=UTF-8');
 header('Expires: ' . gmdate( "D, d M Y H:i:s", time() + $expires_offset ) . ' GMT');
 header("Cache-Control: public, max-age=$expires_offset");

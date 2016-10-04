@@ -7,6 +7,8 @@
  * @package WordPress
  */
 
+use function WP\getApp;
+
 /**
  * Return the HTTP protocol sent by the server.
  *
@@ -116,21 +118,25 @@ function wp_fix_server_vars() {
  *
  * @since 3.0.0
  * @access private
- *
- * @global string $required_php_version The required PHP version string.
- * @global string $wp_version           The WordPress version string.
  */
 function wp_check_php_mysql_versions() {
-	global $required_php_version, $wp_version;
 	$php_version = phpversion();
+	$app = getApp();
 
-	if ( version_compare( $required_php_version, $php_version, '>' ) ) {
+	if ( version_compare( $app['required_php_version'], $php_version, '>' ) ) {
 		wp_load_translations_early();
+
+		$app = getApp();
 
 		$protocol = wp_get_server_protocol();
 		header( sprintf( '%s 500 Internal Server Error', $protocol ), true, 500 );
 		header( 'Content-Type: text/html; charset=utf-8' );
-		die( sprintf( __( 'Your server is running PHP version %1$s but WordPress %2$s requires at least %3$s.' ), $php_version, $wp_version, $required_php_version ) );
+		die( sprintf(
+			__( 'Your server is running PHP version %1$s but WordPress %2$s requires at least %3$s.' ),
+			$php_version,
+			$app['wp_version'],
+			$app['required_php_version']
+		) );
 	}
 
 	if ( ! extension_loaded( 'mysql' ) && ! extension_loaded( 'mysqli' ) && ! extension_loaded( 'mysqlnd' ) && ! file_exists( WP_CONTENT_DIR . '/db.php' ) ) {

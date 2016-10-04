@@ -6,12 +6,16 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
+$app = getApp();
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
 $title = __( 'Freedoms' );
 
-list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );
+list( $display_version ) = explode( '-', $app['wp_version'] );
 
 include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>

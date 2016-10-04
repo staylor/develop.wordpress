@@ -6,6 +6,8 @@
  * @subpackage Comment
  */
 
+use function WP\getApp;
+
 /**
  * Check whether a comment passes internal checks to be allowed to add.
  *
@@ -2382,6 +2384,7 @@ function generic_ping( $post_id = 0 ) {
  * @param int $post_ID Post ID.
  */
 function pingback($content, $post_ID) {
+	$app = getApp();
 	// original code by Mort (http://mort.mine.nu:8080)
 	$post_links = array();
 
@@ -2447,7 +2450,7 @@ function pingback($content, $post_ID) {
 			 * @param string $pagelinkedto        URL of page linked to.
 			 * @param string $pagelinkedfrom      URL of page linked from.
 			 */
-			$client->useragent = apply_filters( 'pingback_useragent', $client->useragent . ' -- WordPress/' . get_bloginfo( 'version' ), $client->useragent, $pingback_server_url, $pagelinkedto, $pagelinkedfrom );
+			$client->useragent = apply_filters( 'pingback_useragent', $client->useragent . ' -- WordPress/' . $app['wp_version'], $client->useragent, $pingback_server_url, $pagelinkedto, $pagelinkedfrom );
 			// when set to true, this outputs debug messages by itself
 			$client->debug = false;
 
@@ -2523,7 +2526,7 @@ function weblog_ping($server = '', $path = '') {
 	// using a timeout of 3 seconds should be enough to cover slow servers
 	$client = new WP_HTTP_IXR_Client($server, ((!strlen(trim($path)) || ('/' == $path)) ? false : $path));
 	$client->timeout = 3;
-	$client->useragent .= ' -- WordPress/' . get_bloginfo( 'version' );
+	$client->useragent .= ' -- WordPress/' . $app['wp_version'];
 
 	// when set to true, this outputs debug messages by itself
 	$client->debug = false;

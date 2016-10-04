@@ -7,6 +7,8 @@
  * @since 4.6.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used for handling automatic background updates.
  *
@@ -452,7 +454,8 @@ class WP_Automatic_Updater {
 
 		// Send debugging email to all development installs.
 		if ( ! empty( $this->update_results ) ) {
-			$development_version = false !== strpos( get_bloginfo( 'version' ), '-' );
+			$app = getApp();
+			$development_version = false !== strpos( $app['wp_version'], '-' );
 
 			/**
 			 * Filters whether to send a debugging email for each automatic background update.
@@ -492,8 +495,6 @@ class WP_Automatic_Updater {
 	 * @param object $update_result The result of the core update. Includes the update offer and result.
 	 */
 	protected function after_core_update( $update_result ) {
-		$wp_version = get_bloginfo( 'version' );
-
 		$core_update = $update_result->item;
 		$result      = $update_result->result;
 
@@ -520,7 +521,7 @@ class WP_Automatic_Updater {
 		if ( $critical ) {
 			$critical_data = array(
 				'attempted'  => $core_update->current,
-				'current'    => $wp_version,
+				'current'    => $this->app['wp_version'],
 				'error_code' => $error_code,
 				'error_data' => $result->get_error_data(),
 				'timestamp'  => time(),
@@ -560,7 +561,7 @@ class WP_Automatic_Updater {
 
 		update_site_option( 'auto_core_update_failed', array(
 			'attempted'  => $core_update->current,
-			'current'    => $wp_version,
+			'current'    => $this->app['wp_version'],
 			'error_code' => $error_code,
 			'error_data' => $result->get_error_data(),
 			'timestamp'  => time(),
@@ -712,8 +713,9 @@ class WP_Automatic_Updater {
 		$body .= "\n\n" . __( 'The WordPress Team' ) . "\n";
 
 		if ( 'critical' == $type && is_wp_error( $result ) ) {
+			$app = getApp();
 			$body .= "\n***\n\n";
-			$body .= sprintf( __( 'Your site was running version %s.' ), get_bloginfo( 'version' ) );
+			$body .= sprintf( __( 'Your site was running version %s.' ), $app['wp_version'] );
 			$body .= ' ' . __( 'We have some data that describes the error your site encountered.' );
 			$body .= ' ' . __( 'Your hosting company, support forum volunteers, or a friendly developer may be able to use this information to help you:' );
 

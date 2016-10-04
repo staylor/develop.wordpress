@@ -143,7 +143,7 @@ class Pingback implements ProviderInterface {
 		$remote_ip = preg_replace( '/[^0-9a-fA-F:., ]/', '', $app['request']->server->get( 'REMOTE_ADDR' ) );
 
 		/** This filter is documented in wp-includes/class-http.php */
-		$user_agent = apply_filters( 'http_headers_useragent', 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ) );
+		$user_agent = apply_filters( 'http_headers_useragent', 'WordPress/' . $app['wp_version'] . '; ' . get_bloginfo( 'url' ) );
 
 		// Let's check the remote site
 		$request = wp_safe_remote_get( $pagelinkedfrom, [

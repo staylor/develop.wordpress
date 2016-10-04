@@ -7,6 +7,8 @@
  * @package WordPress
  */
 
+use function WP\getApp;
+
 /**
  * Replaces common plain text characters into formatted entities
  *
@@ -4978,7 +4980,8 @@ function _print_emoji_detection_script() {
 		'svgExt' => apply_filters( 'emoji_svg_ext', '.svg' ),
 	);
 
-	$version = 'ver=' . get_bloginfo( 'version' );
+	$app = getApp();
+	$version = 'ver=' . $app['wp_version'];
 
 	if ( SCRIPT_DEBUG ) {
 		$settings['source'] = array(

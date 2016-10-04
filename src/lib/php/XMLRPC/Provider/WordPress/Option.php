@@ -2,6 +2,7 @@
 namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\Error;
+use function WP\getApp;
 
 trait Option {
 	/**
@@ -148,6 +149,7 @@ trait Option {
 			return $this->blog_options;
 		}
 
+		$app = getApp();
 		$this->blog_options = [
 			// Read only options
 			'software_name'     => [
@@ -158,7 +160,7 @@ trait Option {
 			'software_version'  => [
 				'desc'          => __( 'Software Version' ),
 				'readonly'      => true,
-				'value'         => get_bloginfo( 'version' )
+				'value'         => $app['wp_version']
 			],
 			'blog_url'          => [
 				'desc'          => __( 'WordPress Address (URL)' ),

@@ -7,6 +7,8 @@
  * @since 4.6.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to store translated data for a locale.
  *
@@ -230,7 +232,8 @@ class WP_Locale {
 		elseif ( 'rtl' == _x( 'ltr', 'text direction' ) )
 			$this->text_direction = 'rtl';
 
-		if ( 'rtl' === $this->text_direction && strpos( get_bloginfo( 'version' ), '-src' ) ) {
+		$app = getApp();
+		if ( 'rtl' === $this->text_direction && strpos( $app['wp_version'], '-src' ) ) {
 			$this->text_direction = 'ltr';
 			add_action( 'all_admin_notices', array( $this, 'rtl_src_admin_notice' ) );
 		}

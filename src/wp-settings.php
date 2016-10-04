@@ -26,8 +26,7 @@ $app = WP\getApp();
  * we're including version.php from another install and don't want
  * these values to be overridden if already set.
  */
-global $wp_version, $wp_db_version, $tinymce_version, $required_php_version, $required_mysql_version, $wp_local_package;
-require( ABSPATH . WPINC . '/version.php' );
+global $wp_local_package;
 
 /**
  * If not already configured, `$blog_id` will default to 1 in a single site

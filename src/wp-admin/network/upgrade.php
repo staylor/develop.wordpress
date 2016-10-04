@@ -7,10 +7,14 @@
  * @since 3.0.0
  */
 
+use function WP\getApp;
+
 /** Load WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
 require_once( ABSPATH . WPINC . '/http.php' );
+
+$app = getApp();
 
 $title = __( 'Upgrade Network' );
 $parent_file = 'upgrade.php';
@@ -45,11 +49,7 @@ switch ( $action ) {
 		$n = ( isset($_GET['n']) ) ? intval($_GET['n']) : 0;
 
 		if ( $n < 5 ) {
-			/**
-			 * @global string $wp_db_version
-			 */
-			global $wp_db_version;
-			update_site_option( 'wpmu_upgrade_site', $wp_db_version );
+			update_site_option( 'wpmu_upgrade_site', $app['wp_db_version'] );
 		}
 
 		$site_ids = get_sites( array(
@@ -120,7 +120,7 @@ switch ( $action ) {
 	break;
 	case 'show':
 	default:
-		if ( get_site_option( 'wpmu_upgrade_site' ) != $GLOBALS['wp_db_version'] ) :
+		if ( get_site_option( 'wpmu_upgrade_site' ) != $app['wp_db_version'] ) :
 		?>
 		<h2><?php _e( 'Database Update Required' ); ?></h2>
 		<p><?php _e( 'WordPress has been updated! Before we send you on your way, we need to individually upgrade the sites in your network.' ); ?></p>

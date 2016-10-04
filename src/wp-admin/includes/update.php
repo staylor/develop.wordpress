@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Selects the first update version from the update_core option.
  *
@@ -579,8 +581,10 @@ function wp_theme_update_row( $theme_key, $theme ) {
  * @return false|void
  */
 function maintenance_nag() {
-	include( ABSPATH . WPINC . '/version.php' ); // include an unmodified $wp_version
 	global $upgrading;
+
+	$app = getApp();
+
 	$nag = isset( $upgrading );
 	if ( ! $nag ) {
 		$failed = get_site_option( 'auto_core_update_failed' );
@@ -595,7 +599,7 @@ function maintenance_nag() {
 		 * This flag is cleared whenever a successful update occurs using Core_Upgrader.
 		 */
 		$comparison = ! empty( $failed['critical'] ) ? '>=' : '>';
-		if ( version_compare( $failed['attempted'], $wp_version, $comparison ) )
+		if ( version_compare( $failed['attempted'], $app['wp_version'], $comparison ) )
 			$nag = true;
 	}
 

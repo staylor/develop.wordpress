@@ -642,106 +642,105 @@ function bloginfo( $show = '' ) {
  *
  * @since 0.71
  *
- * @global string $wp_version
- *
  * @param string $show   Optional. Site info to retrieve. Default empty (site name).
  * @param string $filter Optional. How to filter what is retrieved. Default 'raw'.
  * @return string Mostly string values, might be empty.
  */
 function get_bloginfo( $show = '', $filter = 'raw' ) {
+	$app = getApp();
+
 	switch( $show ) {
-		case 'home' : // DEPRECATED
-		case 'siteurl' : // DEPRECATED
-			_deprecated_argument( __FUNCTION__, '2.2.0', sprintf(
-				/* translators: 1: 'siteurl'/'home' argument, 2: bloginfo() function name, 3: 'url' argument */
-				__( 'The %1$s option is deprecated for the family of %2$s functions. Use the %3$s option instead.' ),
-				'<code>' . $show . '</code>',
-				'<code>bloginfo()</code>',
-				'<code>url</code>'
-			) );
-		case 'url' :
-			$output = home_url();
-			break;
-		case 'wpurl' :
-			$output = site_url();
-			break;
-		case 'description':
-			$output = get_option('blogdescription');
-			break;
-		case 'rdf_url':
-			$output = get_feed_link('rdf');
-			break;
-		case 'rss_url':
-			$output = get_feed_link('rss');
-			break;
-		case 'rss2_url':
-			$output = get_feed_link('rss2');
-			break;
-		case 'atom_url':
-			$output = get_feed_link('atom');
-			break;
-		case 'comments_atom_url':
-			$output = get_feed_link('comments_atom');
-			break;
-		case 'comments_rss2_url':
-			$output = get_feed_link('comments_rss2');
-			break;
-		case 'pingback_url':
-			$output = site_url( 'xmlrpc.php' );
-			break;
-		case 'stylesheet_url':
-			$output = get_stylesheet_uri();
-			break;
-		case 'stylesheet_directory':
-			$output = get_stylesheet_directory_uri();
-			break;
-		case 'template_directory':
-		case 'template_url':
-			$output = get_template_directory_uri();
-			break;
-		case 'admin_email':
-			$output = get_option('admin_email');
-			break;
-		case 'charset':
-			$output = get_option('blog_charset');
-			if ('' == $output) $output = 'UTF-8';
-			break;
-		case 'html_type' :
-			$output = get_option('html_type');
-			break;
-		case 'version':
-			global $wp_version;
-			$output = $wp_version;
-			break;
-		case 'language':
-			/* translators: Translate this to the correct language tag for your locale,
-			 * see https://www.w3.org/International/articles/language-tags/ for reference.
-			 * Do not translate into your own language.
-			 */
-			$output = __( 'html_lang_attribute' );
-			if ( 'html_lang_attribute' === $output || preg_match( '/[^a-zA-Z0-9-]/', $output ) ) {
-				$output = get_locale();
-				$output = str_replace( '_', '-', $output );
-			}
-			break;
-		case 'text_direction':
-			_deprecated_argument( __FUNCTION__, '2.2.0', sprintf(
-				/* translators: 1: 'text_direction' argument, 2: bloginfo() function name, 3: is_rtl() function name */
-				__( 'The %1$s option is deprecated for the family of %2$s functions. Use the %3$s function instead.' ),
-				'<code>' . $show . '</code>',
-				'<code>bloginfo()</code>',
-				'<code>is_rtl()</code>'
-			) );
-			if ( function_exists( 'is_rtl' ) ) {
-				$output = is_rtl() ? 'rtl' : 'ltr';
-			} else {
-				$output = 'ltr';
-			}
-			break;
-		case 'name':
-		default:
-			$output = get_option('blogname');
-			break;
+	case 'home' : // DEPRECATED
+	case 'siteurl' : // DEPRECATED
+		_deprecated_argument( __FUNCTION__, '2.2.0', sprintf(
+			/* translators: 1: 'siteurl'/'home' argument, 2: bloginfo() function name, 3: 'url' argument */
+			__( 'The %1$s option is deprecated for the family of %2$s functions. Use the %3$s option instead.' ),
+			'<code>' . $show . '</code>',
+			'<code>bloginfo()</code>',
+			'<code>url</code>'
+		) );
+	case 'url' :
+		$output = home_url();
+		break;
+	case 'wpurl' :
+		$output = site_url();
+		break;
+	case 'description':
+		$output = get_option('blogdescription');
+		break;
+	case 'rdf_url':
+		$output = get_feed_link('rdf');
+		break;
+	case 'rss_url':
+		$output = get_feed_link('rss');
+		break;
+	case 'rss2_url':
+		$output = get_feed_link('rss2');
+		break;
+	case 'atom_url':
+		$output = get_feed_link('atom');
+		break;
+	case 'comments_atom_url':
+		$output = get_feed_link('comments_atom');
+		break;
+	case 'comments_rss2_url':
+		$output = get_feed_link('comments_rss2');
+		break;
+	case 'pingback_url':
+		$output = site_url( 'xmlrpc.php' );
+		break;
+	case 'stylesheet_url':
+		$output = get_stylesheet_uri();
+		break;
+	case 'stylesheet_directory':
+		$output = get_stylesheet_directory_uri();
+		break;
+	case 'template_directory':
+	case 'template_url':
+		$output = get_template_directory_uri();
+		break;
+	case 'admin_email':
+		$output = get_option('admin_email');
+		break;
+	case 'charset':
+		$output = get_option('blog_charset');
+		if ('' == $output) $output = 'UTF-8';
+		break;
+	case 'html_type' :
+		$output = get_option('html_type');
+		break;
+	case 'version':
+		$output = $app['wp_version'];
+		break;
+	case 'language':
+		/* translators: Translate this to the correct language tag for your locale,
+		 * see https://www.w3.org/International/articles/language-tags/ for reference.
+		 * Do not translate into your own language.
+		 */
+		$output = __( 'html_lang_attribute' );
+		if ( 'html_lang_attribute' === $output || preg_match( '/[^a-zA-Z0-9-]/', $output ) ) {
+			$output = get_locale();
+			$output = str_replace( '_', '-', $output );
+		}
+		break;
+	case 'text_direction':
+		_deprecated_argument( __FUNCTION__, '2.2.0', sprintf(
+			/* translators: 1: 'text_direction' argument, 2: bloginfo() function name, 3: is_rtl() function name */
+			__( 'The %1$s option is deprecated for the family of %2$s functions. Use the %3$s function instead.' ),
+			'<code>' . $show . '</code>',
+			'<code>bloginfo()</code>',
+			'<code>is_rtl()</code>'
+		) );
+		if ( function_exists( 'is_rtl' ) ) {
+			$output = is_rtl() ? 'rtl' : 'ltr';
+		} else {
+			$output = 'ltr';
+		}
+		break;
+	case 'name':
+	default:
+		$output = get_option('blogname');
+		break;
 	}
 
 	$url = true;
@@ -3363,6 +3362,7 @@ function wp_admin_css_color( $key, $name, $url, $colors = array(), $icons = arra
  * @since 3.0.0
  */
 function register_admin_color_schemes() {
+	$app = getApp();
 	$suffix = is_rtl() ? '-rtl' : '';
 	$suffix .= SCRIPT_DEBUG ? '' : '.min';
 
@@ -3373,7 +3373,7 @@ function register_admin_color_schemes() {
 	);
 
 	// Other color schemes are not available when running out of src
-	if ( false !== strpos( get_bloginfo( 'version' ), '-src' ) ) {
+	if ( false !== strpos( $app['wp_version'], '-src' ) ) {
 		return;
 	}
 
@@ -3432,12 +3432,13 @@ function register_admin_color_schemes() {
  * @return string
  */
 function wp_admin_css_uri( $file = 'wp-admin' ) {
+	$app = getApp();
 	if ( defined('WP_INSTALLING') ) {
 		$_file = "./$file.css";
 	} else {
 		$_file = admin_url("$file.css");
 	}
-	$_file = add_query_arg( 'version', get_bloginfo( 'version' ),  $_file );
+	$_file = add_query_arg( 'version', $app['wp_version'],  $_file );
 
 	/**
 	 * Filters the URI of a WordPress admin CSS file.
@@ -3572,6 +3573,7 @@ function the_generator( $type ) {
  * @return string|void The HTML content for the generator.
  */
 function get_the_generator( $type = '' ) {
+	$app = getApp();
 	if ( empty( $type ) ) {
 
 		$current_filter = current_filter();
@@ -3579,47 +3581,47 @@ function get_the_generator( $type = '' ) {
 			return;
 
 		switch ( $current_filter ) {
-			case 'rss2_head' :
-			case 'commentsrss2_head' :
-				$type = 'rss2';
-				break;
-			case 'rss_head' :
-			case 'opml_head' :
-				$type = 'comment';
-				break;
-			case 'rdf_header' :
-				$type = 'rdf';
-				break;
-			case 'atom_head' :
-			case 'comments_atom_head' :
-			case 'app_head' :
-				$type = 'atom';
-				break;
+		case 'rss2_head' :
+		case 'commentsrss2_head' :
+			$type = 'rss2';
+			break;
+		case 'rss_head' :
+		case 'opml_head' :
+			$type = 'comment';
+			break;
+		case 'rdf_header' :
+			$type = 'rdf';
+			break;
+		case 'atom_head' :
+		case 'comments_atom_head' :
+		case 'app_head' :
+			$type = 'atom';
+			break;
 		}
 	}
 
 	switch ( $type ) {
-		case 'html':
-			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '">';
-			break;
-		case 'xhtml':
-			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '" />';
-			break;
-		case 'atom':
-			$gen = '<generator uri="https://wordpress.org/" version="' . get_bloginfo_rss( 'version' ) . '">WordPress</generator>';
-			break;
-		case 'rss2':
-			$gen = '<generator>https://wordpress.org/?v=' . get_bloginfo_rss( 'version' ) . '</generator>';
-			break;
-		case 'rdf':
-			$gen = '<admin:generatorAgent rdf:resource="https://wordpress.org/?v=' . get_bloginfo_rss( 'version' ) . '" />';
-			break;
-		case 'comment':
-			$gen = '<!-- generator="WordPress/' . get_bloginfo( 'version' ) . '" -->';
-			break;
-		case 'export':
-			$gen = '<!-- generator="WordPress/' . get_bloginfo_rss('version') . '" created="'. date('Y-m-d H:i') . '" -->';
-			break;
+	case 'html':
+		$gen = '<meta name="generator" content="WordPress ' . $app['wp_version'] . '">';
+		break;
+	case 'xhtml':
+		$gen = '<meta name="generator" content="WordPress ' . $app['wp_version'] . '" />';
+		break;
+	case 'atom':
+		$gen = '<generator uri="https://wordpress.org/" version="' . get_bloginfo_rss( 'version' ) . '">WordPress</generator>';
+		break;
+	case 'rss2':
+		$gen = '<generator>https://wordpress.org/?v=' . get_bloginfo_rss( 'version' ) . '</generator>';
+		break;
+	case 'rdf':
+		$gen = '<admin:generatorAgent rdf:resource="https://wordpress.org/?v=' . get_bloginfo_rss( 'version' ) . '" />';
+		break;
+	case 'comment':
+		$gen = '<!-- generator="WordPress/' . $app['wp_version'] . '" -->';
+		break;
+	case 'export':
+		$gen = '<!-- generator="WordPress/' . get_bloginfo_rss('version') . '" created="'. date('Y-m-d H:i') . '" -->';
+		break;
 	}
 
 	/**

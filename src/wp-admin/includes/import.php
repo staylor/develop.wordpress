@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Retrieve list of importers.
  *
@@ -123,18 +125,17 @@ function wp_import_handle_upload() {
  * @return array Importers with metadata for each.
  */
 function wp_get_popular_importers() {
-	include( ABSPATH . WPINC . '/version.php' ); // include an unmodified $wp_version
-
+	$app = getApp();
 	$locale = get_user_locale();
-	$cache_key = 'popular_importers_' . md5( $locale . $wp_version );
+	$cache_key = 'popular_importers_' . md5( $locale . $app['wp_version'] );
 	$popular_importers = get_site_transient( $cache_key );
 
 	if ( ! $popular_importers ) {
 		$url = add_query_arg( array(
 			'locale'  => get_user_locale(),
-			'version' => $wp_version,
+			'version' => $app['wp_version'],
 		), 'http://api.wordpress.org/core/importers/1.1/' );
-		$options = array( 'user-agent' => 'WordPress/' . $wp_version . '; ' . home_url() );
+		$options = array( 'user-agent' => 'WordPress/' . $app['wp_version'] . '; ' . home_url() );
 		$response = wp_remote_get( $url, $options );
 		$popular_importers = json_decode( wp_remote_retrieve_body( $response ), true );
 

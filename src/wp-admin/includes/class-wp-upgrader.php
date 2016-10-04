@@ -9,6 +9,8 @@
  * @since 2.8.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used for upgrading/installing a local set of files via
  * the Filesystem Abstraction classes from a Zip file.
@@ -83,6 +85,8 @@ class WP_Upgrader {
 	 */
 	public $update_current = 0;
 
+	protected $app;
+
 	/**
 	 * Construct the upgrader with a skin.
 	 *
@@ -93,6 +97,8 @@ class WP_Upgrader {
 	 *                               instance.
 	 */
 	public function __construct( $skin = null ) {
+		$this->app = getApp();
+
 		if ( null == $skin )
 			$this->skin = new WP_Upgrader_Skin();
 		else

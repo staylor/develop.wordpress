@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -42,7 +44,8 @@ if ( 'en' !== $locale ) {
 
 $title = __( 'About' );
 
-list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );
+$app = getApp();
+list( $display_version ) = explode( '-', $app['wp_version'] );
 
 include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>

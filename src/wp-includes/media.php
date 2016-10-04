@@ -3817,7 +3817,8 @@ function attachment_url_to_postid( $url ) {
  * @return array The relevant CSS file URLs.
  */
 function wpview_media_sandbox_styles() {
- 	$version = 'ver=' . get_bloginfo( 'version' );
+	$app = getApp();
+ 	$version = 'ver=' . $app['wp_version'];
  	$mediaelement = includes_url( "js/mediaelement/mediaelementplayer.min.css?$version" );
  	$wpmediaelement = includes_url( "js/mediaelement/wp-mediaelement.css?$version" );
 

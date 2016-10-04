@@ -9,6 +9,8 @@
  * @since 0.71
  */
 
+use function WP\getApp;
+
 /**
  * @since 0.71
  */
@@ -606,6 +608,7 @@ class wpdb {
 	 */
 	private $has_connected = false;
 
+	protected $app;
 	/**
 	 * Connects to the database server and selects a database
 	 *
@@ -616,14 +619,14 @@ class wpdb {
 	 * @link https://core.trac.wordpress.org/ticket/3354
 	 * @since 2.0.8
 	 *
-	 * @global string $wp_version
-	 *
 	 * @param string $dbuser     MySQL database user
 	 * @param string $dbpassword MySQL database password
 	 * @param string $dbname     MySQL database name
 	 * @param string $dbhost     MySQL database host
 	 */
 	public function __construct( $dbuser, $dbpassword, $dbname, $dbhost ) {
+		$this->app = getApp();
+
 		register_shutdown_function( array( $this, '__destruct' ) );
 
 		if ( WP_DEBUG && WP_DEBUG_DISPLAY )
@@ -640,7 +643,7 @@ class wpdb {
 				$this->use_mysqli = ! WP_USE_EXT_MYSQL;
 			} elseif ( version_compare( phpversion(), '5.5', '>=' ) || ! function_exists( 'mysql_connect' ) ) {
 				$this->use_mysqli = true;
-			} elseif ( false !== strpos( $GLOBALS['wp_version'], '-' ) ) {
+			} elseif ( false !== strpos( $this->app['wp_version'], '-' ) ) {
 				$this->use_mysqli = true;
 			}
 		}
@@ -3151,16 +3154,20 @@ class wpdb {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @global string $wp_version
-	 * @global string $required_mysql_version
-	 *
 	 * @return WP_Error|void
 	 */
 	public function check_database_version() {
-		global $wp_version, $required_mysql_version;
 		// Make sure the server has the required MySQL version
-		if ( version_compare($this->db_version(), $required_mysql_version, '<') )
-			return new WP_Error('database_version', sprintf( __( '<strong>ERROR</strong>: WordPress %1$s requires MySQL %2$s or higher' ), $wp_version, $required_mysql_version ));
+		if ( version_compare( $this->db_version(), $this->app['required_mysql_version'], '<' ) ) {
+			return new WP_Error(
+				'database_version',
+				sprintf(
+					__( '<strong>ERROR</strong>: WordPress %1$s requires MySQL %2$s or higher' ),
+					$this->app['wp_version'],
+					$this->app['required_mysql_version']
+				)
+			);
+		}
 	}
 
 	/**
