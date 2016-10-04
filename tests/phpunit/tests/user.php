@@ -208,7 +208,7 @@ class Tests_User extends WP_UnitTestCase {
 
 	/**
 	 * @depends test_user_unset
-	 * @expectedDeprecated WP_User->id
+	 * @expectedDeprecated User->id
 	 * @ticket 20043
 	 */
 	function test_user_unset_lowercase_id( $user ) {
@@ -242,7 +242,7 @@ class Tests_User extends WP_UnitTestCase {
 	}
 
 	/**
-	 * @expectedDeprecated WP_User->id
+	 * @expectedDeprecated User->id
 	 */
 	function test_id_property_back_compat() {
 		$user = new User( self::$author_id );
