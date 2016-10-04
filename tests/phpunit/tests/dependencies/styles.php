@@ -255,7 +255,7 @@ CSS;
 	 * @ticket 35921
 	 * @dataProvider data_styles_with_media
 	 */
-	function test_wp_enqueue_style_with_media() {
+	function test_wp_enqueue_style_with_media( $expected, $media ) {
 		wp_enqueue_style( 'handle', 'http://example.com', array(), 1, $media );
 		$this->assertContains( $expected, get_echo( 'wp_print_styles' ) );
 	}
