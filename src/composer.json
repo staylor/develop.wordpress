@@ -25,10 +25,6 @@
 		{
 			"type": "vcs",
 			"url": "https://github.com/pear/Text_Diff"
-		},
-		{
-			"type": "vcs",
-			"url": "https://github.com/pear/Services_JSON"
 		}
 	],
 	"autoload": {
@@ -62,7 +58,6 @@
 	"require": {
 		"james-heinrich/getid3": "^1.9",
 		"paragonie/random_compat": "^2.0",
-		"pear/services_json": "dev-trunk",
 		"pear/text_diff": "dev-stable",
 		"pimple/pimple": "^3.0",
 		"pomo/pomo": "^1.2",

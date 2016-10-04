@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6a4c963ec4c4a59311791563c0866b8e",
-    "content-hash": "f5bef153dabba05ebce0e82b06a1bf2b",
+    "hash": "ec82ec0f27729011dde26f0fbb5ecc08",
+    "content-hash": "9ffc8d0ee8e79940f9e3ce92345d154e",
     "packages": [
         {
             "name": "james-heinrich/getid3",
@@ -90,109 +90,6 @@
                 "random"
             ],
             "time": "2016-04-03 06:00:07"
-        },
-        {
-            "name": "pear/pear_exception",
-            "version": "v1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/PEAR_Exception.git",
-                "reference": "8c18719fdae000b690e3912be401c76e406dd13b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/8c18719fdae000b690e3912be401c76e406dd13b",
-                "reference": "8c18719fdae000b690e3912be401c76e406dd13b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=4.4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "*"
-            },
-            "type": "class",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "PEAR": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "."
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Helgi Thormar",
-                    "email": "dufuz@php.net"
-                },
-                {
-                    "name": "Greg Beaver",
-                    "email": "cellog@php.net"
-                }
-            ],
-            "description": "The PEAR Exception base class.",
-            "homepage": "https://github.com/pear/PEAR_Exception",
-            "keywords": [
-                "exception"
-            ],
-            "time": "2015-02-10 20:07:52"
-        },
-        {
-            "name": "pear/services_json",
-            "version": "dev-trunk",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/Services_JSON.git",
-                "reference": "22927b55e18eea7cdc451d510115078c79497653"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/Services_JSON/zipball/22927b55e18eea7cdc451d510115078c79497653",
-                "reference": "22927b55e18eea7cdc451d510115078c79497653",
-                "shasum": ""
-            },
-            "require": {
-                "pear/pear_exception": "*"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "./"
-                ]
-            },
-            "license": [
-                "BSD"
-            ],
-            "authors": [
-                {
-                    "email": "migurski@php.net",
-                    "name": "Michal Migurski  ",
-                    "role": "Lead"
-                },
-                {
-                    "email": "alan@akbkhome.com",
-                    "name": "Alan Knowles",
-                    "role": "Lead"
-                }
-            ],
-            "description": "More info available on: http://pear.php.net/package/Services_JSON",
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Services_JSON",
-                "source": "https://github.com/pear/Services_JSON"
-            },
-            "time": "2014-02-21 11:51:56"
         },
         {
             "name": "pear/text_diff",
@@ -550,7 +447,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "pear/services_json": 20,
         "pear/text_diff": 20
     },
     "prefer-stable": false,
