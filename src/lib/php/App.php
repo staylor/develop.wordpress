@@ -6,6 +6,8 @@ use Pimple\Container;
 class App extends Container {
 	public $blog_id = 1;
 
+	public $current_screen;
+
 	public $taxonomies = [];
 
 	public $shortcode_tags = [];

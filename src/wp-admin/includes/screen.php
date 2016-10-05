@@ -207,17 +207,15 @@ function add_screen_option( $option, $args = array() ) {
  *
  * @since 3.1.0
  *
- * @global WP_Screen $current_screen
- *
  * @return WP_Screen|null Current screen object or null when screen not defined.
  */
 function get_current_screen() {
-	global $current_screen;
+	$app = getApp();
 
-	if ( ! isset( $current_screen ) )
+	if ( ! isset( $app->current_screen ) )
 		return null;
 
-	return $current_screen;
+	return $app->current_screen;
 }
 
 /**

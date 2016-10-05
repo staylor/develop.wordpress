@@ -233,7 +233,8 @@ final class _WP_Editors {
 		$quicktags_toolbar = '';
 
 		if ( self::$this_quicktags ) {
-			if ( 'content' === $editor_id && ! empty( $GLOBALS['current_screen'] ) && $GLOBALS['current_screen']->base === 'post' ) {
+			$app = getApp();
+			if ( 'content' === $editor_id && ! empty( $app->current_screen ) && $app->current_screen->base === 'post' ) {
 				$toolbar_id = 'ed_toolbar';
 			} else {
 				$toolbar_id = 'qt_' . $editor_id_attr . '_toolbar';

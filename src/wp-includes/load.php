@@ -706,13 +706,13 @@ function wp_clone( $object ) {
  *
  * @since 1.5.1
  *
- * @global WP_Screen $current_screen
- *
  * @return bool True if inside WordPress administration interface, false otherwise.
  */
 function is_admin() {
-	if ( isset( $GLOBALS['current_screen'] ) )
-		return $GLOBALS['current_screen']->in_admin();
+	$app = getApp();
+
+	if ( isset( $app->current_screen ) )
+		return $app->current_screen->in_admin();
 	elseif ( defined( 'WP_ADMIN' ) )
 		return WP_ADMIN;
 
@@ -729,13 +729,13 @@ function is_admin() {
  *
  * @since 3.1.0
  *
- * @global WP_Screen $current_screen
- *
  * @return bool True if inside WordPress blog administration pages.
  */
 function is_blog_admin() {
-	if ( isset( $GLOBALS['current_screen'] ) )
-		return $GLOBALS['current_screen']->in_admin( 'site' );
+	$app = getApp();
+
+	if ( isset( $app->current_screen ) )
+		return $app->current_screen->in_admin( 'site' );
 	elseif ( defined( 'WP_BLOG_ADMIN' ) )
 		return WP_BLOG_ADMIN;
 
@@ -752,13 +752,13 @@ function is_blog_admin() {
  *
  * @since 3.1.0
  *
- * @global WP_Screen $current_screen
- *
  * @return bool True if inside WordPress network administration pages.
  */
 function is_network_admin() {
-	if ( isset( $GLOBALS['current_screen'] ) )
-		return $GLOBALS['current_screen']->in_admin( 'network' );
+	$app = getApp();
+
+	if ( isset( $app->current_screen ) )
+		return $app->current_screen->in_admin( 'network' );
 	elseif ( defined( 'WP_NETWORK_ADMIN' ) )
 		return WP_NETWORK_ADMIN;
 
@@ -776,13 +776,13 @@ function is_network_admin() {
  *
  * @since 3.1.0
  *
- * @global WP_Screen $current_screen
- *
  * @return bool True if inside WordPress user administration pages.
  */
 function is_user_admin() {
-	if ( isset( $GLOBALS['current_screen'] ) )
-		return $GLOBALS['current_screen']->in_admin( 'user' );
+	$app = getApp();
+
+	if ( isset( $app->current_screen ) )
+		return $app->current_screen->in_admin( 'user' );
 	elseif ( defined( 'WP_USER_ADMIN' ) )
 		return WP_USER_ADMIN;
 

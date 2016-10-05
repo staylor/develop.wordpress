@@ -19,17 +19,16 @@ $app = getApp();
  *
  * @global string    $title
  * @global string    $hook_suffix
- * @global WP_Screen $current_screen
  * @global string    $pagenow
  * @global string    $update_title
  * @global int       $total_update_count
  * @global string    $parent_file
  */
-global $title, $hook_suffix, $current_screen, $pagenow,
+global $title, $hook_suffix, $pagenow,
 	$update_title, $total_update_count, $parent_file;
 
 // Catch plugins that include admin-header.php before admin.php completes.
-if ( empty( $current_screen ) )
+if ( empty( $app->current_screen ) )
 	set_current_screen();
 
 get_admin_page_title();
@@ -74,8 +73,8 @@ $admin_body_class = preg_replace('/[^a-z0-9_-]+/i', '-', $hook_suffix);
 <script type="text/javascript">
 addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function'){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
 var ajaxurl = '<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>',
-	pagenow = '<?php echo $current_screen->id; ?>',
-	typenow = '<?php echo $current_screen->post_type; ?>',
+	pagenow = '<?php echo $app->current_screen->id; ?>',
+	typenow = '<?php echo $app->current_screen->post_type; ?>',
 	adminpage = '<?php echo $admin_body_class; ?>',
 	thousandsSeparator = '<?php echo addslashes( $app['locale']->number_format['thousands_sep'] ); ?>',
 	decimalPoint = '<?php echo addslashes( $app['locale']->number_format['decimal_point'] ); ?>',
@@ -150,11 +149,11 @@ if ( is_admin_bar_showing() )
 if ( is_rtl() )
 	$admin_body_class .= ' rtl';
 
-if ( $current_screen->post_type )
-	$admin_body_class .= ' post-type-' . $current_screen->post_type;
+if ( $app->current_screen->post_type )
+	$admin_body_class .= ' post-type-' . $app->current_screen->post_type;
 
-if ( $current_screen->taxonomy )
-	$admin_body_class .= ' taxonomy-' . $current_screen->taxonomy;
+if ( $app->current_screen->taxonomy )
+	$admin_body_class .= ' taxonomy-' . $app->current_screen->taxonomy;
 
 $admin_body_class .= ' branch-' . str_replace( array( '.', ',' ), '-', floatval( $app['wp_version'] ) );
 $admin_body_class .= ' version-' . str_replace( '.', '-', preg_replace( '/^([.0-9]+).*/', '$1', $app['wp_version'] ) );
@@ -220,14 +219,14 @@ do_action( 'in_admin_header' );
 <?php
 unset($title_class, $blog_name, $total_update_count, $update_title);
 
-$current_screen->set_parentage( $parent_file );
+$app->current_screen->set_parentage( $parent_file );
 
 ?>
 
 <div id="wpbody-content" aria-label="<?php esc_attr_e('Main content'); ?>" tabindex="0">
 <?php
 
-$current_screen->render_screen_meta();
+$app->current_screen->render_screen_meta();
 
 if ( is_network_admin() ) {
 	/**
