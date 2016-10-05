@@ -20,9 +20,13 @@ class App extends Container {
 		'_widgets' => [],
 	];
 
+	public $nav_menus = [
+		'registered' => []
+	];
+
 	public $theme_features = [];
 	public $theme_directories = [];
 	public $default_headers = [];
-	
+
 	public $suspend_cache_invalidation;
 }

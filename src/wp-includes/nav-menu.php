@@ -81,32 +81,28 @@ function is_nav_menu( $menu ) {
  *
  * @since 3.0.0
  *
- * @global array $_wp_registered_nav_menus
- *
  * @param array $locations Associative array of menu location identifiers (like a slug) and descriptive text.
  */
 function register_nav_menus( $locations = array() ) {
-	global $_wp_registered_nav_menus;
+	$app = getApp();
 
 	add_theme_support( 'menus' );
 
-	$_wp_registered_nav_menus = array_merge( (array) $_wp_registered_nav_menus, $locations );
+	$app->nav_menus['registered'] = array_merge( (array) $app->nav_menus['registered'], $locations );
 }
 
 /**
  * Unregisters a navigation menu location for a theme.
  *
- * @global array $_wp_registered_nav_menus
- *
  * @param string $location The menu location identifier.
  * @return bool True on success, false on failure.
  */
 function unregister_nav_menu( $location ) {
-	global $_wp_registered_nav_menus;
+	$app = getApp();
 
-	if ( is_array( $_wp_registered_nav_menus ) && isset( $_wp_registered_nav_menus[$location] ) ) {
-		unset( $_wp_registered_nav_menus[$location] );
-		if ( empty( $_wp_registered_nav_menus ) ) {
+	if ( isset( $app->nav_menus['registered'][ $location ] ) ) {
+		unset( $app->nav_menus['registered'][ $location ] );
+		if ( empty( $app->nav_menus['registered'] ) ) {
 			_remove_theme_support( 'menus' );
 		}
 		return true;
@@ -130,15 +126,11 @@ function register_nav_menu( $location, $description ) {
  *
  * @since 3.0.0
  *
- * @global array $_wp_registered_nav_menus
- *
  * @return array Registered navigation menu locations. If none are registered, an empty array.
  */
 function get_registered_nav_menus() {
-	global $_wp_registered_nav_menus;
-	if ( isset( $_wp_registered_nav_menus ) )
-		return $_wp_registered_nav_menus;
-	return array();
+	$app = getApp();
+	return $app->nav_menus['registered'];
 }
 
 /**
@@ -772,7 +764,7 @@ function wp_setup_nav_menu_item( $menu_item ) {
 
 				$menu_item->type_label = __( 'Post Type Archive' );
 				$post_content = wp_trim_words( $menu_item->post_content, 200 );
-				$post_type_description = '' == $post_content ? $post_type_description : $post_content; 
+				$post_type_description = '' == $post_content ? $post_type_description : $post_content;
 				$menu_item->url = get_post_type_archive_link( $menu_item->object );
 			} elseif ( 'taxonomy' == $menu_item->type ) {
 				$object = get_taxonomy( $menu_item->object );
