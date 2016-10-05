@@ -20,6 +20,7 @@ class App extends Container {
 		'_widgets' => [],
 	];
 
+	public $theme_features = [];
 	public $theme_directories = [];
 	public $default_headers = [];
 }

@@ -1508,8 +1508,6 @@ function get_editor_stylesheets() {
  * @since 4.1.0 The `title-tag` feature was added
  * @since 4.5.0 The `customize-selective-refresh-widgets` feature was added
  *
- * @global array $_wp_theme_features
- *
  * @param string $feature  The feature being added. Likely core values include 'post-formats',
  *                         'post-thumbnails', 'html5', 'custom-logo', 'custom-header-uploads',
  *                         'custom-header', 'custom-background', 'title-tag', etc.
@@ -1517,7 +1515,7 @@ function get_editor_stylesheets() {
  * @return void|bool False on failure, void otherwise.
  */
 function add_theme_support( $feature ) {
-	global $_wp_theme_features;
+	$app = getApp();
 
 	if ( func_num_args() == 1 )
 		$args = true;
@@ -1535,8 +1533,8 @@ function add_theme_support( $feature ) {
 			 * Merge post types with any that already declared their support
 			 * for post thumbnails.
 			 */
-			if ( is_array( $args[0] ) && isset( $_wp_theme_features['post-thumbnails'] ) ) {
-				$args[0] = array_unique( array_merge( $_wp_theme_features['post-thumbnails'][0], $args[0] ) );
+			if ( is_array( $args[0] ) && isset( $app->theme_features['post-thumbnails'] ) ) {
+				$args[0] = array_unique( array_merge( $app->theme_features['post-thumbnails'][0], $args[0] ) );
 			}
 
 			break;
@@ -1561,8 +1559,8 @@ function add_theme_support( $feature ) {
 			}
 
 			// Calling 'html5' again merges, rather than overwrites.
-			if ( isset( $_wp_theme_features['html5'] ) )
-				$args[0] = array_merge( $_wp_theme_features['html5'][0], $args[0] );
+			if ( isset( $app->theme_features['html5'] ) )
+				$args[0] = array_merge( $app->theme_features['html5'][0], $args[0] );
 			break;
 
 		case 'custom-logo':
@@ -1612,8 +1610,8 @@ function add_theme_support( $feature ) {
 
 			// Merge in data from previous add_theme_support() calls.
 			// The first value registered wins. (A child theme is set up first.)
-			if ( isset( $_wp_theme_features['custom-header'] ) )
-				$args[0] = wp_parse_args( $_wp_theme_features['custom-header'][0], $args[0] );
+			if ( isset( $app->theme_features['custom-header'] ) )
+				$args[0] = wp_parse_args( $app->theme_features['custom-header'][0], $args[0] );
 
 			// Load in the defaults at the end, as we need to insure first one wins.
 			// This will cause all constants to be defined, as each arg will then be set to the default.
@@ -1684,8 +1682,8 @@ function add_theme_support( $feature ) {
 			unset( $args[0]['__jit'] );
 
 			// Merge in data from previous add_theme_support() calls. The first value registered wins.
-			if ( isset( $_wp_theme_features['custom-background'] ) )
-				$args[0] = wp_parse_args( $_wp_theme_features['custom-background'][0], $args[0] );
+			if ( isset( $app->theme_features['custom-background'] ) )
+				$args[0] = wp_parse_args( $app->theme_features['custom-background'][0], $args[0] );
 
 			if ( $jit )
 				$args[0] = wp_parse_args( $args[0], $defaults );
@@ -1714,7 +1712,7 @@ function add_theme_support( $feature ) {
 			}
 	}
 
-	$_wp_theme_features[ $feature ] = $args;
+	$app->theme_features[ $feature ] = $args;
 }
 
 /**
@@ -1784,30 +1782,32 @@ function _custom_logo_header_styles() {
  *
  * @since 3.1.0
  *
- * @global array $_wp_theme_features
- *
  * @param string $feature the feature to check
  * @return mixed The array of extra arguments or the value for the registered feature.
  */
 function get_theme_support( $feature ) {
-	global $_wp_theme_features;
-	if ( ! isset( $_wp_theme_features[ $feature ] ) )
-		return false;
+	$app = getApp();
 
-	if ( func_num_args() <= 1 )
-		return $_wp_theme_features[ $feature ];
+	if ( ! isset( $app->theme_features[ $feature ] ) ) {
+		return false;
+	}
+
+	if ( func_num_args() <= 1 ) {
+		return $app->theme_features[ $feature ];
+	}
 
 	$args = array_slice( func_get_args(), 1 );
 	switch ( $feature ) {
-		case 'custom-logo' :
-		case 'custom-header' :
-		case 'custom-background' :
-			if ( isset( $_wp_theme_features[ $feature ][0][ $args[0] ] ) )
-				return $_wp_theme_features[ $feature ][0][ $args[0] ];
-			return false;
+	case 'custom-logo' :
+	case 'custom-header' :
+	case 'custom-background' :
+		if ( isset( $app->theme_features[ $feature ][0][ $args[0] ] ) ) {
+			return $app->theme_features[ $feature ][0][ $args[0] ];
+		}
+		return false;
 
-		default :
-			return $_wp_theme_features[ $feature ];
+	default :
+		return $app->theme_features[ $feature ];
 	}
 }
 
@@ -1836,48 +1836,47 @@ function remove_theme_support( $feature ) {
  * @access private
  * @since 3.1.0
  *
- * @global array               $_wp_theme_features
  * @global Custom_Image_Header $custom_image_header
  * @global Custom_Background   $custom_background
  *
  * @param string $feature
  */
 function _remove_theme_support( $feature ) {
-	global $_wp_theme_features;
+	$app = getApp();
 
 	switch ( $feature ) {
-		case 'custom-header-uploads' :
-			if ( ! isset( $_wp_theme_features['custom-header'] ) )
-				return false;
-			add_theme_support( 'custom-header', array( 'uploads' => false ) );
-			return; // Do not continue - custom-header-uploads no longer exists.
+	case 'custom-header-uploads' :
+		if ( ! isset( $app->theme_features['custom-header'] ) )
+			return false;
+		add_theme_support( 'custom-header', array( 'uploads' => false ) );
+		return; // Do not continue - custom-header-uploads no longer exists.
 	}
 
-	if ( ! isset( $_wp_theme_features[ $feature ] ) )
+	if ( ! isset( $app->theme_features[ $feature ] ) )
 		return false;
 
 	switch ( $feature ) {
-		case 'custom-header' :
-			if ( ! did_action( 'wp_loaded' ) )
-				break;
-			$support = get_theme_support( 'custom-header' );
-			if ( $support[0]['wp-head-callback'] )
-				remove_action( 'wp_head', $support[0]['wp-head-callback'] );
-			remove_action( 'admin_menu', array( $GLOBALS['custom_image_header'], 'init' ) );
-			unset( $GLOBALS['custom_image_header'] );
+	case 'custom-header' :
+		if ( ! did_action( 'wp_loaded' ) )
 			break;
-
-		case 'custom-background' :
-			if ( ! did_action( 'wp_loaded' ) )
-				break;
-			$support = get_theme_support( 'custom-background' );
+		$support = get_theme_support( 'custom-header' );
+		if ( $support[0]['wp-head-callback'] )
 			remove_action( 'wp_head', $support[0]['wp-head-callback'] );
-			remove_action( 'admin_menu', array( $GLOBALS['custom_background'], 'init' ) );
-			unset( $GLOBALS['custom_background'] );
+		remove_action( 'admin_menu', array( $GLOBALS['custom_image_header'], 'init' ) );
+		unset( $GLOBALS['custom_image_header'] );
+		break;
+
+	case 'custom-background' :
+		if ( ! did_action( 'wp_loaded' ) )
 			break;
+		$support = get_theme_support( 'custom-background' );
+		remove_action( 'wp_head', $support[0]['wp-head-callback'] );
+		remove_action( 'admin_menu', array( $GLOBALS['custom_background'], 'init' ) );
+		unset( $GLOBALS['custom_background'] );
+		break;
 	}
 
-	unset( $_wp_theme_features[ $feature ] );
+	unset( $app->theme_features[ $feature ] );
 	return true;
 }
 
@@ -1886,18 +1885,16 @@ function _remove_theme_support( $feature ) {
  *
  * @since 2.9.0
  *
- * @global array $_wp_theme_features
- *
  * @param string $feature the feature being checked
  * @return bool
  */
 function current_theme_supports( $feature ) {
-	global $_wp_theme_features;
+	$app = getApp();
 
 	if ( 'custom-header-uploads' == $feature )
 		return current_theme_supports( 'custom-header', 'uploads' );
 
-	if ( !isset( $_wp_theme_features[$feature] ) )
+	if ( !isset( $app->theme_features[ $feature ] ) )
 		return false;
 
 	// If no args passed then no extra checks need be performed
@@ -1907,30 +1904,30 @@ function current_theme_supports( $feature ) {
 	$args = array_slice( func_get_args(), 1 );
 
 	switch ( $feature ) {
-		case 'post-thumbnails':
-			// post-thumbnails can be registered for only certain content/post types by passing
-			// an array of types to add_theme_support(). If no array was passed, then
-			// any type is accepted
-			if ( true === $_wp_theme_features[$feature] )  // Registered for all types
-				return true;
-			$content_type = $args[0];
-			return in_array( $content_type, $_wp_theme_features[$feature][0] );
+	case 'post-thumbnails':
+		// post-thumbnails can be registered for only certain content/post types by passing
+		// an array of types to add_theme_support(). If no array was passed, then
+		// any type is accepted
+		if ( true === $app->theme_features[ $feature ] )  // Registered for all types
+			return true;
+		$content_type = $args[0];
+		return in_array( $content_type, $app->theme_features[ $feature ][0] );
 
-		case 'html5':
-		case 'post-formats':
-			// specific post formats can be registered by passing an array of types to
-			// add_theme_support()
+	case 'html5':
+	case 'post-formats':
+		// specific post formats can be registered by passing an array of types to
+		// add_theme_support()
 
-			// Specific areas of HTML5 support *must* be passed via an array to add_theme_support()
+		// Specific areas of HTML5 support *must* be passed via an array to add_theme_support()
 
-			$type = $args[0];
-			return in_array( $type, $_wp_theme_features[$feature][0] );
+		$type = $args[0];
+		return in_array( $type, $app->theme_features[ $feature ][0] );
 
-		case 'custom-logo':
-		case 'custom-header':
-		case 'custom-background':
-			// Specific capabilities can be registered by passing an array to add_theme_support().
-			return ( isset( $_wp_theme_features[ $feature ][0][ $args[0] ] ) && $_wp_theme_features[ $feature ][0][ $args[0] ] );
+	case 'custom-logo':
+	case 'custom-header':
+	case 'custom-background':
+		// Specific capabilities can be registered by passing an array to add_theme_support().
+		return ( isset( $app->theme_features[ $feature ][0][ $args[0] ] ) && $app->theme_features[ $feature ][0][ $args[0] ] );
 	}
 
 	/**
@@ -1946,7 +1943,7 @@ function current_theme_supports( $feature ) {
 	 * @param array  $args    Array of arguments for the feature.
 	 * @param string $feature The theme feature.
 	 */
-	return apply_filters( "current_theme_supports-{$feature}", true, $args, $_wp_theme_features[$feature] );
+	return apply_filters( "current_theme_supports-{$feature}", true, $args, $app->theme_features[ $feature ] );
 }
 
 /**

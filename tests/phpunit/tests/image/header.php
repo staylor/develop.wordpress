@@ -14,7 +14,7 @@ class Tests_Image_Header extends WP_UnitTestCase {
 	}
 
 	function test_header_image_has_correct_dimensions_with_max_width() {
-		global $_wp_theme_features;
+		$_wp_theme_features = $this->app->theme_features;
 
 		$_wp_theme_features['custom-header'][0]['max-width'] = 1600;
 		$_wp_theme_features['custom-header'][0]['width'] = 1200;
@@ -32,7 +32,7 @@ class Tests_Image_Header extends WP_UnitTestCase {
 	}
 
 	function test_header_image_has_correct_dimensions_with_fixed() {
-		global $_wp_theme_features;
+		$_wp_theme_features = $this->app->theme_features;
 
 		unset( $_wp_theme_features['custom-header'][0]['max-width'] );
 		$_wp_theme_features['custom-header'][0]['width'] = 1200;
@@ -50,7 +50,7 @@ class Tests_Image_Header extends WP_UnitTestCase {
 	}
 
 	function test_header_image_has_correct_dimensions_with_flex_height() {
-		global $_wp_theme_features;
+		$_wp_theme_features = $this->app->theme_features;
 
 		unset( $_wp_theme_features['custom-header'][0]['max-width'] );
 		$_wp_theme_features['custom-header'][0]['width'] = 1200;
@@ -86,7 +86,7 @@ class Tests_Image_Header extends WP_UnitTestCase {
 	}
 
 	function test_header_image_has_correct_dimensions_with_flex_width_and_height() {
-		global $_wp_theme_features;
+		$_wp_theme_features = $this->app->theme_features;
 
 		$_wp_theme_features['custom-header'][0]['max-width'] = 1800;
 		$_wp_theme_features['custom-header'][0]['width'] = 1200;
