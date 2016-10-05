@@ -6,6 +6,7 @@
  * @subpackage Post
  */
 
+use WP\Post\PostType;
 use function WP\getApp;
 
 //
@@ -1204,10 +1205,9 @@ function get_post_type_capabilities( $args ) {
  * @param array $capabilities Post type meta capabilities.
  */
 function _post_type_meta_capabilities( $capabilities = null ) {
-	$app = getApp();
 	foreach ( $capabilities as $core => $custom ) {
 		if ( in_array( $core, array( 'read_post', 'delete_post', 'edit_post' ) ) ) {
-			$app->post_type['meta_caps'][ $custom ] = $core;
+			PostType::add_meta_cap( $custom, $core );
 		}
 	}
 }
@@ -1400,14 +1400,14 @@ function _add_post_type_submenus() {
  *                                feature strings or a single string.
  */
 function add_post_type_support( $post_type, $feature ) {
-	$app = getApp();
+	$obj = get_post_type_object( $post_type );
 
 	$features = (array) $feature;
-	foreach ($features as $feature) {
+	foreach ( $features as $feature ) {
 		if ( func_num_args() == 2 ) {
-			$app->post_type['features'][$post_type][$feature] = true;
+			$obj->features[ $feature ] = true;
 		} else {
-			$app->post_type['features'][$post_type][$feature] = array_slice( func_get_args(), 2 );
+			$obj->features[ $feature ] = array_slice( func_get_args(), 2 );
 		}
 	}
 }
@@ -1421,8 +1421,8 @@ function add_post_type_support( $post_type, $feature ) {
  * @param string $feature   The feature being removed.
  */
 function remove_post_type_support( $post_type, $feature ) {
-	$app = getApp();
-	unset( $app->post_type['features'][ $post_type ][ $feature ] );
+	$obj = get_post_type_object( $post_type );
+	unset( $obj->features[ $feature ] );
 }
 
 /**
@@ -1434,12 +1434,8 @@ function remove_post_type_support( $post_type, $feature ) {
  * @return array Post type supports list.
  */
 function get_all_post_type_supports( $post_type ) {
-	$app = getApp();
-
-	if ( isset( $app->post_type['features'][$post_type] ) )
-		return $app->post_type['features'][$post_type];
-
-	return array();
+	$obj = get_post_type_object( $post_type );
+	return $obj->features;
 }
 
 /**
@@ -1452,8 +1448,8 @@ function get_all_post_type_supports( $post_type ) {
  * @return bool Whether the post type supports the given feature.
  */
 function post_type_supports( $post_type, $feature ) {
-	$app = getApp();
-	return ( isset( $app->post_type['features'][$post_type][$feature] ) );
+	$obj = get_post_type_object( $post_type );
+	return isset( $obj->features[ $feature ] );
 }
 
 /**
@@ -1471,9 +1467,14 @@ function post_type_supports( $post_type, $feature ) {
 function get_post_types_by_support( $feature, $operator = 'and' ) {
 	$app = getApp();
 
+	$post_type_features = [];
+	foreach ( $app->post_types as $post_type ) {
+		$post_type_features[ $post_type->name ] = $post_type->features;
+	}
+
 	$features = array_fill_keys( (array) $feature, true );
 
-	return array_keys( wp_filter_object_list( $app->post_type['features'], $features, $operator ) );
+	return array_keys( wp_filter_object_list( $post_type_features, $features, $operator ) );
 }
 
 /**

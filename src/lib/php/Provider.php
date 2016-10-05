@@ -72,7 +72,7 @@ class Provider implements ServiceProviderInterface {
 		};
 
 		$app['wp'] = function () {
-			return new \WP();
+			return new Controller\WP();
 		};
 	}
 }

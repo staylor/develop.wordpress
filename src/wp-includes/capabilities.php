@@ -5,8 +5,8 @@
  * @package WordPress
  * @subpackage Users
  */
+use WP\Post\PostType;
 use WP\User\Role;
-use WP\User\Roles;
 use function WP\getApp;
 
 /**
@@ -28,7 +28,6 @@ use function WP\getApp;
  * @return array Actual capabilities for meta capability.
  */
 function map_meta_cap( $cap, $user_id ) {
-	$app = getApp();
 	$args = array_slice( func_get_args(), 2 );
 	$caps = array();
 
@@ -453,8 +452,8 @@ function map_meta_cap( $cap, $user_id ) {
 		break;
 	default:
 		// Handle meta capabilities for custom post types.
-		if ( isset( $app->post_type['meta_caps'][ $cap ] ) ) {
-			$args = array_merge( array( $app->post_type['meta_caps'][ $cap ], $user_id ), $args );
+		if ( PostType::has_meta_cap( $cap ) ) {
+			$args = array_merge( array( PostType::get_meta_cap( $cap ), $user_id ), $args );
 			return call_user_func_array( 'map_meta_cap', $args );
 		}
 
