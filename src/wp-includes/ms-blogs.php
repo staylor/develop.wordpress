@@ -753,7 +753,6 @@ function update_blog_option( $id, $option, $value, $deprecated = null ) {
  * @since MU
  *
  * @global int             $blog_id
- * @global bool            $switched
  * @global string          $table_prefix
  * @global WP_Object_Cache $wp_object_cache
  *
@@ -787,7 +786,7 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
 		 * @param int $new_blog Blog ID.
 		 */
 		do_action( 'switch_blog', $new_blog, $new_blog );
-		$GLOBALS['switched'] = true;
+		$app->switched = true;
 		return true;
 	}
 
@@ -827,7 +826,7 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
 
 	/** This filter is documented in wp-includes/ms-blogs.php */
 	do_action( 'switch_blog', $new_blog, $prev_blog_id );
-	$GLOBALS['switched'] = true;
+	$app->switched = true;
 
 	return true;
 }
@@ -839,7 +838,6 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
  * @since MU
  *
  * @global int             $blog_id
- * @global bool            $switched
  * @global string          $table_prefix
  * @global WP_Object_Cache $wp_object_cache
  *
@@ -860,7 +858,7 @@ function restore_current_blog() {
 		/** This filter is documented in wp-includes/ms-blogs.php */
 		do_action( 'switch_blog', $blog, $blog );
 		// If we still have items in the switched stack, consider ourselves still 'switched'
-		$GLOBALS['switched'] = ! empty( $app->switched_stack );
+		$app->switched = ! empty( $app->switched_stack );
 		return true;
 	}
 
@@ -903,7 +901,7 @@ function restore_current_blog() {
 	do_action( 'switch_blog', $blog, $prev_blog_id );
 
 	// If we still have items in the switched stack, consider ourselves still 'switched'
-	$GLOBALS['switched'] = ! empty( $app->switched_stack );
+	$app->switched = ! empty( $app->switched_stack );
 
 	return true;
 }

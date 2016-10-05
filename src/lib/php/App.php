@@ -29,5 +29,6 @@ class App extends Container {
 	public $default_headers = [];
 
 	public $suspend_cache_invalidation;
-	public $switched_stack;
+	public $switched_stack = [];
+	public $switched = false;
 }
