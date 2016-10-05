@@ -19,9 +19,8 @@ class Tests_Shortcode extends WP_UnitTestCase {
 	}
 
 	function tearDown() {
-		global $shortcode_tags;
 		foreach ( $this->shortcodes as $shortcode ) {
-			unset( $shortcode_tags[ $shortcode ] );
+			unset( $this->app->shortcode_tags[ $shortcode ] );
 		}
 		parent::tearDown();
 	}

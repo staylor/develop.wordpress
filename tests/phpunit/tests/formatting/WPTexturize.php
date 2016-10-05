@@ -1582,7 +1582,7 @@ class Tests_Formatting_WPTexturize extends WP_UnitTestCase {
 			case '&#8221;' : return '!closeq2!';
 			case '&#8242;' : return '!prime1!';
 			case '&#8243;' : return '!prime2!';
-			case '&#8217;tain&#8217;t,&#8217;twere,&#8217;twas,&#8217;tis,&#8217;twill,&#8217;til,&#8217;bout,&#8217;nuff,&#8217;round,&#8217;cause,&#8217;em' : 
+			case '&#8217;tain&#8217;t,&#8217;twere,&#8217;twas,&#8217;tis,&#8217;twill,&#8217;til,&#8217;bout,&#8217;nuff,&#8217;round,&#8217;cause,&#8217;em' :
 				return '!apos!tain!apos!t,!apos!twere,!apos!twas,!apos!tis,!apos!twill,!apos!til,!apos!bout,!apos!nuff,!apos!round,!apos!cause,!apos!em';
 			default : return $translations;
 		}
@@ -1828,13 +1828,13 @@ class Tests_Formatting_WPTexturize extends WP_UnitTestCase {
 	 */
 	function test_unregistered_shortcodes( $input, $output ) {
 		add_filter( 'no_texturize_shortcodes', array( $this, 'filter_shortcodes' ), 10, 1 );
-	
+
 		$output = $this->assertEquals( $output, wptexturize( $input ) );
-	
+
 		remove_filter( 'no_texturize_shortcodes', array( $this, 'filter_shortcodes' ), 10, 1 );
 		return $output;
 	}
-	
+
 	function filter_shortcodes( $disabled ) {
 		$disabled[] = 'audio';
 		return $disabled;
@@ -2059,15 +2059,13 @@ String with a number followed by a single quote !q1!Expendables 3!q1! vestibulum
 	 * @dataProvider data_whole_posts
 	 */
 	function test_pcre_performance( $input ) {
-		global $shortcode_tags;
-
 		// With Shortcodes Disabled
 		$regex = _get_wptexturize_split_regex( );
 		$result = benchmark_pcre_backtracking( $regex, $input, 'split' );
 		$this->assertLessThan( 200, $result );
 
 		// With Shortcodes Enabled
-		$shortcode_regex = _get_wptexturize_shortcode_regex( array_keys( $shortcode_tags ) );
+		$shortcode_regex = _get_wptexturize_shortcode_regex( array_keys( $this->app->shortcode_tags ) );
 		$regex = _get_wptexturize_split_regex( $shortcode_regex );
 		$result = benchmark_pcre_backtracking( $regex, $input, 'split' );
 		return $this->assertLessThan( 200, $result );

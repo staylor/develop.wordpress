@@ -16,7 +16,7 @@ $config_file_path .= '/wp-tests-config.php';
  * Globalize some WordPress variables, because PHPUnit loads this file inside a function
  * See: https://github.com/sebastianbergmann/phpunit/issues/325
  */
-global $current_site, $current_blog, $shortcode_tags, $wp, $phpmailer;
+global $current_site, $current_blog, $wp, $phpmailer;
 
 if ( !is_readable( $config_file_path ) ) {
 	die( "ERROR: wp-tests-config.php is missing! Please use wp-tests-config-sample.php to create a config file.\n" );

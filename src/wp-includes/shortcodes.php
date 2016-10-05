@@ -30,16 +30,7 @@
  * @since 2.5.0
  */
 
-/**
- * Container for storing shortcode tags and their hook to call for the shortcode
- *
- * @since 2.5.0
- *
- * @name $shortcode_tags
- * @var array
- * @global array $shortcode_tags
- */
-$shortcode_tags = array();
+use function WP\getApp;
 
 /**
  * Add hook for shortcode tag.
@@ -81,13 +72,11 @@ $shortcode_tags = array();
  *
  * @since 2.5.0
  *
- * @global array $shortcode_tags
- *
  * @param string   $tag  Shortcode tag to be searched in post content.
  * @param callable $func Hook to run when shortcode is found.
  */
 function add_shortcode($tag, $func) {
-	global $shortcode_tags;
+	$app = getApp();
 
 	if ( '' == trim( $tag ) ) {
 		$message = __( 'Invalid shortcode name: Empty name given.' );
@@ -102,7 +91,7 @@ function add_shortcode($tag, $func) {
 		return;
 	}
 
-	$shortcode_tags[ $tag ] = $func;
+	$app->shortcode_tags[ $tag ] = $func;
 }
 
 /**
@@ -110,14 +99,11 @@ function add_shortcode($tag, $func) {
  *
  * @since 2.5.0
  *
- * @global array $shortcode_tags
- *
  * @param string $tag Shortcode tag to remove hook for.
  */
 function remove_shortcode($tag) {
-	global $shortcode_tags;
-
-	unset($shortcode_tags[$tag]);
+	$app = getApp();
+	unset( $app->shortcode_tags[ $tag ] );
 }
 
 /**
@@ -128,13 +114,10 @@ function remove_shortcode($tag) {
  * for removing all shortcodes.
  *
  * @since 2.5.0
- *
- * @global array $shortcode_tags
  */
 function remove_all_shortcodes() {
-	global $shortcode_tags;
-
-	$shortcode_tags = array();
+	$app = getApp();
+	$app->shortcode_tags = array();
 }
 
 /**
@@ -142,22 +125,18 @@ function remove_all_shortcodes() {
  *
  * @since 3.6.0
  *
- * @global array $shortcode_tags List of shortcode tags and their callback hooks.
- *
  * @param string $tag Shortcode tag to check.
  * @return bool Whether the given shortcode exists.
  */
 function shortcode_exists( $tag ) {
-	global $shortcode_tags;
-	return array_key_exists( $tag, $shortcode_tags );
+	$app = getApp();
+	return array_key_exists( $tag, $app->shortcode_tags );
 }
 
 /**
  * Whether the passed content contains the specified shortcode
  *
  * @since 3.6.0
- *
- * @global array $shortcode_tags
  *
  * @param string $content Content to search for shortcodes.
  * @param string $tag     Shortcode tag to check.
@@ -193,25 +172,23 @@ function has_shortcode( $content, $tag ) {
  *
  * @since 2.5.0
  *
- * @global array $shortcode_tags List of shortcode tags and their callback hooks.
- *
  * @param string $content Content to search for shortcodes.
  * @param bool $ignore_html When true, shortcodes inside HTML elements will be skipped.
  * @return string Content with shortcodes filtered out.
  */
 function do_shortcode( $content, $ignore_html = false ) {
-	global $shortcode_tags;
-
 	if ( false === strpos( $content, '[' ) ) {
 		return $content;
 	}
 
-	if (empty($shortcode_tags) || !is_array($shortcode_tags))
+	$app = getApp();
+	if ( empty( $app->shortcode_tags ) || ! is_array( $app->shortcode_tags ) ) {
 		return $content;
+	}
 
 	// Find all registered tag names in $content.
 	preg_match_all( '@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches );
-	$tagnames = array_intersect( array_keys( $shortcode_tags ), $matches[1] );
+	$tagnames = array_intersect( array_keys( $app->shortcode_tags ), $matches[1] );
 
 	if ( empty( $tagnames ) ) {
 		return $content;
@@ -245,16 +222,14 @@ function do_shortcode( $content, $ignore_html = false ) {
  *
  * @since 2.5.0
  *
- * @global array $shortcode_tags
- *
  * @param array $tagnames List of shortcodes to find. Optional. Defaults to all registered shortcodes.
  * @return string The shortcode search regular expression
  */
 function get_shortcode_regex( $tagnames = null ) {
-	global $shortcode_tags;
+	$app = getApp();
 
 	if ( empty( $tagnames ) ) {
-		$tagnames = array_keys( $shortcode_tags );
+		$tagnames = array_keys( $app->shortcode_tags );
 	}
 	$tagregexp = join( '|', array_map('preg_quote', $tagnames) );
 
@@ -298,13 +273,11 @@ function get_shortcode_regex( $tagnames = null ) {
  * @since 2.5.0
  * @access private
  *
- * @global array $shortcode_tags
- *
  * @param array $m Regular expression match array
  * @return string|false False on failure.
  */
 function do_shortcode_tag( $m ) {
-	global $shortcode_tags;
+	$app = getApp();
 
 	// allow [[foo]] syntax for escaping a tag
 	if ( $m[1] == '[' && $m[6] == ']' ) {
@@ -314,7 +287,7 @@ function do_shortcode_tag( $m ) {
 	$tag = $m[2];
 	$attr = shortcode_parse_atts( $m[3] );
 
-	if ( ! is_callable( $shortcode_tags[ $tag ] ) ) {
+	if ( ! is_callable( $app->shortcode_tags[ $tag ] ) ) {
 		/* translators: %s: shortcode tag */
 		$message = sprintf( __( 'Attempting to parse a shortcode without a valid callback: %s' ), $tag );
 		_doing_it_wrong( __FUNCTION__, $message, '4.3.0' );
@@ -341,7 +314,7 @@ function do_shortcode_tag( $m ) {
 
 	$content = isset( $m[5] ) ? $m[5] : null;
 
-	$output = $m[1] . call_user_func( $shortcode_tags[ $tag ], $attr, $content, $tag ) . $m[6];
+	$output = $m[1] . call_user_func( $app->shortcode_tags[ $tag ], $attr, $content, $tag ) . $m[6];
 
 	/**
 	 * Filters the output created by a shortcode callback.
@@ -588,24 +561,22 @@ function shortcode_atts( $pairs, $atts, $shortcode = '' ) {
  *
  * @since 2.5.0
  *
- * @global array $shortcode_tags
- *
  * @param string $content Content to remove shortcode tags.
  * @return string Content without shortcode tags.
  */
 function strip_shortcodes( $content ) {
-	global $shortcode_tags;
+	$app = getApp();
 
 	if ( false === strpos( $content, '[' ) ) {
 		return $content;
 	}
 
-	if (empty($shortcode_tags) || !is_array($shortcode_tags))
+	if ( empty( $app->shortcode_tags ) || ! is_array( $app->shortcode_tags ) )
 		return $content;
 
 	// Find all registered tag names in $content.
 	preg_match_all( '@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches );
-	$tagnames = array_intersect( array_keys( $shortcode_tags ), $matches[1] );
+	$tagnames = array_intersect( array_keys( $app->shortcode_tags ), $matches[1] );
 
 	if ( empty( $tagnames ) ) {
 		return $content;

@@ -15,8 +15,7 @@ class Tests_Post_Output extends WP_UnitTestCase {
 	}
 
 	function tearDown() {
-		global $shortcode_tags;
-		unset( $shortcode_tags['dumptag'], $shortcode_tags['paragraph'] );
+		unset( $this->app->shortcode_tags['dumptag'], $this->app->shortcode_tags['paragraph'] );
 		parent::tearDown();
 	}
 

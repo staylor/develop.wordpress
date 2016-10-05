@@ -1,4 +1,6 @@
 <?php
+use function WP\getApp;
+
 /**
  * API for easily embedding rich media such as videos and images into content.
  *
@@ -50,16 +52,14 @@ class WP_Embed {
 	 * this function removes all existing shortcodes, registers the [embed] shortcode,
 	 * calls do_shortcode(), and then re-registers the old shortcodes.
 	 *
-	 * @global array $shortcode_tags
-	 *
 	 * @param string $content Content to parse
 	 * @return string Content with shortcode parsed
 	 */
 	public function run_shortcode( $content ) {
-		global $shortcode_tags;
+		$app = getApp();
 
 		// Back up current registered shortcodes and clear them all out
-		$orig_shortcode_tags = $shortcode_tags;
+		$orig_shortcode_tags = $app->shortcode_tags;
 		remove_all_shortcodes();
 
 		add_shortcode( 'embed', array( $this, 'shortcode' ) );
@@ -68,7 +68,7 @@ class WP_Embed {
 		$content = do_shortcode( $content, true );
 
 		// Put the original shortcodes back
-		$shortcode_tags = $orig_shortcode_tags;
+		$app->shortcode_tags = $orig_shortcode_tags;
 
 		return $content;
 	}

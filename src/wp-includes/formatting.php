@@ -27,7 +27,6 @@ use function WP\getApp;
  * @since 0.71
  *
  * @global array $wp_cockneyreplace Array of formatted entities for certain common phrases
- * @global array $shortcode_tags
  * @staticvar array $static_characters
  * @staticvar array $static_replacements
  * @staticvar array $dynamic_characters
@@ -41,7 +40,7 @@ use function WP\getApp;
  * @return string The string replaced with html entities
  */
 function wptexturize( $text, $reset = false ) {
-	global $wp_cockneyreplace, $shortcode_tags;
+	global $wp_cockneyreplace;
 	static $static_characters = null,
 		$static_replacements = null,
 		$dynamic_characters = null,
@@ -217,9 +216,9 @@ function wptexturize( $text, $reset = false ) {
 	$no_texturize_shortcodes_stack = array();
 
 	// Look for shortcodes and HTML elements.
-
+	$app = getApp();
 	preg_match_all( '@\[/?([^<>&/\[\]\x00-\x20=]++)@', $text, $matches );
-	$tagnames = array_intersect( array_keys( $shortcode_tags ), $matches[1] );
+	$tagnames = array_intersect( array_keys( $app->shortcode_tags ), $matches[1] );
 	$found_shortcodes = ! empty( $tagnames );
 	$shortcode_regex = $found_shortcodes ? _get_wptexturize_shortcode_regex( $tagnames ) : '';
 	$regex = _get_wptexturize_split_regex( $shortcode_regex );
@@ -784,19 +783,17 @@ function _autop_newline_preservation_helper( $matches ) {
  *
  * @since 2.9.0
  *
- * @global array $shortcode_tags
- *
  * @param string $pee The content.
  * @return string The filtered content.
  */
 function shortcode_unautop( $pee ) {
-	global $shortcode_tags;
+	$app = getApp();
 
-	if ( empty( $shortcode_tags ) || !is_array( $shortcode_tags ) ) {
+	if ( empty( $app->shortcode_tags ) || ! is_array( $app->shortcode_tags ) ) {
 		return $pee;
 	}
 
-	$tagregexp = join( '|', array_map( 'preg_quote', array_keys( $shortcode_tags ) ) );
+	$tagregexp = join( '|', array_map( 'preg_quote', array_keys( $app->shortcode_tags ) ) );
 	$spaces = wp_spaces_regexp();
 
 	$pattern =

@@ -36,9 +36,8 @@ CAP;
 	}
 
 	function test_img_caption_shortcode_added() {
-		global $shortcode_tags;
-		$this->assertEquals( 'img_caption_shortcode', $shortcode_tags['caption'] );
-		$this->assertEquals( 'img_caption_shortcode', $shortcode_tags['wp_caption'] );
+		$this->assertEquals( 'img_caption_shortcode', $this->app->shortcode_tags['caption'] );
+		$this->assertEquals( 'img_caption_shortcode', $this->app->shortcode_tags['wp_caption'] );
 	}
 
 	function test_img_caption_shortcode_with_empty_params() {
