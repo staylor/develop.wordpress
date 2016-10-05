@@ -2399,7 +2399,9 @@ function wp_ajax_query_attachments() {
 		$query['post_status'] .= ',private';
 
 	// Filter query clauses to include filenames.
-	add_filter( 'posts_clauses', '_filter_query_attachment_filenames' );
+	if ( isset( $query['s'] ) ) {
+		add_filter( 'posts_clauses', '_filter_query_attachment_filenames' );
+	}
 
 	/**
 	 * Filters the arguments passed to WP_Query during an Ajax
