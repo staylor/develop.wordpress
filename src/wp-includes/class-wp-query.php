@@ -3560,14 +3560,12 @@ class WP_Query {
 	 *
 	 * @since 3.1.0
 	 *
-	 * @global array $wp_taxonomies
-	 *
 	 * @param mixed $taxonomy Optional. Taxonomy slug or slugs.
 	 * @param mixed $term     Optional. Term ID, name, slug or array of Term IDs, names, and slugs.
 	 * @return bool True for custom taxonomy archive pages, false for built-in taxonomies (category and tag archives).
 	 */
 	public function is_tax( $taxonomy = '', $term = '' ) {
-		global $wp_taxonomies;
+		$app = getApp();
 
 		if ( !$this->is_tax )
 			return false;
@@ -3576,7 +3574,7 @@ class WP_Query {
 			return true;
 
 		$queried_object = $this->get_queried_object();
-		$tax_array = array_intersect( array_keys( $wp_taxonomies ), (array) $taxonomy );
+		$tax_array = array_intersect( array_keys( $app->taxonomies ), (array) $taxonomy );
 		$term_array = (array) $term;
 
 		// Check that the taxonomy matches.

@@ -5,6 +5,7 @@ use Pimple\Container;
 
 class App extends Container {
 	public $post_types = [];
+	public $taxonomies = [];
 
 	public $post_type = [
 		'features' => [],

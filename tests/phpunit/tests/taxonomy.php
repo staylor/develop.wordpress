@@ -674,16 +674,14 @@ class Tests_Taxonomy extends WP_UnitTestCase {
 	 * @ticket 35227
 	 */
 	public function test_unregister_taxonomy_removes_taxonomy_from_global() {
-		global $wp_taxonomies;
-
 		register_taxonomy( 'foo', 'post' );
 
-		$this->assertInternalType( 'object', $wp_taxonomies['foo'] );
+		$this->assertInternalType( 'object', $this->app->taxonomies['foo'] );
 		$this->assertInternalType( 'object', get_taxonomy( 'foo' ) );
 
 		$this->assertTrue( unregister_taxonomy( 'foo' ) );
 
-		$this->assertFalse( isset( $wp_taxonomies['foo'] ) );
+		$this->assertFalse( isset( $this->app->taxonomies['foo'] ) );
 		$this->assertFalse( get_taxonomy( 'foo' ) );
 	}
 

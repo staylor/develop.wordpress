@@ -148,8 +148,6 @@ function create_initial_taxonomies() {
  *
  * @since 3.0.0
  *
- * @global array $wp_taxonomies The registered taxonomies.
- *
  * @param array  $args     Optional. An array of `key => value` arguments to match against the taxonomy objects.
  *                         Default empty array.
  * @param string $output   Optional. The type of output to return in the array. Accepts either taxonomy 'names'
@@ -160,11 +158,11 @@ function create_initial_taxonomies() {
  * @return array A list of taxonomy names or objects.
  */
 function get_taxonomies( $args = array(), $output = 'names', $operator = 'and' ) {
-	global $wp_taxonomies;
+	$app = getApp();
 
 	$field = ('names' == $output) ? 'name' : false;
 
-	return wp_filter_object_list($wp_taxonomies, $args, $operator, $field);
+	return wp_filter_object_list( $app->taxonomies, $args, $operator, $field );
 }
 
 /**
@@ -181,16 +179,13 @@ function get_taxonomies( $args = array(), $output = 'names', $operator = 'and' )
  *
  * @since 2.3.0
  *
- * @global array $wp_taxonomies The registered taxonomies.
- *
  * @param array|string|WP_Post $object Name of the type of taxonomy object, or an object (row from posts)
  * @param string               $output Optional. The type of output to return in the array. Accepts either
  *                                     taxonomy 'names' or 'objects'. Default 'names'.
  * @return array The names of all taxonomy of $object_type.
  */
 function get_object_taxonomies( $object, $output = 'names' ) {
-	global $wp_taxonomies;
-
+	$app = getApp();
 	if ( is_object($object) ) {
 		if ( $object->post_type == 'attachment' )
 			return get_attachment_taxonomies( $object, $output );
@@ -200,7 +195,7 @@ function get_object_taxonomies( $object, $output = 'names' ) {
 	$object = (array) $object;
 
 	$taxonomies = array();
-	foreach ( (array) $wp_taxonomies as $tax_name => $tax_obj ) {
+	foreach ( (array) $app->taxonomies as $tax_name => $tax_obj ) {
 		if ( array_intersect($object, (array) $tax_obj->object_type) ) {
 			if ( 'names' == $output )
 				$taxonomies[] = $tax_name;
@@ -220,18 +215,16 @@ function get_object_taxonomies( $object, $output = 'names' ) {
  *
  * @since 2.3.0
  *
- * @global array $wp_taxonomies The registered taxonomies.
- *
  * @param string $taxonomy Name of taxonomy object to return.
  * @return object|false The Taxonomy Object or false if $taxonomy doesn't exist.
  */
 function get_taxonomy( $taxonomy ) {
-	global $wp_taxonomies;
+	$app = getApp();
 
 	if ( ! taxonomy_exists( $taxonomy ) )
 		return false;
 
-	return $wp_taxonomies[$taxonomy];
+	return $app->taxonomies[$taxonomy];
 }
 
 /**
@@ -241,15 +234,13 @@ function get_taxonomy( $taxonomy ) {
  *
  * @since 3.0.0
  *
- * @global array $wp_taxonomies The registered taxonomies.
- *
  * @param string $taxonomy Name of taxonomy object.
  * @return bool Whether the taxonomy exists.
  */
 function taxonomy_exists( $taxonomy ) {
-	global $wp_taxonomies;
+	$app = getApp();
 
-	return isset( $wp_taxonomies[$taxonomy] );
+	return isset( $app->taxonomies[$taxonomy] );
 }
 
 /**
@@ -288,9 +279,6 @@ function is_taxonomy_hierarchical($taxonomy) {
  * @since 4.4.0 The `show_ui` argument is now enforced on the term editing screen.
  * @since 4.4.0 The `public` argument now controls whether the taxonomy can be queried on the front end.
  * @since 4.5.0 Introduced `publicly_queryable` argument.
- *
- * @global array $wp_taxonomies Registered taxonomies.
- * @global WP    $wp            WP instance.
  *
  * @param string       $taxonomy    Taxonomy key, must not exceed 32 characters.
  * @param array|string $object_type Name of the object type for the taxonomy object.
@@ -361,10 +349,10 @@ function is_taxonomy_hierarchical($taxonomy) {
  * @return WP_Error|void WP_Error, if errors.
  */
 function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
-	global $wp_taxonomies, $wp;
+	$app = getApp();
 
-	if ( ! is_array( $wp_taxonomies ) )
-		$wp_taxonomies = array();
+	if ( ! is_array( $app->taxonomies ) )
+		$app->taxonomies = array();
 
 	$args = wp_parse_args( $args );
 
@@ -416,7 +404,7 @@ function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
 			$args['query_var'] = $taxonomy;
 		else
 			$args['query_var'] = sanitize_title_with_dashes( $args['query_var'] );
-		$wp->add_query_var( $args['query_var'] );
+		$app['wp']->add_query_var( $args['query_var'] );
 	} else {
 		// Force query_var to false for non-public taxonomies.
 		$args['query_var'] = false;
@@ -485,7 +473,7 @@ function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
 			$args['meta_box_cb'] = 'post_tags_meta_box';
 	}
 
-	$wp_taxonomies[ $taxonomy ] = (object) $args;
+	$app->taxonomies[ $taxonomy ] = (object) $args;
 
 	// Register callback handling for meta box.
  	add_filter( 'wp_ajax_add-' . $taxonomy, '_wp_ajax_add_hierarchical_term' );
@@ -509,9 +497,6 @@ function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
  *
  * @since 4.5.0
  *
- * @global WP    $wp            Current WordPress environment instance.
- * @global array $wp_taxonomies List of taxonomies.
- *
  * @param string $taxonomy Taxonomy name.
  * @return bool|WP_Error True on success, WP_Error on failure or if the taxonomy doesn't exist.
  */
@@ -527,11 +512,11 @@ function unregister_taxonomy( $taxonomy ) {
 		return new WP_Error( 'invalid_taxonomy', __( 'Unregistering a built-in taxonomy is not allowed' ) );
 	}
 
-	global $wp, $wp_taxonomies;
+	$app = getApp();
 
 	// Remove query var.
 	if ( false !== $taxonomy_args->query_var ) {
-		$wp->remove_query_var( $taxonomy_args->query_var );
+		$app['wp']->remove_query_var( $taxonomy_args->query_var );
 	}
 
 	// Remove rewrite tags and permastructs.
@@ -544,7 +529,7 @@ function unregister_taxonomy( $taxonomy ) {
 	remove_filter( 'wp_ajax_add-' . $taxonomy, '_wp_ajax_add_hierarchical_term' );
 
 	// Remove the taxonomy.
-	unset( $wp_taxonomies[ $taxonomy ] );
+	unset( $app->taxonomies[ $taxonomy ] );
 
 	/**
 	 * Fires after a taxonomy is unregistered.
@@ -656,26 +641,24 @@ function get_taxonomy_labels( $tax ) {
  *
  * @since 3.0.0
  *
- * @global array $wp_taxonomies The registered taxonomies.
- *
  * @param string $taxonomy    Name of taxonomy object.
  * @param string $object_type Name of the object type.
  * @return bool True if successful, false if not.
  */
 function register_taxonomy_for_object_type( $taxonomy, $object_type) {
-	global $wp_taxonomies;
+	$app = getApp();
 
-	if ( !isset($wp_taxonomies[$taxonomy]) )
+	if ( !isset( $app->taxonomies[ $taxonomy ] ) )
 		return false;
 
 	if ( ! get_post_type_object($object_type) )
 		return false;
 
-	if ( ! in_array( $object_type, $wp_taxonomies[$taxonomy]->object_type ) )
-		$wp_taxonomies[$taxonomy]->object_type[] = $object_type;
+	if ( ! in_array( $object_type, $app->taxonomies[$taxonomy]->object_type ) )
+		$app->taxonomies[$taxonomy]->object_type[] = $object_type;
 
 	// Filter out empties.
-	$wp_taxonomies[ $taxonomy ]->object_type = array_filter( $wp_taxonomies[ $taxonomy ]->object_type );
+	$app->taxonomies[ $taxonomy ]->object_type = array_filter( $app->taxonomies[ $taxonomy ]->object_type );
 
 	return true;
 }
@@ -685,26 +668,23 @@ function register_taxonomy_for_object_type( $taxonomy, $object_type) {
  *
  * @since 3.7.0
  *
- * @global array $wp_taxonomies The registered taxonomies.
- *
  * @param string $taxonomy    Name of taxonomy object.
  * @param string $object_type Name of the object type.
  * @return bool True if successful, false if not.
  */
 function unregister_taxonomy_for_object_type( $taxonomy, $object_type ) {
-	global $wp_taxonomies;
-
-	if ( ! isset( $wp_taxonomies[ $taxonomy ] ) )
+	$app = getApp();
+	if ( ! isset( $app->taxonomies[ $taxonomy ] ) )
 		return false;
 
 	if ( ! get_post_type_object( $object_type ) )
 		return false;
 
-	$key = array_search( $object_type, $wp_taxonomies[ $taxonomy ]->object_type, true );
+	$key = array_search( $object_type, $app->taxonomies[ $taxonomy ]->object_type, true );
 	if ( false === $key )
 		return false;
 
-	unset( $wp_taxonomies[ $taxonomy ]->object_type[ $key ] );
+	unset( $app->taxonomies[ $taxonomy ]->object_type[ $key ] );
 	return true;
 }
 

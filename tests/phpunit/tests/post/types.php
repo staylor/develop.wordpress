@@ -157,8 +157,6 @@ class Tests_Post_Types extends WP_UnitTestCase {
 	}
 
 	function test_register_taxonomy_for_object_type() {
-		global $wp_taxonomies;
-
 		register_post_type( 'bar' );
 		register_taxonomy_for_object_type( 'post_tag', 'bar' );
 		$this->assertEquals( array( 'post_tag' ), get_object_taxonomies( 'bar' ) );
@@ -416,18 +414,16 @@ class Tests_Post_Types extends WP_UnitTestCase {
 	 * @ticket 14761
 	 */
 	public function test_unregister_post_type_removes_post_type_from_taxonomies() {
-		global $wp_taxonomies;
-
 		register_post_type( 'foo', array(
 			'public'     => true,
 			'taxonomies' => array( 'category', 'post_tag' ),
 		) );
 
-		$this->assertInternalType( 'int', array_search( 'foo', $wp_taxonomies['category']->object_type, true ) );
-		$this->assertInternalType( 'int', array_search( 'foo', $wp_taxonomies['post_tag']->object_type, true ) );
+		$this->assertInternalType( 'int', array_search( 'foo', $this->app->taxonomies['category']->object_type, true ) );
+		$this->assertInternalType( 'int', array_search( 'foo', $this->app->taxonomies['post_tag']->object_type, true ) );
 		$this->assertTrue( unregister_post_type( 'foo' ) );
-		$this->assertFalse( array_search( 'foo', $wp_taxonomies['category']->object_type, true ) );
-		$this->assertFalse( array_search( 'foo', $wp_taxonomies['post_tag']->object_type, true ) );
+		$this->assertFalse( array_search( 'foo', $this->app->taxonomies['category']->object_type, true ) );
+		$this->assertFalse( array_search( 'foo', $this->app->taxonomies['post_tag']->object_type, true ) );
 		$this->assertEmpty( get_object_taxonomies( 'foo' ) );
 	}
 
