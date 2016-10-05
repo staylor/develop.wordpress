@@ -1703,8 +1703,6 @@ if ( !function_exists('wp_new_user_notification') ) :
  * @since 4.3.1 The `$plaintext_pass` parameter was deprecated. `$notify` added as a third parameter.
  * @since 4.6.0 The `$notify` parameter accepts 'user' for sending notification only to the user created.
  *
- * @global PasswordHash $wp_hasher Portable PHP password hashing framework instance.
- *
  * @param int    $user_id    User ID.
  * @param null   $deprecated Not used (argument deprecated).
  * @param string $notify     Optional. Type of notification that should happen. Accepts 'admin' or an empty
@@ -1715,7 +1713,6 @@ function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) 
 		_deprecated_argument( __FUNCTION__, '4.3.1' );
 	}
 
-	global $wp_hasher;
 	$app = getApp();
 	$wpdb = $app['db'];
 	$user = get_userdata( $user_id );
@@ -1744,9 +1741,7 @@ function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) 
 	do_action( 'retrieve_password_key', $user->user_login, $key );
 
 	// Now insert the key, hashed, into the DB.
-	if ( empty( $wp_hasher ) ) {
-		$wp_hasher = new PasswordHash( 8, true );
-	}
+	$wp_hasher = $app['password.hasher'];
 	$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
 	$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user->user_login ) );
 
@@ -2010,19 +2005,12 @@ if ( !function_exists('wp_hash_password') ) :
  *
  * @since 2.5.0
  *
- * @global PasswordHash $wp_hasher PHPass object
- *
  * @param string $password Plain text user password to hash
  * @return string The hash string of the password
  */
 function wp_hash_password($password) {
-	global $wp_hasher;
-
-	if ( empty($wp_hasher) ) {
-		// By default, use the portable hash from phpass
-		$wp_hasher = new PasswordHash(8, true);
-	}
-
+	$app = getApp();
+	$wp_hasher = $app['password.hasher'];
 	return $wp_hasher->HashPassword( trim( $password ) );
 }
 endif;
@@ -2041,18 +2029,13 @@ if ( !function_exists('wp_check_password') ) :
  *
  * @since 2.5.0
  *
- * @global PasswordHash $wp_hasher PHPass object used for checking the password
- *	against the $hash + $password
- * @uses PasswordHash::CheckPassword
- *
  * @param string     $password Plaintext user's password
  * @param string     $hash     Hash of the user's password to check against.
  * @param string|int $user_id  Optional. User ID.
  * @return bool False, if the $password does not match the hashed password
  */
 function wp_check_password($password, $hash, $user_id = '') {
-	global $wp_hasher;
-
+	$app = getApp();
 	// If the hash is still md5...
 	if ( strlen($hash) <= 32 ) {
 		$check = hash_equals( $hash, md5( $password ) );
@@ -2077,10 +2060,8 @@ function wp_check_password($password, $hash, $user_id = '') {
 
 	// If the stored hash is longer than an MD5, presume the
 	// new style phpass portable hash.
-	if ( empty($wp_hasher) ) {
-		// By default, use the portable hash from phpass
-		$wp_hasher = new PasswordHash(8, true);
-	}
+	// By default, use the portable hash from phpass
+	$wp_hasher = $app['password.hasher'];
 
 	$check = $wp_hasher->CheckPassword($password, $hash);
 

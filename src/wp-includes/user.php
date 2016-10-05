@@ -2040,8 +2040,6 @@ function wp_get_password_hint() {
  *
  * @since 4.4.0
  *
- * @global PasswordHash $wp_hasher Portable PHP password hashing framework.
- *
  * @param User $user User to retrieve password reset key for.
  *
  * @return string|WP_Error Password reset key on success. WP_Error on error.
@@ -2107,9 +2105,7 @@ function get_password_reset_key( $user ) {
 	do_action( 'retrieve_password_key', $user->user_login, $key );
 
 	// Now insert the key, hashed, into the DB.
-	if ( empty( $wp_hasher ) ) {
-		$wp_hasher = new PasswordHash( 8, true );
-	}
+	$wp_hasher = $app['password.hasher'];
 	$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
 	$key_saved = $wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user->user_login ) );
 	if ( false === $key_saved ) {
@@ -2128,8 +2124,6 @@ function get_password_reset_key( $user ) {
  * but have a different WP_Error code so good user feedback can be provided.
  *
  * @since 3.1.0
- *
- * @global PasswordHash $wp_hasher Portable PHP password hashing framework instance.
  *
  * @param string $key       Hash to validate sending user's password.
  * @param string $login     The user login.
@@ -2152,9 +2146,7 @@ function check_password_reset_key($key, $login) {
 	if ( ! $row )
 		return new WP_Error('invalid_key', __('Invalid key'));
 
-	if ( empty( $wp_hasher ) ) {
-		$wp_hasher = new PasswordHash( 8, true );
-	}
+	$wp_hasher = $app['password.hasher'];
 
 	/**
 	 * Filters the expiration time of password reset keys.

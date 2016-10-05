@@ -779,6 +779,7 @@ function get_body_class( $class = '' ) {
  * @return bool false if a password is not required or the correct password cookie is present, true otherwise.
  */
 function post_password_required( $post = null ) {
+	$app = getApp();
 	$post = get_post($post);
 
 	if ( empty( $post->post_password ) ) {
@@ -791,7 +792,7 @@ function post_password_required( $post = null ) {
 		return apply_filters( 'post_password_required', true, $post );
 	}
 
-	$hasher = new PasswordHash( 8, true );
+	$hasher = $app['password.hasher'];;
 
 	$hash = wp_unslash( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
 	if ( 0 !== strpos( $hash, '$P$B' ) ) {

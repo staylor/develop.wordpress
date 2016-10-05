@@ -11,10 +11,15 @@ class Provider implements ServiceProviderInterface {
 			$GLOBALS['wp_version'] = $version;
 			return $version;
 		};
+
 		$app['wp_db_version'] = 38590;
+
 		$app['tinymce_version'] = '4401-20160726';
+
 		$app['required_php_version'] = '7.0';
+
 		$app['required_mysql_version'] = '5.0';
+
 		// for non-US English locales
 		$app['wp_local_package'] = null;
 
@@ -41,6 +46,10 @@ class Provider implements ServiceProviderInterface {
 		} );
 		$app['styles.global'] = function ( $app ) {
 			return $app['styles.factory'];
+		};
+
+		$app['password.hasher'] = function () {
+			return new PasswordHash( 8, true );
 		};
 	}
 }
