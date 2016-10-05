@@ -393,18 +393,15 @@ class WP_Admin_Bar {
 	}
 
 	/**
-	 *
-	 * @global bool $is_IE
 	 * @param object $root
 	 */
 	final protected function _render( $root ) {
-		global $is_IE;
+		$app = getApp();
 
 		// Add browser classes.
 		// We have to do this here since admin bar shows on the front end.
 		$class = 'nojq nojs';
-		if ( $is_IE ) {
-			$app = getApp();
+		if ( $app['is_IE'] ) {
 			if ( strpos( $app['request.useragent'], 'MSIE 7' ) ) {
 				$class .= ' ie7';
 			} elseif ( strpos( $app['request.useragent'], 'MSIE 8' ) ) {

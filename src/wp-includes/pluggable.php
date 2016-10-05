@@ -1141,14 +1141,12 @@ if ( !function_exists('wp_redirect') ) :
  *
  * @since 1.5.1
  *
- * @global bool $is_IIS
- *
  * @param string $location The path to redirect to.
  * @param int    $status   Status code to use.
  * @return bool False if $location is not provided, true otherwise.
  */
-function wp_redirect($location, $status = 302) {
-	global $is_IIS;
+function wp_redirect( $location, $status = 302 ) {
+	$app = getApp();
 
 	/**
 	 * Filters the redirect location.
@@ -1175,9 +1173,9 @@ function wp_redirect($location, $status = 302) {
 
 	$location = wp_sanitize_redirect($location);
 
-	if ( !$is_IIS && PHP_SAPI != 'cgi-fcgi' )
+	if ( ! $app['is_IIS'] && PHP_SAPI != 'cgi-fcgi' ) {
 		status_header($status); // This causes problems on IIS and some FastCGI setups
-
+	}
 	header("Location: $location", true, $status);
 
 	return true;

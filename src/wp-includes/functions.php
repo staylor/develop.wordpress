@@ -4126,15 +4126,13 @@ function apache_mod_loaded($mod, $default = false) {
  *
  * @since 2.8.0
  *
- * @global bool $is_iis7
- *
  * @return bool Whether IIS7 supports permalinks.
  */
 function iis7_supports_permalinks() {
-	global $is_iis7;
+	$app = getApp();
 
 	$supports_permalinks = false;
-	if ( $is_iis7 ) {
+	if ( $app['is_iis7'] ) {
 		/* First we check if the DOMDocument class exists. If it does not exist, then we cannot
 		 * easily update the xml configuration file, hence we just bail out and tell user that
 		 * pretty permalinks cannot be used.

@@ -2923,22 +2923,22 @@ function wp_dependencies_unique_hosts() {
  * @global bool $is_opera     Whether the browser is Opera.
  * @global bool $is_safari    Whether the browser is Safari.
  * @global bool $is_chrome    Whether the browser is Chrome.
- * @global bool $is_IE        Whether the browser is Internet Explorer.
  * @global bool $is_edge      Whether the browser is Microsoft Edge.
  *
  * @return bool True if the user can access the visual editor, false otherwise.
  */
 function user_can_richedit() {
-	global $wp_rich_edit, $is_gecko, $is_opera, $is_safari, $is_chrome, $is_IE, $is_edge;
+	global $wp_rich_edit, $is_gecko, $is_opera, $is_safari, $is_chrome, $is_edge;
 
 	if ( !isset($wp_rich_edit) ) {
 		$wp_rich_edit = false;
+		$app = getApp();
 
 		if ( get_user_option( 'rich_editing' ) == 'true' || ! is_user_logged_in() ) { // default to 'true' for logged out users
 			if ( $is_safari ) {
 				$app = getApp();
 				$wp_rich_edit = ! wp_is_mobile() || ( preg_match( '!AppleWebKit/(\d+)!', $app['request.useragent'], $match ) && intval( $match[1] ) >= 534 );
-			} elseif ( $is_gecko || $is_chrome || $is_IE || $is_edge || ( $is_opera && !wp_is_mobile() ) ) {
+			} elseif ( $is_gecko || $is_chrome || $app['is_IE'] || $is_edge || ( $is_opera && !wp_is_mobile() ) ) {
 				$wp_rich_edit = true;
 			}
 		}

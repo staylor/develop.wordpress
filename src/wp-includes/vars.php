@@ -23,8 +23,8 @@ $software = $app['request.software'];
 $php_self = $app['request.php_self'];
 
 global $pagenow,
-	$is_lynx, $is_gecko, $is_winIE, $is_macIE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone, $is_IE, $is_edge,
-	$is_apache, $is_IIS, $is_iis7, $is_nginx;
+	$is_lynx, $is_gecko, $is_winIE, $is_macIE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone, $is_edge,
+	$is_apache, $is_nginx;
 
 // On which page are we ?
 if ( is_admin() ) {
@@ -102,7 +102,7 @@ if ( $is_safari && stripos( $ua, 'mobile' ) !== false ) {
 	$is_iphone = true;
 }
 
-$is_IE = ( $is_macIE || $is_winIE );
+$app['is_IE'] = ( $is_macIE || $is_winIE );
 
 // Server detection
 
@@ -120,15 +120,13 @@ $is_nginx = (strpos( $software, 'nginx' ) !== false);
 
 /**
  * Whether the server software is IIS or something else
- * @global bool $is_IIS
  */
-$is_IIS = !$is_apache && (strpos( $software, 'Microsoft-IIS' ) !== false || strpos( $software, 'ExpressionDevServer' ) !== false);
+$app['is_IIS'] = !$is_apache && (strpos( $software, 'Microsoft-IIS' ) !== false || strpos( $software, 'ExpressionDevServer' ) !== false);
 
 /**
  * Whether the server software is IIS 7.X or greater
- * @global bool $is_iis7
  */
-$is_iis7 = $is_IIS && intval( substr( $software, strpos( $software, 'Microsoft-IIS/' ) + 14 ) ) >= 7;
+$app['is_iis7'] = $app['is_IIS'] && intval( substr( $software, strpos( $software, 'Microsoft-IIS/' ) + 14 ) ) >= 7;
 
 /**
  * Test if the current browser runs on a mobile device (smart phone, tablet, etc.)

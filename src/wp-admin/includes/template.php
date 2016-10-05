@@ -8,6 +8,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 //
 // Category Checklists
 //
@@ -1944,18 +1946,14 @@ function get_submit_button( $text = '', $type = 'primary large', $name = 'submit
 	return $button;
 }
 
-/**
- *
- * @global bool $is_IE
- */
 function _wp_admin_html_begin() {
-	global $is_IE;
+	$app = getApp();
 
 	$admin_html_class = ( is_admin_bar_showing() ) ? 'wp-toolbar' : '';
 
-	if ( $is_IE )
+	if ( $app['is_IE'] ) {
 		@header('X-UA-Compatible: IE=edge');
-
+	}
 ?>
 <!DOCTYPE html>
 <!--[if IE 8]>

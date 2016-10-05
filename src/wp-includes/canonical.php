@@ -30,7 +30,6 @@ use function WP\getApp;
  *
  * @since 2.3.0
  *
- * @global bool $is_IIS
  * @global WP_Query $wp_query
  *
  * @param string $requested_url Optional. The URL that was requested, used to
@@ -39,13 +38,15 @@ use function WP\getApp;
  * @return string|void The string of the URL, if redirect needed.
  */
 function redirect_canonical( $requested_url = null, $do_redirect = true ) {
-	global $is_IIS, $wp_query, $wp;
+	global $wp_query, $wp;
 
 	$app = getApp();
-	$wpdb = $app['db'];
 	if ( isset( $app['request.method'] ) && ! in_array( strtoupper( $app['request.method'] ), array( 'GET', 'HEAD' ) ) ) {
 		return;
 	}
+
+	$wpdb = $app['db'];
+	$is_IIS = $app['is_IIS'];
 
 	// If we're not in wp-admin and the post has been published and preview nonce
 	// is non-existent or invalid then no need for preview in query
