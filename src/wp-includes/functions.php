@@ -4283,16 +4283,13 @@ function wp_suspend_cache_addition( $suspend = null ) {
  *
  * @since 2.7.0
  *
- * @global bool $_wp_suspend_cache_invalidation
- *
  * @param bool $suspend Optional. Whether to suspend or enable cache invalidation. Default true.
  * @return bool The current suspend setting.
  */
 function wp_suspend_cache_invalidation( $suspend = true ) {
-	global $_wp_suspend_cache_invalidation;
-
-	$current_suspend = $_wp_suspend_cache_invalidation;
-	$_wp_suspend_cache_invalidation = $suspend;
+	$app = getApp();
+	$current_suspend = $app->suspend_cache_invalidation;
+	$app->suspend_cache_invalidation = $suspend;
 	return $current_suspend;
 }
 

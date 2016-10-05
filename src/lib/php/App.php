@@ -23,4 +23,6 @@ class App extends Container {
 	public $theme_features = [];
 	public $theme_directories = [];
 	public $default_headers = [];
+	
+	public $suspend_cache_invalidation;
 }

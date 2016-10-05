@@ -2987,17 +2987,15 @@ function wp_update_term_count_now( $terms, $taxonomy ) {
  *
  * @since 2.3.0
  *
- * @global bool $_wp_suspend_cache_invalidation
- *
  * @see get_object_taxonomies() for more on $object_type.
  *
  * @param int|array    $object_ids  Single or list of term object ID(s).
  * @param array|string $object_type The taxonomy object type.
  */
 function clean_object_term_cache($object_ids, $object_type) {
-	global $_wp_suspend_cache_invalidation;
+	$app = getApp();
 
-	if ( ! empty( $_wp_suspend_cache_invalidation ) ) {
+	if ( ! empty( $app->suspend_cache_invalidation ) ) {
 		return;
 	}
 
@@ -3028,8 +3026,6 @@ function clean_object_term_cache($object_ids, $object_type) {
  *
  * @since 2.3.0
  *
- * @global bool $_wp_suspend_cache_invalidation
- *
  * @param int|array $ids            Single or list of Term IDs.
  * @param string    $taxonomy       Optional. Can be empty and will assume `tt_ids`, else will use for context.
  *                                  Default empty.
@@ -3037,11 +3033,10 @@ function clean_object_term_cache($object_ids, $object_type) {
  *                                  term object caches (false). Default true.
  */
 function clean_term_cache($ids, $taxonomy = '', $clean_taxonomy = true) {
-	global $_wp_suspend_cache_invalidation;
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( ! empty( $_wp_suspend_cache_invalidation ) ) {
+	if ( ! empty( $app->suspend_cache_invalidation ) ) {
 		return;
 	}
 

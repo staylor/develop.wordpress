@@ -5507,14 +5507,12 @@ function update_post_cache( &$posts ) {
  *
  * @since 2.0.0
  *
- * @global bool $_wp_suspend_cache_invalidation
- *
  * @param int|WP_Post $post Post ID or post object to remove from the cache.
  */
 function clean_post_cache( $post ) {
-	global $_wp_suspend_cache_invalidation;
+	$app = getApp();
 
-	if ( ! empty( $_wp_suspend_cache_invalidation ) )
+	if ( ! empty( $app->suspend_cache_invalidation ) )
 		return;
 
 	$post = get_post( $post );
@@ -5627,15 +5625,13 @@ function update_postmeta_cache( $post_ids ) {
  *
  * @since 3.0.0
  *
- * @global bool $_wp_suspend_cache_invalidation
- *
  * @param int  $id          The attachment ID in the cache to clean.
  * @param bool $clean_terms Optional. Whether to clean terms cache. Default false.
  */
 function clean_attachment_cache( $id, $clean_terms = false ) {
-	global $_wp_suspend_cache_invalidation;
+	$app = getApp();
 
-	if ( !empty($_wp_suspend_cache_invalidation) )
+	if ( ! empty( $app->suspend_cache_invalidation ) )
 		return;
 
 	$id = (int) $id;
