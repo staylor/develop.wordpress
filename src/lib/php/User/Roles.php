@@ -1,6 +1,7 @@
 <?php
 namespace WP\User;
 
+use WP\Observer;
 use function WP\getApp;
 
 /**
@@ -27,7 +28,7 @@ use function WP\getApp;
  *
  * @since 2.0.0
  */
-class Roles {
+class Roles extends Observer {
 	/**
 	 * List of roles and capabilities.
 	 *
@@ -111,7 +112,9 @@ class Roles {
 		$this->role_objects = [];
 		$this->role_names = [];
 		foreach ( array_keys( $this->roles ) as $role ) {
-			$this->role_objects[ $role ] = new Role( $role, $this->roles[ $role ]['capabilities'] );
+			$obj = new Role( $role, $this->roles[ $role ]['capabilities'] );
+			$obj->attach( $this );
+			$this->role_objects[ $role ] = $obj;
 			$this->role_names[ $role ] = $this->roles[ $role ]['name'];
 		}
 	}
@@ -141,7 +144,9 @@ class Roles {
 		$this->role_objects = [];
 		$this->role_names = [];
 		foreach ( array_keys( $this->roles ) as $role ) {
-			$this->role_objects[ $role ] = new Role( $role, $this->roles[ $role ]['capabilities'] );
+			$obj = new Role( $role, $this->roles[ $role ]['capabilities'] );
+			$obj->attach( $this );
+			$this->role_objects[ $role ] = $obj;
 			$this->role_names[ $role ] = $this->roles[ $role ]['name'];
 		}
 	}
@@ -174,7 +179,9 @@ class Roles {
 		if ( $this->use_db ) {
 			update_option( $this->role_key, $this->roles );
 		}
-		$this->role_objects[ $role ] = new Role( $role, $capabilities );
+		$obj = new Role( $role, $capabilities );
+		$obj->attach( $this );
+		$this->role_objects[ $role ] = $obj;
 		$this->role_names[ $role ] = $display_name;
 		return $this->role_objects[ $role ];
 	}
@@ -284,5 +291,19 @@ class Roles {
 	 */
 	public function is_role( $role ) {
 		return isset( $this->role_names[ $role ] );
+	}
+
+	public function update( \SplSubject $subject ) {
+		$message = $subject->message;
+
+		switch ( $message['event'] ) {
+		case 'add_cap':
+			$this->add_cap( $subject->name, $message['cap'], $message['grant'] );
+			break;
+
+		case 'remove_cap':
+			$this->remove_cap( $subject->name, $message['cap'] );
+			break;
+		}
 	}
 }

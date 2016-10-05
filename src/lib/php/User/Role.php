@@ -1,7 +1,7 @@
 <?php
 namespace WP\User;
 
-use function WP\getApp;
+use WP\Observable;
 
 /**
  * User API: WP\User\Role class
@@ -16,7 +16,7 @@ use function WP\getApp;
  *
  * @since 2.0.0
  */
-class Role {
+class Role extends Observable {
 	/**
 	 * Role name.
 	 *
@@ -35,6 +35,7 @@ class Role {
 	 */
 	public $capabilities;
 
+	public $message = [];
 	/**
 	 * Constructor - Set up object properties.
 	 *
@@ -62,9 +63,14 @@ class Role {
 	 * @param bool $grant Whether role has capability privilege.
 	 */
 	public function add_cap( $cap, $grant = true ) {
-		$app = getApp();
 		$this->capabilities[ $cap ] = $grant;
-		$app['roles']->add_cap( $this->name, $cap, $grant );
+		$this->message = [
+			'event' => 'add_cap',
+			'cap' => $cap,
+			'grant' => $grant
+		];
+
+		$this->notify();
 	}
 
 	/**
@@ -81,9 +87,14 @@ class Role {
 	 * @param string $cap Capability name.
 	 */
 	public function remove_cap( $cap ) {
-		$app = getApp();
 		unset( $this->capabilities[ $cap ] );
-		$app['roles']->remove_cap( $this->name, $cap );
+
+		$this->message = [
+			'event' => 'remove_cap',
+			'cap' => $cap
+		];
+
+		$this->notify();
 	}
 
 	/**
@@ -118,5 +129,4 @@ class Role {
 			return false;
 		}
 	}
-
 }
