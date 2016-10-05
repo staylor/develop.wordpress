@@ -251,12 +251,11 @@ function get_stylesheet_uri() {
  *
  * @since 2.1.0
  *
- * @global WP_Locale $wp_locale
- *
  * @return string
  */
 function get_locale_stylesheet_uri() {
-	global $wp_locale;
+	$app = getApp();
+	$wp_locale = $app['locale'];
 	$stylesheet_dir_uri = get_stylesheet_directory_uri();
 	$dir = get_stylesheet_directory();
 	$locale = get_locale();

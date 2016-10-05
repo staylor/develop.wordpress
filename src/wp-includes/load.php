@@ -855,12 +855,11 @@ function get_current_network_id() {
  * @access private
  *
  * @global string    $text_direction
- * @global WP_Locale $wp_locale      The WordPress date and time locale object.
  *
  * @staticvar bool $loaded
  */
 function wp_load_translations_early() {
-	global $text_direction, $wp_locale;
+	global $text_direction;
 
 	$app = getApp();
 
@@ -870,7 +869,7 @@ function wp_load_translations_early() {
 	$loaded = true;
 
 	if ( function_exists( 'did_action' ) && did_action( 'init' ) )
-		return;;
+		return;
 
 	require_once ABSPATH . WPINC . '/l10n.php';
 
@@ -920,8 +919,6 @@ function wp_load_translations_early() {
 
 		break;
 	}
-
-	$wp_locale = new WP_Locale();
 }
 
 /**

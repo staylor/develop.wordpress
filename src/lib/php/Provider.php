@@ -23,6 +23,14 @@ class Provider implements ServiceProviderInterface {
 		// for non-US English locales
 		$app['wp_local_package'] = null;
 
+		$app['locale.factory'] = $app->factory( function () {
+			return new I18N\Locale();
+		} );
+
+		$app['locale'] = function ( $app ) {
+			return $app['locale.factory'];
+		};
+
 		$app['rewrite.factory'] = $app->factory( function () {
 			return new Rewrite\Rewrite();
 		} );

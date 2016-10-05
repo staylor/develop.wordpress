@@ -12,19 +12,20 @@ use function getApp;
 if ( ! defined( 'WP_ADMIN' ) )
 	require_once( dirname( __FILE__ ) . '/admin.php' );
 
+$app = getApp();
+
 /**
  * In case admin-header.php is included in a function.
  *
  * @global string    $title
  * @global string    $hook_suffix
  * @global WP_Screen $current_screen
- * @global WP_Locale $wp_locale
  * @global string    $pagenow
  * @global string    $update_title
  * @global int       $total_update_count
  * @global string    $parent_file
  */
-global $title, $hook_suffix, $current_screen, $wp_locale, $pagenow,
+global $title, $hook_suffix, $current_screen, $pagenow,
 	$update_title, $total_update_count, $parent_file;
 
 // Catch plugins that include admin-header.php before admin.php completes.
@@ -76,8 +77,8 @@ var ajaxurl = '<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>',
 	pagenow = '<?php echo $current_screen->id; ?>',
 	typenow = '<?php echo $current_screen->post_type; ?>',
 	adminpage = '<?php echo $admin_body_class; ?>',
-	thousandsSeparator = '<?php echo addslashes( $wp_locale->number_format['thousands_sep'] ); ?>',
-	decimalPoint = '<?php echo addslashes( $wp_locale->number_format['decimal_point'] ); ?>',
+	thousandsSeparator = '<?php echo addslashes( $app['locale']->number_format['thousands_sep'] ); ?>',
+	decimalPoint = '<?php echo addslashes( $app['locale']->number_format['decimal_point'] ); ?>',
 	isRtl = <?php echo (int) is_rtl(); ?>;
 </script>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -155,7 +156,6 @@ if ( $current_screen->post_type )
 if ( $current_screen->taxonomy )
 	$admin_body_class .= ' taxonomy-' . $current_screen->taxonomy;
 
-$app = getApp();
 $admin_body_class .= ' branch-' . str_replace( array( '.', ',' ), '-', floatval( $app['wp_version'] ) );
 $admin_body_class .= ' version-' . str_replace( '.', '-', preg_replace( '/^([.0-9]+).*/', '$1', $app['wp_version'] ) );
 $admin_body_class .= ' admin-color-' . sanitize_html_class( get_user_option( 'admin_color' ), 'fresh' );

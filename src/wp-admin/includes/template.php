@@ -349,6 +349,8 @@ function get_inline_data($post) {
  */
 function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $table_row = true ) {
 	global $wp_list_table;
+
+	$app = getApp();
 	/**
 	 * Filters the in-line comment reply-to form output in the Comments
 	 * list table.
@@ -668,8 +670,6 @@ function meta_form( $post = null ) {
  * @since 0.71
  * @since 4.4.0 Converted to use get_comment() instead of the global `$comment`.
  *
- * @global WP_Locale  $wp_locale
- *
  * @param int|bool $edit      Accepts 1|true for editing the date, 0|false for adding the date.
  * @param int|bool $for_post  Accepts 1|true for applying the date to a post, 0|false for a comment.
  * @param int      $tab_index The tabindex attribute to add. Default 0.
@@ -677,7 +677,6 @@ function meta_form( $post = null ) {
  *                            Default 0|false.
  */
 function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
-	global $wp_locale;
 	$post = get_post();
 
 	if ( $for_post )
@@ -708,7 +707,7 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 	$month = '<label><span class="screen-reader-text">' . __( 'Month' ) . '</span><select ' . ( $multi ? '' : 'id="mm" ' ) . 'name="mm"' . $tab_index_attribute . ">\n";
 	for ( $i = 1; $i < 13; $i = $i +1 ) {
 		$monthnum = zeroise($i, 2);
-		$monthtext = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
+		$monthtext = $app['locale']->get_month_abbrev( $app['locale']->get_month( $i ) );
 		$month .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $mm, false ) . '>';
 		/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
 		$month .= sprintf( __( '%1$s-%2$s' ), $monthnum, $monthtext ) . "</option>\n";
@@ -1564,17 +1563,18 @@ function _admin_search_query() {
  *
  * @global string    $hook_suffix
  * @global string    $admin_body_class
- * @global WP_Locale $wp_locale
  *
  * @param string $title      Optional. Title of the Iframe page. Default empty.
  * @param bool   $deprecated Not used.
  */
 function iframe_header( $title = '', $deprecated = false ) {
 	show_admin_bar( false );
-	global $hook_suffix, $admin_body_class, $wp_locale;
+	global $hook_suffix, $admin_body_class;
 	$admin_body_class = preg_replace('/[^a-z0-9_-]+/i', '-', $hook_suffix);
 
 	$current_screen = get_current_screen();
+
+	$app = getApp();
 
 	@header( 'Content-Type: ' . get_option( 'html_type' ) . '; charset=' . get_option( 'blog_charset' ) );
 	_wp_admin_html_begin();
@@ -1590,8 +1590,8 @@ var ajaxurl = '<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>',
 	pagenow = '<?php echo $current_screen->id; ?>',
 	typenow = '<?php echo $current_screen->post_type; ?>',
 	adminpage = '<?php echo $admin_body_class; ?>',
-	thousandsSeparator = '<?php echo addslashes( $wp_locale->number_format['thousands_sep'] ); ?>',
-	decimalPoint = '<?php echo addslashes( $wp_locale->number_format['decimal_point'] ); ?>',
+	thousandsSeparator = '<?php echo addslashes( $app['locale']->number_format['thousands_sep'] ); ?>',
+	decimalPoint = '<?php echo addslashes( $app['locale']->number_format['decimal_point'] ); ?>',
 	isRtl = <?php echo (int) is_rtl(); ?>;
 </script>
 <?php

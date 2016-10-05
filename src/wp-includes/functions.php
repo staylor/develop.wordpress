@@ -81,8 +81,6 @@ function current_time( $type, $gmt = 0 ) {
  *
  * @since 0.71
  *
- * @global WP_Locale $wp_locale
- *
  * @param string   $dateformatstring Format to display the date.
  * @param bool|int $unixtimestamp    Optional. Unix timestamp. Default false.
  * @param bool     $gmt              Optional. Whether to use GMT timezone. Default false.
@@ -90,7 +88,8 @@ function current_time( $type, $gmt = 0 ) {
  * @return string The date, translated if locale specifies it.
  */
 function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
-	global $wp_locale;
+	$app = getApp();
+	$wp_locale = $app['locale'];
 	$i = $unixtimestamp;
 
 	if ( false === $i ) {
@@ -173,7 +172,8 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
  * @return string The date, declined if locale specifies it.
  */
 function wp_maybe_decline_date( $date ) {
-	global $wp_locale;
+	$app = getApp();
+	$wp_locale = $app['locale'];
 
 	// i18n functions are not available in SHORTINIT mode
 	if ( ! function_exists( '_x' ) ) {
@@ -217,17 +217,15 @@ function wp_maybe_decline_date( $date ) {
  *
  * @since 2.3.0
  *
- * @global WP_Locale $wp_locale
- *
  * @param float $number   The number to convert based on locale.
  * @param int   $decimals Optional. Precision of the number of decimal places. Default 0.
  * @return string Converted number in string format.
  */
 function number_format_i18n( $number, $decimals = 0 ) {
-	global $wp_locale;
+	$app = getApp();
 
-	if ( isset( $wp_locale ) ) {
-		$formatted = number_format( $number, absint( $decimals ), $wp_locale->number_format['decimal_point'], $wp_locale->number_format['thousands_sep'] );
+	if ( isset( $app['locale'] ) ) {
+		$formatted = number_format( $number, absint( $decimals ), $app['locale']->number_format['decimal_point'], $app['locale']->number_format['thousands_sep'] );
 	} else {
 		$formatted = number_format( $number, absint( $decimals ) );
 	}
@@ -953,7 +951,7 @@ function wp_remote_fopen( $uri ) {
  *
  * @since 2.0.0
  *
- * @global WP       $wp_locale
+ * @global WP       $wp
  * @global WP_Query $wp_query
  * @global WP_Query $wp_the_query
  *

@@ -5,13 +5,13 @@
  * @group i18n
  */
 class Tests_Locale extends WP_UnitTestCase {
-	/**
-	 * @var WP_Locale
-	 */
+
 	protected $locale;
 
 	public function setUp() {
-		$this->locale = new WP_Locale();
+		parent::setUp();
+
+		$this->locale = $this->app['locale.factory'];
 	}
 
 	public function test_rtl_src_admin_notice() {

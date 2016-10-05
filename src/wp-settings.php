@@ -310,13 +310,6 @@ if ( ( 0 === validate_file( $locale ) ) && is_readable( $locale_file ) )
 	require( $locale_file );
 unset( $locale_file );
 
-/**
- * WordPress Locale object for loading locale domain date and various strings.
- * @global WP_Locale $wp_locale
- * @since 2.1.0
- */
-$GLOBALS['wp_locale'] = new WP_Locale();
-
 // Load the functions for the active theme, for both parent and child theme if applicable.
 if ( ! wp_installing() || 'wp-activate.php' === $pagenow ) {
 	if ( TEMPLATEPATH !== STYLESHEETPATH && file_exists( STYLESHEETPATH . '/functions.php' ) )

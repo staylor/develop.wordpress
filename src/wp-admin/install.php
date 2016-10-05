@@ -263,9 +263,6 @@ if ( defined( 'DO_NOT_UPGRADE_GLOBAL_TABLES' ) ) {
 
 $app = getApp();
 
-/**
- * @global WP_Locale $wp_locale
- */
 $language = '';
 if ( ! empty( $_REQUEST['language'] ) ) {
 	$language = preg_replace( '/[^a-zA-Z_]/', '', $_REQUEST['language'] );
@@ -293,7 +290,8 @@ switch($step) {
 			$loaded_language = wp_download_language_pack( $language );
 			if ( $loaded_language ) {
 				load_default_textdomain( $loaded_language );
-				$GLOBALS['wp_locale'] = new WP_Locale();
+				unset( $app['locale'] );
+				$app['locale'] = $app['locale.factory'];
 			}
 		}
 
@@ -313,7 +311,8 @@ switch($step) {
 	case 2:
 		if ( ! empty( $language ) && load_default_textdomain( $language ) ) {
 			$loaded_language = $language;
-			$GLOBALS['wp_locale'] = new WP_Locale();
+			unset( $app['locale'] );
+			$app['locale'] = $app['locale.factory'];
 		} else {
 			$loaded_language = 'en_US';
 		}

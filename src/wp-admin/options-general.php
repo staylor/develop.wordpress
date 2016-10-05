@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -14,6 +16,8 @@ require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
 if ( ! current_user_can( 'manage_options' ) )
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
+
+$app = getApp();
 
 $title = __('General Settings');
 $parent_file = 'options-general.php';
@@ -304,14 +308,10 @@ if ( empty($tzstring) ) { // Create a UTC+- zone if no timezone string exists
 <th scope="row"><label for="start_of_week"><?php _e('Week Starts On') ?></label></th>
 <td><select name="start_of_week" id="start_of_week">
 <?php
-/**
- * @global WP_Locale $wp_locale
- */
-global $wp_locale;
 
 for ($day_index = 0; $day_index <= 6; $day_index++) :
 	$selected = (get_option('start_of_week') == $day_index) ? 'selected="selected"' : '';
-	echo "\n\t<option value='" . esc_attr($day_index) . "' $selected>" . $wp_locale->get_weekday($day_index) . '</option>';
+	echo "\n\t<option value='" . esc_attr($day_index) . "' $selected>" . $app['locale']->get_weekday($day_index) . '</option>';
 endfor;
 ?>
 </select></td>

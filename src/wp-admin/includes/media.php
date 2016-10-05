@@ -2338,7 +2338,6 @@ jQuery(function($){
  * @since 2.5.0
  *
  * @global WP_Query  $wp_query
- * @global WP_Locale $wp_locale
  * @global string    $type
  * @global string    $tab
  * @global array     $post_mime_types
@@ -2346,7 +2345,7 @@ jQuery(function($){
  * @param array $errors
  */
 function media_upload_library_form($errors) {
-	global $wp_query, $wp_locale, $type, $tab, $post_mime_types;
+	global $wp_query, $type, $tab, $post_mime_types;
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -2477,7 +2476,7 @@ foreach ($arc_result as $arc_row) {
 		$default = '';
 
 	echo "<option$default value='" . esc_attr( $arc_row->yyear . $arc_row->mmonth ) . "'>";
-	echo esc_html( $wp_locale->get_month($arc_row->mmonth) . " $arc_row->yyear" );
+	echo esc_html( $app['locale']->get_month($arc_row->mmonth) . " $arc_row->yyear" );
 	echo "</option>\n";
 }
 ?>

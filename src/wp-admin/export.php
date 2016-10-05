@@ -122,15 +122,11 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 /**
  * Create the date options fields for exporting a given post type.
  *
- * @global WP_Locale $wp_locale Date and Time Locale object.
- *
  * @since 3.1.0
  *
  * @param string $post_type The post type. Default 'post'.
  */
 function export_date_options( $post_type = 'post' ) {
-	global $wp_locale;
-
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -150,7 +146,7 @@ function export_date_options( $post_type = 'post' ) {
 			continue;
 
 		$month = zeroise( $date->month, 2 );
-		echo '<option value="' . $date->year . '-' . $month . '">' . $wp_locale->get_month( $month ) . ' ' . $date->year . '</option>';
+		echo '<option value="' . $date->year . '-' . $month . '">' . $app['locale']->get_month( $month ) . ' ' . $date->year . '</option>';
 	}
 }
 ?>

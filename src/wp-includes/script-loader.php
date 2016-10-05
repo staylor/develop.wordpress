@@ -916,15 +916,14 @@ function wp_just_in_time_script_localization() {
  * @since 4.6.0
  *
  * @link http://api.jqueryui.com/datepicker/#options
- *
- * @global WP_Locale $wp_locale The WordPress date and time locale object.
  */
 function wp_localize_jquery_ui_datepicker() {
-	global $wp_locale;
-
 	if ( ! wp_script_is( 'jquery-ui-datepicker', 'enqueued' ) ) {
 		return;
 	}
+
+	$app = getApp();
+	$wp_locale = $app['locale'];
 
 	// Convert the PHP date format into jQuery UI's format.
 	$datepicker_date_format = str_replace(

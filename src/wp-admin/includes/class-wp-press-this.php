@@ -1189,11 +1189,9 @@ class WP_Press_This {
 	 *
 	 * @since 4.2.0
 	 * @access public
-	 *
-	 * @global WP_Locale $wp_locale
 	 */
 	public function html() {
-		global $wp_locale;
+		$app = getApp();
 
 		// Get data, new (POST) and old (GET).
 		$data = $this->merge_or_fetch_data();
@@ -1255,8 +1253,8 @@ class WP_Press_This {
 			pagenow = 'press-this',
 			typenow = 'post',
 			adminpage = 'press-this-php',
-			thousandsSeparator = '<?php echo addslashes( $wp_locale->number_format['thousands_sep'] ); ?>',
-			decimalPoint = '<?php echo addslashes( $wp_locale->number_format['decimal_point'] ); ?>',
+			thousandsSeparator = '<?php echo addslashes( $app['locale']->number_format['thousands_sep'] ); ?>',
+			decimalPoint = '<?php echo addslashes( $app['locale']->number_format['decimal_point'] ); ?>',
 			isRtl = <?php echo (int) is_rtl(); ?>;
 	</script>
 

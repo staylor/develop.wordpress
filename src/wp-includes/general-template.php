@@ -1087,8 +1087,6 @@ function _wp_render_title_tag() {
  *
  * @since 1.0.0
  *
- * @global WP_Locale $wp_locale
- *
  * @param string $sep         Optional, default is '&raquo;'. How to separate the various items
  *                            within the page title.
  * @param bool   $display     Optional, default is true. Whether to display or retrieve title.
@@ -1096,7 +1094,8 @@ function _wp_render_title_tag() {
  * @return string|null String on retrieve, null when displaying.
  */
 function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
-	global $wp_locale;
+	$app = getApp();
+	$wp_locale = $app['locale'];
 
 	$m        = get_query_var( 'm' );
 	$year     = get_query_var( 'year' );
@@ -1400,14 +1399,13 @@ function single_term_title( $prefix = '', $display = true ) {
  *
  * @since 0.71
  *
- * @global WP_Locale $wp_locale
- *
  * @param string $prefix  Optional. What to display before the title.
  * @param bool   $display Optional, default is true. Whether to display or retrieve title.
  * @return string|void Title when retrieving.
  */
 function single_month_title($prefix = '', $display = true ) {
-	global $wp_locale;
+	$app = getApp();
+	$wp_locale = $app['locale'];
 
 	$m = get_query_var('m');
 	$year = get_query_var('year');
@@ -1623,8 +1621,6 @@ function get_archives_link($url, $text, $format = 'html', $before = '', $after =
  *
  * @see get_archives_link()
  *
- * @global WP_Locale $wp_locale
- *
  * @param string|array $args {
  *     Default archive links arguments. Optional.
  *
@@ -1650,9 +1646,9 @@ function get_archives_link($url, $text, $format = 'html', $before = '', $after =
  * @return string|void String when retrieving.
  */
 function wp_get_archives( $args = '' ) {
-	global $wp_locale;
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_locale = $app['locale'];
 
 	$defaults = array(
 		'type' => 'monthly', 'limit' => '',
@@ -1873,7 +1869,6 @@ function calendar_week_mod($num) {
  * @global int       $m
  * @global int       $monthnum
  * @global int       $year
- * @global WP_Locale $wp_locale
  * @global array     $posts
  *
  * @param bool $initial Optional, default is true. Use initial calendar names.
@@ -1881,10 +1876,11 @@ function calendar_week_mod($num) {
  * @return string|void String when retrieving.
  */
 function get_calendar( $initial = true, $echo = true ) {
-	global $m, $monthnum, $year, $wp_locale, $posts;
+	global $m, $monthnum, $year, $posts;
 
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_locale = $app['locale'];
 
 	$key = md5( $m . $monthnum . $year );
 	$cache = wp_cache_get( 'get_calendar', 'calendar' );
@@ -2499,12 +2495,10 @@ function get_post_modified_time( $d = 'U', $gmt = false, $post = null, $translat
  * Display the weekday on which the post was written.
  *
  * @since 0.71
- *
- * @global WP_Locale $wp_locale
  */
 function the_weekday() {
-	global $wp_locale;
-	$the_weekday = $wp_locale->get_weekday( mysql2date( 'w', get_post()->post_date, false ) );
+	$app = getApp();
+	$the_weekday = $app['locale']->get_weekday( mysql2date( 'w', get_post()->post_date, false ) );
 
 	/**
 	 * Filters the weekday on which the post was written, for display.
@@ -2524,7 +2518,6 @@ function the_weekday() {
  *
  * @since 0.71
  *
- * @global WP_Locale       $wp_locale
  * @global string|int|bool $currentday
  * @global string|int|bool $previousweekday
  *
@@ -2532,11 +2525,13 @@ function the_weekday() {
  * @param string $after Optional Output after the date.
  */
 function the_weekday_date($before='',$after='') {
-	global $wp_locale, $currentday, $previousweekday;
+	global $currentday, $previousweekday;
+	$app = getApp();
+
 	$the_weekday_date = '';
 	if ( $currentday != $previousweekday ) {
 		$the_weekday_date .= $before;
-		$the_weekday_date .= $wp_locale->get_weekday( mysql2date( 'w', get_post()->post_date, false ) );
+		$the_weekday_date .= $app['locale']->get_weekday( mysql2date( 'w', get_post()->post_date, false ) );
 		$the_weekday_date .= $after;
 		$previousweekday = $currentday;
 	}

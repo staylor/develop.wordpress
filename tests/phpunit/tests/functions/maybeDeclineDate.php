@@ -17,19 +17,18 @@ class Tests_Functions_MaybeDeclineDate extends WP_UnitTestCase {
 	private $wp_locale_original;
 
 	public function setUp() {
-		global $locale, $wp_locale;
+		global $locale;
 
 		parent::setUp();
 
 		$this->locale_original    = $locale;
-		$this->wp_locale_original = clone $wp_locale;
+		$this->wp_locale_original = $this->app['locale'];
 	}
 
 	public function tearDown() {
-		global $locale, $wp_locale;
+		global $locale;
 
 		$locale    = $this->locale_original;
-		$wp_locale = $this->wp_locale_original;
 
 		parent::tearDown();
 	}
@@ -39,7 +38,8 @@ class Tests_Functions_MaybeDeclineDate extends WP_UnitTestCase {
 	 * @dataProvider data_wp_maybe_decline_date
 	 */
 	public function test_wp_maybe_decline_date( $test_locale, $input, $output ) {
-		global $locale, $wp_locale;
+		global $locale;
+		$wp_locale = $this->app['locale'];
 
 		add_filter( 'gettext_with_context', array( $this, 'filter__enable_months_names_declension' ), 10, 3 );
 

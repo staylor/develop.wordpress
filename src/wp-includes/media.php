@@ -3244,7 +3244,6 @@ function wp_prepare_attachment_for_js( $attachment ) {
  * @since 3.5.0
  *
  * @global int       $content_width
- * @global WP_Locale $wp_locale
  *
  * @param array $args {
  *     Arguments for enqueuing media scripts.
@@ -3257,7 +3256,7 @@ function wp_enqueue_media( $args = array() ) {
 	if ( did_action( 'wp_enqueue_media' ) )
 		return;
 
-	global $content_width, $wp_locale;
+	global $content_width;
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -3319,7 +3318,7 @@ function wp_enqueue_media( $args = array() ) {
 		ORDER BY post_date DESC
 	", 'attachment' ) );
 	foreach ( $months as $month_year ) {
-		$month_year->text = sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month_year->month ), $month_year->year );
+		$month_year->text = sprintf( __( '%1$s %2$d' ), $app['locale']->get_month( $month_year->month ), $month_year->year );
 	}
 
 	$settings = array(

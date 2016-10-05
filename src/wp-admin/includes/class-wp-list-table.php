@@ -533,12 +533,9 @@ class WP_List_Table {
 	 * @since 3.1.0
 	 * @access protected
 	 *
-	 * @global WP_Locale $wp_locale
-	 *
 	 * @param string $post_type
 	 */
 	protected function months_dropdown( $post_type ) {
-		global $wp_locale;
 		$app = getApp();
 		$wpdb = $app['db'];
 
@@ -601,7 +598,7 @@ class WP_List_Table {
 				selected( $m, $year . $month, false ),
 				esc_attr( $arc_row->year . $month ),
 				/* translators: 1: month name, 2: 4-digit year */
-				sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month ), $year )
+				sprintf( __( '%1$s %2$d' ), $app['locale']->get_month( $month ), $year )
 			);
 		}
 ?>

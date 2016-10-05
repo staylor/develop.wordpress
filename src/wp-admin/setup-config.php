@@ -79,8 +79,6 @@ $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : -1;
  * @ignore
  * @since 2.3.0
  *
- * @global WP_Locale $wp_locale
- *
  * @param string|array $body_classes
  */
 function setup_config_display_header( $body_classes = array() ) {
@@ -133,7 +131,8 @@ switch($step) {
 			$loaded_language = wp_download_language_pack( $language );
 			if ( $loaded_language ) {
 				load_default_textdomain( $loaded_language );
-				$GLOBALS['wp_locale'] = new WP_Locale();
+				unset( $app['locale'] );
+				$app['locale'] = $app['locale.factory'];
 			}
 		}
 
@@ -182,7 +181,8 @@ switch($step) {
 
 	case 1:
 		load_default_textdomain( $language );
-		$GLOBALS['wp_locale'] = new WP_Locale();
+		unset( $app['locale'] );
+		$app['locale'] = $app['locale.factory'];
 
 		setup_config_display_header();
 	?>
@@ -228,7 +228,8 @@ switch($step) {
 
 	case 2:
 	load_default_textdomain( $language );
-	$GLOBALS['wp_locale'] = new WP_Locale();
+	unset( $app['locale'] );
+	$app['locale'] = $app['locale.factory'];
 
 	$dbname = trim( wp_unslash( $_POST[ 'dbname' ] ) );
 	$uname = trim( wp_unslash( $_POST[ 'uname' ] ) );
