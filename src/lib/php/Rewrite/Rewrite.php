@@ -8,6 +8,7 @@ namespace WP\Rewrite;
  * @since 1.5.0
  */
 
+use WP\Observable;
 use function WP\getApp;
 
 /**
@@ -25,7 +26,7 @@ use function WP\getApp;
  *
  * @since 1.5.0
  */
-class Rewrite {
+class Rewrite extends Observable {
 	/**
 	 * Permalink structure for posts.
 	 *
@@ -1683,7 +1684,6 @@ class Rewrite {
 	 * @access public
 	 *
 	 * @see add_rewrite_endpoint() for full documentation.
-	 * @global WP $wp
 	 *
 	 * @param string      $name      Name of the endpoint.
 	 * @param int         $places    Endpoint mask describing the places the endpoint should be added.
@@ -1692,8 +1692,6 @@ class Rewrite {
 	 *                               value of `$name`.
 	 */
 	public function add_endpoint( $name, $places, $query_var = true ) {
-		global $wp;
-
 		// For backward compatibility, if null has explicitly been passed as `$query_var`, assume `true`.
 		if ( true === $query_var || null === func_get_arg( 2 ) ) {
 			$query_var = $name;
@@ -1701,7 +1699,11 @@ class Rewrite {
 		$this->endpoints[] = array( $places, $name, $query_var );
 
 		if ( $query_var ) {
-			$wp->add_query_var( $query_var );
+			$this->message = [
+				'event' => 'add_endpoint',
+				'query_var' => $query_var
+			];
+			$this->notify();
 		}
 	}
 

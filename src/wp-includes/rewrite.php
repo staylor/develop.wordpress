@@ -148,8 +148,6 @@ function add_rewrite_rule( $regex, $query, $after = 'bottom' ) {
  *
  * @since 2.1.0
  *
- * @global WP         $wp
- *
  * @param string $tag   Name of the new rewrite tag.
  * @param string $regex Regular expression to substitute the tag for in rewrite rules.
  * @param string $query Optional. String to append to the rewritten query. Must end in '='. Default empty.
@@ -159,15 +157,14 @@ function add_rewrite_tag( $tag, $regex, $query = '' ) {
 	if ( strlen( $tag ) < 3 || $tag[0] != '%' || $tag[ strlen($tag) - 1 ] != '%' )
 		return;
 
-	global $wp;
+	$app = getApp();
 
 	if ( empty( $query ) ) {
 		$qv = trim( $tag, '%' );
-		$wp->add_query_var( $qv );
+		$app['wp']->add_query_var( $qv );
 		$query = $qv . '=';
 	}
 
-	$app = getApp();
 	$app['rewrite']->add_rewrite_tag( $tag, $regex, $query );
 }
 
@@ -440,8 +437,6 @@ function wp_resolve_numeric_slug_conflicts( $query_vars = array() ) {
  *
  * @since 1.0.0
  *
- * @global WP         $wp
- *
  * @param string $url Permalink to check.
  * @return int Post ID, or 0 on failure.
  */
@@ -557,11 +552,10 @@ function url_to_postid( $url ) {
 			$query = addslashes(WP_MatchesMapRegex::apply($query, $matches));
 
 			// Filter out non-public query vars
-			global $wp;
 			parse_str( $query, $query_vars );
 			$query = array();
 			foreach ( (array) $query_vars as $key => $value ) {
-				if ( in_array( $key, $wp->public_query_vars ) ){
+				if ( in_array( $key, $app['wp']->public_query_vars ) ){
 					$query[$key] = $value;
 					if ( isset( $post_type_query_vars[$key] ) ) {
 						$query['post_type'] = $post_type_query_vars[$key];

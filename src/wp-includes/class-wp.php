@@ -1,4 +1,5 @@
 <?php
+use WP\Observer;
 use function WP\getApp;
 /**
  * WordPress environment setup class.
@@ -6,7 +7,7 @@ use function WP\getApp;
  * @package WordPress
  * @since 2.0.0
  */
-class WP {
+class WP extends Observer {
 	/**
 	 * Public query variables.
 	 *
@@ -735,5 +736,20 @@ class WP {
 		 * @param WP &$this Current WordPress environment instance (passed by reference).
 		 */
 		do_action_ref_array( 'wp', array( &$this ) );
+	}
+
+	public function update( \SplSubject $subject ) {
+		$message = $subject->message;
+
+		switch ( $message['event'] ) {
+		case 'add_endpoint':
+		case 'add_rewrite_rules':
+			$this->add_query_var( $message['query_var'] );
+			break;
+
+		case 'remove_rewrite_rules':
+			$this->remove_query_var( $message['query_var'] );
+			break;
+		}
 	}
 }

@@ -270,12 +270,8 @@ $GLOBALS['wp_the_query'] = new WP_Query();
  */
 $GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 
-/**
- * WordPress Object
- * @global WP $wp
- * @since 2.0.0
- */
-$GLOBALS['wp'] = new WP();
+$wp_rewrite = $app['rewrite'];
+$wp_rewrite->attach( $app['wp'] );
 
 /**
  * Fires before the theme is loaded.
@@ -312,7 +308,7 @@ if ( ! wp_installing() || 'wp-activate.php' === $pagenow ) {
 do_action( 'after_setup_theme' );
 
 // Set up current user.
-$GLOBALS['wp']->init();
+$app['wp']->init();
 
 /**
  * Fires after WordPress has finished loading but before any headers are sent.

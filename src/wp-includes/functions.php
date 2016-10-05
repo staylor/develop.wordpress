@@ -951,15 +951,15 @@ function wp_remote_fopen( $uri ) {
  *
  * @since 2.0.0
  *
- * @global WP       $wp
  * @global WP_Query $wp_query
  * @global WP_Query $wp_the_query
  *
  * @param string|array $query_vars Default WP_Query arguments.
  */
 function wp( $query_vars = '' ) {
-	global $wp, $wp_query, $wp_the_query;
-	$wp->main( $query_vars );
+	global $wp_query, $wp_the_query;
+	$app = getApp();
+	$app['wp']->main( $query_vars );
 
 	if ( !isset($wp_the_query) )
 		$wp_the_query = $wp_query;

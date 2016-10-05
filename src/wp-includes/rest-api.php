@@ -78,13 +78,12 @@ function register_rest_route( $namespace, $route, $args = array(), $override = f
  * @since 4.4.0
  *
  * @see rest_api_register_rewrites()
- * @global WP $wp Current WordPress environment instance.
  */
 function rest_api_init() {
 	rest_api_register_rewrites();
 
-	global $wp;
-	$wp->add_query_var( 'rest_route' );
+	$app = getApp();
+	$app['wp']->add_query_var( 'rest_route' );
 }
 
 /**
@@ -126,11 +125,12 @@ function rest_api_default_filters() {
  *
  * @since 4.4.0
  *
- * @global WP             $wp             Current WordPress environment instance.
  * @global WP_REST_Server $wp_rest_server ResponseHandler instance (usually WP_REST_Server).
  */
 function rest_api_loaded() {
-	if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
+	$app = getApp();
+
+	if ( empty( $app['wp']->query_vars['rest_route'] ) ) {
 		return;
 	}
 
@@ -146,7 +146,7 @@ function rest_api_loaded() {
 	$server = rest_get_server();
 
 	// Fire off the request.
-	$server->serve_request( $GLOBALS['wp']->query_vars['rest_route'] );
+	$server->serve_request( $app['wp']->query_vars['rest_route'] );
 
 	// We're done.
 	die();

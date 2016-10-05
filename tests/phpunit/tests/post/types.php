@@ -395,8 +395,6 @@ class Tests_Post_Types extends WP_UnitTestCase {
 	 * @ticket 14761
 	 */
 	public function test_unregister_post_type_removes_post_type_supports() {
-		global $_wp_post_type_features;
-
 		register_post_type( 'foo', array(
 			'public'   => true,
 			'supports' => array( 'editor', 'author', 'title' ),
@@ -408,10 +406,10 @@ class Tests_Post_Types extends WP_UnitTestCase {
 				'author' => true,
 				'title'  => true,
 			),
-			$_wp_post_type_features['foo']
+			$this->app->post_type['features']['foo']
 		);
 		$this->assertTrue( unregister_post_type( 'foo' ) );
-		$this->assertFalse( isset( $_wp_post_type_features['foo'] ) );
+		$this->assertFalse( isset( $this->app->post_type['features']['foo'] ) );
 	}
 
 	/**
@@ -468,18 +466,16 @@ class Tests_Post_Types extends WP_UnitTestCase {
 	 * @ticket 14761
 	 */
 	public function test_unregister_post_type_removes_post_type_from_global() {
-		global $wp_post_types;
-
 		register_post_type( 'foo', array(
 			'public' => true,
 		) );
 
-		$this->assertInternalType( 'object', $wp_post_types['foo'] );
+		$this->assertInternalType( 'object', $this->app->post_types['foo'] );
 		$this->assertInternalType( 'object', get_post_type_object( 'foo' ) );
 
 		$this->assertTrue( unregister_post_type( 'foo' ) );
 
-		$this->assertFalse( isset( $wp_post_types['foo'] ) );
+		$this->assertFalse( isset( $this->app->post_types['foo'] ) );
 		$this->assertNull( get_post_type_object( 'foo' ) );
 	}
 

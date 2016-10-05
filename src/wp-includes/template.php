@@ -610,6 +610,7 @@ function load_template( $_template_file, $require_once = true ) {
 	$wp_version = $app['wp_version'];
 	$wpdb = $app['db'];
 	$wp_rewrite = $app['rewrite'];
+	$wp = $app['wp'];
 
 	if ( is_array( $wp_query->query_vars ) ) {
 		extract( $wp_query->query_vars, EXTR_SKIP );

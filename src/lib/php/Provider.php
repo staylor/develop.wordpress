@@ -70,5 +70,9 @@ class Provider implements ServiceProviderInterface {
 		$app['widget_factory'] = function () {
 			return new Widget\Factory();
 		};
+
+		$app['wp'] = function () {
+			return new \WP();
+		};
 	}
 }

@@ -5,9 +5,7 @@
  */
 class Tests_WP_Post_Type extends WP_UnitTestCase {
 	public function test_instances() {
-		global $wp_post_types;
-
-		foreach ( $wp_post_types as $post_type ) {
+		foreach ( $this->app->post_types as $post_type ) {
 			$this->assertInstanceOf( 'WP_Post_Type', $post_type );
 		}
 	}
@@ -128,19 +126,17 @@ class Tests_WP_Post_Type extends WP_UnitTestCase {
 	}
 
 	public function test_register_taxonomies() {
-		global $wp_post_types;
-
 		$post_type        = rand_str();
 		$post_type_object = new WP_Post_Type( $post_type, array( 'taxonomies' => array( 'post_tag' ) ) );
 
-		$wp_post_types[ $post_type ] = $post_type_object;
+		$this->app->post_types[ $post_type ] = $post_type_object;
 
 		$post_type_object->register_taxonomies();
 		$taxonomies = get_object_taxonomies( $post_type );
 		$post_type_object->unregister_taxonomies();
 		$taxonomies_after = get_object_taxonomies( $post_type );
 
-		unset( $wp_post_types[ $post_type ] );
+		unset( $this->app->post_types[ $post_type ] );
 
 		$this->assertEqualSets( array( 'post_tag' ), $taxonomies );
 		$this->assertEqualSets( array(), $taxonomies_after );

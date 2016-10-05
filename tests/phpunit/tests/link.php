@@ -161,8 +161,6 @@ class Tests_Link extends WP_UnitTestCase {
 	 * @ticket 1914
 	 */
 	public function test_attachment_attached_to_non_existent_post_type_has_a_pretty_permalink() {
-		global $wp_post_types;
-
 		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
 
 		register_post_type( 'not_a_post_type', array( 'public' => true ) );
@@ -182,9 +180,9 @@ class Tests_Link extends WP_UnitTestCase {
 
 		$this->assertSame( get_permalink( $post_id ) . user_trailingslashit( $attachment->post_name ), get_permalink( $attachment_id ) );
 
-		foreach( $wp_post_types as $id => $pt ) {
+		foreach( $this->app->post_types as $id => $pt ) {
 			if ( 'not_a_post_type' === $pt->name ) {
-				unset( $wp_post_types[ $id ] );
+				unset( $this->app->post_types[ $id ] );
 				break;
 			}
 		}

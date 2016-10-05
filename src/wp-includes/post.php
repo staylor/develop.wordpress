@@ -841,29 +841,25 @@ function get_post_type( $post = null ) {
  * @since 3.0.0
  * @since 4.6.0 Object returned is now an instance of WP_Post_Type.
  *
- * @global array $wp_post_types List of post types.
- *
  * @see register_post_type()
  *
  * @param string $post_type The name of a registered post type.
  * @return WP_Post_Type|null WP_Post_Type object if it exists, null otherwise.
  */
 function get_post_type_object( $post_type ) {
-	global $wp_post_types;
+	$app = getApp();
 
-	if ( ! is_scalar( $post_type ) || empty( $wp_post_types[ $post_type ] ) ) {
+	if ( ! is_scalar( $post_type ) || empty( $app->post_types[ $post_type ] ) ) {
 		return null;
 	}
 
-	return $wp_post_types[ $post_type ];
+	return $app->post_types[ $post_type ];
 }
 
 /**
  * Get a list of all registered post type objects.
  *
  * @since 2.9.0
- *
- * @global array $wp_post_types List of post types.
  *
  * @see register_post_type() for accepted arguments.
  *
@@ -877,11 +873,11 @@ function get_post_type_object( $post_type ) {
  * @return array A list of post type names or objects.
  */
 function get_post_types( $args = array(), $output = 'names', $operator = 'and' ) {
-	global $wp_post_types;
+	$app = getApp();
 
 	$field = ('names' == $output) ? 'name' : false;
 
-	return wp_filter_object_list($wp_post_types, $args, $operator, $field);
+	return wp_filter_object_list( $app->post_types, $args, $operator, $field );
 }
 
 /**
@@ -903,8 +899,6 @@ function get_post_types( $args = array(), $output = 'names', $operator = 'and' )
  * @since 4.4.0 The `show_ui` argument is now enforced on the post type listing
  *              screen and post editing screen.
  * @since 4.6.0 Post type object returned is now an instance of WP_Post_Type.
- *
- * @global array $wp_post_types List of post types.
  *
  * @param string $post_type Post type key. Must not exceed 20 characters and may
  *                          only contain lowercase alphanumeric characters, dashes,
@@ -1016,10 +1010,10 @@ function get_post_types( $args = array(), $output = 'names', $operator = 'and' )
  * @return WP_Post_Type|WP_Error The registered post type object, or an error object.
  */
 function register_post_type( $post_type, $args = array() ) {
-	global $wp_post_types;
+	$app = getApp();
 
-	if ( ! is_array( $wp_post_types ) ) {
-		$wp_post_types = array();
+	if ( ! is_array( $app->post_types ) ) {
+		$app->post_types = array();
 	}
 
 	// Sanitize post type name
@@ -1031,11 +1025,13 @@ function register_post_type( $post_type, $args = array() ) {
 	}
 
 	$post_type_object = new WP_Post_Type( $post_type, $args );
+	$post_type_object->attach( $app['wp'] );
+
 	$post_type_object->add_supports();
 	$post_type_object->add_rewrite_rules();
 	$post_type_object->register_meta_boxes();
 
-	$wp_post_types[ $post_type ] = $post_type_object;
+	$app->post_types[ $post_type ] = $post_type_object;
 
 	$post_type_object->add_hooks();
 	$post_type_object->register_taxonomies();
@@ -1061,13 +1057,11 @@ function register_post_type( $post_type, $args = array() ) {
  *
  * @since 4.5.0
  *
- * @global array $wp_post_types List of post types.
- *
  * @param string $post_type Post type to unregister.
  * @return bool|WP_Error True on success, WP_Error on failure or if the post type doesn't exist.
  */
 function unregister_post_type( $post_type ) {
-	global $wp_post_types;
+	$app = getApp();
 
 	if ( ! post_type_exists( $post_type ) ) {
 		return new WP_Error( 'invalid_post_type', __( 'Invalid post type.' ) );
@@ -1086,7 +1080,7 @@ function unregister_post_type( $post_type ) {
 	$post_type_object->remove_hooks();
 	$post_type_object->unregister_taxonomies();
 
-	unset( $wp_post_types[ $post_type ] );
+	unset( $app->post_types[ $post_type ] );
 
 	/**
 	 * Fires after a post type was unregistered.
@@ -1207,16 +1201,13 @@ function get_post_type_capabilities( $args ) {
  * @since 3.1.0
  * @access private
  *
- * @global array $post_type_meta_caps Used to store meta capabilities.
- *
  * @param array $capabilities Post type meta capabilities.
  */
 function _post_type_meta_capabilities( $capabilities = null ) {
-	global $post_type_meta_caps;
-
+	$app = getApp();
 	foreach ( $capabilities as $core => $custom ) {
 		if ( in_array( $core, array( 'read_post', 'delete_post', 'edit_post' ) ) ) {
-			$post_type_meta_caps[ $custom ] = $core;
+			$app->post_type['meta_caps'][ $custom ] = $core;
 		}
 	}
 }
@@ -1404,21 +1395,20 @@ function _add_post_type_submenus() {
  *
  * @since 3.0.0
  *
- * @global array $_wp_post_type_features
- *
  * @param string       $post_type The post type for which to add the feature.
  * @param string|array $feature   The feature being added, accepts an array of
  *                                feature strings or a single string.
  */
 function add_post_type_support( $post_type, $feature ) {
-	global $_wp_post_type_features;
+	$app = getApp();
 
 	$features = (array) $feature;
 	foreach ($features as $feature) {
-		if ( func_num_args() == 2 )
-			$_wp_post_type_features[$post_type][$feature] = true;
-		else
-			$_wp_post_type_features[$post_type][$feature] = array_slice( func_get_args(), 2 );
+		if ( func_num_args() == 2 ) {
+			$app->post_type['features'][$post_type][$feature] = true;
+		} else {
+			$app->post_type['features'][$post_type][$feature] = array_slice( func_get_args(), 2 );
+		}
 	}
 }
 
@@ -1427,15 +1417,12 @@ function add_post_type_support( $post_type, $feature ) {
  *
  * @since 3.0.0
  *
- * @global array $_wp_post_type_features
- *
  * @param string $post_type The post type for which to remove the feature.
  * @param string $feature   The feature being removed.
  */
 function remove_post_type_support( $post_type, $feature ) {
-	global $_wp_post_type_features;
-
-	unset( $_wp_post_type_features[ $post_type ][ $feature ] );
+	$app = getApp();
+	unset( $app->post_type['features'][ $post_type ][ $feature ] );
 }
 
 /**
@@ -1443,16 +1430,14 @@ function remove_post_type_support( $post_type, $feature ) {
  *
  * @since 3.4.0
  *
- * @global array $_wp_post_type_features
- *
  * @param string $post_type The post type.
  * @return array Post type supports list.
  */
 function get_all_post_type_supports( $post_type ) {
-	global $_wp_post_type_features;
+	$app = getApp();
 
-	if ( isset( $_wp_post_type_features[$post_type] ) )
-		return $_wp_post_type_features[$post_type];
+	if ( isset( $app->post_type['features'][$post_type] ) )
+		return $app->post_type['features'][$post_type];
 
 	return array();
 }
@@ -1462,24 +1447,19 @@ function get_all_post_type_supports( $post_type ) {
  *
  * @since 3.0.0
  *
- * @global array $_wp_post_type_features
- *
  * @param string $post_type The post type being checked.
  * @param string $feature   The feature being checked.
  * @return bool Whether the post type supports the given feature.
  */
 function post_type_supports( $post_type, $feature ) {
-	global $_wp_post_type_features;
-
-	return ( isset( $_wp_post_type_features[$post_type][$feature] ) );
+	$app = getApp();
+	return ( isset( $app->post_type['features'][$post_type][$feature] ) );
 }
 
 /**
  * Retrieves a list of post type names that support a specific feature.
  *
  * @since 4.5.0
- *
- * @global array $_wp_post_type_features Post type features
  *
  * @param array|string $feature  Single feature or an array of features the post types should support.
  * @param string       $operator Optional. The logical operation to perform. 'or' means
@@ -1489,11 +1469,11 @@ function post_type_supports( $post_type, $feature ) {
  * @return array A list of post type names.
  */
 function get_post_types_by_support( $feature, $operator = 'and' ) {
-	global $_wp_post_type_features;
+	$app = getApp();
 
 	$features = array_fill_keys( (array) $feature, true );
 
-	return array_keys( wp_filter_object_list( $_wp_post_type_features, $features, $operator ) );
+	return array_keys( wp_filter_object_list( $app->post_type['features'], $features, $operator ) );
 }
 
 /**

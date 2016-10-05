@@ -7,6 +7,7 @@
  * @since 4.6.0
  */
 
+use WP\Observable;
 use function WP\getApp;
 
 /**
@@ -16,7 +17,7 @@ use function WP\getApp;
  *
  * @see register_post_type()
  */
-final class WP_Post_Type {
+final class WP_Post_Type extends Observable {
 	/**
 	 * Post type key.
 	 *
@@ -526,16 +527,17 @@ final class WP_Post_Type {
 	 *
 	 * @since 4.6.0
 	 * @access public
-	 *
-	 * @global WP         $wp         Current WordPress environment instance.
 	 */
 	public function add_rewrite_rules() {
-		global $wp;
-
 		$app = getApp();
 
-		if ( false !== $this->query_var && $wp && is_post_type_viewable( $this ) ) {
-			$wp->add_query_var( $this->query_var );
+		if ( false !== $this->query_var && is_post_type_viewable( $this ) ) {
+			$this->message = [
+				'event' => 'add_rewrite_rules',
+				'query_var' => $this->query_var,
+			];
+
+			$this->notify();
 		}
 
 		if ( false !== $this->rewrite && ( is_admin() || '' != get_option( 'permalink_structure' ) ) ) {
@@ -609,13 +611,10 @@ final class WP_Post_Type {
 	 *
 	 * @since 4.6.0
 	 * @access public
-	 *
-	 * @global array $_wp_post_type_features Post type features.
 	 */
 	public function remove_supports() {
-		global $_wp_post_type_features;
-
-		unset( $_wp_post_type_features[ $this->name ] );
+		$app = getApp();
+		unset( $app->post_type['features'][ $this->name ] );
 	}
 
 	/**
@@ -623,17 +622,17 @@ final class WP_Post_Type {
 	 *
 	 * @since 4.6.0
 	 * @access public
-	 *
-	 * @global WP         $wp                  Current WordPress environment instance.
-	 * @global array      $post_type_meta_caps Used to remove meta capabilities.
 	 */
 	public function remove_rewrite_rules() {
-		global $wp, $post_type_meta_caps;
-
 		$app = getApp();
 		// Remove query var.
 		if ( false !== $this->query_var ) {
-			$wp->remove_query_var( $this->query_var );
+			$this->message = [
+				'event' => 'remove_rewrite_rules',
+				'query_var' => $this->query_var,
+			];
+
+			$this->notify();
 		}
 
 		// Remove any rewrite rules, permastructs, and rules.
@@ -649,7 +648,7 @@ final class WP_Post_Type {
 
 		// Remove registered custom meta capabilities.
 		foreach ( $this->cap as $cap ) {
-			unset( $post_type_meta_caps[ $cap ] );
+			unset( $app->post_type['meta_caps'][ $cap ] );
 		}
 	}
 

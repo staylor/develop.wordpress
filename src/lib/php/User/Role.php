@@ -35,7 +35,6 @@ class Role extends Observable {
 	 */
 	public $capabilities;
 
-	public $message = [];
 	/**
 	 * Constructor - Set up object properties.
 	 *
