@@ -20,12 +20,8 @@
 
 use function WP\getApp;
 
-/**
- * Private
- *
- * @global array $_wp_deprecated_widgets_callbacks
- */
-$GLOBALS['_wp_deprecated_widgets_callbacks'] = array(
+$app = getApp();
+$app->widgets['deprecated_callbacks'] = [
 	'wp_widget_pages',
 	'wp_widget_pages_control',
 	'wp_widget_calendar',
@@ -48,7 +44,7 @@ $GLOBALS['_wp_deprecated_widgets_callbacks'] = array(
 	'wp_widget_rss_control',
 	'wp_widget_recent_comments',
 	'wp_widget_recent_comments_control'
-);
+];
 
 //
 // Template tags & API functions
@@ -259,9 +255,6 @@ function is_registered_sidebar( $sidebar_id ) {
  *
  * @since 2.2.0
  *
- * @global array $wp_register_widget_defaults Retrieves widget defaults.
- * @global array $_wp_deprecated_widgets_callbacks
- *
  * @param int|string $id              Widget ID.
  * @param string     $name            Widget display title.
  * @param callable   $output_callback Run when widget is called.
@@ -275,8 +268,6 @@ function is_registered_sidebar( $sidebar_id ) {
  * }
  */
 function wp_register_sidebar_widget( $id, $name, $output_callback, $options = array() ) {
-	global $_wp_deprecated_widgets_callbacks;
-
 	$app = getApp();
 
 	$id = strtolower($id);
@@ -287,7 +278,7 @@ function wp_register_sidebar_widget( $id, $name, $output_callback, $options = ar
 	}
 
 	$id_base = _get_widget_id_base($id);
-	if ( in_array($output_callback, $_wp_deprecated_widgets_callbacks, true) && !is_callable($output_callback) ) {
+	if ( in_array($output_callback, $app->widgets['deprecated_callbacks'], true) && !is_callable($output_callback) ) {
 		unset( $app->widgets['controls'][ $id ] );
 		unset( $app->widgets['updates'][ $id_base ] );
 		return;
@@ -391,8 +382,6 @@ function wp_unregister_sidebar_widget($id) {
  *
  * @todo `$params` parameter?
  *
- * @global array $_wp_deprecated_widgets_callbacks
- *
  * @param int|string   $id               Sidebar ID.
  * @param string       $name             Sidebar display name.
  * @param callable     $control_callback Run when sidebar is displayed.
@@ -407,8 +396,6 @@ function wp_unregister_sidebar_widget($id) {
  * }
  */
 function wp_register_widget_control( $id, $name, $control_callback, $options = array() ) {
-	global $_wp_deprecated_widgets_callbacks;
-
 	$app = getApp();
 	$id = strtolower($id);
 	$id_base = _get_widget_id_base($id);
@@ -419,7 +406,7 @@ function wp_register_widget_control( $id, $name, $control_callback, $options = a
 		return;
 	}
 
-	if ( in_array($control_callback, $_wp_deprecated_widgets_callbacks, true) && !is_callable($control_callback) ) {
+	if ( in_array($control_callback, $app->widgets['deprecated_callbacks'], true) && !is_callable($control_callback) ) {
 		unset( $app->widgets['registered'][ $id ] );
 		return;
 	}

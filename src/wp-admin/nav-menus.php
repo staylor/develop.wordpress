@@ -9,6 +9,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** Load WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -26,6 +28,8 @@ if ( ! current_user_can( 'edit_theme_options' ) ) {
 		403
 	);
 }
+
+$app = getApp();
 
 wp_enqueue_script( 'nav-menu' );
 
@@ -481,15 +485,6 @@ if ( current_theme_supports( 'menus' ) ) {
 	$menu_locations = get_nav_menu_locations();
 }
 
-/*
- * Ensure the user will be able to scroll horizontally
- * by adding a class for the max menu depth.
- *
- * @global int $_wp_nav_menu_max_depth
- */
-global $_wp_nav_menu_max_depth;
-$_wp_nav_menu_max_depth = 0;
-
 // Calling wp_get_nav_menu_to_edit generates $_wp_nav_menu_max_depth.
 if ( is_nav_menu( $nav_menu_selected_id ) ) {
 	$menu_items = wp_get_nav_menu_items( $nav_menu_selected_id, array( 'post_status' => 'any' ) );
@@ -497,15 +492,12 @@ if ( is_nav_menu( $nav_menu_selected_id ) ) {
 }
 
 /**
- *
- * @global int $_wp_nav_menu_max_depth
- *
  * @param string $classes
  * @return string
  */
 function wp_nav_menu_max_depth( $classes ) {
-	global $_wp_nav_menu_max_depth;
-	return "$classes menu-max-depth-$_wp_nav_menu_max_depth";
+	$app = getApp();
+	return "$classes menu-max-depth-{$app->nav_menus['max_depth']}";
 }
 
 add_filter('admin_body_class', 'wp_nav_menu_max_depth');

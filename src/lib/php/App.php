@@ -19,6 +19,7 @@ class App extends Container {
 		'registered' => [],
 		'controls' => [],
 		'updates' => [],
+		'deprecated_callbacks' => [],
 	];
 
 	public $sidebars = [
@@ -28,7 +29,8 @@ class App extends Container {
 	];
 
 	public $nav_menus = [
-		'registered' => []
+		'registered' => [],
+		'max_depth' => 0,
 	];
 
 	public $theme = [
