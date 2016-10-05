@@ -238,7 +238,7 @@ class Custom_Image_Header {
 	public function process_default_headers() {
 		$app = getApp();
 
-		if ( empty( $app->default_headers ) ) {
+		if ( empty( $app->theme['default_headers'] ) ) {
 			return;
 		}
 
@@ -246,7 +246,7 @@ class Custom_Image_Header {
 			return;
 		}
 
-		$this->default_headers = $app->default_headers;
+		$this->default_headers = $app->theme['default_headers'];
 		$template_directory_uri = get_template_directory_uri();
 		$stylesheet_directory_uri = get_stylesheet_directory_uri();
 		foreach ( array_keys($this->default_headers) as $header ) {

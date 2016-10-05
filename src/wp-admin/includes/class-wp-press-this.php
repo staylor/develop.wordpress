@@ -1226,7 +1226,6 @@ class WP_Press_This {
 
 		add_filter( 'mce_css', array( $this, 'add_editor_style' ) );
 
-		$app = getApp();
 		if ( ! empty( $app['is_IE'] ) ) {
 			@header( 'X-UA-Compatible: IE=edge' );
 		}

@@ -24,9 +24,12 @@ class App extends Container {
 		'registered' => []
 	];
 
-	public $theme_features = [];
-	public $theme_directories = [];
-	public $default_headers = [];
+	public $theme = [
+		'features' => [],
+		'directories' => [],
+		'default_headers' => [],
+		'editor_styles' => [],
+	];
 
 	public $suspend_cache_invalidation;
 	public $switched_stack = [];
