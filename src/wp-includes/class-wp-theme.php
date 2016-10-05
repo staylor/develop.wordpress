@@ -1,4 +1,6 @@
 <?php
+use function WP\getApp;
+
 /**
  * WP_Theme Class
  *
@@ -192,14 +194,12 @@ final class WP_Theme implements ArrayAccess {
 	/**
 	 * Constructor for WP_Theme.
 	 *
-	 * @global array $wp_theme_directories
-	 *
 	 * @param string $theme_dir Directory of the theme within the theme_root.
 	 * @param string $theme_root Theme root.
 	 * @param WP_Error|void $_child If this theme is a parent theme, the child may be passed for validation purposes.
 	 */
 	public function __construct( $theme_dir, $theme_root, $_child = null ) {
-		global $wp_theme_directories;
+		$app = getApp();
 
 		// Initialize caching on first run.
 		if ( ! isset( self::$persistently_cache ) ) {
@@ -218,7 +218,7 @@ final class WP_Theme implements ArrayAccess {
 		$this->stylesheet = $theme_dir;
 
 		// Correct a situation where the theme is 'some-directory/some-theme' but 'some-directory' was passed in as part of the theme root instead.
-		if ( ! in_array( $theme_root, (array) $wp_theme_directories ) && in_array( dirname( $theme_root ), (array) $wp_theme_directories ) ) {
+		if ( ! in_array( $theme_root, (array) $app->theme_directories ) && in_array( dirname( $theme_root ), (array) $app->theme_directories ) ) {
 			$this->stylesheet = basename( $this->theme_root ) . '/' . $this->stylesheet;
 			$this->theme_root = dirname( $theme_root );
 		}

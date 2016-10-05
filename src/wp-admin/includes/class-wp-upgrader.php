@@ -378,7 +378,6 @@ class WP_Upgrader {
 	 * @access public
 	 *
 	 * @global WP_Filesystem_Base $wp_filesystem Subclass
-	 * @global array              $wp_theme_directories
 	 *
 	 * @param array|string $args {
 	 *     Optional. Array or string of arguments for installing a package. Default empty array.
@@ -399,7 +398,9 @@ class WP_Upgrader {
 	 * @return array|WP_Error The result (also stored in `WP_Upgrader::$result`), or a WP_Error on failure.
 	 */
 	public function install_package( $args = array() ) {
-		global $wp_filesystem, $wp_theme_directories;
+		global $wp_filesystem;
+
+		$app = getApp();
 
 		$defaults = array(
 			'source' => '', // Please always pass this
@@ -489,8 +490,8 @@ class WP_Upgrader {
 		 */
 		$protected_directories = array( ABSPATH, WP_CONTENT_DIR, WP_PLUGIN_DIR, WP_CONTENT_DIR . '/themes' );
 
-		if ( is_array( $wp_theme_directories ) ) {
-			$protected_directories = array_merge( $protected_directories, $wp_theme_directories );
+		if ( is_array( $app->theme_directories ) ) {
+			$protected_directories = array_merge( $protected_directories, $app->theme_directories );
 		}
 
 		if ( in_array( $destination, $protected_directories ) ) {
@@ -810,7 +811,7 @@ class WP_Upgrader {
  	 */
 	public static function create_lock( $lock_name, $release_timeout = null ) {
 		$app = getApp();
-		$wpdb = $app['db'];	
+		$wpdb = $app['db'];
 		if ( ! $release_timeout ) {
 			$release_timeout = HOUR_IN_SECONDS;
 		}

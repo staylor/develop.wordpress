@@ -19,4 +19,6 @@ class App extends Container {
 		'widgets' => [],
 		'_widgets' => [],
 	];
+
+	public $theme_directories = [];
 }

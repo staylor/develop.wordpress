@@ -16,7 +16,6 @@ use function WP\getApp;
  *
  * @since 3.4.0
  *
- * @global array $wp_theme_directories
  * @staticvar array $_themes
  *
  * @param array $args The search arguments. Optional.
@@ -30,20 +29,20 @@ use function WP\getApp;
  * @return array Array of WP_Theme objects.
  */
 function wp_get_themes( $args = array() ) {
-	global $wp_theme_directories;
+	$app = getApp();
 
 	$defaults = array( 'errors' => false, 'allowed' => null, 'blog_id' => 0 );
 	$args = wp_parse_args( $args, $defaults );
 
 	$theme_directories = search_theme_directories();
 
-	if ( count( $wp_theme_directories ) > 1 ) {
+	if ( count( $app->theme_directories ) > 1 ) {
 		// Make sure the current theme wins out, in case search_theme_directories() picks the wrong
 		// one in the case of a conflict. (Normally, last registered theme root wins.)
 		$current_theme = get_stylesheet();
 		if ( isset( $theme_directories[ $current_theme ] ) ) {
 			$root_of_current_theme = get_raw_theme_root( $current_theme );
-			if ( ! in_array( $root_of_current_theme, $wp_theme_directories ) )
+			if ( ! in_array( $root_of_current_theme, $app->theme_directories ) )
 				$root_of_current_theme = WP_CONTENT_DIR . $root_of_current_theme;
 			$theme_directories[ $current_theme ]['theme_root'] = $root_of_current_theme;
 		}
@@ -89,15 +88,13 @@ function wp_get_themes( $args = array() ) {
  *
  * @since 3.4.0
  *
- * @global array $wp_theme_directories
- *
  * @param string $stylesheet Directory name for the theme. Optional. Defaults to current theme.
  * @param string $theme_root Absolute path of the theme root to look in. Optional. If not specified, get_raw_theme_root()
  * 	                         is used to calculate the theme root for the $stylesheet provided (or current theme).
  * @return WP_Theme Theme object. Be sure to check the object's exists() method if you need to confirm the theme's existence.
  */
 function wp_get_theme( $stylesheet = null, $theme_root = null ) {
-	global $wp_theme_directories;
+	$app = getApp();
 
 	if ( empty( $stylesheet ) )
 		$stylesheet = get_stylesheet();
@@ -106,7 +103,7 @@ function wp_get_theme( $stylesheet = null, $theme_root = null ) {
 		$theme_root = get_raw_theme_root( $stylesheet );
 		if ( false === $theme_root )
 			$theme_root = WP_CONTENT_DIR . '/themes';
-		elseif ( ! in_array( $theme_root, (array) $wp_theme_directories ) )
+		elseif ( ! in_array( $theme_root, (array) $app->theme_directories ) )
 			$theme_root = WP_CONTENT_DIR . $theme_root;
 	}
 
@@ -347,14 +344,12 @@ function get_template_directory_uri() {
  *
  * @since 2.9.0
  *
- * @global array $wp_theme_directories
- *
  * @return array|string An array of theme roots keyed by template/stylesheet or a single theme root if all themes have the same root.
  */
 function get_theme_roots() {
-	global $wp_theme_directories;
+	$app = getApp();
 
-	if ( count($wp_theme_directories) <= 1 )
+	if ( count( $app->theme_directories ) <= 1 )
 		return '/themes';
 
 	$theme_roots = get_site_transient( 'theme_roots' );
@@ -370,13 +365,11 @@ function get_theme_roots() {
  *
  * @since 2.9.0
  *
- * @global array $wp_theme_directories
- *
  * @param string $directory Either the full filesystem path to a theme folder or a folder within WP_CONTENT_DIR
  * @return bool
  */
 function register_theme_directory( $directory ) {
-	global $wp_theme_directories;
+	$app = getApp();
 
 	if ( ! file_exists( $directory ) ) {
 		// Try prepending as the theme directory could be relative to the content directory
@@ -387,13 +380,13 @@ function register_theme_directory( $directory ) {
 		}
 	}
 
-	if ( ! is_array( $wp_theme_directories ) ) {
-		$wp_theme_directories = array();
+	if ( ! is_array( $app->theme_directories ) ) {
+		$app->theme_directories = array();
 	}
 
 	$untrailed = untrailingslashit( $directory );
-	if ( ! empty( $untrailed ) && ! in_array( $untrailed, $wp_theme_directories ) ) {
-		$wp_theme_directories[] = $untrailed;
+	if ( ! empty( $untrailed ) && ! in_array( $untrailed, $app->theme_directories ) ) {
+		$app->theme_directories[] = $untrailed;
 	}
 
 	return true;
@@ -404,17 +397,16 @@ function register_theme_directory( $directory ) {
  *
  * @since 2.9.0
  *
- * @global array $wp_theme_directories
  * @staticvar array $found_themes
  *
  * @param bool $force Optional. Whether to force a new directory scan. Defaults to false.
  * @return array|false Valid themes found
  */
 function search_theme_directories( $force = false ) {
-	global $wp_theme_directories;
+	$app = getApp();
 	static $found_themes = null;
 
-	if ( empty( $wp_theme_directories ) )
+	if ( empty( $app->theme_directories ) )
 		return false;
 
 	if ( ! $force && isset( $found_themes ) )
@@ -422,7 +414,7 @@ function search_theme_directories( $force = false ) {
 
 	$found_themes = array();
 
-	$wp_theme_directories = (array) $wp_theme_directories;
+	$wp_theme_directories = (array) $app->theme_directories;
 	$relative_theme_roots = array();
 
 	// Set up maybe-relative, maybe-absolute array of theme directories.
@@ -535,18 +527,16 @@ function search_theme_directories( $force = false ) {
  *
  * @since 1.5.0
  *
- * @global array $wp_theme_directories
- *
  * @param string $stylesheet_or_template The stylesheet or template name of the theme
  * @return string Theme path.
  */
 function get_theme_root( $stylesheet_or_template = false ) {
-	global $wp_theme_directories;
+	$app = getApp();
 
 	if ( $stylesheet_or_template && $theme_root = get_raw_theme_root( $stylesheet_or_template ) ) {
 		// Always prepend WP_CONTENT_DIR unless the root currently registered as a theme directory.
 		// This gives relative theme roots the benefit of the doubt when things go haywire.
-		if ( ! in_array( $theme_root, (array) $wp_theme_directories ) )
+		if ( ! in_array( $theme_root, (array) $app->theme_directories ) )
 			$theme_root = WP_CONTENT_DIR . $theme_root;
 	} else {
 		$theme_root = WP_CONTENT_DIR . '/themes';
@@ -569,8 +559,6 @@ function get_theme_root( $stylesheet_or_template = false ) {
  *
  * @since 1.5.0
  *
- * @global array $wp_theme_directories
- *
  * @param string $stylesheet_or_template Optional. The stylesheet or template name of the theme.
  * 	                                     Default is to leverage the main theme root.
  * @param string $theme_root             Optional. The theme root for which calculations will be based, preventing
@@ -578,13 +566,13 @@ function get_theme_root( $stylesheet_or_template = false ) {
  * @return string Themes URI.
  */
 function get_theme_root_uri( $stylesheet_or_template = false, $theme_root = false ) {
-	global $wp_theme_directories;
+	$app = getApp();
 
 	if ( $stylesheet_or_template && ! $theme_root )
 		$theme_root = get_raw_theme_root( $stylesheet_or_template );
 
 	if ( $stylesheet_or_template && $theme_root ) {
-		if ( in_array( $theme_root, (array) $wp_theme_directories ) ) {
+		if ( in_array( $theme_root, (array) $app->theme_directories ) ) {
 			// Absolute path. Make an educated guess. YMMV -- but note the filter below.
 			if ( 0 === strpos( $theme_root, WP_CONTENT_DIR ) )
 				$theme_root_uri = content_url( str_replace( WP_CONTENT_DIR, '', $theme_root ) );
@@ -618,17 +606,15 @@ function get_theme_root_uri( $stylesheet_or_template = false, $theme_root = fals
  *
  * @since 3.1.0
  *
- * @global array $wp_theme_directories
- *
  * @param string $stylesheet_or_template The stylesheet or template name of the theme
  * @param bool   $skip_cache             Optional. Whether to skip the cache.
  *                                       Defaults to false, meaning the cache is used.
  * @return string Theme root
  */
 function get_raw_theme_root( $stylesheet_or_template, $skip_cache = false ) {
-	global $wp_theme_directories;
+	$app = getApp();
 
-	if ( count($wp_theme_directories) <= 1 )
+	if ( count( $app->theme_directories ) <= 1 )
 		return '/themes';
 
 	$theme_root = false;
@@ -670,14 +656,15 @@ function locale_stylesheet() {
  *
  * @since 2.5.0
  *
- * @global array                $wp_theme_directories
  * @global WP_Customize_Manager $wp_customize
  * @global array                $sidebars_widgets
  *
  * @param string $stylesheet Stylesheet name
  */
 function switch_theme( $stylesheet ) {
-	global $wp_theme_directories, $wp_customize, $sidebars_widgets;
+	global $wp_customize, $sidebars_widgets;
+
+	$app = getApp();
 
 	$_sidebars_widgets = null;
 	if ( 'wp_ajax_customize_save' === current_action() ) {
@@ -703,7 +690,7 @@ function switch_theme( $stylesheet ) {
 	update_option( 'template', $template );
 	update_option( 'stylesheet', $stylesheet );
 
-	if ( count( $wp_theme_directories ) > 1 ) {
+	if ( count( $app->theme_directories ) > 1 ) {
 		update_option( 'template_root', get_raw_theme_root( $template, true ) );
 		update_option( 'stylesheet_root', get_raw_theme_root( $stylesheet, true ) );
 	} else {

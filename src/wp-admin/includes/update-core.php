@@ -889,7 +889,7 @@ function update_core($from, $to) {
 	if ( function_exists( 'get_core_checksums' ) ) {
 		// Find the local version of the working directory
 		$working_dir_local = WP_CONTENT_DIR . '/upgrade/' . basename( $from ) . $distro;
-		
+
 		$checksums = get_core_checksums( $app['wp_version'], $app['wp_local_package'] ?? 'en_US' );
 		if ( is_array( $checksums ) && isset( $checksums[ $app['wp_version'] ] ) )
 			$checksums = $checksums[ $app['wp_version'] ]; // Compat code for 3.7-beta2
@@ -1240,17 +1240,18 @@ window.location = 'about.php?updated';
  *
  * @since 4.2.2
  *
- * @global array              $wp_theme_directories
  * @global WP_Filesystem_Base $wp_filesystem
  */
 function _upgrade_422_remove_genericons() {
-	global $wp_theme_directories, $wp_filesystem;
+	global $wp_filesystem;
+
+	$app = getApp();
 
 	// A list of the affected files using the filesystem absolute paths.
 	$affected_files = array();
 
 	// Themes
-	foreach ( $wp_theme_directories as $directory ) {
+	foreach ( $app->theme_directories as $directory ) {
 		$affected_theme_files = _upgrade_422_find_genericons_files_in_folder( $directory );
 		$affected_files       = array_merge( $affected_files, $affected_theme_files );
 	}
