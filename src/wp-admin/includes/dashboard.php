@@ -15,14 +15,14 @@ use function WP\getApp;
  *
  * @since 2.5.0
  *
- * @global array $wp_registered_widgets
- * @global array $wp_registered_widget_controls
  * @global array $wp_dashboard_control_callbacks
  */
 function wp_dashboard_setup() {
-	global $wp_registered_widgets, $wp_registered_widget_controls, $wp_dashboard_control_callbacks;
+	global $wp_dashboard_control_callbacks;
 	$wp_dashboard_control_callbacks = array();
 	$screen = get_current_screen();
+
+	$app = getApp();
 
 	/* Register Widgets and Controls */
 
@@ -110,9 +110,13 @@ function wp_dashboard_setup() {
 		$dashboard_widgets = apply_filters( 'wp_dashboard_widgets', array() );
 	}
 
+	$registered = $app->widgets['registered'];
 	foreach ( $dashboard_widgets as $widget_id ) {
-		$name = empty( $wp_registered_widgets[$widget_id]['all_link'] ) ? $wp_registered_widgets[$widget_id]['name'] : $wp_registered_widgets[$widget_id]['name'] . " <a href='{$wp_registered_widgets[$widget_id]['all_link']}' class='edit-box open-box'>" . __('View all') . '</a>';
-		wp_add_dashboard_widget( $widget_id, $name, $wp_registered_widgets[$widget_id]['callback'], $wp_registered_widget_controls[$widget_id]['callback'] );
+		$name = empty( $registered[ $widget_id ]['all_link'] ) ?
+			$registered[ $widget_id ]['name'] :
+			$registered[ $widget_id ]['name'] .
+			" <a href='{$registered[ $widget_id ]['all_link']}' class='edit-box open-box'>" . __('View all') . '</a>';
+		wp_add_dashboard_widget( $widget_id, $name, $registered[ $widget_id ]['callback'], $app->widgets['controls'][$widget_id]['callback'] );
 	}
 
 	if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset($_POST['widget_id']) ) {

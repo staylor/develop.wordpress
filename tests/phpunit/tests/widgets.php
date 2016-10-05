@@ -10,13 +10,12 @@ class Tests_Widgets extends WP_UnitTestCase {
 	public $valid_sidebar;
 
 	function clean_up_global_scope() {
-		global $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
-
-		$wp_registered_sidebars = array();
-		$wp_registered_widgets = array();
-		$wp_registered_widget_controls = array();
-		$wp_registered_widget_updates = array();
-		$wp_widget_factory->widgets = array();
+		$this->app->sidebars['registered'] = [];
+		$this->app->widgets['registered'] = [];
+		$this->app->widgets['controls'] = [];
+		$this->app->widgets['updates'] = [];
+		$factory = $this->app['widget_factory'];
+		$factory->widgets = [];
 
 		parent::clean_up_global_scope();
 	}
@@ -33,14 +32,12 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @see unregister_widget()
 	 */
 	function test_register_and_unregister_widget_core_widget() {
-		global $wp_widget_factory;
-
 		$widget_class = 'WP_Widget_Search';
 		register_widget( $widget_class );
-		$this->assertArrayHasKey( $widget_class, $wp_widget_factory->widgets );
+		$this->assertArrayHasKey( $widget_class, $this->app['widget_factory']->widgets );
 
 		unregister_widget( $widget_class );
-		$this->assertArrayNotHasKey( $widget_class, $wp_widget_factory->widgets );
+		$this->assertArrayNotHasKey( $widget_class, $this->app['widget_factory']->widgets );
 	}
 
 	/**
@@ -51,7 +48,8 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @ticket 28216
 	 */
 	function test_register_and_unregister_widget_instance() {
-		global $wp_widget_factory, $wp_registered_widgets;
+		$wp_registered_widgets = $this->app->widgets['registered'];
+		$wp_widget_factory = $this->app['widget_factory'];
 		$this->assertEmpty( $wp_widget_factory->widgets );
 		$this->assertEmpty( $wp_registered_widgets );
 
@@ -96,6 +94,7 @@ class Tests_Widgets extends WP_UnitTestCase {
 
 		$wp_widget_factory->_register_widgets();
 
+		$wp_registered_widgets = $this->app->widgets['registered'];
 		$this->assertArrayHasKey( 'search-2', $wp_registered_widgets );
 		$this->assertArrayHasKey( 'better_search-3', $wp_registered_widgets );
 		$this->assertArrayHasKey( 'best_search-4', $wp_registered_widgets );
@@ -118,12 +117,8 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @group sidebar
 	 */
 	function test_register_sidebars_single() {
-
-		global $wp_registered_sidebars;
-
 		register_sidebars( 1, array( 'id' => 'wp-unit-test' ) );
-
-		$this->assertTrue( isset( $wp_registered_sidebars['wp-unit-test'] ) );
+		$this->assertTrue( isset( $this->app->sidebars['registered']['wp-unit-test'] ) );
 
 	}
 
@@ -131,15 +126,12 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @group sidebar
 	 */
 	function test_register_sidebars_multiple() {
-
-		global $wp_registered_sidebars;
-
 		$result = array();
 		$num = 3;
 		$id_base = 'WP Unit Test';
 		register_sidebars( $num, array( 'name' => $id_base . ' %d' ) );
 
-		$names = wp_list_pluck( $wp_registered_sidebars, 'name' );
+		$names = wp_list_pluck( $this->app->sidebars['registered'], 'name' );
 		for ( $i = 1; $i <= $num; $i++ ) {
 			if ( in_array( "$id_base $i", $names ) ) {
 				$result[] = true;
@@ -154,8 +146,6 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @group sidebar
 	 */
 	function test_register_sidebar_with_no_id() {
-		global $wp_registered_sidebars;
-
 		$this->setExpectedIncorrectUsage( 'register_sidebar' );
 
 		// Incorrectly register a couple of sidebars for fun.
@@ -164,15 +154,13 @@ class Tests_Widgets extends WP_UnitTestCase {
 
 		$derived_sidebar_id = "sidebar-2"; // Number of sidebars in the global + 1.
 
-		$this->assertArrayHasKey( $derived_sidebar_id, $wp_registered_sidebars );
+		$this->assertArrayHasKey( $derived_sidebar_id, $this->app->sidebars['registered'] );
 	}
 
 	/**
 	 * @group sidebar
 	 */
 	function test_unregister_sidebar_registered_with_no_id() {
-		global $wp_registered_sidebars;
-
 		$this->setExpectedIncorrectUsage( 'register_sidebar' );
 
 		// Incorrectly register a couple of sidebars for fun.
@@ -183,58 +171,51 @@ class Tests_Widgets extends WP_UnitTestCase {
 
 		unregister_sidebar( $derived_sidebar_id );
 
-		$this->assertArrayNotHasKey( $derived_sidebar_id, $wp_registered_sidebars );
+		$this->assertArrayNotHasKey( $derived_sidebar_id, $this->app->sidebars['registered'] );
 	}
 
 	/**
 	 * @group sidebar
 	 */
 	function test_register_sidebar_with_string_id() {
-
-		global $wp_registered_sidebars;
-
 		$sidebar_id = 'wp-unit-test';
 		register_sidebar( array( 'id' => $sidebar_id ) );
 
-		$this->assertArrayHasKey( $sidebar_id, $wp_registered_sidebars );
+		$this->assertArrayHasKey( $sidebar_id, $this->app->sidebars['registered'] );
 	}
 
 	/**
 	 * @group sidebar
 	 */
 	function test_unregister_sidebar_with_string_id() {
-		global $wp_registered_sidebars;
-
 		$sidebar_id = 'wp-unit-tests';
 		register_sidebar( array( 'id' => $sidebar_id ) );
 
 		unregister_sidebar( $sidebar_id );
-		$this->assertArrayNotHasKey( $sidebar_id, $wp_registered_sidebars );
+
+		$this->assertArrayNotHasKey( $sidebar_id, $this->app->sidebars['registered'] );
 	}
 
 	/**
 	 * @group sidebar
 	 */
 	function test_register_sidebar_with_numeric_id() {
-		global $wp_registered_sidebars;
-
 		$sidebar_id = 2;
 		register_sidebar( array( 'id' => $sidebar_id ) );
 
-		$this->assertArrayHasKey( $sidebar_id, $wp_registered_sidebars );
+		$this->assertArrayHasKey( $sidebar_id, $this->app->sidebars['registered'] );
 	}
 
 	/**
 	 * @group sidebar
 	 */
 	function test_unregister_sidebar_with_numeric_id() {
-		global $wp_registered_sidebars;
-
 		$sidebar_id = 2;
 		register_sidebar( array( 'id' => $sidebar_id ) );
 
 		unregister_sidebar( $sidebar_id );
-		$this->assertArrayNotHasKey( $sidebar_id, $wp_registered_sidebars );
+
+		$this->assertArrayNotHasKey( $sidebar_id, $this->app->sidebars['registered'] );
 	}
 
 	/**
@@ -479,19 +460,18 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @see WP_Widget::_register()
 	 */
 	function test_wp_widget__register() {
-		global $wp_registered_widgets;
-
 		$settings = get_option( 'widget_search' );
 		unset( $settings['_multiwidget'] );
 		$this->assertArrayHasKey( 2, $settings );
 
+		$wp_registered_widgets = $this->app->widgets['registered'];
 		$this->assertEmpty( $wp_registered_widgets );
 		wp_widgets_init();
 
 		// Note: We cannot use array_keys() here because $settings could be an ArrayIterator
 		foreach ( $settings as $widget_number => $instance ) {
 			$widget_id = "search-$widget_number";
-			$this->assertArrayHasKey( $widget_id, $wp_registered_widgets );
+			$this->assertArrayHasKey( $widget_id, $this->app->widgets['registered'] );
 		}
 	}
 
@@ -524,8 +504,6 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @see WP_Widget::get_settings()
 	 */
 	function test_wp_widget_get_settings() {
-		global $wp_registered_widgets;
-
 		$option_value = get_option( 'widget_search' );
 		$this->assertArrayHasKey( '_multiwidget', $option_value );
 		$this->assertEquals( 1, $option_value['_multiwidget'] );
@@ -541,7 +519,7 @@ class Tests_Widgets extends WP_UnitTestCase {
 		$this->assertEquals( array(), (array) $never_used );
 
 		wp_widgets_init();
-		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
+		$wp_widget_search = $this->app->widgets['registered']['search-2']['callback'][0];
 
 		$settings = $wp_widget_search->get_settings();
 		// @todo $this->assertArrayNotHasKey( '_multiwidget', $settings ); ?
@@ -561,10 +539,8 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @see WP_Widget::save_settings()
 	 */
 	function test_wp_widget_save_settings() {
-		global $wp_registered_widgets;
-
 		wp_widgets_init();
-		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
+		$wp_widget_search = $this->app->widgets['registered']['search-2']['callback'][0];
 
 		$settings = $wp_widget_search->get_settings();
 		$overridden_title = 'Unit Tested';
@@ -592,10 +568,8 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @see WP_Widget::save_settings()
 	 */
 	function test_wp_widget_save_settings_delete() {
-		global $wp_registered_widgets;
-
 		wp_widgets_init();
-		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
+		$wp_widget_search = $this->app->widgets['registered']['search-2']['callback'][0];
 
 		$settings = $wp_widget_search->get_settings();
 		$this->assertArrayHasKey( 2, $settings );
@@ -609,12 +583,10 @@ class Tests_Widgets extends WP_UnitTestCase {
 	 * @see wp_widget_control()
 	 */
 	function test_wp_widget_control() {
-		global $wp_registered_widgets;
-
 		wp_widgets_init();
 		require_once ABSPATH . '/wp-admin/includes/widgets.php';
 		$widget_id = 'search-2';
-		$widget = $wp_registered_widgets[ $widget_id ];
+		$widget = $this->app->widgets['registered'][ $widget_id ];
 		$params = array(
 			'widget_id' => $widget['id'],
 			'widget_name' => $widget['name'],

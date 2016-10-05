@@ -395,8 +395,6 @@ function wp_set_lang_dir() {
  * Load the database class file and instantiate the `$wpdb` global.
  *
  * @since 2.5.0
- *
- * @global wpdb $wpdb The WordPress database class.
  */
 function require_wp_db() {
 	$app = getApp();
@@ -409,7 +407,11 @@ function require_wp_db() {
 		return;
 	}
 
-	$app['db'] = new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
+	$wpdb = new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
+
+	$app['db'] = function () use ( $wpdb ) {
+		return $wpdb;
+	};
 }
 
 /**

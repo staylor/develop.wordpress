@@ -45,20 +45,18 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 		remove_action( 'after_setup_theme', 'twentysixteen_setup' );
 		remove_action( 'customize_register', 'twentysixteen_customize_register', 11 );
 
-		$this->backup_registered_sidebars = $GLOBALS['wp_registered_sidebars'];
-
+		$this->backup_registered_sidebars = $this->app->sidebars['registered'];
 		// Reset protected static var on class.
 		WP_Customize_Setting::reset_aggregated_multidimensionals();
 	}
 
 	function clean_up_global_scope() {
-		global $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
+		$this->app->sidebars['registered'] = [];
+		$this->app->widgets['registered'] = [];
+		$this->app->widgets['controls'] = [];
+		$this->app->widgets['updates'] = [];
 
-		$wp_registered_sidebars = array();
-		$wp_registered_widgets = array();
-		$wp_registered_widget_controls = array();
-		$wp_registered_widget_updates = array();
-		$wp_widget_factory->widgets = array();
+		$this->app['widget_factory']->widgets = array();
 
 		parent::clean_up_global_scope();
 	}
@@ -67,7 +65,7 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 		$this->manager = null;
 		unset( $GLOBALS['wp_customize'] );
 		$this->app['scripts.global'] = null;
-		$GLOBALS['wp_registered_sidebars'] = $this->backup_registered_sidebars;
+		$this->app->sidebars['registered'] = $this->backup_registered_sidebars;
 		parent::tearDown();
 	}
 
@@ -119,14 +117,13 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 	 * @see WP_Customize_Widgets::get_selective_refreshable_widgets()
 	 */
 	function test_get_selective_refreshable_widgets_when_theme_supports() {
-		global $wp_widget_factory;
 		add_action( 'widgets_init', array( $this, 'override_search_widget_customize_selective_refresh' ), 90 );
 		add_theme_support( 'customize-selective-refresh-widgets' );
 		$this->do_customize_boot_actions();
 
 		$selective_refreshable_widgets = $this->manager->widgets->get_selective_refreshable_widgets();
 		$this->assertInternalType( 'array', $selective_refreshable_widgets );
-		$this->assertEquals( count( $wp_widget_factory->widgets ), count( $selective_refreshable_widgets ) );
+		$this->assertEquals( count( $this->app['widget_factory']->widgets ), count( $selective_refreshable_widgets ) );
 		$this->assertArrayHasKey( 'text', $selective_refreshable_widgets );
 		$this->assertTrue( $selective_refreshable_widgets['text'] );
 		$this->assertArrayHasKey( 'search', $selective_refreshable_widgets );
@@ -153,8 +150,7 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 	 * @see Tests_WP_Customize_Widgets::test_get_selective_refreshable_widgets_when_no_theme_supports()
 	 */
 	function override_search_widget_customize_selective_refresh() {
-		global $wp_widget_factory;
-		$wp_widget_factory->widgets['WP_Widget_Search']->widget_options['customize_selective_refresh'] = false;
+		$this->app['widget_factory']->widgets['WP_Widget_Search']->widget_options['customize_selective_refresh'] = false;
 	}
 
 	/**
@@ -376,7 +372,7 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 	 * @return array
 	 */
 	function get_test_widget_control_args() {
-		global $wp_registered_widgets;
+		$wp_registered_widgets = $this->app->widgets['registered'];
 		require_once ABSPATH . '/wp-admin/includes/widgets.php';
 		$widget_id = 'search-2';
 		$widget = $wp_registered_widgets[ $widget_id ];
@@ -443,14 +439,14 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 	 * @see WP_Customize_Widgets::is_panel_active()
 	 */
 	function test_is_panel_active() {
-		global $wp_registered_sidebars;
+		$wp_registered_sidebars = $this->app->sidebars['registered'];
 		$this->do_customize_boot_actions();
 
 		$this->assertNotEmpty( $wp_registered_sidebars );
 		$this->assertTrue( $this->manager->widgets->is_panel_active() );
 		$this->assertTrue( $this->manager->get_panel( 'widgets' )->active() );
 
-		$wp_registered_sidebars = array();
+		$this->app->sidebars['registered'] = array();
 		$this->assertFalse( $this->manager->widgets->is_panel_active() );
 		$this->assertFalse( $this->manager->get_panel( 'widgets' )->active() );
 	}
@@ -583,12 +579,12 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 	 * @see WP_Customize_Widgets::end_dynamic_sidebar()
 	 */
 	function test_filter_dynamic_sidebar_params() {
-		global $wp_registered_sidebars;
 		register_sidebar( array(
 			'id' => 'foo',
 		) );
 
 		$this->manager->widgets->selective_refresh_init();
+		$wp_registered_sidebars = $this->app['sidebars.registered']->getArrayCopy();
 
 		$params = array(
 			array_merge(

@@ -20,9 +20,9 @@ class Tests_Term_SplitSharedTerm extends WP_UnitTestCase {
 	 *   after term splitting.
 	 */
 	public function setUp() {
-		$wpdb = $this->app['db'];
-
 		parent::setUp();
+
+		$wpdb = $this->app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 		register_taxonomy( 'wptests_tax_2', 'post', array(

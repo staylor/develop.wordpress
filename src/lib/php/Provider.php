@@ -66,5 +66,9 @@ class Provider implements ServiceProviderInterface {
 		$app['password.hasher'] = function () {
 			return new \PasswordHash( 8, true );
 		};
+
+		$app['widget_factory'] = function () {
+			return new Widget\Factory();
+		};
 	}
 }

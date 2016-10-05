@@ -167,7 +167,9 @@ class Tests_Post_GetPageByPath extends WP_UnitTestCase {
 	 * @ticket 36711
 	 */
 	public function test_bad_path_served_from_cache_should_not_fall_back_on_current_post() {
-		global $wpdb, $post;
+		global $post;
+
+		$wpdb = $this->app['db'];
 
 		// Fake the global.
 		$post = self::factory()->post->create_and_get();

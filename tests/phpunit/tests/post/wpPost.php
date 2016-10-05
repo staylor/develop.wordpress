@@ -1,5 +1,5 @@
 <?php
-
+use function WP\getApp;
 /**
  * @group post
  */
@@ -7,7 +7,8 @@ class Tests_Post_WpPost extends WP_UnitTestCase {
 	protected static $post_id;
 
 	public static function wpSetUpBeforeClass( $factory ) {
-		$wpdb = $this->app['db'];
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		// Ensure that there is a post with ID 1.
 		if ( ! get_post( 1 ) ) {

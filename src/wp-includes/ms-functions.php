@@ -1324,13 +1324,11 @@ function insert_blog($domain, $path, $site_id) {
  *
  * @since MU
  *
- * @global WP\User\Roles $wp_roles
- *
  * @param int    $blog_id    The value returned by insert_blog().
  * @param string $blog_title The title of the new site.
  */
 function install_blog( $blog_id, $blog_title = '' ) {
-	global $wp_roles, $current_site;
+	global $current_site;
 
 	$app = WP\getApp();
 	$wpdb = $app['db'];

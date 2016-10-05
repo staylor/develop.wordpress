@@ -33,7 +33,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		// we want to make sure we're testing against the db, not just in-memory data
 		// this will flush everything and reload it from the db
 		unset($GLOBALS['wp_user_roles']);
-		global $wp_roles;
+		$wp_roles = $this->app['roles'];
 		if ( is_object( $wp_roles ) )
 			$wp_roles->_init();
 	}
@@ -587,7 +587,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 	// newly added empty role
 	function test_add_empty_role() {
-		global $wp_roles;
+		$wp_roles = $this->app['roles'];
 
 		$role_name = 'janitor';
 		add_role( $role_name, 'Janitor', array() );
@@ -618,7 +618,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 	// newly added role
 	function test_add_role() {
-		global $wp_roles;
+		$wp_roles = $this->app['roles'];
 
 		$role_name = 'janitor';
 		$expected_caps = array(
@@ -662,7 +662,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	function test_role_add_cap() {
 		// change the capabilites associated with a role and make sure the change is reflected in has_cap()
 
-		global $wp_roles;
+		$wp_roles = $this->app['roles'];
 		$role_name = rand_str();
 		add_role( $role_name, 'Janitor', array('level_1'=>true) );
 		$this->_flush_roles();
@@ -700,7 +700,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	function test_role_remove_cap() {
 		// change the capabilites associated with a role and make sure the change is reflected in has_cap()
 
-		global $wp_roles;
+		$wp_roles = $this->app['roles'];
 		$role_name = rand_str();
 		add_role( $role_name, 'Janitor', array('level_1'=>true, 'sweep_floor'=>true, 'polish_doorknobs'=>true) );
 		$this->_flush_roles();

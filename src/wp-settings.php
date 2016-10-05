@@ -278,20 +278,6 @@ $GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 $GLOBALS['wp'] = new WP();
 
 /**
- * WordPress Widget Factory Object
- * @global WP_Widget_Factory $wp_widget_factory
- * @since 2.8.0
- */
-$GLOBALS['wp_widget_factory'] = new WP_Widget_Factory();
-
-/**
- * WordPress User Roles
- * @global WP\User\Roles $wp_roles
- * @since 2.0.0
- */
-$GLOBALS['wp_roles'] = $app['roles'];
-
-/**
  * Fires before the theme is loaded.
  *
  * @since 2.6.0

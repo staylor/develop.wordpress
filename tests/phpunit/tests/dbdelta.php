@@ -22,8 +22,9 @@ class Tests_dbDelta extends WP_UnitTestCase {
 	 * Create a custom table to be used in each test.
 	 */
 	public function setUp() {
+		$app = \WP\getApp();
 
-		$wpdb = $this->app['db'];
+		$wpdb = $app['db'];
 
 		// Forcing MyISAM, because InnoDB only started supporting FULLTEXT indexes in MySQL 5.7.
 		$wpdb->query(

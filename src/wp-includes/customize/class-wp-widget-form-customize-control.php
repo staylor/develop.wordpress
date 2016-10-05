@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Widget Form Customize Control class.
  *
@@ -26,11 +28,9 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 
 	/**
 	 * Gather control params for exporting to JavaScript.
-	 *
-	 * @global array $wp_registered_widgets
 	 */
 	public function to_json() {
-		global $wp_registered_widgets;
+		$app = getApp();
 
 		parent::to_json();
 		$exported_properties = array( 'widget_id', 'widget_id_base', 'sidebar_id', 'width', 'height', 'is_wide' );
@@ -41,7 +41,7 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 		// Get the widget_control and widget_content.
 		require_once ABSPATH . '/wp-admin/includes/widgets.php';
 
-		$widget = $wp_registered_widgets[ $this->widget_id ];
+		$widget = $app->widgets['registered'][ $this->widget_id ];
 		if ( ! isset( $widget['params'][0] ) ) {
 			$widget['params'][0] = array();
 		}

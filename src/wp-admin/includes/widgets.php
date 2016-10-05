@@ -6,18 +6,17 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Display list of the available widgets.
  *
  * @since 2.5.0
- *
- * @global array $wp_registered_widgets
- * @global array $wp_registered_widget_controls
  */
 function wp_list_widgets() {
-	global $wp_registered_widgets, $wp_registered_widget_controls;
+	$app = getApp();
 
-	$sort = $wp_registered_widgets;
+	$sort = $app->widgets['registered'];
 	usort( $sort, '_sort_name_callback' );
 	$done = array();
 
@@ -33,8 +32,8 @@ function wp_list_widgets() {
 
 		$args = array( 'widget_id' => $widget['id'], 'widget_name' => $widget['name'], '_display' => 'template' );
 
-		if ( isset($wp_registered_widget_controls[$widget['id']]['id_base']) && isset($widget['params'][0]['number']) ) {
-			$id_base = $wp_registered_widget_controls[$widget['id']]['id_base'];
+		if ( isset( $app->widgets['controls'][$widget['id']]['id_base']) && isset($widget['params'][0]['number']) ) {
+			$id_base = $app->widgets['controls'][$widget['id']]['id_base'];
 			$args['_temp_id'] = "$id_base-__i__";
 			$args['_multi_num'] = next_widget_id_number($id_base);
 			$args['_add'] = 'multi';
@@ -104,17 +103,16 @@ function wp_list_widget_controls( $sidebar, $sidebar_name = '' ) {
  *
  * @since 2.5.0
  *
- * @global array $wp_registered_widgets
- *
  * @staticvar int $i
  *
  * @param array $params
  * @return array
  */
 function wp_list_widget_controls_dynamic_sidebar( $params ) {
-	global $wp_registered_widgets;
 	static $i = 0;
 	$i++;
+
+	$app = getApp();
 
 	$widget_id = $params[0]['widget_id'];
 	$id = isset($params[0]['_temp_id']) ? $params[0]['_temp_id'] : $widget_id;
@@ -124,26 +122,24 @@ function wp_list_widget_controls_dynamic_sidebar( $params ) {
 	$params[0]['after_widget'] = "</div>";
 	$params[0]['before_title'] = "%BEG_OF_TITLE%"; // deprecated
 	$params[0]['after_title'] = "%END_OF_TITLE%"; // deprecated
-	if ( is_callable( $wp_registered_widgets[$widget_id]['callback'] ) ) {
-		$wp_registered_widgets[$widget_id]['_callback'] = $wp_registered_widgets[$widget_id]['callback'];
-		$wp_registered_widgets[$widget_id]['callback'] = 'wp_widget_control';
+	if ( is_callable( $app->widgets['registered'][ $widget_id ]['callback'] ) ) {
+		$app->widgets['registered'][ $widget_id ]['_callback'] = $app->widgets['registered'][ $widget_id ]['callback'];
+		$app->widgets['registered'][ $widget_id ]['callback'] = 'wp_widget_control';
 	}
 
 	return $params;
 }
 
 /**
- *
- * @global array $wp_registered_widgets
- *
  * @param string $id_base
  * @return int
  */
 function next_widget_id_number( $id_base ) {
-	global $wp_registered_widgets;
 	$number = 1;
 
-	foreach ( $wp_registered_widgets as $widget_id => $widget ) {
+	$app = getApp();
+
+	foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
 		if ( preg_match( '/' . $id_base . '-([0-9]+)$/', $widget_id, $matches ) )
 			$number = max($number, $matches[1]);
 	}
@@ -159,21 +155,17 @@ function next_widget_id_number( $id_base ) {
  *
  * @since 2.5.0
  *
- * @global array $wp_registered_widgets
- * @global array $wp_registered_widget_controls
- * @global array $sidebars_widgets
- *
  * @param array $sidebar_args
  * @return array
  */
 function wp_widget_control( $sidebar_args ) {
-	global $wp_registered_widgets, $wp_registered_widget_controls, $sidebars_widgets;
+	$app = getApp();
 
 	$widget_id = $sidebar_args['widget_id'];
 	$sidebar_id = isset($sidebar_args['id']) ? $sidebar_args['id'] : false;
-	$key = $sidebar_id ? array_search( $widget_id, $sidebars_widgets[$sidebar_id] ) : '-1'; // position of widget in sidebar
-	$control = isset($wp_registered_widget_controls[$widget_id]) ? $wp_registered_widget_controls[$widget_id] : array();
-	$widget = $wp_registered_widgets[$widget_id];
+	$key = $sidebar_id ? array_search( $widget_id, $app->sidebars['widgets'][$sidebar_id] ) : '-1'; // position of widget in sidebar
+	$control = isset($app->widgets['controls'][$widget_id]) ? $app->widgets['controls'][$widget_id] : array();
+	$widget = $app->widgets['registered'][$widget_id];
 
 	$id_format = $widget['id'];
 	$widget_number = isset($control['params'][0]['number']) ? $control['params'][0]['number'] : '';
@@ -210,8 +202,8 @@ function wp_widget_control( $sidebar_args ) {
 			$id_format = $control['id_base'] . '-__i__';
 	}
 
-	$wp_registered_widgets[$widget_id]['callback'] = $wp_registered_widgets[$widget_id]['_callback'];
-	unset($wp_registered_widgets[$widget_id]['_callback']);
+	$app->widgets['registered'][$widget_id]['callback'] = $app->widgets['registered'][$widget_id]['_callback'];
+	unset( $app->widgets['registered'][$widget_id]['_callback'] );
 
 	$widget_title = esc_html( strip_tags( $sidebar_args['widget_name'] ) );
 	$has_form = 'noform';

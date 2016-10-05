@@ -34,6 +34,8 @@ class Tests_Admin_includesScreen extends WP_UnitTestCase {
 	);
 
 	function setUp() {
+		parent::setUp();
+
 		set_current_screen( 'front' );
 	}
 

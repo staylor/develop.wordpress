@@ -13,14 +13,14 @@ class Tests_Multisite_Network extends WP_UnitTestCase {
 	protected $suppress = false;
 
 	function setUp() {
-		$wpdb = $this->app['db'];
 		parent::setUp();
+		$wpdb = $this->app['db'];
 		$this->suppress = $wpdb->suppress_errors();
 	}
 
 	function tearDown() {
-		global $wpdb, $current_site;
-		$wpdb->suppress_errors( $this->suppress );
+		global $current_site;
+		$this->app['db']->suppress_errors( $this->suppress );
 		$current_site->id = 1;
 		parent::tearDown();
 	}
@@ -64,7 +64,9 @@ class Tests_Multisite_Network extends WP_UnitTestCase {
 	 * fake the process with UPDATE queries.
 	 */
 	function test_get_main_network_id_after_network_delete() {
-		global $wpdb, $current_site;
+		global $current_site;
+
+		$wpdb = $this->app['db'];
 
 		$id = self::factory()->network->create();
 		$temp_id = $id + 1;

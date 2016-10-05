@@ -1,5 +1,5 @@
 <?php
-
+use function WP\getApp;
 /**
  * @group taxonomy
  */
@@ -12,7 +12,8 @@ class Tests_Term_WpTerm extends WP_UnitTestCase {
 	}
 
 	public static function wpSetUpBeforeClass( $factory ) {
-		$wpdb = $this->app['db'];
+		$app = getApp();
+		$wpdb = $app['db'];
 
 		register_taxonomy( 'wptests_tax', 'post' );
 

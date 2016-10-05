@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Core base class extended to register widgets.
  *
@@ -406,12 +408,10 @@ class WP_Widget {
 	 * @since 2.8.0
 	 * @access public
 	 *
-	 * @global array $wp_registered_widgets
-	 *
 	 * @param int $deprecated Not used.
 	 */
 	public function update_callback( $deprecated = 1 ) {
-		global $wp_registered_widgets;
+		$app = getApp();
 
 		$all_instances = $this->get_settings();
 
@@ -426,8 +426,8 @@ class WP_Widget {
 			else
 				return;
 
-			if ( isset($wp_registered_widgets[$del_id]['params'][0]['number']) ) {
-				$number = $wp_registered_widgets[$del_id]['params'][0]['number'];
+			if ( isset($app->widgets['registered'][$del_id]['params'][0]['number']) ) {
+				$number = $app->widgets['registered'][$del_id]['params'][0]['number'];
 
 				if ( $this->id_base . '-' . $number == $del_id )
 					unset($all_instances[$number]);

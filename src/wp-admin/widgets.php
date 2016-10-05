@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -19,6 +21,8 @@ if ( ! current_user_can( 'edit_theme_options' ) ) {
 		403
 	);
 }
+
+$app = getApp();
 
 $widgets_access = get_user_setting( 'widgets_access' );
 if ( isset($_GET['widgets-access']) ) {
@@ -167,7 +171,7 @@ if ( isset($_POST['savewidget']) || isset($_POST['removewidget']) ) {
 
 	$_POST['widget-id'] = $sidebar;
 
-	foreach ( (array) $wp_registered_widget_updates as $name => $control ) {
+	foreach ( (array) $app->widgets['updates'] as $name => $control ) {
 		if ( $name != $id_base || !is_callable($control['callback']) )
 			continue;
 
@@ -222,29 +226,29 @@ if ( isset($_GET['editwidget']) && $_GET['editwidget'] ) {
 
 	if ( isset($_GET['addnew']) ) {
 		// Default to the first sidebar
-		$keys = array_keys( $wp_registered_sidebars );
+		$keys = array_keys( $app->sidebars['registered'] );
 		$sidebar = reset( $keys );
 
 		if ( isset($_GET['base']) && isset($_GET['num']) ) { // multi-widget
 			// Copy minimal info from an existing instance of this widget to a new instance
-			foreach ( $wp_registered_widget_controls as $control ) {
+			foreach ( $app->widgets['controls'] as $control ) {
 				if ( $_GET['base'] === $control['id_base'] ) {
 					$control_callback = $control['callback'];
 					$multi_number = (int) $_GET['num'];
 					$control['params'][0]['number'] = -1;
 					$widget_id = $control['id'] = $control['id_base'] . '-' . $multi_number;
-					$wp_registered_widget_controls[$control['id']] = $control;
+					$app->widgets['controls'][$control['id']] = $control;
 					break;
 				}
 			}
 		}
 	}
 
-	if ( isset($wp_registered_widget_controls[$widget_id]) && !isset($control) ) {
-		$control = $wp_registered_widget_controls[$widget_id];
+	if ( isset($app->widgets['controls'][$widget_id]) && !isset($control) ) {
+		$control = $app->widgets['controls'][$widget_id];
 		$control_callback = $control['callback'];
-	} elseif ( !isset($wp_registered_widget_controls[$widget_id]) && isset($wp_registered_widgets[$widget_id]) ) {
-		$name = esc_html( strip_tags($wp_registered_widgets[$widget_id]['name']) );
+	} elseif ( !isset($app->widgets['controls'][$widget_id]) && isset( $app->widgets['registered'][ $widget_id ] ) ) {
+		$name = esc_html( strip_tags( $app->widgets['registered'][ $widget_id ]['name'] ) );
 	}
 
 	if ( !isset($name) )
@@ -281,7 +285,7 @@ if ( isset($_GET['editwidget']) && $_GET['editwidget'] ) {
 	<div class="widget-position">
 	<table class="widefat"><thead><tr><th><?php _e('Sidebar'); ?></th><th><?php _e('Position'); ?></th></tr></thead><tbody>
 <?php
-	foreach ( $wp_registered_sidebars as $sbname => $sbvalue ) {
+	foreach ( $app->sidebars['registered'] as $sbname => $sbvalue ) {
 		echo "\t\t<tr><td><label><input type='radio' name='sidebar' value='" . esc_attr($sbname) . "'" . checked( $sbname, $sidebar, false ) . " /> $sbvalue[name]</label></td><td>";
 		if ( 'wp_inactive_widgets' == $sbname || 'orphaned_widgets' == substr( $sbname, 0, 16 ) ) {
 			echo '&nbsp;';
@@ -400,7 +404,7 @@ do_action( 'widgets_admin_page' ); ?>
 <?php
 
 $theme_sidebars = array();
-foreach ( $wp_registered_sidebars as $sidebar => $registered_sidebar ) {
+foreach ( $app->sidebars['registered'] as $sidebar => $registered_sidebar ) {
 	if ( false !== strpos( $registered_sidebar['class'], 'inactive-sidebar' ) || 'orphaned_widgets' == substr( $sidebar, 0, 16 ) ) {
 		$wrap_class = 'widgets-holder-wrap';
 		if ( !empty( $registered_sidebar['class'] ) )

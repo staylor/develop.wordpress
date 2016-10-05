@@ -135,13 +135,13 @@ final class WP_Customize_Widgets {
 	 *               selective refresh, an empty array is returned.
 	 */
 	public function get_selective_refreshable_widgets() {
-		global $wp_widget_factory;
+		$app = getApp();
 		if ( ! current_theme_supports( 'customize-selective-refresh-widgets' ) ) {
 			return array();
 		}
 		if ( ! isset( $this->selective_refreshable_widgets ) ) {
 			$this->selective_refreshable_widgets = array();
-			foreach ( $wp_widget_factory->widgets as $wp_widget ) {
+			foreach ( $app['widget_factory']->widgets as $wp_widget ) {
 				$this->selective_refreshable_widgets[ $wp_widget->id_base ] = ! empty( $wp_widget->widget_options['customize_selective_refresh'] );
 			}
 		}
@@ -266,11 +266,10 @@ final class WP_Customize_Widgets {
 	 * @since 3.9.0
 	 * @access public
 	 *
-	 * @global array $sidebars_widgets
 	 * @global array $_wp_sidebars_widgets
 	 */
 	public function override_sidebars_widgets_for_theme_switch() {
-		global $sidebars_widgets;
+		$app = getApp();
 
 		if ( $this->manager->doing_ajax() || $this->manager->is_theme_active() ) {
 			return;
@@ -280,8 +279,9 @@ final class WP_Customize_Widgets {
 		add_filter( 'customize_value_old_sidebars_widgets_data', array( $this, 'filter_customize_value_old_sidebars_widgets_data' ) );
 
 		// retrieve_widgets() looks at the global $sidebars_widgets
-		$sidebars_widgets = $this->old_sidebars_widgets;
-		$sidebars_widgets = retrieve_widgets( 'customize' );
+		$app->sidebars['widgets'] = $this->old_sidebars_widgets;
+		$app->sidebars['widgets'] = retrieve_widgets( 'customize' );
+
 		add_filter( 'option_sidebars_widgets', array( $this, 'filter_option_sidebars_widgets_for_theme_switch' ), 1 );
 		// reset global cache var used by wp_get_sidebars_widgets()
 		unset( $GLOBALS['_wp_sidebars_widgets'] );
@@ -370,19 +370,15 @@ final class WP_Customize_Widgets {
 	 *
 	 * @since 3.9.0
 	 * @access public
-	 *
-	 * @global array $wp_registered_widgets
-	 * @global array $wp_registered_widget_controls
-	 * @global array $wp_registered_sidebars
 	 */
 	public function customize_register() {
-		global $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_sidebars;
+		$app = getApp();
 
 		add_filter( 'sidebars_widgets', array( $this, 'preview_sidebars_widgets' ), 1 );
 
 		$sidebars_widgets = array_merge(
 			array( 'wp_inactive_widgets' => array() ),
-			array_fill_keys( array_keys( $wp_registered_sidebars ), array() ),
+			array_fill_keys( array_keys( $app->sidebars['registered'] ), array() ),
 			wp_get_sidebars_widgets()
 		);
 
@@ -393,7 +389,7 @@ final class WP_Customize_Widgets {
 		 * inactive, and orphaned since a widget may get suppressed from a sidebar
 		 * via a plugin (like Widget Visibility).
 		 */
-		foreach ( array_keys( $wp_registered_widgets ) as $widget_id ) {
+		foreach ( array_keys( $app->widgets['registered'] ) as $widget_id ) {
 			$setting_id   = $this->get_setting_id( $widget_id );
 			$setting_args = $this->get_setting_args( $setting_id );
 			if ( ! $this->manager->get_setting( $setting_id ) ) {
@@ -449,9 +445,9 @@ final class WP_Customize_Widgets {
 				if ( $is_active_sidebar ) {
 
 					$section_args = array(
-						'title' => $wp_registered_sidebars[ $sidebar_id ]['name'],
-						'description' => $wp_registered_sidebars[ $sidebar_id ]['description'],
-						'priority' => array_search( $sidebar_id, array_keys( $wp_registered_sidebars ) ),
+						'title' => $app->sidebars['registered'][ $sidebar_id ]['name'],
+						'description' => $app->sidebars['registered'][ $sidebar_id ]['description'],
+						'priority' => array_search( $sidebar_id, array_keys( $app->sidebars['registered'] ) ),
 						'panel' => 'widgets',
 						'sidebar_id' => $sidebar_id,
 					);
@@ -485,13 +481,13 @@ final class WP_Customize_Widgets {
 			foreach ( $sidebar_widget_ids as $i => $widget_id ) {
 
 				// Skip widgets that may have gone away due to a plugin being deactivated.
-				if ( ! $is_active_sidebar || ! isset( $wp_registered_widgets[$widget_id] ) ) {
+				if ( ! $is_active_sidebar || ! isset( $app->widgets['registered'][$widget_id] ) ) {
 					continue;
 				}
 
-				$registered_widget = $wp_registered_widgets[$widget_id];
+				$registered_widget = $app->widgets['registered'][$widget_id];
 				$setting_id        = $this->get_setting_id( $widget_id );
-				$id_base           = $wp_registered_widget_controls[$widget_id]['id_base'];
+				$id_base           = $app->widgets['controls'][$widget_id]['id_base'];
 
 				$control = new WP_Widget_Form_Customize_Control( $this->manager, $setting_id, array(
 					'label'          => $registered_widget['name'],
@@ -500,8 +496,8 @@ final class WP_Customize_Widgets {
 					'widget_id'      => $widget_id,
 					'widget_id_base' => $id_base,
 					'priority'       => $i,
-					'width'          => $wp_registered_widget_controls[$widget_id]['width'],
-					'height'         => $wp_registered_widget_controls[$widget_id]['height'],
+					'width'          => $app->widgets['controls'][$widget_id]['width'],
+					'height'         => $app->widgets['controls'][$widget_id]['height'],
 					'is_wide'        => $this->is_wide_widget( $widget_id ),
 				) );
 				$this->manager->add_control( $control );
@@ -523,12 +519,11 @@ final class WP_Customize_Widgets {
 	 *
 	 * @see WP_Customize_Panel::$active_callback
 	 *
-	 * @global array $wp_registered_sidebars
 	 * @return bool Active.
 	 */
 	public function is_panel_active() {
-		global $wp_registered_sidebars;
-		return ! empty( $wp_registered_sidebars );
+		$app = getApp();
+		return ! empty( $app->sidebars['registered'] );
 	}
 
 	/**
@@ -563,16 +558,13 @@ final class WP_Customize_Widgets {
 	 * @since 3.9.0
 	 * @access public
 	 *
-	 * @global $wp_registered_widget_controls
-	 *
 	 * @param string $widget_id Widget ID.
 	 * @return bool Whether or not the widget is a "wide" widget.
 	 */
 	public function is_wide_widget( $widget_id ) {
-		global $wp_registered_widget_controls;
-
+		$app = getApp();
 		$parsed_widget_id = $this->parse_widget_id( $widget_id );
-		$width            = $wp_registered_widget_controls[$widget_id]['width'];
+		$width            = $app->widgets['controls'][$widget_id]['width'];
 		$is_core          = in_array( $parsed_widget_id['id_base'], $this->core_widget_id_bases );
 		$is_wide          = ( $width > 250 && ! $is_core );
 
@@ -668,12 +660,9 @@ final class WP_Customize_Widgets {
 	 *
 	 * @since 3.9.0
 	 * @access public
-	 *
-	 * @global array $wp_registered_sidebars
-	 * @global array $wp_registered_widgets
 	 */
 	public function enqueue_scripts() {
-		global $wp_registered_sidebars, $wp_registered_widgets;
+		$app = getApp();
 
 		wp_enqueue_style( 'customize-widgets' );
 		wp_enqueue_script( 'customize-widgets' );
@@ -719,8 +708,8 @@ final class WP_Customize_Widgets {
 		);
 
 		$settings = array(
-			'registeredSidebars'   => array_values( $wp_registered_sidebars ),
-			'registeredWidgets'    => $wp_registered_widgets,
+			'registeredSidebars'   => array_values( $app->sidebars['registered'] ),
+			'registeredWidgets'    => $app->widgets['registered'],
 			'availableWidgets'     => $available_widgets, // @todo Merge this with registered_widgets
 			'l10n' => array(
 				'saveBtnLabel'     => __( 'Apply' ),
@@ -884,8 +873,6 @@ final class WP_Customize_Widgets {
 	 * @since 3.9.0
 	 * @access public
 	 *
-	 * @global array $wp_registered_widgets
-	 * @global array $wp_registered_widget_controls
 	 * @staticvar array $available_widgets
 	 *
 	 * @see wp_list_widgets()
@@ -898,10 +885,11 @@ final class WP_Customize_Widgets {
 			return $available_widgets;
 		}
 
-		global $wp_registered_widgets, $wp_registered_widget_controls;
+		$app = getApp();
+
 		require_once ABSPATH . '/wp-admin/includes/widgets.php'; // for next_widget_id_number()
 
-		$sort = $wp_registered_widgets;
+		$sort = $app->widgets['registered'];
 		usort( $sort, array( $this, '_sort_name_callback' ) );
 		$done = array();
 
@@ -927,9 +915,9 @@ final class WP_Customize_Widgets {
 			);
 
 			$is_disabled     = false;
-			$is_multi_widget = ( isset( $wp_registered_widget_controls[$widget['id']]['id_base'] ) && isset( $widget['params'][0]['number'] ) );
+			$is_multi_widget = ( isset( $app->widgets['controls'][$widget['id']]['id_base'] ) && isset( $widget['params'][0]['number'] ) );
 			if ( $is_multi_widget ) {
-				$id_base            = $wp_registered_widget_controls[$widget['id']]['id_base'];
+				$id_base            = $app->widgets['controls'][$widget['id']]['id_base'];
 				$args['_temp_id']   = "$id_base-__i__";
 				$args['_multi_num'] = next_widget_id_number( $id_base );
 				$args['_add']       = 'multi';
@@ -954,8 +942,8 @@ final class WP_Customize_Widgets {
 				'is_disabled'  => $is_disabled,
 				'id_base'      => $id_base,
 				'transport'    => $this->is_widget_selective_refreshable( $id_base ) ? 'postMessage' : 'refresh',
-				'width'        => $wp_registered_widget_controls[$widget['id']]['width'],
-				'height'       => $wp_registered_widget_controls[$widget['id']]['height'],
+				'width'        => $app->widgets['controls'][$widget['id']]['width'],
+				'height'       => $app->widgets['controls'][$widget['id']]['height'],
 				'is_wide'      => $this->is_wide_widget( $widget['id'] ),
 			) );
 
@@ -1115,19 +1103,16 @@ final class WP_Customize_Widgets {
 	 *
 	 * @since 3.9.0
 	 * @access public
-     *
-	 * @global array $wp_registered_sidebars
-	 * @global array $wp_registered_widgets
 	 */
 	public function export_preview_data() {
-		global $wp_registered_sidebars, $wp_registered_widgets;
+		$app = getApp();
 
 		// Prepare Customizer settings to pass to JavaScript.
 		$settings = array(
 			'renderedSidebars'   => array_fill_keys( array_unique( $this->rendered_sidebars ), true ),
 			'renderedWidgets'    => array_fill_keys( array_keys( $this->rendered_widgets ), true ),
-			'registeredSidebars' => array_values( $wp_registered_sidebars ),
-			'registeredWidgets'  => $wp_registered_widgets,
+			'registeredSidebars' => array_values( $app->sidebars['registered'] ),
+			'registeredWidgets'  => $app->widgets['registered'],
 			'l10n'               => array(
 				'widgetTooltip'  => __( 'Shift-click to edit this widget.' ),
 			),
@@ -1324,15 +1309,12 @@ final class WP_Customize_Widgets {
 	 * @since 3.9.0
 	 * @access public
 	 *
-	 * @global array $wp_registered_widgets
-	 *
 	 * @param array $widget_ids List of widget IDs.
 	 * @return array Parsed list of widget IDs.
 	 */
 	public function sanitize_sidebar_widgets_js_instance( $widget_ids ) {
-		global $wp_registered_widgets;
-		$widget_ids = array_values( array_intersect( $widget_ids, array_keys( $wp_registered_widgets ) ) );
-		return $widget_ids;
+		$app = getApp();
+		return array_values( array_intersect( $widget_ids, array_keys( $app->widgets['registered'] ) ) );
 	}
 
 	/**
@@ -1343,15 +1325,12 @@ final class WP_Customize_Widgets {
 	 * @since 3.9.0
 	 * @access public
 	 *
-	 * @global array $wp_registered_widget_updates
-	 * @global array $wp_registered_widget_controls
-	 *
 	 * @param  string $widget_id Widget ID.
 	 * @return WP_Error|array Array containing the updated widget information.
 	 *                        A WP_Error object, otherwise.
 	 */
 	public function call_widget_update( $widget_id ) {
-		global $wp_registered_widget_updates, $wp_registered_widget_controls;
+		$app = getApp();
 
 		$setting_id = $this->get_setting_id( $widget_id );
 
@@ -1404,7 +1383,7 @@ final class WP_Customize_Widgets {
 		}
 
 		// Invoke the widget update callback.
-		foreach ( (array) $wp_registered_widget_updates as $name => $control ) {
+		foreach ( (array) $app->widgets['updates'] as $name => $control ) {
 			if ( $name === $parsed_id['id_base'] && is_callable( $control['callback'] ) ) {
 				ob_start();
 				call_user_func_array( $control['callback'], $control['params'] );
@@ -1451,7 +1430,7 @@ final class WP_Customize_Widgets {
 
 		// Obtain the widget control with the updated instance in place.
 		ob_start();
-		$form = $wp_registered_widget_controls[ $widget_id ];
+		$form = $app->widgets['controls'][ $widget_id ];
 		if ( $form ) {
 			call_user_func_array( $form['callback'], $form['params'] );
 		}

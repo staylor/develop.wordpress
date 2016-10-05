@@ -154,6 +154,10 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	function tearDown() {
 		global $wp_query, $wp;
 		$wpdb = $this->app['db'];
+		if ( is_null( $wpdb ) ) {
+			error_log( static::class );
+		}
+
 		$wpdb->query( 'ROLLBACK' );
 		if ( is_multisite() ) {
 			while ( ms_is_switched() ) {

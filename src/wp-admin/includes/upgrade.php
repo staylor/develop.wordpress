@@ -1307,13 +1307,8 @@ function upgrade_300() {
  *
  * @ignore
  * @since 3.3.0
- *
- * @global array $wp_registered_widgets
- * @global array $sidebars_widgets
  */
 function upgrade_330() {
-	global $wp_registered_widgets, $sidebars_widgets;
-
 	$app = getApp();
 	$wpdb = $app['db'];
 	$wp_current_db_version = $app['wp_current_db_version'];
@@ -1339,19 +1334,19 @@ function upgrade_330() {
 			if ( is_array($sidebar) )
 			foreach ( (array) $sidebar as $i => $name ) {
 				$id = strtolower($name);
-				if ( isset($wp_registered_widgets[$id]) ) {
+				if ( isset( $app->widgets['registered'][ $id ] ) ) {
 					$_sidebars_widgets[$index][$i] = $id;
 					continue;
 				}
 				$id = sanitize_title($name);
-				if ( isset($wp_registered_widgets[$id]) ) {
+				if ( isset( $app->widgets['registered'][ $id ] ) ) {
 					$_sidebars_widgets[$index][$i] = $id;
 					continue;
 				}
 
 				$found = false;
 
-				foreach ( $wp_registered_widgets as $widget_id => $widget ) {
+				foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
 					if ( strtolower($widget['name']) == strtolower($name) ) {
 						$_sidebars_widgets[$index][$i] = $widget['id'];
 						$found = true;

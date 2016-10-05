@@ -39,6 +39,7 @@ if ( ! empty( $autofocus ) && is_array( $autofocus ) ) {
 global $wp_customize;
 
 $registered = $app['scripts.global']->registered;
+unset( $app['scripts.global'] );
 $app['scripts.global'] = $app['scripts.factory'];
 $app['scripts.global']->registered = $registered;
 

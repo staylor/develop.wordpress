@@ -677,6 +677,7 @@ function meta_form( $post = null ) {
  *                            Default 0|false.
  */
 function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
+	$app = getApp();
 	$post = get_post();
 
 	if ( $for_post )

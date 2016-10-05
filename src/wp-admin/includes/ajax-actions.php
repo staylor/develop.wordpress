@@ -1848,14 +1848,8 @@ function wp_ajax_widgets_order() {
  * Ajax handler for saving a widget.
  *
  * @since 3.1.0
- *
- * @global array $wp_registered_widgets
- * @global array $wp_registered_widget_controls
- * @global array $wp_registered_widget_updates
  */
 function wp_ajax_save_widget() {
-	global $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
-
 	check_ajax_referer( 'save-sidebar-widgets', 'savewidgets' );
 
 	if ( !current_user_can('edit_theme_options') || !isset($_POST['id_base']) )
@@ -1880,6 +1874,8 @@ function wp_ajax_save_widget() {
 	/** This action is documented in wp-admin/widgets.php */
 	do_action( 'sidebar_admin_setup' );
 
+	$app = getApp();
+
 	$id_base = $_POST['id_base'];
 	$widget_id = $_POST['widget-id'];
 	$sidebar_id = $_POST['sidebar'];
@@ -1893,8 +1889,9 @@ function wp_ajax_save_widget() {
 	// Delete.
 	if ( isset($_POST['delete_widget']) && $_POST['delete_widget'] ) {
 
-		if ( !isset($wp_registered_widgets[$widget_id]) )
+		if ( ! isset( $app->widgets['registered'][ $widget_id ] ) ) {
 			wp_die( $error );
+		}
 
 		$sidebar = array_diff( $sidebar, array($widget_id) );
 		$_POST = array('sidebar' => $sidebar_id, 'widget-' . $id_base => array(), 'the-widget-id' => $widget_id, 'delete_widget' => '1');
@@ -1912,7 +1909,7 @@ function wp_ajax_save_widget() {
 	}
 	$_POST['widget-id'] = $sidebar;
 
-	foreach ( (array) $wp_registered_widget_updates as $name => $control ) {
+	foreach ( (array) $app->widgets['updates'] as $name => $control ) {
 
 		if ( $name == $id_base ) {
 			if ( !is_callable( $control['callback'] ) )
@@ -1935,7 +1932,7 @@ function wp_ajax_save_widget() {
 	if ( !empty($_POST['add_new']) )
 		wp_die();
 
-	if ( $form = $wp_registered_widget_controls[$widget_id] )
+	if ( $form = $app->widgets['controls'][$widget_id] )
 		call_user_func_array( $form['callback'], $form['params'] );
 
 	wp_die();
