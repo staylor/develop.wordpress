@@ -355,8 +355,7 @@ class Tests_AdminBar extends WP_UnitTestCase {
 		$id = wp_insert_post( $post );
 
 		// Set queried object to the newly created post.
-		global $wp_the_query;
-		$wp_the_query->queried_object = (object) array( 'ID' => $id, 'post_type' => 'post' );
+		$this->app['wp']->query->queried_object = (object) array( 'ID' => $id, 'post_type' => 'post' );
 
 		$wp_admin_bar = $this->get_standard_admin_bar();
 
@@ -371,8 +370,7 @@ class Tests_AdminBar extends WP_UnitTestCase {
 		wp_set_current_user( self::$editor_id );
 
 		// Set queried object to a non-existing post.
-		global $wp_the_query;
-		$wp_the_query->queried_object = (object) array( 'ID' => 0, 'post_type' => 'post' );
+		$this->app['wp']->query->queried_object = (object) array( 'ID' => 0, 'post_type' => 'post' );
 
 		$wp_admin_bar = $this->get_standard_admin_bar();
 

@@ -27,8 +27,8 @@ class Tests_Query_IsTerm extends WP_UnitTestCase {
 
 		set_current_screen( 'front' );
 
-		$GLOBALS['wp_the_query'] = new WP_Query();
-		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
+		$this->app['wp']->query = new WP_Query();
+		$this->app['wp']->current_query = $this->app['wp']->query;
 
 		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
 

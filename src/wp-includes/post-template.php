@@ -564,13 +564,12 @@ function body_class( $class = '' ) {
  *
  * @since 2.8.0
  *
- * @global WP_Query $wp_query
- *
  * @param string|array $class One or more classes to add to the class list.
  * @return array Array of classes.
  */
 function get_body_class( $class = '' ) {
-	global $wp_query;
+	$app = getApp();
+	$wp_query = $app['wp']->current_query;
 
 	$classes = array();
 
@@ -1130,8 +1129,6 @@ function wp_dropdown_pages( $args = '' ) {
  *
  * @see get_pages()
  *
- * @global WP_Query $wp_query
- *
  * @param array|string $args {
  *     Array or string of arguments. Optional.
  *
@@ -1204,8 +1201,8 @@ function wp_list_pages( $args = '' ) {
 		if ( $r['title_li'] ) {
 			$output .= '<li class="pagenav">' . $r['title_li'] . '<ul>';
 		}
-		global $wp_query;
-		if ( is_page() || is_attachment() || $wp_query->is_posts_page ) {
+		$app = getApp();
+		if ( is_page() || is_attachment() || $app['wp']->current_query->is_posts_page ) {
 			$current_page = get_queried_object_id();
 		} elseif ( is_singular() ) {
 			$queried_object = get_queried_object();

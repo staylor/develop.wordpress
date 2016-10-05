@@ -3146,8 +3146,6 @@ function language_attributes( $doctype = 'html' ) {
  *
  * @since 2.1.0
  *
- * @global WP_Query   $wp_query
- *
  * @param string|array $args {
  *     Optional. Array or string of arguments for generating paginated links for archives.
  *
@@ -3173,9 +3171,9 @@ function language_attributes( $doctype = 'html' ) {
  * @return array|string|void String of page links or array of page links.
  */
 function paginate_links( $args = '' ) {
-	global $wp_query;
-
 	$app = getApp();
+	$wp_query = $app['wp']->current_query;
+
 	// Setting up default values based on the current URL.
 	$pagenum_link = html_entity_decode( get_pagenum_link() );
 	$url_parts    = explode( '?', $pagenum_link );

@@ -3930,18 +3930,17 @@ class WP_Query {
 		return (bool) $this->is_embed;
 	}
 
+	public $is_main_query = false;
+
 	/**
 	 * Is the query the main query?
 	 *
 	 * @since 3.3.0
 	 *
-	 * @global WP_Query $wp_query Global WP_Query instance.
-	 *
 	 * @return bool
 	 */
 	public function is_main_query() {
-		global $wp_the_query;
-		return $wp_the_query === $this;
+		return $this->is_main_query;
 	}
 
 	/**

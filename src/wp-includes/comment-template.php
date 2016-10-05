@@ -1275,7 +1275,6 @@ function wp_comment_form_unfiltered_html_nonce() {
  *
  * @since 1.5.0
  *
- * @global WP_Query   $wp_query
  * @global WP_Post    $post
  * @global int        $id
  * @global WP_Comment $comment
@@ -1290,13 +1289,14 @@ function wp_comment_form_unfiltered_html_nonce() {
  *                                  Default false.
  */
 function comments_template( $file = '/comments.php', $separate_comments = false ) {
-	global $wp_query, $withcomments, $post, $wpdb, $id, $comment, $user_login, $user_ID, $user_identity, $overridden_cpage;
+	global $withcomments, $post, $wpdb, $id, $comment, $user_login, $user_ID, $user_identity, $overridden_cpage;
 
 	if ( !(is_single() || is_page() || $withcomments) || empty($post) )
 		return;
 
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_query = $app['wp']->current_query;
 
 	if ( empty($file) )
 		$file = '/comments.php';
@@ -1894,7 +1894,6 @@ function comment_form_title( $noreplytext = false, $replytext = false, $linktopa
  *
  * @see WP_Query->comments
  *
- * @global WP_Query $wp_query
  * @global int      $comment_alt
  * @global int      $comment_depth
  * @global int      $comment_thread_alt
@@ -1924,7 +1923,10 @@ function comment_form_title( $noreplytext = false, $replytext = false, $linktopa
  * @param array $comments Optional. Array of WP_Comment objects.
  */
 function wp_list_comments( $args = array(), $comments = null ) {
-	global $wp_query, $comment_alt, $comment_depth, $comment_thread_alt, $overridden_cpage, $in_comment_loop;
+	global $comment_alt, $comment_depth, $comment_thread_alt, $overridden_cpage, $in_comment_loop;
+
+	$app = getApp();
+	$wp_query = $app['wp']->current_query;
 
 	$in_comment_loop = true;
 

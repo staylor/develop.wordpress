@@ -9,6 +9,8 @@
  * @subpackage Template
  */
 
+use function WP\getApp;
+
 /**
  * Check if post has an image attached.
  *
@@ -67,16 +69,17 @@ function the_post_thumbnail( $size = 'post-thumbnail', $attr = '' ) {
  *
  * @since 3.2.0
  *
- * @global WP_Query $wp_query
- *
  * @param WP_Query $wp_query Optional. A WP_Query instance. Defaults to the $wp_query global.
  */
 function update_post_thumbnail_cache( $wp_query = null ) {
-	if ( ! $wp_query )
-		$wp_query = $GLOBALS['wp_query'];
+	if ( ! $wp_query ) {
+		$app = getApp();
+		$wp_query = $app['wp']->current_query;
+	}
 
-	if ( $wp_query->thumbnails_cached )
+	if ( $wp_query->thumbnails_cached ) {
 		return;
+	}
 
 	$thumb_ids = array();
 	foreach ( $wp_query->posts as $post ) {

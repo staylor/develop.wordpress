@@ -562,12 +562,11 @@ function wp_admin_bar_shortlink_menu( $wp_admin_bar ) {
  * @since 3.1.0
  *
  * @global WP_Term  $tag
- * @global WP_Query $wp_the_query
  *
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_edit_menu( $wp_admin_bar ) {
-	global $tag, $wp_the_query;
+	global $tag;
 
 	if ( is_admin() ) {
 		$current_screen = get_current_screen();
@@ -619,7 +618,8 @@ function wp_admin_bar_edit_menu( $wp_admin_bar ) {
 			) );
 		}
 	} else {
-		$current_object = $wp_the_query->get_queried_object();
+		$app = getApp();
+		$current_object = $app['wp']->query->get_queried_object();
 
 		if ( empty( $current_object ) )
 			return;

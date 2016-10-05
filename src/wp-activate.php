@@ -6,6 +6,8 @@
  * @package WordPress
  */
 
+use function WP\getApp;
+
 define( 'WP_INSTALLING', true );
 
 /** Sets up the WordPress Environment. */
@@ -22,7 +24,8 @@ if ( is_object( $wp_object_cache ) )
 	$wp_object_cache->cache_enabled = false;
 
 // Fix for page title
-$wp_query->is_404 = false;
+$app = getApp();
+$app['wp']->current_query->is_404 = false;
 
 /**
  * Fires before the Site Activation page is loaded.

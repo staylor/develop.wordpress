@@ -951,18 +951,14 @@ function wp_remote_fopen( $uri ) {
  *
  * @since 2.0.0
  *
- * @global WP_Query $wp_query
- * @global WP_Query $wp_the_query
- *
  * @param string|array $query_vars Default WP_Query arguments.
  */
 function wp( $query_vars = '' ) {
-	global $wp_query, $wp_the_query;
 	$app = getApp();
 	$app['wp']->main( $query_vars );
-
-	if ( !isset($wp_the_query) )
-		$wp_the_query = $wp_query;
+	if ( ! $app['wp']->query ) {
+		$app['wp']->query = $app['wp']->current_query;
+	}
 }
 
 /**
@@ -1213,12 +1209,8 @@ function bool_from_yn( $yn ) {
  * It is better to only have one hook for each feed.
  *
  * @since 2.1.0
- *
- * @global WP_Query $wp_query Used to tell if the use a comment feed.
  */
 function do_feed() {
-	global $wp_query;
-
 	$feed = get_query_var( 'feed' );
 
 	// Remove the pad, if present.
@@ -1243,7 +1235,7 @@ function do_feed() {
 	 * @param bool   $is_comment_feed Whether the feed is a comment feed.
 	 * @param string $feed            The feed name.
 	 */
-	do_action( "do_feed_{$feed}", $wp_query->is_comment_feed, $feed );
+	do_action( "do_feed_{$feed}", is_comment_feed(), $feed );
 }
 
 /**

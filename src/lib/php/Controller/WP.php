@@ -16,7 +16,6 @@ class WP extends Observer {
 	 * Long list of public query variables.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 * @var array
 	 */
 	public $public_query_vars = array('m', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots', 'taxonomy', 'term', 'cpage', 'post_type', 'embed' );
@@ -27,7 +26,6 @@ class WP extends Observer {
 	 * Long list of private query variables.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 * @var array
 	 */
 	public $private_query_vars = array( 'offset', 'posts_per_page', 'posts_per_archive_page', 'showposts', 'nopaging', 'post_type', 'post_status', 'category__in', 'category__not_in', 'category__and', 'tag__in', 'tag__not_in', 'tag__and', 'tag_slug__in', 'tag_slug__and', 'tag_id', 'post_mime_type', 'perm', 'comments_per_page', 'post__in', 'post__not_in', 'post_parent', 'post_parent__in', 'post_parent__not_in', 'title', 'fields' );
@@ -36,16 +34,14 @@ class WP extends Observer {
 	 * Extra query variables set by the user.
 	 *
 	 * @since 2.1.0
-	 * @access public
 	 * @var array
 	 */
-	public $extra_query_vars = array();
+	public $extra_query_vars = [];
 
 	/**
 	 * Query variables for setting up the WordPress Query Loop.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 * @var array
 	 */
 	public $query_vars;
@@ -54,7 +50,6 @@ class WP extends Observer {
 	 * String parsed to set the query variables.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 * @var string
 	 */
 	public $query_string;
@@ -63,7 +58,6 @@ class WP extends Observer {
 	 * The request path, e.g. 2015/05/06.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 * @var string
 	 */
 	public $request;
@@ -72,7 +66,6 @@ class WP extends Observer {
 	 * Rewrite rule the request matched.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 * @var string
 	 */
 	public $matched_rule;
@@ -81,7 +74,6 @@ class WP extends Observer {
 	 * Rewrite query the request matched.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 * @var string
 	 */
 	public $matched_query;
@@ -90,16 +82,24 @@ class WP extends Observer {
 	 * Whether already did the permalink.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 * @var bool
 	 */
 	public $did_permalink = false;
 
 	/**
+	 * @var \WP_Query
+	 */
+	public $query;
+
+	/**
+	 * @var \WP_Query
+	 */
+	public $current_query;
+
+	/**
 	 * Add name to list of public query variables.
 	 *
 	 * @since 2.1.0
-	 * @access public
 	 *
 	 * @param string $qv Query variable name.
 	 */
@@ -112,7 +112,6 @@ class WP extends Observer {
 	 * Removes a query variable from a list of public query variables.
 	 *
 	 * @since 4.5.0
-	 * @access public
 	 *
 	 * @param string $name Query variable name.
 	 */
@@ -124,7 +123,6 @@ class WP extends Observer {
 	 * Set the value of a query variable.
 	 *
 	 * @since 2.3.0
-	 * @access public
 	 *
 	 * @param string $key Query variable name.
 	 * @param mixed $value Query variable value.
@@ -140,7 +138,6 @@ class WP extends Observer {
 	 * filters and actions that can be used to further manipulate the result.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 *
 	 * @param array|string $extra_query_vars Set the extra query variables.
 	 */
@@ -154,12 +151,13 @@ class WP extends Observer {
 		 * @param WP           $this             Current WordPress environment instance.
 		 * @param array|string $extra_query_vars Extra passed query variables.
 		 */
-		if ( ! apply_filters( 'do_parse_request', true, $this, $extra_query_vars ) )
+		if ( ! apply_filters( 'do_parse_request', true, $this, $extra_query_vars ) ) {
 			return;
+		}
 
 		$app = getApp();
-		$this->query_vars = array();
-		$post_type_query_vars = array();
+		$this->query_vars = [];
+		$post_type_query_vars = [];
 
 		if ( is_array( $extra_query_vars ) ) {
 			$this->extra_query_vars = & $extra_query_vars;
@@ -295,7 +293,7 @@ class WP extends Observer {
 		 */
 		$this->public_query_vars = apply_filters( 'query_vars', $this->public_query_vars );
 
-		foreach ( get_post_types( array(), 'objects' ) as $post_type => $t ) {
+		foreach ( get_post_types( [], 'objects' ) as $post_type => $t ) {
 			if ( is_post_type_viewable( $t ) && $t->query_var ) {
 				$post_type_query_vars[$t->query_var] = $post_type;
 			}
@@ -330,7 +328,7 @@ class WP extends Observer {
 		}
 
 		// Convert urldecoded spaces back into +
-		foreach ( get_taxonomies( array() , 'objects' ) as $taxonomy => $t )
+		foreach ( get_taxonomies( [] , 'objects' ) as $taxonomy => $t )
 			if ( $t->query_var && isset( $this->query_vars[$t->query_var] ) )
 				$this->query_vars[$t->query_var] = str_replace( ' ', '+', $this->query_vars[$t->query_var] );
 
@@ -396,10 +394,9 @@ class WP extends Observer {
 	 *
 	 * @since 2.0.0
 	 * @since 4.4.0 `X-Pingback` header is added conditionally after posts have been queried in handle_404().
-	 * @access public
 	 */
 	public function send_headers() {
-		$headers = array();
+		$headers = [];
 		$status = null;
 		$exit_required = false;
 
@@ -519,7 +516,6 @@ class WP extends Observer {
 	 * use the {@see 'request'} filter instead.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 */
 	public function build_query_string() {
 		$this->query_string = '';
@@ -554,9 +550,7 @@ class WP extends Observer {
 	 * WordPress environment.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 *
-	 * @global WP_Query     $wp_query
 	 * @global string       $query_string Query string for the loop.
 	 * @global array        $posts The found posts.
 	 * @global WP_Post|null $post The current post, if available.
@@ -566,32 +560,30 @@ class WP extends Observer {
 	 * @global WP_User      $authordata Only set, if author archive.
 	 */
 	public function register_globals() {
-		global $wp_query;
-
 		// Extract updated query vars back into global namespace.
-		foreach ( (array) $wp_query->query_vars as $key => $value ) {
+		foreach ( (array) $this->current_query->query_vars as $key => $value ) {
 			$GLOBALS[ $key ] = $value;
 		}
 
 		$GLOBALS['query_string'] = $this->query_string;
-		$GLOBALS['posts'] = & $wp_query->posts;
-		$GLOBALS['post'] = isset( $wp_query->post ) ? $wp_query->post : null;
-		$GLOBALS['request'] = $wp_query->request;
+		$GLOBALS['posts'] =& $this->current_query->posts;
+		$GLOBALS['post'] = $this->current_query->post ?? null;
+		$GLOBALS['request'] = $this->current_query->request;
 
-		if ( $wp_query->is_single() || $wp_query->is_page() ) {
+		if ( $this->current_query->is_single() || $this->current_query->is_page() ) {
 			$GLOBALS['more']   = 1;
 			$GLOBALS['single'] = 1;
 		}
 
-		if ( $wp_query->is_author() && isset( $wp_query->post ) )
-			$GLOBALS['authordata'] = get_userdata( $wp_query->post->post_author );
+		if ( $this->current_query->is_author() && isset( $this->current_query->post ) ) {
+			$GLOBALS['authordata'] = get_userdata( $this->current_query->post->post_author );
+		}
 	}
 
 	/**
 	 * Set up the current user.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 */
 	public function init() {
 		wp_get_current_user();
@@ -601,14 +593,14 @@ class WP extends Observer {
 	 * Set up the Loop based on the query variables.
 	 *
 	 * @since 2.0.0
-	 * @access public
-	 *
-	 * @global WP_Query $wp_the_query
 	 */
 	public function query_posts() {
-		global $wp_the_query;
+		$this->query = new \WP_Query();
+		$this->query->is_main_query = true;
 		$this->build_query_string();
-		$wp_the_query->query($this->query_vars);
+		$this->query->query( $this->query_vars );
+
+		$this->current_query = $this->query;
  	}
 
  	/**
@@ -625,13 +617,8 @@ class WP extends Observer {
 	 * a 404 so that canonical redirection logic can kick in.
 	 *
 	 * @since 2.0.0
-     * @access public
-	 *
-	 * @global WP_Query $wp_query
  	 */
 	public function handle_404() {
-		global $wp_query;
-
 		/**
 		 * Filters whether to short-circuit default header status handling.
 		 *
@@ -641,25 +628,25 @@ class WP extends Observer {
 		 * @since 4.5.0
 		 *
 		 * @param bool     $preempt  Whether to short-circuit default header status handling. Default false.
-		 * @param WP_Query $wp_query WordPress Query object.
 		 */
-		if ( false !== apply_filters( 'pre_handle_404', false, $wp_query ) ) {
+		if ( false !== apply_filters( 'pre_handle_404', false, $this->current_query ) ) {
 			return;
 		}
 
 		// If we've already issued a 404, bail.
-		if ( is_404() )
+		if ( is_404() ) {
 			return;
+		}
 
 		// Never 404 for the admin, robots, or if we found posts.
-		if ( is_admin() || is_robots() || $wp_query->posts ) {
+		if ( is_admin() || is_robots() || $this->current_query->posts ) {
 
 			$success = true;
 			if ( is_singular() ) {
 				$p = false;
 
-				if ( $wp_query->post instanceof WP_Post ) {
-					$p = clone $wp_query->post;
+				if ( $this->current_query->post instanceof \WP_Post ) {
+					$p = clone $this->current_query->post;
 				}
 
 				// Only set X-Pingback for single posts that allow pings.
@@ -705,7 +692,7 @@ class WP extends Observer {
 		}
 
 		// Guess it's time to 404.
-		$wp_query->set_404();
+		$this->current_query->set_404();
 		status_header( 404 );
 		nocache_headers();
 	}
@@ -718,13 +705,12 @@ class WP extends Observer {
 	 * object.
 	 *
 	 * @since 2.0.0
-	 * @access public
 	 *
 	 * @param string|array $query_args Passed to parse_request().
 	 */
-	public function main($query_args = '') {
+	public function main( $query_args = [] ) {
 		$this->init();
-		$this->parse_request($query_args);
+		$this->parse_request( $query_args );
 		$this->send_headers();
 		$this->query_posts();
 		$this->handle_404();

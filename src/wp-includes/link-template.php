@@ -2164,14 +2164,16 @@ function next_posts( $max_page = 0, $echo = true ) {
  * @since 2.7.0
  *
  * @global int      $paged
- * @global WP_Query $wp_query
  *
  * @param string $label    Content for link text.
  * @param int    $max_page Optional. Max pages. Default 0.
  * @return string|void HTML-formatted next posts page link.
  */
 function get_next_posts_link( $label = null, $max_page = 0 ) {
-	global $paged, $wp_query;
+	global $paged;
+
+	$app = getApp();
+	$wp_query = $app['wp']->current_query;
 
 	if ( !$max_page )
 		$max_page = $wp_query->max_num_pages;
@@ -2296,8 +2298,6 @@ function previous_posts_link( $label = null ) {
  *
  * @since 2.8.0
  *
- * @global WP_Query $wp_query
- *
  * @param string|array $args {
  *     Optional. Arguments to build the post pages link navigation.
  *
@@ -2310,7 +2310,8 @@ function previous_posts_link( $label = null ) {
  * @return string The posts link navigation.
  */
 function get_posts_nav_link( $args = array() ) {
-	global $wp_query;
+	$app = getApp();
+	$wp_query = $app['wp']->current_query;
 
 	$return = '';
 
@@ -2424,8 +2425,6 @@ function the_post_navigation( $args = array() ) {
  * Returns the navigation to next/previous set of posts, when applicable.
  *
  * @since 4.1.0
- *
- * @global WP_Query $wp_query WordPress Query object.
  *
  * @param array $args {
  *     Optional. Default posts navigation arguments. Default empty array.
@@ -2622,14 +2621,13 @@ function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
  *
  * @since 2.7.1
  *
- * @global WP_Query $wp_query
- *
  * @param string $label    Optional. Label for link text. Default empty.
  * @param int    $max_page Optional. Max page. Default 0.
  * @return string|void HTML-formatted link for the next page of comments.
  */
 function get_next_comments_link( $label = '', $max_page = 0 ) {
-	global $wp_query;
+	$app = getApp();
+	$wp_query = $app['wp']->current_query;
 
 	if ( ! is_singular() )
 		return;

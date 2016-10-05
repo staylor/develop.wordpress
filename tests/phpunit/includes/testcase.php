@@ -152,7 +152,6 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	 * After a test method runs, reset any state in WordPress the test method might have changed.
 	 */
 	function tearDown() {
-		global $wp_query, $wp;
 		$wpdb = $this->app['db'];
 		if ( is_null( $wpdb ) ) {
 			error_log( static::class );
@@ -164,8 +163,9 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 				restore_current_blog();
 			}
 		}
-		$wp_query = new WP_Query();
-		$wp = new WP();
+
+		$this->app['wp'] = new \WP\Controller\WP();
+		$this->app['wp']->current_query = new WP_Query();
 
 		// Reset globals related to the post loop and `setup_postdata()`.
 		$post_globals = array( 'post', 'id', 'authordata', 'currentday', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages' );
@@ -485,20 +485,16 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 		unset($_SERVER['PATH_INFO']);
 
 		self::flush_cache();
-		unset($GLOBALS['wp_query'], $GLOBALS['wp_the_query']);
-		$GLOBALS['wp_the_query'] = new WP_Query();
-		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 
-		$public_query_vars  = $GLOBALS['wp']->public_query_vars;
-		$private_query_vars = $GLOBALS['wp']->private_query_vars;
+		$this->app['wp']->query = new WP_Query();
+		$this->app['wp']->current_query = $this->app['wp']->query;
 
-		$GLOBALS['wp'] = new WP();
-		$GLOBALS['wp']->public_query_vars  = $public_query_vars;
-		$GLOBALS['wp']->private_query_vars = $private_query_vars;
+		$this->app['wp']->query->public_query_vars  = $this->app['wp']->public_query_vars;
+		$this->app['wp']->query->private_query_vars = $this->app['wp']->private_query_vars;
 
 		_cleanup_query_vars();
 
-		$GLOBALS['wp']->main($parts['query']);
+		$this->app['wp']->main( $parts['query'] );
 		unset( $this->app['request.uri'] );
 		$this->app['request.uri'] = $uri;
 	}
@@ -600,7 +596,7 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	 * @param string $prop,... Any number of WP_Query properties that are expected to be true for the current request.
 	 */
 	function assertQueryTrue(/* ... */) {
-		global $wp_query;
+		$wp_query = $this->app['wp']->current_query;
 		$all = array(
 			'is_404',
 			'is_admin',

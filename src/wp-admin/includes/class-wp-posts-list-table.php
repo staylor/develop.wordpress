@@ -135,12 +135,14 @@ class WP_Posts_List_Table extends WP_List_Table {
 	/**
 	 *
 	 * @global array    $avail_post_stati
-	 * @global WP_Query $wp_query
 	 * @global int      $per_page
 	 * @global string   $mode
 	 */
 	public function prepare_items() {
-		global $avail_post_stati, $wp_query, $per_page, $mode;
+		global $avail_post_stati, $per_page, $mode;
+
+		$app = getApp();
+		$wp_query = $app['wp']->current_query;
 
 		// is going to call wp()
 		$avail_post_stati = wp_edit_posts_query();
@@ -623,17 +625,17 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global WP_Query $wp_query
 	 * @global int $per_page
 	 * @param array $posts
 	 * @param int $level
 	 */
 	public function display_rows( $posts = array(), $level = 0 ) {
-		global $wp_query, $per_page;
+		global $per_page;
 
-		if ( empty( $posts ) )
-			$posts = $wp_query->posts;
-
+		if ( empty( $posts ) ) {
+			$app = getApp();
+			$posts = $app['wp']->current_query->posts;
+		}
 		add_filter( 'the_title', 'esc_html' );
 
 		if ( $this->hierarchical_display ) {

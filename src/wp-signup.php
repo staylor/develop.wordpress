@@ -13,6 +13,8 @@ if ( is_array( get_site_option( 'illegal_names' )) && isset( $_GET[ 'new' ] ) &&
 	die();
 }
 
+$app = getApp();
+
 /**
  * Prints signup_header via wp_head
  *
@@ -39,7 +41,7 @@ if ( !is_main_site() ) {
 }
 
 // Fix for page title
-$wp_query->is_404 = false;
+$app['wp']->current_query->is_404 = false;
 
 /**
  * Fires before the Site Signup page is loaded.

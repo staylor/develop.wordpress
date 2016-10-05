@@ -485,13 +485,8 @@ function export_wp( $args = array() ) {
 	?>
 
 <?php if ( $post_ids ) {
-	/**
-	 * @global WP_Query $wp_query
-	 */
-	global $wp_query;
-
 	// Fake being in the loop.
-	$wp_query->in_the_loop = true;
+	$app['wp']->current_query->in_the_loop = true;
 
 	// Fetch 20 posts at a time rather than loading the entire table into memory.
 	while ( $next_posts = array_splice( $post_ids, 0, 20 ) ) {

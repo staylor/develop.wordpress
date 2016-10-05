@@ -1309,13 +1309,13 @@ function get_attachment_fields_to_edit($post, $errors = null) {
  *
  * @since 2.5.0
  *
- * @global WP_Query $wp_the_query
- *
  * @param int $post_id Optional. Post ID.
  * @param array $errors Errors for attachment, if any.
  * @return string
  */
 function get_media_items( $post_id, $errors ) {
+	$app = getApp();
+
 	$attachments = array();
 	if ( $post_id ) {
 		$post = get_post($post_id);
@@ -1323,10 +1323,10 @@ function get_media_items( $post_id, $errors ) {
 			$attachments = array($post->ID => $post);
 		else
 			$attachments = get_children( array( 'post_parent' => $post_id, 'post_type' => 'attachment', 'orderby' => 'menu_order ASC, ID', 'order' => 'DESC') );
-	} else {
-		if ( is_array($GLOBALS['wp_the_query']->posts) )
-			foreach ( $GLOBALS['wp_the_query']->posts as $attachment )
-				$attachments[$attachment->ID] = $attachment;
+	} elseif ( is_array( $app['wp']->query->posts ) ) {
+		foreach ( $app['wp']->query->posts as $attachment ) {
+			$attachments[$attachment->ID] = $attachment;
+		}
 	}
 
 	$output = '';
@@ -2337,7 +2337,6 @@ jQuery(function($){
  *
  * @since 2.5.0
  *
- * @global WP_Query  $wp_query
  * @global string    $type
  * @global string    $tab
  * @global array     $post_mime_types
@@ -2345,7 +2344,7 @@ jQuery(function($){
  * @param array $errors
  */
 function media_upload_library_form($errors) {
-	global $wp_query, $type, $tab, $post_mime_types;
+	global $type, $tab, $post_mime_types;
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -2443,7 +2442,7 @@ $page_links = paginate_links( array(
 	'format' => '',
 	'prev_text' => __('&laquo;'),
 	'next_text' => __('&raquo;'),
-	'total' => ceil($wp_query->found_posts / 10),
+	'total' => ceil( $app['wp']->current_query->found_posts / 10),
 	'current' => $q['paged'],
 ));
 

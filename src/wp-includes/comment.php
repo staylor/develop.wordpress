@@ -804,15 +804,14 @@ function separate_comments(&$comments) {
  *
  * @uses Walker_Comment
  *
- * @global WP_Query $wp_query
- *
  * @param array $comments Optional array of WP_Comment objects. Defaults to $wp_query->comments
  * @param int   $per_page Optional comments per page.
  * @param bool  $threaded Optional control over flat or threaded comments.
  * @return int Number of comment pages.
  */
 function get_comment_pages_count( $comments = null, $per_page = null, $threaded = null ) {
-	global $wp_query;
+	$app = getApp();
+	$wp_query = $app['wp']->current_query;
 
 	if ( null === $comments && null === $per_page && null === $threaded && !empty($wp_query->max_num_comment_pages) )
 		return $wp_query->max_num_comment_pages;

@@ -30,21 +30,19 @@ use function WP\getApp;
  *
  * @since 2.3.0
  *
- * @global WP_Query $wp_query
- *
  * @param string $requested_url Optional. The URL that was requested, used to
  *		figure if redirect is needed.
  * @param bool $do_redirect Optional. Redirect to the new URL.
  * @return string|void The string of the URL, if redirect needed.
  */
 function redirect_canonical( $requested_url = null, $do_redirect = true ) {
-	global $wp_query, $wp;
-
 	$app = getApp();
 	if ( isset( $app['request.method'] ) && ! in_array( strtoupper( $app['request.method'] ), array( 'GET', 'HEAD' ) ) ) {
 		return;
 	}
 
+	$wp = $app['wp'];
+	$wp_query = $app['wp']->current_query;
 	$wpdb = $app['db'];
 	$is_IIS = $app['is_IIS'];
 

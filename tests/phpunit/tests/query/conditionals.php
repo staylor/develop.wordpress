@@ -130,7 +130,7 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 			$this->assertQueryTrue('is_page','is_singular','is_trackback');
 
 			// make sure the correct page was fetched
-			global $wp_query;
+			$wp_query = $this->app['wp']->current_query;
 			$this->assertEquals( $page_id, $wp_query->get_queried_object()->ID );
 		}
 	}
@@ -150,7 +150,7 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 			$this->assertQueryTrue('is_page', 'is_singular', 'is_feed', 'is_comment_feed');
 
 			// make sure the correct page was fetched
-			global $wp_query;
+			$wp_query = $this->app['wp']->current_query;
 			$this->assertEquals( $page_id, $wp_query->get_queried_object()->ID );
 		}
 	}
@@ -168,7 +168,7 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 			$this->assertQueryTrue('is_page', 'is_singular', 'is_feed', 'is_comment_feed');
 
 			// make sure the correct page was fetched
-			global $wp_query;
+			$wp_query = $this->app['wp']->current_query;
 			$this->assertEquals( $page_id, $wp_query->get_queried_object()->ID );
 		}
 	}
@@ -189,7 +189,7 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 			$this->assertQueryTrue('is_page', 'is_singular', 'is_feed', 'is_comment_feed');
 
 			// make sure the correct page was fetched
-			global $wp_query;
+			$wp_query = $this->app['wp']->current_query;
 			$this->assertEquals( $page_id, $wp_query->get_queried_object()->ID );
 		}
 	}
@@ -203,7 +203,7 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 		$this->assertQueryTrue('is_page', 'is_singular', 'is_paged');
 
 		// make sure the correct page was fetched
-		global $wp_query;
+		$wp_query = $this->app['wp']->current_query;
 		$this->assertEquals( $page_id, $wp_query->get_queried_object()->ID );
 	}
 
@@ -216,7 +216,7 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 		$this->assertQueryTrue('is_page', 'is_singular', 'is_paged');
 
 		// make sure the correct page was fetched
-		global $wp_query;
+		$wp_query = $this->app['wp']->current_query;
 		$this->assertEquals( $page_id, $wp_query->get_queried_object()->ID );
 	}
 
@@ -231,7 +231,7 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 		$this->assertQueryTrue( 'is_home', 'is_posts_page' );
 
 		// make sure the correct page was fetched
-		global $wp_query;
+		$wp_query = $this->app['wp']->current_query;
 		$this->assertEquals( $page_id, $wp_query->get_queried_object()->ID );
 
 		update_option( 'show_on_front', 'posts' );

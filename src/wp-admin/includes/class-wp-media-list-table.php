@@ -7,6 +7,8 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement displaying media items in a list table.
  *
@@ -62,20 +64,21 @@ class WP_Media_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 *
-	 * @global WP_Query $wp_query
 	 * @global array    $post_mime_types
 	 * @global array    $avail_post_mime_types
 	 * @global string   $mode
 	 */
 	public function prepare_items() {
-		global $wp_query, $post_mime_types, $avail_post_mime_types, $mode;
+		global $post_mime_types, $avail_post_mime_types, $mode;
 
 		list( $post_mime_types, $avail_post_mime_types ) = wp_edit_attachments_query( $_REQUEST );
 
  		$this->is_trash = isset( $_REQUEST['attachment-filter'] ) && 'trash' === $_REQUEST['attachment-filter'];
 
  		$mode = empty( $_REQUEST['mode'] ) ? 'list' : $_REQUEST['mode'];
+
+		$app = getApp();
+		$wp_query = $app['wp']->current_query;
 
 		$this->set_pagination_args( array(
 			'total_items' => $wp_query->found_posts,
@@ -600,7 +603,10 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @global WP_Post $post
 	 */
 	public function display_rows() {
-		global $post, $wp_query;
+		global $post;
+
+		$app = getApp();
+		$wp_query = $app['wp']->current_query;
 
 		$post_ids = wp_list_pluck( $wp_query->posts, 'ID' );
 		reset( $wp_query->posts );
