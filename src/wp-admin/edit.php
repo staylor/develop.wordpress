@@ -6,6 +6,7 @@
  * @subpackage Administration
  */
 
+use WP\Post\PostType;
 use function WP\getApp;
 
 /** WordPress Administration Bootstrap */
@@ -29,7 +30,7 @@ $wpdb = $app['db'];
 
 /**
  * @global string       $post_type
- * @global WP_Post_Type $post_type_object
+ * @global PostType $post_type_object
  */
 global $post_type, $post_type_object;
 

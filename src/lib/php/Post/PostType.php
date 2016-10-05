@@ -2,7 +2,7 @@
 namespace WP\Post;
 
 /**
- * Post API: WP_Post_Type class
+ * Post API: PostType class
  *
  * @package WordPress
  * @subpackage Post
@@ -24,7 +24,6 @@ class PostType extends Observable {
 	 * Post type key.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var string $name
 	 */
 	public $name;
@@ -33,7 +32,6 @@ class PostType extends Observable {
 	 * Name of the post type shown in the menu. Usually plural.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var string $label
 	 */
 	public $label;
@@ -47,7 +45,6 @@ class PostType extends Observable {
 	 * @see get_post_type_labels()
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var object $labels
 	 */
 	public $labels;
@@ -58,7 +55,6 @@ class PostType extends Observable {
 	 * Default empty.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var string $description
 	 */
 	public $description = '';
@@ -72,7 +68,6 @@ class PostType extends Observable {
 	 * Default false.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $public
 	 */
 	public $public = false;
@@ -83,7 +78,6 @@ class PostType extends Observable {
 	 * Default false.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $hierarchical
 	 */
 	public $hierarchical = false;
@@ -95,7 +89,6 @@ class PostType extends Observable {
 	 * Default is the opposite value of $public.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $exclude_from_search
 	 */
 	public $exclude_from_search = null;
@@ -111,7 +104,6 @@ class PostType extends Observable {
 	 * Default is the value of $public.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $publicly_queryable
 	 */
 	public $publicly_queryable = null;
@@ -122,7 +114,6 @@ class PostType extends Observable {
 	 * Default is the value of $public.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $show_ui
 	 */
 	public $show_ui = null;
@@ -137,7 +128,6 @@ class PostType extends Observable {
 	 * Default is the value of $show_ui.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $show_in_menu
 	 */
 	public $show_in_menu = null;
@@ -148,7 +138,7 @@ class PostType extends Observable {
 	 * Default is the value $public.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 * @var bool $show_in_nav_menus
 	 */
 	public $show_in_nav_menus = null;
@@ -159,7 +149,6 @@ class PostType extends Observable {
 	 * Default is the value of $show_in_menu.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $show_in_admin_bar
 	 */
 	public $show_in_admin_bar = null;
@@ -170,7 +159,6 @@ class PostType extends Observable {
 	 * To work, $show_in_menu must be true. Default null (at the bottom).
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var int $menu_position
 	 */
 	public $menu_position = null;
@@ -186,7 +174,6 @@ class PostType extends Observable {
 	 * Defaults to use the posts icon.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var string $menu_icon
 	 */
 	public $menu_icon = null;
@@ -199,7 +186,6 @@ class PostType extends Observable {
 	 * array( 'story', 'stories' ). Default 'post'.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var string $capability_type
 	 */
 	public $capability_type = 'post';
@@ -210,7 +196,6 @@ class PostType extends Observable {
 	 * Default false.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $map_meta_cap
 	 */
 	public $map_meta_cap = false;
@@ -221,7 +206,6 @@ class PostType extends Observable {
 	 * Do `remove_meta_box()` and `add_meta_box()` calls in the callback. Default null.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var string $register_meta_box_cb
 	 */
 	public $register_meta_box_cb = null;
@@ -234,7 +218,6 @@ class PostType extends Observable {
 	 * Default empty array.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var array $taxonomies
 	 */
 	public $taxonomies = array();
@@ -245,7 +228,6 @@ class PostType extends Observable {
 	 * Will generate the proper rewrite rules if $rewrite is enabled. Default false.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool|string $has_archive
 	 */
 	public $has_archive = false;
@@ -257,7 +239,6 @@ class PostType extends Observable {
 	 * If specified as a string, the query `?{query_var_string}={post_slug}` will be valid.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var string|bool $query_var
 	 */
 	public $query_var;
@@ -268,7 +249,6 @@ class PostType extends Observable {
 	 * Default true.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $can_export
 	 */
 	public $can_export = true;
@@ -282,7 +262,6 @@ class PostType extends Observable {
 	 * Otherwise posts are not trashed or deleted. Default null.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $delete_with_user
 	 */
 	public $delete_with_user = null;
@@ -293,7 +272,6 @@ class PostType extends Observable {
 	 * Default false.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var bool $_builtin
 	 */
 	public $_builtin = false;
@@ -304,7 +282,6 @@ class PostType extends Observable {
 	 * Default 'post.php?post=%d'.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var string $_edit_link
 	 */
 	public $_edit_link = 'post.php?post=%d';
@@ -313,7 +290,6 @@ class PostType extends Observable {
 	 * Post type capabilities.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var object $cap
 	 */
 	public $cap;
@@ -324,7 +300,6 @@ class PostType extends Observable {
 	 * Defaults to true, using $post_type as slug.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var array|false $rewrite
 	 */
 	public $rewrite;
@@ -333,7 +308,6 @@ class PostType extends Observable {
 	 * The features supported by the post type.
 	 *
 	 * @since 4.6.0
-	 * @access public
 	 * @var array|bool $supports
 	 */
 	public $supports;
@@ -358,6 +332,34 @@ class PostType extends Observable {
 		unset( self::$meta_caps[ $name ] );
 	}
 
+	private static $instances = [];
+
+	public static function get( $name = null ) {
+		if ( ! $name ) {
+			return self::$instances;
+		}
+
+		if ( isset( self::$instances[ $name ] ) ) {
+			return self::$instances[ $name ];
+		}
+	}
+
+	public static function set( $post_type, $args ) {
+		$app = getApp();
+		$obj = new self( $post_type, $args );
+		$obj->attach( $app['wp'] );
+		$obj->load();
+
+		self::$instances[ $post_type ] = $obj;
+	}
+
+	public static function remove( $name ) {
+		$obj = self::get( $name );
+		$obj->unload();
+
+		unset( self::$instances[ $name ] );
+	}
+
 	/**
 	 * Constructor.
 	 *
@@ -365,7 +367,7 @@ class PostType extends Observable {
 	 * default properties based on that information.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 *
 	 * @see register_post_type()
 	 *
@@ -376,14 +378,32 @@ class PostType extends Observable {
 	public function __construct( $post_type, $args = array() ) {
 		$this->name = $post_type;
 
+		self::$instances[ $post_type ] = $this;
+
 		$this->set_props( $args );
+	}
+
+	public function load() {
+		$this->add_supports();
+		$this->add_rewrite_rules();
+		$this->register_meta_boxes();
+		$this->add_hooks();
+		$this->register_taxonomies();
+	}
+
+	public function unload() {
+		$this->remove_supports();
+		$this->remove_rewrite_rules();
+		$this->unregister_meta_boxes();
+		$this->remove_hooks();
+		$this->unregister_taxonomies();
 	}
 
 	/**
 	 * Sets post type properties.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 *
 	 * @param array|string $args Array or string of arguments for registering a post type.
 	 */
@@ -532,7 +552,7 @@ class PostType extends Observable {
 	 * Sets the features support for the post type.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function add_supports() {
 		if ( ! empty( $this->supports ) ) {
@@ -548,7 +568,7 @@ class PostType extends Observable {
 	 * Adds the necessary rewrite rules for the post type.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function add_rewrite_rules() {
 		$app = getApp();
@@ -598,7 +618,7 @@ class PostType extends Observable {
 	 * Registers the post type meta box if a custom callback was specified.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function register_meta_boxes() {
 		if ( $this->register_meta_box_cb ) {
@@ -610,7 +630,7 @@ class PostType extends Observable {
 	 * Adds the future post hook action for the post type.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function add_hooks() {
 		add_action( 'future_' . $this->name, '_future_post_hook', 5, 2 );
@@ -620,7 +640,7 @@ class PostType extends Observable {
 	 * Registers the taxonomies for the post type.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function register_taxonomies() {
 		foreach ( $this->taxonomies as $taxonomy ) {
@@ -632,7 +652,7 @@ class PostType extends Observable {
 	 * Removes the features support for the post type.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function remove_supports() {
 		$this->features = [];
@@ -642,7 +662,7 @@ class PostType extends Observable {
 	 * Removes any rewrite rules, permastructs, and rules for the post type.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function remove_rewrite_rules() {
 		$app = getApp();
@@ -677,7 +697,7 @@ class PostType extends Observable {
 	 * Unregisters the post type meta box if a custom callback was specified.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function unregister_meta_boxes() {
 		if ( $this->register_meta_box_cb ) {
@@ -689,7 +709,7 @@ class PostType extends Observable {
 	 * Removes the post type from all taxonomies.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function unregister_taxonomies() {
 		foreach ( get_object_taxonomies( $this->name ) as $taxonomy ) {
@@ -701,7 +721,7 @@ class PostType extends Observable {
 	 * Removes the future post hook action for the post type.
 	 *
 	 * @since 4.6.0
-	 * @access public
+
 	 */
 	public function remove_hooks() {
 		remove_action( 'future_' . $this->name, '_future_post_hook', 5 );

@@ -840,21 +840,19 @@ function get_post_type( $post = null ) {
  * Retrieves a post type object by name.
  *
  * @since 3.0.0
- * @since 4.6.0 Object returned is now an instance of WP_Post_Type.
+ * @since 4.6.0 Object returned is now an instance of PostType.
  *
  * @see register_post_type()
  *
  * @param string $post_type The name of a registered post type.
- * @return WP_Post_Type|null WP_Post_Type object if it exists, null otherwise.
+ * @return PostType|null PostType object if it exists, null otherwise.
  */
 function get_post_type_object( $post_type ) {
-	$app = getApp();
-
-	if ( ! is_scalar( $post_type ) || empty( $app->post_types[ $post_type ] ) ) {
+	if ( ! is_scalar( $post_type ) || ! PostType::get( $post_type ) ) {
 		return null;
 	}
 
-	return $app->post_types[ $post_type ];
+	return PostType::get( $post_type );
 }
 
 /**
@@ -874,11 +872,9 @@ function get_post_type_object( $post_type ) {
  * @return array A list of post type names or objects.
  */
 function get_post_types( $args = array(), $output = 'names', $operator = 'and' ) {
-	$app = getApp();
-
 	$field = ('names' == $output) ? 'name' : false;
 
-	return wp_filter_object_list( $app->post_types, $args, $operator, $field );
+	return wp_filter_object_list( PostType::get(), $args, $operator, $field );
 }
 
 /**
@@ -899,7 +895,7 @@ function get_post_types( $args = array(), $output = 'names', $operator = 'and' )
  * @since 3.0.0 The `show_ui` argument is now enforced on the new post screen.
  * @since 4.4.0 The `show_ui` argument is now enforced on the post type listing
  *              screen and post editing screen.
- * @since 4.6.0 Post type object returned is now an instance of WP_Post_Type.
+ * @since 4.6.0 Post type object returned is now an instance of PostType.
  *
  * @param string $post_type Post type key. Must not exceed 20 characters and may
  *                          only contain lowercase alphanumeric characters, dashes,
@@ -1008,15 +1004,9 @@ function get_post_types( $args = array(), $output = 'names', $operator = 'and' )
  *     @type string      $_edit_link           FOR INTERNAL USE ONLY! URL segment to use for edit link of
  *                                             this post type. Default 'post.php?post=%d'.
  * }
- * @return WP_Post_Type|WP_Error The registered post type object, or an error object.
+ * @return PostType|WP_Error The registered post type object, or an error object.
  */
 function register_post_type( $post_type, $args = array() ) {
-	$app = getApp();
-
-	if ( ! is_array( $app->post_types ) ) {
-		$app->post_types = array();
-	}
-
 	// Sanitize post type name
 	$post_type = sanitize_key( $post_type );
 
@@ -1025,26 +1015,18 @@ function register_post_type( $post_type, $args = array() ) {
 		return new WP_Error( 'post_type_length_invalid', __( 'Post type names must be between 1 and 20 characters in length.' ) );
 	}
 
-	$post_type_object = new WP_Post_Type( $post_type, $args );
-	$post_type_object->attach( $app['wp'] );
+	PostType::set( $post_type, $args );
 
-	$post_type_object->add_supports();
-	$post_type_object->add_rewrite_rules();
-	$post_type_object->register_meta_boxes();
-
-	$app->post_types[ $post_type ] = $post_type_object;
-
-	$post_type_object->add_hooks();
-	$post_type_object->register_taxonomies();
+	$post_type_object = PostType::get( $post_type );
 
 	/**
 	 * Fires after a post type is registered.
 	 *
 	 * @since 3.3.0
-	 * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+	 * @since 4.6.0 Converted the `$post_type` parameter to accept a PostType object.
 	 *
 	 * @param string       $post_type        Post type.
-	 * @param WP_Post_Type $post_type_object Arguments used to register the post type.
+	 * @param PostType $post_type_object Arguments used to register the post type.
 	 */
 	do_action( 'registered_post_type', $post_type, $post_type_object );
 
@@ -1062,26 +1044,18 @@ function register_post_type( $post_type, $args = array() ) {
  * @return bool|WP_Error True on success, WP_Error on failure or if the post type doesn't exist.
  */
 function unregister_post_type( $post_type ) {
-	$app = getApp();
-
 	if ( ! post_type_exists( $post_type ) ) {
 		return new WP_Error( 'invalid_post_type', __( 'Invalid post type.' ) );
 	}
 
-	$post_type_object = get_post_type_object( $post_type );
+	$post_type_object = PostType::get( $post_type );
 
 	// Do not allow unregistering internal post types.
 	if ( $post_type_object->_builtin ) {
 		return new WP_Error( 'invalid_post_type', __( 'Unregistering a built-in post type is not allowed' ) );
 	}
 
-	$post_type_object->remove_supports();
-	$post_type_object->remove_rewrite_rules();
-	$post_type_object->unregister_meta_boxes();
-	$post_type_object->remove_hooks();
-	$post_type_object->unregister_taxonomies();
-
-	unset( $app->post_types[ $post_type ] );
+	PostType::remove( $post_type );
 
 	/**
 	 * Fires after a post type was unregistered.
@@ -1260,12 +1234,12 @@ function _post_type_meta_capabilities( $capabilities = null ) {
  *              and `use_featured_image` labels.
  * @since 4.4.0 Added the `insert_into_item`, `uploaded_to_this_item`, `filter_items_list`,
  *              `items_list_navigation`, and `items_list` labels.
- * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+ * @since 4.6.0 Converted the `$post_type` parameter to accept a PostType object.
  * @since 4.7.0 Added the `view_items` label.
  *
  * @access private
  *
- * @param object|WP_Post_Type $post_type_object Post type object.
+ * @param object|PostType $post_type_object Post type object.
  * @return object Object with all the labels as member variables.
  */
 function get_post_type_labels( $post_type_object ) {
@@ -1465,10 +1439,8 @@ function post_type_supports( $post_type, $feature ) {
  * @return array A list of post type names.
  */
 function get_post_types_by_support( $feature, $operator = 'and' ) {
-	$app = getApp();
-
 	$post_type_features = [];
-	foreach ( $app->post_types as $post_type ) {
+	foreach ( get_post_types( [], 'objects' ) as $post_type ) {
 		$post_type_features[ $post_type->name ] = $post_type->features;
 	}
 
@@ -1509,9 +1481,9 @@ function set_post_type( $post_id = 0, $post_type = 'post' ) {
  *
  * @since 4.4.0
  * @since 4.5.0 Added the ability to pass a post type name in addition to object.
- * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+ * @since 4.6.0 Converted the `$post_type` parameter to accept a PostType object.
  *
- * @param string|WP_Post_Type $post_type Post type name or object.
+ * @param string|PostType $post_type Post type name or object.
  * @return bool Whether the post type should be considered viewable.
  */
 function is_post_type_viewable( $post_type ) {

@@ -8,10 +8,10 @@ trait Post {
 	 * Prepares post data for return in an XML-RPC object.
 	 *
 	 * @since 3.4.0
-	 * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+	 * @since 4.6.0 Converted the `$post_type` parameter to accept a PostType object.
 	 * @access protected
 	 *
-	 * @param WP_Post_Type $post_type Post type object.
+	 * @param PostType $post_type Post type object.
 	 * @param array        $fields    The subset of post fields to return.
 	 * @return array The prepared post type data.
 	 */
@@ -49,10 +49,10 @@ trait Post {
 		 * Filters XML-RPC-prepared date for the given post type.
 		 *
 		 * @since 3.4.0
-		 * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+		 * @since 4.6.0 Converted the `$post_type` parameter to accept a PostType object.
 		 *
 		 * @param array        $_post_type An array of post type data.
-		 * @param WP_Post_Type $post_type  Post type object.
+		 * @param PostType $post_type  Post type object.
 		 */
 		return apply_filters( 'xmlrpc_prepare_post_type', $_post_type, $post_type );
 	}

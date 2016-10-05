@@ -7,6 +7,7 @@
  * @since 3.0.0
  */
 
+use WP\Post\PostType;
 use function WP\getApp;
 
 /**
@@ -304,10 +305,10 @@ function wp_nav_menu_item_link_meta_box() {
  * @param array  $box {
  *     Post type menu item meta box arguments.
  *
- *     @type string       $id       Meta box 'id' attribute.
- *     @type string       $title    Meta box title.
- *     @type string       $callback Meta box display callback.
- *     @type WP_Post_Type $args     Extra meta box arguments (the post type object for this meta box).
+ *     @type string     $id       Meta box 'id' attribute.
+ *     @type string    $title    Meta box title.
+ *     @type string    $callback Meta box display callback.
+ *     @type PostType  $args     Extra meta box arguments (the post type object for this meta box).
  * }
  */
 function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
@@ -530,13 +531,13 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 				 * to the slug of the current post type.
 				 *
 				 * @since 3.2.0
-				 * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+				 * @since 4.6.0 Converted the `$post_type` parameter to accept a PostType object.
 				 *
 				 * @see WP_Query::query()
 				 *
 				 * @param array        $posts     The posts for the current post type.
 				 * @param array        $args      An array of WP_Query arguments.
-				 * @param WP_Post_Type $post_type The current post type object for this menu item meta box.
+				 * @param PostType $post_type The current post type object for this menu item meta box.
 				 */
 				$posts = apply_filters( "nav_menu_items_{$post_type_name}", $posts, $args, $post_type );
 

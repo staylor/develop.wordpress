@@ -1,12 +1,12 @@
 <?php
-
+use WP\Post\PostType;
 /**
  * @group post
  */
 class Tests_WP_Post_Type extends WP_UnitTestCase {
 	public function test_instances() {
-		foreach ( $this->app->post_types as $post_type ) {
-			$this->assertInstanceOf( 'WP_Post_Type', $post_type );
+		foreach ( PostType::get() as $post_type ) {
+			$this->assertInstanceOf( PostType::class, $post_type );
 		}
 	}
 
