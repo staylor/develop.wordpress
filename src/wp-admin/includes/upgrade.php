@@ -121,13 +121,9 @@ if ( !function_exists('wp_install_defaults') ) :
  *
  * @since 2.1.0
  *
- * @global string     $table_prefix
- *
  * @param int $user_id User ID.
  */
 function wp_install_defaults( $user_id ) {
-	global $table_prefix;
-
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -273,8 +269,8 @@ As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to d
 		$wpdb->update( $wpdb->options, array('option_value' => $user->user_email), array('option_name' => 'admin_email') );
 
 		// Remove all perms except for the login user.
-		$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->usermeta WHERE user_id != %d AND meta_key = %s", $user_id, $table_prefix.'user_level') );
-		$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->usermeta WHERE user_id != %d AND meta_key = %s", $user_id, $table_prefix.'capabilities') );
+		$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->usermeta WHERE user_id != %d AND meta_key = %s", $user_id, $app['db.table_prefix'] . 'user_level') );
+		$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->usermeta WHERE user_id != %d AND meta_key = %s", $user_id, $app['db.table_prefix'] . 'capabilities') );
 
 		// Delete any caps that snuck into the previously active blog. (Hardcoded to blog 1 for now.) TODO: Get previous_blog_id.
 		if ( !is_super_admin( $user_id ) && $user_id != 1 )

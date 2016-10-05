@@ -1378,9 +1378,8 @@ function install_blog( $blog_id, $blog_title = '' ) {
 	update_option( 'admin_email', '' );
 
 	// remove all perms
-	$table_prefix = $wpdb->get_blog_prefix();
-	delete_metadata( 'user', 0, $table_prefix . 'user_level',   null, true ); // delete all
-	delete_metadata( 'user', 0, $table_prefix . 'capabilities', null, true ); // delete all
+	delete_metadata( 'user', 0, $app['db.table_prefix'] . 'user_level',   null, true ); // delete all
+	delete_metadata( 'user', 0, $app['db.table_prefix'] . 'capabilities', null, true ); // delete all
 }
 
 /**

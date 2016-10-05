@@ -407,11 +407,13 @@ function require_wp_db() {
 		return;
 	}
 
-	$wpdb = new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
-
-	$app['db'] = function () use ( $wpdb ) {
-		return $wpdb;
+	$app['db'] = function () {
+		return new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
 	};
+
+	$app['db.table_prefix'] = $app->factory( function ( $app ) {
+		return $app['db']->get_blog_prefix();
+	} );
 }
 
 /**
@@ -422,14 +424,11 @@ function require_wp_db() {
  *
  * @since 3.0.0
  * @access private
- *
- * @global string $table_prefix The database table prefix.
  */
 function wp_set_wpdb_vars() {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	global $table_prefix;
 	if ( !empty( $wpdb->error ) )
 		dead_db();
 
@@ -441,7 +440,7 @@ function wp_set_wpdb_vars() {
 		'active' => '%d', 'cat_id' => '%d', 'deleted' => '%d', 'lang_id' => '%d', 'mature' => '%d', 'public' => '%d', 'site_id' => '%d', 'spam' => '%d',
 	);
 
-	$prefix = $wpdb->set_prefix( $table_prefix );
+	$prefix = $wpdb->set_prefix( $app['db.table_prefix'] );
 
 	if ( is_wp_error( $prefix ) ) {
 		wp_load_translations_early();

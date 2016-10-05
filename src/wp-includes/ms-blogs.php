@@ -752,7 +752,6 @@ function update_blog_option( $id, $option, $value, $deprecated = null ) {
  * @see restore_current_blog()
  * @since MU
  *
- * @global string          $table_prefix
  * @global WP_Object_Cache $wp_object_cache
  *
  * @param int  $new_blog   The id of the blog you want to switch to. Default: current blog
@@ -790,7 +789,6 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
 	}
 
 	$wpdb->set_blog_id( $new_blog );
-	$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
 	$prev_blog_id = $blog_id;
 	$app->blog_id = $new_blog;
 
@@ -836,7 +834,6 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
  * @see switch_to_blog()
  * @since MU
  *
- * @global string          $table_prefix
  * @global WP_Object_Cache $wp_object_cache
  *
  * @return bool True on success, false if we're already on the current blog
@@ -863,7 +860,6 @@ function restore_current_blog() {
 	$wpdb->set_blog_id( $blog );
 	$prev_blog_id = $blog_id;
 	$app->blog_id = $blog;
-	$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
 
 	if ( function_exists( 'wp_cache_switch_to_blog' ) ) {
 		wp_cache_switch_to_blog( $blog );
