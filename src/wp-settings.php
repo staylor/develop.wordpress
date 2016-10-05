@@ -255,12 +255,6 @@ wp_magic_quotes();
  */
 do_action( 'sanitize_comment_cookies' );
 
-/**
- * Use this global for WordPress queries
- * @since 1.5.0
- */
-$app['wp']->current_query = $app['wp']->query ?? new \WP_Query();
-
 $wp_rewrite = $app['rewrite'];
 $wp_rewrite->attach( $app['wp'] );
 
