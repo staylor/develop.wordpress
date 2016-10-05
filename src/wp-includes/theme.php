@@ -1718,12 +1718,9 @@ function add_theme_support( $feature ) {
  *
  * @since 3.4.0
  * @access private
- *
- * @global Custom_Image_Header $custom_image_header
- * @global Custom_Background   $custom_background
  */
 function _custom_header_background_just_in_time() {
-	global $custom_image_header, $custom_background;
+	$app = getApp();
 
 	if ( current_theme_supports( 'custom-header' ) ) {
 		// In case any constants were defined after an add_custom_image_header() call, re-run.
@@ -1734,7 +1731,7 @@ function _custom_header_background_just_in_time() {
 			add_action( 'wp_head', $args[0]['wp-head-callback'] );
 
 		if ( is_admin() ) {
-			$custom_image_header = new Custom_Image_Header( $args[0]['admin-head-callback'], $args[0]['admin-preview-callback'] );
+			$app->theme['custom_image_header'] = new Custom_Image_Header( $args[0]['admin-head-callback'], $args[0]['admin-preview-callback'] );
 		}
 	}
 
@@ -1746,7 +1743,7 @@ function _custom_header_background_just_in_time() {
 		add_action( 'wp_head', $args[0]['wp-head-callback'] );
 
 		if ( is_admin() ) {
-			$custom_background = new Custom_Background( $args[0]['admin-head-callback'], $args[0]['admin-preview-callback'] );
+			$app->theme['custom_background'] = new Custom_Background( $args[0]['admin-head-callback'], $args[0]['admin-preview-callback'] );
 		}
 	}
 }
@@ -1834,9 +1831,6 @@ function remove_theme_support( $feature ) {
  * @access private
  * @since 3.1.0
  *
- * @global Custom_Image_Header $custom_image_header
- * @global Custom_Background   $custom_background
- *
  * @param string $feature
  */
 function _remove_theme_support( $feature ) {
@@ -1860,8 +1854,8 @@ function _remove_theme_support( $feature ) {
 		$support = get_theme_support( 'custom-header' );
 		if ( $support[0]['wp-head-callback'] )
 			remove_action( 'wp_head', $support[0]['wp-head-callback'] );
-		remove_action( 'admin_menu', array( $GLOBALS['custom_image_header'], 'init' ) );
-		unset( $GLOBALS['custom_image_header'] );
+		remove_action( 'admin_menu', array( $app->theme['custom_image_header'], 'init' ) );
+		$app->theme['custom_image_header'] = null;
 		break;
 
 	case 'custom-background' :
@@ -1869,8 +1863,8 @@ function _remove_theme_support( $feature ) {
 			break;
 		$support = get_theme_support( 'custom-background' );
 		remove_action( 'wp_head', $support[0]['wp-head-callback'] );
-		remove_action( 'admin_menu', array( $GLOBALS['custom_background'], 'init' ) );
-		unset( $GLOBALS['custom_background'] );
+		remove_action( 'admin_menu', array( $app->theme['custom_background'], 'init' ) );
+		$app->theme['custom_background'] = null;
 		break;
 	}
 

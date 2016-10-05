@@ -33,6 +33,8 @@ class App extends Container {
 		'directories' => [],
 		'default_headers' => [],
 		'editor_styles' => [],
+		'custom_image_header' => null,
+		'custom_background' => null,
 	];
 
 	public $suspend_cache_invalidation;

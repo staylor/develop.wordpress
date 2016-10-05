@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Customize Header Image Control class.
  *
@@ -68,20 +70,16 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 		parent::enqueue();
 	}
 
-	/**
-	 *
-	 * @global Custom_Image_Header $custom_image_header
-	 */
 	public function prepare_control() {
-		global $custom_image_header;
-		if ( empty( $custom_image_header ) ) {
+		$app = getApp();
+		if ( empty( $app->theme['custom_image_header'] ) ) {
 			return;
 		}
 
 		// Process default headers and uploaded headers.
-		$custom_image_header->process_default_headers();
-		$this->default_headers = $custom_image_header->get_default_header_images();
-		$this->uploaded_headers = $custom_image_header->get_uploaded_header_images();
+		$app->theme['custom_image_header']->process_default_headers();
+		$this->default_headers = $app->theme['custom_image_header']->get_default_header_images();
+		$this->uploaded_headers = $app->theme['custom_image_header']->get_uploaded_header_images();
 	}
 
 	/**

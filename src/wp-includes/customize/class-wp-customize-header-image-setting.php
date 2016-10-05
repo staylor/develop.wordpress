@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * A setting that is used to filter a value, but will not save the results.
  *
@@ -22,21 +24,20 @@ final class WP_Customize_Header_Image_Setting extends WP_Customize_Setting {
 	/**
 	 * @since 3.4.0
 	 *
-	 * @global Custom_Image_Header $custom_image_header
-	 *
 	 * @param $value
 	 */
 	public function update( $value ) {
-		global $custom_image_header;
-
+		$app = getApp();
 		// If the value doesn't exist (removed or random),
 		// use the header_image value.
-		if ( ! $value )
+		if ( ! $value ) {
 			$value = $this->manager->get_setting('header_image')->post_value();
+		}
 
-		if ( is_array( $value ) && isset( $value['choice'] ) )
-			$custom_image_header->set_header_image( $value['choice'] );
-		else
-			$custom_image_header->set_header_image( $value );
+		if ( is_array( $value ) && isset( $value['choice'] ) ) {
+			 $app->theme['custom_image_header']->set_header_image( $value['choice'] );
+		} else {
+			 $app->theme['custom_image_header']->set_header_image( $value );
+		}
 	}
 }

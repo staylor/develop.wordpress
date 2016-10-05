@@ -13,6 +13,9 @@
  * @deprecated 3.0.0 Use SimplePie instead.
  */
 
+use function WP\getApp;
+
+$app = getApp();
 /**
  * Deprecated. Use SimplePie (class-simplepie.php) instead.
  */
@@ -29,7 +32,7 @@ do_action( 'load_feed_engine' );
 /** RSS feed constant. */
 define('RSS', 'RSS');
 define('ATOM', 'Atom');
-define('MAGPIE_USER_AGENT', 'WordPress/' . $GLOBALS['wp_version']);
+define('MAGPIE_USER_AGENT', 'WordPress/' . $app['wp_version']);
 
 class MagpieRSS {
 	var $parser;
@@ -668,7 +671,8 @@ function init () {
 	}
 
 	if ( !defined('MAGPIE_USER_AGENT') ) {
-		$ua = 'WordPress/' . $GLOBALS['wp_version'];
+		$app = getApp();
+		$ua = 'WordPress/' . $app['wp_version'];
 
 		if ( MAGPIE_CACHE_ON ) {
 			$ua = $ua . ')';

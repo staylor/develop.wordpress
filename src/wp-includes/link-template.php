@@ -2439,10 +2439,11 @@ function the_post_navigation( $args = array() ) {
  * @return string Markup for posts links.
  */
 function get_the_posts_navigation( $args = array() ) {
+	$app = getApp();
 	$navigation = '';
 
 	// Don't print empty markup if there's only one page.
-	if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
+	if ( $app['wp']->current_query->max_num_pages > 1 ) {
 		$args = wp_parse_args( $args, array(
 			'prev_text'          => __( 'Older posts' ),
 			'next_text'          => __( 'Newer posts' ),
@@ -2492,10 +2493,11 @@ function the_posts_navigation( $args = array() ) {
  * @return string Markup for pagination links.
  */
 function get_the_posts_pagination( $args = array() ) {
+	$app = getApp();
 	$navigation = '';
 
 	// Don't print empty markup if there's only one page.
-	if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
+	if ( $app['wp']->current_query->max_num_pages > 1 ) {
 		$args = wp_parse_args( $args, array(
 			'mid_size'           => 1,
 			'prev_text'          => _x( 'Previous', 'previous set of posts' ),
