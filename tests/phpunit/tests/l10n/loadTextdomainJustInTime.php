@@ -16,18 +16,18 @@ class Tests_L10n_loadTextdomainJustInTime extends WP_UnitTestCase {
 		$this->orig_theme_dir = $GLOBALS['wp_theme_directories'];
 
 		// /themes is necessary as theme.php functions assume /themes is the root if there is only one root.
-		$GLOBALS['wp_theme_directories'] = array( WP_CONTENT_DIR . '/themes', $this->theme_root );
+		$this->app->theme['directories'] = array( WP_CONTENT_DIR . '/themes', $this->theme_root );
 		add_filter( 'theme_root', array( $this, 'filter_theme_root' ) );
 		add_filter( 'stylesheet_root', array( $this, 'filter_theme_root' ) );
 		add_filter( 'template_root', array( $this, 'filter_theme_root' ) );
 		wp_clean_themes_cache();
 		unset( $GLOBALS['wp_themes'] );
 
-		unset( $GLOBALS['l10n_unloaded'] );
+		unset( $this->app->l10n_unloaded );
 	}
 
 	function tearDown() {
-		$GLOBALS['wp_theme_directories'] = $this->orig_theme_dir;
+		$this->app->theme['directories'] = $this->orig_theme_dir;
 		remove_filter( 'theme_root', array( $this, 'filter_theme_root' ) );
 		remove_filter( 'stylesheet_root', array( $this, 'filter_theme_root' ) );
 		remove_filter( 'template_root', array( $this, 'filter_theme_root' ) );

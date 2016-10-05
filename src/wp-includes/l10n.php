@@ -523,18 +523,12 @@ function translate_nooped_plural( $nooped_plural, $count, $domain = 'default' ) 
  *
  * @since 1.5.0
  *
- * @global array $l10n          An array of all currently loaded text domains.
- * @global array $l10n_unloaded An array of all text domains that have been unloaded again.
- *
  * @param string $domain Text domain. Unique identifier for retrieving translated strings.
  * @param string $mofile Path to the .mo file.
  * @return bool True on success, false on failure.
  */
 function load_textdomain( $domain, $mofile ) {
-	global $l10n, $l10n_unloaded;
-
-	$l10n_unloaded = (array) $l10n_unloaded;
-
+	$app = getApp();
 	/**
 	 * Filters whether to override the .mo file loading.
 	 *
@@ -547,7 +541,7 @@ function load_textdomain( $domain, $mofile ) {
 	$plugin_override = apply_filters( 'override_load_textdomain', false, $domain, $mofile );
 
 	if ( true == $plugin_override ) {
-		unset( $l10n_unloaded[ $domain ] );
+		unset( $app->l10n_unloaded[ $domain ] );
 
 		return true;
 	}
@@ -577,12 +571,12 @@ function load_textdomain( $domain, $mofile ) {
 	$mo = new MO();
 	if ( !$mo->import_from_file( $mofile ) ) return false;
 
-	if ( isset( $l10n[$domain] ) )
-		$mo->merge_with( $l10n[$domain] );
+	if ( isset( $app->l10n[$domain] ) )
+		$mo->merge_with( $app->l10n[$domain] );
 
-	unset( $l10n_unloaded[ $domain ] );
+	unset( $app->l10n_unloaded[ $domain ] );
 
-	$l10n[$domain] = &$mo;
+	$app->l10n[$domain] = &$mo;
 
 	return true;
 }
@@ -592,17 +586,11 @@ function load_textdomain( $domain, $mofile ) {
  *
  * @since 3.0.0
  *
- * @global array $l10n          An array of all currently loaded text domains.
- * @global array $l10n_unloaded An array of all text domains that have been unloaded again.
- *
  * @param string $domain Text domain. Unique identifier for retrieving translated strings.
  * @return bool Whether textdomain was unloaded.
  */
 function unload_textdomain( $domain ) {
-	global $l10n, $l10n_unloaded;
-
-	$l10n_unloaded = (array) $l10n_unloaded;
-
+	$app = getApp();
 	/**
 	 * Filters whether to override the text domain unloading.
 	 *
@@ -614,7 +602,7 @@ function unload_textdomain( $domain ) {
 	$plugin_override = apply_filters( 'override_unload_textdomain', false, $domain );
 
 	if ( $plugin_override ) {
-		$l10n_unloaded[ $domain ] = true;
+		$app->l10n_unloaded[ $domain ] = true;
 
 		return true;
 	}
@@ -628,10 +616,10 @@ function unload_textdomain( $domain ) {
 	 */
 	do_action( 'unload_textdomain', $domain );
 
-	if ( isset( $l10n[$domain] ) ) {
-		unset( $l10n[$domain] );
+	if ( isset( $app->l10n[$domain] ) ) {
+		unset( $app->l10n[$domain] );
 
-		$l10n_unloaded[ $domain ] = true;
+		$app->l10n_unloaded[ $domain ] = true;
 
 		return true;
 	}
@@ -825,20 +813,17 @@ function load_child_theme_textdomain( $domain, $path = false ) {
  * @access private
  *
  * @see get_translations_for_domain()
- * @global array $l10n_unloaded An array of all text domains that have been unloaded again.
  *
  * @param string $domain Text domain. Unique identifier for retrieving translated strings.
  * @return bool True when the textdomain is successfully loaded, false otherwise.
  */
 function _load_textdomain_just_in_time( $domain ) {
-	global $l10n_unloaded;
-
-	$l10n_unloaded = (array) $l10n_unloaded;
+	$app = getApp();
 
 	static $cached_mofiles = null;
 
 	// Short-circuit if domain is 'default' which is reserved for core.
-	if ( 'default' === $domain || isset( $l10n_unloaded[ $domain ] ) ) {
+	if ( 'default' === $domain || isset( $app->l10n_unloaded[ $domain ] ) ) {
 		return false;
 	}
 
@@ -878,15 +863,13 @@ function _load_textdomain_just_in_time( $domain ) {
  *
  * @since 2.8.0
  *
- * @global array $l10n
- *
  * @param string $domain Text domain. Unique identifier for retrieving translated strings.
  * @return Translations|NOOP_Translations A Translations instance.
  */
 function get_translations_for_domain( $domain ) {
-	global $l10n;
-	if ( isset( $l10n[ $domain ] ) || ( _load_textdomain_just_in_time( $domain ) && isset( $l10n[ $domain ] ) ) ) {
-		return $l10n[ $domain ];
+	$app = getApp();
+	if ( isset( $app->l10n[ $domain ] ) || ( _load_textdomain_just_in_time( $domain ) && isset( $app->l10n[ $domain ] ) ) ) {
+		return $app->l10n[ $domain ];
 	}
 
 	static $noop_translations = null;
@@ -902,14 +885,12 @@ function get_translations_for_domain( $domain ) {
  *
  * @since 3.0.0
  *
- * @global array $l10n
- *
  * @param string $domain Text domain. Unique identifier for retrieving translated strings.
  * @return bool Whether there are translations.
  */
 function is_textdomain_loaded( $domain ) {
-	global $l10n;
-	return isset( $l10n[ $domain ] );
+	$app = getApp();
+	return isset( $app->l10n[ $domain ] );
 }
 
 /**

@@ -6,6 +6,9 @@ use Pimple\Container;
 class App extends Container {
 	public $blog_id = 1;
 
+	public $l10n = [];
+	public $l10n_unloaded = [];
+
 	public $current_screen;
 
 	public $taxonomies = [];
