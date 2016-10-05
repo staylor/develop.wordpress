@@ -6,6 +6,8 @@
  * @subpackage Option
  */
 
+use function WP\getApp;
+
 /**
  * Retrieves an option value based on an option name.
  *

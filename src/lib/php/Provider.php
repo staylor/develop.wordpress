@@ -18,10 +18,6 @@ class Provider implements ServiceProviderInterface {
 		// for non-US English locales
 		$app['wp_local_package'] = null;
 
-		$app['db'] = function () {
-			return $GLOBALS['wpdb'];
-		};
-
 		$app['rewrite.factory'] = $app->factory( function () {
 			return new Rewrite\Rewrite();
 		} );

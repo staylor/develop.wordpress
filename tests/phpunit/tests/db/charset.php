@@ -392,7 +392,7 @@ class Tests_DB_Charset extends WP_UnitTestCase {
 	 * @ticket 21212
 	 */
 	function data_process_field_charsets() {
-		if ( $this->app['db']->charset ) {
+		if ( isset( $this->app['db']->charset ) ) {
 			$charset = $this->app['db']->charset;
 		} else {
 			$charset = $this->app['db']->get_col_charset( $this->app['db']->posts, 'post_content' );

@@ -18,9 +18,6 @@ $config_file_path .= '/wp-tests-config.php';
  */
 global $current_site, $current_blog, $shortcode_tags, $wp, $phpmailer;
 
-$app = getApp();
-$wpdb = $app['db'];
-
 if ( !is_readable( $config_file_path ) ) {
 	die( "ERROR: wp-tests-config.php is missing! Please use wp-tests-config-sample.php to create a config file.\n" );
 }
@@ -85,6 +82,9 @@ if(isset($GLOBALS['wp_tests_options'])) {
 
 // Load WordPress
 require_once ABSPATH . '/wp-settings.php';
+
+$app = getApp();
+$wpdb = $app['db'];
 
 // Delete any default posts & related data
 _delete_all_posts();

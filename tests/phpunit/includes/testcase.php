@@ -304,8 +304,8 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	 * @since 4.1.0
 	 */
 	public static function commit_transaction() {
-		$wpdb = $this->app['db'];
-		$wpdb->query( 'COMMIT;' );
+		$app = getApp();
+		$app['db']->query( 'COMMIT;' );
 	}
 
 	function _create_temporary_tables( $query ) {

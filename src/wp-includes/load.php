@@ -399,17 +399,17 @@ function wp_set_lang_dir() {
  * @global wpdb $wpdb The WordPress database class.
  */
 function require_wp_db() {
-	global $wpdb;
+	$app = getApp();
 
 	if ( file_exists( WP_CONTENT_DIR . '/db.php' ) ) {
 		require_once( WP_CONTENT_DIR . '/db.php' );
 	}
 
-	if ( isset( $wpdb ) ) {
+	if ( isset( $app['db'] ) ) {
 		return;
 	}
 
-	$wpdb = new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
+	$app['db'] = new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
 }
 
 /**
