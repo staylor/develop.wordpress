@@ -402,16 +402,12 @@ if ( !function_exists('wp_upgrade') ) :
  * Upgrades the database if needed during a site update.
  *
  * @since 2.1.0
- *
- * @global int  $wp_current_db_version
  */
 function wp_upgrade() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	$wp_current_db_version = __get_option('db_version');
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	// We are up-to-date. Nothing to do.
 	if ( $app['wp_db_version'] == $wp_current_db_version )
@@ -456,12 +452,10 @@ endif;
  *
  * @ignore
  * @since 1.0.1
- *
- * @global int $wp_current_db_version
  */
 function upgrade_all() {
-	global $wp_current_db_version;
-	$wp_current_db_version = __get_option('db_version');
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	$app = getApp();
 
@@ -802,14 +796,11 @@ function upgrade_130() {
  *
  * @ignore
  * @since 2.0.0
- *
- * @global int  $wp_current_db_version
  */
 function upgrade_160() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	populate_roles_160();
 
@@ -891,14 +882,11 @@ function upgrade_160() {
  *
  * @ignore
  * @since 2.1.0
- *
- * @global int  $wp_current_db_version
  */
 function upgrade_210() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 3506 ) {
 		// Update status and type.
@@ -941,14 +929,11 @@ function upgrade_210() {
  *
  * @ignore
  * @since 2.3.0
- *
- * @global int  $wp_current_db_version
  */
 function upgrade_230() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 5200 ) {
 		populate_roles_230();
@@ -1166,11 +1151,10 @@ function upgrade_old_slugs() {
  *
  * @ignore
  * @since 2.5.0
- *
- * @global int $wp_current_db_version
  */
 function upgrade_250() {
-	global $wp_current_db_version;
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 6689 ) {
 		populate_roles_250();
@@ -1196,11 +1180,10 @@ function upgrade_252() {
  *
  * @ignore
  * @since 2.6.0
- *
- * @global int $wp_current_db_version
  */
 function upgrade_260() {
-	global $wp_current_db_version;
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 8000 )
 		populate_roles_260();
@@ -1211,14 +1194,11 @@ function upgrade_260() {
  *
  * @ignore
  * @since 2.7.0
- *
- * @global int  $wp_current_db_version
  */
 function upgrade_270() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 8980 )
 		populate_roles_270();
@@ -1233,14 +1213,11 @@ function upgrade_270() {
  *
  * @ignore
  * @since 2.8.0
- *
- * @global int  $wp_current_db_version
  */
 function upgrade_280() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 10360 )
 		populate_roles_280();
@@ -1266,11 +1243,10 @@ function upgrade_280() {
  *
  * @ignore
  * @since 2.9.0
- *
- * @global int $wp_current_db_version
  */
 function upgrade_290() {
-	global $wp_current_db_version;
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 11958 ) {
 		// Previously, setting depth to 1 would redundantly disable threading, but now 2 is the minimum depth to avoid confusion
@@ -1286,14 +1262,11 @@ function upgrade_290() {
  *
  * @ignore
  * @since 3.0.0
- *
- * @global int  $wp_current_db_version
  */
 function upgrade_300() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 15093 )
 		populate_roles_300();
@@ -1335,15 +1308,15 @@ function upgrade_300() {
  * @ignore
  * @since 3.3.0
  *
- * @global int   $wp_current_db_version
  * @global array $wp_registered_widgets
  * @global array $sidebars_widgets
  */
 function upgrade_330() {
-	global $wp_current_db_version, $wp_registered_widgets, $sidebars_widgets;
+	global $wp_registered_widgets, $sidebars_widgets;
 
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 19061 && wp_should_upgrade_global_tables() ) {
 		$wpdb->query( "DELETE FROM $wpdb->usermeta WHERE meta_key IN ('show_admin_bar_admin', 'plugins_last_view')" );
@@ -1411,14 +1384,11 @@ function upgrade_330() {
  *
  * @ignore
  * @since 3.4.0
- *
- * @global int   $wp_current_db_version
  */
 function upgrade_340() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 19798 ) {
 		$wpdb->hide_errors();
@@ -1450,14 +1420,11 @@ function upgrade_340() {
  *
  * @ignore
  * @since 3.5.0
- *
- * @global int   $wp_current_db_version
  */
 function upgrade_350() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 22006 && $wpdb->get_var( "SELECT link_id FROM $wpdb->links LIMIT 1" ) )
 		update_option( 'link_manager_enabled', 1 ); // Previously set to 0 by populate_options()
@@ -1483,11 +1450,10 @@ function upgrade_350() {
  *
  * @ignore
  * @since 3.7.0
- *
- * @global int $wp_current_db_version
  */
 function upgrade_370() {
-	global $wp_current_db_version;
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 	if ( $wp_current_db_version < 25824 )
 		wp_clear_scheduled_hook( 'wp_auto_updates_maybe_update' );
 }
@@ -1498,11 +1464,10 @@ function upgrade_370() {
  * @ignore
  * @since 3.7.2
  * @since 3.8.0
- *
- * @global int $wp_current_db_version
  */
 function upgrade_372() {
-	global $wp_current_db_version;
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 	if ( $wp_current_db_version < 26148 )
 		wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
 }
@@ -1512,11 +1477,10 @@ function upgrade_372() {
  *
  * @ignore
  * @since 3.8.0
- *
- * @global int $wp_current_db_version
  */
 function upgrade_380() {
-	global $wp_current_db_version;
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 	if ( $wp_current_db_version < 26691 ) {
 		deactivate_plugins( array( 'mp6/mp6.php' ), true );
 	}
@@ -1527,11 +1491,10 @@ function upgrade_380() {
  *
  * @ignore
  * @since 4.0.0
- *
- * @global int $wp_current_db_version
  */
 function upgrade_400() {
-	global $wp_current_db_version;
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 	if ( $wp_current_db_version < 29630 ) {
 		if ( ! is_multisite() && false === get_option( 'WPLANG' ) ) {
 			if ( defined( 'WPLANG' ) && ( '' !== WPLANG ) && in_array( WPLANG, get_available_languages() ) ) {
@@ -1548,8 +1511,6 @@ function upgrade_400() {
  *
  * @ignore
  * @since 4.2.0
- *
- * @global int   $wp_current_db_version
  */
 function upgrade_420() {}
 
@@ -1558,14 +1519,11 @@ function upgrade_420() {}
  *
  * @ignore
  * @since 4.3.0
- *
- * @global int  $wp_current_db_version Current version.
  */
 function upgrade_430() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 32364 ) {
 		upgrade_430_fix_comments();
@@ -1599,14 +1557,11 @@ function upgrade_430() {
  *
  * @ignore
  * @since 4.3.0
- *
- * @global int  $wp_current_db_version Current version.
  */
 function upgrade_430_fix_comments() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	$content_length = $wpdb->get_col_length( $wpdb->comments, 'comment_content' );
 
@@ -1666,14 +1621,11 @@ function upgrade_431() {
  *
  * @ignore
  * @since 4.4.0
- *
- * @global int  $wp_current_db_version Current version.
  */
 function upgrade_440() {
-	global $wp_current_db_version;
-
 	$app = WP\getApp;
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 34030 ) {
 		$wpdb->query( "ALTER TABLE {$wpdb->options} MODIFY option_name VARCHAR(191)" );
@@ -1692,13 +1644,11 @@ function upgrade_440() {
  *
  * @ignore
  * @since 4.5.0
- *
- * @global int  $wp_current_db_version Current database version.
  */
 function upgrade_450() {
-	global $wp_current_db_version;
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version < 36180 ) {
 		wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
@@ -1718,11 +1668,10 @@ function upgrade_450() {
  *
  * @ignore
  * @since 4.6.0
- *
- * @global int $wp_current_db_version Current database version.
  */
 function upgrade_460() {
-	global $wp_current_db_version;
+	$app = getApp();
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	// Remove unused post meta.
 	if ( $wp_current_db_version < 37854 ) {
@@ -1749,14 +1698,11 @@ function upgrade_460() {
  * Executes network-level upgrade routines.
  *
  * @since 3.0.0
- *
- * @global int   $wp_current_db_version
  */
 function upgrade_network() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	// Always.
 	if ( is_main_network() ) {
@@ -2796,14 +2742,11 @@ function maybe_disable_automattic_widgets() {
  * Disables the Link Manager on upgrade if, at the time of upgrade, no links exist in the DB.
  *
  * @since 3.5.0
- *
- * @global int  $wp_current_db_version
  */
 function maybe_disable_link_manager() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	if ( $wp_current_db_version >= 22006 && get_option( 'link_manager_enabled' ) && ! $wpdb->get_var( "SELECT link_id FROM $wpdb->links LIMIT 1" ) )
 		update_option( 'link_manager_enabled', 0 );
@@ -2813,14 +2756,11 @@ function maybe_disable_link_manager() {
  * Runs before the schema is upgraded.
  *
  * @since 2.9.0
- *
- * @global int  $wp_current_db_version
  */
 function pre_schema_upgrade() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 
 	// Upgrade versions prior to 2.9
 	if ( $wp_current_db_version < 11557 ) {

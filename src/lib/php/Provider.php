@@ -14,6 +14,13 @@ class Provider implements ServiceProviderInterface {
 
 		$app['wp_db_version'] = 38590;
 
+		$app['wp_current_db_version'] = $app->factory( function () {
+			if ( ! function_exists( '__get_option' ) ) {
+				return 0;
+			}
+			return __get_option( 'db_version' );
+		} );
+
 		$app['tinymce_version'] = '4401-20160726';
 
 		$app['required_php_version'] = '7.0';

@@ -345,14 +345,11 @@ $wp_queries = wp_get_db_schema( 'all' );
  * Create WordPress options and set the default values.
  *
  * @since 1.5.0
- *
- * @global int  $wp_current_db_version
  */
 function populate_options() {
-	global $wp_current_db_version;
-
 	$app = getApp();
 	$wpdb = $app['db'];
+	$wp_current_db_version = $app['wp_current_db_version'];
 	$guessurl = wp_guess_url();
 	/**
 	 * Fires before creating WordPress options and populating their default values.
