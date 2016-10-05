@@ -1129,13 +1129,9 @@ final class _WP_Editors {
 	}
 
 	/**
-	 *
 	 * @static
-	 * @global bool   $concatenate_scripts
-	 * @global bool   $compress_scripts
 	 */
 	public static function editor_js() {
-		global $$concatenate_scripts, $compress_scripts;
 		$app = getApp();
 		/**
 		 * Filters "tiny_mce_version" is deprecated
@@ -1147,10 +1143,7 @@ final class _WP_Editors {
 		$version = 'ver=' . $app['tinymce_version'];
 		$tmce_on = !empty(self::$mce_settings);
 
-		if ( ! isset($concatenate_scripts) )
-			script_concat_settings();
-
-		$compressed = $compress_scripts && $concatenate_scripts && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+		$compressed = $app['scripts.compress'] && $app['scripts.concat'] && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
 			&& false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip');
 
 		$mceInit = $qtInit = '';

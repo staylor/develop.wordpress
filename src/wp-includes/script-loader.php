@@ -1019,13 +1019,9 @@ function wp_style_loader_src( $src, $handle ) {
  *
  * @see wp_print_scripts()
  *
- * @global bool $concatenate_scripts
- *
  * @return array
  */
 function print_head_scripts() {
-	global $concatenate_scripts;
-
 	if ( ! did_action('wp_print_scripts') ) {
 		/** This action is documented in wp-includes/functions.wp-scripts.php */
 		do_action( 'wp_print_scripts' );
@@ -1034,8 +1030,7 @@ function print_head_scripts() {
 	$app = getApp();
 	$wp_scripts = $app['scripts.global'];
 
-	script_concat_settings();
-	$wp_scripts->do_concat = $concatenate_scripts;
+	$wp_scripts->do_concat = $app['scripts.concat'];
 	$wp_scripts->do_head_items();
 
 	/**
@@ -1058,18 +1053,13 @@ function print_head_scripts() {
  *
  * @since 2.8.0
  *
- * @global bool       $concatenate_scripts
- *
  * @return array
  */
 function print_footer_scripts() {
-	global $concatenate_scripts;
-
 	$app = getApp();
 	$wp_scripts = $app['scripts.global'];
 
-	script_concat_settings();
-	$wp_scripts->do_concat = $concatenate_scripts;
+	$wp_scripts->do_concat = $app['scripts.concat'];
 	$wp_scripts->do_footer_items();
 
 	/**
@@ -1091,16 +1081,12 @@ function print_footer_scripts() {
  * Print scripts (internal use only)
  *
  * @ignore
- *
- * @global bool       $compress_scripts
  */
 function _print_scripts() {
-	global $compress_scripts;
-
 	$app = getApp();
 	$wp_scripts = $app['scripts.global'];
 
-	$zip = $compress_scripts ? 1 : 0;
+	$zip = $app['scripts.compress'] ? 1 : 0;
 	if ( $zip && defined('ENFORCE_GZIP') && ENFORCE_GZIP )
 		$zip = 'gzip';
 
@@ -1190,18 +1176,12 @@ function wp_enqueue_scripts() {
  *
  * @since 2.8.0
  *
- * @global bool $concatenate_scripts
- *
  * @return array
  */
 function print_admin_styles() {
-	global $concatenate_scripts;
-
 	$app = getApp();
 	$wp_styles = $app['styles.global'];
-
-	script_concat_settings();
-	$wp_styles->do_concat = $concatenate_scripts;
+	$wp_styles->do_concat = $app['scripts.concat'];
 	$wp_styles->do_items(false);
 
 	/**
@@ -1224,18 +1204,12 @@ function print_admin_styles() {
  *
  * @since 3.3.0
  *
- * @global bool      $concatenate_scripts
- *
  * @return array|void
  */
 function print_late_styles() {
-	global $concatenate_scripts;
-
 	$app = getApp();
 	$wp_styles = $app['styles.global'];
-
-	script_concat_settings();
-	$wp_styles->do_concat = $concatenate_scripts;
+	$wp_styles->do_concat = $app['scripts.concat'];
 	$wp_styles->do_footer_items();
 
 	/**
@@ -1258,16 +1232,12 @@ function print_late_styles() {
  *
  * @ignore
  * @since 3.3.0
- *
- * @global bool $compress_css
  */
 function _print_styles() {
-	global $compress_css;
-
 	$app = WP\getApp();
 	$wp_styles = $app['styles.global'];
 
-	$zip = $compress_css ? 1 : 0;
+	$zip = $app['styles.compress'] ? 1 : 0;
 	if ( $zip && defined('ENFORCE_GZIP') && ENFORCE_GZIP )
 		$zip = 'gzip';
 
@@ -1290,37 +1260,4 @@ function _print_styles() {
 
 	if ( !empty($wp_styles->print_html) )
 		echo $wp_styles->print_html;
-}
-
-/**
- * Determine the concatenation and compression settings for scripts and styles.
- *
- * @since 2.8.0
- *
- * @global bool $concatenate_scripts
- * @global bool $compress_scripts
- * @global bool $compress_css
- */
-function script_concat_settings() {
-	global $concatenate_scripts, $compress_scripts, $compress_css;
-
-	$compressed_output = ( ini_get('zlib.output_compression') || 'ob_gzhandler' == ini_get('output_handler') );
-
-	if ( ! isset($concatenate_scripts) ) {
-		$concatenate_scripts = defined('CONCATENATE_SCRIPTS') ? CONCATENATE_SCRIPTS : true;
-		if ( ( ! is_admin() && ! did_action( 'login_init' ) ) || ( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) )
-			$concatenate_scripts = false;
-	}
-
-	if ( ! isset($compress_scripts) ) {
-		$compress_scripts = defined('COMPRESS_SCRIPTS') ? COMPRESS_SCRIPTS : true;
-		if ( $compress_scripts && ( ! get_site_option('can_compress_scripts') || $compressed_output ) )
-			$compress_scripts = false;
-	}
-
-	if ( ! isset($compress_css) ) {
-		$compress_css = defined('COMPRESS_CSS') ? COMPRESS_CSS : true;
-		if ( $compress_css && ( ! get_site_option('can_compress_scripts') || $compressed_output ) )
-			$compress_css = false;
-	}
 }
