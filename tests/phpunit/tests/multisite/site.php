@@ -24,11 +24,9 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 	}
 
 	function test_switch_restore_blog() {
-		global $_wp_switched_stack;
-
 		$wpdb = $this->app['db'];
 
-		$this->assertEquals( array(), $_wp_switched_stack );
+		$this->assertEquals( array(), $this->app->switched_stack );
 		$this->assertFalse( ms_is_switched() );
 		$current_blog_id = get_current_blog_id();
 		$this->assertInternalType( 'integer', $current_blog_id );
@@ -41,7 +39,7 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 		$cap_key = wp_get_current_user()->cap_key;
 		switch_to_blog( $blog_id );
 		$this->assertNotEquals( $cap_key, wp_get_current_user()->cap_key );
-		$this->assertEquals( array( $current_blog_id ), $_wp_switched_stack );
+		$this->assertEquals( array( $current_blog_id ), $this->app->switched_stack );
 		$this->assertTrue( ms_is_switched() );
 		$this->assertEquals( $blog_id, $wpdb->blogid );
 		$this->assertFalse( wp_cache_get( 'switch-test', 'switch-test' ) );
@@ -49,13 +47,13 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 		$this->assertEquals( $blog_id, wp_cache_get( 'switch-test', 'switch-test' ) );
 
 		switch_to_blog( $blog_id );
-		$this->assertEquals( array( $current_blog_id, $blog_id ), $_wp_switched_stack );
+		$this->assertEquals( array( $current_blog_id, $blog_id ), $this->app->switched_stack );
 		$this->assertTrue( ms_is_switched() );
 		$this->assertEquals( $blog_id, $wpdb->blogid );
 		$this->assertEquals( $blog_id, wp_cache_get( 'switch-test', 'switch-test' ) );
 
 		restore_current_blog();
-		$this->assertEquals( array( $current_blog_id ), $_wp_switched_stack );
+		$this->assertEquals( array( $current_blog_id ), $this->app->switched_stack );
 		$this->assertTrue( ms_is_switched() );
 		$this->assertEquals( $blog_id, $wpdb->blogid );
 		$this->assertEquals( $blog_id, wp_cache_get( 'switch-test', 'switch-test' ) );
@@ -63,7 +61,7 @@ class Tests_Multisite_Site extends WP_UnitTestCase {
 		restore_current_blog();
 		$this->assertEquals( $cap_key, wp_get_current_user()->cap_key );
 		$this->assertEquals( $current_blog_id, get_current_blog_id() );
-		$this->assertEquals( array(), $_wp_switched_stack );
+		$this->assertEquals( array(), $this->app->switched_stack );
 		$this->assertFalse( ms_is_switched() );
 		$this->assertEquals( $current_blog_id, wp_cache_get( 'switch-test', 'switch-test' ) );
 

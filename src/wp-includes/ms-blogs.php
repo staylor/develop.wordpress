@@ -753,7 +753,6 @@ function update_blog_option( $id, $option, $value, $deprecated = null ) {
  * @since MU
  *
  * @global int             $blog_id
- * @global array           $_wp_switched_stack
  * @global bool            $switched
  * @global string          $table_prefix
  * @global WP_Object_Cache $wp_object_cache
@@ -771,7 +770,7 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
 		$new_blog = $blog_id;
 	}
 
-	$GLOBALS['_wp_switched_stack'][] = $blog_id;
+	$app->switched_stack[] = $blog_id;
 
 	/*
 	 * If we're switching to the same blog id that we're on,
@@ -839,7 +838,6 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
  * @see switch_to_blog()
  * @since MU
  *
- * @global array           $_wp_switched_stack
  * @global int             $blog_id
  * @global bool            $switched
  * @global string          $table_prefix
@@ -851,18 +849,18 @@ function restore_current_blog() {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( empty( $GLOBALS['_wp_switched_stack'] ) ) {
+	if ( empty( $app->switched_stack ) ) {
 		return false;
 	}
 
-	$blog = array_pop( $GLOBALS['_wp_switched_stack'] );
+	$blog = array_pop( $app->switched_stack );
 	$blog_id = get_current_blog_id();
 
 	if ( $blog_id == $blog ) {
 		/** This filter is documented in wp-includes/ms-blogs.php */
 		do_action( 'switch_blog', $blog, $blog );
 		// If we still have items in the switched stack, consider ourselves still 'switched'
-		$GLOBALS['switched'] = ! empty( $GLOBALS['_wp_switched_stack'] );
+		$GLOBALS['switched'] = ! empty( $app->switched_stack );
 		return true;
 	}
 
@@ -905,7 +903,7 @@ function restore_current_blog() {
 	do_action( 'switch_blog', $blog, $prev_blog_id );
 
 	// If we still have items in the switched stack, consider ourselves still 'switched'
-	$GLOBALS['switched'] = ! empty( $GLOBALS['_wp_switched_stack'] );
+	$GLOBALS['switched'] = ! empty( $app->switched_stack );
 
 	return true;
 }
@@ -915,12 +913,11 @@ function restore_current_blog() {
  *
  * @since 3.5.0
  *
- * @global array $_wp_switched_stack
- *
  * @return bool True if switched, false otherwise.
  */
 function ms_is_switched() {
-	return ! empty( $GLOBALS['_wp_switched_stack'] );
+	$app = getApp();
+	return ! empty( $app->switched_stack );
 }
 
 /**
