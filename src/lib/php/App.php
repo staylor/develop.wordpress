@@ -13,5 +13,6 @@ class App extends Container {
 	public $sidebars = [
 		'registered' => [],
 		'widgets' => [],
+		'_widgets' => [],
 	];
 }

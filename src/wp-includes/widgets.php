@@ -23,13 +23,6 @@ use function WP\getApp;
 /**
  * Private
  *
- * @global array $_wp_sidebars_widgets
- */
-$_wp_sidebars_widgets = array();
-
-/**
- * Private
- *
  * @global array $_wp_deprecated_widgets_callbacks
  */
 $GLOBALS['_wp_deprecated_widgets_callbacks'] = array(
@@ -813,8 +806,6 @@ function is_active_sidebar( $index ) {
  * @since 2.2.0
  * @access private
  *
- * @global array $_wp_sidebars_widgets
- *
  * @param bool $deprecated Not used (argument deprecated).
  * @return array Upgraded list of widgets to version 3 array format when called from the admin.
  */
@@ -822,17 +813,15 @@ function wp_get_sidebars_widgets( $deprecated = true ) {
 	if ( $deprecated !== true )
 		_deprecated_argument( __FUNCTION__, '2.8.1' );
 
-	global $_wp_sidebars_widgets;
-
 	$app = getApp();
 
 	// If loading from front page, consult $_wp_sidebars_widgets rather than options
 	// to see if wp_convert_widget_settings() has made manipulations in memory.
 	if ( !is_admin() ) {
-		if ( empty($_wp_sidebars_widgets) )
-			$_wp_sidebars_widgets = get_option('sidebars_widgets', array());
-
-		$sidebars_widgets = $_wp_sidebars_widgets;
+		if ( empty( $app->sidebars['_widgets'] ) ) {
+			$app->sidebars['_widgets'] = get_option('sidebars_widgets', array());
+		}
+		$sidebars_widgets = $app->sidebars['_widgets'];
 	} else {
 		$sidebars_widgets = get_option('sidebars_widgets', array());
 	}
@@ -889,8 +878,6 @@ function wp_get_widget_defaults() {
  *
  * @since 2.8.0
  *
- * @global array $_wp_sidebars_widgets
- *
  * @param string $base_name
  * @param string $option_name
  * @param array  $settings
@@ -919,9 +906,10 @@ function wp_convert_widget_settings($base_name, $option_name, $settings) {
 		if ( is_admin() ) {
 			$sidebars_widgets = get_option('sidebars_widgets');
 		} else {
-			if ( empty($GLOBALS['_wp_sidebars_widgets']) )
-				$GLOBALS['_wp_sidebars_widgets'] = get_option('sidebars_widgets', array());
-			$sidebars_widgets = &$GLOBALS['_wp_sidebars_widgets'];
+			if ( empty( $app->sidebars['_widgets'] ) ) {
+				$app->sidebars['_widgets'] = get_option( 'sidebars_widgets', array() );
+			}
+			$sidebars_widgets =& $app->sidebars['_widgets'];
 		}
 
 		foreach ( (array) $sidebars_widgets as $index => $sidebar ) {

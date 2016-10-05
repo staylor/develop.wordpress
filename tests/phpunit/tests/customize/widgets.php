@@ -30,7 +30,7 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 		$GLOBALS['wp_customize'] = new WP_Customize_Manager();
 		$this->manager = $GLOBALS['wp_customize'];
 
-		unset( $GLOBALS['_wp_sidebars_widgets'] ); // clear out cache set by wp_get_sidebars_widgets()
+		$this->app->sidebars['_widgets'] = null;
 		$sidebars_widgets = wp_get_sidebars_widgets();
 		$this->assertEqualSets( array( 'wp_inactive_widgets', 'sidebar-1' ), array_keys( wp_get_sidebars_widgets() ) );
 		$this->assertContains( 'search-2', $sidebars_widgets['sidebar-1'] );
@@ -584,7 +584,7 @@ class Tests_WP_Customize_Widgets extends WP_UnitTestCase {
 		) );
 
 		$this->manager->widgets->selective_refresh_init();
-		$wp_registered_sidebars = $this->app['sidebars.registered']->getArrayCopy();
+		$wp_registered_sidebars = $this->app->sidebars['registered'];
 
 		$params = array(
 			array_merge(

@@ -265,8 +265,6 @@ final class WP_Customize_Widgets {
 	 *
 	 * @since 3.9.0
 	 * @access public
-	 *
-	 * @global array $_wp_sidebars_widgets
 	 */
 	public function override_sidebars_widgets_for_theme_switch() {
 		$app = getApp();
@@ -284,7 +282,7 @@ final class WP_Customize_Widgets {
 
 		add_filter( 'option_sidebars_widgets', array( $this, 'filter_option_sidebars_widgets_for_theme_switch' ), 1 );
 		// reset global cache var used by wp_get_sidebars_widgets()
-		unset( $GLOBALS['_wp_sidebars_widgets'] );
+		$app->sidebars['_widgets'] = null;
 	}
 
 	/**

@@ -14,7 +14,7 @@ class Tests_DB_Charset extends WP_UnitTestCase {
 	 */
 	protected static $_wpdb;
 
-	public static function setUpBeforeClass() {
+	public static function wpSetUpBeforeClass() {
 		require_once( dirname( dirname( __FILE__ ) ) . '/db.php' );
 
 		self::$_wpdb = new wpdb_exposed_methods_for_testing();
@@ -436,7 +436,7 @@ class Tests_DB_Charset extends WP_UnitTestCase {
 	 * @ticket 21212
 	 */
 	function test_process_field_charsets( $data, $expected, $message ) {
-		$actual = self::$_wpdb->process_field_charsets( $data, $GLOBALS['wpdb']->posts );
+		$actual = self::$_wpdb->process_field_charsets( $data, self::$_wpdb->posts );
 		$this->assertSame( $expected, $actual, $message );
 	}
 
