@@ -49,7 +49,7 @@ class Provider implements ServiceProviderInterface {
 		};
 
 		$app['password.hasher'] = function () {
-			return new PasswordHash( 8, true );
+			return new \PasswordHash( 8, true );
 		};
 	}
 }
