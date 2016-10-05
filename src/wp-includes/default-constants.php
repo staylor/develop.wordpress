@@ -13,12 +13,8 @@ use function WP\getApp;
  * @see wp_debug_mode()
  *
  * @since 3.0.0
- *
- * @global int $blog_id
  */
 function wp_initial_constants() {
-	global $blog_id;
-
 	$app = getApp();
 	/**#@+
 	 * Constants for expressing human-readable data sizes in their respective number of bytes.
@@ -60,9 +56,6 @@ function wp_initial_constants() {
 	if ( -1 !== $current_limit_int && ( -1 === $wp_limit_int || $wp_limit_int > $current_limit_int ) ) {
 		@ini_set( 'memory_limit', WP_MEMORY_LIMIT );
 	}
-
-	if ( ! isset($blog_id) )
-		$blog_id = 1;
 
 	if ( !defined('WP_CONTENT_DIR') )
 		define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' ); // no trailing slash, full paths only - WP_CONTENT_URL is defined further down

@@ -21,15 +21,6 @@ require_once( ABSPATH . 'vendor/autoload.php' );
 
 $app = WP\getApp();
 
-/**
- * If not already configured, `$blog_id` will default to 1 in a single site
- * configuration. In multisite, it will be overridden by default in ms-settings.php.
- *
- * @global int $blog_id
- * @since 2.0.0
- */
-global $blog_id;
-
 // Set initial default constants including WP_MEMORY_LIMIT, WP_MAX_MEMORY_LIMIT, WP_DEBUG, SCRIPT_DEBUG, WP_CONTENT_DIR and WP_CACHE.
 wp_initial_constants();
 

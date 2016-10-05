@@ -752,7 +752,6 @@ function update_blog_option( $id, $option, $value, $deprecated = null ) {
  * @see restore_current_blog()
  * @since MU
  *
- * @global int             $blog_id
  * @global string          $table_prefix
  * @global WP_Object_Cache $wp_object_cache
  *
@@ -793,7 +792,7 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
 	$wpdb->set_blog_id( $new_blog );
 	$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
 	$prev_blog_id = $blog_id;
-	$GLOBALS['blog_id'] = $new_blog;
+	$app->blog_id = $new_blog;
 
 	if ( function_exists( 'wp_cache_switch_to_blog' ) ) {
 		wp_cache_switch_to_blog( $new_blog );
@@ -837,7 +836,6 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
  * @see switch_to_blog()
  * @since MU
  *
- * @global int             $blog_id
  * @global string          $table_prefix
  * @global WP_Object_Cache $wp_object_cache
  *
@@ -864,7 +862,7 @@ function restore_current_blog() {
 
 	$wpdb->set_blog_id( $blog );
 	$prev_blog_id = $blog_id;
-	$GLOBALS['blog_id'] = $blog;
+	$app->blog_id = $blog;
 	$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
 
 	if ( function_exists( 'wp_cache_switch_to_blog' ) ) {

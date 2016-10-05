@@ -811,13 +811,11 @@ function is_multisite() {
  *
  * @since 3.1.0
  *
- * @global int $blog_id
- *
  * @return int Site ID.
  */
 function get_current_blog_id() {
-	global $blog_id;
-	return absint($blog_id);
+	$app = getApp();
+	return absint( $app->blog_id );
 }
 
 /**

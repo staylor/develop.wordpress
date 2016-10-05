@@ -372,7 +372,7 @@ function ms_load_current_site_and_network( $domain, $path, $subdomain = false ) 
 	// During activation of a new subdomain, the requested site does not yet exist.
 	if ( empty( $current_blog ) && wp_installing() ) {
 		$current_blog = new stdClass;
-		$current_blog->blog_id = $blog_id = 1;
+		$current_blog->blog_id = $app->blog_id = 1;
 		$current_blog->public = 1;
 	}
 

@@ -145,8 +145,6 @@ class WP_User_Query {
 	 *
 	 * @access public
 	 *
-	 * @global int  $blog_id
-	 *
 	 * @param string|array $query {
 	 *     Optional. Array or string of Query parameters.
 	 *

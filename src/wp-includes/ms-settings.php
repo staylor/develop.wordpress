@@ -71,7 +71,7 @@ if ( !isset( $current_site ) || !isset( $current_blog ) ) {
 	}
 	unset( $bootstrap_result );
 
-	$blog_id = $current_blog->blog_id;
+	$app->blog_id = $current_blog->blog_id;
 	$public  = $current_blog->public;
 
 	if ( empty( $current_blog->site_id ) ) {
