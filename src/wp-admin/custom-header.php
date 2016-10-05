@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * The custom header image class.
  *
@@ -232,20 +234,19 @@ class Custom_Image_Header {
 	 * Process the default headers
 	 *
 	 * @since 3.0.0
-	 *
-	 * @global array $_wp_default_headers
 	 */
 	public function process_default_headers() {
-		global $_wp_default_headers;
+		$app = getApp();
 
-		if ( !isset($_wp_default_headers) )
+		if ( empty( $app->default_headers ) ) {
 			return;
+		}
 
 		if ( ! empty( $this->default_headers ) ) {
 			return;
 		}
 
-		$this->default_headers = $_wp_default_headers;
+		$this->default_headers = $app->default_headers;
 		$template_directory_uri = get_template_directory_uri();
 		$stylesheet_directory_uri = get_stylesheet_directory_uri();
 		foreach ( array_keys($this->default_headers) as $header ) {

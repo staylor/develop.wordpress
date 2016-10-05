@@ -316,13 +316,12 @@ final class WP_Customize_Widgets {
 	 * @access public
 	 *
 	 * @see WP_Customize_Widgets::handle_theme_switch()
-	 * @global array $sidebars_widgets
 	 *
-	 * @param array $sidebars_widgets
 	 * @return array
 	 */
 	public function filter_option_sidebars_widgets_for_theme_switch( $sidebars_widgets ) {
-		$sidebars_widgets = $GLOBALS['sidebars_widgets'];
+		$app = getApp();
+		$sidebars_widgets = $app->sidebars['widgets'];
 		$sidebars_widgets['array_version'] = 3;
 		return $sidebars_widgets;
 	}

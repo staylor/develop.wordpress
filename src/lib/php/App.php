@@ -21,4 +21,5 @@ class App extends Container {
 	];
 
 	public $theme_directories = [];
+	public $default_headers = [];
 }

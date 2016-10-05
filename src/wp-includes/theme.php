@@ -657,14 +657,14 @@ function locale_stylesheet() {
  * @since 2.5.0
  *
  * @global WP_Customize_Manager $wp_customize
- * @global array                $sidebars_widgets
  *
  * @param string $stylesheet Stylesheet name
  */
 function switch_theme( $stylesheet ) {
-	global $wp_customize, $sidebars_widgets;
+	global $wp_customize;
 
 	$app = getApp();
+	$sidebars_widgets = $app->sidebars['widgets'];
 
 	$_sidebars_widgets = null;
 	if ( 'wp_ajax_customize_save' === current_action() ) {
@@ -1088,7 +1088,6 @@ function the_header_image_tag( $attr = array() ) {
  *
  * @access private
  *
- * @global array  $_wp_default_headers
  * @staticvar object $_wp_random_header
  *
  * @return object
@@ -1097,18 +1096,19 @@ function _get_random_header_data() {
 	static $_wp_random_header = null;
 
 	if ( empty( $_wp_random_header ) ) {
-		global $_wp_default_headers;
+		$app = getApp();
+
 		$header_image_mod = get_theme_mod( 'header_image', '' );
 		$headers = array();
 
 		if ( 'random-uploaded-image' == $header_image_mod )
 			$headers = get_uploaded_header_images();
-		elseif ( ! empty( $_wp_default_headers ) ) {
+		elseif ( ! empty( $app->default_headers ) ) {
 			if ( 'random-default-image' == $header_image_mod ) {
-				$headers = $_wp_default_headers;
+				$headers = $app->default_headers;
 			} else {
 				if ( current_theme_supports( 'custom-header', 'random-default' ) )
-					$headers = $_wp_default_headers;
+					$headers = $app->default_headers;
 			}
 		}
 
@@ -1218,12 +1218,10 @@ function get_uploaded_header_images() {
  *
  * @since 3.4.0
  *
- * @global array $_wp_default_headers
- *
  * @return object
  */
 function get_custom_header() {
-	global $_wp_default_headers;
+	$app = getApp();
 
 	if ( is_random_header_image() ) {
 		$data = _get_random_header_data();
@@ -1233,8 +1231,8 @@ function get_custom_header() {
 			$directory_args = array( get_template_directory_uri(), get_stylesheet_directory_uri() );
 			$data = array();
 			$data['url'] = $data['thumbnail_url'] = vsprintf( get_theme_support( 'custom-header', 'default-image' ), $directory_args );
-			if ( ! empty( $_wp_default_headers ) ) {
-				foreach ( (array) $_wp_default_headers as $default_header ) {
+			if ( ! empty( $app->default_headers ) ) {
+				foreach ( (array) $app->default_headers as $default_header ) {
 					$url = vsprintf( $default_header['url'], $directory_args );
 					if ( $data['url'] == $url ) {
 						$data = $default_header;
@@ -1261,14 +1259,11 @@ function get_custom_header() {
  *
  * @since 3.0.0
  *
- * @global array $_wp_default_headers
- *
  * @param array $headers Array of headers keyed by a string id. The ids point to arrays containing 'url', 'thumbnail_url', and 'description' keys.
  */
 function register_default_headers( $headers ) {
-	global $_wp_default_headers;
-
-	$_wp_default_headers = array_merge( (array) $_wp_default_headers, (array) $headers );
+	$app = getApp();
+	$app->default_headers = array_merge( (array) $app->default_headers, (array) $headers );
 }
 
 /**
@@ -1280,18 +1275,17 @@ function register_default_headers( $headers ) {
  * @see register_default_headers()
  * @since 3.0.0
  *
- * @global array $_wp_default_headers
- *
  * @param string|array $header The header string id (key of array) to remove, or an array thereof.
  * @return bool|void A single header returns true on success, false on failure.
  *                   There is currently no return value for multiple headers.
  */
 function unregister_default_headers( $header ) {
-	global $_wp_default_headers;
+	$app = getApp();
+
 	if ( is_array( $header ) ) {
 		array_map( 'unregister_default_headers', $header );
-	} elseif ( isset( $_wp_default_headers[ $header ] ) ) {
-		unset( $_wp_default_headers[ $header ] );
+	} elseif ( isset( $app->default_headers[ $header ] ) ) {
+		unset( $app->default_headers[ $header ] );
 		return true;
 	} else {
 		return false;
