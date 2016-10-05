@@ -856,13 +856,9 @@ function get_current_network_id() {
  * @since 3.4.0
  * @access private
  *
- * @global string    $text_direction
- *
  * @staticvar bool $loaded
  */
 function wp_load_translations_early() {
-	global $text_direction;
-
 	$app = getApp();
 
 	static $loaded = false;
