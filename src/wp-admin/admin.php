@@ -180,6 +180,9 @@ if ( isset( $page_hook ) ) {
 
 set_current_screen();
 
+$typenow = $app['typenow'];
+$taxnow = $app['taxnow'];
+
 // Handle plugin admin pages.
 if ( isset($plugin_page) ) {
 	if ( $page_hook ) {
