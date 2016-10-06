@@ -11,6 +11,7 @@ function getApp( App $app = null ) {
 		$store = new App();
 		$store->register( new Provider() );
 		$store->register( new Symfony\Provider() );
+		$store->register( new Dependency\Provider() );
 	}
 
 	return $store;
