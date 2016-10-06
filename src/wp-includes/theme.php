@@ -32,7 +32,7 @@ use function WP\getApp;
 function wp_get_themes( $args = [] ) {
 	$app = getApp();
 
-	$defaults = array( 'errors' => false, 'allowed' => null, 'blog_id' => 0 );
+	$defaults = [ 'errors' => false, 'allowed' => null, 'blog_id' => 0 ];
 	$args = wp_parse_args( $args, $defaults );
 
 	$theme_directories = search_theme_directories();
@@ -121,7 +121,7 @@ function wp_clean_themes_cache( $clear_update_cache = true ) {
 	if ( $clear_update_cache )
 		delete_site_transient( 'update_themes' );
 	search_theme_directories( true );
-	foreach ( wp_get_themes( array( 'errors' => null ) ) as $theme )
+	foreach ( wp_get_themes( [ 'errors' => null ] ) as $theme )
 		$theme->cache_delete();
 }
 
@@ -443,10 +443,10 @@ function search_theme_directories( $force = false ) {
 				// A cached theme root is no longer around, so skip it.
 				if ( ! isset( $relative_theme_roots[ $theme_root ] ) )
 					continue;
-				$found_themes[ $theme_dir ] = array(
+				$found_themes[ $theme_dir ] = [
 					'theme_file' => $theme_dir . '/style.css',
 					'theme_root' => $relative_theme_roots[ $theme_root ], // Convert relative to absolute.
-				);
+				];
 			}
 			return $found_themes;
 		}
@@ -471,10 +471,10 @@ function search_theme_directories( $force = false ) {
 			if ( file_exists( $theme_root . '/' . $dir . '/style.css' ) ) {
 				// wp-content/themes/a-single-theme
 				// wp-content/themes is $theme_root, a-single-theme is $dir
-				$found_themes[ $dir ] = array(
+				$found_themes[ $dir ] = [
 					'theme_file' => $dir . '/style.css',
 					'theme_root' => $theme_root,
-				);
+				];
 			} else {
 				$found_theme = false;
 				// wp-content/themes/a-folder-of-themes/*
@@ -489,19 +489,19 @@ function search_theme_directories( $force = false ) {
 						continue;
 					if ( ! file_exists( $theme_root . '/' . $dir . '/' . $sub_dir . '/style.css' ) )
 						continue;
-					$found_themes[ $dir . '/' . $sub_dir ] = array(
+					$found_themes[ $dir . '/' . $sub_dir ] = [
 						'theme_file' => $dir . '/' . $sub_dir . '/style.css',
 						'theme_root' => $theme_root,
-					);
+					];
 					$found_theme = true;
 				}
 				// Never mind the above, it's just a theme missing a style.css.
 				// Return it; WP_Theme will catch the error.
 				if ( ! $found_theme )
-					$found_themes[ $dir ] = array(
+					$found_themes[ $dir ] = [
 						'theme_file' => $dir . '/style.css',
 						'theme_root' => $theme_root,
-					);
+					];
 			}
 		}
 	}
@@ -671,7 +671,7 @@ function switch_theme( $stylesheet ) {
 	}
 
 	if ( is_array( $_sidebars_widgets ) ) {
-		set_theme_mod( 'sidebars_widgets', array( 'time' => time(), 'data' => $_sidebars_widgets ) );
+		set_theme_mod( 'sidebars_widgets', [ 'time' => time(), 'data' => $_sidebars_widgets ] );
 	}
 
 	$nav_menu_locations = get_theme_mod( 'nav_menu_locations' );
@@ -1033,7 +1033,7 @@ function get_header_image_tag( $attr = [] ) {
 	// Generate 'srcset' and 'sizes' if not already present.
 	if ( empty( $attr['srcset'] ) && ! empty( $header->attachment_id ) ) {
 		$image_meta = get_post_meta( $header->attachment_id, '_wp_attachment_metadata', true );
-		$size_array = array( $width, $height );
+		$size_array = [ $width, $height ];
 
 		if ( is_array( $image_meta ) ) {
 			$srcset = wp_calculate_image_srcset( $size_array, $header->url, $image_meta, $header->attachment_id );
@@ -1185,7 +1185,7 @@ function get_uploaded_header_images() {
 	$header_images = [];
 
 	// @todo caching
-	$headers = get_posts( array( 'post_type' => 'attachment', 'meta_key' => '_wp_attachment_is_custom_header', 'meta_value' => get_option('stylesheet'), 'orderby' => 'none', 'nopaging' => true ) );
+	$headers = get_posts( [ 'post_type' => 'attachment', 'meta_key' => '_wp_attachment_is_custom_header', 'meta_value' => get_option('stylesheet'), 'orderby' => 'none', 'nopaging' => true ] );
 
 	if ( empty( $headers ) )
 		return [];
@@ -1225,7 +1225,7 @@ function get_custom_header() {
 	} else {
 		$data = get_theme_mod( 'header_image_data' );
 		if ( ! $data && current_theme_supports( 'custom-header', 'default-image' ) ) {
-			$directory_args = array( get_template_directory_uri(), get_stylesheet_directory_uri() );
+			$directory_args = [ get_template_directory_uri(), get_stylesheet_directory_uri() ];
 			$data = [];
 			$data['url'] = $data['thumbnail_url'] = vsprintf( get_theme_support( 'custom-header', 'default-image' ), $directory_args );
 			if ( ! empty( $app->theme['default_headers'] ) ) {
@@ -1242,12 +1242,12 @@ function get_custom_header() {
 		}
 	}
 
-	$default = array(
+	$default = [
 		'url'           => '',
 		'thumbnail_url' => '',
 		'width'         => get_theme_support( 'custom-header', 'width' ),
 		'height'        => get_theme_support( 'custom-header', 'height' ),
-	);
+	];
 	return (object) wp_parse_args( $data, $default );
 }
 
@@ -1356,17 +1356,17 @@ function _custom_background_cb() {
 		$image = " background-image: url('$background');";
 
 		$repeat = get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) );
-		if ( ! in_array( $repeat, array( 'no-repeat', 'repeat-x', 'repeat-y', 'repeat' ) ) )
+		if ( ! in_array( $repeat, [ 'no-repeat', 'repeat-x', 'repeat-y', 'repeat' ] ) )
 			$repeat = 'repeat';
 		$repeat = " background-repeat: $repeat;";
 
 		$position = get_theme_mod( 'background_position_x', get_theme_support( 'custom-background', 'default-position-x' ) );
-		if ( ! in_array( $position, array( 'center', 'right', 'left' ) ) )
+		if ( ! in_array( $position, [ 'center', 'right', 'left' ] ) )
 			$position = 'left';
 		$position = " background-position: top $position;";
 
 		$attachment = get_theme_mod( 'background_attachment', get_theme_support( 'custom-background', 'default-attachment' ) );
-		if ( ! in_array( $attachment, array( 'fixed', 'scroll' ) ) )
+		if ( ! in_array( $attachment, [ 'fixed', 'scroll' ] ) )
 			$attachment = 'scroll';
 		$attachment = " background-attachment: $attachment;";
 
@@ -1547,7 +1547,7 @@ function add_theme_support( $feature ) {
 			// You can't just pass 'html5', you need to pass an array of types.
 			if ( empty( $args[0] ) ) {
 				// Build an array of types for back-compat.
-				$args = array( 0 => array( 'comment-list', 'comment-form', 'search-form' ) );
+				$args = [ 0 => [ 'comment-list', 'comment-form', 'search-form' ] ];
 			} elseif ( ! is_array( $args[0] ) ) {
 				_doing_it_wrong( "add_theme_support( 'html5' )", __( 'You need to pass an array of types.' ), '3.6.1' );
 				return false;
@@ -1560,15 +1560,15 @@ function add_theme_support( $feature ) {
 
 		case 'custom-logo':
 			if ( ! is_array( $args ) ) {
-				$args = array( 0 => [] );
+				$args = [ 0 => [] ];
 			}
-			$defaults = array(
+			$defaults = [
 				'width'       => null,
 				'height'      => null,
 				'flex-width'  => false,
 				'flex-height' => false,
 				'header-text' => '',
-			);
+			];
 			$args[0] = wp_parse_args( array_intersect_key( $args[0], $defaults ), $defaults );
 
 			// Allow full flexibility if no size is specified.
@@ -1579,13 +1579,13 @@ function add_theme_support( $feature ) {
 			break;
 
 		case 'custom-header-uploads' :
-			return add_theme_support( 'custom-header', array( 'uploads' => true ) );
+			return add_theme_support( 'custom-header', [ 'uploads' => true ] );
 
 		case 'custom-header' :
 			if ( ! is_array( $args ) )
-				$args = array( 0 => [] );
+				$args = [ 0 => [] ];
 
-			$defaults = array(
+			$defaults = [
 				'default-image' => '',
 				'random-default' => false,
 				'width' => 0,
@@ -1598,7 +1598,7 @@ function add_theme_support( $feature ) {
 				'wp-head-callback' => '',
 				'admin-head-callback' => '',
 				'admin-preview-callback' => '',
-			);
+			];
 
 			$jit = isset( $args[0]['__jit'] );
 			unset( $args[0]['__jit'] );
@@ -1660,9 +1660,9 @@ function add_theme_support( $feature ) {
 
 		case 'custom-background' :
 			if ( ! is_array( $args ) )
-				$args = array( 0 => [] );
+				$args = [ 0 => [] ];
 
-			$defaults = array(
+			$defaults = [
 				'default-image'          => '',
 				'default-repeat'         => 'repeat',
 				'default-position-x'     => 'left',
@@ -1671,7 +1671,7 @@ function add_theme_support( $feature ) {
 				'wp-head-callback'       => '_custom_background_cb',
 				'admin-head-callback'    => '',
 				'admin-preview-callback' => '',
-			);
+			];
 
 			$jit = isset( $args[0]['__jit'] );
 			unset( $args[0]['__jit'] );
@@ -1721,7 +1721,7 @@ function _custom_header_background_just_in_time() {
 
 	if ( current_theme_supports( 'custom-header' ) ) {
 		// In case any constants were defined after an add_custom_image_header() call, re-run.
-		add_theme_support( 'custom-header', array( '__jit' => true ) );
+		add_theme_support( 'custom-header', [ '__jit' => true ] );
 
 		$args = get_theme_support( 'custom-header' );
 		if ( $args[0]['wp-head-callback'] )
@@ -1734,7 +1734,7 @@ function _custom_header_background_just_in_time() {
 
 	if ( current_theme_supports( 'custom-background' ) ) {
 		// In case any constants were defined after an add_custom_background() call, re-run.
-		add_theme_support( 'custom-background', array( '__jit' => true ) );
+		add_theme_support( 'custom-background', [ '__jit' => true ] );
 
 		$args = get_theme_support( 'custom-background' );
 		add_action( 'wp_head', $args[0]['wp-head-callback'] );
@@ -1816,7 +1816,7 @@ function get_theme_support( $feature ) {
  */
 function remove_theme_support( $feature ) {
 	// Blacklist: for internal registrations not used directly by themes.
-	if ( in_array( $feature, array( 'editor-style', 'widgets', 'menus' ) ) )
+	if ( in_array( $feature, [ 'editor-style', 'widgets', 'menus' ] ) )
 		return false;
 
 	return _remove_theme_support( $feature );
@@ -1837,7 +1837,7 @@ function _remove_theme_support( $feature ) {
 	case 'custom-header-uploads' :
 		if ( ! isset( $app->theme['features']['custom-header'] ) )
 			return false;
-		add_theme_support( 'custom-header', array( 'uploads' => false ) );
+		add_theme_support( 'custom-header', [ 'uploads' => false ] );
 		return; // Do not continue - custom-header-uploads no longer exists.
 	}
 
@@ -1851,7 +1851,7 @@ function _remove_theme_support( $feature ) {
 		$support = get_theme_support( 'custom-header' );
 		if ( $support[0]['wp-head-callback'] )
 			remove_action( 'wp_head', $support[0]['wp-head-callback'] );
-		remove_action( 'admin_menu', array( $app->theme['custom_image_header'], 'init' ) );
+		remove_action( 'admin_menu', [ $app->theme['custom_image_header'], 'init' ] );
 		$app->theme['custom_image_header'] = null;
 		break;
 
@@ -1860,7 +1860,7 @@ function _remove_theme_support( $feature ) {
 			break;
 		$support = get_theme_support( 'custom-background' );
 		remove_action( 'wp_head', $support[0]['wp-head-callback'] );
-		remove_action( 'admin_menu', array( $app->theme['custom_background'], 'init' ) );
+		remove_action( 'admin_menu', [ $app->theme['custom_background'], 'init' ] );
 		$app->theme['custom_background'] = null;
 		break;
 	}
@@ -2062,20 +2062,20 @@ function _wp_customize_loader_settings() {
 	$home_origin  = parse_url( home_url() );
 	$cross_domain = ( strtolower( $admin_origin[ 'host' ] ) != strtolower( $home_origin[ 'host' ] ) );
 
-	$browser = array(
+	$browser = [
 		'mobile' => wp_is_mobile(),
 		'ios'    => wp_is_mobile() && preg_match( '/iPad|iPod|iPhone/', $app['request.useragent'] ),
-	);
+	];
 
-	$settings = array(
+	$settings = [
 		'url'           => esc_url( admin_url( 'customize.php' ) ),
 		'isCrossDomain' => $cross_domain,
 		'browser'       => $browser,
-		'l10n'          => array(
+		'l10n'          => [
 			'saveAlert'       => __( 'The changes you made will be lost if you navigate away from this page.' ),
 			'mainIframeTitle' => __( 'Customizer' ),
-		),
-	);
+		],
+	];
 
 	$script = 'var _wpCustomizeLoaderSettings = ' . wp_json_encode( $settings ) . ';';
 

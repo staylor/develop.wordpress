@@ -23,11 +23,11 @@ class WP_Widget_Pages extends WP_Widget {
 	 * @access public
 	 */
 	public function __construct() {
-		$widget_ops = array(
+		$widget_ops = [
 			'classname' => 'widget_pages',
 			'description' => __( 'A list of your site&#8217;s Pages.' ),
 			'customize_selective_refresh' => true,
-		);
+		];
 		parent::__construct( 'pages', __( 'Pages' ), $widget_ops );
 	}
 
@@ -69,12 +69,12 @@ class WP_Widget_Pages extends WP_Widget {
 		 *
 		 * @param array $args An array of arguments to retrieve the pages list.
 		 */
-		$out = wp_list_pages( apply_filters( 'widget_pages_args', array(
+		$out = wp_list_pages( apply_filters( 'widget_pages_args', [
 			'title_li'    => '',
 			'echo'        => 0,
 			'sort_column' => $sortby,
 			'exclude'     => $exclude
-		) ) );
+		] ) );
 
 		if ( ! empty( $out ) ) {
 			echo $args['before_widget'];
@@ -104,7 +104,7 @@ class WP_Widget_Pages extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 		$instance['title'] = sanitize_text_field( $new_instance['title'] );
-		if ( in_array( $new_instance['sortby'], array( 'post_title', 'menu_order', 'ID' ) ) ) {
+		if ( in_array( $new_instance['sortby'], [ 'post_title', 'menu_order', 'ID' ] ) ) {
 			$instance['sortby'] = $new_instance['sortby'];
 		} else {
 			$instance['sortby'] = 'menu_order';
@@ -125,7 +125,7 @@ class WP_Widget_Pages extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		//Defaults
-		$instance = wp_parse_args( (array) $instance, array( 'sortby' => 'post_title', 'title' => '', 'exclude' => '') );
+		$instance = wp_parse_args( (array) $instance, [ 'sortby' => 'post_title', 'title' => '', 'exclude' => '' ] );
 		?>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title:' ); ?></label>

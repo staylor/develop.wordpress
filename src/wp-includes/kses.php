@@ -58,71 +58,71 @@ if ( ! CUSTOM_TAGS ) {
 	 * @global array $allowedposttags
 	 * @since 2.0.0
 	 */
-	$allowedposttags = array(
+	$allowedposttags = [
 		'address' => [],
-		'a' => array(
+		'a' => [
 			'href' => true,
 			'rel' => true,
 			'rev' => true,
 			'name' => true,
 			'target' => true,
-		),
+		],
 		'abbr' => [],
 		'acronym' => [],
-		'area' => array(
+		'area' => [
 			'alt' => true,
 			'coords' => true,
 			'href' => true,
 			'nohref' => true,
 			'shape' => true,
 			'target' => true,
-		),
-		'article' => array(
+		],
+		'article' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'aside' => array(
+		],
+		'aside' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'audio' => array(
+		],
+		'audio' => [
 			'autoplay' => true,
 			'controls' => true,
 			'loop' => true,
 			'muted' => true,
 			'preload' => true,
 			'src' => true,
-		),
+		],
 		'b' => [],
-		'bdo' => array(
+		'bdo' => [
 			'dir' => true,
-		),
+		],
 		'big' => [],
-		'blockquote' => array(
+		'blockquote' => [
 			'cite' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
+		],
 		'br' => [],
-		'button' => array(
+		'button' => [
 			'disabled' => true,
 			'name' => true,
 			'type' => true,
 			'value' => true,
-		),
-		'caption' => array(
+		],
+		'caption' => [
 			'align' => true,
-		),
-		'cite' => array(
+		],
+		'cite' => [
 			'dir' => true,
 			'lang' => true,
-		),
+		],
 		'code' => [],
-		'col' => array(
+		'col' => [
 			'align' => true,
 			'char' => true,
 			'charoff' => true,
@@ -130,61 +130,61 @@ if ( ! CUSTOM_TAGS ) {
 			'dir' => true,
 			'valign' => true,
 			'width' => true,
-		),
-		'colgroup' => array(
+		],
+		'colgroup' => [
 			'align' => true,
 			'char' => true,
 			'charoff' => true,
 			'span' => true,
 			'valign' => true,
 			'width' => true,
-		),
-		'del' => array(
+		],
+		'del' => [
 			'datetime' => true,
-		),
+		],
 		'dd' => [],
 		'dfn' => [],
-		'details' => array(
+		'details' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'open' => true,
 			'xml:lang' => true,
-		),
-		'div' => array(
+		],
+		'div' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
+		],
 		'dl' => [],
 		'dt' => [],
 		'em' => [],
 		'fieldset' => [],
-		'figure' => array(
+		'figure' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'figcaption' => array(
+		],
+		'figcaption' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'font' => array(
+		],
+		'font' => [
 			'color' => true,
 			'face' => true,
 			'size' => true,
-		),
-		'footer' => array(
+		],
+		'footer' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'form' => array(
+		],
+		'form' => [
 			'action' => true,
 			'accept' => true,
 			'accept-charset' => true,
@@ -192,45 +192,45 @@ if ( ! CUSTOM_TAGS ) {
 			'method' => true,
 			'name' => true,
 			'target' => true,
-		),
-		'h1' => array(
+		],
+		'h1' => [
 			'align' => true,
-		),
-		'h2' => array(
+		],
+		'h2' => [
 			'align' => true,
-		),
-		'h3' => array(
+		],
+		'h3' => [
 			'align' => true,
-		),
-		'h4' => array(
+		],
+		'h4' => [
 			'align' => true,
-		),
-		'h5' => array(
+		],
+		'h5' => [
 			'align' => true,
-		),
-		'h6' => array(
+		],
+		'h6' => [
 			'align' => true,
-		),
-		'header' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
-		),
-		'hgroup' => array(
+		],
+		'header' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'hr' => array(
+		],
+		'hgroup' => [
+			'align' => true,
+			'dir' => true,
+			'lang' => true,
+			'xml:lang' => true,
+		],
+		'hr' => [
 			'align' => true,
 			'noshade' => true,
 			'size' => true,
 			'width' => true,
-		),
+		],
 		'i' => [],
-		'img' => array(
+		'img' => [
 			'alt' => true,
 			'align' => true,
 			'border' => true,
@@ -241,73 +241,73 @@ if ( ! CUSTOM_TAGS ) {
 			'src' => true,
 			'usemap' => true,
 			'width' => true,
-		),
-		'ins' => array(
+		],
+		'ins' => [
 			'datetime' => true,
 			'cite' => true,
-		),
+		],
 		'kbd' => [],
-		'label' => array(
+		'label' => [
 			'for' => true,
-		),
-		'legend' => array(
+		],
+		'legend' => [
 			'align' => true,
-		),
-		'li' => array(
+		],
+		'li' => [
 			'align' => true,
 			'value' => true,
-		),
-		'map' => array(
+		],
+		'map' => [
 			'name' => true,
-		),
+		],
 		'mark' => [],
-		'menu' => array(
+		'menu' => [
 			'type' => true,
-		),
-		'nav' => array(
+		],
+		'nav' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'p' => array(
+		],
+		'p' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'pre' => array(
+		],
+		'pre' => [
 			'width' => true,
-		),
-		'q' => array(
+		],
+		'q' => [
 			'cite' => true,
-		),
+		],
 		's' => [],
 		'samp' => [],
-		'span' => array(
+		'span' => [
 			'dir' => true,
 			'align' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
-		'section' => array(
+		],
+		'section' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
+		],
 		'small' => [],
 		'strike' => [],
 		'strong' => [],
 		'sub' => [],
-		'summary' => array(
+		'summary' => [
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
-		),
+		],
 		'sup' => [],
-		'table' => array(
+		'table' => [
 			'align' => true,
 			'bgcolor' => true,
 			'border' => true,
@@ -317,14 +317,14 @@ if ( ! CUSTOM_TAGS ) {
 			'rules' => true,
 			'summary' => true,
 			'width' => true,
-		),
-		'tbody' => array(
+		],
+		'tbody' => [
 			'align' => true,
 			'char' => true,
 			'charoff' => true,
 			'valign' => true,
-		),
-		'td' => array(
+		],
+		'td' => [
 			'abbr' => true,
 			'align' => true,
 			'axis' => true,
@@ -340,21 +340,21 @@ if ( ! CUSTOM_TAGS ) {
 			'scope' => true,
 			'valign' => true,
 			'width' => true,
-		),
-		'textarea' => array(
+		],
+		'textarea' => [
 			'cols' => true,
 			'rows' => true,
 			'disabled' => true,
 			'name' => true,
 			'readonly' => true,
-		),
-		'tfoot' => array(
+		],
+		'tfoot' => [
 			'align' => true,
 			'char' => true,
 			'charoff' => true,
 			'valign' => true,
-		),
-		'th' => array(
+		],
+		'th' => [
 			'abbr' => true,
 			'align' => true,
 			'axis' => true,
@@ -369,40 +369,40 @@ if ( ! CUSTOM_TAGS ) {
 			'scope' => true,
 			'valign' => true,
 			'width' => true,
-		),
-		'thead' => array(
+		],
+		'thead' => [
 			'align' => true,
 			'char' => true,
 			'charoff' => true,
 			'valign' => true,
-		),
+		],
 		'title' => [],
-		'tr' => array(
+		'tr' => [
 			'align' => true,
 			'bgcolor' => true,
 			'char' => true,
 			'charoff' => true,
 			'valign' => true,
-		),
-		'track' => array(
+		],
+		'track' => [
 			'default' => true,
 			'kind' => true,
 			'label' => true,
 			'src' => true,
 			'srclang' => true,
-		),
+		],
 		'tt' => [],
 		'u' => [],
-		'ul' => array(
+		'ul' => [
 			'type' => true,
-		),
-		'ol' => array(
+		],
+		'ol' => [
 			'start' => true,
 			'type' => true,
 			'reversed' => true,
-		),
+		],
 		'var' => [],
-		'video' => array(
+		'video' => [
 			'autoplay' => true,
 			'controls' => true,
 			'height' => true,
@@ -412,8 +412,8 @@ if ( ! CUSTOM_TAGS ) {
 			'preload' => true,
 			'src' => true,
 			'width' => true,
-		),
-	);
+		],
+	];
 
 	/**
 	 * Kses allowed HTML elements.
@@ -421,37 +421,37 @@ if ( ! CUSTOM_TAGS ) {
 	 * @global array $allowedtags
 	 * @since 1.0.0
 	 */
-	$allowedtags = array(
-		'a' => array(
+	$allowedtags = [
+		'a' => [
 			'href' => true,
 			'title' => true,
-		),
-		'abbr' => array(
+		],
+		'abbr' => [
 			'title' => true,
-		),
-		'acronym' => array(
+		],
+		'acronym' => [
 			'title' => true,
-		),
+		],
 		'b' => [],
-		'blockquote' => array(
+		'blockquote' => [
 			'cite' => true,
-		),
+		],
 		'cite' => [],
 		'code' => [],
-		'del' => array(
+		'del' => [
 			'datetime' => true,
-		),
+		],
 		'em' => [],
 		'i' => [],
-		'q' => array(
+		'q' => [
 			'cite' => true,
-		),
+		],
 		's' => [],
 		'strike' => [],
 		'strong' => [],
-	);
+	];
 
-	$allowedentitynames = array(
+	$allowedentitynames = [
 		'nbsp',    'iexcl',  'cent',    'pound',  'curren', 'yen',
 		'brvbar',  'sect',   'uml',     'copy',   'ordf',   'laquo',
 		'not',     'shy',    'reg',     'macr',   'deg',    'plusmn',
@@ -495,7 +495,7 @@ if ( ! CUSTOM_TAGS ) {
 		'rang',    'loz',    'spades',  'clubs',  'hearts', 'diams',
 		'sup1',    'sup2',   'sup3',    'frac14', 'frac12', 'frac34',
 		'there4',
-	);
+	];
 
 	$allowedposttags = array_map( '_wp_add_global_attributes', $allowedposttags );
 } else {
@@ -546,7 +546,7 @@ function wp_kses( $string, $allowed_html, $allowed_protocols = [] ) {
  * @return string Filtered attribute.
  */
 function wp_kses_one_attr( $string, $element ) {
-	$uris = array('xmlns', 'profile', 'href', 'src', 'cite', 'classid', 'codebase', 'data', 'usemap', 'longdesc', 'action');
+	$uris = [ 'xmlns', 'profile', 'href', 'src', 'cite', 'classid', 'codebase', 'data', 'usemap', 'longdesc', 'action' ];
 	$allowed_html = wp_kses_allowed_html( 'post' );
 	$allowed_protocols = wp_allowed_protocols();
 	$string = wp_kses_no_null( $string, array( 'slash_zero' => 'keep' ) );
@@ -919,7 +919,7 @@ function wp_kses_hair($attr, $allowed_protocols) {
 	$attrarr = [];
 	$mode = 0;
 	$attrname = '';
-	$uris = array('xmlns', 'profile', 'href', 'src', 'cite', 'classid', 'codebase', 'data', 'usemap', 'longdesc', 'action');
+	$uris = [ 'xmlns', 'profile', 'href', 'src', 'cite', 'classid', 'codebase', 'data', 'usemap', 'longdesc', 'action' ];
 
 	// Loop through the whole attribute list
 
@@ -1244,7 +1244,7 @@ function wp_kses_bad_protocol($string, $allowed_protocols) {
  */
 function wp_kses_no_null( $string, $options = null ) {
 	if ( ! isset( $options['slash_zero'] ) ) {
-		$options = array( 'slash_zero' => 'remove' );
+		$options = [ 'slash_zero' => 'remove' ];
 	}
 
 	$string = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $string );
@@ -1820,13 +1820,13 @@ function safecss_filter_attr( $css, $deprecated = '' ) {
  * @return array The array of attributes with global attributes added.
  */
 function _wp_add_global_attributes( $value ) {
-	$global_attributes = array(
+	$global_attributes = [
 		'class' => true,
 		'id' => true,
 		'style' => true,
 		'title' => true,
 		'role' => true,
-	);
+	];
 
 	if ( true === $value )
 		$value = [];

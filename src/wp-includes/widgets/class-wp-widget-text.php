@@ -23,12 +23,12 @@ class WP_Widget_Text extends WP_Widget {
 	 * @access public
 	 */
 	public function __construct() {
-		$widget_ops = array(
+		$widget_ops = [
 			'classname' => 'widget_text',
 			'description' => __( 'Arbitrary text or HTML.' ),
 			'customize_selective_refresh' => true,
-		);
-		$control_ops = array( 'width' => 400, 'height' => 350 );
+		];
+		$control_ops = [ 'width' => 400, 'height' => 350 ];
 		parent::__construct( 'text', __( 'Text' ), $widget_ops, $control_ops );
 	}
 
@@ -102,7 +102,7 @@ class WP_Widget_Text extends WP_Widget {
 	 * @param array $instance Current settings.
 	 */
 	public function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'text' => '' ) );
+		$instance = wp_parse_args( (array) $instance, [ 'title' => '', 'text' => '' ] );
 		$filter = isset( $instance['filter'] ) ? $instance['filter'] : 0;
 		$title = sanitize_text_field( $instance['title'] );
 		?>

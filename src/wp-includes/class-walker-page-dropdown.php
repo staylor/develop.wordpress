@@ -37,7 +37,7 @@ class Walker_PageDropdown extends Walker {
 	 * @see Walker::$db_fields
 	 * @todo Decouple this
 	 */
-	public $db_fields = array( 'parent' => 'post_parent', 'id' => 'ID' );
+	public $db_fields = [ 'parent' => 'post_parent', 'id' => 'ID' ];
 
 	/**
 	 * Starts the element output.

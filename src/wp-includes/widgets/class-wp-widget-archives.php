@@ -23,11 +23,11 @@ class WP_Widget_Archives extends WP_Widget {
 	 * @access public
 	 */
 	public function __construct() {
-		$widget_ops = array(
+		$widget_ops = [
 			'classname' => 'widget_archive',
 			'description' => __( 'A monthly archive of your site&#8217;s Posts.' ),
 			'customize_selective_refresh' => true,
-		);
+		];
 		parent::__construct('archives', __('Archives'), $widget_ops);
 	}
 
@@ -68,11 +68,11 @@ class WP_Widget_Archives extends WP_Widget {
 			 *
 			 * @param array $args An array of Archives widget drop-down arguments.
 			 */
-			$dropdown_args = apply_filters( 'widget_archives_dropdown_args', array(
+			$dropdown_args = apply_filters( 'widget_archives_dropdown_args', [
 				'type'            => 'monthly',
 				'format'          => 'option',
 				'show_post_count' => $c
-			) );
+			] );
 
 			switch ( $dropdown_args['type'] ) {
 				case 'yearly':
@@ -109,10 +109,10 @@ class WP_Widget_Archives extends WP_Widget {
 		 *
 		 * @param array $args An array of Archives option arguments.
 		 */
-		wp_get_archives( apply_filters( 'widget_archives_args', array(
+		wp_get_archives( apply_filters( 'widget_archives_args', [
 			'type'            => 'monthly',
 			'show_post_count' => $c
-		) ) );
+		] ) );
 		?>
 		</ul>
 		<?php
@@ -134,7 +134,7 @@ class WP_Widget_Archives extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
-		$new_instance = wp_parse_args( (array) $new_instance, array( 'title' => '', 'count' => 0, 'dropdown' => '') );
+		$new_instance = wp_parse_args( (array) $new_instance, [ 'title' => '', 'count' => 0, 'dropdown' => '' ] );
 		$instance['title'] = sanitize_text_field( $new_instance['title'] );
 		$instance['count'] = $new_instance['count'] ? 1 : 0;
 		$instance['dropdown'] = $new_instance['dropdown'] ? 1 : 0;
@@ -151,7 +151,7 @@ class WP_Widget_Archives extends WP_Widget {
 	 * @param array $instance Current settings.
 	 */
 	public function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'count' => 0, 'dropdown' => '') );
+		$instance = wp_parse_args( (array) $instance, [ 'title' => '', 'count' => 0, 'dropdown' => '' ] );
 		$title = sanitize_text_field( $instance['title'] );
 		?>
 		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>

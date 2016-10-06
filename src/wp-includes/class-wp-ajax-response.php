@@ -64,12 +64,12 @@ class WP_Ajax_Response {
 	 * @return string XML response.
 	 */
 	public function add( $args = '' ) {
-		$defaults = array(
+		$defaults = [
 			'what' => 'object', 'action' => false,
 			'id' => '0', 'old_id' => false,
 			'position' => 1,
 			'data' => '', 'supplemental' => []
-		);
+		];
 
 		$r = wp_parse_args( $args, $defaults );
 

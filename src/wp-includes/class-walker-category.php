@@ -160,17 +160,17 @@ class Walker_Category extends Walker {
 		}
 		if ( 'list' == $args['style'] ) {
 			$output .= "\t<li";
-			$css_classes = array(
+			$css_classes = [
 				'cat-item',
 				'cat-item-' . $category->term_id,
-			);
+			];
 
 			if ( ! empty( $args['current_category'] ) ) {
 				// 'current_category' can be an array, so we use `get_terms()`.
-				$_current_terms = get_terms( $category->taxonomy, array(
+				$_current_terms = get_terms( $category->taxonomy, [
 					'include' => $args['current_category'],
 					'hide_empty' => false,
-				) );
+				] );
 
 				foreach ( $_current_terms as $_current_term ) {
 					if ( $category->term_id == $_current_term->term_id ) {

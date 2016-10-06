@@ -61,7 +61,7 @@ function wp_admin_bar_render() {
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference
 	 */
-	do_action_ref_array( 'admin_bar_menu', array( &$app['admin_bar'] ) );
+	do_action_ref_array( 'admin_bar_menu', [ &$app['admin_bar'] ] );
 
 	/**
 	 * Fires before the admin bar is rendered.
@@ -96,62 +96,62 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 		$about_url = false;
 	}
 
-	$wp_logo_menu_args = array(
+	$wp_logo_menu_args = [
 		'id'    => 'wp-logo',
 		'title' => '<span class="ab-icon"></span><span class="screen-reader-text">' . __( 'About WordPress' ) . '</span>',
 		'href'  => $about_url,
-	);
+	];
 
 	// Set tabindex="0" to make sub menus accessible when no URL is available.
 	if ( ! $about_url ) {
-		$wp_logo_menu_args['meta'] = array(
+		$wp_logo_menu_args['meta'] = [
 			'tabindex' => 0,
-		);
+		];
 	}
 
 	$wp_admin_bar->add_menu( $wp_logo_menu_args );
 
 	if ( $about_url ) {
 		// Add "About WordPress" link
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'wp-logo',
 			'id'     => 'about',
 			'title'  => __('About WordPress'),
 			'href'   => $about_url,
-		) );
+		] );
 	}
 
 	// Add WordPress.org link
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'parent'    => 'wp-logo-external',
 		'id'        => 'wporg',
 		'title'     => __('WordPress.org'),
 		'href'      => __('https://wordpress.org/'),
-	) );
+	] );
 
 	// Add codex link
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'parent'    => 'wp-logo-external',
 		'id'        => 'documentation',
 		'title'     => __('Documentation'),
 		'href'      => __('https://codex.wordpress.org/'),
-	) );
+	] );
 
 	// Add forums link
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'parent'    => 'wp-logo-external',
 		'id'        => 'support-forums',
 		'title'     => __('Support Forums'),
 		'href'      => __('https://wordpress.org/support/'),
-	) );
+	] );
 
 	// Add feedback link
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'parent'    => 'wp-logo-external',
 		'id'        => 'feedback',
 		'title'     => __('Feedback'),
 		'href'      => __('https://wordpress.org/support/forum/requests-and-feedback'),
-	) );
+	] );
 }
 
 /**
@@ -163,11 +163,11 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
  */
 function wp_admin_bar_sidebar_toggle( $wp_admin_bar ) {
 	if ( is_admin() ) {
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'id'    => 'menu-toggle',
 			'title' => '<span class="ab-icon"></span><span class="screen-reader-text">' . __( 'Menu' ) . '</span>',
 			'href'  => '#',
-		) );
+		] );
 	}
 }
 
@@ -198,15 +198,15 @@ function wp_admin_bar_my_account_item( $wp_admin_bar ) {
 	$howdy  = sprintf( __( 'Howdy, %s' ), $current_user->display_name );
 	$class  = empty( $avatar ) ? '' : 'with-avatar';
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'id'        => 'my-account',
 		'parent'    => 'top-secondary',
 		'title'     => $howdy . $avatar,
 		'href'      => $profile_url,
-		'meta'      => array(
+		'meta'      => [
 			'class'     => $class,
-		),
-	) );
+		],
+	] );
 }
 
 /**
@@ -231,10 +231,10 @@ function wp_admin_bar_my_account_menu( $wp_admin_bar ) {
 		$profile_url = false;
 	}
 
-	$wp_admin_bar->add_group( array(
+	$wp_admin_bar->add_group( [
 		'parent' => 'my-account',
 		'id'     => 'user-actions',
-	) );
+	] );
 
 	$user_info  = get_avatar( $user_id, 64 );
 	$user_info .= "<span class='display-name'>{$current_user->display_name}</span>";
@@ -242,31 +242,31 @@ function wp_admin_bar_my_account_menu( $wp_admin_bar ) {
 	if ( $current_user->display_name !== $current_user->user_login )
 		$user_info .= "<span class='username'>{$current_user->user_login}</span>";
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'parent' => 'user-actions',
 		'id'     => 'user-info',
 		'title'  => $user_info,
 		'href'   => $profile_url,
-		'meta'   => array(
+		'meta'   => [
 			'tabindex' => -1,
-		),
-	) );
+		],
+	] );
 
 	if ( false !== $profile_url ) {
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'user-actions',
 			'id'     => 'edit-profile',
 			'title'  => __( 'Edit My Profile' ),
 			'href'   => $profile_url,
-		) );
+		] );
 	}
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'parent' => 'user-actions',
 		'id'     => 'logout',
 		'title'  => __( 'Log Out' ),
 		'href'   => wp_logout_url(),
-	) );
+	] );
 }
 
 /**
@@ -301,40 +301,40 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 
 	$title = wp_html_excerpt( $blogname, 40, '&hellip;' );
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'id'    => 'site-name',
 		'title' => $title,
 		'href'  => ( is_admin() || ! current_user_can( 'read' ) ) ? home_url( '/' ) : admin_url(),
-	) );
+	] );
 
 	// Create submenu items.
 
 	if ( is_admin() ) {
 		// Add an option to visit the site.
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'site-name',
 			'id'     => 'view-site',
 			'title'  => __( 'Visit Site' ),
 			'href'   => home_url( '/' ),
-		) );
+		] );
 
 		if ( is_blog_admin() && is_multisite() && current_user_can( 'manage_sites' ) ) {
-			$wp_admin_bar->add_menu( array(
+			$wp_admin_bar->add_menu( [
 				'parent' => 'site-name',
 				'id'     => 'edit-site',
 				'title'  => __( 'Edit Site' ),
 				'href'   => network_admin_url( 'site-info.php?id=' . get_current_blog_id() ),
-			) );
+			] );
 		}
 
 	} else if ( current_user_can( 'read' ) ) {
 		// We're on the front end, link to the Dashboard.
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'site-name',
 			'id'     => 'dashboard',
 			'title'  => __( 'Dashboard' ),
 			'href'   => admin_url(),
-		) );
+		] );
 
 		// Add the appearance submenu items.
 		wp_admin_bar_appearance_menu( $wp_admin_bar );
@@ -358,14 +358,14 @@ function wp_admin_bar_customize_menu( $wp_admin_bar ) {
 	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $app['request.host'] . $app['request.uri'];
 	$customize_url = add_query_arg( 'url', urlencode( $current_url ), wp_customize_url() );
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'id'     => 'customize',
 		'title'  => __( 'Customize' ),
 		'href'   => $customize_url,
-		'meta'   => array(
+		'meta'   => [
 			'class' => 'hide-if-no-customize',
-		),
-	) );
+		],
+	] );
 	add_action( 'wp_before_admin_bar_render', 'wp_customize_support_script' );
 }
 
@@ -391,71 +391,71 @@ function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 		$my_sites_url = admin_url( 'my-sites.php' );
 	}
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'id'    => 'my-sites',
 		'title' => __( 'My Sites' ),
 		'href'  => $my_sites_url,
-	) );
+	] );
 
 	if ( is_super_admin() ) {
-		$wp_admin_bar->add_group( array(
+		$wp_admin_bar->add_group( [
 			'parent' => 'my-sites',
 			'id'     => 'my-sites-super-admin',
-		) );
+		] );
 
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'my-sites-super-admin',
 			'id'     => 'network-admin',
 			'title'  => __('Network Admin'),
 			'href'   => network_admin_url(),
-		) );
+		] );
 
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'network-admin',
 			'id'     => 'network-admin-d',
 			'title'  => __( 'Dashboard' ),
 			'href'   => network_admin_url(),
-		) );
-		$wp_admin_bar->add_menu( array(
+		] );
+		$wp_admin_bar->add_menu( [
 			'parent' => 'network-admin',
 			'id'     => 'network-admin-s',
 			'title'  => __( 'Sites' ),
 			'href'   => network_admin_url( 'sites.php' ),
-		) );
-		$wp_admin_bar->add_menu( array(
+		] );
+		$wp_admin_bar->add_menu( [
 			'parent' => 'network-admin',
 			'id'     => 'network-admin-u',
 			'title'  => __( 'Users' ),
 			'href'   => network_admin_url( 'users.php' ),
-		) );
-		$wp_admin_bar->add_menu( array(
+		] );
+		$wp_admin_bar->add_menu( [
 			'parent' => 'network-admin',
 			'id'     => 'network-admin-t',
 			'title'  => __( 'Themes' ),
 			'href'   => network_admin_url( 'themes.php' ),
-		) );
-		$wp_admin_bar->add_menu( array(
+		] );
+		$wp_admin_bar->add_menu( [
 			'parent' => 'network-admin',
 			'id'     => 'network-admin-p',
 			'title'  => __( 'Plugins' ),
 			'href'   => network_admin_url( 'plugins.php' ),
-		) );
-		$wp_admin_bar->add_menu( array(
+		] );
+		$wp_admin_bar->add_menu( [
 			'parent' => 'network-admin',
 			'id'     => 'network-admin-o',
 			'title'  => __( 'Settings' ),
 			'href'   => network_admin_url( 'settings.php' ),
-		) );
+		] );
 	}
 
 	// Add site links
-	$wp_admin_bar->add_group( array(
+	$wp_admin_bar->add_group( [
 		'parent' => 'my-sites',
 		'id'     => 'my-sites-list',
-		'meta'   => array(
+		'meta'   => [
 			'class' => is_super_admin() ? 'ab-sub-secondary' : '',
-		),
-	) );
+		],
+	] );
 
 	foreach ( (array) $wp_admin_bar->user->blogs as $blog ) {
 		switch_to_blog( $blog->userblog_id );
@@ -470,44 +470,44 @@ function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 
 		$menu_id  = 'blog-' . $blog->userblog_id;
 
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent'    => 'my-sites-list',
 			'id'        => $menu_id,
 			'title'     => $blavatar . $blogname,
 			'href'      => admin_url(),
-		) );
+		] );
 
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => $menu_id,
 			'id'     => $menu_id . '-d',
 			'title'  => __( 'Dashboard' ),
 			'href'   => admin_url(),
-		) );
+		] );
 
 		if ( current_user_can( get_post_type_object( 'post' )->cap->create_posts ) ) {
-			$wp_admin_bar->add_menu( array(
+			$wp_admin_bar->add_menu( [
 				'parent' => $menu_id,
 				'id'     => $menu_id . '-n',
 				'title'  => __( 'New Post' ),
 				'href'   => admin_url( 'post-new.php' ),
-			) );
+			] );
 		}
 
 		if ( current_user_can( 'edit_posts' ) ) {
-			$wp_admin_bar->add_menu( array(
+			$wp_admin_bar->add_menu( [
 				'parent' => $menu_id,
 				'id'     => $menu_id . '-c',
 				'title'  => __( 'Manage Comments' ),
 				'href'   => admin_url( 'edit-comments.php' ),
-			) );
+			] );
 		}
 
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => $menu_id,
 			'id'     => $menu_id . '-v',
 			'title'  => __( 'Visit Site' ),
 			'href'   => home_url( '/' ),
-		) );
+		] );
 
 		restore_current_blog();
 	}
@@ -529,12 +529,12 @@ function wp_admin_bar_shortlink_menu( $wp_admin_bar ) {
 
 	$html = '<input class="shortlink-input" type="text" readonly="readonly" value="' . esc_attr( $short ) . '" />';
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'id' => $id,
 		'title' => __( 'Shortlink' ),
 		'href' => $short,
-		'meta' => array( 'html' => $html ),
-	) );
+		'meta' => [ 'html' => $html ],
+	] );
 }
 
 /**
@@ -562,18 +562,18 @@ function wp_admin_bar_edit_menu( $wp_admin_bar ) {
 		{
 			if ( 'draft' == $post->post_status ) {
 				$preview_link = get_preview_post_link( $post );
-				$wp_admin_bar->add_menu( array(
+				$wp_admin_bar->add_menu( [
 					'id' => 'preview',
 					'title' => $post_type_object->labels->view_item,
 					'href' => esc_url( $preview_link ),
-					'meta' => array( 'target' => 'wp-preview-' . $post->ID ),
-				) );
+					'meta' => [ 'target' => 'wp-preview-' . $post->ID ],
+				] );
 			} else {
-				$wp_admin_bar->add_menu( array(
+				$wp_admin_bar->add_menu( [
 					'id' => 'view',
 					'title' => $post_type_object->labels->view_item,
 					'href' => get_permalink( $post->ID )
-				) );
+				] );
 			}
 		} elseif ( 'edit' == $current_screen->base
  			&& ( $post_type_object = get_post_type_object( $current_screen->post_type ) )
@@ -582,21 +582,21 @@ function wp_admin_bar_edit_menu( $wp_admin_bar ) {
  			&& ( get_post_type_archive_link( $post_type_object->name ) )
 			&& ! ( 'post' === $post_type_object->name && 'posts' === get_option( 'show_on_front' ) ) )
  		{
- 			$wp_admin_bar->add_node( array(
+ 			$wp_admin_bar->add_node( [
  				'id' => 'archive',
  				'title' => $post_type_object->labels->view_items,
  				'href' => get_post_type_archive_link( $current_screen->post_type )
- 			) );
+ 			] );
 		} elseif ( 'term' == $current_screen->base
 			&& isset( $tag ) && is_object( $tag ) && ! is_wp_error( $tag )
 			&& ( $tax = get_taxonomy( $tag->taxonomy ) )
 			&& $tax->public )
 		{
-			$wp_admin_bar->add_menu( array(
+			$wp_admin_bar->add_menu( [
 				'id' => 'view',
 				'title' => $tax->labels->view_item,
 				'href' => get_term_link( $tag )
-			) );
+			] );
 		}
 	} else {
 		$app = getApp();
@@ -611,21 +611,21 @@ function wp_admin_bar_edit_menu( $wp_admin_bar ) {
 			&& $post_type_object->show_in_admin_bar
 			&& $edit_post_link = get_edit_post_link( $current_object->ID ) )
 		{
-			$wp_admin_bar->add_menu( array(
+			$wp_admin_bar->add_menu( [
 				'id' => 'edit',
 				'title' => $post_type_object->labels->edit_item,
 				'href' => $edit_post_link
-			) );
+			] );
 		} elseif ( ! empty( $current_object->taxonomy )
 			&& ( $tax = get_taxonomy( $current_object->taxonomy ) )
 			&& current_user_can( 'edit_term', $current_object->term_id )
 			&& $edit_term_link = get_edit_term_link( $current_object->term_id, $current_object->taxonomy ) )
 		{
-			$wp_admin_bar->add_menu( array(
+			$wp_admin_bar->add_menu( [
 				'id' => 'edit',
 				'title' => $tax->labels->edit_item,
 				'href' => $edit_term_link
-			) );
+			] );
 		}
 	}
 }
@@ -640,19 +640,19 @@ function wp_admin_bar_edit_menu( $wp_admin_bar ) {
 function wp_admin_bar_new_content_menu( $wp_admin_bar ) {
 	$actions = [];
 
-	$cpts = (array) get_post_types( array( 'show_in_admin_bar' => true ), 'objects' );
+	$cpts = (array) get_post_types( [ 'show_in_admin_bar' => true ], 'objects' );
 
 	if ( isset( $cpts['post'] ) && current_user_can( $cpts['post']->cap->create_posts ) )
-		$actions[ 'post-new.php' ] = array( $cpts['post']->labels->name_admin_bar, 'new-post' );
+		$actions[ 'post-new.php' ] = [ $cpts['post']->labels->name_admin_bar, 'new-post' ];
 
 	if ( isset( $cpts['attachment'] ) && current_user_can( 'upload_files' ) )
-		$actions[ 'media-new.php' ] = array( $cpts['attachment']->labels->name_admin_bar, 'new-media' );
+		$actions[ 'media-new.php' ] = [ $cpts['attachment']->labels->name_admin_bar, 'new-media' ];
 
 	if ( current_user_can( 'manage_links' ) )
-		$actions[ 'link-add.php' ] = array( _x( 'Link', 'add new from admin bar' ), 'new-link' );
+		$actions[ 'link-add.php' ] = [ _x( 'Link', 'add new from admin bar' ), 'new-link' ];
 
 	if ( isset( $cpts['page'] ) && current_user_can( $cpts['page']->cap->create_posts ) )
-		$actions[ 'post-new.php?post_type=page' ] = array( $cpts['page']->labels->name_admin_bar, 'new-page' );
+		$actions[ 'post-new.php?post_type=page' ] = [ $cpts['page']->labels->name_admin_bar, 'new-page' ];
 
 	unset( $cpts['post'], $cpts['page'], $cpts['attachment'] );
 
@@ -662,35 +662,35 @@ function wp_admin_bar_new_content_menu( $wp_admin_bar ) {
 			continue;
 
 		$key = 'post-new.php?post_type=' . $cpt->name;
-		$actions[ $key ] = array( $cpt->labels->name_admin_bar, 'new-' . $cpt->name );
+		$actions[ $key ] = [ $cpt->labels->name_admin_bar, 'new-' . $cpt->name ];
 	}
 	// Avoid clash with parent node and a 'content' post type.
 	if ( isset( $actions['post-new.php?post_type=content'] ) )
 		$actions['post-new.php?post_type=content'][1] = 'add-new-content';
 
 	if ( current_user_can( 'create_users' ) || current_user_can( 'promote_users' ) )
-		$actions[ 'user-new.php' ] = array( _x( 'User', 'add new from admin bar' ), 'new-user' );
+		$actions[ 'user-new.php' ] = [ _x( 'User', 'add new from admin bar' ), 'new-user' ];
 
 	if ( ! $actions )
 		return;
 
 	$title = '<span class="ab-icon"></span><span class="ab-label">' . _x( 'New', 'admin bar menu group label' ) . '</span>';
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'id'    => 'new-content',
 		'title' => $title,
 		'href'  => admin_url( current( array_keys( $actions ) ) ),
-	) );
+	] );
 
 	foreach ( $actions as $link => $action ) {
 		list( $title, $id ) = $action;
 
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent'    => 'new-content',
 			'id'        => $id,
 			'title'     => $title,
 			'href'      => admin_url( $link )
-		) );
+		] );
 	}
 }
 
@@ -713,11 +713,11 @@ function wp_admin_bar_comments_menu( $wp_admin_bar ) {
 	$title = '<span class="ab-label awaiting-mod pending-count count-' . $awaiting_mod . '" aria-hidden="true">' . number_format_i18n( $awaiting_mod ) . '</span>';
 	$title .= '<span class="screen-reader-text">' . $awaiting_text . '</span>';
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'id'    => 'comments',
 		'title' => $icon . $title,
 		'href'  => admin_url('edit-comments.php'),
-	) );
+	] );
 }
 
 /**
@@ -728,15 +728,15 @@ function wp_admin_bar_comments_menu( $wp_admin_bar ) {
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_appearance_menu( $wp_admin_bar ) {
-	$wp_admin_bar->add_group( array( 'parent' => 'site-name', 'id' => 'appearance' ) );
+	$wp_admin_bar->add_group( [ 'parent' => 'site-name', 'id' => 'appearance' ] );
 
 	if ( current_user_can( 'switch_themes' ) ) {
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'appearance',
 			'id'     => 'themes',
 			'title'  => __( 'Themes' ),
 			'href'   => admin_url( 'themes.php' ),
-		) );
+		] );
 	}
 
 	if ( ! current_user_can( 'edit_theme_options' ) ) {
@@ -744,39 +744,39 @@ function wp_admin_bar_appearance_menu( $wp_admin_bar ) {
 	}
 
 	if ( current_theme_supports( 'widgets' )  ) {
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'appearance',
 			'id'     => 'widgets',
 			'title'  => __( 'Widgets' ),
 			'href'   => admin_url( 'widgets.php' ),
-		) );
+		] );
 	}
 
 	if ( current_theme_supports( 'menus' ) || current_theme_supports( 'widgets' ) )
-		$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
+		$wp_admin_bar->add_menu( [ 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ] );
 
 	if ( current_theme_supports( 'custom-background' ) ) {
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'appearance',
 			'id'     => 'background',
 			'title'  => __( 'Background' ),
 			'href'   => admin_url( 'themes.php?page=custom-background' ),
-			'meta'   => array(
+			'meta'   => [
 				'class' => 'hide-if-customize',
-			),
-		) );
+			],
+		] );
 	}
 
 	if ( current_theme_supports( 'custom-header' ) ) {
-		$wp_admin_bar->add_menu( array(
+		$wp_admin_bar->add_menu( [
 			'parent' => 'appearance',
 			'id'     => 'header',
 			'title'  => __( 'Header' ),
 			'href'   => admin_url( 'themes.php?page=custom-header' ),
-			'meta'   => array(
+			'meta'   => [
 				'class' => 'hide-if-customize',
-			),
-		) );
+			],
+		] );
 	}
 
 }
@@ -798,14 +798,14 @@ function wp_admin_bar_updates_menu( $wp_admin_bar ) {
 	$title = '<span class="ab-icon"></span><span class="ab-label">' . number_format_i18n( $update_data['counts']['total'] ) . '</span>';
 	$title .= '<span class="screen-reader-text">' . $update_data['title'] . '</span>';
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'id'    => 'updates',
 		'title' => $title,
 		'href'  => network_admin_url( 'update-core.php' ),
-		'meta'  => array(
+		'meta'  => [
 			'title' => $update_data['title'],
-		),
-	) );
+		],
+	] );
 }
 
 /**
@@ -825,15 +825,15 @@ function wp_admin_bar_search_menu( $wp_admin_bar ) {
 	$form .= '<input type="submit" class="adminbar-button" value="' . __('Search') . '"/>';
 	$form .= '</form>';
 
-	$wp_admin_bar->add_menu( array(
+	$wp_admin_bar->add_menu( [
 		'parent' => 'top-secondary',
 		'id'     => 'search',
 		'title'  => $form,
-		'meta'   => array(
+		'meta'   => [
 			'class'    => 'admin-bar-search',
 			'tabindex' => -1,
-		)
-	) );
+		]
+	] );
 }
 
 /**
@@ -844,20 +844,20 @@ function wp_admin_bar_search_menu( $wp_admin_bar ) {
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_add_secondary_groups( $wp_admin_bar ) {
-	$wp_admin_bar->add_group( array(
+	$wp_admin_bar->add_group( [
 		'id'     => 'top-secondary',
-		'meta'   => array(
+		'meta'   => [
 			'class' => 'ab-top-secondary',
-		),
-	) );
+		],
+	] );
 
-	$wp_admin_bar->add_group( array(
+	$wp_admin_bar->add_group( [
 		'parent' => 'wp-logo',
 		'id'     => 'wp-logo-external',
-		'meta'   => array(
+		'meta'   => [
 			'class' => 'ab-sub-secondary',
-		),
-	) );
+		],
+	] );
 }
 
 /**

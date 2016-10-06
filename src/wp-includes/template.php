@@ -27,7 +27,7 @@ function get_query_template( $type, $templates = [] ) {
 	$type = preg_replace( '|[^a-z0-9-]+|', '', $type );
 
 	if ( empty( $templates ) )
-		$templates = array("{$type}.php");
+		$templates = [ "{$type}.php" ];
 
 	/**
 	 * Filters the list of template filenames that are searched for when retrieving a template to use.
@@ -316,7 +316,7 @@ function get_date_template() {
  * @return string Full path to home template file.
  */
 function get_home_template() {
-	$templates = array( 'home.php', 'index.php' );
+	$templates = [ 'home.php', 'index.php' ];
 
 	return get_query_template( 'home', $templates );
 }
@@ -334,7 +334,7 @@ function get_home_template() {
  * @return string Full path to front page template file.
  */
 function get_front_page_template() {
-	$templates = array('front-page.php');
+	$templates = [ 'front-page.php' ];
 
 	return get_query_template( 'front_page', $templates );
 }
@@ -527,7 +527,7 @@ function get_attachment_template() {
 		if ( false !== strpos( $attachment->post_mime_type, '/' ) ) {
 			list( $type, $subtype ) = explode( '/', $attachment->post_mime_type );
 		} else {
-			list( $type, $subtype ) = array( $attachment->post_mime_type, '' );
+			list( $type, $subtype ) = [ $attachment->post_mime_type, '' ];
 		}
 
 		if ( ! empty( $subtype ) ) {

@@ -53,7 +53,7 @@ use function WP\getApp;
  *
  *     // [bartag foo="bar"]
  *     function bartag_func( $atts ) {
- *         $args = shortcode_atts( array(
+ *         $args = shortcode_atts( [
  *             'foo' => 'no foo',
  *             'baz' => 'default baz',
  *         ), $atts );
@@ -346,9 +346,9 @@ function do_shortcode_tag( $m ) {
  */
 function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 	// Normalize entities in unfiltered HTML before adding placeholders.
-	$trans = array( '&#91;' => '&#091;', '&#93;' => '&#093;' );
+	$trans = [ '&#91;' => '&#091;', '&#93;' => '&#093;' ];
 	$content = strtr( $content, $trans );
-	$trans = array( '[' => '&#91;', ']' => '&#93;' );
+	$trans = [ '[' => '&#91;', ']' => '&#93;' ];
 
 	$pattern = get_shortcode_regex( $tagnames );
 	$textarr = wp_html_split( $content );
@@ -445,7 +445,7 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
  */
 function unescape_invalid_shortcodes( $content ) {
         // Clean up entire string, avoids re-parsing HTML.
-        $trans = array( '&#91;' => '[', '&#93;' => ']' );
+        $trans = [ '&#91;' => '[', '&#93;' => ']' ];
         $content = strtr( $content, $trans );
 
         return $content;

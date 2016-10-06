@@ -92,11 +92,11 @@ function map_meta_cap( $cap, $user_id ) {
 		// If the post author is set and the user is the author...
 		if ( $post->post_author && $user_id == $post->post_author ) {
 			// If the post is published or scheduled...
-			if ( in_array( $post->post_status, array( 'publish', 'future' ), true ) ) {
+			if ( in_array( $post->post_status, [ 'publish', 'future' ], true ) ) {
 				$caps[] = $post_type->cap->delete_published_posts;
 			} elseif ( 'trash' == $post->post_status ) {
 				$status = get_post_meta( $post->ID, '_wp_trash_meta_status', true );
-				if ( in_array( $status, array( 'publish', 'future' ), true ) ) {
+				if ( in_array( $status, [ 'publish', 'future' ], true ) ) {
 					$caps[] = $post_type->cap->delete_published_posts;
 				} else {
 					$caps[] = $post_type->cap->delete_posts;
@@ -109,7 +109,7 @@ function map_meta_cap( $cap, $user_id ) {
 			// The user is trying to edit someone else's post.
 			$caps[] = $post_type->cap->delete_others_posts;
 			// The post is published or scheduled, extra cap required.
-			if ( in_array( $post->post_status, array( 'publish', 'future' ), true ) ) {
+			if ( in_array( $post->post_status, [ 'publish', 'future' ], true ) ) {
 				$caps[] = $post_type->cap->delete_published_posts;
 			} elseif ( 'private' == $post->post_status ) {
 				$caps[] = $post_type->cap->delete_private_posts;
@@ -153,11 +153,11 @@ function map_meta_cap( $cap, $user_id ) {
 		// If the post author is set and the user is the author...
 		if ( $post->post_author && $user_id == $post->post_author ) {
 			// If the post is published or scheduled...
-			if ( in_array( $post->post_status, array( 'publish', 'future' ), true ) ) {
+			if ( in_array( $post->post_status, [ 'publish', 'future' ], true ) ) {
 				$caps[] = $post_type->cap->edit_published_posts;
 			} elseif ( 'trash' == $post->post_status ) {
 				$status = get_post_meta( $post->ID, '_wp_trash_meta_status', true );
-				if ( in_array( $status, array( 'publish', 'future' ), true ) ) {
+				if ( in_array( $status, [ 'publish', 'future' ], true ) ) {
 					$caps[] = $post_type->cap->edit_published_posts;
 				} else {
 					$caps[] = $post_type->cap->edit_posts;
@@ -170,7 +170,7 @@ function map_meta_cap( $cap, $user_id ) {
 			// The user is trying to edit someone else's post.
 			$caps[] = $post_type->cap->edit_others_posts;
 			// The post is published or scheduled, extra cap required.
-			if ( in_array( $post->post_status, array( 'publish', 'future' ), true ) ) {
+			if ( in_array( $post->post_status, [ 'publish', 'future' ], true ) ) {
 				$caps[] = $post_type->cap->edit_published_posts;
 			} elseif ( 'private' == $post->post_status ) {
 				$caps[] = $post_type->cap->edit_private_posts;
@@ -453,7 +453,7 @@ function map_meta_cap( $cap, $user_id ) {
 	default:
 		// Handle meta capabilities for custom post types.
 		if ( PostType::has_meta_cap( $cap ) ) {
-			$args = array_merge( array( PostType::get_meta_cap( $cap ), $user_id ), $args );
+			$args = array_merge( [ PostType::get_meta_cap( $cap ), $user_id ], $args );
 			return call_user_func_array( 'map_meta_cap', $args );
 		}
 
@@ -503,9 +503,9 @@ function current_user_can( $capability ) {
 		return false;
 
 	$args = array_slice( func_get_args(), 1 );
-	$args = array_merge( array( $capability ), $args );
+	$args = array_merge( [ $capability ], $args );
 
-	return call_user_func_array( array( $current_user, 'has_cap' ), $args );
+	return call_user_func_array( [ $current_user, 'has_cap' ], $args );
 }
 
 /**
@@ -530,9 +530,9 @@ function current_user_can_for_blog( $blog_id, $capability ) {
 	}
 
 	$args = array_slice( func_get_args(), 2 );
-	$args = array_merge( array( $capability ), $args );
+	$args = array_merge( [ $capability ], $args );
 
-	$can = call_user_func_array( array( $current_user, 'has_cap' ), $args );
+	$can = call_user_func_array( [ $current_user, 'has_cap' ], $args );
 
 	if ( $switched ) {
 		restore_current_blog();
@@ -560,9 +560,9 @@ function author_can( $post, $capability ) {
 		return false;
 
 	$args = array_slice( func_get_args(), 2 );
-	$args = array_merge( array( $capability ), $args );
+	$args = array_merge( [ $capability ], $args );
 
-	return call_user_func_array( array( $author, 'has_cap' ), $args );
+	return call_user_func_array( [ $author, 'has_cap' ], $args );
 }
 
 /**
@@ -582,9 +582,9 @@ function user_can( $user, $capability ) {
 		return false;
 
 	$args = array_slice( func_get_args(), 2 );
-	$args = array_merge( array( $capability ), $args );
+	$args = array_merge( [ $capability ], $args );
 
-	return call_user_func_array( array( $user, 'has_cap' ), $args );
+	return call_user_func_array( [ $user, 'has_cap' ], $args );
 }
 
 /**
@@ -607,7 +607,7 @@ function get_role( $role ) {
  *
  * @param string $role Role name.
  * @param string $display_name Display name for role.
- * @param array $capabilities List of capabilities, e.g. array( 'edit_posts' => true, 'delete_posts' => false );
+ * @param array $capabilities List of capabilities, e.g. [ 'edit_posts' => true, 'delete_posts' => false );
  * @return Role|null Role object if role is added, null if already exists.
  */
 function add_role( $role, $display_name, $capabilities = [] ) {
@@ -645,7 +645,7 @@ function get_super_admins() {
 	if ( isset($super_admins) )
 		return $super_admins;
 	else
-		return get_site_option( 'site_admins', array('admin') );
+		return get_site_option( 'site_admins', [ 'admin' ] );
 }
 
 /**
@@ -704,7 +704,7 @@ function grant_super_admin( $user_id ) {
 	do_action( 'grant_super_admin', $user_id );
 
 	// Directly fetch site_admins instead of using get_super_admins()
-	$super_admins = get_site_option( 'site_admins', array( 'admin' ) );
+	$super_admins = get_site_option( 'site_admins', [ 'admin' ] );
 
 	$user = get_userdata( $user_id );
 	if ( $user && ! in_array( $user->user_login, $super_admins ) ) {
@@ -751,7 +751,7 @@ function revoke_super_admin( $user_id ) {
 	do_action( 'revoke_super_admin', $user_id );
 
 	// Directly fetch site_admins instead of using get_super_admins()
-	$super_admins = get_site_option( 'site_admins', array( 'admin' ) );
+	$super_admins = get_site_option( 'site_admins', [ 'admin' ] );
 
 	$user = get_userdata( $user_id );
 	if ( $user && 0 !== strcasecmp( $user->user_email, get_site_option( 'admin_email' ) ) ) {

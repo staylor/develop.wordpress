@@ -61,7 +61,7 @@ class WP_Admin_Bar {
 		if ( current_theme_supports( 'admin-bar' ) ) {
 			/**
 			 * To remove the default padding styles from WordPress for the Toolbar, use the following code:
-			 * add_theme_support( 'admin-bar', array( 'callback' => '__return_false' ) );
+			 * add_theme_support( 'admin-bar', [ 'callback' => '__return_false' ] );
 			 */
 			$admin_bar_args = get_theme_support( 'admin-bar' );
 			$header_callback = $admin_bar_args[0]['callback'];

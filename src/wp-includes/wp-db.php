@@ -267,20 +267,18 @@ class wpdb {
 	 * @see wpdb::tables()
 	 * @var array
 	 */
-	var $tables = array( 'posts', 'comments', 'links', 'options', 'postmeta',
-		'terms', 'term_taxonomy', 'term_relationships', 'termmeta', 'commentmeta' );
-
-	/**
-	 * List of deprecated WordPress tables
-	 *
-	 * categories, post2cat, and link2cat were deprecated in 2.3.0, db version 5539
-	 *
-	 * @since 2.9.0
-	 * @access private
-	 * @see wpdb::tables()
-	 * @var array
-	 */
-	var $old_tables = array( 'categories', 'post2cat', 'link2cat' );
+	var $tables = [
+		'posts',
+		'comments',
+		'links',
+		'options',
+		'postmeta',
+		'terms',
+		'term_taxonomy',
+		'term_relationships',
+		'termmeta',
+		'commentmeta'
+	];
 
 	/**
 	 * List of WordPress global tables
@@ -290,7 +288,7 @@ class wpdb {
 	 * @see wpdb::tables()
 	 * @var array
 	 */
-	var $global_tables = array( 'users', 'usermeta' );
+	var $global_tables = [ 'users', 'usermeta' ];
 
 	/**
 	 * List of Multisite global tables
@@ -300,8 +298,15 @@ class wpdb {
 	 * @see wpdb::tables()
 	 * @var array
 	 */
-	var $ms_global_tables = array( 'blogs', 'signups', 'site', 'sitemeta',
-		'sitecategories', 'registration_log', 'blog_versions' );
+	var $ms_global_tables = [
+		'blogs',
+		'signups',
+		'site',
+		'sitemeta',
+		'sitecategories',
+		'registration_log',
+		'blog_versions'
+	];
 
 	/**
 	 * WordPress Comments table
@@ -587,8 +592,13 @@ class wpdb {
 	 * @access protected
 	 * @var array
 	 */
-	protected $incompatible_modes = array( 'NO_ZERO_DATE', 'ONLY_FULL_GROUP_BY',
-		'STRICT_TRANS_TABLES', 'STRICT_ALL_TABLES', 'TRADITIONAL' );
+	protected $incompatible_modes = [
+		'NO_ZERO_DATE',
+		'ONLY_FULL_GROUP_BY',
+		'STRICT_TRANS_TABLES',
+		'STRICT_ALL_TABLES',
+		'TRADITIONAL'
+	];
 
 	/**
 	 * Whether to use mysqli over mysql.
@@ -627,7 +637,7 @@ class wpdb {
 	public function __construct( $dbuser, $dbpassword, $dbname, $dbhost ) {
 		$this->app = getApp();
 
-		register_shutdown_function( array( $this, '__destruct' ) );
+		register_shutdown_function( [ $this, '__destruct' ] );
 
 		if ( WP_DEBUG && WP_DEBUG_DISPLAY )
 			$this->show_errors();
@@ -696,11 +706,11 @@ class wpdb {
 	 * @param mixed  $value The value to set
 	 */
 	public function __set( $name, $value ) {
-		$protected_members = array(
+		$protected_members = [
 			'col_meta',
 			'table_charset',
 			'check_current_query',
-		);
+		];
 		if (  in_array( $name, $protected_members, true ) ) {
 			return;
 		}
@@ -1016,7 +1026,6 @@ class wpdb {
 	 *
 	 * @since 3.0.0
 	 * @uses wpdb::$tables
-	 * @uses wpdb::$old_tables
 	 * @uses wpdb::$global_tables
 	 * @uses wpdb::$ms_global_tables
 	 *
@@ -1028,27 +1037,28 @@ class wpdb {
 	 */
 	public function tables( $scope = 'all', $prefix = true, $blog_id = 0 ) {
 		switch ( $scope ) {
-			case 'all' :
-				$tables = array_merge( $this->global_tables, $this->tables );
-				if ( is_multisite() )
-					$tables = array_merge( $tables, $this->ms_global_tables );
-				break;
-			case 'blog' :
-				$tables = $this->tables;
-				break;
-			case 'global' :
-				$tables = $this->global_tables;
-				if ( is_multisite() )
-					$tables = array_merge( $tables, $this->ms_global_tables );
-				break;
-			case 'ms_global' :
-				$tables = $this->ms_global_tables;
-				break;
-			case 'old' :
-				$tables = $this->old_tables;
-				break;
-			default :
-				return [];
+		case 'all' :
+			$tables = array_merge( $this->global_tables, $this->tables );
+			if ( is_multisite() )
+				$tables = array_merge( $tables, $this->ms_global_tables );
+			break;
+
+		case 'blog' :
+			$tables = $this->tables;
+			break;
+
+		case 'global' :
+			$tables = $this->global_tables;
+			if ( is_multisite() )
+				$tables = array_merge( $tables, $this->ms_global_tables );
+			break;
+
+		case 'ms_global' :
+			$tables = $this->ms_global_tables;
+			break;
+
+		default :
+			return [];
 		}
 
 		if ( $prefix ) {
@@ -1259,7 +1269,7 @@ class wpdb {
 		$query = str_replace( '"%s"', '%s', $query ); // doublequote unquoting
 		$query = preg_replace( '|(?<!%)%f|' , '%F', $query ); // Force floats to be locale unaware
 		$query = preg_replace( '|(?<!%)%s|', "'%s'", $query ); // quote the strings, avoiding escaped strings like %%s
-		array_walk( $args, array( $this, 'escape_by_ref' ) );
+		array_walk( $args, [ $this, 'escape_by_ref' ] );
 		return @vsprintf( $query, $args );
 	}
 
@@ -1827,15 +1837,15 @@ class wpdb {
 		$this->num_queries++;
 
 		if ( defined( 'SAVEQUERIES' ) && SAVEQUERIES ) {
-			$this->queries[] = array( $query, $this->timer_stop(), $this->get_caller() );
+			$this->queries[] = [ $query, $this->timer_stop(), $this->get_caller() ];
 		}
 	}
 
 	/**
 	 * Insert a row into a table.
 	 *
-	 *     wpdb::insert( 'table', array( 'column' => 'foo', 'field' => 'bar' ) )
-	 *     wpdb::insert( 'table', array( 'column' => 'foo', 'field' => 1337 ), array( '%s', '%d' ) )
+	 *     wpdb::insert( 'table', [ 'column' => 'foo', 'field' => 'bar' ) )
+	 *     wpdb::insert( 'table', [ 'column' => 'foo', 'field' => 1337 ), [ '%s', '%d' ] )
 	 *
 	 * @since 2.5.0
 	 * @see wpdb::prepare()
@@ -1859,8 +1869,8 @@ class wpdb {
 	/**
 	 * Replace a row into a table.
 	 *
-	 *     wpdb::replace( 'table', array( 'column' => 'foo', 'field' => 'bar' ) )
-	 *     wpdb::replace( 'table', array( 'column' => 'foo', 'field' => 1337 ), array( '%s', '%d' ) )
+	 *     wpdb::replace( 'table', [ 'column' => 'foo', 'field' => 'bar' ) )
+	 *     wpdb::replace( 'table', [ 'column' => 'foo', 'field' => 1337 ), [ '%s', '%d' ] )
 	 *
 	 * @since 3.0.0
 	 * @see wpdb::prepare()
@@ -1906,7 +1916,7 @@ class wpdb {
 	function _insert_replace_helper( $table, $data, $format = null, $type = 'INSERT' ) {
 		$this->insert_id = 0;
 
-		if ( ! in_array( strtoupper( $type ), array( 'REPLACE', 'INSERT' ) ) ) {
+		if ( ! in_array( strtoupper( $type ), [ 'REPLACE', 'INSERT' ] ) ) {
 			return false;
 		}
 
@@ -1938,8 +1948,8 @@ class wpdb {
 	/**
 	 * Update a row in the table
 	 *
-	 *     wpdb::update( 'table', array( 'column' => 'foo', 'field' => 'bar' ), array( 'ID' => 1 ) )
-	 *     wpdb::update( 'table', array( 'column' => 'foo', 'field' => 1337 ), array( 'ID' => 1 ), array( '%s', '%d' ), array( '%d' ) )
+	 *     wpdb::update( 'table', [ 'column' => 'foo', 'field' => 'bar' ), [ 'ID' => 1 ] )
+	 *     wpdb::update( 'table', [ 'column' => 'foo', 'field' => 1337 ), [ 'ID' => 1 ], [ '%s', '%d' ], [ '%d' ] )
 	 *
 	 * @since 2.5.0
 	 * @see wpdb::prepare()
@@ -2011,8 +2021,8 @@ class wpdb {
 	/**
 	 * Delete a row in the table
 	 *
-	 *     wpdb::delete( 'table', array( 'ID' => 1 ) )
-	 *     wpdb::delete( 'table', array( 'ID' => 1 ), array( '%d' ) )
+	 *     wpdb::delete( 'table', [ 'ID' => 1 ] )
+	 *     wpdb::delete( 'table', [ 'ID' => 1 ], [ '%d' ] )
 	 *
 	 * @since 3.4.0
 	 * @see wpdb::prepare()
@@ -2117,10 +2127,10 @@ class wpdb {
 		$formats = $original_formats = (array) $format;
 
 		foreach ( $data as $field => $value ) {
-			$value = array(
+			$value = [
 				'value'  => $value,
 				'format' => '%s',
-			);
+			];
 
 			if ( ! empty( $format ) ) {
 				$value['format'] = array_shift( $formats );
@@ -2435,7 +2445,7 @@ class wpdb {
 			list( $type ) = explode( '(', $column->Type );
 
 			// A binary/blob means the whole query gets treated like this.
-			if ( in_array( strtoupper( $type ), array( 'BINARY', 'VARBINARY', 'TINYBLOB', 'MEDIUMBLOB', 'BLOB', 'LONGBLOB' ) ) ) {
+			if ( in_array( strtoupper( $type ), [ 'BINARY', 'VARBINARY', 'TINYBLOB', 'MEDIUMBLOB', 'BLOB', 'LONGBLOB' ] ) ) {
 				$this->table_charset[ $tablekey ] = 'binary';
 				return 'binary';
 			}
@@ -2547,7 +2557,7 @@ class wpdb {
 	 *
 	 * @param string $table  Table name.
 	 * @param string $column Column name.
-	 * @return array|false|WP_Error array( 'length' => (int), 'type' => 'byte' | 'char' )
+	 * @return array|false|WP_Error [ 'length' => (int), 'type' => 'byte' | 'char' )
 	 *                              false if the column has no length (for example, numeric column)
 	 *                              WP_Error object if there was an error.
 	 */
@@ -2582,50 +2592,50 @@ class wpdb {
 		}
 
 		switch( $type ) {
-			case 'char':
-			case 'varchar':
-				return array(
-					'type'   => 'char',
-					'length' => (int) $length,
-				);
+		case 'char':
+		case 'varchar':
+			return [
+				'type'   => 'char',
+				'length' => (int) $length,
+			];
 
-			case 'binary':
-			case 'varbinary':
-				return array(
-					'type'   => 'byte',
-					'length' => (int) $length,
-				);
+		case 'binary':
+		case 'varbinary':
+			return [
+				'type'   => 'byte',
+				'length' => (int) $length,
+			];
 
-			case 'tinyblob':
-			case 'tinytext':
-				return array(
-					'type'   => 'byte',
-					'length' => 255,        // 2^8 - 1
-				);
+		case 'tinyblob':
+		case 'tinytext':
+			return [
+				'type'   => 'byte',
+				'length' => 255,        // 2^8 - 1
+			];
 
-			case 'blob':
-			case 'text':
-				return array(
-					'type'   => 'byte',
-					'length' => 65535,      // 2^16 - 1
-				);
+		case 'blob':
+		case 'text':
+			return [
+				'type'   => 'byte',
+				'length' => 65535,      // 2^16 - 1
+			];
 
-			case 'mediumblob':
-			case 'mediumtext':
-				return array(
-					'type'   => 'byte',
-					'length' => 16777215,   // 2^24 - 1
-				);
+		case 'mediumblob':
+		case 'mediumtext':
+			return [
+				'type'   => 'byte',
+				'length' => 16777215,   // 2^24 - 1
+			];
 
-			case 'longblob':
-			case 'longtext':
-				return array(
-					'type'   => 'byte',
-					'length' => 4294967295, // 2^32 - 1
-				);
+		case 'longblob':
+		case 'longtext':
+			return [
+				'type'   => 'byte',
+				'length' => 4294967295, // 2^32 - 1
+			];
 
-			default:
-				return false;
+		default:
+			return false;
 		}
 	}
 
@@ -2703,7 +2713,7 @@ class wpdb {
 				continue;
 			}
 
-			if ( ! in_array( $col->Collation, array( 'utf8_general_ci', 'utf8_bin', 'utf8mb4_general_ci', 'utf8mb4_bin' ), true ) ) {
+			if ( ! in_array( $col->Collation, [ 'utf8_general_ci', 'utf8_bin', 'utf8mb4_general_ci', 'utf8mb4_bin' ], true ) ) {
 				return false;
 			}
 		}
@@ -2902,14 +2912,14 @@ class wpdb {
 			$charset = $this->charset;
 		}
 
-		$data = array(
+		$data = [
 			'value'   => $query,
 			'charset' => $charset,
 			'ascii'   => false,
 			'length'  => false,
-		);
+		];
 
-		$data = $this->strip_invalid_text( array( $data ) );
+		$data = $this->strip_invalid_text( [ $data ] );
 		if ( is_wp_error( $data ) ) {
 			return $data;
 		}
@@ -2942,13 +2952,13 @@ class wpdb {
 			return $charset;
 		}
 
-		$data = array(
-			$column => array(
+		$data = [
+			$column => [
 				'value'   => $value,
 				'charset' => $charset,
 				'length'  => $this->get_col_length( $table, $column ),
-			)
-		);
+			]
+		];
 
 		$data = $this->strip_invalid_text( $data );
 		if ( is_wp_error( $data ) ) {

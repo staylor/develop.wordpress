@@ -186,7 +186,7 @@ function register_sidebar($args = []) {
 
 	$id_is_empty = empty( $args['id'] );
 
-	$defaults = array(
+	$defaults = [
 		'name' => sprintf(__('Sidebar %d'), $i ),
 		'id' => "sidebar-$i",
 		'description' => '',
@@ -195,7 +195,7 @@ function register_sidebar($args = []) {
 		'after_widget' => "</li>\n",
 		'before_title' => '<h2 class="widgettitle">',
 		'after_title' => "</h2>\n",
-	);
+	];
 
 	$sidebar = wp_parse_args( $args, $defaults );
 
@@ -284,14 +284,14 @@ function wp_register_sidebar_widget( $id, $name, $output_callback, $options = []
 		return;
 	}
 
-	$defaults = array('classname' => $output_callback);
+	$defaults = ['classname' => $output_callback ];
 	$options = wp_parse_args($options, $defaults);
-	$widget = array(
+	$widget = [
 		'name' => $name,
 		'id' => $id,
 		'callback' => $output_callback,
 		'params' => array_slice(func_get_args(), 4)
-	);
+	];
 	$widget = array_merge($widget, $options);
 
 	if ( is_callable($output_callback) && ( ! isset( $app->widgets['registered'][ $id ] ) || did_action( 'widgets_init' ) ) ) {
@@ -414,17 +414,17 @@ function wp_register_widget_control( $id, $name, $control_callback, $options = [
 	if ( isset($app->widgets['controls'][$id]) && !did_action( 'widgets_init' ) )
 		return;
 
-	$defaults = array('width' => 250, 'height' => 200 ); // height is never used
+	$defaults = ['width' => 250, 'height' => 200 ]; // height is never used
 	$options = wp_parse_args($options, $defaults);
 	$options['width'] = (int) $options['width'];
 	$options['height'] = (int) $options['height'];
 
-	$widget = array(
+	$widget = [
 		'name' => $name,
 		'id' => $id,
 		'callback' => $control_callback,
 		'params' => array_slice(func_get_args(), 4)
-	);
+	];
 	$widget = array_merge($widget, $options);
 
 	$app->widgets['controls'][$id] = $widget;
@@ -458,10 +458,10 @@ function _register_widget_update_callback( $id_base, $update_callback, $options 
 		return;
 	}
 
-	$widget = array(
+	$widget = [
 		'callback' => $update_callback,
 		'params' => array_slice(func_get_args(), 3)
-	);
+	];
 
 	$widget = array_merge($widget, $options);
 	$app->widgets['updates'][$id_base] = $widget;
@@ -491,17 +491,17 @@ function _register_widget_form_callback($id, $name, $form_callback, $options = [
 	if ( isset($app->widgets['controls'][$id]) && !did_action( 'widgets_init' ) )
 		return;
 
-	$defaults = array('width' => 250, 'height' => 200 );
+	$defaults = ['width' => 250, 'height' => 200 ];
 	$options = wp_parse_args($options, $defaults);
 	$options['width'] = (int) $options['width'];
 	$options['height'] = (int) $options['height'];
 
-	$widget = array(
+	$widget = [
 		'name' => $name,
 		'id' => $id,
 		'callback' => $form_callback,
 		'params' => array_slice(func_get_args(), 4)
-	);
+	];
 	$widget = array_merge($widget, $options);
 
 	$app->widgets['controls'][$id] = $widget;
@@ -576,7 +576,7 @@ function dynamic_sidebar( $index = 1 ) {
 		if ( !isset($app->widgets['registered'][$id]) ) continue;
 
 		$params = array_merge(
-			array( array_merge( $sidebar, array('widget_id' => $id, 'widget_name' => $app->widgets['registered'][$id]['name']) ) ),
+			array( array_merge( $sidebar, ['widget_id' => $id, 'widget_name' => $app->widgets['registered'][$id]['name'] ] ) ),
 			(array) $app->widgets['registered'][$id]['params']
 		);
 
@@ -887,7 +887,7 @@ function wp_convert_widget_settings($base_name, $option_name, $settings) {
 	}
 
 	if ( $single ) {
-		$settings = array( 2 => $settings );
+		$settings = [ 2 => $settings ];
 
 		// If loading from the front page, update sidebar in memory but don't save to options
 		if ( is_admin() ) {
@@ -950,12 +950,12 @@ function the_widget( $widget, $instance = [], $args = [] ) {
 		return;
 	}
 
-	$default_args = array(
+	$default_args = [
 		'before_widget' => '<div class="widget %s">',
 		'after_widget'  => "</div>",
 		'before_title'  => '<h2 class="widgettitle">',
 		'after_title'   => '</h2>',
-	);
+	];
 	$args = wp_parse_args( $args, $default_args );
 	$args['before_widget'] = sprintf( $args['before_widget'], $widget_obj->widget_options['classname'] );
 
@@ -1051,9 +1051,9 @@ function retrieve_widgets( $theme_changed = false ) {
 		if ( $old == $registered_sidebar_keys )
 			return;
 
-		$_sidebars_widgets = array(
+		$_sidebars_widgets = [
 			'wp_inactive_widgets' => !empty( $sidebars_widgets['wp_inactive_widgets'] ) ? $sidebars_widgets['wp_inactive_widgets'] : []
-		);
+		];
 
 		unset( $sidebars_widgets['wp_inactive_widgets'] );
 
@@ -1142,7 +1142,7 @@ function wp_widget_rss_output( $rss, $args = [] ) {
 		return;
 	}
 
-	$default_args = array( 'show_author' => 0, 'show_date' => 0, 'show_summary' => 0, 'items' => 0 );
+	$default_args = [ 'show_author' => 0, 'show_date' => 0, 'show_summary' => 0, 'items' => 0 ];
 	$args = wp_parse_args( $args, $default_args );
 
 	$items = (int) $args['items'];
@@ -1231,7 +1231,7 @@ function wp_widget_rss_output( $rss, $args = [] ) {
  * @param array $inputs Override default display options.
  */
 function wp_widget_rss_form( $args, $inputs = null ) {
-	$default_inputs = array( 'url' => true, 'title' => true, 'items' => true, 'show_summary' => true, 'show_author' => true, 'show_date' => true );
+	$default_inputs = [ 'url' => true, 'title' => true, 'items' => true, 'show_summary' => true, 'show_author' => true, 'show_date' => true ];
 	$inputs = wp_parse_args( $inputs, $default_inputs );
 
 	$args['title'] = isset( $args['title'] ) ? $args['title'] : '';

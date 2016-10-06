@@ -37,7 +37,7 @@ class Walker_Page extends Walker {
 	 * @see Walker::$db_fields
 	 * @todo Decouple this.
 	 */
-	public $db_fields = array( 'parent' => 'post_parent', 'id' => 'ID' );
+	public $db_fields = [ 'parent' => 'post_parent', 'id' => 'ID' ];
 
 	/**
 	 * Outputs the beginning of the current level in the tree before elements are output.
@@ -116,7 +116,7 @@ class Walker_Page extends Walker {
 			$indent = '';
 		}
 
-		$css_class = array( 'page_item', 'page-item-' . $page->ID );
+		$css_class = [ 'page_item', 'page-item-' . $page->ID ];
 
 		if ( isset( $args['pages_with_children'][ $page->ID ] ) ) {
 			$css_class[] = 'page_item_has_children';

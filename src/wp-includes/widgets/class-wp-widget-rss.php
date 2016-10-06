@@ -23,11 +23,11 @@ class WP_Widget_RSS extends WP_Widget {
 	 * @access public
 	 */
 	public function __construct() {
-		$widget_ops = array(
+		$widget_ops = [
 			'description' => __( 'Entries from any RSS or Atom feed.' ),
 			'customize_selective_refresh' => true,
-		);
-		$control_ops = array( 'width' => 400, 'height' => 200 );
+		];
+		$control_ops = [ 'width' => 400, 'height' => 200 ];
 		parent::__construct( 'rss', __( 'RSS' ), $widget_ops, $control_ops );
 	}
 
@@ -53,7 +53,7 @@ class WP_Widget_RSS extends WP_Widget {
 			return;
 
 		// self-url destruction sequence
-		if ( in_array( untrailingslashit( $url ), array( site_url(), home_url() ) ) )
+		if ( in_array( untrailingslashit( $url ), [ site_url(), home_url() ] ) )
 			return;
 
 		$rss = fetch_feed($url);
@@ -119,7 +119,7 @@ class WP_Widget_RSS extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		if ( empty( $instance ) ) {
-			$instance = array( 'title' => '', 'url' => '', 'items' => 10, 'error' => false, 'show_summary' => 0, 'show_author' => 0, 'show_date' => 0 );
+			$instance = [ 'title' => '', 'url' => '', 'items' => 10, 'error' => false, 'show_summary' => 0, 'show_author' => 0, 'show_date' => 0 ];
 		}
 		$instance['number'] = $this->number;
 

@@ -26,10 +26,10 @@ class WP_Nav_Menu_Widget extends WP_Widget {
 	 * @access public
 	 */
 	public function __construct() {
-		$widget_ops = array(
+		$widget_ops = [
 			'description' => __( 'Add a custom menu to your sidebar.' ),
 			'customize_selective_refresh' => true,
-		);
+		];
 		parent::__construct( 'nav_menu', __('Custom Menu'), $widget_ops );
 	}
 
@@ -58,10 +58,10 @@ class WP_Nav_Menu_Widget extends WP_Widget {
 		if ( !empty($instance['title']) )
 			echo $args['before_title'] . $instance['title'] . $args['after_title'];
 
-		$nav_menu_args = array(
+		$nav_menu_args = [
 			'fallback_cb' => '',
 			'menu'        => $nav_menu
-		);
+		];
 
 		/**
 		 * Filters the arguments for the Custom Menu widget.

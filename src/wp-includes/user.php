@@ -66,7 +66,7 @@ function wp_signon( $credentials = [], $secure_cookie = '' ) {
 	 * @param string $user_login    Username, passed by reference.
 	 * @param string $user_password User password, passed by reference.
 	 */
-	do_action_ref_array( 'wp_authenticate', array( &$credentials['user_login'], &$credentials['user_password'] ) );
+	do_action_ref_array( 'wp_authenticate', [ &$credentials['user_login'], &$credentials['user_password'] ] );
 
 	if ( '' === $secure_cookie )
 		$secure_cookie = is_ssl();
@@ -96,7 +96,7 @@ function wp_signon( $credentials = [], $secure_cookie = '' ) {
 	$user = wp_authenticate($credentials['user_login'], $credentials['user_password']);
 
 	if ( is_wp_error($user) ) {
-		if ( $user->get_error_codes() == array('empty_username', 'empty_password') ) {
+		if ( $user->get_error_codes() == ['empty_username', 'empty_password' ] ) {
 			$user = new WP_Error('', '');
 		}
 
@@ -611,7 +611,7 @@ function get_blogs_of_user( $user_id, $all = false ) {
 
 	if ( ! is_multisite() ) {
 		$site_id = get_current_blog_id();
-		$sites = array( $site_id => new stdClass );
+		$sites = [ $site_id => new stdClass ];
 		$sites[ $site_id ]->userblog_id = $site_id;
 		$sites[ $site_id ]->blogname = get_option('blogname');
 		$sites[ $site_id ]->domain = '';
@@ -638,7 +638,7 @@ function get_blogs_of_user( $user_id, $all = false ) {
 			continue;
 		if ( $wpdb->base_prefix && 0 !== strpos( $key, $wpdb->base_prefix ) )
 			continue;
-		$site_id = str_replace( array( $wpdb->base_prefix, '_capabilities' ), '', $key );
+		$site_id = str_replace( [ $wpdb->base_prefix, '_capabilities' ], '', $key );
 		if ( ! is_numeric( $site_id ) )
 			continue;
 
@@ -648,10 +648,10 @@ function get_blogs_of_user( $user_id, $all = false ) {
 	$sites = [];
 
 	if ( ! empty( $site_ids ) ) {
-		$args = array(
+		$args = [
 			'number'   => '',
 			'site__in' => $site_ids,
-		);
+		];
 		if ( ! $all ) {
 			$args['archived'] = 0;
 			$args['spam']     = 0;
@@ -661,7 +661,7 @@ function get_blogs_of_user( $user_id, $all = false ) {
 		$_sites = get_sites( $args );
 
 		foreach ( $_sites as $site ) {
-			$sites[ $site->id ] = (object) array(
+			$sites[ $site->id ] = (object) [
 				'userblog_id' => $site->id,
 				'blogname'    => $site->blogname,
 				'domain'      => $site->domain,
@@ -672,7 +672,7 @@ function get_blogs_of_user( $user_id, $all = false ) {
 				'mature'      => $site->mature,
 				'spam'        => $site->spam,
 				'deleted'     => $site->deleted,
-			);
+			];
 		}
 	}
 
@@ -882,9 +882,9 @@ function count_users($strategy = 'time') {
 		$result['total_users'] = $total_users;
 		$result['avail_roles'] =& $role_counts;
 	} else {
-		$avail_roles = array(
+		$avail_roles = [
 			'none' => 0,
-		);
+		];
 
 		$users_of_blog = $wpdb->get_col( "SELECT meta_value FROM $wpdb->usermeta WHERE meta_key = '{$blog_prefix}capabilities'" );
 
@@ -1024,7 +1024,7 @@ function setup_userdata($for_user_id = '') {
  * @return string String of HTML content.
  */
 function wp_dropdown_users( $args = '' ) {
-	$defaults = array(
+	$defaults = [
 		'show_option_all' => '', 'show_option_none' => '', 'hide_if_only_one_author' => '',
 		'orderby' => 'display_name', 'order' => 'ASC',
 		'include' => '', 'exclude' => '', 'multi' => 0,
@@ -1035,15 +1035,15 @@ function wp_dropdown_users( $args = '' ) {
 		'role' => '',
 		'role__in' => [],
 		'role__not_in' => [],
-	);
+	];
 
 	$defaults['selected'] = is_author() ? get_query_var( 'author' ) : 0;
 
 	$r = wp_parse_args( $args, $defaults );
 
-	$query_args = wp_array_slice_assoc( $r, array( 'blog_id', 'include', 'exclude', 'orderby', 'order', 'who', 'role', 'role__in', 'role__not_in' ) );
+	$query_args = wp_array_slice_assoc( $r, [ 'blog_id', 'include', 'exclude', 'orderby', 'order', 'who', 'role', 'role__in', 'role__not_in' ] );
 
-	$fields = array( 'ID', 'user_login' );
+	$fields = [ 'ID', 'user_login' ];
 
 	$show = ! empty( $r['show'] ) ? $r['show'] : 'display_name';
 	if ( 'display_name_with_login' === $show ) {
@@ -1153,7 +1153,7 @@ function wp_dropdown_users( $args = '' ) {
  * @return mixed Sanitized value.
  */
 function sanitize_user_field($field, $value, $user_id, $context) {
-	$int_fields = array('ID');
+	$int_fields = ['ID'];
 	if ( in_array($field, $int_fields) )
 		$value = (int) $value;
 
@@ -1821,12 +1821,12 @@ Regards,
 All at ###SITENAME###
 ###SITEURL###' );
 
-			$pass_change_email = array(
+			$pass_change_email = [
 				'to'      => $user['user_email'],
 				'subject' => __( '[%s] Notice of Password Change' ),
 				'message' => $pass_change_text,
 				'headers' => '',
-			);
+			];
 
 			/**
 			 * Filters the contents of the email sent when the user's password is changed.
@@ -1876,12 +1876,12 @@ Regards,
 All at ###SITENAME###
 ###SITEURL###' );
 
-			$email_change_email = array(
+			$email_change_email = [
 				'to'      => $user['user_email'],
 				'subject' => __( '[%s] Notice of Email Change' ),
 				'message' => $email_change_text,
 				'headers' => '',
-			);
+			];
 
 			/**
 			 * Filters the contents of the email sent when the user's email is changed.
@@ -1973,7 +1973,7 @@ function wp_create_user($username, $password, $email = '') {
  * @return array List of user keys to be populated in wp_update_user().
  */
 function _get_additional_user_keys( $user ) {
-	$keys = array( 'first_name', 'last_name', 'nickname', 'description', 'rich_editing', 'comment_shortcuts', 'admin_color', 'use_ssl', 'show_admin_bar_front', 'locale' );
+	$keys = [ 'first_name', 'last_name', 'nickname', 'description', 'rich_editing', 'comment_shortcuts', 'admin_color', 'use_ssl', 'show_admin_bar_front', 'locale' ];
 	return array_merge( $keys, array_keys( wp_get_user_contact_methods( $user ) ) );
 }
 
@@ -1990,11 +1990,11 @@ function _get_additional_user_keys( $user ) {
 function wp_get_user_contact_methods( $user = null ) {
 	$methods = [];
 	if ( get_site_option( 'initial_db_version' ) < 23588 ) {
-		$methods = array(
+		$methods = [
 			'aim'    => __( 'AIM' ),
 			'yim'    => __( 'Yahoo IM' ),
 			'jabber' => __( 'Jabber / Google Talk' )
-		);
+		];
 	}
 
 	/**
@@ -2115,7 +2115,7 @@ function get_password_reset_key( $user ) {
 	// Now insert the key, hashed, into the DB.
 	$wp_hasher = $app['password.hasher'];
 	$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
-	$key_saved = $wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user->user_login ) );
+	$key_saved = $wpdb->update( $wpdb->users, [ 'user_activation_key' => $hashed ], [ 'user_login' => $user->user_login ] );
 	if ( false === $key_saved ) {
 		return new WP_Error( 'no_password_key_update', __( 'Could not save password reset key to database.' ) );
 	}

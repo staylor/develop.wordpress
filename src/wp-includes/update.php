@@ -84,7 +84,7 @@ function wp_version_check( $extra_stats = [], $force_check = false ) {
 		$wp_install = home_url( '/' );
 	}
 
-	$query = array(
+	$query = [
 		'version'            => $app['wp_version'],
 		'php'                => $php_version,
 		'locale'             => $locale,
@@ -94,28 +94,28 @@ function wp_version_check( $extra_stats = [], $force_check = false ) {
 		'users'              => $user_count,
 		'multisite_enabled'  => $multisite_enabled,
 		'initial_db_version' => get_site_option( 'initial_db_version' ),
-	);
+	];
 
-	$post_body = array(
+	$post_body = [
 		'translations' => wp_json_encode( $translations ),
-	);
+	];
 
 	if ( is_array( $extra_stats ) )
 		$post_body = array_merge( $post_body, $extra_stats );
 
 	$url = $http_url = 'http://api.wordpress.org/core/version-check/1.7/?' . http_build_query( $query, null, '&' );
-	if ( $ssl = wp_http_supports( array( 'ssl' ) ) )
+	if ( $ssl = wp_http_supports( [ 'ssl' ] ) )
 		$url = set_url_scheme( $url, 'https' );
 
-	$options = array(
+	$options = [
 		'timeout' => ( ( defined('DOING_CRON') && DOING_CRON ) ? 30 : 3 ),
 		'user-agent' => 'WordPress/' . $app['wp_version'] . '; ' . home_url( '/' ),
-		'headers' => array(
+		'headers' => [
 			'wp_install' => $wp_install,
 			'wp_blog' => home_url( '/' )
-		),
+		],
 		'body' => $post_body,
-	);
+	];
 
 	$response = wp_remote_post( $url, $options );
 	if ( $ssl && is_wp_error( $response ) ) {
@@ -140,14 +140,14 @@ function wp_version_check( $extra_stats = [], $force_check = false ) {
 		foreach ( $offer as $offer_key => $value ) {
 			if ( 'packages' == $offer_key )
 				$offer['packages'] = (object) array_intersect_key( array_map( 'esc_url', $offer['packages'] ),
-					array_fill_keys( array( 'full', 'no_content', 'new_bundled', 'partial', 'rollback' ), '' ) );
+					array_fill_keys( [ 'full', 'no_content', 'new_bundled', 'partial', 'rollback' ], '' ) );
 			elseif ( 'download' == $offer_key )
 				$offer['download'] = esc_url( $value );
 			else
 				$offer[ $offer_key ] = esc_html( $value );
 		}
-		$offer = (object) array_intersect_key( $offer, array_fill_keys( array( 'response', 'download', 'locale',
-			'packages', 'current', 'version', 'php_version', 'mysql_version', 'new_bundled', 'partial_version', 'notify_email', 'support_email', 'new_files' ), '' ) );
+		$offer = (object) array_intersect_key( $offer, array_fill_keys( [ 'response', 'download', 'locale',
+			'packages', 'current', 'version', 'php_version', 'mysql_version', 'new_bundled', 'partial_version', 'notify_email', 'support_email', 'new_files' ], '' ) );
 	}
 
 	$updates = new stdClass();
@@ -279,23 +279,23 @@ function wp_update_plugins( $extra_stats = [] ) {
 		$timeout = 3 + (int) ( count( $plugins ) / 10 );
 	}
 
-	$options = array(
+	$options = [
 		'timeout' => $timeout,
-		'body' => array(
+		'body' => [
 			'plugins'      => wp_json_encode( $to_send ),
 			'translations' => wp_json_encode( $translations ),
 			'locale'       => wp_json_encode( $locales ),
 			'all'          => wp_json_encode( true ),
-		),
+		],
 		'user-agent' => 'WordPress/' . $app['wp_version'] . '; ' . get_bloginfo( 'url' )
-	);
+	];
 
 	if ( $extra_stats ) {
 		$options['body']['update_stats'] = wp_json_encode( $extra_stats );
 	}
 
 	$url = $http_url = 'http://api.wordpress.org/plugins/update-check/1.1/';
-	if ( $ssl = wp_http_supports( array( 'ssl' ) ) )
+	if ( $ssl = wp_http_supports( [ 'ssl' ] ) )
 		$url = set_url_scheme( $url, 'https' );
 
 	$raw_response = wp_remote_post( $url, $options );
@@ -371,7 +371,7 @@ function wp_update_themes( $extra_stats = [] ) {
 	foreach ( $installed_themes as $theme ) {
 		$checked[ $theme->get_stylesheet() ] = $theme->get('Version');
 
-		$themes[ $theme->get_stylesheet() ] = array(
+		$themes[ $theme->get_stylesheet() ] = [
 			'Name'       => $theme->get('Name'),
 			'Title'      => $theme->get('Name'),
 			'Version'    => $theme->get('Version'),
@@ -379,7 +379,7 @@ function wp_update_themes( $extra_stats = [] ) {
 			'Author URI' => $theme->get('AuthorURI'),
 			'Template'   => $theme->get_template(),
 			'Stylesheet' => $theme->get_stylesheet(),
-		);
+		];
 	}
 
 	// Check for update on a different schedule, depending on the page.
@@ -452,22 +452,22 @@ function wp_update_themes( $extra_stats = [] ) {
 		$timeout = 3 + (int) ( count( $themes ) / 10 );
 	}
 
-	$options = array(
+	$options = [
 		'timeout' => $timeout,
-		'body' => array(
+		'body' => [
 			'themes'       => wp_json_encode( $request ),
 			'translations' => wp_json_encode( $translations ),
 			'locale'       => wp_json_encode( $locales ),
-		),
+		],
 		'user-agent'	=> 'WordPress/' . $app['wp_version'] . '; ' . get_bloginfo( 'url' )
-	);
+	];
 
 	if ( $extra_stats ) {
 		$options['body']['update_stats'] = wp_json_encode( $extra_stats );
 	}
 
 	$url = $http_url = 'http://api.wordpress.org/themes/update-check/1.1/';
-	if ( $ssl = wp_http_supports( array( 'ssl' ) ) )
+	if ( $ssl = wp_http_supports( [ 'ssl' ] ) )
 		$url = set_url_scheme( $url, 'https' );
 
 	$raw_response = wp_remote_post( $url, $options );
@@ -515,7 +515,7 @@ function wp_maybe_auto_update() {
  */
 function wp_get_translation_updates() {
 	$updates = [];
-	$transients = array( 'update_core' => 'core', 'update_plugins' => 'plugin', 'update_themes' => 'theme' );
+	$transients = [ 'update_core' => 'core', 'update_plugins' => 'plugin', 'update_themes' => 'theme' ];
 	foreach ( $transients as $transient => $type ) {
 		$transient = get_site_transient( $transient );
 		if ( empty( $transient->translations ) )
@@ -536,7 +536,7 @@ function wp_get_translation_updates() {
  * @return array
  */
 function wp_get_update_data() {
-	$counts = array( 'plugins' => 0, 'themes' => 0, 'wordpress' => 0, 'translations' => 0 );
+	$counts = [ 'plugins' => 0, 'themes' => 0, 'wordpress' => 0, 'translations' => 0 ];
 
 	if ( $plugins = current_user_can( 'update_plugins' ) ) {
 		$update_plugins = get_site_transient( 'update_plugins' );
@@ -551,8 +551,8 @@ function wp_get_update_data() {
 	}
 
 	if ( ( $core = current_user_can( 'update_core' ) ) && function_exists( 'get_core_updates' ) ) {
-		$update_wordpress = get_core_updates( array('dismissed' => false) );
-		if ( ! empty( $update_wordpress ) && ! in_array( $update_wordpress[0]->response, array('development', 'latest') ) && current_user_can('update_core') )
+		$update_wordpress = get_core_updates( [ 'dismissed' => false ] );
+		if ( ! empty( $update_wordpress ) && ! in_array( $update_wordpress[0]->response, [ 'development', 'latest' ] ) && current_user_can('update_core') )
 			$counts['wordpress'] = 1;
 	}
 
@@ -572,7 +572,7 @@ function wp_get_update_data() {
 
 	$update_title = $titles ? esc_attr( implode( ', ', $titles ) ) : '';
 
-	$update_data = array( 'counts' => $counts, 'title' => $update_title );
+	$update_data = [ 'counts' => $counts, 'title' => $update_title ];
 	/**
 	 * Filters the returned array of update data for plugins, themes, and WordPress core.
 	 *

@@ -733,13 +733,6 @@ class WP_Object_Cache {
 	public function __construct() {
 		$this->multisite = is_multisite();
 		$this->blog_prefix =  $this->multisite ? get_current_blog_id() . ':' : '';
-
-
-		/**
-		 * @todo This should be moved to the PHP4 style constructor, PHP5
-		 * already calls __destruct()
-		 */
-		register_shutdown_function( array( $this, '__destruct' ) );
 	}
 
 	/**

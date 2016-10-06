@@ -24,7 +24,7 @@ class Walker_Nav_Menu extends Walker {
 	 *
 	 * @see Walker::$tree_type
 	 */
-	public $tree_type = array( 'post_type', 'taxonomy', 'custom' );
+	public $tree_type = [ 'post_type', 'taxonomy', 'custom' ];
 
 	/**
 	 * Database fields to use.
@@ -36,7 +36,7 @@ class Walker_Nav_Menu extends Walker {
 	 *
 	 * @see Walker::$db_fields
 	 */
-	public $db_fields = array( 'parent' => 'menu_item_parent', 'id' => 'db_id' );
+	public $db_fields = [ 'parent' => 'menu_item_parent', 'id' => 'db_id' ];
 
 	/**
 	 * Starts the list before the elements are added.

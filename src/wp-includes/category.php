@@ -24,7 +24,7 @@
  * @return array List of categories.
  */
 function get_categories( $args = '' ) {
-	$defaults = array( 'taxonomy' => 'category' );
+	$defaults = [ 'taxonomy' => 'category' ];
 	$args = wp_parse_args( $args, $defaults );
 
 	$taxonomy = $args['taxonomy'];
@@ -128,7 +128,7 @@ function get_category_by_path( $category_path, $full_match = true, $output = OBJ
 	foreach ( (array) $category_paths as $pathdir ) {
 		$full_path .= ( $pathdir != '' ? '/' : '' ) . sanitize_title( $pathdir );
 	}
-	$categories = get_terms( 'category', array('get' => 'all', 'slug' => $leaf_path) );
+	$categories = get_terms( 'category', [ 'get' => 'all', 'slug' => $leaf_path ] );
 
 	if ( empty( $categories ) ) {
 		return;

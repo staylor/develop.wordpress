@@ -23,10 +23,10 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	 * @access public
 	 */
 	public function __construct() {
-		$widget_ops = array(
+		$widget_ops = [
 			'description' => __( 'A cloud of your most used tags.' ),
 			'customize_selective_refresh' => true,
-		);
+		];
 		parent::__construct( 'tag_cloud', __( 'Tag Cloud' ), $widget_ops );
 	}
 
@@ -63,10 +63,10 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 		 *
 		 * @param array $current_taxonomy The taxonomy to use in the tag cloud. Default 'tags'.
 		 */
-		$tag_cloud = wp_tag_cloud( apply_filters( 'widget_tag_cloud_args', array(
+		$tag_cloud = wp_tag_cloud( apply_filters( 'widget_tag_cloud_args', [
 			'taxonomy' => $current_taxonomy,
 			'echo' => false
-		) ) );
+		] ) );
 
 		if ( empty( $tag_cloud ) ) {
 			return;
@@ -123,7 +123,7 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 			<input type="text" class="widefat" id="' . $title_id .'" name="' . $this->get_field_name( 'title' ) .'" value="' . $instance['title'] .'" />
 		</p>';
 
-		$taxonomies = get_taxonomies( array( 'show_tagcloud' => true ), 'object' );
+		$taxonomies = get_taxonomies( [ 'show_tagcloud' => true ], 'object' );
 		$id = $this->get_field_id( 'taxonomy' );
 		$name = $this->get_field_name( 'taxonomy' );
 		$input = '<input type="hidden" id="' . $id . '" name="' . $name . '" value="%s" />';

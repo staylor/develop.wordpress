@@ -23,11 +23,11 @@ class WP_Widget_Categories extends WP_Widget {
 	 * @access public
 	 */
 	public function __construct() {
-		$widget_ops = array(
+		$widget_ops = [
 			'classname' => 'widget_categories',
 			'description' => __( 'A list or dropdown of categories.' ),
 			'customize_selective_refresh' => true,
-		);
+		];
 		parent::__construct( 'categories', __( 'Categories' ), $widget_ops );
 	}
 
@@ -56,11 +56,11 @@ class WP_Widget_Categories extends WP_Widget {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
 
-		$cat_args = array(
+		$cat_args = [
 			'orderby'      => 'name',
 			'show_count'   => $c,
 			'hierarchical' => $h
-		);
+		];
 
 		if ( $d ) {
 			$dropdown_id = ( $first_dropdown ) ? 'cat' : "{$this->id_base}-dropdown-{$this->number}";
@@ -151,7 +151,7 @@ class WP_Widget_Categories extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		//Defaults
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '') );
+		$instance = wp_parse_args( (array) $instance, [ 'title' => '' ] );
 		$title = sanitize_text_field( $instance['title'] );
 		$count = isset($instance['count']) ? (bool) $instance['count'] :false;
 		$hierarchical = isset( $instance['hierarchical'] ) ? (bool) $instance['hierarchical'] : false;
