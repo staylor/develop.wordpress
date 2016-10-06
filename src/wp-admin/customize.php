@@ -21,6 +21,7 @@ if ( ! current_user_can( 'customize' ) ) {
 }
 
 $app = WP\getApp();
+$wp_customize = $app['customize'];
 
 wp_reset_vars( array( 'url', 'return', 'autofocus' ) );
 if ( ! empty( $url ) ) {
@@ -32,11 +33,6 @@ if ( ! empty( $return ) ) {
 if ( ! empty( $autofocus ) && is_array( $autofocus ) ) {
 	$wp_customize->set_autofocus( wp_unslash( $autofocus ) );
 }
-
-/**
- * @global WP_Customize_Manager $wp_customize
- */
-global $wp_customize;
 
 $registered = $app['scripts.global']->registered;
 unset( $app['scripts.global'] );

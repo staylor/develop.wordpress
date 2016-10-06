@@ -105,5 +105,9 @@ class Provider implements ServiceProviderInterface {
 		$app['wp'] = function () {
 			return new Controller\WP();
 		};
+
+		$app['customize'] = function () {
+			return new Customize\Manager();
+		};
 	}
 }

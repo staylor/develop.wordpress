@@ -7,6 +7,7 @@
  * @since 4.4.0
  */
 
+use WP\Customize\Manager;
 use function WP\getApp;
 
 /**
@@ -26,7 +27,7 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param Manager $manager Customizer bootstrap instance.
 	 */
 	public function __construct( $manager ) {
 		parent::__construct( $manager, 'header_image', array(

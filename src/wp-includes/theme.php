@@ -6,6 +6,7 @@
  * @subpackage Theme
  */
 
+use WP\Customize\Manager;
 use function WP\getApp;
 
 /**
@@ -656,19 +657,15 @@ function locale_stylesheet() {
  *
  * @since 2.5.0
  *
- * @global WP_Customize_Manager $wp_customize
- *
  * @param string $stylesheet Stylesheet name
  */
 function switch_theme( $stylesheet ) {
-	global $wp_customize;
-
 	$app = getApp();
 	$sidebars_widgets = $app->sidebars['widgets'];
 
 	$_sidebars_widgets = null;
 	if ( 'wp_ajax_customize_save' === current_action() ) {
-		$_sidebars_widgets = $wp_customize->post_value( $wp_customize->get_setting( 'old_sidebars_widgets_data' ) );
+		$_sidebars_widgets = $app['customize']->post_value( $app['customize']->get_setting( 'old_sidebars_widgets_data' ) );
 	} elseif ( is_array( $sidebars_widgets ) ) {
 		$_sidebars_widgets = $sidebars_widgets;
 	}
@@ -2032,7 +2029,7 @@ function check_theme_switched() {
 }
 
 /**
- * Includes and instantiates the WP_Customize_Manager class.
+ * Includes and instantiates the Manager class.
  *
  * Loads the Customizer at plugins_loaded when accessing the customize.php admin
  * page or when any request includes a wp_customize=on param, either as a GET
@@ -2041,8 +2038,6 @@ function check_theme_switched() {
  * or when making Customizer Ajax requests for widgets or menus.
  *
  * @since 3.4.0
- *
- * @global WP_Customize_Manager $wp_customize
  */
 function _wp_customize_include() {
 	$app = getApp();
@@ -2053,7 +2048,7 @@ function _wp_customize_include() {
 		return;
 	}
 
-	$GLOBALS['wp_customize'] = new WP_Customize_Manager();
+	return $app['customize'];
 }
 
 /**
@@ -2162,12 +2157,9 @@ function wp_customize_support_script() {
  *
  * @since 4.0.0
  *
- * @global WP_Customize_Manager $wp_customize Customizer instance.
- *
  * @return bool True if the site is being previewed in the Customizer, false otherwise.
  */
 function is_customize_preview() {
-	global $wp_customize;
-
-	return ( $wp_customize instanceof WP_Customize_Manager ) && $wp_customize->is_preview();
+	$app = getApp();
+	return ( $app['customize'] instanceof Manager ) && $app['customize']->is_preview();
 }

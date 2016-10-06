@@ -7,6 +7,8 @@
  * @since 4.5.0
  */
 
+use WP\Customize\Manager;
+
 /**
  * Core Customizer class for implementing selective refresh.
  *
@@ -26,7 +28,7 @@ final class WP_Customize_Selective_Refresh {
 	 *
 	 * @since 4.5.0
 	 * @access public
-	 * @var WP_Customize_Manager
+	 * @var Manager
 	 */
 	public $manager;
 
@@ -63,9 +65,9 @@ final class WP_Customize_Selective_Refresh {
 	 * @since 4.5.0
 	 * @access public
 	 *
-	 * @param WP_Customize_Manager $manager Manager instance.
+	 * @param Manager $manager Manager instance.
 	 */
-	public function __construct( WP_Customize_Manager $manager ) {
+	public function __construct( Manager $manager ) {
 		$this->manager = $manager;
 
 		add_action( 'customize_preview_init', array( $this, 'init_preview' ) );
@@ -198,7 +200,7 @@ final class WP_Customize_Selective_Refresh {
 	 * @since 4.5.0
 	 * @access public
 	 *
-	 * @see WP_Customize_Manager::add_dynamic_settings()
+	 * @see Manager::add_dynamic_settings()
 	 *
 	 * @param array $partial_ids The partial ID to add.
 	 * @return array Added WP_Customize_Partial instances.
@@ -311,7 +313,7 @@ final class WP_Customize_Selective_Refresh {
 		/*
 		 * Note that is_customize_preview() returning true will entail that the
 		 * user passed the 'customize' capability check and the nonce check, since
-		 * WP_Customize_Manager::setup_theme() is where the previewing flag is set.
+		 * Manager::setup_theme() is where the previewing flag is set.
 		 */
 		if ( ! is_customize_preview() ) {
 			wp_send_json_error( 'expected_customize_preview', 403 );

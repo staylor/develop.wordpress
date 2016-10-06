@@ -6,6 +6,7 @@
  * @subpackage Administration
  */
 
+use WP\Customize\Manager;
 use function WP\getApp;
 
 /**
@@ -1306,7 +1307,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 
 	/**
 	 *
-	 * @param WP_Customize_Manager $wp_customize
+	 * @param Manager $wp_customize
 	 */
 	public function customize_set_last_used( $wp_customize ) {
 		$data = $wp_customize->get_setting( 'header_image_data' )->post_value();

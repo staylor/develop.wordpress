@@ -1942,12 +1942,10 @@ function wp_ajax_save_widget() {
  * Ajax handler for saving a widget.
  *
  * @since 3.9.0
- *
- * @global WP_Customize_Manager $wp_customize
  */
 function wp_ajax_update_widget() {
-	global $wp_customize;
-	$wp_customize->widgets->wp_ajax_update_widget();
+	$app = getApp();
+	$app['customize']->widgets->wp_ajax_update_widget();
 }
 
 /**

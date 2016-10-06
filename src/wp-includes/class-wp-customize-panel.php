@@ -7,14 +7,16 @@
  * @since 4.0.0
  */
 
+use WP\Customize\Manager;
+
 /**
  * Customize Panel class.
  *
- * A UI container for sections, managed by the WP_Customize_Manager.
+ * A UI container for sections, managed by the Manager.
  *
  * @since 4.0.0
  *
- * @see WP_Customize_Manager
+ * @see Manager
  */
 class WP_Customize_Panel {
 
@@ -41,11 +43,11 @@ class WP_Customize_Panel {
 	public $instance_number;
 
 	/**
-	 * WP_Customize_Manager instance.
+	 * Manager instance.
 	 *
 	 * @since 4.0.0
 	 * @access public
-	 * @var WP_Customize_Manager
+	 * @var Manager
 	 */
 	public $manager;
 
@@ -143,7 +145,7 @@ class WP_Customize_Panel {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param Manager $manager Customizer bootstrap instance.
 	 * @param string               $id      An specific ID for the panel.
 	 * @param array                $args    Panel arguments.
 	 */
@@ -311,11 +313,11 @@ class WP_Customize_Panel {
 	 * Render the panel's JS templates.
 	 *
 	 * This function is only run for panel types that have been registered with
-	 * WP_Customize_Manager::register_panel_type().
+	 * Manager::register_panel_type().
 	 *
 	 * @since 4.3.0
 	 *
-	 * @see WP_Customize_Manager::register_panel_type()
+	 * @see Manager::register_panel_type()
 	 */
 	public function print_template() {
 		?>

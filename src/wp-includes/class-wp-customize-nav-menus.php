@@ -7,6 +7,7 @@
  * @since 4.3.0
  */
 
+use WP\Customize\Manager;
 use function WP\getApp;
 
 /**
@@ -16,16 +17,16 @@ use function WP\getApp;
  *
  * @since 4.3.0
  *
- * @see WP_Customize_Manager
+ * @see Manager
  */
 final class WP_Customize_Nav_Menus {
 
 	/**
-	 * WP_Customize_Manager instance.
+	 * Manager instance.
 	 *
 	 * @since 4.3.0
 	 * @access public
-	 * @var WP_Customize_Manager
+	 * @var Manager
 	 */
 	public $manager;
 
@@ -44,7 +45,7 @@ final class WP_Customize_Nav_Menus {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @param object $manager An instance of the WP_Customize_Manager class.
+	 * @param object $manager An instance of the Manager class.
 	 */
 	public function __construct( $manager ) {
 		$this->previewed_menus = array();

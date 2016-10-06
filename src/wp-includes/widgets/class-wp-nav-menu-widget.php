@@ -7,6 +7,9 @@
  * @since 4.4.0
  */
 
+use WP\Customize\Manager;
+use function WP\getApp;
+
 /**
  * Core class used to implement the Custom Menu widget.
  *
@@ -110,10 +113,9 @@ class WP_Nav_Menu_Widget extends WP_Widget {
 	 * @access public
 	 *
 	 * @param array $instance Current settings.
-	 * @global WP_Customize_Manager $wp_customize
 	 */
 	public function form( $instance ) {
-		global $wp_customize;
+		$app = getApp();
 		$title = isset( $instance['title'] ) ? $instance['title'] : '';
 		$nav_menu = isset( $instance['nav_menu'] ) ? $instance['nav_menu'] : '';
 
@@ -124,7 +126,7 @@ class WP_Nav_Menu_Widget extends WP_Widget {
 		?>
 		<p class="nav-menu-widget-no-menus-message" <?php if ( ! empty( $menus ) ) { echo ' style="display:none" '; } ?>>
 			<?php
-			if ( $wp_customize instanceof WP_Customize_Manager ) {
+			if ( $app['customize'] instanceof Manager ) {
 				$url = 'javascript: wp.customize.panel( "nav_menus" ).focus();';
 			} else {
 				$url = admin_url( 'nav-menus.php' );
@@ -148,7 +150,7 @@ class WP_Nav_Menu_Widget extends WP_Widget {
 					<?php endforeach; ?>
 				</select>
 			</p>
-			<?php if ( $wp_customize instanceof WP_Customize_Manager ) : ?>
+			<?php if ( $app['customize'] instanceof Manager ) : ?>
 				<p class="edit-selected-nav-menu" style="<?php if ( ! $nav_menu ) { echo 'display: none;'; } ?>">
 					<button type="button" class="button"><?php _e( 'Edit Menu' ) ?></button>
 				</p>

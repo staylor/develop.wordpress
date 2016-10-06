@@ -7,6 +7,8 @@
  * @since 3.4.0
  */
 
+use WP\Customize\Manager;
+
 /**
  * Customize Setting class.
  *
@@ -14,12 +16,12 @@
  *
  * @since 3.4.0
  *
- * @see WP_Customize_Manager
+ * @see Manager
  */
 class WP_Customize_Setting {
 	/**
 	 * @access public
-	 * @var WP_Customize_Manager
+	 * @var Manager
 	 */
 	public $manager;
 
@@ -117,7 +119,7 @@ class WP_Customize_Setting {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Customize_Manager $manager
+	 * @param Manager $manager
 	 * @param string               $id      An specific ID of the setting. Can be a
 	 *                                      theme mod or option name.
 	 * @param array                $args    Setting arguments.
@@ -380,7 +382,7 @@ class WP_Customize_Setting {
 	 *
 	 * @since 4.4.0
 	 * @access private
-	 * @see WP_Customize_Manager::set_post_value()
+	 * @see Manager::set_post_value()
 	 * @see WP_Customize_Setting::_multidimensional_preview_filter()
 	 */
 	final public function _clear_aggregated_multidimensional_preview_applied_flag() {

@@ -334,13 +334,11 @@ class WP_Widget {
 	 * @since 3.9.0
 	 * @access public
 	 *
-	 * @global WP_Customize_Manager $wp_customize
-	 *
 	 * @return bool True if within the Customizer preview, false if not.
 	 */
 	public function is_preview() {
-		global $wp_customize;
-		return ( isset( $wp_customize ) && $wp_customize->is_preview() ) ;
+		$app = getApp();
+		return $app['customize']->is_preview();
 	}
 
 	/**

@@ -7,14 +7,16 @@
  * @since 3.4.0
  */
 
+use WP\Customize\Manager;
+
 /**
  * Customize Section class.
  *
- * A UI container for controls, managed by the WP_Customize_Manager class.
+ * A UI container for controls, managed by the Manager class.
  *
  * @since 3.4.0
  *
- * @see WP_Customize_Manager
+ * @see Manager
  */
 class WP_Customize_Section {
 
@@ -41,11 +43,11 @@ class WP_Customize_Section {
 	public $instance_number;
 
 	/**
-	 * WP_Customize_Manager instance.
+	 * Manager instance.
 	 *
 	 * @since 3.4.0
 	 * @access public
-	 * @var WP_Customize_Manager
+	 * @var Manager
 	 */
 	public $manager;
 
@@ -152,7 +154,7 @@ class WP_Customize_Section {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param Manager $manager Customizer bootstrap instance.
 	 * @param string               $id      An specific ID of the section.
 	 * @param array                $args    Section arguments.
 	 */
@@ -316,12 +318,12 @@ class WP_Customize_Section {
 	 * Render the section's JS template.
 	 *
 	 * This function is only run for section types that have been registered with
-	 * WP_Customize_Manager::register_section_type().
+	 * Manager::register_section_type().
 	 *
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @see WP_Customize_Manager::render_template()
+	 * @see Manager::render_template()
 	 */
 	public function print_template() {
         ?>

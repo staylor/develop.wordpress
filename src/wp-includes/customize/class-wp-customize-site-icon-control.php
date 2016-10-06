@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use WP\Customize\Manager;
+
 /**
  * Customize Site Icon control class.
  *
@@ -33,7 +35,7 @@ class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control 
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param Manager $manager Customizer bootstrap instance.
 	 * @param string               $id      Control ID.
 	 * @param array                $args    Optional. Arguments to override class property defaults.
 	 */

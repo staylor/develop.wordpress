@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use WP\Customize\Manager;
+
 /**
  * Customize control to represent the name field for a given menu.
  *
@@ -40,7 +42,7 @@ class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 	 *
 	 * @see WP_Customize_Control::__construct()
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param Manager $manager Customizer bootstrap instance.
 	 * @param string               $id      The control ID.
 	 * @param array                $args    Optional. Overrides class property defaults.
 	 */

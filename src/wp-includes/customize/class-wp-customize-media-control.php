@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use WP\Customize\Manager;
+
 /**
  * Customize Media Control class.
  *
@@ -48,7 +50,7 @@ class WP_Customize_Media_Control extends WP_Customize_Control {
 	 * @since 4.1.0
 	 * @since 4.2.0 Moved from WP_Customize_Upload_Control.
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param Manager $manager Customizer bootstrap instance.
 	 * @param string               $id      Control ID.
 	 * @param array                $args    Optional. Arguments to override class property defaults.
 	 */

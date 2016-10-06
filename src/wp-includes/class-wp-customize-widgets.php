@@ -7,6 +7,7 @@
  * @since 3.9.0
  */
 
+use WP\Customize\Manager;
 use function WP\getApp;
 
 /**
@@ -16,16 +17,16 @@ use function WP\getApp;
  *
  * @since 3.9.0
  *
- * @see WP_Customize_Manager
+ * @see Manager
  */
 final class WP_Customize_Widgets {
 
 	/**
-	 * WP_Customize_Manager instance.
+	 * Manager instance.
 	 *
 	 * @since 3.9.0
 	 * @access public
-	 * @var WP_Customize_Manager
+	 * @var Manager
 	 */
 	public $manager;
 
@@ -90,7 +91,7 @@ final class WP_Customize_Widgets {
 	 * @since 3.9.0
 	 * @access public
 	 *
-	 * @param WP_Customize_Manager $manager Customize manager bootstrap instance.
+	 * @param Manager $manager Customize manager bootstrap instance.
 	 */
 	public function __construct( $manager ) {
 		$this->manager = $manager;

@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use WP\Customize\Manager;
+
 /**
  * Customize Background Image Control class.
  *
@@ -23,7 +25,7 @@ class WP_Customize_Background_Image_Control extends WP_Customize_Image_Control {
 	 * @since 3.4.0
 	 * @uses WP_Customize_Image_Control::__construct()
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param Manager $manager Customizer bootstrap instance.
 	 */
 	public function __construct( $manager ) {
 		parent::__construct( $manager, 'background_image', array(
