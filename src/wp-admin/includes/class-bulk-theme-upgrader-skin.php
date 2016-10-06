@@ -45,10 +45,10 @@ class Bulk_Theme_Upgrader_Skin extends Bulk_Upgrader_Skin {
 	 */
 	public function bulk_footer() {
 		parent::bulk_footer();
-		$update_actions =  array(
+		$update_actions = [
 			'themes_page' => '<a href="' . self_admin_url( 'themes.php' ) . '" target="_parent">' . __( 'Return to Themes page' ) . '</a>',
 			'updates_page' => '<a href="' . self_admin_url( 'update-core.php' ) . '" target="_parent">' . __( 'Return to WordPress Updates page' ) . '</a>'
-		);
+		];
 		if ( ! current_user_can( 'switch_themes' ) && ! current_user_can( 'edit_theme_options' ) )
 			unset( $update_actions['themes_page'] );
 

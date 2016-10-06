@@ -71,11 +71,11 @@ $network_help = '<p>' . __('This screen allows you to configure a network as hav
 	'<p>' . __('<a href="https://codex.wordpress.org/Create_A_Network" target="_blank">Documentation on Creating a Network</a>') . '</p>' .
 	'<p>' . __('<a href="https://codex.wordpress.org/Tools_Network_Screen" target="_blank">Documentation on the Network Screen</a>') . '</p>';
 
-get_current_screen()->add_help_tab( array(
+get_current_screen()->add_help_tab( [
 	'id'      => 'network',
 	'title'   => __('Network'),
 	'content' => $network_help,
-) );
+] );
 
 get_current_screen()->set_help_sidebar(
 	'<p><strong>' . __('For more information:') . '</strong></p>' .

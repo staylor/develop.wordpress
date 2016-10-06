@@ -16,19 +16,17 @@
  * @see WP_Comments_List_Table
  */
 class WP_Post_Comments_List_Table extends WP_Comments_List_Table {
-
 	/**
-	 *
 	 * @return array
 	 */
 	protected function get_column_info() {
 		return array(
-			array(
+			[
 				'author'   => __( 'Author' ),
 				'comment'  => _x( 'Comment', 'column name' ),
-			),
-			array(),
-			array(),
+			],
+			[],
+			[],
 			'comment',
 		);
 	}

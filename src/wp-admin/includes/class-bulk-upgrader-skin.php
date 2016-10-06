@@ -27,7 +27,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	 * @param array $args
 	 */
 	public function __construct($args = []) {
-		$defaults = array( 'url' => '', 'nonce' => '' );
+		$defaults = [ 'url' => '', 'nonce' => '' ];
 		$args = wp_parse_args($args, $defaults);
 
 		parent::__construct($args);

@@ -24,7 +24,7 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	 * @param array $args
 	 */
 	public function __construct($args = []) {
-		$defaults = array( 'type' => 'web', 'url' => '', 'plugin' => '', 'nonce' => '', 'title' => '' );
+		$defaults = [ 'type' => 'web', 'url' => '', 'plugin' => '', 'nonce' => '', 'title' => '' ];
 		$args = wp_parse_args($args, $defaults);
 
 		$this->type = $args['type'];

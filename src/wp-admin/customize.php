@@ -23,7 +23,7 @@ if ( ! current_user_can( 'customize' ) ) {
 $app = WP\getApp();
 $wp_customize = $app['customize'];
 
-wp_reset_vars( array( 'url', 'return', 'autofocus' ) );
+wp_reset_vars( [ 'url', 'return', 'autofocus' ] );
 if ( ! empty( $url ) ) {
 	$wp_customize->set_preview_url( wp_unslash( $url ) );
 }

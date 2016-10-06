@@ -65,8 +65,8 @@ if ( 'approved' === wp_get_comment_status( $comment ) && $comment->comment_post_
 <div id="postdiv" class="postarea">
 <?php
 	echo '<label for="content" class="screen-reader-text">' . __( 'Comment' ) . '</label>';
-	$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' );
-	wp_editor( $comment->comment_content, 'content', array( 'media_buttons' => false, 'tinymce' => false, 'quicktags' => $quicktags_settings ) );
+	$quicktags_settings = [ 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' ];
+	wp_editor( $comment->comment_content, 'content', [ 'media_buttons' => false, 'tinymce' => false, 'quicktags' => $quicktags_settings ] );
 	wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 </div>
 </div><!-- /post-body-content -->

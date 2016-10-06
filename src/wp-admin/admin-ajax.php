@@ -43,12 +43,12 @@ nocache_headers();
 /** This action is documented in wp-admin/admin.php */
 do_action( 'admin_init' );
 
-$core_actions_get = array(
+$core_actions_get = [
 	'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
 	'autocomplete-user', 'dashboard-widgets', 'logged-in',
-);
+];
 
-$core_actions_post = array(
+$core_actions_post = [
 	'oembed-cache', 'image-editor', 'delete-comment', 'delete-tag', 'delete-link',
 	'delete-meta', 'delete-post', 'trash-post', 'untrash-post', 'delete-page', 'dim-comment',
 	'add-link-category', 'add-tag', 'get-tagcloud', 'get-comments', 'replyto-comment',
@@ -65,7 +65,7 @@ $core_actions_post = array(
 	'press-this-add-category', 'crop-image', 'generate-password', 'save-wporg-username', 'delete-plugin',
 	'search-plugins', 'search-install-plugins', 'activate-plugin', 'update-theme', 'delete-theme',
 	'install-theme', 'get-post-thumbnail-html',
-);
+];
 
 // Deprecated
 $core_actions_post[] = 'wp-fullscreen-save-post';

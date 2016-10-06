@@ -153,7 +153,7 @@ if ( $app->current_screen->post_type )
 if ( $app->current_screen->taxonomy )
 	$admin_body_class .= ' taxonomy-' . $app->current_screen->taxonomy;
 
-$admin_body_class .= ' branch-' . str_replace( array( '.', ',' ), '-', floatval( $app['wp_version'] ) );
+$admin_body_class .= ' branch-' . str_replace( [ '.', ',' ], '-', floatval( $app['wp_version'] ) );
 $admin_body_class .= ' version-' . str_replace( '.', '-', preg_replace( '/^([.0-9]+).*/', '$1', $app['wp_version'] ) );
 $admin_body_class .= ' admin-color-' . sanitize_html_class( get_user_option( 'admin_color' ), 'fresh' );
 $admin_body_class .= ' locale-' . sanitize_html_class( strtolower( str_replace( '_', '-', get_user_locale() ) ) );

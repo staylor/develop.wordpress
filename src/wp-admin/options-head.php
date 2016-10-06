@@ -8,7 +8,7 @@
  * @subpackage Administration
  */
 
-wp_reset_vars( array( 'action' ) );
+wp_reset_vars( [ 'action' ] );
 
 if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) ) {
 	// For back-compat with plugins that don't use the Settings API and just set updated=1 in the redirect.
