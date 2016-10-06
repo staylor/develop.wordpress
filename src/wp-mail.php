@@ -8,7 +8,7 @@
  */
 
 /** Make sure that the WordPress bootstrap has run before continuing. */
-require(dirname(__FILE__) . '/wp-load.php');
+require( __DIR__ . '/wp-load.php' );
 
 /** This filter is documented in wp-admin/options.php */
 if ( ! apply_filters( 'enable_post_by_email_configuration', true ) )
