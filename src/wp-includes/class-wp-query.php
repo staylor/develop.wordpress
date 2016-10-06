@@ -174,6 +174,8 @@ class WP_Query {
 	 */
 	public $comment;
 
+	public $authordata;
+
 	/**
 	 * The amount of found posts for the current query.
 	 *
@@ -3950,7 +3952,6 @@ class WP_Query {
 	 * @since 4.4.0 Added the ability to pass a post ID to `$post`.
 	 *
 	 * @global int             $id
-	 * @global WP_User         $authordata
 	 * @global string|int|bool $currentday
 	 * @global string|int|bool $currentmonth
 	 * @global int             $page
@@ -3963,7 +3964,7 @@ class WP_Query {
 	 * @return true True when finished.
 	 */
 	public function setup_postdata( $post ) {
-		global $id, $authordata, $currentday, $currentmonth, $page, $pages, $multipage, $more, $numpages;
+		global $id, $currentday, $currentmonth, $page, $pages, $multipage, $more, $numpages;
 
 		if ( ! ( $post instanceof WP_Post ) ) {
 			$post = get_post( $post );
@@ -3975,7 +3976,7 @@ class WP_Query {
 
 		$id = (int) $post->ID;
 
-		$authordata = get_userdata($post->post_author);
+		$this->authordata = get_userdata( $post->post_author );
 
 		$currentday = mysql2date('d.m.y', $post->post_date, false);
 		$currentmonth = mysql2date('m', $post->post_date, false);

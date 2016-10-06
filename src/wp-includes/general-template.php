@@ -1866,21 +1866,21 @@ function calendar_week_mod($num) {
  *
  * @since 1.0.0
  *
- * @global int       $m
- * @global int       $monthnum
- * @global int       $year
- * @global array     $posts
+ * @global int  $m
+ * @global int  $monthnum
+ * @global int  $year
  *
  * @param bool $initial Optional, default is true. Use initial calendar names.
  * @param bool $echo    Optional, default is true. Set to false for return.
  * @return string|void String when retrieving.
  */
 function get_calendar( $initial = true, $echo = true ) {
-	global $m, $monthnum, $year, $posts;
+	global $m, $monthnum, $year;
 
 	$app = getApp();
 	$wpdb = $app['db'];
 	$wp_locale = $app['locale'];
+	$posts = $app['wp']->current_query->posts;
 
 	$key = md5( $m . $monthnum . $year );
 	$cache = wp_cache_get( 'get_calendar', 'calendar' );

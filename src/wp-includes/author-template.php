@@ -17,13 +17,12 @@ use function WP\getApp;
  *
  * @since 1.5.0
  *
- * @global object $authordata The current author's DB object.
- *
  * @param string $deprecated Deprecated.
  * @return string|null The author's display name.
  */
 function get_the_author($deprecated = '') {
-	global $authordata;
+	$app = getApp();
+	$authordata = $app['wp']->current_query->authordata;
 
 	if ( !empty( $deprecated ) )
 		_deprecated_argument( __FUNCTION__, '2.1.0' );
@@ -35,7 +34,7 @@ function get_the_author($deprecated = '') {
 	 *
 	 * @param string $authordata->display_name The author's display name.
 	 */
-	return apply_filters('the_author', is_object($authordata) ? $authordata->display_name : null);
+	return apply_filters('the_author', is_object( $authordata ) ? $authordata->display_name : null);
 }
 
 /**
@@ -117,8 +116,6 @@ function the_modified_author() {
  * @link https://codex.wordpress.org/Template_Tags/the_author_meta
  * @since 2.8.0
  *
- * @global object $authordata The current author's DB object.
- *
  * @param string $field selects the field of the users record.
  * @param int $user_id Optional. User ID.
  * @return string The author's field from the current author's DB object.
@@ -127,7 +124,8 @@ function get_the_author_meta( $field = '', $user_id = false ) {
 	$original_user_id = $user_id;
 
 	if ( ! $user_id ) {
-		global $authordata;
+		$app = getApp();
+		$authordata = $app['wp']->current_query->authordata;
 		$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
 	} else {
 		$authordata = get_userdata( $user_id );
@@ -247,12 +245,11 @@ function the_author_posts() {
  *
  * @since 4.4.0
  *
- * @global object $authordata The current author's DB object.
- *
  * @return string An HTML link to the author page.
  */
 function get_the_author_posts_link() {
-	global $authordata;
+	$app = getApp();
+	$authordata = $app['wp']->current_query->authordata;
 	if ( ! is_object( $authordata ) ) {
 		return;
 	}

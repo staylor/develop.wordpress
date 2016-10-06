@@ -551,12 +551,8 @@ class WP extends Observer {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @global array        $posts The found posts.
 	 * @global WP_Post|null $post The current post, if available.
-	 * @global string       $request The SQL statement for the request.
 	 * @global int          $more Only set, if single page or post.
-	 * @global int          $single If single page or post. Only set, if single page or post.
-	 * @global WP_User      $authordata Only set, if author archive.
 	 */
 	public function register_globals() {
 		// Extract updated query vars back into global namespace.
@@ -564,17 +560,14 @@ class WP extends Observer {
 			$GLOBALS[ $key ] = $value;
 		}
 
-		$GLOBALS['posts'] =& $this->current_query->posts;
 		$GLOBALS['post'] = $this->current_query->post ?? null;
-		$GLOBALS['request'] = $this->current_query->request;
 
 		if ( $this->current_query->is_single() || $this->current_query->is_page() ) {
-			$GLOBALS['more']   = 1;
-			$GLOBALS['single'] = 1;
+			$GLOBALS['more'] = 1;
 		}
 
 		if ( $this->current_query->is_author() && isset( $this->current_query->post ) ) {
-			$GLOBALS['authordata'] = get_userdata( $this->current_query->post->post_author );
+			$this->current_query->authordata = get_userdata( $this->current_query->post->post_author );
 		}
 	}
 
