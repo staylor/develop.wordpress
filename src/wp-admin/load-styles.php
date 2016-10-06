@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
 
-define( 'WPINC', 'wp-includes' );
+const WPINC = 'wp-includes';
 
 require( ABSPATH . 'vendor/autoload.php' );
 

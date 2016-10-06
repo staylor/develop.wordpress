@@ -14,7 +14,7 @@ use function WP\getApp;
  *
  * @var string
  */
-define( 'REST_API_VERSION', '2.0' );
+const REST_API_VERSION = '2.0';
 
 /**
  * Registers a REST API route.

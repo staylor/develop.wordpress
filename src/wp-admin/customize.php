@@ -7,7 +7,7 @@
  * @since 3.4.0
  */
 
-define( 'IFRAME_REQUEST', true );
+const IFRAME_REQUEST = true;
 
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );

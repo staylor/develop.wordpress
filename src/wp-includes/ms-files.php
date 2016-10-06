@@ -10,7 +10,7 @@
 
 use function WP\getApp;
 
-define( 'SHORTINIT', true );
+const SHORTINIT = true;
 require_once( dirname( __DIR__ ) . '/wp-load.php' );
 
 if ( !is_multisite() )

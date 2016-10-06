@@ -14,7 +14,7 @@ use function WP\getApp;
  * @since 1.5.1
  * @var bool
  */
-define( 'WP_INSTALLING', true );
+const WP_INSTALLING = true;
 
 /** Load WordPress Bootstrap */
 require( dirname( __DIR__ ) . '/wp-load.php' );

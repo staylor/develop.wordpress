@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
 
-define( 'WPINC', 'wp-includes' );
+const WPINC = 'wp-includes';
 
 $load = $_GET['load'];
 if ( is_array( $load ) )

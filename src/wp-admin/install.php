@@ -8,31 +8,13 @@
 
 use function WP\getApp;
 
-// Sanity check.
-if ( false ) {
-?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Error: PHP is not running</title>
-</head>
-<body class="wp-core-ui">
-	<p id="logo"><a href="https://wordpress.org/">WordPress</a></p>
-	<h1>Error: PHP is not running</h1>
-	<p>WordPress requires that your web server is running PHP. Your server does not have PHP installed, or PHP is turned off.</p>
-</body>
-</html>
-<?php
-}
-
 /**
  * We are installing WordPress.
  *
  * @since 1.5.1
  * @var bool
  */
-define( 'WP_INSTALLING', true );
+const WP_INSTALLING = true;
 
 /** Load WordPress Bootstrap */
 require_once( dirname( __DIR__ ) . '/wp-load.php' );
