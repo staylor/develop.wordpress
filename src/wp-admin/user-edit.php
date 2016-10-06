@@ -10,7 +10,7 @@ use WP\User\User;
 use function WP\getApp;
 
 /** WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once( __DIR__ . '/admin.php' );
 
 $app = getApp();
 $wpdb = $app['db'];

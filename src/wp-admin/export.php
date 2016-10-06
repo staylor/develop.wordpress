@@ -9,7 +9,7 @@
 use function WP\getApp;
 
 /** Load WordPress Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once( __DIR__ . '/admin.php' );
 
 if ( !current_user_can('export') )
 	wp_die(__('Sorry, you are not allowed to export the content of this site.'));

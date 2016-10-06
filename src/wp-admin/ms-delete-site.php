@@ -9,7 +9,7 @@
 
 use function WP\getApp;
 
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once( __DIR__ . '/admin.php' );
 
 $app = getApp();
 $wpdb = $app['db'];

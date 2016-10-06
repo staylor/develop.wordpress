@@ -11,6 +11,6 @@ if ( isset( $_GET['action'] ) && in_array( $_GET['action'], array( 'update-selec
 	define( 'IFRAME_REQUEST', true );
 
 /** Load WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once( __DIR__ . '/admin.php' );
 
 require( ABSPATH . 'wp-admin/update.php' );

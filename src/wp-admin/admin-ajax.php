@@ -19,7 +19,7 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 }
 
 /** Load WordPress Bootstrap */
-require_once( dirname( dirname( __FILE__ ) ) . '/wp-load.php' );
+require_once( dirname( __DIR__ ) . '/wp-load.php' );
 
 /** Allow for cross-domain requests (from the front end). */
 send_origin_headers();

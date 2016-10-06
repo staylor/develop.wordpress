@@ -15,7 +15,7 @@ use function WP\getApp;
 define( 'WP_INSTALLING_NETWORK', true );
 
 /** WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once( __DIR__ . '/admin.php' );
 
 if ( ! is_super_admin() ) {
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
@@ -35,7 +35,7 @@ if ( is_multisite() ) {
 $app = getApp();
 $wpdb = $app['db'];
 
-require_once( dirname( __FILE__ ) . '/includes/network.php' );
+require_once( __DIR__ . '/includes/network.php' );
 
 // We need to create references to ms global tables to enable Network.
 foreach ( $wpdb->tables( 'ms_global' ) as $table => $prefixed_table ) {

@@ -18,7 +18,7 @@
 use function WP\getApp;
 
 /** WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once( __DIR__ . '/admin.php' );
 
 $title = __('Settings');
 $this_file = 'options.php';
