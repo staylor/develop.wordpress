@@ -23,8 +23,7 @@ $software = $app['request.software'];
 $php_self = $app['request.php_self'];
 
 global $pagenow,
-	$is_lynx, $is_gecko, $is_winIE, $is_macIE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone, $is_edge,
-	$is_apache, $is_nginx;
+	$is_lynx, $is_gecko, $is_winIE, $is_macIE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone, $is_edge;
 
 // On which page are we ?
 if ( is_admin() ) {
@@ -60,7 +59,7 @@ unset( $self_matches );
 // Simple browser detection
 $is_lynx = $is_gecko = $is_winIE = $is_macIE = $is_opera = $is_NS4 = $is_safari = $is_chrome = $is_iphone = $is_edge = false;
 
-if ( isset( $ua) ) {
+if ( isset( $ua ) ) {
 	if ( strpos( $ua, 'Lynx' ) !== false ) {
 		$is_lynx = true;
 	} elseif ( strpos( $ua, 'Edge' ) !== false ) {
@@ -108,20 +107,18 @@ $app['is_IE'] = ( $is_macIE || $is_winIE );
 
 /**
  * Whether the server software is Apache or something else
- * @global bool $is_apache
  */
-$is_apache = (strpos( $software, 'Apache' ) !== false || strpos( $software, 'LiteSpeed' ) !== false);
+$app['is_apache'] = (strpos( $software, 'Apache' ) !== false || strpos( $software, 'LiteSpeed' ) !== false);
 
 /**
  * Whether the server software is Nginx or something else
- * @global bool $is_nginx
  */
-$is_nginx = (strpos( $software, 'nginx' ) !== false);
+$app['is_nginx'] = ( strpos( $software, 'nginx' ) !== false );
 
 /**
  * Whether the server software is IIS or something else
  */
-$app['is_IIS'] = !$is_apache && (strpos( $software, 'Microsoft-IIS' ) !== false || strpos( $software, 'ExpressionDevServer' ) !== false);
+$app['is_IIS'] = ! $app['is_apache'] && ( strpos( $software, 'Microsoft-IIS' ) !== false || strpos( $software, 'ExpressionDevServer' ) !== false );
 
 /**
  * Whether the server software is IIS 7.X or greater

@@ -4085,17 +4085,16 @@ function is_lighttpd_before_150() {
  *
  * @since 2.5.0
  *
- * @global bool $is_apache
- *
  * @param string $mod     The module, e.g. mod_rewrite.
  * @param bool   $default Optional. The default return value if the module is not found. Default false.
  * @return bool Whether the specified module is loaded.
  */
 function apache_mod_loaded($mod, $default = false) {
-	global $is_apache;
+	$app = getApp();
 
-	if ( !$is_apache )
+	if ( ! $app['is_apache'] ) {
 		return false;
+	}
 
 	if ( function_exists( 'apache_get_modules' ) ) {
 		$mods = apache_get_modules();

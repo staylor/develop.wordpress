@@ -79,7 +79,7 @@ if ( $iis7_permalinks ) {
 		$writable = true;
 	else
 		$writable = false;
-} elseif ( $is_nginx ) {
+} elseif ( $app['is_nginx'] ) {
 	$writable = false;
 } else {
 	if ( ( ! file_exists( $home_path . '.htaccess' ) && is_writable( $home_path ) ) || is_writable( $home_path . '.htaccess' ) ) {
@@ -138,7 +138,7 @@ if ( isset($_POST['permalink_structure']) || isset($_POST['category_base']) ) {
 		} elseif ( $permalink_structure && ! $using_index_permalinks && $writable ) {
 			$message = __( 'Permalink structure updated. Remove write access on web.config file now!' );
 		}
-	} elseif ( ! $is_nginx && $permalink_structure && ! $using_index_permalinks && ! $writable && $update_required ) {
+	} elseif ( ! $app['is_nginx'] && $permalink_structure && ! $using_index_permalinks && ! $writable && $update_required ) {
 		$message = __( 'You should update your .htaccess now.' );
 	}
 
@@ -254,7 +254,7 @@ printf( __( 'If you like, you may enter custom structures for your category and 
 <p><?php _e('If you temporarily make your site&#8217;s root directory writable for us to generate the <code>web.config</code> file automatically, do not forget to revert the permissions after the file has been created.') ?></p>
 		<?php endif; ?>
 	<?php endif; ?>
-<?php elseif ( $is_nginx ) : ?>
+<?php elseif ( $app['is_nginx'] ) : ?>
 	<p><?php _e( '<a href="https://codex.wordpress.org/Nginx">Documentation on Nginx configuration</a>.' ); ?></p>
 <?php else:
 	if ( $permalink_structure && ! $using_index_permalinks && ! $writable && $update_required ) : ?>

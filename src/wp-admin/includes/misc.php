@@ -39,13 +39,12 @@ function got_mod_rewrite() {
  * Detects Apache's mod_rewrite, IIS 7.0+ permalink support, and nginx.
  *
  * @since 3.7.0
- *
- * @global bool $is_nginx
- *
  * @return bool Whether the server supports URL rewriting.
  */
 function got_url_rewrite() {
-	$got_url_rewrite = ( got_mod_rewrite() || $GLOBALS['is_nginx'] || iis7_supports_permalinks() );
+	$app = getApp();
+
+	$got_url_rewrite = ( got_mod_rewrite() || $app['is_nginx'] || iis7_supports_permalinks() );
 
 	/**
 	 * Filters whether URL rewriting is available.
