@@ -15,7 +15,8 @@
  *
  * @since 1.0.0
  */
-define( 'WPINC', 'wp-includes' );
+
+const WPINC = 'wp-includes';
 
 require_once( ABSPATH . 'vendor/autoload.php' );
 

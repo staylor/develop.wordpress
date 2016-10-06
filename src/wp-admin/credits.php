@@ -8,11 +8,11 @@
 
 use function WP\getApp;
 
-$app = getApp();
-
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 require_once( __DIR__ . '/includes/credits.php' );
+
+$app = getApp();
 
 $title = __( 'Credits' );
 

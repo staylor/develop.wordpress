@@ -60,6 +60,7 @@
 	},
 	"require": {
 		"james-heinrich/getid3": "^1.9",
+		"mustache/mustache": "^2.11",
 		"paragonie/random_compat": "^2.0",
 		"pear/text_diff": "dev-stable",
 		"pimple/pimple": "^3.0",
