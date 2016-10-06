@@ -267,7 +267,7 @@ if ( ( 0 === validate_file( $locale ) ) && is_readable( $locale_file ) )
 unset( $locale_file );
 
 // Load the functions for the active theme, for both parent and child theme if applicable.
-if ( ! wp_installing() || 'wp-activate.php' === $pagenow ) {
+if ( ! wp_installing() || 'wp-activate.php' === $app['pagenow'] ) {
 	if ( TEMPLATEPATH !== STYLESHEETPATH && file_exists( STYLESHEETPATH . '/functions.php' ) )
 		include( STYLESHEETPATH . '/functions.php' );
 	if ( file_exists( TEMPLATEPATH . '/functions.php' ) )

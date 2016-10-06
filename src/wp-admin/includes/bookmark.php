@@ -295,13 +295,12 @@ function wp_update_link( $linkdata ) {
  *
  * @since 3.5.0
  * @access private
- *
- * @global string $pagenow
  */
 function wp_link_manager_disabled_message() {
-	global $pagenow;
-	if ( 'link-manager.php' != $pagenow && 'link-add.php' != $pagenow && 'link.php' != $pagenow )
+	$app = getApp();
+	if ( 'link-manager.php' != $app['pagenow'] && 'link-add.php' != $app['pagenow'] && 'link.php' != $app['pagenow'] ) {
 		return;
+	}
 
 	add_filter( 'pre_option_link_manager_enabled', '__return_true', 100 );
 	$really_can_manage_links = current_user_can( 'manage_links' );

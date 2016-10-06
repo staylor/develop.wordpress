@@ -1295,14 +1295,11 @@ class wpdb {
 	 * Print SQL/DB error.
 	 *
 	 * @since 0.71
-	 * @global array $EZSQL_ERROR Stores error information of query and error string
 	 *
 	 * @param string $str The error to display
 	 * @return false|void False if the showing of errors is disabled.
 	 */
 	public function print_error( $str = '' ) {
-		global $EZSQL_ERROR;
-
 		if ( !$str ) {
 			if ( $this->use_mysqli ) {
 				$str = mysqli_error( $this->dbh );
@@ -1310,7 +1307,6 @@ class wpdb {
 				$str = mysql_error( $this->dbh );
 			}
 		}
-		$EZSQL_ERROR[] = array( 'query' => $this->last_query, 'error_str' => $str );
 
 		if ( $this->suppress_errors )
 			return false;

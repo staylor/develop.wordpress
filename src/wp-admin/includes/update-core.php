@@ -1194,13 +1194,12 @@ function _copy_dir($from, $to, $skip_list = array() ) {
  *
  * @since 3.3.0
  *
- * @global string $pagenow
  * @global string $action
  *
  * @param string $new_version
  */
 function _redirect_to_about_wordpress( $new_version ) {
-	global $pagenow, $action;
+	global $action;
 
 	$app = getApp();
 
@@ -1208,7 +1207,7 @@ function _redirect_to_about_wordpress( $new_version ) {
 		return;
 
 	// Ensure we only run this on the update-core.php page. The Core_Upgrader may be used in other contexts.
-	if ( 'update-core.php' != $pagenow )
+	if ( 'update-core.php' != $app['pagenow'] )
 		return;
 
  	if ( 'do-core-upgrade' != $action && 'do-core-reinstall' != $action )

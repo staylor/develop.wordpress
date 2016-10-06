@@ -212,17 +212,15 @@ function core_update_footer( $msg = '' ) {
 }
 
 /**
- *
- * @global string $pagenow
  * @return false|void
  */
 function update_nag() {
 	if ( is_multisite() && !current_user_can('update_core') )
 		return false;
 
-	global $pagenow;
+	$app = getApp();
 
-	if ( 'update-core.php' == $pagenow )
+	if ( 'update-core.php' == $app['pagenow'] )
 		return;
 
 	$cur = get_preferred_from_update_core();

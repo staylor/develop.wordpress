@@ -21,8 +21,6 @@ define( 'REST_API_VERSION', '2.0' );
  *
  * @since 4.4.0
  *
- * @global WP_REST_Server $wp_rest_server ResponseHandler instance (usually WP_REST_Server).
- *
  * @param string $namespace The first URL segment after core prefix. Should be unique to your package/plugin.
  * @param string $route     The base URL for route you are adding.
  * @param array  $args      Optional. Either an array of options for the endpoint, or an array of arrays for
@@ -32,8 +30,8 @@ define( 'REST_API_VERSION', '2.0' );
  * @return bool True on success, false on error.
  */
 function register_rest_route( $namespace, $route, $args = array(), $override = false ) {
-	/** @var WP_REST_Server $wp_rest_server */
-	global $wp_rest_server;
+	$app = getApp();
+	$wp_rest_server = $app['rest.server'];
 
 	if ( empty( $namespace ) ) {
 		/*
@@ -124,8 +122,6 @@ function rest_api_default_filters() {
  * Loads the REST API.
  *
  * @since 4.4.0
- *
- * @global WP_REST_Server $wp_rest_server ResponseHandler instance (usually WP_REST_Server).
  */
 function rest_api_loaded() {
 	$app = getApp();
@@ -245,8 +241,6 @@ function rest_url( $path = '', $scheme = 'json' ) {
  *
  * @since 4.4.0
  *
- * @global WP_REST_Server $wp_rest_server ResponseHandler instance (usually WP_REST_Server).
- *
  * @param WP_REST_Request|string $request Request.
  * @return WP_REST_Response REST response.
  */
@@ -261,43 +255,11 @@ function rest_do_request( $request ) {
  * Instantiates a new instance if none exists already.
  *
  * @since 4.5.0
- *
- * @global WP_REST_Server $wp_rest_server REST server instance.
- *
  * @return WP_REST_Server REST server instance.
  */
 function rest_get_server() {
-	/* @var WP_REST_Server $wp_rest_server */
-	global $wp_rest_server;
-
-	if ( empty( $wp_rest_server ) ) {
-		/**
-		 * Filters the REST Server Class.
-		 *
-		 * This filter allows you to adjust the server class used by the API, using a
-		 * different class to handle requests.
-		 *
-		 * @since 4.4.0
-		 *
-		 * @param string $class_name The name of the server class. Default 'WP_REST_Server'.
-		 */
-		$wp_rest_server_class = apply_filters( 'wp_rest_server_class', 'WP_REST_Server' );
-		$wp_rest_server = new $wp_rest_server_class;
-
-		/**
-		 * Fires when preparing to serve an API request.
-		 *
-		 * Endpoint objects should be created and register their hooks on this action rather
-		 * than another action to ensure they're only loaded when needed.
-		 *
-		 * @since 4.4.0
-		 *
-		 * @param WP_REST_Server $wp_rest_server Server object.
-		 */
-		do_action( 'rest_api_init', $wp_rest_server );
-	}
-
-	return $wp_rest_server;
+	$app = getApp();
+	return $app['rest.server'];
 }
 
 /**
@@ -550,7 +512,6 @@ function rest_output_link_header() {
  * @since 4.4.0
  *
  * @global mixed          $wp_rest_auth_cookie
- * @global WP_REST_Server $wp_rest_server      REST server instance.
  *
  * @param WP_Error|mixed $result Error from another authentication handler,
  *                               null if we should handle it, or another value
@@ -562,7 +523,7 @@ function rest_cookie_check_errors( $result ) {
 		return $result;
 	}
 
-	global $wp_rest_auth_cookie, $wp_rest_server;
+	global $wp_rest_auth_cookie;
 
 	/*
 	 * Is cookie authentication being used? (If we get an auth
@@ -596,7 +557,8 @@ function rest_cookie_check_errors( $result ) {
 	}
 
 	// Send a refreshed nonce in header.
-	$wp_rest_server->send_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+	$app = getApp();
+	$app['rest.server']->send_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
 
 	return true;
 }

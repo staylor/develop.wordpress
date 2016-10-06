@@ -459,13 +459,11 @@ function default_password_nag_edit_user($user_ID, $old_data) {
 
 /**
  * @since 2.8.0
- *
- * @global string $pagenow
  */
 function default_password_nag() {
-	global $pagenow;
+	$app = getApp();
 	// Short-circuit it.
-	if ( 'profile.php' == $pagenow || ! get_user_option('default_password_nag') )
+	if ( 'profile.php' == $app['pagenow'] || ! get_user_option('default_password_nag') )
 		return;
 
 	echo '<div class="error default-password-nag">';

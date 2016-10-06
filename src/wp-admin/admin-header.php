@@ -19,13 +19,11 @@ $app = getApp();
  *
  * @global string    $title
  * @global string    $hook_suffix
- * @global string    $pagenow
  * @global string    $update_title
  * @global int       $total_update_count
  * @global string    $parent_file
  */
-global $title, $hook_suffix, $pagenow,
-	$update_title, $total_update_count, $parent_file;
+global $title, $hook_suffix, $update_title, $total_update_count, $parent_file;
 
 // Catch plugins that include admin-header.php before admin.php completes.
 if ( empty( $app->current_screen ) )

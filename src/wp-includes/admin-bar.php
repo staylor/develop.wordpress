@@ -18,34 +18,17 @@ use function WP\getApp;
  * @since 3.1.0
  * @access private
  *
- * @global WP_Admin_Bar $wp_admin_bar
- *
  * @return bool Whether the admin bar was successfully initialized.
  */
 function _wp_admin_bar_init() {
-	global $wp_admin_bar;
-
 	if ( ! is_admin_bar_showing() ) {
 		return false;
 	}
 
 	/* Instantiate the admin bar */
-
-	/**
-	 * Filters the admin bar class to instantiate.
-	 *
-	 * @since 3.1.0
-	 *
-	 * @param string $wp_admin_bar_class Admin bar class to use. Default 'WP_Admin_Bar'.
-	 */
-	$admin_bar_class = apply_filters( 'wp_admin_bar_class', 'WP_Admin_Bar' );
-	if ( class_exists( $admin_bar_class ) ) {
-		$wp_admin_bar = new $admin_bar_class;
-	} else {
-		return false;
-	}
-	$wp_admin_bar->initialize();
-	$wp_admin_bar->add_menus();
+	$app = getApp();
+	$app['admin_bar']->initialize();
+	$app['admin_bar']->add_menus();
 
 	return true;
 }
@@ -62,13 +45,11 @@ function _wp_admin_bar_init() {
  * the `$post` global, among others.
  *
  * @since 3.1.0
- *
- * @global WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_render() {
-	global $wp_admin_bar;
+	$app = getApp();
 
-	if ( ! is_admin_bar_showing() || ! is_object( $wp_admin_bar ) )
+	if ( ! is_admin_bar_showing() || ! is_object( $app['admin_bar'] ) )
 		return;
 
 	/**
@@ -80,7 +61,7 @@ function wp_admin_bar_render() {
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference
 	 */
-	do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
+	do_action_ref_array( 'admin_bar_menu', array( &$app['admin_bar'] ) );
 
 	/**
 	 * Fires before the admin bar is rendered.
@@ -89,7 +70,7 @@ function wp_admin_bar_render() {
 	 */
 	do_action( 'wp_before_admin_bar_render' );
 
-	$wp_admin_bar->render();
+	$app['admin_bar']->render();
 
 	/**
 	 * Fires after the admin bar is rendered.
@@ -914,13 +895,11 @@ function _admin_bar_bump_cb() { ?>
  *
  * @since 3.1.0
  *
- * @global bool $show_admin_bar
- *
  * @param bool $show Whether to allow the admin bar to show.
  */
 function show_admin_bar( $show ) {
-	global $show_admin_bar;
-	$show_admin_bar = (bool) $show;
+	$app = getApp();
+	$app->show_admin_bar = (bool) $show;
 }
 
 /**
@@ -928,13 +907,10 @@ function show_admin_bar( $show ) {
  *
  * @since 3.1.0
  *
- * @global bool   $show_admin_bar
- * @global string $pagenow
- *
  * @return bool Whether the admin bar should be showing.
  */
 function is_admin_bar_showing() {
-	global $show_admin_bar, $pagenow;
+	$app = getApp();
 
 	// For all these types of requests, we never want an admin bar.
 	if ( defined('XMLRPC_REQUEST') || defined('DOING_AJAX') || defined('IFRAME_REQUEST') )
@@ -948,11 +924,11 @@ function is_admin_bar_showing() {
 	if ( is_admin() )
 		return true;
 
-	if ( ! isset( $show_admin_bar ) ) {
-		if ( ! is_user_logged_in() || 'wp-login.php' == $pagenow ) {
-			$show_admin_bar = false;
+	if ( ! isset( $app->show_admin_bar ) ) {
+		if ( ! is_user_logged_in() || 'wp-login.php' == $app['pagenow'] ) {
+			$app->show_admin_bar = false;
 		} else {
-			$show_admin_bar = _get_admin_bar_pref();
+			$app->show_admin_bar = _get_admin_bar_pref();
 		}
 	}
 
@@ -966,9 +942,9 @@ function is_admin_bar_showing() {
 	 *
 	 * @param bool $show_admin_bar Whether the admin bar should be shown. Default false.
 	 */
-	$show_admin_bar = apply_filters( 'show_admin_bar', $show_admin_bar );
+	$app->show_admin_bar = apply_filters( 'show_admin_bar', $app->show_admin_bar );
 
-	return $show_admin_bar;
+	return $app->show_admin_bar;
 }
 
 /**

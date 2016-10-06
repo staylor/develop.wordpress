@@ -13,6 +13,8 @@ class App extends Container {
 
 	public $taxonomies = [];
 
+	public $post_statuses = [];
+
 	public $shortcode_tags = [];
 
 	public $widgets = [
@@ -41,6 +43,8 @@ class App extends Container {
 		'custom_image_header' => null,
 		'custom_background' => null,
 	];
+
+	public $show_admin_bar;
 
 	public $suspend_cache_invalidation;
 	public $switched_stack = [];

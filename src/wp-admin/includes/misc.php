@@ -843,15 +843,13 @@ function wp_refresh_post_nonces( $response, $data, $screen_id ) {
  *
  * @since 3.8.0
  *
- * @global string $pagenow
- *
  * @param array $settings An array of Heartbeat settings.
  * @return array Filtered Heartbeat settings.
  */
 function wp_heartbeat_set_suspension( $settings ) {
-	global $pagenow;
+	$app = getApp();
 
-	if ( 'post.php' === $pagenow || 'post-new.php' === $pagenow ) {
+	if ( 'post.php' === $app['pagenow'] || 'post-new.php' === $app['pagenow'] ) {
 		$settings['suspension'] = 'disable';
 	}
 

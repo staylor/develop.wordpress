@@ -406,12 +406,10 @@ All at ###SITENAME###
  * after email address change.
  *
  * @since 3.0.0
- *
- * @global string $pagenow
  */
 function new_user_email_admin_notice() {
-	global $pagenow;
-	if ( 'profile.php' === $pagenow && isset( $_GET['updated'] ) && $email = get_user_meta( get_current_user_id(), '_new_email', true ) ) {
+	$app = getApp();
+	if ( 'profile.php' === $app['pagenow'] && isset( $_GET['updated'] ) && $email = get_user_meta( get_current_user_id(), '_new_email', true ) ) {
 		/* translators: %s: New email address */
 		echo '<div class="notice notice-info"><p>' . sprintf( __( 'Your email address has not been updated yet. Please check your inbox at %s for a confirmation email.' ), '<code>' . esc_html( $email['newemail'] ) . '</code>' ) . '</p></div>';
 	}
@@ -750,18 +748,16 @@ function mu_dropdown_languages( $lang_files = array(), $current = '' ) {
  *
  * @since 3.0.0
  *
- * @global string $pagenow
- *
  * @return false False if the current user is not a super admin.
  */
 function site_admin_notice() {
-	global $pagenow;
+	$app = getApp();
 
 	if ( ! is_super_admin() ) {
 		return false;
 	}
 
-	if ( 'upgrade.php' == $pagenow ) {
+	if ( 'upgrade.php' == $app['pagenow'] ) {
 		return;
 	}
 
@@ -1044,6 +1040,7 @@ jQuery(document).ready( function($) {
  * }
  */
 function network_edit_site_nav( $args = array() ) {
+	$app = getApp();
 
 	/**
 	 * Filters the links that appear on site-editing network pages.
@@ -1093,7 +1090,7 @@ function network_edit_site_nav( $args = array() ) {
 		$classes = array( 'nav-tab' );
 
 		// Selected is set by the parent OR assumed by the $pagenow global
-		if ( $r['selected'] === $link_id || $link['url'] === $GLOBALS['pagenow'] ) {
+		if ( $r['selected'] === $link_id || $link['url'] === $app['pagenow'] ) {
 			$classes[] = 'nav-tab-active';
 		}
 

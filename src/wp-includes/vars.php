@@ -20,41 +20,8 @@ use function WP\getApp;
 $app = getApp();
 $ua = $app['request.useragent'];
 $software = $app['request.software'];
-$php_self = $app['request.php_self'];
 
-global $pagenow,
-	$is_lynx, $is_gecko, $is_winIE, $is_macIE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone, $is_edge;
-
-// On which page are we ?
-if ( is_admin() ) {
-	// wp-admin pages are checked more carefully
-	if ( is_network_admin() ) {
-		preg_match( '#/wp-admin/network/?(.*?)$#i', $php_self, $self_matches );
-	} elseif ( is_user_admin() ) {
-		preg_match( '#/wp-admin/user/?(.*?)$#i', $php_self, $self_matches );
-	} else {
-		preg_match( '#/wp-admin/?(.*?)$#i', $php_self, $self_matches );
-	}
-
-	$pagenow = trim( $self_matches[1], '/' );
-	$pagenow = preg_replace( '#\?.*?$#', '', $pagenow);
-	if ( '' === $pagenow || 'index' === $pagenow || 'index.php' === $pagenow ) {
-		$pagenow = 'index.php';
-	} else {
-		preg_match( '#(.*?)(/|$)#', $pagenow, $self_matches );
-		$pagenow = strtolower( $self_matches[1] );
-		if ( '.php' !== substr( $pagenow, -4, 4) ) {
-			$pagenow .= '.php'; // for Options +Multiviews: /wp-admin/themes/index.php (themes.php is queried)
-		}
-	}
-} else {
-	if ( preg_match( '#([^/]+\.php)([?/].*?)?$#i', $php_self, $self_matches ) ) {
-		$pagenow = strtolower( $self_matches[1] );
-	} else {
-		$pagenow = 'index.php';
-	}
-}
-unset( $self_matches );
+global $is_lynx, $is_gecko, $is_winIE, $is_macIE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone, $is_edge;
 
 // Simple browser detection
 $is_lynx = $is_gecko = $is_winIE = $is_macIE = $is_opera = $is_NS4 = $is_safari = $is_chrome = $is_iphone = $is_edge = false;

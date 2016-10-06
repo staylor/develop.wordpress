@@ -643,7 +643,6 @@ function get_page_statuses() {
  * Arguments prefixed with an _underscore shouldn't be used by plugins and themes.
  *
  * @since 3.0.0
- * @global array $wp_post_statuses Inserts new post status object into the list
  *
  * @param string $post_status Name of the post status.
  * @param array|string $args {
@@ -677,10 +676,7 @@ function get_page_statuses() {
  * @return object
  */
 function register_post_status( $post_status, $args = array() ) {
-	global $wp_post_statuses;
-
-	if (!is_array($wp_post_statuses))
-		$wp_post_statuses = array();
+	$app = getApp();
 
 	// Args prefixed with an underscore are reserved for internal use.
 	$defaults = array(
@@ -736,7 +732,7 @@ function register_post_status( $post_status, $args = array() ) {
 	if ( false === $args->label_count )
 		$args->label_count = array( $args->label, $args->label );
 
-	$wp_post_statuses[$post_status] = $args;
+	$app->post_statuses[ $post_status ] = $args;
 
 	return $args;
 }
@@ -746,28 +742,25 @@ function register_post_status( $post_status, $args = array() ) {
  *
  * @since 3.0.0
  *
- * @global array $wp_post_statuses List of post statuses.
- *
  * @see register_post_status()
  *
  * @param string $post_status The name of a registered post status.
  * @return object|null A post status object.
  */
 function get_post_status_object( $post_status ) {
-	global $wp_post_statuses;
+	$app = getApp();
 
-	if ( empty($wp_post_statuses[$post_status]) )
+	if ( empty( $app->post_statuses[ $post_status ] ) ) {
 		return null;
+	}
 
-	return $wp_post_statuses[$post_status];
+	return $app->post_statuses[ $post_status ];
 }
 
 /**
  * Get a list of post statuses.
  *
  * @since 3.0.0
- *
- * @global array $wp_post_statuses List of post statuses.
  *
  * @see register_post_status()
  *
@@ -780,11 +773,11 @@ function get_post_status_object( $post_status ) {
  * @return array A list of post status names or objects.
  */
 function get_post_stati( $args = array(), $output = 'names', $operator = 'and' ) {
-	global $wp_post_statuses;
+	$app = getApp();
 
 	$field = ('names' == $output) ? 'name' : false;
 
-	return wp_filter_object_list($wp_post_statuses, $args, $operator, $field);
+	return wp_filter_object_list( $app->post_statuses, $args, $operator, $field );
 }
 
 /**
@@ -4845,12 +4838,12 @@ function wp_update_attachment_metadata( $post_id, $data ) {
  *
  * @since 2.1.0
  *
- * @global string $pagenow
- *
  * @param int $post_id Optional. Attachment ID. Default 0.
  * @return string|false Attachment URL, otherwise false.
  */
 function wp_get_attachment_url( $post_id = 0 ) {
+	$app = getApp();
+
 	$post_id = (int) $post_id;
 	if ( !$post = get_post( $post_id ) )
 		return false;
@@ -4886,7 +4879,7 @@ function wp_get_attachment_url( $post_id = 0 ) {
 	}
 
 	// On SSL front end, URLs should be HTTPS.
-	if ( is_ssl() && ! is_admin() && 'wp-login.php' !== $GLOBALS['pagenow'] ) {
+	if ( is_ssl() && ! is_admin() && 'wp-login.php' !== $app['pagenow'] ) {
 		$url = set_url_scheme( $url );
 	}
 

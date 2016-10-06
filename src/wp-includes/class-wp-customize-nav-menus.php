@@ -1028,8 +1028,8 @@ final class WP_Customize_Nav_Menus {
 	 * @access public
 	 */
 	public function make_auto_draft_status_previewable() {
-		global $wp_post_statuses;
-		$wp_post_statuses['auto-draft']->protected = true;
+		$app = getApp();
+		$app->post_statuses['auto-draft']->protected = true;
 	}
 
 	/**

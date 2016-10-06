@@ -11,6 +11,8 @@
  * @since 2.3.0
  */
 
+use function WP\getApp;
+
 /** The descriptions for theme files. */
 $wp_file_descriptions = array(
 	'functions.php'         => __( 'Theme Functions' ),
@@ -1049,8 +1051,6 @@ function get_filesystem_method( $args = array(), $context = '', $allow_relaxed_f
  * @since 2.5.0
  * @since 4.6.0 The `$context` parameter default changed from `false` to an empty string.
  *
- * @global string $pagenow
- *
  * @param string $form_post                    The URL to post the form to.
  * @param string $type                         Optional. Chosen type of filesystem. Default empty.
  * @param bool   $error                        Optional. Whether the current request has failed to connect.
@@ -1064,7 +1064,7 @@ function get_filesystem_method( $args = array(), $context = '', $allow_relaxed_f
  * @return bool False on failure, true on success.
  */
 function request_filesystem_credentials( $form_post, $type = '', $error = false, $context = '', $extra_fields = null, $allow_relaxed_file_ownership = false ) {
-	global $pagenow;
+	$app = getApp();
 
 	/**
 	 * Filters the filesystem credentials form output.
@@ -1189,7 +1189,7 @@ function request_filesystem_credentials( $form_post, $type = '', $error = false,
 <?php
 // Print a H1 heading in the FTP credentials modal dialog, default is a H2.
 $heading_tag = 'h2';
-if ( 'plugins.php' === $pagenow || 'plugin-install.php' === $pagenow ) {
+if ( 'plugins.php' === $app['pagenow'] || 'plugin-install.php' === $app['pagenow'] ) {
 	$heading_tag = 'h1';
 }
 echo "<$heading_tag id='request-filesystem-credentials-title'>" . __( 'Connection Information' ) . "</$heading_tag>";

@@ -102,18 +102,18 @@ wp_enqueue_script( 'common' );
 
 
 /**
- * $pagenow is set in vars.php
  * $wp_importers is sometimes set in wp-admin/includes/import.php
  * The remaining variables are imported as globals elsewhere, declared as globals here
  *
- * @global string $pagenow
  * @global array  $wp_importers
  * @global string $hook_suffix
  * @global string $plugin_page
  * @global string $typenow
  * @global string $taxnow
  */
-global $pagenow, $wp_importers, $hook_suffix, $plugin_page, $typenow, $taxnow;
+global $wp_importers, $hook_suffix, $plugin_page, $typenow, $taxnow;
+
+$pagenow = $app['pagenow'];
 
 $page_hook = null;
 
