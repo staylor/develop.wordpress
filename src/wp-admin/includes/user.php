@@ -163,7 +163,7 @@ function edit_user( $user_id = 0 ) {
 		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ));
 
 	/** This filter is documented in wp-includes/user.php */
-	$illegal_logins = (array) apply_filters( 'illegal_user_logins', array() );
+	$illegal_logins = (array) apply_filters( 'illegal_user_logins', [] );
 
 	if ( in_array( strtolower( $user->user_login ), array_map( 'strtolower', $illegal_logins ) ) ) {
 		$errors->add( 'invalid_username', __( '<strong>ERROR</strong>: Sorry, that username is not allowed.' ) );
@@ -331,8 +331,8 @@ function wp_delete_user( $id, $reassign = null ) {
 	do_action( 'delete_user', $id, $reassign );
 
 	if ( null === $reassign ) {
-		$post_types_to_delete = array();
-		foreach ( get_post_types( array(), 'objects' ) as $post_type ) {
+		$post_types_to_delete = [];
+		foreach ( get_post_types( [], 'objects' ) as $post_type ) {
 			if ( $post_type->delete_with_user ) {
 				$post_types_to_delete[] = $post_type->name;
 			} elseif ( null === $post_type->delete_with_user && post_type_supports( $post_type->name, 'author' ) ) {

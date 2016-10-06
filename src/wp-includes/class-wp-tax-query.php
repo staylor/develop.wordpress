@@ -32,7 +32,7 @@ class WP_Tax_Query {
 	 * @access public
 	 * @var array
 	 */
-	public $queries = array();
+	public $queries = [];
 
 	/**
 	 * The relation between the queries. Can be one of 'AND' or 'OR'.
@@ -61,7 +61,7 @@ class WP_Tax_Query {
 	 * @access protected
 	 * @var array
 	 */
-	protected $table_aliases = array();
+	protected $table_aliases = [];
 
 	/**
 	 * Terms and taxonomies fetched by this query.
@@ -73,7 +73,7 @@ class WP_Tax_Query {
 	 * @access public
 	 * @var array
 	 */
-	public $queried_terms = array();
+	public $queried_terms = [];
 
 	/**
 	 * Database table that where the metadata's objects are stored (eg $wpdb->users).
@@ -143,11 +143,11 @@ class WP_Tax_Query {
 	 * @return array Sanitized array of query clauses.
 	 */
 	public function sanitize_query( $queries ) {
-		$cleaned_query = array();
+		$cleaned_query = [];
 
 		$defaults = array(
 			'taxonomy' => '',
-			'terms' => array(),
+			'terms' => [],
 			'field' => 'term_id',
 			'operator' => 'IN',
 			'include_children' => true,
@@ -171,7 +171,7 @@ class WP_Tax_Query {
 				if ( ! empty( $cleaned_clause['taxonomy'] ) && 'NOT IN' !== $cleaned_clause['operator'] ) {
 					$taxonomy = $cleaned_clause['taxonomy'];
 					if ( ! isset( $this->queried_terms[ $taxonomy ] ) ) {
-						$this->queried_terms[ $taxonomy ] = array();
+						$this->queried_terms[ $taxonomy ] = [];
 					}
 
 					/*
@@ -319,8 +319,8 @@ class WP_Tax_Query {
 	 */
 	protected function get_sql_for_query( &$query, $depth = 0 ) {
 		$sql_chunks = array(
-			'join'  => array(),
-			'where' => array(),
+			'join'  => [],
+			'where' => [],
 		);
 
 		$sql = array(
@@ -403,8 +403,8 @@ class WP_Tax_Query {
 		$wpdb = $app['db'];
 
 		$sql = array(
-			'where' => array(),
-			'join'  => array(),
+			'where' => [],
+			'join'  => [],
 		);
 
 		$join = $where = '';
@@ -582,7 +582,7 @@ class WP_Tax_Query {
 			if ( is_wp_error( $query ) )
 				return;
 
-			$children = array();
+			$children = [];
 			foreach ( $query['terms'] as $term ) {
 				$children = array_merge( $children, get_term_children( $term, $query['taxonomy'] ) );
 				$children[] = $term;

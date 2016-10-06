@@ -140,7 +140,7 @@ foreach ( array_merge( $builtin, $types ) as $ptype ) {
 	$submenu[ $ptype_file ][10]  = array( $ptype_obj->labels->add_new, $ptype_obj->cap->create_posts, $post_new_file );
 
 	$i = 15;
-	foreach ( get_taxonomies( array(), 'objects' ) as $tax ) {
+	foreach ( get_taxonomies( [], 'objects' ) as $tax ) {
 		if ( ! $tax->show_ui || ! $tax->show_in_menu || ! in_array($ptype, (array) $tax->object_type, true) )
 			continue;
 

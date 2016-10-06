@@ -80,7 +80,7 @@ if ( isset($_REQUEST['action']) && 'update-site' == $_REQUEST['action'] && is_ar
 }
 
 if ( isset($_GET['update']) ) {
-	$messages = array();
+	$messages = [];
 	if ( 'updated' == $_GET['update'] )
 		$messages[] = __('Site options updated.');
 }

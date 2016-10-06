@@ -63,7 +63,7 @@ if ( isset($_REQUEST['action']) && 'add-user' == $_REQUEST['action'] ) {
 }
 
 if ( isset($_GET['update']) ) {
-	$messages = array();
+	$messages = [];
 	if ( 'added' == $_GET['update'] ) {
 		$edit_link = '';
 		if ( isset( $_GET['user_id'] ) ) {

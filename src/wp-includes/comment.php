@@ -136,9 +136,9 @@ function check_comment($author, $email, $url, $comment, $user_ip, $user_agent, $
  * @return int|array $comments The approved comments, or number of comments if `$count`
  *                             argument is true.
  */
-function get_approved_comments( $post_id, $args = array() ) {
+function get_approved_comments( $post_id, $args = [] ) {
 	if ( ! $post_id ) {
-		return array();
+		return [];
 	}
 
 	$defaults = array(
@@ -297,7 +297,7 @@ function get_default_comment_status( $post_type = 'post', $comment_type = 'comme
 function get_lastcommentmodified($timezone = 'server') {
 	$app = getApp();
 	$wpdb = $app['db'];
-	static $cache_lastcommentmodified = array();
+	static $cache_lastcommentmodified = [];
 
 	if ( isset($cache_lastcommentmodified[$timezone]) )
 		return $cache_lastcommentmodified[$timezone];
@@ -475,7 +475,7 @@ function update_comment_meta($comment_id, $meta_key, $meta_value, $prev_value = 
  */
 function wp_queue_comments_for_comment_meta_lazyload( $comments ) {
 	// Don't use `wp_list_pluck()` to avoid by-reference manipulation.
-	$comment_ids = array();
+	$comment_ids = [];
 	if ( is_array( $comments ) ) {
 		foreach ( $comments as $comment ) {
 			if ( $comment instanceof WP_Comment ) {
@@ -783,7 +783,7 @@ function check_comment_flood_db( $ip, $email, $date ) {
  * @return array Array of comments keyed by comment_type.
  */
 function separate_comments(&$comments) {
-	$comments_by_type = array('comment' => array(), 'trackback' => array(), 'pingback' => array(), 'pings' => array());
+	$comments_by_type = array('comment' => [], 'trackback' => [], 'pingback' => [], 'pings' => []);
 	$count = count($comments);
 	for ( $i = 0; $i < $count; $i++ ) {
 		$type = $comments[$i]->comment_type;
@@ -864,7 +864,7 @@ function get_comment_pages_count( $comments = null, $per_page = null, $threaded 
  * } *
  * @return int|null Comment page number or null on error.
  */
-function get_page_of_comment( $comment_ID, $args = array() ) {
+function get_page_of_comment( $comment_ID, $args = [] ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -1110,7 +1110,7 @@ function wp_count_comments( $post_id = 0 ) {
 	 * @param array $count   An empty array.
 	 * @param int   $post_id The post ID.
 	 */
-	$filtered = apply_filters( 'wp_count_comments', array(), $post_id );
+	$filtered = apply_filters( 'wp_count_comments', [], $post_id );
 	if ( ! empty( $filtered ) ) {
 		return $filtered;
 	}
@@ -2103,7 +2103,7 @@ function wp_defer_comment_counting($defer=null) {
  *                   not exist.
  */
 function wp_update_comment_count($post_id, $do_deferred=false) {
-	static $_deferred = array();
+	static $_deferred = [];
 
 	if ( empty( $post_id ) && ! $do_deferred ) {
 		return false;
@@ -2372,7 +2372,7 @@ function generic_ping( $post_id = 0 ) {
 function pingback($content, $post_ID) {
 	$app = getApp();
 	// original code by Mort (http://mort.mine.nu:8080)
-	$post_links = array();
+	$post_links = [];
 
 	$pung = get_pung($post_ID);
 
@@ -2481,7 +2481,7 @@ function trackback($trackback_url, $title, $excerpt, $ID) {
 	if ( empty($trackback_url) )
 		return;
 
-	$options = array();
+	$options = [];
 	$options['timeout'] = 10;
 	$options['body'] = array(
 		'title' => $title,
@@ -2598,7 +2598,7 @@ function update_comment_cache( $comments, $update_meta_cache = true ) {
 
 	if ( $update_meta_cache ) {
 		// Avoid `wp_list_pluck()` in case `$comments` is passed by reference.
-		$comment_ids = array();
+		$comment_ids = [];
 		foreach ( $comments as $comment ) {
 			$comment_ids[] = $comment->comment_ID;
 		}

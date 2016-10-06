@@ -41,7 +41,7 @@ class Custom_Image_Header {
 	 * @since 3.0.0
 	 * @access private
 	 */
-	public $default_headers = array();
+	public $default_headers = [];
 
 	/**
 	 * Used to trigger a success message when settings updated and set to true.
@@ -1084,7 +1084,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		}
 		$default = sprintf( $default, get_template_directory_uri(), get_stylesheet_directory_uri() );
 
-		$default_data = array();
+		$default_data = [];
 		foreach ( $this->default_headers as $header => $details ) {
 			if ( $details['url'] == $default ) {
 				$default_data = $details;
@@ -1350,7 +1350,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		}
 
 		// If the one true image isn't included in the default set, prepend it.
-		$header_images = array();
+		$header_images = [];
 		$header_images['default'] = array(
 			'url'           => $default,
 			'thumbnail_url' => $default,

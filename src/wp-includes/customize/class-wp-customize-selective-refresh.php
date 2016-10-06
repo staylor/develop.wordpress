@@ -40,7 +40,7 @@ final class WP_Customize_Selective_Refresh {
 	 * @access protected
 	 * @var WP_Customize_Partial[]
 	 */
-	protected $partials = array();
+	protected $partials = [];
 
 	/**
 	 * Log of errors triggered when partials are rendered.
@@ -49,7 +49,7 @@ final class WP_Customize_Selective_Refresh {
 	 * @access private
 	 * @var array
 	 */
-	protected $triggered_errors = array();
+	protected $triggered_errors = [];
 
 	/**
 	 * Keep track of the current partial being rendered.
@@ -96,7 +96,7 @@ final class WP_Customize_Selective_Refresh {
 	 * @param array                       $args Optional. Partial arguments. Default empty array.
 	 * @return WP_Customize_Partial             The instance of the panel that was added.
 	 */
-	public function add_partial( $id, $args = array() ) {
+	public function add_partial( $id, $args = [] ) {
 		if ( $id instanceof WP_Customize_Partial ) {
 			$partial = $id;
 		} else {
@@ -173,7 +173,7 @@ final class WP_Customize_Selective_Refresh {
 	 * @access public
 	 */
 	public function export_preview_data() {
-		$partials = array();
+		$partials = [];
 
 		foreach ( $this->partials() as $partial ) {
 			if ( $partial->check_capabilities() ) {
@@ -207,7 +207,7 @@ final class WP_Customize_Selective_Refresh {
 	 * @return array Added WP_Customize_Partial instances.
 	 */
 	public function add_dynamic_partials( $partial_ids ) {
-		$new_partials = array();
+		$new_partials = [];
 
 		foreach ( $partial_ids as $partial_id ) {
 
@@ -350,7 +350,7 @@ final class WP_Customize_Selective_Refresh {
 
 		set_error_handler( array( $this, 'handle_error' ), error_reporting() );
 
-		$contents = array();
+		$contents = [];
 
 		foreach ( $partials as $partial_id => $container_contexts ) {
 			$this->current_partial_id = $partial_id;
@@ -366,7 +366,7 @@ final class WP_Customize_Selective_Refresh {
 				continue;
 			}
 
-			$contents[ $partial_id ] = array();
+			$contents[ $partial_id ] = [];
 
 			// @todo The array should include not only the contents, but also whether the container is included?
 			if ( empty( $container_contexts ) ) {

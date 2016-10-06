@@ -598,7 +598,7 @@ function upgrade_100() {
 
 	$done_ids = $wpdb->get_results("SELECT DISTINCT post_id FROM $wpdb->post2cat");
 	if ($done_ids) :
-		$done_posts = array();
+		$done_posts = [];
 		foreach ($done_ids as $done_id) :
 			$done_posts[] = $done_id->post_id;
 		endforeach;
@@ -936,7 +936,7 @@ function upgrade_230() {
 	}
 
 	// Convert categories to terms.
-	$tt_ids = array();
+	$tt_ids = [];
 	$have_tags = false;
 	$categories = $wpdb->get_results("SELECT * FROM $wpdb->categories ORDER BY cat_ID");
 	foreach ($categories as $category) {
@@ -1024,9 +1024,9 @@ function upgrade_230() {
 		 * Create link_category terms for link categories. Create a map of link
 		 * cat IDs to link_category terms.
 		 */
-		$link_cat_id_map = array();
+		$link_cat_id_map = [];
 		$default_link_cat = 0;
-		$tt_ids = array();
+		$tt_ids = [];
 		$link_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM " . $wpdb->prefix . 'linkcategories');
 		foreach ( $link_cats as $category) {
 			$cat_id = (int) $category->cat_id;
@@ -1316,8 +1316,8 @@ function upgrade_330() {
 	if ( $wp_current_db_version >= 11548 )
 		return;
 
-	$sidebars_widgets = get_option( 'sidebars_widgets', array() );
-	$_sidebars_widgets = array();
+	$sidebars_widgets = get_option( 'sidebars_widgets', [] );
+	$_sidebars_widgets = [];
 
 	if ( isset($sidebars_widgets['wp_inactive_widgets']) || empty($sidebars_widgets) )
 		$sidebars_widgets['array_version'] = 3;
@@ -1421,7 +1421,7 @@ function upgrade_350() {
 		update_option( 'link_manager_enabled', 1 ); // Previously set to 0 by populate_options()
 
 	if ( $wp_current_db_version < 21811 && wp_should_upgrade_global_tables() ) {
-		$meta_keys = array();
+		$meta_keys = [];
 		foreach ( array_merge( get_post_types(), get_taxonomies() ) as $name ) {
 			if ( false !== strpos( $name, '-' ) )
 			$meta_keys[] = 'edit_' . str_replace( '-', '_', $name ) . '_per_page';
@@ -1600,7 +1600,7 @@ function upgrade_430_fix_comments() {
  */
 function upgrade_431() {
 	// Fix incorrect cron entries for term splitting
-	$cron_array = _get_cron_array();
+	$cron_array = _get_cron_[];
 	if ( isset( $cron_array['wp_batch_split_terms'] ) ) {
 		unset( $cron_array['wp_batch_split_terms'] );
 		_set_cron_array( $cron_array );
@@ -1671,7 +1671,7 @@ function upgrade_460() {
 
 	// Remove plugins with callback as an array object/method as the uninstall hook, see #13786.
 	if ( $wp_current_db_version < 37965 ) {
-		$uninstall_plugins = get_option( 'uninstall_plugins', array() );
+		$uninstall_plugins = get_option( 'uninstall_plugins', [] );
 
 		if ( ! empty( $uninstall_plugins ) ) {
 			foreach ( $uninstall_plugins as $basename => $callback ) {
@@ -1750,7 +1750,7 @@ function upgrade_network() {
 
 	if ( $wp_current_db_version < 19470 ) {
 		if ( false === get_site_option( 'active_sitewide_plugins' ) )
-			update_site_option( 'active_sitewide_plugins', array() );
+			update_site_option( 'active_sitewide_plugins', [] );
 	}
 
 	// 3.4
@@ -1759,7 +1759,7 @@ function upgrade_network() {
 		$allowedthemes  = get_site_option( 'allowedthemes'  );
 		$allowed_themes = get_site_option( 'allowed_themes' );
 		if ( false === $allowedthemes && is_array( $allowed_themes ) && $allowed_themes ) {
-			$converted = array();
+			$converted = [];
 			$themes = wp_get_themes();
 			foreach ( $themes as $stylesheet => $theme_data ) {
 				if ( isset( $allowed_themes[ $theme_data->get('Name') ] ) )
@@ -2101,9 +2101,9 @@ function dbDelta( $queries = '', $execute = true ) {
 	 */
 	$queries = apply_filters( 'dbdelta_queries', $queries );
 
-	$cqueries = array(); // Creation Queries
-	$iqueries = array(); // Insertion Queries
-	$for_update = array();
+	$cqueries = []; // Creation Queries
+	$iqueries = []; // Insertion Queries
+	$for_update = [];
 
 	// Create a tablename index for an array ($cqueries) of queries
 	foreach ($queries as $qry) {
@@ -2163,7 +2163,7 @@ function dbDelta( $queries = '', $execute = true ) {
 			continue;
 
 		// Clear the field and index arrays.
-		$cfields = $indices = array();
+		$cfields = $indices = [];
 
 		// Get all of the field names in the query from between the parentheses.
 		preg_match("|\((.*)\)|ms", $qry, $match2);
@@ -2351,7 +2351,7 @@ function dbDelta( $queries = '', $execute = true ) {
 
 		if ($tableindices) {
 			// Clear the index array.
-			$index_ary = array();
+			$index_ary = [];
 
 			// For every index in the table.
 			foreach ($tableindices as $tableindex) {

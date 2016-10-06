@@ -454,7 +454,7 @@ function comment_class( $class = '', $comment = null, $post_id = null, $echo = t
 function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
 	global $comment_alt, $comment_depth, $comment_thread_alt;
 
-	$classes = array();
+	$classes = [];
 
 	$comment = get_comment( $comment_id );
 	if ( ! $comment ) {
@@ -700,7 +700,7 @@ function comment_ID() {
  * }
  * @return string The permalink to the given comment.
  */
-function get_comment_link( $comment = null, $args = array() ) {
+function get_comment_link( $comment = null, $args = [] ) {
 	global $in_comment_loop;
 	$app = getApp();
 	$comment = get_comment($comment);
@@ -949,7 +949,7 @@ function get_comments_number_text( $zero = false, $one = false, $more = false ) 
  * @param array           $args       Optional. An array of arguments. Default empty.
  * @return string The comment content.
  */
-function get_comment_text( $comment_ID = 0, $args = array() ) {
+function get_comment_text( $comment_ID = 0, $args = [] ) {
 	$comment = get_comment( $comment_ID );
 
 	/**
@@ -978,7 +978,7 @@ function get_comment_text( $comment_ID = 0, $args = array() ) {
  *                                    Default current comment.
  * @param array           $args       Optional. An array of arguments. Default empty array. Default empty.
  */
-function comment_text( $comment_ID = 0, $args = array() ) {
+function comment_text( $comment_ID = 0, $args = [] ) {
 	$comment = get_comment( $comment_ID );
 
 	$comment_text = get_comment_text( $comment, $args );
@@ -1413,7 +1413,7 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 
 	// Trees must be flattened before they're passed to the walker.
 	if ( $comment_args['hierarchical'] ) {
-		$comments_flat = array();
+		$comments_flat = [];
 		foreach ( $_comments as $_comment ) {
 			$comments_flat[]  = $_comment;
 			$comment_children = $_comment->get_children( array(
@@ -1448,7 +1448,7 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 		$wp_query->comments_by_type = separate_comments($comments);
 		$comments_by_type = &$wp_query->comments_by_type;
 	} else {
-		$wp_query->comments_by_type = array();
+		$wp_query->comments_by_type = [];
 	}
 
 	$overridden_cpage = false;
@@ -1589,7 +1589,7 @@ function comments_popup_link( $zero = false, $one = false, $more = false, $css_c
  *                                Default current post.
  * @return void|false|string Link to show comment form, if successful. False, if comments are closed.
  */
-function get_comment_reply_link( $args = array(), $comment = null, $post = null ) {
+function get_comment_reply_link( $args = [], $comment = null, $post = null ) {
 	$defaults = array(
 		'add_below'     => 'comment',
 		'respond_id'    => 'respond',
@@ -1676,7 +1676,7 @@ function get_comment_reply_link( $args = array(), $comment = null, $post = null 
  *                             Default current post.
  * @return mixed Link to show comment form, if successful. False, if comments are closed.
  */
-function comment_reply_link($args = array(), $comment = null, $post = null) {
+function comment_reply_link($args = [], $comment = null, $post = null) {
 	echo get_comment_reply_link($args, $comment, $post);
 }
 
@@ -1703,7 +1703,7 @@ function comment_reply_link($args = array(), $comment = null, $post = null) {
  *                             Default current post.
  * @return false|null|string Link to show comment form, if successful. False, if comments are closed.
  */
-function get_post_reply_link($args = array(), $post = null) {
+function get_post_reply_link($args = [], $post = null) {
 	$defaults = array(
 		'add_below'  => 'post',
 		'respond_id' => 'respond',
@@ -1762,7 +1762,7 @@ function get_post_reply_link($args = array(), $post = null) {
  *                          Default current post.
  * @return string|bool|null Link to show comment form, if successful. False, if comments are closed.
  */
-function post_reply_link($args = array(), $post = null) {
+function post_reply_link($args = [], $post = null) {
 	echo get_post_reply_link($args, $post);
 }
 
@@ -1927,7 +1927,7 @@ function comment_form_title( $noreplytext = false, $replytext = false, $linktopa
  * }
  * @param array $comments Optional. Array of WP_Comment objects.
  */
-function wp_list_comments( $args = array(), $comments = null ) {
+function wp_list_comments( $args = [], $comments = null ) {
 	global $comment_alt, $comment_depth, $comment_thread_alt, $overridden_cpage, $in_comment_loop;
 
 	$app = getApp();
@@ -2174,7 +2174,7 @@ function wp_list_comments( $args = array(), $comments = null ) {
  * }
  * @param int|WP_Post $post_id Post ID or WP_Post object to generate the form for. Default current post.
  */
-function comment_form( $args = array(), $post_id = null ) {
+function comment_form( $args = [], $post_id = null ) {
 	if ( null === $post_id )
 		$post_id = get_the_ID();
 

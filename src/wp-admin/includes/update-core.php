@@ -883,7 +883,7 @@ function update_core($from, $to) {
 	// Don't copy wp-content, we'll deal with that below
 	// We also copy version.php last so failed updates report their old version
 	$skip = array( 'wp-content', 'wp-includes/version.php' );
-	$check_is_writable = array();
+	$check_is_writable = [];
 
 	// Check to see which files don't really need updating - only available for 3.7 and higher
 	if ( function_exists( 'get_core_checksums' ) ) {
@@ -955,7 +955,7 @@ function update_core($from, $to) {
 
 	// Check to make sure everything copied correctly, ignoring the contents of wp-content
 	$skip = array( 'wp-content' );
-	$failed = array();
+	$failed = [];
 	if ( isset( $checksums ) && is_array( $checksums ) ) {
 		foreach ( $checksums as $file => $checksum ) {
 			if ( 'wp-content' == substr( $file, 0, 10 ) )
@@ -1144,7 +1144,7 @@ function update_core($from, $to) {
  * @param array $skip_list a list of files/folders to skip copying
  * @return mixed WP_Error on failure, True on success.
  */
-function _copy_dir($from, $to, $skip_list = array() ) {
+function _copy_dir($from, $to, $skip_list = [] ) {
 	global $wp_filesystem;
 
 	$dirlist = $wp_filesystem->dirlist($from);
@@ -1173,7 +1173,7 @@ function _copy_dir($from, $to, $skip_list = array() ) {
 			 * Generate the $sub_skip_list for the subdirectory as a sub-set
 			 * of the existing $skip_list.
 			 */
-			$sub_skip_list = array();
+			$sub_skip_list = [];
 			foreach ( $skip_list as $skip_item ) {
 				if ( 0 === strpos( $skip_item, $filename . '/' ) )
 					$sub_skip_list[] = preg_replace( '!^' . preg_quote( $filename, '!' ) . '/!i', '', $skip_item );
@@ -1247,7 +1247,7 @@ function _upgrade_422_remove_genericons() {
 	$app = getApp();
 
 	// A list of the affected files using the filesystem absolute paths.
-	$affected_files = array();
+	$affected_files = [];
 
 	// Themes
 	foreach ( $app->theme['directories'] as $directory ) {
@@ -1289,7 +1289,7 @@ function _upgrade_422_remove_genericons() {
  */
 function _upgrade_422_find_genericons_files_in_folder( $directory ) {
 	$directory = trailingslashit( $directory );
-	$files     = array();
+	$files     = [];
 
 	if ( file_exists( "{$directory}example.html" ) && false !== strpos( file_get_contents( "{$directory}example.html" ), '<title>Genericons</title>' ) ) {
 		$files[] = "{$directory}example.html";

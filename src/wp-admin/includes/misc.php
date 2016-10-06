@@ -129,13 +129,13 @@ function insert_with_markers( $filename, $marker, $insertion ) {
 	// Attempt to get a lock. If the filesystem supports locking, this will block until the lock is acquired.
 	flock( $fp, LOCK_EX );
 
-	$lines = array();
+	$lines = [];
 	while ( ! feof( $fp ) ) {
 		$lines[] = rtrim( fgets( $fp ), "\r\n" );
 	}
 
 	// Split out the existing file into the preceeding lines, and those that appear after the marker
-	$pre_lines = $post_lines = $existing_lines = array();
+	$pre_lines = $post_lines = $existing_lines = [];
 	$found_marker = $found_end_marker = false;
 	foreach ( $lines as $line ) {
 		if ( ! $found_marker && false !== strpos( $line, $start_marker ) ) {
@@ -336,15 +336,15 @@ function show_message($message) {
  */
 function wp_doc_link_parse( $content ) {
 	if ( !is_string( $content ) || empty( $content ) )
-		return array();
+		return [];
 
 	if ( !function_exists('token_get_all') )
-		return array();
+		return [];
 
 	$tokens = token_get_all( $content );
 	$count = count( $tokens );
-	$functions = array();
-	$ignore_functions = array();
+	$functions = [];
+	$ignore_functions = [];
 	for ( $t = 0; $t < $count - 2; $t++ ) {
 		if ( ! is_array( $tokens[ $t ] ) ) {
 			continue;
@@ -374,7 +374,7 @@ function wp_doc_link_parse( $content ) {
 
 	$ignore_functions = array_unique( $ignore_functions );
 
-	$out = array();
+	$out = [];
 	foreach ( $functions as $function ) {
 		if ( in_array( $function, $ignore_functions ) )
 			continue;
@@ -733,7 +733,7 @@ function _ipad_meta() {
  * @return array The Heartbeat response.
  */
 function wp_check_locked_posts( $response, $data, $screen_id ) {
-	$checked = array();
+	$checked = [];
 
 	if ( array_key_exists( 'wp-check-locked-posts', $data ) && is_array( $data['wp-check-locked-posts'] ) ) {
 		foreach ( $data['wp-check-locked-posts'] as $key ) {
@@ -770,7 +770,7 @@ function wp_check_locked_posts( $response, $data, $screen_id ) {
 function wp_refresh_post_lock( $response, $data, $screen_id ) {
 	if ( array_key_exists( 'wp-refresh-post-lock', $data ) ) {
 		$received = $data['wp-refresh-post-lock'];
-		$send = array();
+		$send = [];
 
 		if ( ! $post_id = absint( $received['post_id'] ) )
 			return $response;

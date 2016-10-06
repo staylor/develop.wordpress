@@ -247,7 +247,7 @@ function get_plugin_files($plugin) {
 function get_plugins($plugin_folder = '') {
 
 	if ( ! $cache_plugins = wp_cache_get('plugins', 'plugins') )
-		$cache_plugins = array();
+		$cache_plugins = [];
 
 	if ( isset($cache_plugins[ $plugin_folder ]) )
 		return $cache_plugins[ $plugin_folder ];
@@ -259,7 +259,7 @@ function get_plugins($plugin_folder = '') {
 
 	// Files in wp-content/plugins directory
 	$plugins_dir = @ opendir( $plugin_root);
-	$plugin_files = array();
+	$plugin_files = [];
 	if ( $plugins_dir ) {
 		while (($file = readdir( $plugins_dir ) ) !== false ) {
 			if ( substr($file, 0, 1) == '.' )
@@ -315,9 +315,9 @@ function get_plugins($plugin_folder = '') {
  * @return array Key is the mu-plugin file path and the value is an array of the mu-plugin data.
  */
 function get_mu_plugins() {
-	$wp_plugins = array();
+	$wp_plugins = [];
 	// Files in wp-content/mu-plugins directory
-	$plugin_files = array();
+	$plugin_files = [];
 
 	if ( ! is_dir( WPMU_PLUGIN_DIR ) )
 		return $wp_plugins;
@@ -372,8 +372,8 @@ function _sort_uname_callback( $a, $b ) {
  * @return array Key is the file path and the value is an array of the plugin data.
  */
 function get_dropins() {
-	$dropins = array();
-	$plugin_files = array();
+	$dropins = [];
+	$plugin_files = [];
 
 	$_dropins = _get_dropins();
 
@@ -450,7 +450,7 @@ function _get_dropins() {
  * @return bool True, if in the active plugins list. False, not in the list.
  */
 function is_plugin_active( $plugin ) {
-	return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || is_plugin_active_for_network( $plugin );
+	return in_array( $plugin, (array) get_option( 'active_plugins', [] ) ) || is_plugin_active_for_network( $plugin );
 }
 
 /**
@@ -543,10 +543,10 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
 
 	if ( is_multisite() && ( $network_wide || is_network_only_plugin($plugin) ) ) {
 		$network_wide = true;
-		$current = get_site_option( 'active_sitewide_plugins', array() );
+		$current = get_site_option( 'active_sitewide_plugins', [] );
 		$_GET['networkwide'] = 1; // Back compat for plugins looking for this value.
 	} else {
-		$current = get_option( 'active_plugins', array() );
+		$current = get_option( 'active_plugins', [] );
 	}
 
 	$valid = validate_plugin($plugin);
@@ -594,11 +594,11 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
 		}
 
 		if ( $network_wide ) {
-			$current = get_site_option( 'active_sitewide_plugins', array() );
+			$current = get_site_option( 'active_sitewide_plugins', [] );
 			$current[$plugin] = time();
 			update_site_option( 'active_sitewide_plugins', $current );
 		} else {
-			$current = get_option( 'active_plugins', array() );
+			$current = get_option( 'active_plugins', [] );
 			$current[] = $plugin;
 			sort($current);
 			update_option('active_plugins', $current);
@@ -645,8 +645,8 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
  */
 function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
 	if ( is_multisite() )
-		$network_current = get_site_option( 'active_sitewide_plugins', array() );
-	$current = get_option( 'active_plugins', array() );
+		$network_current = get_site_option( 'active_sitewide_plugins', [] );
+	$current = get_option( 'active_plugins', [] );
 	$do_blog = $do_network = false;
 
 	foreach ( (array) $plugins as $plugin ) {
@@ -747,7 +747,7 @@ function activate_plugins( $plugins, $redirect = '', $network_wide = false, $sil
 	if ( !is_array($plugins) )
 		$plugins = array($plugins);
 
-	$errors = array();
+	$errors = [];
 	foreach ( $plugins as $plugin ) {
 		if ( !empty($redirect) )
 			$redirect = add_query_arg('plugin', $plugin, $redirect);
@@ -780,7 +780,7 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 	if ( empty($plugins) )
 		return false;
 
-	$checked = array();
+	$checked = [];
 	foreach ( $plugins as $plugin )
 		$checked[] = 'checked[]=' . $plugin;
 
@@ -830,7 +830,7 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 
 	$plugin_translations = wp_get_installed_translations( 'plugins' );
 
-	$errors = array();
+	$errors = [];
 
 	foreach ( $plugins as $plugin_file ) {
 		// Run Uninstall hook.
@@ -911,22 +911,22 @@ function delete_plugins( $plugins, $deprecated = '' ) {
  * @return array invalid plugins, plugin as key, error as value
  */
 function validate_active_plugins() {
-	$plugins = get_option( 'active_plugins', array() );
+	$plugins = get_option( 'active_plugins', [] );
 	// Validate vartype: array.
 	if ( ! is_array( $plugins ) ) {
-		update_option( 'active_plugins', array() );
-		$plugins = array();
+		update_option( 'active_plugins', [] );
+		$plugins = [];
 	}
 
 	if ( is_multisite() && current_user_can( 'manage_network_plugins' ) ) {
-		$network_plugins = (array) get_site_option( 'active_sitewide_plugins', array() );
+		$network_plugins = (array) get_site_option( 'active_sitewide_plugins', [] );
 		$plugins = array_merge( $plugins, array_keys( $network_plugins ) );
 	}
 
 	if ( empty( $plugins ) )
-		return array();
+		return [];
 
-	$invalid = array();
+	$invalid = [];
 
 	// Invalid plugins get deactivated.
 	foreach ( $plugins as $plugin ) {
@@ -1810,7 +1810,7 @@ function add_option_whitelist( $new_options, $options = '' ) {
 	foreach ( $new_options as $page => $keys ) {
 		foreach ( $keys as $key ) {
 			if ( !isset($whitelist_options[ $page ]) || !is_array($whitelist_options[ $page ]) ) {
-				$whitelist_options[ $page ] = array();
+				$whitelist_options[ $page ] = [];
 				$whitelist_options[ $page ][] = $key;
 			} else {
 				$pos = array_search( $key, $whitelist_options[ $page ] );

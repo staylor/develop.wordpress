@@ -276,7 +276,7 @@ $bulk_counts = array(
 	'untrashed' => isset( $_REQUEST['untrashed'] ) ? absint( $_REQUEST['untrashed'] ) : 0,
 );
 
-$bulk_messages = array();
+$bulk_messages = [];
 $bulk_messages['post'] = array(
 	'updated'   => _n( '%s post updated.', '%s posts updated.', $bulk_counts['updated'] ),
 	'locked'    => ( 1 == $bulk_counts['locked'] ) ? __( '1 post not updated, somebody is editing it.' ) :
@@ -324,7 +324,7 @@ if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
 
 <?php
 // If we have a bulk message to issue:
-$messages = array();
+$messages = [];
 foreach ( $bulk_counts as $message => $count ) {
 	if ( isset( $bulk_messages[ $typenow ][ $message ] ) )
 		$messages[] = sprintf( $bulk_messages[ $typenow ][ $message ], number_format_i18n( $count ) );

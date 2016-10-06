@@ -37,7 +37,7 @@ if ( wp_is_mobile() )
 	wp_enqueue_script( 'jquery-touch-punch' );
 
 // Container for any messages displayed to the user
-$messages = array();
+$messages = [];
 
 // Container that stores the name of the active menu
 $nav_menu_selected_title = '';
@@ -80,8 +80,8 @@ switch ( $action ) {
 				$menu_item_data = (array) wp_setup_nav_menu_item( get_post( $menu_item_id ) );
 
 				// Set up the data we need in one pass through the array of menu items.
-				$dbids_to_orders = array();
-				$orders_to_dbids = array();
+				$dbids_to_orders = [];
+				$orders_to_dbids = [];
 				foreach ( (array) $ordered_menu_items as $ordered_menu_item_object ) {
 					if ( isset( $ordered_menu_item_object->ID ) ) {
 						if ( isset( $ordered_menu_item_object->menu_order ) ) {
@@ -153,8 +153,8 @@ switch ( $action ) {
 				$menu_item_data = (array) wp_setup_nav_menu_item( get_post( $menu_item_id ) );
 
 				// Set up the data we need in one pass through the array of menu items.
-				$dbids_to_orders = array();
-				$orders_to_dbids = array();
+				$dbids_to_orders = [];
+				$orders_to_dbids = [];
 				foreach ( (array) $ordered_menu_items as $ordered_menu_item_object ) {
 					if ( isset( $ordered_menu_item_object->ID ) ) {
 						if ( isset( $ordered_menu_item_object->menu_order ) ) {
@@ -677,7 +677,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 						echo esc_html( $_nav_menu->truncated_name ) ;
 
 						if ( ! empty( $menu_locations ) && in_array( $_nav_menu->term_id, $menu_locations ) ) {
-							$locations_assigned_to_this_menu = array();
+							$locations_assigned_to_this_menu = [];
 							foreach ( array_keys( $menu_locations, $_nav_menu->term_id ) as $menu_location_key ) {
 								if ( isset( $locations[ $menu_location_key ] ) ) {
 									$locations_assigned_to_this_menu[] = $locations[ $menu_location_key ];

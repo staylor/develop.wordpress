@@ -283,10 +283,10 @@ function get_theme_feature_list( $api = true ) {
 		return $features;
 
 	if ( !$feature_list = get_site_transient( 'wporg_theme_feature_list' ) )
-		set_site_transient( 'wporg_theme_feature_list', array(), 3 * HOUR_IN_SECONDS );
+		set_site_transient( 'wporg_theme_feature_list', [], 3 * HOUR_IN_SECONDS );
 
 	if ( !$feature_list ) {
-		$feature_list = themes_api( 'feature_list', array() );
+		$feature_list = themes_api( 'feature_list', [] );
 		if ( is_wp_error( $feature_list ) )
 			return $features;
 	}
@@ -303,11 +303,11 @@ function get_theme_feature_list( $api = true ) {
 	);
 
 	// Loop over the wporg canonical list and apply translations
-	$wporg_features = array();
+	$wporg_features = [];
 	foreach ( (array) $feature_list as $feature_category => $feature_items ) {
 		if ( isset($category_translations[$feature_category]) )
 			$feature_category = $category_translations[$feature_category];
-		$wporg_features[$feature_category] = array();
+		$wporg_features[$feature_category] = [];
 
 		foreach ( $feature_items as $feature ) {
 			if ( isset($features[$feature_category][$feature]) )
@@ -401,7 +401,7 @@ function get_theme_feature_list( $api = true ) {
  *         {@link https://developer.wordpress.org/reference/functions/themes_api/ function reference article}
  *         for more information on the make-up of possible return objects depending on the value of `$action`.
  */
-function themes_api( $action, $args = array() ) {
+function themes_api( $action, $args = [] ) {
 
 	if ( is_array( $args ) ) {
 		$args = (object) $args;
@@ -512,14 +512,14 @@ function wp_prepare_themes_for_js( $themes = null ) {
 	 * @param null|array $themes          An array of WP_Theme objects to prepare, if any.
 	 * @param string     $current_theme   The current theme slug.
 	 */
-	$prepared_themes = (array) apply_filters( 'pre_prepare_themes_for_js', array(), $themes, $current_theme );
+	$prepared_themes = (array) apply_filters( 'pre_prepare_themes_for_js', [], $themes, $current_theme );
 
 	if ( ! empty( $prepared_themes ) ) {
 		return $prepared_themes;
 	}
 
 	// Make sure the current theme is listed first.
-	$prepared_themes[ $current_theme ] = array();
+	$prepared_themes[ $current_theme ] = [];
 
 	if ( null === $themes ) {
 		$themes = wp_get_themes( array( 'allowed' => true ) );
@@ -528,7 +528,7 @@ function wp_prepare_themes_for_js( $themes = null ) {
 		}
 	}
 
-	$updates = array();
+	$updates = [];
 	if ( current_user_can( 'update_themes' ) ) {
 		$updates_transient = get_site_transient( 'update_themes' );
 		if ( isset( $updates_transient->response ) ) {
@@ -538,7 +538,7 @@ function wp_prepare_themes_for_js( $themes = null ) {
 
 	WP_Theme::sort_by_name( $themes );
 
-	$parents = array();
+	$parents = [];
 
 	foreach ( $themes as $theme ) {
 		$slug = $theme->get_stylesheet();

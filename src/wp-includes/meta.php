@@ -511,7 +511,7 @@ function get_metadata($meta_type, $object_id, $meta_key = '', $single = false) {
 	if ($single)
 		return '';
 	else
-		return array();
+		return [];
 }
 
 /**
@@ -650,7 +650,7 @@ function update_metadata_by_mid( $meta_type, $meta_id, $meta_value, $meta_key = 
 		);
 
 		// Format the where query arguments.
-		$where = array();
+		$where = [];
 		$where[$id_column] = $meta_id;
 
 		/** This action is documented in wp-includes/meta.php */
@@ -802,8 +802,8 @@ function update_meta_cache($meta_type, $object_ids) {
 	$object_ids = array_map('intval', $object_ids);
 
 	$cache_key = $meta_type . '_meta';
-	$ids = array();
-	$cache = array();
+	$ids = [];
+	$cache = [];
 	foreach ( $object_ids as $id ) {
 		$cached_object = wp_cache_get( $id, $cache_key );
 		if ( false === $cached_object )
@@ -828,9 +828,9 @@ function update_meta_cache($meta_type, $object_ids) {
 
 			// Force subkeys to be array type:
 			if ( !isset($cache[$mpid]) || !is_array($cache[$mpid]) )
-				$cache[$mpid] = array();
+				$cache[$mpid] = [];
 			if ( !isset($cache[$mpid][$mkey]) || !is_array($cache[$mpid][$mkey]) )
-				$cache[$mpid][$mkey] = array();
+				$cache[$mpid][$mkey] = [];
 
 			// Add a value to the current pid/key:
 			$cache[$mpid][$mkey][] = $mval;
@@ -839,7 +839,7 @@ function update_meta_cache($meta_type, $object_ids) {
 
 	foreach ( $ids as $id ) {
 		if ( ! isset($cache[$id]) )
-			$cache[$id] = array();
+			$cache[$id] = [];
 		wp_cache_add( $id, $cache[$id], $cache_key );
 	}
 
@@ -984,7 +984,7 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 	global $wp_meta_keys;
 
 	if ( ! is_array( $wp_meta_keys ) ) {
-		$wp_meta_keys = array();
+		$wp_meta_keys = [];
 	}
 
 	$defaults = array(
@@ -1132,7 +1132,7 @@ function get_registered_meta_keys( $object_type ) {
 	global $wp_meta_keys;
 
 	if ( ! is_array( $wp_meta_keys ) || ! isset( $wp_meta_keys[ $object_type ] ) ) {
-		return array();
+		return [];
 	}
 
 	return $wp_meta_keys[ $object_type ];
@@ -1166,7 +1166,7 @@ function get_registered_metadata( $object_type, $object_id, $meta_key = '' ) {
 	$data = get_metadata( $object_type, $object_id );
 
 	$meta_keys = get_registered_meta_keys( $object_type );
-	$registered_data = array();
+	$registered_data = [];
 
 	// Someday, array_filter()
 	foreach ( $meta_keys as $k => $v ) {

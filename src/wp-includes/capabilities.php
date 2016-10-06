@@ -29,7 +29,7 @@ use function WP\getApp;
  */
 function map_meta_cap( $cap, $user_id ) {
 	$args = array_slice( func_get_args(), 2 );
-	$caps = array();
+	$caps = [];
 
 	switch ( $cap ) {
 	case 'remove_user':
@@ -370,7 +370,7 @@ function map_meta_cap( $cap, $user_id ) {
 		$caps[] = $cap;
 		if ( is_multisite() ) {
 			// update_, install_, and delete_ are handled above with is_super_admin().
-			$menu_perms = get_site_option( 'menu_items', array() );
+			$menu_perms = get_site_option( 'menu_items', [] );
 			if ( empty( $menu_perms['plugins'] ) )
 				$caps[] = 'manage_network_plugins';
 		}
@@ -610,7 +610,7 @@ function get_role( $role ) {
  * @param array $capabilities List of capabilities, e.g. array( 'edit_posts' => true, 'delete_posts' => false );
  * @return Role|null Role object if role is added, null if already exists.
  */
-function add_role( $role, $display_name, $capabilities = array() ) {
+function add_role( $role, $display_name, $capabilities = [] ) {
 	if ( empty( $role ) ) {
 		return;
 	}

@@ -638,7 +638,7 @@ function wp_admin_bar_edit_menu( $wp_admin_bar ) {
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_new_content_menu( $wp_admin_bar ) {
-	$actions = array();
+	$actions = [];
 
 	$cpts = (array) get_post_types( array( 'show_in_admin_bar' => true ), 'objects' );
 

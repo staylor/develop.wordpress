@@ -19,9 +19,9 @@ class WP_Press_This {
 	const VERSION = 8;
 	public $version = 8;
 
-	private $images = array();
+	private $images = [];
 
-	private $embeds = array();
+	private $embeds = [];
 
 	private $domain = '';
 
@@ -123,8 +123,8 @@ class WP_Press_This {
 			'post_type'     => 'post',
 			'post_status'   => 'draft',
 			'post_format'   => ( ! empty( $_POST['post_format'] ) ) ? sanitize_text_field( $_POST['post_format'] ) : '',
-			'tax_input'     => ( ! empty( $_POST['tax_input'] ) ) ? $_POST['tax_input'] : array(),
-			'post_category' => ( ! empty( $_POST['post_category'] ) ) ? $_POST['post_category'] : array(),
+			'tax_input'     => ( ! empty( $_POST['tax_input'] ) ) ? $_POST['tax_input'] : [],
+			'post_category' => ( ! empty( $_POST['post_category'] ) ) ? $_POST['post_category'] : [],
 		);
 
 		if ( ! empty( $_POST['post_status'] ) && 'publish' === $_POST['post_status'] ) {
@@ -211,7 +211,7 @@ class WP_Press_This {
 
 		$parent = isset( $_POST['parent'] ) && (int) $_POST['parent'] > 0 ? (int) $_POST['parent'] : 0;
 		$names = explode( ',', $_POST['name'] );
-		$added = $data = array();
+		$added = $data = [];
 
 		foreach ( $names as $cat_name ) {
 			$cat_name = trim( $cat_name );
@@ -330,7 +330,7 @@ class WP_Press_This {
 			return $value;
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -513,7 +513,7 @@ class WP_Press_This {
 					$meta_value = $this->_limit_embed( $meta_value );
 
 					if ( ! isset( $data['_embeds'] ) ) {
-						$data['_embeds'] = array();
+						$data['_embeds'] = [];
 					}
 
 					if ( ! empty( $meta_value ) && ! in_array( $meta_value, $data['_embeds'] ) ) {
@@ -530,7 +530,7 @@ class WP_Press_This {
 					$meta_value = $this->_limit_img( $meta_value );
 
 					if ( ! isset( $data['_images'] ) ) {
-						$data['_images'] = array();
+						$data['_images'] = [];
 					}
 
 					if ( ! empty( $meta_value ) && ! in_array( $meta_value, $data['_images'] ) ) {
@@ -554,9 +554,9 @@ class WP_Press_This {
 	 * @param array  $data Optional. Existing data array if you have one. Default empty array.
 	 * @return array New data array.
 	 */
-	public function source_data_fetch_fallback( $url, $data = array() ) {
+	public function source_data_fetch_fallback( $url, $data = [] ) {
 		if ( empty( $url ) ) {
-			return array();
+			return [];
 		}
 
 		// Download source page to tmp file.
@@ -567,7 +567,7 @@ class WP_Press_This {
 
 		// Fetch and gather <meta> data first, so discovered media is offered 1st to user.
 		if ( empty( $data['_meta'] ) ) {
-			$data['_meta'] = array();
+			$data['_meta'] = [];
 		}
 
 		if ( preg_match_all( '/<meta [^>]+>/', $source_content, $matches ) ) {
@@ -590,7 +590,7 @@ class WP_Press_This {
 
 		// Fetch and gather <img> data.
 		if ( empty( $data['_images'] ) ) {
-			$data['_images'] = array();
+			$data['_images'] = [];
 		}
 
 		if ( preg_match_all( '/<img [^>]+>/', $source_content, $matches ) ) {
@@ -614,7 +614,7 @@ class WP_Press_This {
 
 		// Fetch and gather <iframe> data.
 		if ( empty( $data['_embeds'] ) ) {
-			$data['_embeds'] = array();
+			$data['_embeds'] = [];
 		}
 
 		if ( preg_match_all( '/<iframe [^>]+>/', $source_content, $matches ) ) {
@@ -633,7 +633,7 @@ class WP_Press_This {
 
 		// Fetch and gather <link> data.
 		if ( empty( $data['_links'] ) ) {
-			$data['_links'] = array();
+			$data['_links'] = [];
 		}
 
 		if ( preg_match_all( '/<link [^>]+>/', $source_content, $matches ) ) {
@@ -664,7 +664,7 @@ class WP_Press_This {
 	 */
 	public function merge_or_fetch_data() {
 		// Get data from $_POST and $_GET, as appropriate ($_POST > $_GET), to remain backward compatible.
-		$data = array();
+		$data = [];
 
 		// Only instantiate the keys we want. Sanity check and sanitize each one.
 		foreach ( array( 'u', 's', 't', 'v' ) as $key ) {
@@ -711,7 +711,7 @@ class WP_Press_This {
 						continue;
 					}
 
-					$data[ $type ] = array();
+					$data[ $type ] = [];
 					$items = $this->_limit_array( $_POST[ $type ] );
 
 					foreach ( $items as $key => $value ) {
@@ -732,7 +732,7 @@ class WP_Press_This {
 						continue;
 					}
 
-					$data[ $type ] = array();
+					$data[ $type ] = [];
 					$items = $this->_limit_array( $_POST[ $type ] );
 
 					foreach ( $items as $key => $value ) {
@@ -959,7 +959,7 @@ class WP_Press_This {
 	 * @return array Embeds selected to be available.
 	 */
 	public function get_embeds( $data ) {
-		$selected_embeds = array();
+		$selected_embeds = [];
 
 		// Make sure to add the Pressed page if it's a valid oembed itself
 		if ( ! empty ( $data['u'] ) && $this->_limit_embed( $data['u'] ) ) {
@@ -992,7 +992,7 @@ class WP_Press_This {
 	 * @return array
 	 */
 	public function get_images( $data ) {
-		$selected_images = array();
+		$selected_images = [];
 
 		if ( ! empty( $data['_images'] ) ) {
 			foreach ( $data['_images'] as $src ) {

@@ -23,7 +23,7 @@ class WP_Automatic_Updater {
 	 * @var array
 	 * @access protected
 	 */
-	protected $update_results = array();
+	protected $update_results = [];
 
 	/**
 	 * Whether the entire automatic updater is disabled.
@@ -80,7 +80,7 @@ class WP_Automatic_Updater {
 			$context_dirs[] = untrailingslashit( ABSPATH );
 
 		$vcs_dirs = array( '.svn', '.git', '.hg', '.bzr' );
-		$check_dirs = array();
+		$check_dirs = [];
 
 		foreach ( $context_dirs as $context_dir ) {
 			// Walk up from $context_dir to the root.
@@ -420,7 +420,7 @@ class WP_Automatic_Updater {
 
 		// Clean up, and check for any pending translations
 		// (Core_Upgrader checks for core updates)
-		$theme_stats = array();
+		$theme_stats = [];
 		if ( isset( $this->update_results['theme'] ) ) {
 			foreach ( $this->update_results['theme'] as $upgrade ) {
 				$theme_stats[ $upgrade->item->theme ] = ( true === $upgrade->result );
@@ -428,7 +428,7 @@ class WP_Automatic_Updater {
 		}
 		wp_update_themes( $theme_stats );  // Check for Theme updates
 
-		$plugin_stats = array();
+		$plugin_stats = [];
 		if ( isset( $this->update_results['plugin'] ) ) {
 			foreach ( $this->update_results['plugin'] as $upgrade ) {
 				$plugin_stats[ $upgrade->item->plugin ] = ( true === $upgrade->result );
@@ -781,7 +781,7 @@ class WP_Automatic_Updater {
 		foreach ( $this->update_results as $type => $updates )
 			$update_count += count( $updates );
 
-		$body = array();
+		$body = [];
 		$failures = 0;
 
 		$body[] = sprintf( __( 'WordPress site: %s' ), network_home_url( '/' ) );

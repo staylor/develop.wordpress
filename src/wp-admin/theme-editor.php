@@ -61,7 +61,7 @@ if ( $theme->errors() && 'theme_no_stylesheet' == $theme->errors()->get_error_co
 	wp_die( __( 'The requested theme does not exist.' ) . ' ' . $theme->errors()->get_error_message() );
 }
 
-$allowed_files = $style_files = array();
+$allowed_files = $style_files = [];
 $has_templates = false;
 $default_types = array( 'php', 'css' );
 

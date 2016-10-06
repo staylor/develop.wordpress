@@ -54,7 +54,7 @@ function get_categories( $args = '' ) {
 	$categories = get_terms( $taxonomy, $args );
 
 	if ( is_wp_error( $categories ) ) {
-		$categories = array();
+		$categories = [];
 	} else {
 		$categories = (array) $categories;
 		foreach ( array_keys( $categories ) as $k ) {
@@ -266,7 +266,7 @@ function get_tags( $args = '' ) {
 	$tags = get_terms( 'post_tag', $args );
 
 	if ( empty( $tags ) ) {
-		$return = array();
+		$return = [];
 		return $return;
 	}
 

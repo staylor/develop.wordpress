@@ -23,12 +23,12 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @param array $args
 	 */
-	public function __construct($args = array()) {
+	public function __construct($args = []) {
 		$defaults = array( 'type' => 'web', 'url' => '', 'plugin' => '', 'nonce' => '', 'title' => '' );
 		$args = wp_parse_args($args, $defaults);
 
 		$this->type = $args['type'];
-		$this->api = isset($args['api']) ? $args['api'] : array();
+		$this->api = isset($args['api']) ? $args['api'] : [];
 
 		parent::__construct($args);
 	}
@@ -47,7 +47,7 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	public function after() {
 		$plugin_file = $this->upgrader->plugin_info();
 
-		$install_actions = array();
+		$install_actions = [];
 
 		$from = isset($_GET['from']) ? wp_unslash( $_GET['from'] ) : 'plugins';
 

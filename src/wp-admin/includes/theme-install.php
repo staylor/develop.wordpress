@@ -6,12 +6,12 @@
  * @subpackage Administration
  */
 
-$themes_allowedtags = array('a' => array('href' => array(), 'title' => array(), 'target' => array()),
-	'abbr' => array('title' => array()), 'acronym' => array('title' => array()),
-	'code' => array(), 'pre' => array(), 'em' => array(), 'strong' => array(),
-	'div' => array(), 'p' => array(), 'ul' => array(), 'ol' => array(), 'li' => array(),
-	'h1' => array(), 'h2' => array(), 'h3' => array(), 'h4' => array(), 'h5' => array(), 'h6' => array(),
-	'img' => array('src' => array(), 'class' => array(), 'alt' => array())
+$themes_allowedtags = array('a' => array('href' => [], 'title' => [], 'target' => []),
+	'abbr' => array('title' => []), 'acronym' => array('title' => []),
+	'code' => [], 'pre' => [], 'em' => [], 'strong' => [],
+	'div' => [], 'p' => [], 'ul' => [], 'ol' => [], 'li' => [],
+	'h1' => [], 'h2' => [], 'h3' => [], 'h4' => [], 'h5' => [], 'h6' => [],
+	'img' => array('src' => [], 'class' => [], 'alt' => [])
 );
 
 $theme_field_defaults = array( 'description' => true, 'sections' => false, 'tested' => true, 'requires' => true,
@@ -32,14 +32,14 @@ function install_themes_feature_list() {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_theme_feature_list()' );
 
 	if ( !$cache = get_transient( 'wporg_theme_feature_list' ) )
-		set_transient( 'wporg_theme_feature_list', array(), 3 * HOUR_IN_SECONDS );
+		set_transient( 'wporg_theme_feature_list', [], 3 * HOUR_IN_SECONDS );
 
 	if ( $cache )
 		return $cache;
 
-	$feature_list = themes_api( 'feature_list', array() );
+	$feature_list = themes_api( 'feature_list', [] );
 	if ( is_wp_error( $feature_list ) )
-		return array();
+		return [];
 
 	set_transient( 'wporg_theme_feature_list', $feature_list, 3 * HOUR_IN_SECONDS );
 

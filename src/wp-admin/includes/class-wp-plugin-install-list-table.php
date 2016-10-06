@@ -21,7 +21,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 
 	public $order = 'ASC';
 	public $orderby = null;
-	public $groups = array();
+	public $groups = [];
 
 	private $error;
 
@@ -46,7 +46,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_installed_plugin_slugs() {
-		$slugs = array();
+		$slugs = [];
 
 		$plugin_info = get_site_transient( 'update_plugins' );
 		if ( isset( $plugin_info->no_update ) ) {
@@ -84,7 +84,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		$per_page = 30;
 
 		// These are the tabs which are shown on the page
-		$tabs = array();
+		$tabs = [];
 
 		if ( 'search' === $tab ) {
 			$tabs['search'] = __( 'Search Results' );
@@ -252,7 +252,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	protected function get_views() {
 		global $tabs, $tab;
 
-		$display_tabs = array();
+		$display_tabs = [];
 		foreach ( (array) $tabs as $action => $text ) {
 			$class = ( $action === $tab ) ? ' current' : '';
 			$href = self_admin_url('plugin-install.php?tab=' . $action);
@@ -365,7 +365,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -395,10 +395,10 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 
 	public function display_rows() {
 		$plugins_allowedtags = array(
-			'a' => array( 'href' => array(),'title' => array(), 'target' => array() ),
-			'abbr' => array( 'title' => array() ),'acronym' => array( 'title' => array() ),
-			'code' => array(), 'pre' => array(), 'em' => array(),'strong' => array(),
-			'ul' => array(), 'ol' => array(), 'li' => array(), 'p' => array(), 'br' => array()
+			'a' => array( 'href' => [],'title' => [], 'target' => [] ),
+			'abbr' => array( 'title' => [] ),'acronym' => array( 'title' => [] ),
+			'code' => [], 'pre' => [], 'em' => [],'strong' => [],
+			'ul' => [], 'ol' => [], 'li' => [], 'p' => [], 'br' => []
 		);
 
 		$plugins_group_titles = array(
@@ -449,7 +449,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 				$author = ' <cite>' . sprintf( __( 'By %s' ), $author ) . '</cite>';
 			}
 
-			$action_links = array();
+			$action_links = [];
 
 			if ( current_user_can( 'install_plugins' ) || current_user_can( 'update_plugins' ) ) {
 				$status = install_plugin_install_status( $plugin );

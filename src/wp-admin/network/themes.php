@@ -42,7 +42,7 @@ if ( $action ) {
 			exit;
 		case 'enable-selected':
 			check_admin_referer('bulk-themes');
-			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : array();
+			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
 			if ( empty($themes) ) {
 				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 				exit;
@@ -52,7 +52,7 @@ if ( $action ) {
 			exit;
 		case 'disable-selected':
 			check_admin_referer('bulk-themes');
-			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : array();
+			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
 			if ( empty($themes) ) {
 				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 				exit;
@@ -68,7 +68,7 @@ if ( $action ) {
 			elseif ( isset( $_POST['checked'] ) )
 				$themes = (array) $_POST['checked'];
 			else
-				$themes = array();
+				$themes = [];
 
 			$title = __( 'Update Themes' );
 			$parent_file = 'themes.php';
@@ -92,7 +92,7 @@ if ( $action ) {
 
 			check_admin_referer( 'bulk-themes' );
 
-			$themes = isset( $_REQUEST['checked'] ) ? (array) $_REQUEST['checked'] : array();
+			$themes = isset( $_REQUEST['checked'] ) ? (array) $_REQUEST['checked'] : [];
 
 			if ( empty( $themes ) ) {
 				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
@@ -106,7 +106,7 @@ if ( $action ) {
 				exit;
 			}
 
-			$theme_info = array();
+			$theme_info = [];
 			foreach ( $themes as $key => $theme ) {
 				$theme_info[ $theme ] = wp_get_theme( $theme );
 			}
@@ -193,7 +193,7 @@ if ( $action ) {
 			), network_admin_url( 'themes.php' ) ) );
 			exit;
 		default:
-			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : array();
+			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
 			if ( empty( $themes ) ) {
 				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 				exit;

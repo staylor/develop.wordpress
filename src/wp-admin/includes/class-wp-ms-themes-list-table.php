@@ -35,7 +35,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		global $status, $page;
 
 		parent::__construct( array(
@@ -99,11 +99,11 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 			 * @param array $all An array of WP_Theme objects to display in the list table.
 			 */
 			'all' => apply_filters( 'all_themes', wp_get_themes() ),
-			'search' => array(),
-			'enabled' => array(),
-			'disabled' => array(),
-			'upgrade' => array(),
-			'broken' => $this->is_site_themes ? array() : wp_get_themes( array( 'errors' => true ) ),
+			'search' => [],
+			'enabled' => [],
+			'disabled' => [],
+			'upgrade' => [],
+			'broken' => $this->is_site_themes ? [] : wp_get_themes( array( 'errors' => true ) ),
 		);
 
 		if ( $this->is_site_themes ) {
@@ -136,7 +136,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 			$themes['search'] = array_filter( array_merge( $themes['all'], $themes['broken'] ), array( $this, '_search_callback' ) );
 		}
 
-		$totals = array();
+		$totals = [];
 		foreach ( $themes as $type => $list )
 			$totals[ $type ] = count( $list );
 
@@ -279,7 +279,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	protected function get_views() {
 		global $totals, $status;
 
-		$status_links = array();
+		$status_links = [];
 		foreach ( $totals as $type => $count ) {
 			if ( !$count )
 				continue;
@@ -327,7 +327,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	protected function get_bulk_actions() {
 		global $status;
 
-		$actions = array();
+		$actions = [];
 		if ( 'enabled' != $status )
 			$actions['enable-selected'] = $this->is_site_themes ? __( 'Enable' ) : __( 'Network Enable' );
 		if ( 'disabled' != $status )
@@ -555,7 +555,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 			<div class='$class second theme-version-author-uri'>";
 
 		$stylesheet = $theme->get_stylesheet();
-		$theme_meta = array();
+		$theme_meta = [];
 
 		if ( $theme->get('Version') ) {
 			$theme_meta[] = sprintf( __( 'Version %s' ), $theme->display('Version') );

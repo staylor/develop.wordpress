@@ -22,7 +22,7 @@ function get_column_headers( $screen ) {
 	if ( is_string( $screen ) )
 		$screen = convert_to_screen( $screen );
 
-	static $column_headers = array();
+	static $column_headers = [];
 
 	if ( ! isset( $column_headers[ $screen->id ] ) ) {
 
@@ -38,7 +38,7 @@ function get_column_headers( $screen ) {
 		 *
 		 * @param array $columns An array of column headers. Default empty.
 		 */
-		$column_headers[ $screen->id ] = apply_filters( "manage_{$screen->id}_columns", array() );
+		$column_headers[ $screen->id ] = apply_filters( "manage_{$screen->id}_columns", [] );
 	}
 
 	return $column_headers[ $screen->id ];
@@ -62,7 +62,7 @@ function get_hidden_columns( $screen ) {
 	$use_defaults = ! is_array( $hidden );
 
 	if ( $use_defaults ) {
-		$hidden = array();
+		$hidden = [];
 
 		/**
 		 * Filters the default list of hidden columns.
@@ -155,7 +155,7 @@ function get_hidden_meta_boxes( $screen ) {
 
 	// Hide slug boxes by default
 	if ( $use_defaults ) {
-		$hidden = array();
+		$hidden = [];
 		if ( 'post' == $screen->base ) {
 			if ( 'post' == $screen->post_type || 'page' == $screen->post_type || 'attachment' == $screen->post_type )
 				$hidden = array('slugdiv', 'trackbacksdiv', 'postcustom', 'postexcerpt', 'commentstatusdiv', 'commentsdiv', 'authordiv', 'revisionsdiv');
@@ -195,7 +195,7 @@ function get_hidden_meta_boxes( $screen ) {
  * @param string $option An option name.
  * @param mixed $args Option-dependent arguments.
  */
-function add_screen_option( $option, $args = array() ) {
+function add_screen_option( $option, $args = [] ) {
 	$current_screen = get_current_screen();
 
 	if ( ! $current_screen )

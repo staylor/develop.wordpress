@@ -60,7 +60,7 @@ class Walker {
 	 * @param int    $depth  Depth of the item.
 	 * @param array  $args   An array of additional arguments.
 	 */
-	public function start_lvl( &$output, $depth = 0, $args = array() ) {}
+	public function start_lvl( &$output, $depth = 0, $args = [] ) {}
 
 	/**
 	 * Ends the list of after the elements are added.
@@ -75,7 +75,7 @@ class Walker {
 	 * @param int    $depth  Depth of the item.
 	 * @param array  $args   An array of additional arguments.
 	 */
-	public function end_lvl( &$output, $depth = 0, $args = array() ) {}
+	public function end_lvl( &$output, $depth = 0, $args = [] ) {}
 
 	/**
 	 * Start the element output.
@@ -92,7 +92,7 @@ class Walker {
 	 * @param array  $args              An array of additional arguments.
 	 * @param int    $current_object_id ID of the current item.
 	 */
-	public function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {}
+	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {}
 
 	/**
 	 * Ends the element output, if needed.
@@ -107,7 +107,7 @@ class Walker {
 	 * @param int    $depth  Depth of the item.
 	 * @param array  $args   An array of additional arguments.
 	 */
-	public function end_el( &$output, $object, $depth = 0, $args = array() ) {}
+	public function end_el( &$output, $object, $depth = 0, $args = [] ) {}
 
 	/**
 	 * Traverse elements to create list from elements.
@@ -200,7 +200,7 @@ class Walker {
 
 		// flat display
 		if ( -1 == $max_depth ) {
-			$empty_array = array();
+			$empty_array = [];
 			foreach ( $elements as $e )
 				$this->display_element( $e, $empty_array, 1, 0, $args, $output );
 			return $output;
@@ -212,8 +212,8 @@ class Walker {
 		 * Children_elements is two dimensional array, eg.
 		 * Children_elements[10][] contains all sub-elements whose parent is 10.
 		 */
-		$top_level_elements = array();
-		$children_elements  = array();
+		$top_level_elements = [];
+		$children_elements  = [];
 		foreach ( $elements as $e) {
 			if ( empty( $e->$parent_field ) )
 				$top_level_elements[] = $e;
@@ -230,8 +230,8 @@ class Walker {
 			$first = array_slice( $elements, 0, 1 );
 			$root = $first[0];
 
-			$top_level_elements = array();
-			$children_elements  = array();
+			$top_level_elements = [];
+			$children_elements  = [];
 			foreach ( $elements as $e) {
 				if ( $root->$parent_field == $e->$parent_field )
 					$top_level_elements[] = $e;
@@ -248,7 +248,7 @@ class Walker {
 		 * then we got orphans, which should be displayed regardless.
 		 */
 		if ( ( $max_depth == 0 ) && count( $children_elements ) > 0 ) {
-			$empty_array = array();
+			$empty_array = [];
 			foreach ( $children_elements as $orphans )
 				foreach ( $orphans as $op )
 					$this->display_element( $op, $empty_array, 1, 0, $args, $output );
@@ -312,7 +312,7 @@ class Walker {
 				$end = $total_top - $oldstart;
 			}
 
-			$empty_array = array();
+			$empty_array = [];
 			foreach ( $elements as $e ) {
 				$count++;
 				if ( $count < $start )
@@ -329,8 +329,8 @@ class Walker {
 		 * Children_elements is two dimensional array, e.g.
 		 * $children_elements[10][] contains all sub-elements whose parent is 10.
 		 */
-		$top_level_elements = array();
-		$children_elements  = array();
+		$top_level_elements = [];
+		$children_elements  = [];
 		foreach ( $elements as $e) {
 			if ( 0 == $e->$parent_field )
 				$top_level_elements[] = $e;
@@ -372,7 +372,7 @@ class Walker {
 		}
 
 		if ( $end >= $total_top && count( $children_elements ) > 0 ) {
-			$empty_array = array();
+			$empty_array = [];
 			foreach ( $children_elements as $orphans )
 				foreach ( $orphans as $op )
 					$this->display_element( $op, $empty_array, 1, 0, $args, $output );

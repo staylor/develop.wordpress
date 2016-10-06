@@ -22,7 +22,7 @@ use function WP\getApp;
  * @since 3.6.0
  */
 function wp_ajax_nopriv_heartbeat() {
-	$response = array();
+	$response = [];
 
 	// screen_id is the same as $current_screen->id and the JS global 'pagenow'.
 	if ( ! empty($_POST['screen_id']) )
@@ -251,7 +251,7 @@ function wp_ajax_autocomplete_user() {
 	if ( ! is_super_admin() && ! apply_filters( 'autocomplete_users_for_site_admins', false ) )
 		wp_die( -1 );
 
-	$return = array();
+	$return = [];
 
 	// Check the type of request
 	// Current allowed values are `add` and `search`
@@ -276,8 +276,8 @@ function wp_ajax_autocomplete_user() {
 		$id = get_current_blog_id();
 	}
 
-	$include_blog_users = ( $type == 'search' ? get_users( array( 'blog_id' => $id, 'fields' => 'ID' ) ) : array() );
-	$exclude_blog_users = ( $type == 'add' ? get_users( array( 'blog_id' => $id, 'fields' => 'ID' ) ) : array() );
+	$include_blog_users = ( $type == 'search' ? get_users( array( 'blog_id' => $id, 'fields' => 'ID' ) ) : [] );
+	$exclude_blog_users = ( $type == 'add' ? get_users( array( 'blog_id' => $id, 'fields' => 'ID' ) ) : [] );
 
 	$users = get_users( array(
 		'blog_id' => false,
@@ -463,9 +463,9 @@ function _wp_ajax_add_hierarchical_term() {
 	if ( 0 > $parent )
 		$parent = 0;
 	if ( $taxonomy->name == 'category' )
-		$post_category = isset($_POST['post_category']) ? (array) $_POST['post_category'] : array();
+		$post_category = isset($_POST['post_category']) ? (array) $_POST['post_category'] : [];
 	else
-		$post_category = ( isset($_POST['tax_input']) && isset($_POST['tax_input'][$taxonomy->name]) ) ? (array) $_POST['tax_input'][$taxonomy->name] : array();
+		$post_category = ( isset($_POST['tax_input']) && isset($_POST['tax_input'][$taxonomy->name]) ) ? (array) $_POST['tax_input'][$taxonomy->name] : [];
 	$checked_categories = array_map( 'absint', (array) $post_category );
 	$popular_ids = wp_popular_terms_checklist($taxonomy->name, 0, 10, false);
 
@@ -1160,7 +1160,7 @@ function wp_ajax_add_menu_item() {
 	// For performance reasons, we omit some object properties from the checklist.
 	// The following is a hacky way to restore them when adding non-custom items.
 
-	$menu_items_data = array();
+	$menu_items_data = [];
 	foreach ( (array) $_POST['menu-item'] as $menu_item_data ) {
 		if (
 			! empty( $menu_item_data['menu-item-type'] ) &&
@@ -1195,7 +1195,7 @@ function wp_ajax_add_menu_item() {
 	if ( is_wp_error( $item_ids ) )
 		wp_die( 0 );
 
-	$menu_items = array();
+	$menu_items = [];
 
 	foreach ( (array) $item_ids as $menu_item_id ) {
 		$menu_obj = get_post( $menu_item_id );
@@ -1244,7 +1244,7 @@ function wp_ajax_add_meta() {
 
 		// If the post is an autodraft, save the post as a draft and then attempt to save the meta.
 		if ( $post->post_status == 'auto-draft' ) {
-			$post_data = array();
+			$post_data = [];
 			$post_data['action'] = 'draft'; // Warning fix
 			$post_data['post_ID'] = $pid;
 			$post_data['post_type'] = $post->post_type;
@@ -1368,10 +1368,10 @@ function wp_ajax_add_user( $action ) {
  */
 function wp_ajax_closed_postboxes() {
 	check_ajax_referer( 'closedpostboxes', 'closedpostboxesnonce' );
-	$closed = isset( $_POST['closed'] ) ? explode( ',', $_POST['closed']) : array();
+	$closed = isset( $_POST['closed'] ) ? explode( ',', $_POST['closed']) : [];
 	$closed = array_filter($closed);
 
-	$hidden = isset( $_POST['hidden'] ) ? explode( ',', $_POST['hidden']) : array();
+	$hidden = isset( $_POST['hidden'] ) ? explode( ',', $_POST['hidden']) : [];
 	$hidden = array_filter($hidden);
 
 	$page = isset( $_POST['page'] ) ? $_POST['page'] : '';
@@ -1408,7 +1408,7 @@ function wp_ajax_hidden_columns() {
 	if ( ! $user = wp_get_current_user() )
 		wp_die( -1 );
 
-	$hidden = ! empty( $_POST['hidden'] ) ? explode( ',', $_POST['hidden'] ) : array();
+	$hidden = ! empty( $_POST['hidden'] ) ? explode( ',', $_POST['hidden'] ) : [];
 	update_user_option( $user->ID, "manage{$page}columnshidden", $hidden, true );
 
 	wp_die( 1 );
@@ -1486,7 +1486,7 @@ function wp_ajax_menu_get_metabox() {
 function wp_ajax_wp_link_ajax() {
 	check_ajax_referer( 'internal-linking', '_ajax_linking_nonce' );
 
-	$args = array();
+	$args = [];
 
 	if ( isset( $_POST['search'] ) ) {
 		$args['s'] = wp_unslash( $_POST['search'] );
@@ -1823,9 +1823,9 @@ function wp_ajax_widgets_order() {
 
 	// Save widgets order for all sidebars.
 	if ( is_array($_POST['sidebars']) ) {
-		$sidebars = array();
+		$sidebars = [];
 		foreach ( $_POST['sidebars'] as $key => $val ) {
-			$sb = array();
+			$sb = [];
 			if ( !empty($val) ) {
 				$val = explode(',', $val);
 				foreach ( $val as $k => $v ) {
@@ -1884,7 +1884,7 @@ function wp_ajax_save_widget() {
 	$error = '<p>' . __('An error has occurred. Please reload the page and try again.') . '</p>';
 
 	$sidebars = wp_get_sidebars_widgets();
-	$sidebar = isset($sidebars[$sidebar_id]) ? $sidebars[$sidebar_id] : array();
+	$sidebar = isset($sidebars[$sidebar_id]) ? $sidebars[$sidebar_id] : [];
 
 	// Delete.
 	if ( isset($_POST['delete_widget']) && $_POST['delete_widget'] ) {
@@ -1894,7 +1894,7 @@ function wp_ajax_save_widget() {
 		}
 
 		$sidebar = array_diff( $sidebar, array($widget_id) );
-		$_POST = array('sidebar' => $sidebar_id, 'widget-' . $id_base => array(), 'the-widget-id' => $widget_id, 'delete_widget' => '1');
+		$_POST = array('sidebar' => $sidebar_id, 'widget-' . $id_base => [], 'the-widget-id' => $widget_id, 'delete_widget' => '1');
 
 		/** This action is documented in wp-admin/widgets.php */
 		do_action( 'delete_widget', $widget_id, $sidebar_id, $id_base );
@@ -2025,7 +2025,7 @@ function wp_ajax_upload_attachment() {
 		$post_id = null;
 	}
 
-	$post_data = isset( $_REQUEST['post_data'] ) ? $_REQUEST['post_data'] : array();
+	$post_data = isset( $_REQUEST['post_data'] ) ? $_REQUEST['post_data'] : [];
 
 	// If the context is custom header or background, make sure the uploaded file is an image.
 	if ( isset( $post_data['context'] ) && in_array( $post_data['context'], array( 'custom-header', 'custom-background' ) ) ) {
@@ -2186,7 +2186,7 @@ function wp_ajax_set_attachment_thumbnail() {
 		wp_send_json_error();
 	}
 
-	$post_ids = array();
+	$post_ids = [];
 	// For each URL, try to find its corresponding post ID.
 	foreach ( $_POST['urls'] as $url ) {
 		$post_id = attachment_url_to_postid( $url );
@@ -2372,7 +2372,7 @@ function wp_ajax_query_attachments() {
 	if ( ! current_user_can( 'upload_files' ) )
 		wp_send_json_error();
 
-	$query = isset( $_REQUEST['query'] ) ? (array) $_REQUEST['query'] : array();
+	$query = isset( $_REQUEST['query'] ) ? (array) $_REQUEST['query'] : [];
 	$keys = array(
 		's', 'order', 'orderby', 'posts_per_page', 'paged', 'post_mime_type',
 		'post_parent', 'post__in', 'post__not_in', 'year', 'monthnum'
@@ -2471,7 +2471,7 @@ function wp_ajax_save_attachment() {
 		$id3data = wp_get_attachment_metadata( $post['ID'] );
 		if ( ! is_array( $id3data ) ) {
 			$changed = true;
-			$id3data = array();
+			$id3data = [];
 		}
 		foreach ( wp_get_attachment_id3_keys( (object) $post, 'edit' ) as $key => $label ) {
 			if ( isset( $changes[ $key ] ) ) {
@@ -2714,7 +2714,7 @@ function wp_ajax_heartbeat() {
 		wp_send_json_error();
 	}
 
-	$response = $data = array();
+	$response = $data = [];
 	$nonce_state = wp_verify_nonce( $_POST['_nonce'], 'heartbeat-nonce' );
 
 	// screen_id is the same as $current_screen->id and the JS global 'pagenow'.
@@ -2797,7 +2797,7 @@ function wp_ajax_get_revision_diffs() {
 	if ( ! $revisions = wp_get_post_revisions( $post->ID, array( 'check_enabled' => false ) ) )
 		wp_send_json_error();
 
-	$return = array();
+	$return = [];
 	@set_time_limit( 0 );
 
 	foreach ( $_REQUEST['compare'] as $compare_key ) {
@@ -3817,7 +3817,7 @@ function wp_ajax_search_plugins() {
 		'screen' => get_current_screen(),
 	) );
 
-	$status = array();
+	$status = [];
 
 	if ( ! $wp_list_table->ajax_user_can() ) {
 		$status['errorMessage'] = __( 'Sorry, you are not allowed to manage plugins for this site.' );
@@ -3860,7 +3860,7 @@ function wp_ajax_search_install_plugins() {
 		'screen' => get_current_screen(),
 	) );
 
-	$status = array();
+	$status = [];
 
 	if ( ! $wp_list_table->ajax_user_can() ) {
 		$status['errorMessage'] = __( 'Sorry, you are not allowed to manage plugins for this site.' );

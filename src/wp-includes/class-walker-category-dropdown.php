@@ -54,7 +54,7 @@ class Walker_CategoryDropdown extends Walker {
 	 *                         See wp_dropdown_categories().
 	 * @param int    $id       Optional. ID of the current category. Default 0 (unused).
 	 */
-	public function start_el( &$output, $category, $depth = 0, $args = array(), $id = 0 ) {
+	public function start_el( &$output, $category, $depth = 0, $args = [], $id = 0 ) {
 		$pad = str_repeat('&nbsp;', $depth * 3);
 
 		/** This filter is documented in wp-includes/category-template.php */

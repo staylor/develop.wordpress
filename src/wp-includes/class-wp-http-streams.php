@@ -27,12 +27,12 @@ class WP_Http_Streams {
 	 * @param string|array $args Optional. Override the defaults.
 	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
 	 */
-	public function request($url, $args = array()) {
+	public function request($url, $args = []) {
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 5,
 			'redirection' => 5, 'httpversion' => '1.0',
 			'blocking' => true,
-			'headers' => array(), 'body' => null, 'cookies' => array()
+			'headers' => [], 'body' => null, 'cookies' => []
 		);
 
 		$r = wp_parse_args( $args, $defaults );
@@ -208,7 +208,7 @@ class WP_Http_Streams {
 		if ( ! $r['blocking'] ) {
 			stream_set_blocking( $handle, 0 );
 			fclose( $handle );
-			return array( 'headers' => array(), 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => array() );
+			return array( 'headers' => [], 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => [] );
 		}
 
 		$strResponse = '';
@@ -345,7 +345,7 @@ class WP_Http_Streams {
 		 */
 		$host_type = ( WP_Http::is_ip_address( $host ) ? 'ip' : 'dns' );
 
-		$certificate_hostnames = array();
+		$certificate_hostnames = [];
 		if ( ! empty( $cert['extensions']['subjectAltName'] ) ) {
 			$match_against = preg_split( '/,\s*/', $cert['extensions']['subjectAltName'] );
 			foreach ( $match_against as $match ) {
@@ -387,7 +387,7 @@ class WP_Http_Streams {
 	 * @param array $args Optional. Array of request arguments. Default empty array.
 	 * @return bool False means this class can not be used, true means it can.
 	 */
-	public static function test( $args = array() ) {
+	public static function test( $args = [] ) {
 		if ( ! function_exists( 'stream_socket_client' ) )
 			return false;
 

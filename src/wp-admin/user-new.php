@@ -231,7 +231,7 @@ if ( is_multisite() && current_user_can( 'promote_users' ) && ! wp_is_large_netw
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 if ( isset($_GET['update']) ) {
-	$messages = array();
+	$messages = [];
 	if ( is_multisite() ) {
 		$edit_link = '';
 		if ( ( isset( $_GET['user_id'] ) ) ) {

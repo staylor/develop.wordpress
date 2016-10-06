@@ -92,7 +92,7 @@ function get_option( $option, $default = false ) {
 					wp_cache_add( $option, $value, 'options' );
 				} else { // option does not exist, so we must cache its non-existence
 					if ( ! is_array( $notoptions ) ) {
-						 $notoptions = array();
+						 $notoptions = [];
 					}
 					$notoptions[$option] = true;
 					wp_cache_set( 'notoptions', $notoptions, 'options' );
@@ -184,7 +184,7 @@ function wp_load_alloptions() {
 		if ( !$alloptions_db = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options WHERE autoload = 'yes'" ) )
 			$alloptions_db = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options" );
 		$wpdb->suppress_errors($suppress);
-		$alloptions = array();
+		$alloptions = [];
 		foreach ( (array) $alloptions_db as $o ) {
 			$alloptions[$o->option_name] = $o->option_value;
 		}
@@ -908,14 +908,14 @@ function get_all_user_settings() {
 	global $_updated_user_settings;
 
 	if ( ! $user_id = get_current_user_id() ) {
-		return array();
+		return [];
 	}
 
 	if ( isset( $_updated_user_settings ) && is_array( $_updated_user_settings ) ) {
 		return $_updated_user_settings;
 	}
 
-	$user_settings = array();
+	$user_settings = [];
 
 	if ( isset( $_COOKIE['wp-settings-' . $user_id] ) ) {
 		$cookie = preg_replace( '/[^A-Za-z0-9=&_-]/', '', $_COOKIE['wp-settings-' . $user_id] );
@@ -1148,7 +1148,7 @@ function get_network_option( $network_id, $option, $default = false ) {
 				wp_cache_set( $cache_key, $value, 'site-options' );
 			} else {
 				if ( ! is_array( $notoptions ) ) {
-					$notoptions = array();
+					$notoptions = [];
 				}
 				$notoptions[ $option ] = true;
 				wp_cache_set( $notoptions_key, $notoptions, 'site-options' );
@@ -1708,7 +1708,7 @@ function set_site_transient( $transient, $value, $expiration = 0 ) {
  *     @type bool     $show_in_rest      Whether data associated with this setting should be included in the REST API.
  * }
  */
-function register_setting( $option_group, $option_name, $args = array() ) {
+function register_setting( $option_group, $option_name, $args = [] ) {
 	global $new_whitelist_options, $wp_registered_settings;
 
 	$defaults = array(
@@ -1740,7 +1740,7 @@ function register_setting( $option_group, $option_name, $args = array() ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	if ( ! is_array( $wp_registered_settings ) ) {
-		$wp_registered_settings = array();
+		$wp_registered_settings = [];
 	}
 
 	if ( 'misc' == $option_group ) {
@@ -1816,7 +1816,7 @@ function get_registered_settings() {
 	global $wp_registered_settings;
 
 	if ( ! is_array( $wp_registered_settings ) ) {
-		return array();
+		return [];
 	}
 
 	return $wp_registered_settings;

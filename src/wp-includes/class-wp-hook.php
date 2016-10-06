@@ -24,7 +24,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	 * @access public
 	 * @var array
 	 */
-	public $callbacks = array();
+	public $callbacks = [];
 
 	/**
 	 * The priority keys of actively running iterations of a hook.
@@ -33,7 +33,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	 * @access private
 	 * @var array
 	 */
-	private $iterations = array();
+	private $iterations = [];
 
 	/**
 	 * The current priority of actively running iterations of a hook.
@@ -42,7 +42,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	 * @access private
 	 * @var array
 	 */
-	private $current_priority = array();
+	private $current_priority = [];
 
 	/**
 	 * Number of levels this hook can be recursively called.
@@ -253,7 +253,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 		}
 
 		if ( false === $priority ) {
-			$this->callbacks = array();
+			$this->callbacks = [];
 		} else if ( isset( $this->callbacks[ $priority ] ) ) {
 			unset( $this->callbacks[ $priority ] );
 		}
@@ -293,7 +293,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 
 				// Avoid the array_slice if possible.
 				if ( $the_['accepted_args'] == 0 ) {
-					$value = call_user_func_array( $the_['function'], array() );
+					$value = call_user_func_array( $the_['function'], [] );
 				} elseif ( $the_['accepted_args'] >= $num_args ) {
 					$value = call_user_func_array( $the_['function'], $args );
 				} else {
@@ -363,7 +363,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	 */
 	public static function build_preinitialized_hooks( $filters ) {
 		/** @var WP_Hook[] $normalized */
-		$normalized = array();
+		$normalized = [];
 
 		foreach ( $filters as $tag => $callback_groups ) {
 			if ( is_object( $callback_groups ) && $callback_groups instanceof WP_Hook ) {

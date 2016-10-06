@@ -447,7 +447,7 @@ default:
 
 	include( ABSPATH . 'wp-admin/admin-header.php' );
 
-	$messages = array();
+	$messages = [];
 	if ( isset($_GET['update']) ) :
 		switch($_GET['update']) {
 		case 'del':

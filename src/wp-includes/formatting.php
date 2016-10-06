@@ -133,9 +133,9 @@ function wptexturize( $text, $reset = false ) {
 
 		// Pattern-based replacements of characters.
 		// Sort the remaining patterns into several arrays for performance tuning.
-		$dynamic_characters = array( 'apos' => array(), 'quote' => array(), 'dash' => array() );
-		$dynamic_replacements = array( 'apos' => array(), 'quote' => array(), 'dash' => array() );
-		$dynamic = array();
+		$dynamic_characters = array( 'apos' => [], 'quote' => [], 'dash' => [] );
+		$dynamic_replacements = array( 'apos' => [], 'quote' => [], 'dash' => [] );
+		$dynamic = [];
 		$spaces = wp_spaces_regexp();
 
 		// '99' and '99" are ambiguous among other patterns; assume it's an abbreviated year at the end of a quotation.
@@ -168,7 +168,7 @@ function wptexturize( $text, $reset = false ) {
 
 		$dynamic_characters['apos'] = array_keys( $dynamic );
 		$dynamic_replacements['apos'] = array_values( $dynamic );
-		$dynamic = array();
+		$dynamic = [];
 
 		// Quoted Numbers like "42"
 		if ( '"' !== $opening_quote && '"' !== $closing_quote ) {
@@ -182,7 +182,7 @@ function wptexturize( $text, $reset = false ) {
 
 		$dynamic_characters['quote'] = array_keys( $dynamic );
 		$dynamic_replacements['quote'] = array_values( $dynamic );
-		$dynamic = array();
+		$dynamic = [];
 
 		// Dashes and spaces
 		$dynamic[ '/---/' ] = $em_dash;
@@ -212,8 +212,8 @@ function wptexturize( $text, $reset = false ) {
 	 */
 	$no_texturize_shortcodes = apply_filters( 'no_texturize_shortcodes', $default_no_texturize_shortcodes );
 
-	$no_texturize_tags_stack = array();
-	$no_texturize_shortcodes_stack = array();
+	$no_texturize_tags_stack = [];
+	$no_texturize_shortcodes_stack = [];
 
 	// Look for shortcodes and HTML elements.
 	$app = getApp();
@@ -428,7 +428,7 @@ function _wptexturize_pushpop_element( $text, &$stack, $disabled_elements ) {
  * @return string Text which has been converted into correct paragraph tags.
  */
 function wpautop( $pee, $br = true ) {
-	$pre_tags = array();
+	$pre_tags = [];
 
 	if ( trim($pee) === '' )
 		return '';
@@ -1070,7 +1070,7 @@ function wp_check_invalid_utf8( $string, $strip = false ) {
  */
 function utf8_uri_encode( $utf8_string, $length = 0 ) {
 	$unicode = '';
-	$values = array();
+	$values = [];
 	$num_octets = 1;
 	$unicode_length = 0;
 
@@ -1109,7 +1109,7 @@ function utf8_uri_encode( $utf8_string, $length = 0 ) {
 
 				$unicode_length += $num_octets * 3;
 
-				$values = array();
+				$values = [];
 				$num_octets = 1;
 			}
 		}
@@ -1711,7 +1711,7 @@ function remove_accents( $string ) {
 
 		$string = strtr($string, $chars);
 	} else {
-		$chars = array();
+		$chars = [];
 		// Assume ISO-8859-1 if not UTF-8
 		$chars['in'] = "\x80\x83\x8a\x8e\x9a\x9e"
 			."\x9f\xa2\xa5\xb5\xc0\xc1\xc2"
@@ -1727,7 +1727,7 @@ function remove_accents( $string ) {
 		$chars['out'] = "EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy";
 
 		$string = strtr($string, $chars['in'], $chars['out']);
-		$double_chars = array();
+		$double_chars = [];
 		$double_chars['in'] = array("\x8c", "\x9c", "\xc6", "\xd0", "\xde", "\xdf", "\xe6", "\xf0", "\xfe");
 		$double_chars['out'] = array('OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th');
 		$string = str_replace($double_chars['in'], $double_chars['out'], $string);
@@ -2176,7 +2176,7 @@ function balanceTags( $text, $force = false ) {
  * @return string Balanced text.
  */
 function force_balance_tags( $text ) {
-	$tagstack = array();
+	$tagstack = [];
 	$stacksize = 0;
 	$tagqueue = '';
 	$newtext = '';
@@ -2669,7 +2669,7 @@ function make_clickable( $text ) {
  * @return array Numeric array of chunks.
  */
 function _split_str_by_whitespace( $string, $goal ) {
-	$chunks = array();
+	$chunks = [];
 
 	$string_nullspace = strtr( $string, "\r\n\t\v\f ", "\000\000\000\000\000\000" );
 
@@ -2773,7 +2773,7 @@ function translate_smiley( $matches ) {
 	$smiley = trim( reset( $matches ) );
 	$img = $wpsmiliestrans[ $smiley ];
 
-	$matches = array();
+	$matches = [];
 	$ext = preg_match( '/\.([^.]+)$/', $img, $matches ) ? strtolower( $matches[1] ) : false;
 	$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png' );
 
@@ -3160,7 +3160,7 @@ function sanitize_email( $email ) {
 	}
 
 	// Create an array that will contain valid subs
-	$new_subs = array();
+	$new_subs = [];
 
 	// Loop through each sub
 	foreach ( $subs as $sub ) {
@@ -4200,7 +4200,7 @@ function sanitize_option( $option, $value ) {
 					$value = explode( "\n", $value );
 
 				$domains = array_values( array_filter( array_map( 'trim', $value ) ) );
-				$value = array();
+				$value = [];
 
 				foreach ( $domains as $domain ) {
 					if ( ! preg_match( '/(--|\.\.)/', $domain ) && preg_match( '|^([a-zA-Z0-9-\.])+$|', $domain ) ) {
@@ -5042,7 +5042,7 @@ function wp_encode_emoji( $content ) {
 		   | \xF0\x9F\x9A[\x80-\xBF]        # Transport and map symbols
 		)/x';
 
-		$matches = array();
+		$matches = [];
 		if ( preg_match_all( $regex, $content, $matches ) ) {
 			if ( ! empty( $matches[1] ) ) {
 				foreach ( $matches[1] as $emoji ) {
@@ -5105,7 +5105,7 @@ function wp_staticize_emoji( $text ) {
 
 		// If it's not a tag and not in ignore block.
 		if ( '' ==  $ignore_block_element && strlen( $content ) > 0 && '<' != $content[0] ) {
-			$matches = array();
+			$matches = [];
 			if ( preg_match_all( '/(&#x1f1(e[6-9a-f]|f[0-9a-f]);){2}/', $content, $matches ) ) {
 				if ( ! empty( $matches[0] ) ) {
 					foreach ( $matches[0] as $flag ) {
@@ -5122,7 +5122,7 @@ function wp_staticize_emoji( $text ) {
 			// Loosely match the Emoji Unicode range.
 			$regex = '/(&#x[2-3][0-9a-f]{3};|&#x1f[1-6][0-9a-f]{2};)/';
 
-			$matches = array();
+			$matches = [];
 			if ( preg_match_all( $regex, $content, $matches ) ) {
 				if ( ! empty( $matches[1] ) ) {
 					foreach ( $matches[1] as $emoji ) {
@@ -5166,7 +5166,7 @@ function wp_staticize_emoji_for_email( $mail ) {
 	 * then pass it through the wp_mail_content_type filter, in case a plugin
 	 * is handling changing the Content-Type.
 	 */
-	$headers = array();
+	$headers = [];
 	if ( isset( $mail['headers'] ) ) {
 		if ( is_array( $mail['headers'] ) ) {
 			$headers = $mail['headers'];

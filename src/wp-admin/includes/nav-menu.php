@@ -17,8 +17,8 @@ use function WP\getApp;
  *
  * @param array $request The unsanitized request values.
  */
-function _wp_ajax_menu_quick_search( $request = array() ) {
-	$args = array();
+function _wp_ajax_menu_quick_search( $request = [] ) {
+	$args = [];
 	$type = isset( $request['type'] ) ? $request['type'] : '';
 	$object_type = isset( $request['object_type'] ) ? $request['object_type'] : '';
 	$query = isset( $request['q'] ) ? $request['q'] : '';
@@ -164,7 +164,7 @@ function wp_initial_nav_menu_meta_boxes() {
 		return;
 
 	$initial_meta_boxes = array( 'add-post-type-page', 'add-post-type-post', 'add-custom-links', 'add-category' );
-	$hidden_meta_boxes = array();
+	$hidden_meta_boxes = [];
 
 	foreach ( array_keys($wp_meta_boxes['nav-menus']) as $context ) {
 		foreach ( array_keys($wp_meta_boxes['nav-menus'][$context]) as $priority ) {
@@ -443,7 +443,7 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 				$search_results = get_posts( array( 's' => $searched, 'post_type' => $post_type_name, 'fields' => 'all', 'order' => 'DESC', ) );
 			} else {
 				$searched = '';
-				$search_results = array();
+				$search_results = [];
 			}
 			?>
 			<p class="quick-search-wrap">
@@ -732,7 +732,7 @@ function wp_nav_menu_item_taxonomy_meta_box( $object, $box ) {
 				$search_results = get_terms( $taxonomy_name, array( 'name__like' => $searched, 'fields' => 'all', 'orderby' => 'count', 'order' => 'DESC', 'hierarchical' => false ) );
 			} else {
 				$searched = '';
-				$search_results = array();
+				$search_results = [];
 			}
 			?>
 			<p class="quick-search-wrap">
@@ -788,9 +788,9 @@ function wp_nav_menu_item_taxonomy_meta_box( $object, $box ) {
  * @param array $menu_data The unsanitized posted menu item data.
  * @return array The database IDs of the items saved
  */
-function wp_save_nav_menu_items( $menu_id = 0, $menu_data = array() ) {
+function wp_save_nav_menu_items( $menu_id = 0, $menu_data = [] ) {
 	$menu_id = (int) $menu_id;
-	$items_saved = array();
+	$items_saved = [];
 
 	if ( 0 == $menu_id || is_nav_menu( $menu_id ) ) {
 
@@ -1007,8 +1007,8 @@ function _wp_delete_orphaned_draft_menu_items() {
  */
 function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_selected_title ) {
 	$unsorted_menu_items = wp_get_nav_menu_items( $nav_menu_selected_id, array( 'orderby' => 'ID', 'output' => ARRAY_A, 'output_key' => 'ID', 'post_status' => 'draft,publish' ) );
-	$messages = array();
-	$menu_items = array();
+	$messages = [];
+	$menu_items = [];
 	// Index menu items by db ID
 	foreach ( $unsorted_menu_items as $_item )
 		$menu_items[$_item->db_id] = $_item;
@@ -1029,7 +1029,7 @@ function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_select
 			if ( ! isset( $_POST['menu-item-title'][ $_key ] ) || '' == $_POST['menu-item-title'][ $_key ] )
 				continue;
 
-			$args = array();
+			$args = [];
 			foreach ( $post_fields as $field )
 				$args[$field] = isset( $_POST[$field][$_key] ) ? $_POST[$field][$_key] : '';
 
@@ -1056,7 +1056,7 @@ function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_select
 	$auto_add = ! empty( $_POST['auto-add-pages'] );
 	$nav_menu_option = (array) get_option( 'nav_menu_options' );
 	if ( ! isset( $nav_menu_option['auto_add'] ) )
-		$nav_menu_option['auto_add'] = array();
+		$nav_menu_option['auto_add'] = [];
 	if ( $auto_add ) {
 		if ( ! in_array( $nav_menu_selected_id, $nav_menu_option['auto_add'] ) )
 			$nav_menu_option['auto_add'][] = $nav_menu_selected_id;
@@ -1111,7 +1111,7 @@ function _wp_expand_nav_menu_post_data() {
 				$array_bits = array_merge( $array_bits, explode( '][', $matches[3] ) );
 			}
 
-			$new_post_data = array();
+			$new_post_data = [];
 
 			// Build the new array value from leaf to trunk.
 			for ( $i = count( $array_bits ) - 1; $i >= 0; $i -- ) {

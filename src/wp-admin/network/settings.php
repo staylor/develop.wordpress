@@ -47,7 +47,7 @@ if ( $_POST ) {
 
 	check_admin_referer( 'siteoptions' );
 
-	$checked_options = array( 'menu_items' => array(), 'registrationnotification' => 'no', 'upload_space_check_disabled' => 1, 'add_new_users' => 0 );
+	$checked_options = array( 'menu_items' => [], 'registrationnotification' => 'no', 'upload_space_check_disabled' => 1, 'add_new_users' => 0 );
 	foreach ( $checked_options as $option_name => $option_unchecked_value ) {
 		if ( ! isset( $_POST[$option_name] ) )
 			$_POST[$option_name] = $option_unchecked_value;

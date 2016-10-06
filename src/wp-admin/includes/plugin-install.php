@@ -100,7 +100,7 @@ use function WP\getApp;
  *         {@link https://developer.wordpress.org/reference/functions/plugins_api/ function reference article}
  *         for more information on the make-up of possible return values depending on the value of `$action`.
  */
-function plugins_api( $action, $args = array() ) {
+function plugins_api( $action, $args = [] ) {
 
 	if ( is_array( $args ) ) {
 		$args = (object) $args;
@@ -192,7 +192,7 @@ function plugins_api( $action, $args = array() ) {
  * @param array $args
  * @return array
  */
-function install_popular_tags( $args = array() ) {
+function install_popular_tags( $args = [] ) {
 	$key = md5(serialize($args));
 	if ( false !== ($tags = get_site_transient('poptags_' . $key) ) )
 		return $tags;
@@ -228,7 +228,7 @@ function install_dashboard() {
 		echo $api_tags->get_error_message();
 	} else {
 		//Set up the tags in a way which can be interpreted by wp_generate_tag_cloud()
-		$tags = array();
+		$tags = [];
 		foreach ( (array) $api_tags as $tag ) {
 			$url = self_admin_url( 'plugin-install.php?tab=search&type=tag&s=' . urlencode( $tag['name'] ) );
 			$data = array(
@@ -449,13 +449,13 @@ function install_plugin_information() {
 	}
 
 	$plugins_allowedtags = array(
-		'a' => array( 'href' => array(), 'title' => array(), 'target' => array() ),
-		'abbr' => array( 'title' => array() ), 'acronym' => array( 'title' => array() ),
-		'code' => array(), 'pre' => array(), 'em' => array(), 'strong' => array(),
-		'div' => array( 'class' => array() ), 'span' => array( 'class' => array() ),
-		'p' => array(), 'ul' => array(), 'ol' => array(), 'li' => array(),
-		'h1' => array(), 'h2' => array(), 'h3' => array(), 'h4' => array(), 'h5' => array(), 'h6' => array(),
-		'img' => array( 'src' => array(), 'class' => array(), 'alt' => array() )
+		'a' => array( 'href' => [], 'title' => [], 'target' => [] ),
+		'abbr' => array( 'title' => [] ), 'acronym' => array( 'title' => [] ),
+		'code' => [], 'pre' => [], 'em' => [], 'strong' => [],
+		'div' => array( 'class' => [] ), 'span' => array( 'class' => [] ),
+		'p' => [], 'ul' => [], 'ol' => [], 'li' => [],
+		'h1' => [], 'h2' => [], 'h3' => [], 'h4' => [], 'h5' => [], 'h6' => [],
+		'img' => array( 'src' => [], 'class' => [], 'alt' => [] )
 	);
 
 	$plugins_section_titles = array(

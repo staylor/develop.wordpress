@@ -21,7 +21,7 @@ use function WP\getApp;
 function wp_get_additional_image_sizes() {
 	global $_wp_additional_image_sizes;
 	if ( ! $_wp_additional_image_sizes ) {
-		$_wp_additional_image_sizes = array();
+		$_wp_additional_image_sizes = [];
 	}
 	return $_wp_additional_image_sizes;
 }
@@ -682,11 +682,11 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 		return false;
 	}
 
-	$data = array();
+	$data = [];
 
 	// Find the best match when '$size' is an array.
 	if ( is_array( $size ) ) {
-		$candidates = array();
+		$candidates = [];
 
 		foreach ( $imagedata['sizes'] as $_size => $data ) {
 			// If there's an exact match to an existing image size, short circuit.
@@ -1112,7 +1112,7 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	$max_srcset_image_width = apply_filters( 'max_srcset_image_width', 1600, $size_array );
 
 	// Array to hold URL candidates.
-	$sources = array();
+	$sources = [];
 
 	/**
 	 * To make sure the ID matches our image src, we will check to see if any sizes in our attachment
@@ -1307,7 +1307,7 @@ function wp_make_content_images_responsive( $content ) {
 		return $content;
 	}
 
-	$selected_images = $attachment_ids = array();
+	$selected_images = $attachment_ids = [];
 
 	foreach( $matches[0] as $image ) {
 		if ( false === strpos( $image, ' srcset=' ) && preg_match( '/wp-image-([0-9]+)/i', $image, $class_id ) &&
@@ -1674,7 +1674,7 @@ function gallery_shortcode( $attr ) {
 	if ( ! empty( $atts['include'] ) ) {
 		$_attachments = get_posts( array( 'include' => $atts['include'], 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $atts['order'], 'orderby' => $atts['orderby'] ) );
 
-		$attachments = array();
+		$attachments = [];
 		foreach ( $_attachments as $key => $val ) {
 			$attachments[$val->ID] = $_attachments[$key];
 		}
@@ -1970,7 +1970,7 @@ function wp_playlist_shortcode( $attr ) {
 		$args['include'] = $atts['include'];
 		$_attachments = get_posts( $args );
 
-		$attachments = array();
+		$attachments = [];
 		foreach ( $_attachments as $key => $val ) {
 			$attachments[$val->ID] = $_attachments[$key];
 		}
@@ -2012,7 +2012,7 @@ function wp_playlist_shortcode( $attr ) {
 		'artists' => wp_validate_boolean( $atts['artists'] ),
 	);
 
-	$tracks = array();
+	$tracks = [];
 	foreach ( $attachments as $attachment ) {
 		$url = wp_get_attachment_url( $attachment->ID );
 		$ftype = wp_check_filetype( $url, wp_get_mime_types() );
@@ -2024,7 +2024,7 @@ function wp_playlist_shortcode( $attr ) {
 			'description' => $attachment->post_content
 		);
 
-		$track['meta'] = array();
+		$track['meta'] = [];
 		$meta = wp_get_attachment_metadata( $attachment->ID );
 		if ( ! empty( $meta ) ) {
 
@@ -2324,7 +2324,7 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 		}
 	}
 
-	$attr_strings = array();
+	$attr_strings = [];
 	foreach ( $html_atts as $k => $v ) {
 		$attr_strings[] = $k . '="' . esc_attr( $v ) . '"';
 	}
@@ -2563,7 +2563,7 @@ function wp_video_shortcode( $attr, $content = '' ) {
 		}
 	}
 
-	$attr_strings = array();
+	$attr_strings = [];
 	foreach ( $html_atts as $k => $v ) {
 		$attr_strings[] = $k . '="' . esc_attr( $v ) . '"';
 	}
@@ -2729,7 +2729,7 @@ function get_attachment_taxonomies( $attachment, $output = 'names' ) {
 		$attachment = (object) $attachment;
 	}
 	if ( ! is_object($attachment) )
-		return array();
+		return [];
 
 	$file = get_attached_file( $attachment->ID );
 	$filename = basename( $file );
@@ -2746,7 +2746,7 @@ function get_attachment_taxonomies( $attachment, $output = 'names' ) {
 					$objects[] = "attachment:$token";
 	}
 
-	$taxonomies = array();
+	$taxonomies = [];
 	foreach ( $objects as $object ) {
 		if ( $taxes = get_object_taxonomies( $object, $output ) ) {
 			$taxonomies = array_merge( $taxonomies, $taxes );
@@ -2774,8 +2774,8 @@ function get_attachment_taxonomies( $attachment, $output = 'names' ) {
  * @return array The names of all taxonomy of $object_type.
  */
 function get_taxonomies_for_attachments( $output = 'names' ) {
-	$taxonomies = array();
-	foreach ( get_taxonomies( array(), 'objects' ) as $taxonomy ) {
+	$taxonomies = [];
+	foreach ( get_taxonomies( [], 'objects' ) as $taxonomy ) {
 		foreach ( $taxonomy->object_type as $object_type ) {
 			if ( 'attachment' == $object_type || 0 === strpos( $object_type, 'attachment:' ) ) {
 				if ( 'names' == $output )
@@ -2866,7 +2866,7 @@ function wp_max_upload_size() {
  * @return WP_Image_Editor|WP_Error The WP_Image_Editor object if successful, an WP_Error
  *                                  object otherwise.
  */
-function wp_get_image_editor( $path, $args = array() ) {
+function wp_get_image_editor( $path, $args = [] ) {
 	$args['path'] = $path;
 
 	if ( ! isset( $args['mime_type'] ) ) {
@@ -2902,7 +2902,7 @@ function wp_get_image_editor( $path, $args = array() ) {
  *                           Default empty array.
  * @return bool True if an eligible editor is found; false otherwise.
  */
-function wp_image_editor_supports( $args = array() ) {
+function wp_image_editor_supports( $args = [] ) {
 	return (bool) _wp_image_editor_choose( $args );
 }
 
@@ -2916,7 +2916,7 @@ function wp_image_editor_supports( $args = array() ) {
  * @return string|false Class name for the first editor that claims to support the request. False if no
  *                     editor claims to support the request.
  */
-function _wp_image_editor_choose( $args = array() ) {
+function _wp_image_editor_choose( $args = [] ) {
 	/**
 	 * Filters the list of image editing library classes.
 	 *
@@ -2964,7 +2964,7 @@ function wp_plupload_default_settings() {
 
 	$max_upload_size = wp_max_upload_size();
 	$allowed_extensions = array_keys( get_allowed_mime_types() );
-	$extensions = array();
+	$extensions = [];
 	foreach ( $allowed_extensions as $extension ) {
 		$extensions = array_merge( $extensions, explode( '|', $extension ) );
 	}
@@ -3131,7 +3131,7 @@ function wp_prepare_attachment_for_js( $attachment ) {
 		$response['nonces']['delete'] = wp_create_nonce( 'delete-post_' . $attachment->ID );
 
 	if ( $meta && 'image' === $type ) {
-		$sizes = array();
+		$sizes = [];
 
 		/** This filter is documented in wp-admin/includes/media.php */
 		$possible_sizes = apply_filters( 'image_size_names_choose', array(
@@ -3198,7 +3198,7 @@ function wp_prepare_attachment_for_js( $attachment ) {
 		if ( isset( $meta['length_formatted'] ) )
 			$response['fileLength'] = $meta['length_formatted'];
 
-		$response['meta'] = array();
+		$response['meta'] = [];
 		foreach ( wp_get_attachment_id3_keys( $attachment, 'js' ) as $key => $label ) {
 			$response['meta'][ $key ] = false;
 
@@ -3251,7 +3251,7 @@ function wp_prepare_attachment_for_js( $attachment ) {
  *     @type int|WP_Post A post object or ID.
  * }
  */
-function wp_enqueue_media( $args = array() ) {
+function wp_enqueue_media( $args = [] ) {
 	// Enqueue me just once per page, please.
 	if ( did_action( 'wp_enqueue_media' ) )
 		return;
@@ -3287,7 +3287,7 @@ function wp_enqueue_media( $args = array() ) {
 
 	$exts = array_merge( wp_get_audio_extensions(), wp_get_video_extensions() );
 	$mimes = get_allowed_mime_types();
-	$ext_mimes = array();
+	$ext_mimes = [];
 	foreach ( $exts as $ext ) {
 		foreach ( $mimes as $ext_preg => $mime_match ) {
 			if ( preg_match( '#' . $ext . '#i', $ext_preg ) ) {
@@ -3556,7 +3556,7 @@ function wp_enqueue_media( $args = array() ) {
  */
 function get_attached_media( $type, $post = 0 ) {
 	if ( ! $post = get_post( $post ) )
-		return array();
+		return [];
 
 	$args = array(
 		'post_parent' => $post->ID,
@@ -3602,7 +3602,7 @@ function get_attached_media( $type, $post = 0 ) {
  * @return array A list of found HTML media embeds.
  */
 function get_media_embedded_in_content( $content, $types = null ) {
-	$html = array();
+	$html = [];
 
 	/**
 	 * Filters the embedded media types that are allowed to be returned from the content blob.
@@ -3645,16 +3645,16 @@ function get_media_embedded_in_content( $content, $types = null ) {
  */
 function get_post_galleries( $post, $html = true ) {
 	if ( ! $post = get_post( $post ) )
-		return array();
+		return [];
 
 	if ( ! has_shortcode( $post->post_content, 'gallery' ) )
-		return array();
+		return [];
 
-	$galleries = array();
+	$galleries = [];
 	if ( preg_match_all( '/' . get_shortcode_regex() . '/s', $post->post_content, $matches, PREG_SET_ORDER ) ) {
 		foreach ( $matches as $shortcode ) {
 			if ( 'gallery' === $shortcode[2] ) {
-				$srcs = array();
+				$srcs = [];
 
 				$gallery = do_shortcode_tag( $shortcode );
 				if ( $html ) {
@@ -3738,7 +3738,7 @@ function get_post_galleries_images( $post = 0 ) {
  */
 function get_post_gallery_images( $post = 0 ) {
 	$gallery = get_post_gallery( $post, false );
-	return empty( $gallery['src'] ) ? array() : $gallery['src'];
+	return empty( $gallery['src'] ) ? [] : $gallery['src'];
 }
 
 /**

@@ -54,7 +54,7 @@ define( 'WXR_VERSION', '1.2' );
  *                                  'trash'. Default false (all statuses except 'auto-draft').
  * }
  */
-function export_wp( $args = array() ) {
+function export_wp( $args = [] ) {
 	global $post;
 	$app = getApp();
 	$wpdb = $app['db'];
@@ -137,7 +137,7 @@ function export_wp( $args = array() ) {
 	 * Get the requested terms ready, empty unless posts filtered by category
 	 * or all content.
 	 */
-	$cats = $tags = $terms = array();
+	$cats = $tags = $terms = [];
 	if ( isset( $term ) && $term ) {
 		$cat = get_term( $term['term_id'], 'category' );
 		$cats = array( $cat->term_id => $cat );
@@ -336,7 +336,7 @@ function export_wp( $args = array() ) {
 			$and = '';
 		}
 
-		$authors = array();
+		$authors = [];
 		$results = $wpdb->get_results( "SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_status != 'auto-draft' $and" );
 		foreach ( (array) $results as $result )
 			$authors[] = get_userdata( $result->post_author );

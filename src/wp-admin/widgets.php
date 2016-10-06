@@ -146,7 +146,7 @@ if ( $app['request']->request->get( 'savewidget' ) || $app['request']->request->
 	$position = isset( $post_data[ $sidebar_id . '_position' ] ) ? (int) $post_data[ $sidebar_id . '_position' ] - 1 : 0;
 
 	$id_base = $post_data['id_base'];
-	$sidebar = isset($sidebars_widgets[$sidebar_id]) ? $sidebars_widgets[$sidebar_id] : array();
+	$sidebar = isset($sidebars_widgets[$sidebar_id]) ? $sidebars_widgets[$sidebar_id] : [];
 
 	// Delete.
 	if ( isset($post_data['removewidget']) && $post_data['removewidget'] ) {
@@ -157,7 +157,7 @@ if ( $app['request']->request->get( 'savewidget' ) || $app['request']->request->
 		}
 
 		$sidebar = array_diff( $sidebar, array($widget_id) );
-		$post_data = array('sidebar' => $sidebar_id, 'widget-' . $id_base => array(), 'the-widget-id' => $widget_id, 'delete_widget' => '1');
+		$post_data = array('sidebar' => $sidebar_id, 'widget-' . $id_base => [], 'the-widget-id' => $widget_id, 'delete_widget' => '1');
 
 		/**
 		 * Fires immediately after a widget has been marked for deletion.
@@ -299,7 +299,7 @@ if ( $app['request']->query->get( 'editwidget' ) ) {
 		} else {
 			if ( !isset($sidebars_widgets[$sbname]) || !is_array($sidebars_widgets[$sbname]) ) {
 				$j = 1;
-				$sidebars_widgets[$sbname] = array();
+				$sidebars_widgets[$sbname] = [];
 			} else {
 				$j = count($sidebars_widgets[$sbname]);
 				if ( $app['request']->query->get( 'addnew' ) || !in_array($widget_id, $sidebars_widgets[$sbname], true) ) {
@@ -415,7 +415,7 @@ do_action( 'widgets_admin_page' ); ?>
 
 <?php
 
-$theme_sidebars = array();
+$theme_sidebars = [];
 foreach ( $app->sidebars['registered'] as $sidebar => $registered_sidebar ) {
 	if ( false !== strpos( $registered_sidebar['class'], 'inactive-sidebar' ) || 'orphaned_widgets' == substr( $sidebar, 0, 16 ) ) {
 		$wrap_class = 'widgets-holder-wrap';

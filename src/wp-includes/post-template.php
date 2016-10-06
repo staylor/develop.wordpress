@@ -449,7 +449,7 @@ function post_class( $class = '', $post_id = null ) {
 function get_post_class( $class = '', $post_id = null ) {
 	$post = get_post( $post_id );
 
-	$classes = array();
+	$classes = [];
 
 	if ( $class ) {
 		if ( ! is_array( $class ) ) {
@@ -458,7 +458,7 @@ function get_post_class( $class = '', $post_id = null ) {
 		$classes = array_map( 'esc_attr', $class );
 	} else {
 		// Ensure that we always coerce class to being an array.
-		$class = array();
+		$class = [];
 	}
 
 	if ( ! $post ) {
@@ -571,7 +571,7 @@ function get_body_class( $class = '' ) {
 	$app = getApp();
 	$wp_query = $app['wp']->current_query;
 
-	$classes = array();
+	$classes = [];
 
 	if ( is_rtl() )
 		$classes[] = 'rtl';
@@ -751,7 +751,7 @@ function get_body_class( $class = '' ) {
 		$classes = array_merge( $classes, $class );
 	} else {
 		// Ensure that we always coerce class to being an array.
-		$class = array();
+		$class = [];
 	}
 
 	$classes = array_map( 'esc_attr', $classes );
@@ -952,7 +952,7 @@ function wp_link_pages( $args = '' ) {
 function _wp_link_page( $i ) {
 	$app = getApp();
 	$post = get_post();
-	$query_args = array();
+	$query_args = [];
 
 	if ( 1 == $i ) {
 		$url = get_permalink();
@@ -1184,7 +1184,7 @@ function wp_list_pages( $args = '' ) {
 	$r['exclude'] = preg_replace( '/[^0-9,]/', '', $r['exclude'] );
 
 	// Allow plugins to filter an array of excluded pages (but don't put a nullstring into the array)
-	$exclude_array = ( $r['exclude'] ) ? explode( ',', $r['exclude'] ) : array();
+	$exclude_array = ( $r['exclude'] ) ? explode( ',', $r['exclude'] ) : [];
 
 	/**
 	 * Filters the array of pages to exclude from the pages list.
@@ -1272,7 +1272,7 @@ function wp_list_pages( $args = '' ) {
  * }
  * @return string|void HTML menu
  */
-function wp_page_menu( $args = array() ) {
+function wp_page_menu( $args = [] ) {
 	$defaults = array(
 		'sort_column'  => 'menu_order, post_title',
 		'menu_id'      => '',

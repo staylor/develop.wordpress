@@ -29,12 +29,12 @@ function get_preferred_from_update_core() {
  * 	                     set $options['available'] to false to skip not-dismissed updates.
  * @return array|false Array of the update objects on success, false on failure.
  */
-function get_core_updates( $options = array() ) {
+function get_core_updates( $options = [] ) {
 	$options = array_merge( array( 'available' => true, 'dismissed' => false ), $options );
 	$dismissed = get_site_option( 'dismissed_update_core' );
 
 	if ( ! is_array( $dismissed ) )
-		$dismissed = array();
+		$dismissed = [];
 
 	$from_api = get_site_transient( 'update_core' );
 
@@ -42,7 +42,7 @@ function get_core_updates( $options = array() ) {
 		return false;
 
 	$updates = $from_api->updates;
-	$result = array();
+	$result = [];
 	foreach ( $updates as $update ) {
 		if ( $update->response == 'autoupdate' )
 			continue;
@@ -298,7 +298,7 @@ function update_right_now_message() {
  */
 function get_plugin_updates() {
 	$all_plugins = get_plugins();
-	$upgrade_plugins = array();
+	$upgrade_plugins = [];
 	$current = get_site_transient( 'update_plugins' );
 	foreach ( (array)$all_plugins as $plugin_file => $plugin_data) {
 		if ( isset( $current->response[ $plugin_file ] ) ) {
@@ -342,12 +342,12 @@ function wp_plugin_update_row( $file, $plugin_data ) {
 	$response = $current->response[ $file ];
 
 	$plugins_allowedtags = array(
-		'a'       => array( 'href' => array(), 'title' => array() ),
-		'abbr'    => array( 'title' => array() ),
-		'acronym' => array( 'title' => array() ),
-		'code'    => array(),
-		'em'      => array(),
-		'strong'  => array(),
+		'a'       => array( 'href' => [], 'title' => [] ),
+		'abbr'    => array( 'title' => [] ),
+		'acronym' => array( 'title' => [] ),
+		'code'    => [],
+		'em'      => [],
+		'strong'  => [],
 	);
 
 	$plugin_name   = wp_kses( $plugin_data['Name'], $plugins_allowedtags );
@@ -454,9 +454,9 @@ function get_theme_updates() {
 	$current = get_site_transient('update_themes');
 
 	if ( ! isset( $current->response ) )
-		return array();
+		return [];
 
-	$update_themes = array();
+	$update_themes = [];
 	foreach ( $current->response as $stylesheet => $data ) {
 		$update_themes[ $stylesheet ] = wp_get_theme( $stylesheet );
 		$update_themes[ $stylesheet ]->update = $data;

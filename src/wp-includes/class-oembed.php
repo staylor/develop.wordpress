@@ -25,7 +25,7 @@ class WP_oEmbed {
 	 * @access public
 	 * @var array
 	 */
-	public $providers = array();
+	public $providers = [];
 
 	/**
 	 * A list of an early oEmbed providers.
@@ -35,7 +35,7 @@ class WP_oEmbed {
 	 * @static
 	 * @var array
 	 */
-	public static $early_providers = array();
+	public static $early_providers = [];
 
 	/**
 	 * A list of private/protected methods, used for backward compatibility.
@@ -122,7 +122,7 @@ class WP_oEmbed {
 			}
 		}
 
-		self::$early_providers = array();
+		self::$early_providers = [];
 
 		/**
 		 * Filters the list of whitelisted oEmbed providers.
@@ -285,7 +285,7 @@ class WP_oEmbed {
 	 */
 	public static function _add_provider_early( $format, $provider, $regex = false ) {
 		if ( empty( self::$early_providers['add'] ) ) {
-			self::$early_providers['add'] = array();
+			self::$early_providers['add'] = [];
 		}
 
 		self::$early_providers['add'][ $format ] = array( $provider, $regex );
@@ -310,7 +310,7 @@ class WP_oEmbed {
 	 */
 	public static function _remove_provider_early( $format ) {
 		if ( empty( self::$early_providers['remove'] ) ) {
-			self::$early_providers['remove'] = array();
+			self::$early_providers['remove'] = [];
 		}
 
 		self::$early_providers['remove'][] = $format;
@@ -381,7 +381,7 @@ class WP_oEmbed {
 	 * @return false|string False on failure, otherwise the oEmbed provider URL.
 	 */
 	public function discover( $url ) {
-		$providers = array();
+		$providers = [];
 		$args = array(
 			'limit_response_size' => 153600, // 150 KB
 		);
@@ -507,7 +507,7 @@ class WP_oEmbed {
 		$provider_url_with_args = add_query_arg( 'format', $format, $provider_url_with_args );
 
 		/** This filter is documented in wp-includes/class-oembed.php */
-		$args = apply_filters( 'oembed_remote_get_args', array(), $provider_url_with_args );
+		$args = apply_filters( 'oembed_remote_get_args', [], $provider_url_with_args );
 
 		$response = wp_safe_remote_get( $provider_url_with_args, $args );
 		if ( 501 == wp_remote_retrieve_response_code( $response ) )
@@ -668,7 +668,7 @@ class WP_oEmbed {
 		}
 
 		$count = 1;
-		$found = array();
+		$found = [];
 		$token = '__PRE__';
 		$search = array( "\t", "\n", "\r", ' ' );
 		$replace = array( '__TAB__', '__NL__', '__CR__', '__SPACE__' );

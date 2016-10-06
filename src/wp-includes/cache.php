@@ -296,7 +296,7 @@ class WP_Object_Cache {
 	 * @access private
 	 * @var array
 	 */
-	private $cache = array();
+	private $cache = [];
 
 	/**
 	 * The amount of times the cache data was already stored in the cache.
@@ -323,7 +323,7 @@ class WP_Object_Cache {
 	 * @access protected
 	 * @var array
 	 */
-	protected $global_groups = array();
+	protected $global_groups = [];
 
 	/**
 	 * The blog prefix to prepend to keys in non-global groups.
@@ -513,7 +513,7 @@ class WP_Object_Cache {
 	 * @return true Always returns true.
 	 */
 	public function flush() {
-		$this->cache = array();
+		$this->cache = [];
 
 		return true;
 	}

@@ -87,7 +87,7 @@ final class WP_Theme implements ArrayAccess {
 	 * @access private
 	 * @var array
 	 */
-	private $headers = array();
+	private $headers = [];
 
 	/**
 	 * Header data from the theme's style.css file after being sanitized.
@@ -570,7 +570,7 @@ final class WP_Theme implements ArrayAccess {
 		foreach ( array( 'theme', 'screenshot', 'headers', 'page_templates' ) as $key )
 			wp_cache_delete( $key . '-' . $this->cache_hash, 'themes' );
 		$this->template = $this->textdomain_loaded = $this->theme_root_uri = $this->parent = $this->errors = $this->headers_sanitized = $this->name_translated = null;
-		$this->headers = array();
+		$this->headers = [];
 		$this->__construct( $this->stylesheet, $this->theme_root );
 	}
 
@@ -598,7 +598,7 @@ final class WP_Theme implements ArrayAccess {
 		if ( ! isset( $this->headers_sanitized ) ) {
 			$this->headers_sanitized = $this->cache_get( 'headers' );
 			if ( ! is_array( $this->headers_sanitized ) )
-				$this->headers_sanitized = array();
+				$this->headers_sanitized = [];
 		}
 
 		if ( isset( $this->headers_sanitized[ $header ] ) )
@@ -1016,12 +1016,12 @@ final class WP_Theme implements ArrayAccess {
 	public function get_page_templates( $post = null ) {
 		// If you screw up your current theme and we invalidate your parent, most things still work. Let it slide.
 		if ( $this->errors() && $this->errors()->get_error_codes() !== array( 'theme_parent_invalid' ) )
-			return array();
+			return [];
 
 		$page_templates = $this->cache_get( 'page_templates' );
 
 		if ( ! is_array( $page_templates ) ) {
-			$page_templates = array();
+			$page_templates = [];
 
 			$files = (array) $this->get_files( 'php', 1 );
 
@@ -1090,7 +1090,7 @@ final class WP_Theme implements ArrayAccess {
 			$relative_path = '';
 
 		$results = scandir( $path );
-		$files = array();
+		$files = [];
 
 		foreach ( $results as $result ) {
 			if ( '.' == $result[0] )
@@ -1263,7 +1263,7 @@ final class WP_Theme implements ArrayAccess {
 	 * @return array Array of stylesheet names.
 	 */
 	public static function get_allowed_on_site( $blog_id = null ) {
-		static $allowed_themes = array();
+		static $allowed_themes = [];
 
 		if ( ! $blog_id || ! is_multisite() )
 			$blog_id = get_current_blog_id();
@@ -1302,9 +1302,9 @@ final class WP_Theme implements ArrayAccess {
 			}
 
 			if ( ! is_array( $allowed_themes[ $blog_id ] ) || empty( $allowed_themes[ $blog_id ] ) ) {
-				$allowed_themes[ $blog_id ] = array();
+				$allowed_themes[ $blog_id ] = [];
 			} else {
-				$converted = array();
+				$converted = [];
 				$themes = wp_get_themes();
 				foreach ( $themes as $stylesheet => $theme_data ) {
 					if ( isset( $allowed_themes[ $blog_id ][ $theme_data->get('Name') ] ) )

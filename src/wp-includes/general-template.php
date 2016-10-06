@@ -39,7 +39,7 @@ function get_header( $name = null ) {
 	 */
 	do_action( 'get_header', $name );
 
-	$templates = array();
+	$templates = [];
 	$name = (string) $name;
 	if ( '' !== $name ) {
 		$templates[] = "header-{$name}.php";
@@ -78,7 +78,7 @@ function get_footer( $name = null ) {
 	 */
 	do_action( 'get_footer', $name );
 
-	$templates = array();
+	$templates = [];
 	$name = (string) $name;
 	if ( '' !== $name ) {
 		$templates[] = "footer-{$name}.php";
@@ -117,7 +117,7 @@ function get_sidebar( $name = null ) {
 	 */
 	do_action( 'get_sidebar', $name );
 
-	$templates = array();
+	$templates = [];
 	$name = (string) $name;
 	if ( '' !== $name )
 		$templates[] = "sidebar-{$name}.php";
@@ -162,7 +162,7 @@ function get_template_part( $slug, $name = null ) {
 	 */
 	do_action( "get_template_part_{$slug}", $slug, $name );
 
-	$templates = array();
+	$templates = [];
 	$name = (string) $name;
 	if ( '' !== $name )
 		$templates[] = "{$slug}-{$name}.php";
@@ -404,7 +404,7 @@ function wp_registration_url() {
  * }
  * @return string|void String when retrieving.
  */
-function wp_login_form( $args = array() ) {
+function wp_login_form( $args = [] ) {
 	$app = getApp();
 	$defaults = array(
 		'echo' => true,
@@ -1898,7 +1898,7 @@ function get_calendar( $initial = true, $echo = true ) {
 	}
 
 	if ( ! is_array( $cache ) ) {
-		$cache = array();
+		$cache = [];
 	}
 
 	// Quick check. If we have no posts at all, abort!
@@ -1968,7 +1968,7 @@ function get_calendar( $initial = true, $echo = true ) {
 	<thead>
 	<tr>';
 
-	$myweek = array();
+	$myweek = [];
 
 	for ( $wdcount = 0; $wdcount <= 6; $wdcount++ ) {
 		$myweek[] = $wp_locale->get_weekday( ( $wdcount + $week_begins ) % 7 );
@@ -2012,7 +2012,7 @@ function get_calendar( $initial = true, $echo = true ) {
 	<tbody>
 	<tr>';
 
-	$daywithpost = array();
+	$daywithpost = [];
 
 	// Get days with posts
 	$dayswithposts = $wpdb->get_results("SELECT DISTINCT DAYOFMONTH(post_date)
@@ -2588,7 +2588,7 @@ function wp_footer() {
  *
  * @param array $args Optional arguments.
  */
-function feed_links( $args = array() ) {
+function feed_links( $args = [] ) {
 	if ( !current_theme_supports('automatic-feed-links') )
 		return;
 
@@ -2633,7 +2633,7 @@ function feed_links( $args = array() ) {
  *
  * @param array $args Optional arguments.
  */
-function feed_links_extra( $args = array() ) {
+function feed_links_extra( $args = [] ) {
 	$defaults = array(
 		/* translators: Separator between blog name and feed type in feed links */
 		'separator'   => _x('&raquo;', 'feed link'),
@@ -2812,9 +2812,9 @@ function wp_site_icon() {
 function wp_resource_hints() {
 	$hints = array(
 		'dns-prefetch' => wp_dependencies_unique_hosts(),
-		'preconnect'   => array(),
-		'prefetch'     => array(),
-		'prerender'    => array(),
+		'preconnect'   => [],
+		'prefetch'     => [],
+		'prerender'    => [],
 	);
 
 	/*
@@ -2878,7 +2878,7 @@ function wp_resource_hints() {
 function wp_dependencies_unique_hosts() {
 	$app = getApp();
 
-	$unique_hosts = array();
+	$unique_hosts = [];
 
 	foreach ( array(
 		$app['scripts.global'],
@@ -2995,7 +2995,7 @@ function wp_default_editor() {
  * @param string $editor_id HTML ID attribute value for the textarea and TinyMCE. Can only be /[a-z]+/.
  * @param array  $settings  See _WP_Editors::editor().
  */
-function wp_editor( $content, $editor_id, $settings = array() ) {
+function wp_editor( $content, $editor_id, $settings = [] ) {
 	_WP_Editors::editor($content, $editor_id, $settings);
 }
 
@@ -3056,7 +3056,7 @@ function the_search_query() {
  * @param string $doctype Optional. The type of html document. Accepts 'xhtml' or 'html'. Default 'html'.
  */
 function get_language_attributes( $doctype = 'html' ) {
-	$attributes = array();
+	$attributes = [];
 
 	if ( function_exists( 'is_rtl' ) && is_rtl() )
 		$attributes[] = 'dir="rtl"';
@@ -3201,7 +3201,7 @@ function paginate_links( $args = '' ) {
 		'end_size' => 1,
 		'mid_size' => 2,
 		'type' => 'plain',
-		'add_args' => array(), // array of query args to add
+		'add_args' => [], // array of query args to add
 		'add_fragment' => '',
 		'before_page_number' => '',
 		'after_page_number' => ''
@@ -3210,7 +3210,7 @@ function paginate_links( $args = '' ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	if ( ! is_array( $args['add_args'] ) ) {
-		$args['add_args'] = array();
+		$args['add_args'] = [];
 	}
 
 	// Merge additional query vars found in the original URL into 'add_args' array.
@@ -3247,7 +3247,7 @@ function paginate_links( $args = '' ) {
 	}
 	$add_args = $args['add_args'];
 	$r = '';
-	$page_links = array();
+	$page_links = [];
 	$dots = false;
 
 	if ( $args['prev_next'] && $current && 1 < $current ) :
@@ -3340,11 +3340,11 @@ function paginate_links( $args = '' ) {
  *     @type string $current SVG icon color of current admin menu link.
  * }
  */
-function wp_admin_css_color( $key, $name, $url, $colors = array(), $icons = array() ) {
+function wp_admin_css_color( $key, $name, $url, $colors = [], $icons = [] ) {
 	global $_wp_admin_css_colors;
 
 	if ( !isset($_wp_admin_css_colors) )
-		$_wp_admin_css_colors = array();
+		$_wp_admin_css_colors = [];
 
 	$_wp_admin_css_colors[$key] = (object) array(
 		'name' => $name,

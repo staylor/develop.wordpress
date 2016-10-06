@@ -23,7 +23,7 @@ use function WP\getApp;
  * @param bool          $deprecated Not used.
  * @return array Array of fields that can be versioned.
  */
-function _wp_post_revision_fields( $post = array(), $deprecated = false ) {
+function _wp_post_revision_fields( $post = [], $deprecated = false ) {
 	static $fields = null;
 
 	if ( ! is_array( $post ) ) {
@@ -77,14 +77,14 @@ function _wp_post_revision_fields( $post = array(), $deprecated = false ) {
  * @param bool          $autosave Optional. Is the revision an autosave? Default false.
  * @return array Post array ready to be inserted as a post revision.
  */
-function _wp_post_revision_data( $post = array(), $autosave = false ) {
+function _wp_post_revision_data( $post = [], $autosave = false ) {
 	if ( ! is_array( $post ) ) {
 		$post = get_post( $post, ARRAY_A );
 	}
 
 	$fields = _wp_post_revision_fields( $post );
 
-	$revision_data = array();
+	$revision_data = [];
 
 	foreach ( array_intersect( array_keys( $post ), array_keys( $fields ) ) as $field ) {
 		$revision_data[ $field ] = $post[ $field ];
@@ -364,7 +364,7 @@ function wp_restore_post_revision( $revision_id, $fields = null ) {
 	if ( !is_array( $fields ) )
 		$fields = array_keys( _wp_post_revision_fields( $revision ) );
 
-	$update = array();
+	$update = [];
 	foreach ( array_intersect( array_keys( $revision ), $fields ) as $field ) {
 		$update[$field] = $revision[$field];
 	}
@@ -441,18 +441,18 @@ function wp_delete_post_revision( $revision_id ) {
 function wp_get_post_revisions( $post_id = 0, $args = null ) {
 	$post = get_post( $post_id );
 	if ( ! $post || empty( $post->ID ) )
-		return array();
+		return [];
 
 	$defaults = array( 'order' => 'DESC', 'orderby' => 'date ID', 'check_enabled' => true );
 	$args = wp_parse_args( $args, $defaults );
 
 	if ( $args['check_enabled'] && ! wp_revisions_enabled( $post ) )
-		return array();
+		return [];
 
 	$args = array_merge( $args, array( 'post_parent' => $post->ID, 'post_type' => 'revision', 'post_status' => 'inherit' ) );
 
 	if ( ! $revisions = get_children( $args ) )
-		return array();
+		return [];
 
 	return $revisions;
 }
@@ -577,7 +577,7 @@ function _wp_preview_terms_filter( $terms, $post_id, $taxonomy ) {
 		return $terms;
 
 	if ( 'standard' == $_REQUEST['post_format'] )
-		$terms = array();
+		$terms = [];
 	elseif ( $term = get_term_by( 'slug', 'post-format-' . sanitize_key( $_REQUEST['post_format'] ), 'post_format' ) )
 		$terms = array( $term ); // Can only have one post format
 

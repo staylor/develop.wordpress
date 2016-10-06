@@ -147,7 +147,7 @@ class WP_Http {
 	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'.
 	 *                        A WP_Error instance upon error.
 	 */
-	public function request( $url, $args = array() ) {
+	public function request( $url, $args = [] ) {
 		$app = getApp();
 
 		$defaults = array(
@@ -196,8 +196,8 @@ class WP_Http {
 			 */
 			'reject_unsafe_urls' => apply_filters( 'http_request_reject_unsafe_urls', false ),
 			'blocking' => true,
-			'headers' => array(),
-			'cookies' => array(),
+			'headers' => [],
+			'cookies' => [],
 			'body' => null,
 			'compress' => false,
 			'decompress' => true,
@@ -287,7 +287,7 @@ class WP_Http {
 		}
 
 		if ( is_null( $r['headers'] ) ) {
-			$r['headers'] = array();
+			$r['headers'] = [];
 		}
 
 		// WP allows passing in headers as a string, weirdly.
@@ -395,13 +395,13 @@ class WP_Http {
 
 		if ( ! $r['blocking'] ) {
 			return array(
-				'headers' => array(),
+				'headers' => [],
 				'body' => '',
 				'response' => array(
 					'code' => false,
 					'message' => false,
 				),
-				'cookies' => array(),
+				'cookies' => [],
 				'http_response' => null,
 			);
 		}
@@ -526,7 +526,7 @@ class WP_Http {
 	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
 	 */
 	private function _dispatch_request( $url, $args ) {
-		static $transports = array();
+		static $transports = [];
 
 		$class = $this->_get_first_available_transport( $args, $url );
 		if ( !$class )
@@ -568,7 +568,7 @@ class WP_Http {
 	 * @param string|array $args Optional. Override the defaults.
 	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
 	 */
-	public function post($url, $args = array()) {
+	public function post($url, $args = []) {
 		$defaults = array('method' => 'POST');
 		$r = wp_parse_args( $args, $defaults );
 		return $this->request($url, $r);
@@ -586,7 +586,7 @@ class WP_Http {
 	 * @param string|array $args Optional. Override the defaults.
 	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
 	 */
-	public function get($url, $args = array()) {
+	public function get($url, $args = []) {
 		$defaults = array('method' => 'GET');
 		$r = wp_parse_args( $args, $defaults );
 		return $this->request($url, $r);
@@ -604,7 +604,7 @@ class WP_Http {
 	 * @param string|array $args Optional. Override the defaults.
 	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
 	 */
-	public function head($url, $args = array()) {
+	public function head($url, $args = []) {
 		$defaults = array('method' => 'HEAD');
 		$r = wp_parse_args( $args, $defaults );
 		return $this->request($url, $r);
@@ -668,8 +668,8 @@ class WP_Http {
 			}
 		}
 
-		$cookies = array();
-		$newheaders = array();
+		$cookies = [];
+		$newheaders = [];
 		foreach ( (array) $headers as $tempheader ) {
 			if ( empty($tempheader) )
 				continue;
@@ -828,12 +828,12 @@ class WP_Http {
 			return true;
 
 		static $accessible_hosts = null;
-		static $wildcard_regex = array();
+		static $wildcard_regex = [];
 		if ( null === $accessible_hosts ) {
 			$accessible_hosts = preg_split('|,\s*|', WP_ACCESSIBLE_HOSTS);
 
 			if ( false !== strpos(WP_ACCESSIBLE_HOSTS, '*') ) {
-				$wildcard_regex = array();
+				$wildcard_regex = [];
 				foreach ( $accessible_hosts as $host )
 					$wildcard_regex[] = str_replace( '\*', '.+', preg_quote( $host, '/' ) );
 				$wildcard_regex = '/^(' . implode('|', $wildcard_regex) . ')$/i';

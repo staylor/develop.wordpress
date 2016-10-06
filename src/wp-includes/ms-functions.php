@@ -433,7 +433,7 @@ function wpmu_validate_user_signup($user_name, $user_email) {
 	}
 
 	/** This filter is documented in wp-includes/user.php */
-	$illegal_logins = (array) apply_filters( 'illegal_user_logins', array() );
+	$illegal_logins = (array) apply_filters( 'illegal_user_logins', [] );
 
 	if ( in_array( strtolower( $user_name ), array_map( 'strtolower', $illegal_logins ) ) ) {
 		$errors->add( 'user_name',  __( 'Sorry, that username is not allowed.' ) );
@@ -663,7 +663,7 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
  * @param string $user_email The user's email address.
  * @param array  $meta       By default, contains the requested privacy setting and lang_id.
  */
-function wpmu_signup_blog( $domain, $path, $title, $user, $user_email, $meta = array() )  {
+function wpmu_signup_blog( $domain, $path, $title, $user, $user_email, $meta = [] )  {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -709,7 +709,7 @@ function wpmu_signup_blog( $domain, $path, $title, $user, $user_email, $meta = a
  * @param string $user_email The user's email address.
  * @param array  $meta       By default, this is an empty array.
  */
-function wpmu_signup_user( $user, $user_email, $meta = array() ) {
+function wpmu_signup_user( $user, $user_email, $meta = [] ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -767,7 +767,7 @@ function wpmu_signup_user( $user, $user_email, $meta = array() ) {
  * @param array  $meta       By default, contains the requested privacy setting and lang_id.
  * @return bool
  */
-function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_email, $key, $meta = array() ) {
+function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_email, $key, $meta = [] ) {
 	/**
 	 * Filters whether to bypass the new site email notification.
 	 *
@@ -871,7 +871,7 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_ema
  * @param array  $meta       By default, an empty array.
  * @return bool
  */
-function wpmu_signup_user_notification( $user, $user_email, $key, $meta = array() ) {
+function wpmu_signup_user_notification( $user, $user_email, $key, $meta = [] ) {
 	/**
 	 * Filters whether to bypass the email notification for new user sign-up.
 	 *
@@ -1089,7 +1089,7 @@ function wpmu_create_user( $user_name, $password, $email ) {
  * @param int    $site_id Optional. Only relevant on multi-network installs.
  * @return int|WP_Error Returns WP_Error object on failure, int $blog_id on success
  */
-function wpmu_create_blog( $domain, $path, $title, $user_id, $meta = array(), $site_id = 1 ) {
+function wpmu_create_blog( $domain, $path, $title, $user_id, $meta = [], $site_id = 1 ) {
 	$defaults = array(
 		'public' => 0,
 		'WPLANG' => get_site_option( 'WPLANG' ),
@@ -1424,7 +1424,7 @@ function install_blog_defaults($blog_id, $user_id) {
  * @param array  $meta     Optional. Not used in the default function, but is passed along to hooks for customization.
  * @return bool
  */
-function wpmu_welcome_notification( $blog_id, $user_id, $password, $title, $meta = array() ) {
+function wpmu_welcome_notification( $blog_id, $user_id, $password, $title, $meta = [] ) {
 	$current_site = get_current_site();
 
 	/**
@@ -1526,7 +1526,7 @@ We hope you enjoy your new site. Thanks!
  * @param array  $meta     Optional. Not used in the default function, but is passed along to hooks for customization.
  * @return bool
  */
-function wpmu_welcome_user_notification( $user_id, $password, $meta = array() ) {
+function wpmu_welcome_user_notification( $user_id, $password, $meta = [] ) {
 	$current_site = get_current_site();
 
 	/**
@@ -1625,7 +1625,7 @@ function get_most_recent_post_of_user( $user_id ) {
 	$wpdb = $app['db'];
 
 	$user_blogs = get_blogs_of_user( (int) $user_id );
-	$most_recent_post = array();
+	$most_recent_post = [];
 
 	// Walk through each blog and get the most recent post
 	// published by $user_id
@@ -1673,7 +1673,7 @@ function get_dirsize( $directory ) {
 		return $dirsize[ $directory ][ 'size' ];
 
 	if ( ! is_array( $dirsize ) )
-		$dirsize = array();
+		$dirsize = [];
 
 	// Exclude individual site directories from the total when checking the main site,
 	// as they are subdirectories and should not be counted.
@@ -1743,7 +1743,7 @@ function recurse_dirsize( $directory, $exclude = null ) {
  */
 function check_upload_mimes( $mimes ) {
 	$site_exts = explode( ' ', get_site_option( 'upload_filetypes', 'jpg jpeg png gif' ) );
-	$site_mimes = array();
+	$site_mimes = [];
 	foreach ( $site_exts as $ext ) {
 		foreach ( $mimes as $ext_pattern => $mime ) {
 			if ( $ext != '' && strpos( $ext_pattern, $ext ) !== false )

@@ -52,7 +52,7 @@ class Walker_Page extends Walker {
 	 * @param array  $args   Optional. Arguments for outputing the next level.
 	 *                       Default empty array.
 	 */
-	public function start_lvl( &$output, $depth = 0, $args = array() ) {
+	public function start_lvl( &$output, $depth = 0, $args = [] ) {
 		if ( 'preserve' === $args['item_spacing'] ) {
 			$t = "\t";
 			$n = "\n";
@@ -77,7 +77,7 @@ class Walker_Page extends Walker {
 	 * @param array  $args   Optional. Arguments for outputting the end of the current level.
 	 *                       Default empty array.
 	 */
-	public function end_lvl( &$output, $depth = 0, $args = array() ) {
+	public function end_lvl( &$output, $depth = 0, $args = [] ) {
 		if ( 'preserve' === $args['item_spacing'] ) {
 			$t = "\t";
 			$n = "\n";
@@ -102,7 +102,7 @@ class Walker_Page extends Walker {
 	 * @param array   $args         Optional. Array of arguments. Default empty array.
 	 * @param int     $current_page Optional. Page ID. Default 0.
 	 */
-	public function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ) {
+	public function start_el( &$output, $page, $depth = 0, $args = [], $current_page = 0 ) {
 		if ( 'preserve' === $args['item_spacing'] ) {
 			$t = "\t";
 			$n = "\n";
@@ -195,7 +195,7 @@ class Walker_Page extends Walker {
 	 * @param int     $depth  Optional. Depth of page. Default 0 (unused).
 	 * @param array   $args   Optional. Array of arguments. Default empty array.
 	 */
-	public function end_el( &$output, $page, $depth = 0, $args = array() ) {
+	public function end_el( &$output, $page, $depth = 0, $args = [] ) {
 		if ( 'preserve' === $args['item_spacing'] ) {
 			$t = "\t";
 			$n = "\n";

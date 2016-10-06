@@ -23,7 +23,7 @@ use function WP\getApp;
  * @param array  $templates An optional list of template candidates
  * @return string Full path to template file.
  */
-function get_query_template( $type, $templates = array() ) {
+function get_query_template( $type, $templates = [] ) {
 	$type = preg_replace( '|[^a-z0-9-]+|', '', $type );
 
 	if ( empty( $templates ) )
@@ -109,7 +109,7 @@ function get_404_template() {
 function get_archive_template() {
 	$post_types = array_filter( (array) get_query_var( 'post_type' ) );
 
-	$templates = array();
+	$templates = [];
 
 	if ( count( $post_types ) == 1 ) {
 		$post_type = reset( $post_types );
@@ -159,7 +159,7 @@ function get_post_type_archive_template() {
 function get_author_template() {
 	$author = get_queried_object();
 
-	$templates = array();
+	$templates = [];
 
 	if ( $author instanceof User ) {
 		$templates[] = "author-{$author->user_nicename}.php";
@@ -189,7 +189,7 @@ function get_author_template() {
 function get_category_template() {
 	$category = get_queried_object();
 
-	$templates = array();
+	$templates = [];
 
 	if ( ! empty( $category->slug ) ) {
 
@@ -225,7 +225,7 @@ function get_category_template() {
 function get_tag_template() {
 	$tag = get_queried_object();
 
-	$templates = array();
+	$templates = [];
 
 	if ( ! empty( $tag->slug ) ) {
 
@@ -266,7 +266,7 @@ function get_tag_template() {
 function get_taxonomy_template() {
 	$term = get_queried_object();
 
-	$templates = array();
+	$templates = [];
 
 	if ( ! empty( $term->slug ) ) {
 		$taxonomy = $term->taxonomy;
@@ -367,7 +367,7 @@ function get_page_template() {
 			$pagename = $post->post_name;
 	}
 
-	$templates = array();
+	$templates = [];
 	if ( $template && 0 === validate_file( $template ) )
 		$templates[] = $template;
 	if ( $pagename ) {
@@ -432,7 +432,7 @@ function get_search_template() {
 function get_single_template() {
 	$object = get_queried_object();
 
-	$templates = array();
+	$templates = [];
 
 	if ( ! empty( $object->post_type ) ) {
 
@@ -467,7 +467,7 @@ function get_single_template() {
 function get_embed_template() {
 	$object = get_queried_object();
 
-	$templates = array();
+	$templates = [];
 
 	if ( ! empty( $object->post_type ) ) {
 		$post_format = get_post_format( $object );
@@ -521,7 +521,7 @@ function get_singular_template() {
 function get_attachment_template() {
 	$attachment = get_queried_object();
 
-	$templates = array();
+	$templates = [];
 
 	if ( $attachment ) {
 		if ( false !== strpos( $attachment->post_mime_type, '/' ) ) {

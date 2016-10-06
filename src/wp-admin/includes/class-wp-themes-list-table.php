@@ -17,8 +17,8 @@
  */
 class WP_Themes_List_Table extends WP_List_Table {
 
-	protected $search_terms = array();
-	public $features = array();
+	protected $search_terms = [];
+	public $features = [];
 
 	/**
 	 * Constructor.
@@ -30,7 +30,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		parent::__construct( array(
 			'ajax' => true,
 			'screen' => isset( $args['screen'] ) ? $args['screen'] : null,
@@ -150,7 +150,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -183,7 +183,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 
 			$activate_link = wp_nonce_url( "themes.php?action=activate&amp;template=" . urlencode( $template ) . "&amp;stylesheet=" . urlencode( $stylesheet ), 'switch-theme_' . $stylesheet );
 
-			$actions = array();
+			$actions = [];
 			$actions['activate'] = '<a href="' . $activate_link . '" class="activatelink" title="'
 				. esc_attr( sprintf( __( 'Activate &#8220;%s&#8221;' ), $title ) ) . '">' . __( 'Activate' ) . '</a>';
 
@@ -290,7 +290,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 	 *
 	 * @param array $extra_args
 	 */
-	public function _js_vars( $extra_args = array() ) {
+	public function _js_vars( $extra_args = [] ) {
 		$search_string = isset( $_REQUEST['s'] ) ? esc_attr( wp_unslash( $_REQUEST['s'] ) ) : '';
 
 		$args = array(

@@ -1198,7 +1198,7 @@ function get_post_type_archive_feed_link( $post_type, $feed = '' ) {
  *                                  post permalink. Default empty.
  * @return string|null URL used for the post preview, or null if the post does not exist.
  */
-function get_preview_post_link( $post = null, $query_args = array(), $preview_link = '' ) {
+function get_preview_post_link( $post = null, $query_args = [], $preview_link = '' ) {
 	$post = get_post( $post );
 	if ( ! $post ) {
 		return;
@@ -1865,13 +1865,13 @@ function get_boundary_post( $in_same_term = false, $excluded_terms = '', $start 
 		'update_post_meta_cache' => false
 	);
 
-	$term_array = array();
+	$term_array = [];
 
 	if ( ! is_array( $excluded_terms ) ) {
 		if ( ! empty( $excluded_terms ) )
 			$excluded_terms = explode( ',', $excluded_terms );
 		else
-			$excluded_terms = array();
+			$excluded_terms = [];
 	}
 
 	if ( $in_same_term || ! empty( $excluded_terms ) ) {
@@ -1882,7 +1882,7 @@ function get_boundary_post( $in_same_term = false, $excluded_terms = '', $start 
 			$excluded_terms = array_map( 'intval', $excluded_terms );
 			$excluded_terms = array_diff( $excluded_terms, $term_array );
 
-			$inverse_terms = array();
+			$inverse_terms = [];
 			foreach ( $excluded_terms as $excluded_term )
 				$inverse_terms[] = $excluded_term * -1;
 			$excluded_terms = $inverse_terms;
@@ -2309,7 +2309,7 @@ function previous_posts_link( $label = null ) {
  * }
  * @return string The posts link navigation.
  */
-function get_posts_nav_link( $args = array() ) {
+function get_posts_nav_link( $args = [] ) {
 	$app = getApp();
 	$wp_query = $app['wp']->current_query;
 
@@ -2373,7 +2373,7 @@ function posts_nav_link( $sep = '', $prelabel = '', $nxtlabel = '' ) {
  * }
  * @return string Markup for post links.
  */
-function get_the_post_navigation( $args = array() ) {
+function get_the_post_navigation( $args = [] ) {
 	$args = wp_parse_args( $args, array(
 		'prev_text'          => '%title',
 		'next_text'          => '%title',
@@ -2417,7 +2417,7 @@ function get_the_post_navigation( $args = array() ) {
  * @param array $args Optional. See get_the_post_navigation() for available arguments.
  *                    Default empty array.
  */
-function the_post_navigation( $args = array() ) {
+function the_post_navigation( $args = [] ) {
 	echo get_the_post_navigation( $args );
 }
 
@@ -2438,7 +2438,7 @@ function the_post_navigation( $args = array() ) {
  * }
  * @return string Markup for posts links.
  */
-function get_the_posts_navigation( $args = array() ) {
+function get_the_posts_navigation( $args = [] ) {
 	$app = getApp();
 	$navigation = '';
 
@@ -2475,7 +2475,7 @@ function get_the_posts_navigation( $args = array() ) {
  * @param array $args Optional. See get_the_posts_navigation() for available arguments.
  *                    Default empty array.
  */
-function the_posts_navigation( $args = array() ) {
+function the_posts_navigation( $args = [] ) {
 	echo get_the_posts_navigation( $args );
 }
 
@@ -2492,7 +2492,7 @@ function the_posts_navigation( $args = array() ) {
  * }
  * @return string Markup for pagination links.
  */
-function get_the_posts_pagination( $args = array() ) {
+function get_the_posts_pagination( $args = [] ) {
 	$app = getApp();
 	$navigation = '';
 
@@ -2529,7 +2529,7 @@ function get_the_posts_pagination( $args = array() ) {
  * @param array $args Optional. See get_the_posts_pagination() for available arguments.
  *                    Default empty array.
  */
-function the_posts_pagination( $args = array() ) {
+function the_posts_pagination( $args = [] ) {
 	echo get_the_posts_pagination( $args );
 }
 
@@ -2728,7 +2728,7 @@ function previous_comments_link( $label = '' ) {
  * @param string|array $args Optional args. See paginate_links(). Default empty array.
  * @return string|void Markup for pagination links.
  */
-function paginate_comments_links( $args = array() ) {
+function paginate_comments_links( $args = [] ) {
 	if ( ! is_singular() )
 		return;
 
@@ -2773,7 +2773,7 @@ function paginate_comments_links( $args = array() ) {
  * }
  * @return string Markup for comments links.
  */
-function get_the_comments_navigation( $args = array() ) {
+function get_the_comments_navigation( $args = [] ) {
 	$navigation = '';
 
 	// Are there comments to navigate through?
@@ -2808,7 +2808,7 @@ function get_the_comments_navigation( $args = array() ) {
  *
  * @param array $args See get_the_comments_navigation() for available arguments. Default empty array.
  */
-function the_comments_navigation( $args = array() ) {
+function the_comments_navigation( $args = [] ) {
 	echo get_the_comments_navigation( $args );
 }
 
@@ -2826,7 +2826,7 @@ function the_comments_navigation( $args = array() ) {
  * }
  * @return string Markup for pagination links.
  */
-function get_the_comments_pagination( $args = array() ) {
+function get_the_comments_pagination( $args = [] ) {
 	$navigation = '';
 	$args       = wp_parse_args( $args, array(
 		'screen_reader_text' => __( 'Comments navigation' ),
@@ -2852,7 +2852,7 @@ function get_the_comments_pagination( $args = array() ) {
  *
  * @param array $args See get_the_comments_pagination() for available arguments. Default empty array.
  */
-function the_comments_pagination( $args = array() ) {
+function the_comments_pagination( $args = [] ) {
 	echo get_the_comments_pagination( $args );
 }
 

@@ -133,7 +133,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 *                             Language_Pack_Upgrader::bulk_upgrade(). Default empty array.
 	 * @return array|bool|WP_Error The result of the upgrade, or a WP_Error object instead.
 	 */
-	public function upgrade( $update = false, $args = array() ) {
+	public function upgrade( $update = false, $args = [] ) {
 		if ( $update ) {
 			$update = array( $update );
 		}
@@ -165,7 +165,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 * @return array|bool|WP_Error Will return an array of results, or true if there are no updates,
 	 *                                   false or WP_Error for initial errors.
 	 */
-	public function bulk_upgrade( $language_updates = array(), $args = array() ) {
+	public function bulk_upgrade( $language_updates = [], $args = [] ) {
 		global $wp_filesystem;
 
 		$defaults = array(
@@ -208,7 +208,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			return false;
 		}
 
-		$results = array();
+		$results = [];
 
 		$this->update_count = count( $language_updates );
 		$this->update_current = 0;
@@ -222,7 +222,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			if ( ! $wp_filesystem->mkdir( $remote_destination, FS_CHMOD_DIR ) )
 				return new WP_Error( 'mkdir_failed_lang_dir', $this->strings['mkdir_failed'], $remote_destination );
 
-		$language_updates_results = array();
+		$language_updates_results = [];
 
 		foreach ( $language_updates as $language_update ) {
 

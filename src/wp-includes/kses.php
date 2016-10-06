@@ -59,7 +59,7 @@ if ( ! CUSTOM_TAGS ) {
 	 * @since 2.0.0
 	 */
 	$allowedposttags = array(
-		'address' => array(),
+		'address' => [],
 		'a' => array(
 			'href' => true,
 			'rel' => true,
@@ -67,8 +67,8 @@ if ( ! CUSTOM_TAGS ) {
 			'name' => true,
 			'target' => true,
 		),
-		'abbr' => array(),
-		'acronym' => array(),
+		'abbr' => [],
+		'acronym' => [],
 		'area' => array(
 			'alt' => true,
 			'coords' => true,
@@ -97,17 +97,17 @@ if ( ! CUSTOM_TAGS ) {
 			'preload' => true,
 			'src' => true,
 		),
-		'b' => array(),
+		'b' => [],
 		'bdo' => array(
 			'dir' => true,
 		),
-		'big' => array(),
+		'big' => [],
 		'blockquote' => array(
 			'cite' => true,
 			'lang' => true,
 			'xml:lang' => true,
 		),
-		'br' => array(),
+		'br' => [],
 		'button' => array(
 			'disabled' => true,
 			'name' => true,
@@ -121,7 +121,7 @@ if ( ! CUSTOM_TAGS ) {
 			'dir' => true,
 			'lang' => true,
 		),
-		'code' => array(),
+		'code' => [],
 		'col' => array(
 			'align' => true,
 			'char' => true,
@@ -142,8 +142,8 @@ if ( ! CUSTOM_TAGS ) {
 		'del' => array(
 			'datetime' => true,
 		),
-		'dd' => array(),
-		'dfn' => array(),
+		'dd' => [],
+		'dfn' => [],
 		'details' => array(
 			'align' => true,
 			'dir' => true,
@@ -157,10 +157,10 @@ if ( ! CUSTOM_TAGS ) {
 			'lang' => true,
 			'xml:lang' => true,
 		),
-		'dl' => array(),
-		'dt' => array(),
-		'em' => array(),
-		'fieldset' => array(),
+		'dl' => [],
+		'dt' => [],
+		'em' => [],
+		'fieldset' => [],
 		'figure' => array(
 			'align' => true,
 			'dir' => true,
@@ -229,7 +229,7 @@ if ( ! CUSTOM_TAGS ) {
 			'size' => true,
 			'width' => true,
 		),
-		'i' => array(),
+		'i' => [],
 		'img' => array(
 			'alt' => true,
 			'align' => true,
@@ -246,7 +246,7 @@ if ( ! CUSTOM_TAGS ) {
 			'datetime' => true,
 			'cite' => true,
 		),
-		'kbd' => array(),
+		'kbd' => [],
 		'label' => array(
 			'for' => true,
 		),
@@ -260,7 +260,7 @@ if ( ! CUSTOM_TAGS ) {
 		'map' => array(
 			'name' => true,
 		),
-		'mark' => array(),
+		'mark' => [],
 		'menu' => array(
 			'type' => true,
 		),
@@ -282,8 +282,8 @@ if ( ! CUSTOM_TAGS ) {
 		'q' => array(
 			'cite' => true,
 		),
-		's' => array(),
-		'samp' => array(),
+		's' => [],
+		'samp' => [],
 		'span' => array(
 			'dir' => true,
 			'align' => true,
@@ -296,17 +296,17 @@ if ( ! CUSTOM_TAGS ) {
 			'lang' => true,
 			'xml:lang' => true,
 		),
-		'small' => array(),
-		'strike' => array(),
-		'strong' => array(),
-		'sub' => array(),
+		'small' => [],
+		'strike' => [],
+		'strong' => [],
+		'sub' => [],
 		'summary' => array(
 			'align' => true,
 			'dir' => true,
 			'lang' => true,
 			'xml:lang' => true,
 		),
-		'sup' => array(),
+		'sup' => [],
 		'table' => array(
 			'align' => true,
 			'bgcolor' => true,
@@ -376,7 +376,7 @@ if ( ! CUSTOM_TAGS ) {
 			'charoff' => true,
 			'valign' => true,
 		),
-		'title' => array(),
+		'title' => [],
 		'tr' => array(
 			'align' => true,
 			'bgcolor' => true,
@@ -391,8 +391,8 @@ if ( ! CUSTOM_TAGS ) {
 			'src' => true,
 			'srclang' => true,
 		),
-		'tt' => array(),
-		'u' => array(),
+		'tt' => [],
+		'u' => [],
 		'ul' => array(
 			'type' => true,
 		),
@@ -401,7 +401,7 @@ if ( ! CUSTOM_TAGS ) {
 			'type' => true,
 			'reversed' => true,
 		),
-		'var' => array(),
+		'var' => [],
 		'video' => array(
 			'autoplay' => true,
 			'controls' => true,
@@ -432,23 +432,23 @@ if ( ! CUSTOM_TAGS ) {
 		'acronym' => array(
 			'title' => true,
 		),
-		'b' => array(),
+		'b' => [],
 		'blockquote' => array(
 			'cite' => true,
 		),
-		'cite' => array(),
-		'code' => array(),
+		'cite' => [],
+		'code' => [],
 		'del' => array(
 			'datetime' => true,
 		),
-		'em' => array(),
-		'i' => array(),
+		'em' => [],
+		'i' => [],
 		'q' => array(
 			'cite' => true,
 		),
-		's' => array(),
-		'strike' => array(),
-		'strong' => array(),
+		's' => [],
+		'strike' => [],
+		'strong' => [],
 	);
 
 	$allowedentitynames = array(
@@ -523,7 +523,7 @@ if ( ! CUSTOM_TAGS ) {
  * @param array  $allowed_protocols Optional. Allowed protocol in links.
  * @return string Filtered content with only allowed HTML elements
  */
-function wp_kses( $string, $allowed_html, $allowed_protocols = array() ) {
+function wp_kses( $string, $allowed_html, $allowed_protocols = [] ) {
 	if ( empty( $allowed_protocols ) )
 		$allowed_protocols = wp_allowed_protocols();
 	$string = wp_kses_no_null( $string, array( 'slash_zero' => 'keep' ) );
@@ -551,9 +551,9 @@ function wp_kses_one_attr( $string, $element ) {
 	$allowed_protocols = wp_allowed_protocols();
 	$string = wp_kses_no_null( $string, array( 'slash_zero' => 'keep' ) );
 	$string = wp_kses_js_entities( $string );
-	
+
 	// Preserve leading and trailing whitespace.
-	$matches = array();
+	$matches = [];
 	preg_match('/^\s*/', $string, $matches);
 	$lead = $matches[0];
 	preg_match('/\s*$/', $string, $matches);
@@ -563,7 +563,7 @@ function wp_kses_one_attr( $string, $element ) {
 	} else {
 		$string = substr( $string, strlen( $lead ), -strlen( $trail ) );
 	}
-	
+
 	// Parse attribute name and value from input.
 	$split = preg_split( '/\s*=\s*/', $string, 2 );
 	$name = $split[0];
@@ -600,7 +600,7 @@ function wp_kses_one_attr( $string, $element ) {
 		$value = '';
 		$vless = 'y';
 	}
-	
+
 	// Sanitize attribute by name.
 	wp_kses_attr_check( $name, $value, $string, $vless, $element, $allowed_html );
 
@@ -652,7 +652,7 @@ function wp_kses_allowed_html( $context = '' ) {
 
 		case 'strip':
 			/** This filter is documented in wp-includes/kses.php */
-			return apply_filters( 'wp_kses_allowed_html', array(), $context );
+			return apply_filters( 'wp_kses_allowed_html', [], $context );
 
 		case 'entities':
 			/** This filter is documented in wp-includes/kses.php */
@@ -916,7 +916,7 @@ function wp_kses_attr_check( &$name, &$value, &$whole, $vless, $element, $allowe
  * @return array List of attributes after parsing
  */
 function wp_kses_hair($attr, $allowed_protocols) {
-	$attrarr = array();
+	$attrarr = [];
 	$mode = 0;
 	$attrname = '';
 	$uris = array('xmlns', 'profile', 'href', 'src', 'cite', 'classid', 'codebase', 'data', 'usemap', 'longdesc', 'action');
@@ -1063,7 +1063,7 @@ function wp_kses_attr_parse( $element ) {
 	} else {
 		$xhtml_slash = '';
 	}
-	
+
 	// Split it
 	$attrarr = wp_kses_hair_parse( $attr );
 	if ( false === $attrarr ) {
@@ -1073,7 +1073,7 @@ function wp_kses_attr_parse( $element ) {
 	// Make sure all input is returned by adding front and back matter.
 	array_unshift( $attrarr, $begin . $slash . $elname );
 	array_push( $attrarr, $xhtml_slash . $end );
-	
+
 	return $attrarr;
 }
 
@@ -1092,7 +1092,7 @@ function wp_kses_attr_parse( $element ) {
  */
 function wp_kses_hair_parse( $attr ) {
 	if ( '' === $attr ) {
-		return array();
+		return [];
 	}
 
 	$regex =
@@ -1829,7 +1829,7 @@ function _wp_add_global_attributes( $value ) {
 	);
 
 	if ( true === $value )
-		$value = array();
+		$value = [];
 
 	if ( is_array( $value ) )
 		return array_merge( $value, $global_attributes );

@@ -37,7 +37,7 @@ class WP_Network_Query {
 	protected $sql_clauses = array(
 		'select'  => '',
 		'from'    => '',
-		'where'   => array(),
+		'where'   => [],
 		'groupby' => '',
 		'orderby' => '',
 		'limits'  => '',
@@ -258,7 +258,7 @@ class WP_Network_Query {
 		}
 
 		// Fetch full network objects from the primed cache.
-		$_networks = array();
+		$_networks = [];
 		foreach ( $network_ids as $network_id ) {
 			if ( $_network = get_network( $network_id ) ) {
 				$_networks[] = $_network;
@@ -296,14 +296,14 @@ class WP_Network_Query {
 		$order = $this->parse_order( $this->query_vars['order'] );
 
 		// Disable ORDER BY with 'none', an empty array, or boolean false.
-		if ( in_array( $this->query_vars['orderby'], array( 'none', array(), false ), true ) ) {
+		if ( in_array( $this->query_vars['orderby'], array( 'none', [], false ), true ) ) {
 			$orderby = '';
 		} elseif ( ! empty( $this->query_vars['orderby'] ) ) {
 			$ordersby = is_array( $this->query_vars['orderby'] ) ?
 				$this->query_vars['orderby'] :
 				preg_split( '/[,\s]/', $this->query_vars['orderby'] );
 
-			$orderby_array = array();
+			$orderby_array = [];
 			foreach ( $ordersby as $_key => $_value ) {
 				if ( ! $_value ) {
 					continue;
@@ -493,7 +493,7 @@ class WP_Network_Query {
 	protected function get_search_sql( $string, $columns ) {
 		$like = '%' . $wpdb->esc_like( $string ) . '%';
 
-		$searches = array();
+		$searches = [];
 		foreach ( $columns as $column ) {
 			$searches[] = $wpdb->prepare( "$column LIKE %s", $like );
 		}

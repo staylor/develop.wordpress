@@ -19,7 +19,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 
 	public $checkbox = true;
 
-	public $pending_count = array();
+	public $pending_count = [];
 
 	public $extra_items;
 
@@ -37,7 +37,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		global $post_id;
 
 		$post_id = isset( $_REQUEST['p'] ) ? absint( $_REQUEST['p'] ) : 0;
@@ -199,7 +199,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 	protected function get_views() {
 		global $post_id, $comment_status, $comment_type;
 
-		$status_links = array();
+		$status_links = [];
 		$num_comments = ( $post_id ) ? wp_count_comments( $post_id ) : wp_count_comments();
 
 		$stati = array(
@@ -288,7 +288,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 	protected function get_bulk_actions() {
 		global $comment_status;
 
-		$actions = array();
+		$actions = [];
 		if ( in_array( $comment_status, array( 'all', 'approved' ) ) )
 			$actions['unapprove'] = __( 'Unapprove' );
 		if ( in_array( $comment_status, array( 'all', 'moderated' ) ) )
@@ -389,7 +389,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 	public function get_columns() {
 		global $post_id;
 
-		$columns = array();
+		$columns = [];
 
 		if ( $this->checkbox )
 			$columns['cb'] = '<input type="checkbox" />';

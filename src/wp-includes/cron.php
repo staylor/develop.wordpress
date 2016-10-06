@@ -26,7 +26,7 @@ use function WP\getApp;
  * @param array $args Optional. Arguments to pass to the hook's callback function.
  * @return false|void False if the event does not get scheduled.
  */
-function wp_schedule_single_event( $timestamp, $hook, $args = array()) {
+function wp_schedule_single_event( $timestamp, $hook, $args = []) {
 	// Make sure timestamp is a positive integer
 	if ( ! is_numeric( $timestamp ) || $timestamp <= 0 ) {
 		return false;
@@ -87,7 +87,7 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array()) {
  * @param array $args Optional. Arguments to pass to the hook's callback function.
  * @return false|void False if the event does not get scheduled.
  */
-function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array()) {
+function wp_schedule_event( $timestamp, $recurrence, $hook, $args = []) {
 	// Make sure timestamp is a positive integer
 	if ( ! is_numeric( $timestamp ) || $timestamp <= 0 ) {
 		return false;
@@ -125,7 +125,7 @@ function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array()) {
  * @param array $args Optional. Arguments to pass to the hook's callback function.
  * @return false|void False if the event does not get rescheduled.
  */
-function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array() ) {
+function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = [] ) {
 	// Make sure timestamp is a positive integer
 	if ( ! is_numeric( $timestamp ) || $timestamp <= 0 ) {
 		return false;
@@ -176,7 +176,7 @@ function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array() ) 
  * as those used when originally scheduling the event.
  * @return false|void False if the event does not get unscheduled.
  */
-function wp_unschedule_event( $timestamp, $hook, $args = array() ) {
+function wp_unschedule_event( $timestamp, $hook, $args = [] ) {
 	// Make sure timestamp is a positive integer
 	if ( ! is_numeric( $timestamp ) || $timestamp <= 0 ) {
 		return false;
@@ -200,7 +200,7 @@ function wp_unschedule_event( $timestamp, $hook, $args = array() ) {
  * @param string $hook Action hook, the execution of which will be unscheduled.
  * @param array $args Optional. Arguments that were to be passed to the hook's callback function.
  */
-function wp_clear_scheduled_hook( $hook, $args = array() ) {
+function wp_clear_scheduled_hook( $hook, $args = [] ) {
 	// Backward compatibility
 	// Previously this function took the arguments as discrete vars rather than an array like the rest of the API
 	if ( !is_array($args) ) {
@@ -232,7 +232,7 @@ function wp_clear_scheduled_hook( $hook, $args = array() ) {
  * @param array $args Optional. Arguments to pass to the hook's callback function.
  * @return false|int The Unix timestamp of the next time the scheduled event will occur.
  */
-function wp_next_scheduled( $hook, $args = array() ) {
+function wp_next_scheduled( $hook, $args = [] ) {
 	$crons = _get_cron_array();
 	$key = md5(serialize($args));
 	if ( empty($crons) )
@@ -420,7 +420,7 @@ function wp_get_schedules() {
 	 *
 	 * @param array $new_schedules An array of non-default cron schedules. Default empty.
 	 */
-	return array_merge( apply_filters( 'cron_schedules', array() ), $schedules );
+	return array_merge( apply_filters( 'cron_schedules', [] ), $schedules );
 }
 
 /**
@@ -434,7 +434,7 @@ function wp_get_schedules() {
  * @param array $args Optional. Arguments passed to the event's callback function.
  * @return string|false False, if no schedule. Schedule name on success.
  */
-function wp_get_schedule($hook, $args = array()) {
+function wp_get_schedule($hook, $args = []) {
 	$crons = _get_cron_array();
 	$key = md5(serialize($args));
 	if ( empty($crons) )
@@ -499,7 +499,7 @@ function _upgrade_cron_array($cron) {
 	if ( isset($cron['version']) && 2 == $cron['version'])
 		return $cron;
 
-	$new_cron = array();
+	$new_cron = [];
 
 	foreach ( (array) $cron as $timestamp => $hooks) {
 		foreach ( (array) $hooks as $hook => $args ) {

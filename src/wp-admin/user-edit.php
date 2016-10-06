@@ -393,7 +393,7 @@ if ( is_multisite() && is_network_admin() && ! IS_PROFILE_PAGE && current_user_c
 	<td>
 		<select name="display_name" id="display_name">
 		<?php
-			$public_display = array();
+			$public_display = [];
 			$public_display['display_nickname']  = $profileuser->nickname;
 			$public_display['display_username']  = $profileuser->user_login;
 

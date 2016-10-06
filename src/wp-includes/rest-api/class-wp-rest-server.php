@@ -63,7 +63,7 @@ class WP_REST_Server {
 	 * @access protected
 	 * @var array
 	 */
-	protected $namespaces = array();
+	protected $namespaces = [];
 
 	/**
 	 * Endpoints registered to the server.
@@ -72,7 +72,7 @@ class WP_REST_Server {
 	 * @access protected
 	 * @var array
 	 */
-	protected $endpoints = array();
+	protected $endpoints = [];
 
 	/**
 	 * Options defined for the routes.
@@ -81,7 +81,7 @@ class WP_REST_Server {
 	 * @access protected
 	 * @var array
 	 */
-	protected $route_options = array();
+	protected $route_options = [];
 
 	/**
 	 * Instantiates the REST server.
@@ -164,7 +164,7 @@ class WP_REST_Server {
 			$status = 500;
 		}
 
-		$errors = array();
+		$errors = [];
 
 		foreach ( (array) $error->errors as $code => $messages ) {
 			foreach ( (array) $messages as $message ) {
@@ -459,13 +459,13 @@ class WP_REST_Server {
 	public static function get_response_links( $response ) {
 		$links = $response->get_links();
 		if ( empty( $links ) ) {
-			return array();
+			return [];
 		}
 
 		// Convert links to part of the data.
-		$data = array();
+		$data = [];
 		foreach ( $links as $rel => $items ) {
-			$data[ $rel ] = array();
+			$data[ $rel ] = [];
 
 			foreach ( $items as $item ) {
 				$attributes = $item['attributes'];
@@ -494,11 +494,11 @@ class WP_REST_Server {
 		$links = self::get_response_links( $response );
 
 		if ( empty( $links ) ) {
-			return array();
+			return [];
 		}
 
 		$curies = $response->get_curies();
-		$used_curies = array();
+		$used_curies = [];
 
 		foreach ( $links as $rel => $items ) {
 
@@ -549,7 +549,7 @@ class WP_REST_Server {
 			return $data;
 		}
 
-		$embedded = array();
+		$embedded = [];
 
 		foreach ( $data['_links'] as $rel => $links ) {
 			// Ignore links to self, for obvious reasons.
@@ -557,20 +557,20 @@ class WP_REST_Server {
 				continue;
 			}
 
-			$embeds = array();
+			$embeds = [];
 
 			foreach ( $links as $item ) {
 				// Determine if the link is embeddable.
 				if ( empty( $item['embeddable'] ) ) {
 					// Ensure we keep the same order.
-					$embeds[] = array();
+					$embeds[] = [];
 					continue;
 				}
 
 				// Run through our internal routing and serve.
 				$request = WP_REST_Request::from_url( $item['href'] );
 				if ( ! $request ) {
-					$embeds[] = array();
+					$embeds[] = [];
 					continue;
 				}
 
@@ -650,7 +650,7 @@ class WP_REST_Server {
 	 */
 	public function register_route( $namespace, $route, $route_args, $override = false ) {
 		if ( ! isset( $this->namespaces[ $namespace ] ) ) {
-			$this->namespaces[ $namespace ] = array();
+			$this->namespaces[ $namespace ] = [];
 
 			$this->register_route( $namespace, '/' . $namespace, array(
 				array(
@@ -720,7 +720,7 @@ class WP_REST_Server {
 			'accept_json'   => false,
 			'accept_raw'    => false,
 			'show_in_index' => true,
-			'args'          => array(),
+			'args'          => [],
 		);
 
 		foreach ( $endpoints as $route => &$handlers ) {
@@ -731,7 +731,7 @@ class WP_REST_Server {
 			}
 
 			if ( ! isset( $this->route_options[ $route ] ) ) {
-				$this->route_options[ $route ] = array();
+				$this->route_options[ $route ] = [];
 			}
 
 			foreach ( $handlers as $key => &$handler ) {
@@ -751,10 +751,10 @@ class WP_REST_Server {
 				} else if ( is_array( $handler['methods'] ) ) {
 					$methods = $handler['methods'];
 				} else {
-					$methods = array();
+					$methods = [];
 				}
 
-				$handler['methods'] = array();
+				$handler['methods'] = [];
 
 				foreach ( $methods as $method ) {
 					$method = strtoupper( trim( $method ) );
@@ -857,7 +857,7 @@ class WP_REST_Server {
 					$request->set_url_params( $args );
 					$request->set_attributes( $handler );
 
-					$defaults = array();
+					$defaults = [];
 
 					foreach ( $handler['args'] as $arg => $options ) {
 						if ( isset( $options['default'] ) ) {
@@ -1020,7 +1020,7 @@ class WP_REST_Server {
 			'url'            => get_option( 'siteurl' ),
 			'home'           => home_url(),
 			'namespaces'     => array_keys( $this->namespaces ),
-			'authentication' => array(),
+			'authentication' => [],
 			'routes'         => $this->get_data_for_routes( $this->get_routes(), $request['context'] ),
 		);
 
@@ -1096,7 +1096,7 @@ class WP_REST_Server {
 	 * @return array Route data to expose in indexes.
 	 */
 	public function get_data_for_routes( $routes, $context = 'view' ) {
-		$available = array();
+		$available = [];
 
 		// Find the available routes.
 		foreach ( $routes as $route => $callbacks ) {
@@ -1144,8 +1144,8 @@ class WP_REST_Server {
 	public function get_data_for_route( $route, $callbacks, $context = 'view' ) {
 		$data = array(
 			'namespace' => '',
-			'methods' => array(),
-			'endpoints' => array(),
+			'methods' => [],
+			'endpoints' => [],
 		);
 
 		if ( isset( $this->route_options[ $route ] ) ) {
@@ -1174,7 +1174,7 @@ class WP_REST_Server {
 			);
 
 			if ( isset( $callback['args'] ) ) {
-				$endpoint_data['args'] = array();
+				$endpoint_data['args'] = [];
 				foreach ( $callback['args'] as $key => $opts ) {
 					$arg_data = array(
 						'required' => ! empty( $opts['required'] ),
@@ -1291,7 +1291,7 @@ class WP_REST_Server {
 	 * @return array Headers extracted from the input.
 	 */
 	public function get_headers( $server ) {
-		$headers = array();
+		$headers = [];
 
 		// CONTENT_* headers are not prefixed with HTTP_.
 		$additional = array( 'CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true );

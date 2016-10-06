@@ -13,10 +13,10 @@ use function WP\getApp;
 final class _WP_Editors {
 	public static $mce_locale;
 
-	private static $mce_settings = array();
-	private static $qt_settings = array();
-	private static $plugins = array();
-	private static $qt_buttons = array();
+	private static $mce_settings = [];
+	private static $qt_settings = [];
+	private static $plugins = [];
+	private static $qt_buttons = [];
 	private static $ext_plugins;
 	private static $baseurl;
 	private static $first_init;
@@ -145,7 +145,7 @@ final class _WP_Editors {
 	 * @param string $editor_id ID for the textarea and TinyMCE and Quicktags instances (can contain only ASCII letters and numbers).
 	 * @param array $settings See the _parse_settings() method for description.
 	 */
-	public static function editor( $content, $editor_id, $settings = array() ) {
+	public static function editor( $content, $editor_id, $settings = [] ) {
 		$set = self::parse_settings( $editor_id, $settings );
 		$editor_class = ' class="' . trim( esc_attr( $set['editor_class'] ) . ' wp-editor-area' ) . '"';
 		$tabindex = $set['tabindex'] ? ' tabindex="' . (int) $set['tabindex'] . '"' : '';
@@ -389,7 +389,7 @@ final class _WP_Editors {
 					 *
 					 * @param array $external_plugins An array of external TinyMCE plugins.
 					 */
-					$mce_external_plugins = apply_filters( 'mce_external_plugins', array() );
+					$mce_external_plugins = apply_filters( 'mce_external_plugins', [] );
 
 					$plugins = array(
 						'charmap',
@@ -450,9 +450,9 @@ final class _WP_Editors {
 						 *
 						 * @param array $translations Translations for external TinyMCE plugins.
 						 */
-						$mce_external_languages = apply_filters( 'mce_external_languages', array() );
+						$mce_external_languages = apply_filters( 'mce_external_languages', [] );
 
-						$loaded_langs = array();
+						$loaded_langs = [];
 						$strings = '';
 
 						if ( ! empty( $mce_external_languages ) ) {
@@ -600,7 +600,7 @@ final class _WP_Editors {
 				 * @param string $editor_id Unique editor identifier, e.g. 'content'.
 				 */
 				$mce_buttons = apply_filters( 'teeny_mce_buttons', array('bold', 'italic', 'underline', 'blockquote', 'strikethrough', 'bullist', 'numlist', 'alignleft', 'aligncenter', 'alignright', 'undo', 'redo', 'link', 'unlink', 'fullscreen'), $editor_id );
-				$mce_buttons_2 = $mce_buttons_3 = $mce_buttons_4 = array();
+				$mce_buttons_2 = $mce_buttons_3 = $mce_buttons_4 = [];
 			} else {
 				$mce_buttons = array( 'bold', 'italic', 'strikethrough', 'bullist', 'numlist', 'blockquote', 'hr', 'alignleft', 'aligncenter', 'alignright', 'link', 'unlink', 'wp_more', 'spellchecker' );
 
@@ -648,7 +648,7 @@ final class _WP_Editors {
 				 * @param array  $buttons   Third-row list of buttons.
 				 * @param string $editor_id Unique editor identifier, e.g. 'content'.
 				 */
-				$mce_buttons_3 = apply_filters( 'mce_buttons_3', array(), $editor_id );
+				$mce_buttons_3 = apply_filters( 'mce_buttons_3', [], $editor_id );
 
 				/**
 				 * Filters the fourth-row list of TinyMCE buttons (Visual tab).
@@ -658,7 +658,7 @@ final class _WP_Editors {
 				 * @param array  $buttons   Fourth-row list of buttons.
 				 * @param string $editor_id Unique editor identifier, e.g. 'content'.
 				 */
-				$mce_buttons_4 = apply_filters( 'mce_buttons_4', array(), $editor_id );
+				$mce_buttons_4 = apply_filters( 'mce_buttons_4', [], $editor_id );
 			}
 
 			$body_class = $editor_id;
@@ -1318,7 +1318,7 @@ final class _WP_Editors {
 	 * @param array $args Optional. Accepts 'pagenum' and 's' (search) arguments.
 	 * @return false|array Results.
 	 */
-	public static function wp_link_query( $args = array() ) {
+	public static function wp_link_query( $args = [] ) {
 		$pts = get_post_types( array( 'public' => true ), 'objects' );
 		$pt_names = array_keys( $pts );
 
@@ -1359,7 +1359,7 @@ final class _WP_Editors {
 			return false;
 
 		// Build results.
-		$results = array();
+		$results = [];
 		foreach ( $posts as $post ) {
 			if ( 'post' == $post->post_type )
 				$info = mysql2date( __( 'Y/m/d' ), $post->post_date );

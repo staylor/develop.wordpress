@@ -25,7 +25,7 @@ class WP_Date_Query {
 	 * @access public
 	 * @var array
 	 */
-	public $queries = array();
+	public $queries = [];
 
 	/**
 	 * The default relation between top-level queries. Can be either 'AND' or 'OR'.
@@ -200,7 +200,7 @@ class WP_Date_Query {
 	 * @return array Sanitized queries.
 	 */
 	public function sanitize_query( $queries, $parent_query = null ) {
-		$cleaned_query = array();
+		$cleaned_query = [];
 
 		$defaults = array(
 			'column'   => 'post_date',
@@ -289,7 +289,7 @@ class WP_Date_Query {
 	 * @param  array $date_query The date_query array.
 	 * @return bool  True if all values in the query are valid, false if one or more fail.
 	 */
-	public function validate_date_values( $date_query = array() ) {
+	public function validate_date_values( $date_query = [] ) {
 		if ( empty( $date_query ) ) {
 			return false;
 		}
@@ -310,7 +310,7 @@ class WP_Date_Query {
 		}
 
 		// Array containing all min-max checks.
-		$min_max_checks = array();
+		$min_max_checks = [];
 
 		// Days per year.
 		if ( array_key_exists( 'year', $date_query ) ) {
@@ -617,8 +617,8 @@ class WP_Date_Query {
 	 */
 	protected function get_sql_for_query( $query, $depth = 0 ) {
 		$sql_chunks = array(
-			'join'  => array(),
-			'where' => array(),
+			'join'  => [],
+			'where' => [],
 		);
 
 		$sql = array(
@@ -722,7 +722,7 @@ class WP_Date_Query {
 		$wpdb = $app['db'];
 
 		// The sub-parts of a $where part.
-		$where_parts = array();
+		$where_parts = [];
 
 		$column = ( ! empty( $query['column'] ) ) ? esc_sql( $query['column'] ) : $this->column;
 
@@ -794,7 +794,7 @@ class WP_Date_Query {
 		 */
 		return array(
 			'where' => $where_parts,
-			'join'  => array(),
+			'join'  => [],
 		);
 	}
 
@@ -969,7 +969,7 @@ class WP_Date_Query {
 
 		// Complex combined queries aren't supported for multi-value queries
 		if ( in_array( $compare, array( 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN' ) ) ) {
-			$return = array();
+			$return = [];
 
 			if ( isset( $hour ) && false !== ( $value = $this->build_value( $compare, $hour ) ) )
 				$return[] = "HOUR( $column ) $compare $value";

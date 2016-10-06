@@ -28,9 +28,9 @@ use function WP\getApp;
  * @param string|bool $secure_cookie Optional. Whether to use secure cookie.
  * @return User|WP_Error User on success, WP_Error on failure.
  */
-function wp_signon( $credentials = array(), $secure_cookie = '' ) {
+function wp_signon( $credentials = [], $secure_cookie = '' ) {
 	if ( empty($credentials) ) {
-		$credentials = array(); // Back-compat for plugins passing an empty string.
+		$credentials = []; // Back-compat for plugins passing an empty string.
 		$app = getApp();
 
 		$log = $app['request']->request->get( 'log' );
@@ -400,7 +400,7 @@ function count_many_users_posts( $users, $post_type = 'post', $public_only = fal
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	$count = array();
+	$count = [];
 	if ( empty( $users ) || ! is_array( $users ) )
 		return $count;
 
@@ -554,7 +554,7 @@ function delete_user_option( $user_id, $option_name, $global = false ) {
  *                    for more information on accepted arguments.
  * @return array List of users.
  */
-function get_users( $args = array() ) {
+function get_users( $args = [] ) {
 
 	$args = wp_parse_args( $args );
 	$args['count_total'] = false;
@@ -584,7 +584,7 @@ function get_blogs_of_user( $user_id, $all = false ) {
 
 	// Logged out users can't have sites
 	if ( empty( $user_id ) )
-		return array();
+		return [];
 
 	/**
 	 * Filters the list of a user's sites before it is populated.
@@ -607,7 +607,7 @@ function get_blogs_of_user( $user_id, $all = false ) {
 
 	$keys = get_user_meta( $user_id );
 	if ( empty( $keys ) )
-		return array();
+		return [];
 
 	if ( ! is_multisite() ) {
 		$site_id = get_current_blog_id();
@@ -624,7 +624,7 @@ function get_blogs_of_user( $user_id, $all = false ) {
 		return $sites;
 	}
 
-	$site_ids = array();
+	$site_ids = [];
 
 	if ( isset( $keys[ $wpdb->base_prefix . 'capabilities' ] ) && defined( 'MULTISITE' ) ) {
 		$site_ids[] = 1;
@@ -645,7 +645,7 @@ function get_blogs_of_user( $user_id, $all = false ) {
 		$site_ids[] = (int) $site_id;
 	}
 
-	$sites = array();
+	$sites = [];
 
 	if ( ! empty( $site_ids ) ) {
 		$args = array(
@@ -848,13 +848,13 @@ function count_users($strategy = 'time') {
 	// Initialize
 	$id = get_current_blog_id();
 	$blog_prefix = $wpdb->get_blog_prefix($id);
-	$result = array();
+	$result = [];
 
 	if ( 'time' == $strategy ) {
 		$avail_roles = $app['roles']->get_names();
 
 		// Build a CPU-intensive query that will return concise information.
-		$select_count = array();
+		$select_count = [];
 		foreach ( $avail_roles as $this_role => $name ) {
 			$select_count[] = $wpdb->prepare( "COUNT(NULLIF(`meta_value` LIKE %s, false))", '%' . $wpdb->esc_like( '"' . $this_role . '"' ) . '%');
 		}
@@ -866,7 +866,7 @@ function count_users($strategy = 'time') {
 
 		// Run the previous loop again to associate results with role names.
 		$col = 0;
-		$role_counts = array();
+		$role_counts = [];
 		foreach ( $avail_roles as $this_role => $name ) {
 			$count = (int) $row[$col++];
 			if ($count > 0) {
@@ -1033,8 +1033,8 @@ function wp_dropdown_users( $args = '' ) {
 		'blog_id' => get_current_blog_id(), 'who' => '', 'include_selected' => false,
 		'option_none_value' => -1,
 		'role' => '',
-		'role__in' => array(),
-		'role__not_in' => array(),
+		'role__in' => [],
+		'role__not_in' => [],
 	);
 
 	$defaults['selected'] = is_author() ? get_query_var( 'author' ) : 0;
@@ -1463,7 +1463,7 @@ function wp_insert_user( $userdata ) {
 	 *
 	 * @param array $usernames Array of blacklisted usernames.
 	 */
-	$illegal_logins = (array) apply_filters( 'illegal_user_logins', array() );
+	$illegal_logins = (array) apply_filters( 'illegal_user_logins', [] );
 
 	if ( in_array( strtolower( $user_login ), array_map( 'strtolower', $illegal_logins ) ) ) {
 		return new WP_Error( 'invalid_username', __( 'Sorry, that username is not allowed.' ) );
@@ -1485,7 +1485,7 @@ function wp_insert_user( $userdata ) {
 	$user_nicename = sanitize_title( $user_nicename );
 
 	// Store values to save in user meta.
-	$meta = array();
+	$meta = [];
 
 	/**
 	 * Filters a user's nicename before the user is created or updated.
@@ -1988,7 +1988,7 @@ function _get_additional_user_keys( $user ) {
  * @return array Array of contact methods and their labels.
  */
 function wp_get_user_contact_methods( $user = null ) {
-	$methods = array();
+	$methods = [];
 	if ( get_site_option( 'initial_db_version' ) < 23588 ) {
 		$methods = array(
 			'aim'    => __( 'AIM' ),
@@ -2273,7 +2273,7 @@ function register_new_user( $user_login, $user_email ) {
 
 	} else {
 		/** This filter is documented in wp-includes/user.php */
-		$illegal_user_logins = array_map( 'strtolower', (array) apply_filters( 'illegal_user_logins', array() ) );
+		$illegal_user_logins = array_map( 'strtolower', (array) apply_filters( 'illegal_user_logins', [] ) );
 		if ( in_array( strtolower( $sanitized_user_login ), $illegal_user_logins ) ) {
 			$errors->add( 'invalid_username', __( '<strong>ERROR</strong>: Sorry, that username is not allowed.' ) );
 		}
@@ -2432,7 +2432,7 @@ function wp_destroy_all_sessions() {
  */
 function wp_get_users_with_no_role() {
 	if ( is_multisite() ) {
-		return array();
+		return [];
 	}
 
 	$app = getApp();

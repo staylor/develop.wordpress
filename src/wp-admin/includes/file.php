@@ -133,7 +133,7 @@ function list_files( $folder = '', $levels = 100 ) {
 	if ( ! $levels )
 		return false;
 
-	$files = array();
+	$files = [];
 	if ( $dir = @opendir( $folder ) ) {
 		while (($file = readdir( $dir ) ) !== false ) {
 			if ( in_array($file, array('.', '..') ) )
@@ -575,7 +575,7 @@ function unzip_file($file, $to) {
 	// Unzip can use a lot of memory, but not this much hopefully.
 	wp_raise_memory_limit( 'admin' );
 
-	$needed_dirs = array();
+	$needed_dirs = [];
 	$to = trailingslashit($to);
 
 	// Determine any parent dir's needed (of the upgrade directory)
@@ -631,7 +631,7 @@ function unzip_file($file, $to) {
  * @param array $needed_dirs A partial list of required folders needed to be created.
  * @return mixed WP_Error on failure, True on success
  */
-function _unzip_file_ziparchive($file, $to, $needed_dirs = array() ) {
+function _unzip_file_ziparchive($file, $to, $needed_dirs = [] ) {
 	global $wp_filesystem;
 
 	$z = new ZipArchive();
@@ -734,7 +734,7 @@ function _unzip_file_ziparchive($file, $to, $needed_dirs = array() ) {
  * @param array $needed_dirs A partial list of required folders needed to be created.
  * @return mixed WP_Error on failure, True on success
  */
-function _unzip_file_pclzip($file, $to, $needed_dirs = array()) {
+function _unzip_file_pclzip($file, $to, $needed_dirs = []) {
 	global $wp_filesystem;
 
 	mbstring_binary_safe_encoding();
@@ -826,7 +826,7 @@ function _unzip_file_pclzip($file, $to, $needed_dirs = array()) {
  * @param array $skip_list a list of files/folders to skip copying
  * @return mixed WP_Error on failure, True on success.
  */
-function copy_dir($from, $to, $skip_list = array() ) {
+function copy_dir($from, $to, $skip_list = [] ) {
 	global $wp_filesystem;
 
 	$dirlist = $wp_filesystem->dirlist($from);
@@ -852,7 +852,7 @@ function copy_dir($from, $to, $skip_list = array() ) {
 			}
 
 			// generate the $sub_skip_list for the subdirectory as a sub-set of the existing $skip_list
-			$sub_skip_list = array();
+			$sub_skip_list = [];
 			foreach ( $skip_list as $skip_item ) {
 				if ( 0 === strpos( $skip_item, $filename . '/' ) )
 					$sub_skip_list[] = preg_replace( '!^' . preg_quote( $filename, '!' ) . '/!i', '', $skip_item );
@@ -976,7 +976,7 @@ function WP_Filesystem( $args = false, $context = false, $allow_relaxed_file_own
  *                                             Default false.
  * @return string The transport to use, see description for valid return values.
  */
-function get_filesystem_method( $args = array(), $context = '', $allow_relaxed_file_ownership = false ) {
+function get_filesystem_method( $args = [], $context = '', $allow_relaxed_file_ownership = false ) {
 	$method = defined('FS_METHOD') ? FS_METHOD : false; // Please ensure that this is either 'direct', 'ssh2', 'ftpext' or 'ftpsockets'
 
 	if ( ! $context ) {
@@ -1091,7 +1091,7 @@ function request_filesystem_credentials( $form_post, $type = '', $error = false,
 		return $req_cred;
 
 	if ( empty($type) ) {
-		$type = get_filesystem_method( array(), $context, $allow_relaxed_file_ownership );
+		$type = get_filesystem_method( [], $context, $allow_relaxed_file_ownership );
 	}
 
 	if ( 'direct' == $type )
@@ -1160,7 +1160,7 @@ function request_filesystem_credentials( $form_post, $type = '', $error = false,
 		echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
 	}
 
-	$types = array();
+	$types = [];
 	if ( extension_loaded('ftp') || extension_loaded('sockets') || function_exists('fsockopen') )
 		$types[ 'ftp' ] = __('FTP');
 	if ( extension_loaded('ftp') ) //Only this supports FTPS

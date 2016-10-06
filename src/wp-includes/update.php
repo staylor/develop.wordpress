@@ -20,7 +20,7 @@ use function WP\getApp;
  * @param array $extra_stats Extra statistics to report to the WordPress.org API.
  * @param bool  $force_check Whether to bypass the transient cache and force a fresh update check. Defaults to false, true if $extra_stats is set.
  */
-function wp_version_check( $extra_stats = array(), $force_check = false ) {
+function wp_version_check( $extra_stats = [], $force_check = false ) {
 	if ( wp_installing() ) {
 		return;
 	}
@@ -39,7 +39,7 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 
 	if ( ! is_object($current) ) {
 		$current = new stdClass;
-		$current->updates = array();
+		$current->updates = [];
 		$current->version_checked = $app['wp_version'];
 	}
 
@@ -185,7 +185,7 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
  *
  * @param array $extra_stats Extra statistics to report to the WordPress.org API.
  */
-function wp_update_plugins( $extra_stats = array() ) {
+function wp_update_plugins( $extra_stats = [] ) {
 	if ( wp_installing() ) {
 		return;
 	}
@@ -199,7 +199,7 @@ function wp_update_plugins( $extra_stats = array() ) {
 	$plugins = get_plugins();
 	$translations = wp_get_installed_translations( 'plugins' );
 
-	$active  = get_option( 'active_plugins', array() );
+	$active  = get_option( 'active_plugins', [] );
 	$current = get_site_transient( 'update_plugins' );
 	if ( ! is_object($current) )
 		$current = new stdClass;
@@ -330,9 +330,9 @@ function wp_update_plugins( $extra_stats = array() ) {
 		// TODO: Perhaps better to store no_update in a separate transient with an expiry?
 		$new_option->no_update = $response['no_update'];
 	} else {
-		$new_option->response = array();
-		$new_option->translations = array();
-		$new_option->no_update = array();
+		$new_option->response = [];
+		$new_option->translations = [];
+		$new_option->no_update = [];
 	}
 
 	set_site_transient( 'update_plugins', $new_option );
@@ -349,7 +349,7 @@ function wp_update_plugins( $extra_stats = array() ) {
  *
  * @param array $extra_stats Extra statistics to report to the WordPress.org API.
  */
-function wp_update_themes( $extra_stats = array() ) {
+function wp_update_themes( $extra_stats = [] ) {
 	if ( wp_installing() ) {
 		return;
 	}
@@ -363,7 +363,7 @@ function wp_update_themes( $extra_stats = array() ) {
 	if ( ! is_object($last_update) )
 		$last_update = new stdClass;
 
-	$themes = $checked = $request = array();
+	$themes = $checked = $request = [];
 
 	// Put slug of current theme into request.
 	$request['active'] = get_option( 'stylesheet' );
@@ -514,7 +514,7 @@ function wp_maybe_auto_update() {
  * @return array
  */
 function wp_get_translation_updates() {
-	$updates = array();
+	$updates = [];
 	$transients = array( 'update_core' => 'core', 'update_plugins' => 'plugin', 'update_themes' => 'theme' );
 	foreach ( $transients as $transient => $type ) {
 		$transient = get_site_transient( $transient );
@@ -560,7 +560,7 @@ function wp_get_update_data() {
 		$counts['translations'] = 1;
 
 	$counts['total'] = $counts['plugins'] + $counts['themes'] + $counts['wordpress'] + $counts['translations'];
-	$titles = array();
+	$titles = [];
 	if ( $counts['wordpress'] )
 		$titles['wordpress'] = sprintf( __( '%d WordPress Update'), $counts['wordpress'] );
 	if ( $counts['plugins'] )

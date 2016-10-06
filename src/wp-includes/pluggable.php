@@ -132,7 +132,7 @@ function cache_users( $user_ids ) {
 
 	$users = $wpdb->get_results( "SELECT * FROM $wpdb->users WHERE ID IN ($list)" );
 
-	$ids = array();
+	$ids = [];
 	foreach ( $users as $user ) {
 		update_user_caches( $user );
 		$ids[] = $user->ID;
@@ -172,7 +172,7 @@ if ( !function_exists( 'wp_mail' ) ) :
  * @param string|array $attachments Optional. Files to attach.
  * @return bool Whether the email contents were sent successfully.
  */
-function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
+function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 	// Compact the input, apply the filters, and extract them back out
 	$app = getApp();
 	/**
@@ -217,10 +217,10 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
 	}
 
 	// Headers
-	$cc = $bcc = $reply_to = array();
+	$cc = $bcc = $reply_to = [];
 
 	if ( empty( $headers ) ) {
-		$headers = array();
+		$headers = [];
 	} else {
 		if ( !is_array( $headers ) ) {
 			// Explode the headers out, so this function can take both
@@ -229,7 +229,7 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
 		} else {
 			$tempheaders = $headers;
 		}
-		$headers = array();
+		$headers = [];
 
 		// If it's actually got contents
 		if ( !empty( $tempheaders ) ) {
@@ -1356,7 +1356,7 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 	$author  = get_userdata( $post->post_author );
 
 	// Who to notify? By default, just the post author, but others can be added.
-	$emails = array();
+	$emails = [];
 	if ( $author ) {
 		$emails[] = $author->user_email;
 	}
@@ -1909,7 +1909,7 @@ if ( !function_exists('wp_salt') ) :
  * @return string Salt value
  */
 function wp_salt( $scheme = 'auth' ) {
-	static $cached_salts = array();
+	static $cached_salts = [];
 	if ( isset( $cached_salts[ $scheme ] ) ) {
 		/**
 		 * Filters the WordPress salt.
@@ -2263,7 +2263,7 @@ function get_avatar( $id_or_email, $size = 96, $default = '', $alt = '', $args =
 	);
 
 	if ( empty( $args ) ) {
-		$args = array();
+		$args = [];
 	}
 
 	$args['size']    = (int) $size;

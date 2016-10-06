@@ -18,7 +18,7 @@ function wp_list_widgets() {
 
 	$sort = $app->widgets['registered'];
 	usort( $sort, '_sort_name_callback' );
-	$done = array();
+	$done = [];
 
 	foreach ( $sort as $widget ) {
 		if ( in_array( $widget['callback'], $done, true ) ) // We already showed this multi-widget
@@ -28,7 +28,7 @@ function wp_list_widgets() {
 		$done[] = $widget['callback'];
 
 		if ( ! isset( $widget['params'][0] ) )
-			$widget['params'][0] = array();
+			$widget['params'][0] = [];
 
 		$args = array( 'widget_id' => $widget['id'], 'widget_name' => $widget['name'], '_display' => 'template' );
 
@@ -164,7 +164,7 @@ function wp_widget_control( $sidebar_args ) {
 	$widget_id = $sidebar_args['widget_id'];
 	$sidebar_id = isset($sidebar_args['id']) ? $sidebar_args['id'] : false;
 	$key = $sidebar_id ? array_search( $widget_id, $app->sidebars['widgets'][$sidebar_id] ) : '-1'; // position of widget in sidebar
-	$control = isset($app->widgets['controls'][$widget_id]) ? $app->widgets['controls'][$widget_id] : array();
+	$control = isset($app->widgets['controls'][$widget_id]) ? $app->widgets['controls'][$widget_id] : [];
 	$widget = $app->widgets['registered'][$widget_id];
 
 	$id_format = $widget['id'];

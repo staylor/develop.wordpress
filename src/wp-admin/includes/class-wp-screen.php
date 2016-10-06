@@ -133,7 +133,7 @@ final class WP_Screen {
 	 * @var array
 	 * @access private
 	 */
-	private $_help_tabs = array();
+	private $_help_tabs = [];
 
 	/**
 	 * The help sidebar data associated with screen, if any.
@@ -151,7 +151,7 @@ final class WP_Screen {
 	 * @access private
 	 * @var array
 	 */
-	private $_screen_reader_content = array();
+	private $_screen_reader_content = [];
 
 	/**
 	 * Stores old string-based help.
@@ -161,7 +161,7 @@ final class WP_Screen {
 	 *
 	 * @var array
 	 */
-	private static $_old_compat_help = array();
+	private static $_old_compat_help = [];
 
 	/**
 	 * The screen options associated with screen, if any.
@@ -170,7 +170,7 @@ final class WP_Screen {
 	 * @var array
 	 * @access private
 	 */
-	private $_options = array();
+	private $_options = [];
 
 	/**
 	 * The screen object registry.
@@ -182,7 +182,7 @@ final class WP_Screen {
 	 *
 	 * @var array
 	 */
-	private static $_registry = array();
+	private static $_registry = [];
 
 	/**
 	 * Stores the result of the public show_screen_options function.
@@ -450,7 +450,7 @@ final class WP_Screen {
 	 * @param string $option Option ID
 	 * @param mixed $args Option-dependent arguments.
 	 */
-	public function add_option( $option, $args = array() ) {
+	public function add_option( $option, $args = [] ) {
 		$this->_options[ $option ] = $args;
 	}
 
@@ -471,7 +471,7 @@ final class WP_Screen {
 	 * @since 3.8.0
 	 */
 	public function remove_options() {
-		$this->_options = array();
+		$this->_options = [];
 	}
 
 	/**
@@ -517,7 +517,7 @@ final class WP_Screen {
 	public function get_help_tabs() {
 		$help_tabs = $this->_help_tabs;
 
-		$priorities = array();
+		$priorities = [];
 		foreach ( $help_tabs as $help_tab ) {
 			if ( isset( $priorities[ $help_tab['priority'] ] ) ) {
 				$priorities[ $help_tab['priority'] ][] = $help_tab;
@@ -528,7 +528,7 @@ final class WP_Screen {
 
 		ksort( $priorities );
 
-		$sorted = array();
+		$sorted = [];
 		foreach ( $priorities as $list ) {
 			foreach ( $list as $tab ) {
 				$sorted[ $tab['id'] ] = $tab;
@@ -606,7 +606,7 @@ final class WP_Screen {
 	 * @since 3.3.0
 	 */
 	public function remove_help_tabs() {
-		$this->_help_tabs = array();
+		$this->_help_tabs = [];
 	}
 
 	/**
@@ -693,7 +693,7 @@ final class WP_Screen {
 	 *                                      Default 'Items list'.
 	 * }
 	 */
-	public function set_screen_reader_content( $content = array() ) {
+	public function set_screen_reader_content( $content = [] ) {
 		$defaults = array(
 			'heading_views'      => __( 'Filter items list' ),
 			'heading_pagination' => __( 'Items list navigation' ),
@@ -710,7 +710,7 @@ final class WP_Screen {
 	 * @since 4.4.0
 	 */
 	public function remove_screen_reader_content() {
-		$this->_screen_reader_content = array();
+		$this->_screen_reader_content = [];
 	}
 
 	/**
@@ -856,7 +856,7 @@ final class WP_Screen {
 		 * @param string    $screen_id     Screen ID.
 		 * @param WP_Screen $this          Current WP_Screen instance.
 		 */
-		$columns = apply_filters( 'screen_layout_columns', array(), $this->id, $this );
+		$columns = apply_filters( 'screen_layout_columns', [], $this->id, $this );
 
 		if ( ! empty( $columns ) && isset( $columns[ $this->id ] ) )
 			$this->add_option( 'layout_columns', array('max' => $columns[ $this->id ] ) );
@@ -962,7 +962,7 @@ final class WP_Screen {
 	 *     @type bool $wrap  Whether the screen-options-wrap div will be included. Defaults to true.
 	 * }
 	 */
-	public function render_screen_options( $options = array() ) {
+	public function render_screen_options( $options = [] ) {
 		$options = wp_parse_args( $options, array(
 			'wrap' => true,
 		) );

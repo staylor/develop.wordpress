@@ -152,7 +152,7 @@ class wpdb {
 	 * @access protected
 	 * @var array
 	 */
-	protected $col_meta = array();
+	protected $col_meta = [];
 
 	/**
 	 * Calculated character sets on tables
@@ -161,7 +161,7 @@ class wpdb {
 	 * @access protected
 	 * @var array
 	 */
-	protected $table_charset = array();
+	protected $table_charset = [];
 
 	/**
 	 * Whether text fields in the current query need to be sanity checked.
@@ -492,7 +492,7 @@ class wpdb {
 	 * @access public
 	 * @var array
 	 */
-	public $field_types = array();
+	public $field_types = [];
 
 	/**
 	 * Database table columns charset
@@ -856,7 +856,7 @@ class wpdb {
 	 *
 	 * @param array $modes Optional. A list of SQL modes to set.
 	 */
-	public function set_sql_mode( $modes = array() ) {
+	public function set_sql_mode( $modes = [] ) {
 		if ( empty( $modes ) ) {
 			if ( $this->use_mysqli ) {
 				$res = mysqli_query( $this->dbh, 'SELECT @@SESSION.sql_mode' );
@@ -1048,7 +1048,7 @@ class wpdb {
 				$tables = $this->old_tables;
 				break;
 			default :
-				return array();
+				return [];
 		}
 
 		if ( $prefix ) {
@@ -1411,7 +1411,7 @@ class wpdb {
 	 * @since 0.71
 	 */
 	public function flush() {
-		$this->last_result = array();
+		$this->last_result = [];
 		$this->col_info    = null;
 		$this->last_query  = null;
 		$this->rows_affected = $this->num_rows = 0;
@@ -1915,7 +1915,7 @@ class wpdb {
 			return false;
 		}
 
-		$formats = $values = array();
+		$formats = $values = [];
 		foreach ( $data as $value ) {
 			if ( is_null( $value['value'] ) ) {
 				$formats[] = 'NULL';
@@ -1979,7 +1979,7 @@ class wpdb {
 			return false;
 		}
 
-		$fields = $conditions = $values = array();
+		$fields = $conditions = $values = [];
 		foreach ( $data as $field => $value ) {
 			if ( is_null( $value['value'] ) ) {
 				$fields[] = "`$field` = NULL";
@@ -2040,7 +2040,7 @@ class wpdb {
 			return false;
 		}
 
-		$conditions = $values = array();
+		$conditions = $values = [];
 		foreach ( $where as $field => $value ) {
 			if ( is_null( $value['value'] ) ) {
 				$conditions[] = "`$field` IS NULL";
@@ -2302,7 +2302,7 @@ class wpdb {
 			$this->query( $query );
 		}
 
-		$new_array = array();
+		$new_array = [];
 		// Extract the column values
 		for ( $i = 0, $j = count( $this->last_result ); $i < $j; $i++ ) {
 			$new_array[$i] = $this->get_var( null, $x, $i );
@@ -2338,7 +2338,7 @@ class wpdb {
 			return null;
 		}
 
-		$new_array = array();
+		$new_array = [];
 		if ( $output == OBJECT ) {
 			// Return an integer-keyed array of row objects
 			return $this->last_result;
@@ -2405,7 +2405,7 @@ class wpdb {
 			return $this->table_charset[ $tablekey ];
 		}
 
-		$charsets = $columns = array();
+		$charsets = $columns = [];
 
 		$table_parts = explode( '.', $table );
 		$table = '`' . implode( '`.`', $table_parts ) . '`';
@@ -2814,7 +2814,7 @@ class wpdb {
 		unset( $value ); // Remove by reference.
 
 		if ( $db_check_string ) {
-			$queries = array();
+			$queries = [];
 			foreach ( $data as $col => $value ) {
 				if ( ! empty( $value['db'] ) ) {
 					// We're going to need to truncate by characters or bytes, depending on the length value we have.
@@ -2846,7 +2846,7 @@ class wpdb {
 				}
 			}
 
-			$sql = array();
+			$sql = [];
 			foreach ( $queries as $column => $query ) {
 				if ( ! $query ) {
 					continue;
@@ -3057,7 +3057,7 @@ class wpdb {
 		if ( $this->col_info ) {
 			if ( $col_offset == -1 ) {
 				$i = 0;
-				$new_array = array();
+				$new_array = [];
 				foreach ( (array) $this->col_info as $col ) {
 					$new_array[$i] = $col->{$info_type};
 					$i++;

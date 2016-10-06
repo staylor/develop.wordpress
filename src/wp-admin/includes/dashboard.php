@@ -19,7 +19,7 @@ use function WP\getApp;
  */
 function wp_dashboard_setup() {
 	global $wp_dashboard_control_callbacks;
-	$wp_dashboard_control_callbacks = array();
+	$wp_dashboard_control_callbacks = [];
 	$screen = get_current_screen();
 
 	$app = getApp();
@@ -73,7 +73,7 @@ function wp_dashboard_setup() {
 		 *
 		 * @param array $dashboard_widgets An array of dashboard widgets.
 		 */
-		$dashboard_widgets = apply_filters( 'wp_network_dashboard_widgets', array() );
+		$dashboard_widgets = apply_filters( 'wp_network_dashboard_widgets', [] );
 	} elseif ( is_user_admin() ) {
 
 		/**
@@ -90,7 +90,7 @@ function wp_dashboard_setup() {
 		 *
 		 * @param array $dashboard_widgets An array of dashboard widgets.
 		 */
-		$dashboard_widgets = apply_filters( 'wp_user_dashboard_widgets', array() );
+		$dashboard_widgets = apply_filters( 'wp_user_dashboard_widgets', [] );
 	} else {
 
 		/**
@@ -107,7 +107,7 @@ function wp_dashboard_setup() {
 		 *
 		 * @param array $dashboard_widgets An array of dashboard widgets.
 		 */
-		$dashboard_widgets = apply_filters( 'wp_dashboard_widgets', array() );
+		$dashboard_widgets = apply_filters( 'wp_dashboard_widgets', [] );
 	}
 
 	$registered = $app->widgets['registered'];
@@ -307,7 +307,7 @@ function wp_dashboard_right_now() {
 	 *
 	 * @param array $items Array of extra 'At a Glance' widget items.
 	 */
-	$elements = apply_filters( 'dashboard_glance_items', array() );
+	$elements = apply_filters( 'dashboard_glance_items', [] );
 
 	if ( $elements ) {
 		echo '<li>' . implode( "</li>\n<li>", $elements ) . "</li>\n";
@@ -389,7 +389,7 @@ function wp_dashboard_right_now() {
  * @since 3.1.0
  */
 function wp_network_dashboard_right_now() {
-	$actions = array();
+	$actions = [];
 	if ( current_user_can('create_sites') )
 		$actions['create-site'] = '<a href="' . network_admin_url('site-new.php') . '">' . __( 'Create a New Site' ) . '</a>';
 	if ( current_user_can('create_users') )
@@ -893,7 +893,7 @@ function wp_dashboard_recent_posts( $args ) {
  */
 function wp_dashboard_recent_comments( $total_items = 5 ) {
 	// Select all comment types and filter out spam later for better query performance.
-	$comments = array();
+	$comments = [];
 
 	$comments_query = array(
 		'number' => $total_items * 5,
@@ -970,7 +970,7 @@ function wp_dashboard_rss_output( $widget_id ) {
  * @param array $check_urls RSS feeds
  * @return bool False on failure. True on success.
  */
-function wp_dashboard_cached_rss_widget( $widget_id, $callback, $check_urls = array() ) {
+function wp_dashboard_cached_rss_widget( $widget_id, $callback, $check_urls = [] ) {
 	$loading = '<p class="widget-loading hide-if-no-js">' . __( 'Loading&#8230;' ) . '</p><p class="hide-if-js">' . __( 'This widget requires JavaScript.' ) . '</p>';
 	$doing_ajax = wp_doing_ajax();
 
@@ -1038,12 +1038,12 @@ function wp_dashboard_trigger_widget_control( $widget_control_id = false ) {
  * @param string $widget_id
  * @param array $form_inputs
  */
-function wp_dashboard_rss_control( $widget_id, $form_inputs = array() ) {
+function wp_dashboard_rss_control( $widget_id, $form_inputs = [] ) {
 	if ( !$widget_options = get_option( 'dashboard_widget_options' ) )
-		$widget_options = array();
+		$widget_options = [];
 
 	if ( !isset($widget_options[$widget_id]) )
-		$widget_options[$widget_id] = array();
+		$widget_options[$widget_id] = [];
 
 	$number = 1; // Hack to use wp_widget_rss_form()
 	$widget_options[$widget_id]['number'] = $number;
@@ -1201,7 +1201,7 @@ function wp_dashboard_primary_output( $widget_id, $feeds ) {
  * @param string $rss  The RSS feed URL.
  * @param array  $args Array of arguments for this RSS feed.
  */
-function wp_dashboard_plugins_output( $rss, $args = array() ) {
+function wp_dashboard_plugins_output( $rss, $args = [] ) {
 	// Plugin feeds plus link to install them
 	$popular = fetch_feed( $args['url']['popular'] );
 

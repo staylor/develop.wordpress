@@ -25,7 +25,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @var array
 	 * @access protected
 	 */
-	protected $comment_pending_count = array();
+	protected $comment_pending_count = [];
 
 	private $detached;
 
@@ -41,7 +41,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		$this->detached = ( isset( $_REQUEST['attachment-filter'] ) && 'detached' === $_REQUEST['attachment-filter'] );
 
 		$this->modes = array(
@@ -95,7 +95,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	protected function get_views() {
 		global $post_mime_types, $avail_post_mime_types;
 
-		$type_links = array();
+		$type_links = [];
 
 		$filter = empty( $_GET['attachment-filter'] ) ? '' : $_GET['attachment-filter'];
 
@@ -141,7 +141,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
-		$actions = array();
+		$actions = [];
 		if ( MEDIA_TRASH ) {
 			if ( $this->is_trash ) {
 				$actions['untrash'] = __( 'Restore' );
@@ -250,7 +250,7 @@ class WP_Media_List_Table extends WP_List_Table {
 		$this->extra_tablenav( 'bar' );
 
 		/** This filter is documented in wp-admin/inclues/class-wp-list-table.php */
-		$views = apply_filters( "views_{$this->screen->id}", array() );
+		$views = apply_filters( "views_{$this->screen->id}", [] );
 
 		// Back compat for pre-4.0 view links.
 		if ( ! empty( $views ) ) {
@@ -275,7 +275,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		$posts_columns = array();
+		$posts_columns = [];
 		$posts_columns['cb'] = '<input type="checkbox" />';
 		/* translators: column name */
 		$posts_columns['title'] = _x( 'File', 'column name' );
@@ -565,9 +565,9 @@ class WP_Media_List_Table extends WP_List_Table {
 		if ( $taxonomy ) {
 			$terms = get_the_terms( $post->ID, $taxonomy );
 			if ( is_array( $terms ) ) {
-				$out = array();
+				$out = [];
 				foreach ( $terms as $t ) {
-					$posts_in_term_qv = array();
+					$posts_in_term_qv = [];
 					$posts_in_term_qv['taxonomy'] = $taxonomy;
 					$posts_in_term_qv['term'] = $t->slug;
 
@@ -650,7 +650,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	private function _get_row_actions( $post, $att_title ) {
-		$actions = array();
+		$actions = [];
 
 		if ( $this->detached ) {
 			if ( current_user_can( 'edit_post', $post->ID ) ) {

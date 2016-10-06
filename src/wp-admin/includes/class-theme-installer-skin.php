@@ -23,12 +23,12 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @param array $args
 	 */
-	public function __construct($args = array()) {
+	public function __construct($args = []) {
 		$defaults = array( 'type' => 'web', 'url' => '', 'theme' => '', 'nonce' => '', 'title' => '' );
 		$args = wp_parse_args($args, $defaults);
 
 		$this->type = $args['type'];
-		$this->api = isset($args['api']) ? $args['api'] : array();
+		$this->api = isset($args['api']) ? $args['api'] : [];
 
 		parent::__construct($args);
 	}
@@ -63,7 +63,7 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 		), admin_url('themes.php') );
 		$activate_link = wp_nonce_url( $activate_link, 'switch-theme_' . $stylesheet );
 
-		$install_actions = array();
+		$install_actions = [];
 
 		if ( current_user_can( 'edit_theme_options' ) && current_user_can( 'customize' ) ) {
 			$install_actions['preview'] = '<a href="' . wp_customize_url( $stylesheet ) . '" class="hide-if-no-customize load-customize"><span aria-hidden="true">' . __( 'Live Preview' ) . '</span><span class="screen-reader-text">' . sprintf( __( 'Live Preview &#8220;%s&#8221;' ), $name ) . '</span></a>';

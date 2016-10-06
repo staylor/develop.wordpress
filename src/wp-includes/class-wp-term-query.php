@@ -56,7 +56,7 @@ class WP_Term_Query {
 	protected $sql_clauses = array(
 		'select'  => '',
 		'from'    => '',
-		'where'   => array(),
+		'where'   => [],
 		'orderby' => '',
 		'limits'  => '',
 	);
@@ -187,9 +187,9 @@ class WP_Term_Query {
 			'orderby'                => 'name',
 			'order'                  => 'ASC',
 			'hide_empty'             => true,
-			'include'                => array(),
-			'exclude'                => array(),
-			'exclude_tree'           => array(),
+			'include'                => [],
+			'exclude'                => [],
+			'exclude_tree'           => [],
 			'number'                 => '',
 			'offset'                 => '',
 			'fields'                 => 'all',
@@ -392,7 +392,7 @@ class WP_Term_Query {
 			}
 
 			if ( ! $in_hierarchy ) {
-				return array();
+				return [];
 			}
 		}
 
@@ -428,7 +428,7 @@ class WP_Term_Query {
 			$this->sql_clauses['where']['inclusions'] = 't.term_id IN ( ' . $inclusions . ' )';
 		}
 
-		$exclusions = array();
+		$exclusions = [];
 		if ( ! empty( $exclude_tree ) ) {
 			$exclude_tree = wp_parse_id_list( $exclude_tree );
 			$excluded_children = $exclude_tree;
@@ -583,7 +583,7 @@ class WP_Term_Query {
 
 		}
 
-		$selects = array();
+		$selects = [];
 		switch ( $args['fields'] ) {
 			case 'all':
 			case 'all_with_object_id' :
@@ -706,8 +706,8 @@ class WP_Term_Query {
 		}
 
 		if ( empty( $terms ) ) {
-			wp_cache_add( $cache_key, array(), 'terms', DAY_IN_SECONDS );
-			return array();
+			wp_cache_add( $cache_key, [], 'terms', DAY_IN_SECONDS );
+			return [];
 		}
 
 		if ( $child_of ) {
@@ -753,7 +753,7 @@ class WP_Term_Query {
 		 * removed.
 		 */
 		if ( ! empty( $args['object_ids'] ) && 'all_with_object_id' != $_fields ) {
-			$_tt_ids = $_terms = array();
+			$_tt_ids = $_terms = [];
 			foreach ( $terms as $term ) {
 				if ( isset( $_tt_ids[ $term->term_id ] ) ) {
 					continue;
@@ -766,7 +766,7 @@ class WP_Term_Query {
 			$terms = $_terms;
 		}
 
-		$_terms = array();
+		$_terms = [];
 		if ( 'id=>parent' == $_fields ) {
 			foreach ( $terms as $term ) {
 				$_terms[ $term->term_id ] = $term->parent;
@@ -804,7 +804,7 @@ class WP_Term_Query {
 		// Hierarchical queries are not limited, so 'offset' and 'number' must be handled now.
 		if ( $hierarchical && $number && is_array( $terms ) ) {
 			if ( $offset >= count( $terms ) ) {
-				$terms = array();
+				$terms = [];
 			} else {
 				$terms = array_slice( $terms, $offset, $number, true );
 			}
@@ -894,7 +894,7 @@ class WP_Term_Query {
 			return $orderby;
 		}
 
-		$allowed_keys = array();
+		$allowed_keys = [];
 		$primary_meta_key = null;
 		$primary_meta_query = reset( $meta_clauses );
 		if ( ! empty( $primary_meta_query['key'] ) ) {

@@ -563,7 +563,7 @@ function do_enclose( $content, $post_ID ) {
 	$wpdb = $app['db'];
 
 	//TODO: Tidy this ghetto code up and make the debug code optional
-	$post_links = array();
+	$post_links = [];
 
 	$pung = get_enclosed( $post_ID );
 
@@ -711,7 +711,7 @@ function build_query( $data ) {
  * @return string The query string.
  */
 function _http_build_query( $data, $prefix = null, $sep = null, $key = '', $urlencode = true ) {
-	$ret = array();
+	$ret = [];
 
 	foreach ( (array) $data as $k => $v ) {
 		if ( $urlencode)
@@ -935,7 +935,7 @@ function wp_remote_fopen( $uri ) {
 	if ( !$parsed_url || !is_array( $parsed_url ) )
 		return false;
 
-	$options = array();
+	$options = [];
 	$options['timeout'] = 10;
 
 	$response = wp_safe_remote_get( $uri, $options );
@@ -1860,7 +1860,7 @@ function wp_get_upload_dir() {
  * @return array See above for description.
  */
 function wp_upload_dir( $time = null, $create_dir = true, $refresh_cache = false ) {
-	static $cache = array(), $tested_paths = array();
+	static $cache = [], $tested_paths = [];
 
 	$key = sprintf( '%d-%s', get_current_blog_id(), (string) $time );
 
@@ -2580,7 +2580,7 @@ function wp_nonce_ays( $action ) {
  *                                  Default is the value of is_rtl().
  * }
  */
-function wp_die( $message = '', $title = '', $args = array() ) {
+function wp_die( $message = '', $title = '', $args = [] ) {
 
 	if ( is_int( $args ) ) {
 		$args = array( 'response' => $args );
@@ -2634,7 +2634,7 @@ function wp_die( $message = '', $title = '', $args = array() ) {
  * @param string          $title   Optional. Error title. Default empty.
  * @param string|array    $args    Optional. Arguments to control behavior. Default empty array.
  */
-function _default_wp_die_handler( $message, $title = '', $args = array() ) {
+function _default_wp_die_handler( $message, $title = '', $args = [] ) {
 	$defaults = array( 'response' => 500 );
 	$r = wp_parse_args($args, $defaults);
 
@@ -2836,7 +2836,7 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
  * @param string       $title   Optional. Error title. Default empty.
  * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
  */
-function _xmlrpc_wp_die_handler( $message, $title = '', $args = array() ) {
+function _xmlrpc_wp_die_handler( $message, $title = '', $args = [] ) {
 	global $wp_xmlrpc_server;
 	$defaults = array( 'response' => 500 );
 
@@ -2861,7 +2861,7 @@ function _xmlrpc_wp_die_handler( $message, $title = '', $args = array() ) {
  * @param string       $title   Optional. Error title (unused). Default empty.
  * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
  */
-function _ajax_wp_die_handler( $message, $title = '', $args = array() ) {
+function _ajax_wp_die_handler( $message, $title = '', $args = [] ) {
 	$defaults = array(
 		'response' => 200,
 	);
@@ -2956,7 +2956,7 @@ function _wp_json_sanity_check( $data, $depth ) {
 	}
 
 	if ( is_array( $data ) ) {
-		$output = array();
+		$output = [];
 		foreach ( $data as $id => $el ) {
 			// Don't forget to sanitize the ID!
 			if ( is_string( $id ) ) {
@@ -3142,7 +3142,7 @@ function wp_send_json_error( $data = null, $status_code = null ) {
 
 	if ( isset( $data ) ) {
 		if ( is_wp_error( $data ) ) {
-			$result = array();
+			$result = [];
 			foreach ( $data->errors as $code => $messages ) {
 				foreach ( $messages as $message ) {
 					$result[] = array( 'code' => $code, 'message' => $message );
@@ -3438,7 +3438,7 @@ function wp_parse_id_list( $list ) {
  * @return array The array slice.
  */
 function wp_array_slice_assoc( $array, $keys ) {
-	$slice = array();
+	$slice = [];
 	foreach ( $keys as $key )
 		if ( isset( $array[ $key ] ) )
 			$slice[ $key ] = $array[ $key ];
@@ -3480,9 +3480,9 @@ function wp_is_numeric_array( $data ) {
  *                              Default false.
  * @return array A list of objects or object fields.
  */
-function wp_filter_object_list( $list, $args = array(), $operator = 'and', $field = false ) {
+function wp_filter_object_list( $list, $args = [], $operator = 'and', $field = false ) {
 	if ( ! is_array( $list ) )
-		return array();
+		return [];
 
 	$list = wp_list_filter( $list, $args, $operator );
 
@@ -3506,16 +3506,16 @@ function wp_filter_object_list( $list, $args = array(), $operator = 'and', $fiel
  *                         match. Default 'AND'.
  * @return array Array of found values.
  */
-function wp_list_filter( $list, $args = array(), $operator = 'AND' ) {
+function wp_list_filter( $list, $args = [], $operator = 'AND' ) {
 	if ( ! is_array( $list ) )
-		return array();
+		return [];
 
 	if ( empty( $args ) )
 		return $list;
 
 	$operator = strtoupper( $operator );
 	$count = count( $args );
-	$filtered = array();
+	$filtered = [];
 
 	foreach ( $list as $key => $obj ) {
 		$to_match = (array) $obj;
@@ -3573,7 +3573,7 @@ function wp_list_pluck( $list, $field, $index_key = null ) {
 	 * When index_key is not set for a particular item, push the value
 	 * to the end of the stack. This is how array_column() behaves.
 	 */
-	$newlist = array();
+	$newlist = [];
 	foreach ( $list as $value ) {
 		if ( is_object( $value ) ) {
 			if ( isset( $value->$index_key ) ) {
@@ -4502,7 +4502,7 @@ function wp_timezone_choice( $selected_zone ) {
 		$mo_loaded = true;
 	}
 
-	$zonen = array();
+	$zonen = [];
 	foreach ( timezone_identifiers_list() as $zone ) {
 		$zone = explode( '/', $zone );
 		if ( !in_array( $zone[0], $continents ) ) {
@@ -4530,7 +4530,7 @@ function wp_timezone_choice( $selected_zone ) {
 	}
 	usort( $zonen, '_wp_timezone_choice_usort_callback' );
 
-	$structure = array();
+	$structure = [];
 
 	if ( empty( $selected_zone ) ) {
 		$structure[] = '<option selected="selected" value="">' . __( 'Select a city' ) . '</option>';
@@ -4717,7 +4717,7 @@ function get_file_data( $file, $default_headers, $context = '' ) {
 	 *
 	 * @param array $extra_context_headers Empty array by default.
 	 */
-	if ( $context && $extra_headers = apply_filters( "extra_{$context}_headers", array() ) ) {
+	if ( $context && $extra_headers = apply_filters( "extra_{$context}_headers", [] ) ) {
 		$extra_headers = array_combine( $extra_headers, $extra_headers ); // keys equal values
 		$all_headers = array_merge( $extra_headers, (array) $default_headers );
 	} else {
@@ -4787,7 +4787,7 @@ function __return_zero() {
  * @return array Empty array.
  */
 function __return_empty_array() {
-	return array();
+	return [];
 }
 
 /**
@@ -4868,11 +4868,11 @@ function _wp_mysql_week( $column ) {
  * @param array    $callback_args Optional. Additional arguments to send to $callback.
  * @return array IDs of all members of loop.
  */
-function wp_find_hierarchy_loop( $callback, $start, $start_parent, $callback_args = array() ) {
-	$override = is_null( $start_parent ) ? array() : array( $start => $start_parent );
+function wp_find_hierarchy_loop( $callback, $start, $start_parent, $callback_args = [] ) {
+	$override = is_null( $start_parent ) ? [] : array( $start => $start_parent );
 
 	if ( !$arbitrary_loop_member = wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override, $callback_args ) )
-		return array();
+		return [];
 
 	return wp_find_hierarchy_loop_tortoise_hare( $callback, $arbitrary_loop_member, $override, $callback_args, true );
 }
@@ -4897,9 +4897,9 @@ function wp_find_hierarchy_loop( $callback, $start, $start_parent, $callback_arg
  * @return mixed Scalar ID of some arbitrary member of the loop, or array of IDs of all members of loop if
  *               $_return_loop
  */
-function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = array(), $callback_args = array(), $_return_loop = false ) {
+function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = [], $callback_args = [], $_return_loop = false ) {
 	$tortoise = $hare = $evanescent_hare = $start;
-	$return = array();
+	$return = [];
 
 	// Set evanescent_hare to one past hare
 	// Increment hare two steps
@@ -4952,7 +4952,7 @@ function send_frame_options_header() {
  *               'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal', and 'urn'.
  */
 function wp_allowed_protocols() {
-	static $protocols = array();
+	static $protocols = [];
 
 	if ( empty( $protocols ) ) {
 		$protocols = array( 'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal', 'urn' );
@@ -4993,7 +4993,7 @@ function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pr
 	else
 		$trace = debug_backtrace();
 
-	$caller = array();
+	$caller = [];
 	$check_class = ! is_null( $ignore_class );
 	$skip_frames++; // skip this function
 
@@ -5033,7 +5033,7 @@ function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pr
  * @return array List of ids not present in the cache.
  */
 function _get_non_cached_ids( $object_ids, $cache_key ) {
-	$clean = array();
+	$clean = [];
 	foreach ( $object_ids as $id ) {
 		$id = (int) $id;
 		if ( !wp_cache_get( $id, $cache_key ) ) {
@@ -5284,7 +5284,7 @@ function _canonical_charset( $charset ) {
  *                    Default false.
  */
 function mbstring_binary_safe_encoding( $reset = false ) {
-	static $encodings = array();
+	static $encodings = [];
 	static $overloaded = null;
 
 	if ( is_null( $overloaded ) )

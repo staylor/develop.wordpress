@@ -187,7 +187,7 @@ if ( ! $ct->errors() || ( 1 == count( $ct->errors()->get_error_codes() )
 */
 
 	// Pretend you didn't see this.
-	$current_theme_actions = array();
+	$current_theme_actions = [];
 	if ( is_array( $submenu ) && isset( $submenu['themes.php'] ) ) {
 		foreach ( (array) $submenu['themes.php'] as $item) {
 			$class = '';

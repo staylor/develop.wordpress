@@ -170,7 +170,7 @@ Name: %3$s' ),
 }
 
 if ( isset($_GET['update']) ) {
-	$messages = array();
+	$messages = [];
 	if ( 'added' == $_GET['update'] )
 		$messages[] = sprintf(
 			/* translators: 1: dashboard url, 2: network admin edit url */

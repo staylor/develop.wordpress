@@ -45,7 +45,7 @@ function _wp_http_get_object() {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return WP_Error|array The response or WP_Error on failure.
  */
-function wp_safe_remote_request( $url, $args = array() ) {
+function wp_safe_remote_request( $url, $args = [] ) {
 	$args['reject_unsafe_urls'] = true;
 	$http = _wp_http_get_object();
 	return $http->request( $url, $args );
@@ -66,7 +66,7 @@ function wp_safe_remote_request( $url, $args = array() ) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return WP_Error|array The response or WP_Error on failure.
  */
-function wp_safe_remote_get( $url, $args = array() ) {
+function wp_safe_remote_get( $url, $args = [] ) {
 	$args['reject_unsafe_urls'] = true;
 	$http = _wp_http_get_object();
 	return $http->get( $url, $args );
@@ -87,7 +87,7 @@ function wp_safe_remote_get( $url, $args = array() ) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return WP_Error|array The response or WP_Error on failure.
  */
-function wp_safe_remote_post( $url, $args = array() ) {
+function wp_safe_remote_post( $url, $args = [] ) {
 	$args['reject_unsafe_urls'] = true;
 	$http = _wp_http_get_object();
 	return $http->post( $url, $args );
@@ -108,7 +108,7 @@ function wp_safe_remote_post( $url, $args = array() ) {
  * @param array $args Optional. Request arguments. Default empty array.
  * @return WP_Error|array The response or WP_Error on failure.
  */
-function wp_safe_remote_head( $url, $args = array() ) {
+function wp_safe_remote_head( $url, $args = [] ) {
 	$args['reject_unsafe_urls'] = true;
 	$http = _wp_http_get_object();
 	return $http->head( $url, $args );
@@ -120,7 +120,7 @@ function wp_safe_remote_head( $url, $args = array() ) {
  * The array structure is a little complex:
  *
  *     $res = array(
- *         'headers'  => array(),
+ *         'headers'  => [],
  *         'response' => array(
  *             'code'    => int,
  *             'message' => string
@@ -150,7 +150,7 @@ function wp_safe_remote_head( $url, $args = array() ) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return WP_Error|array The response or WP_Error on failure.
  */
-function wp_remote_request($url, $args = array()) {
+function wp_remote_request($url, $args = []) {
 	$http = _wp_http_get_object();
 	return $http->request( $url, $args );
 }
@@ -167,7 +167,7 @@ function wp_remote_request($url, $args = array()) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return WP_Error|array The response or WP_Error on failure.
  */
-function wp_remote_get($url, $args = array()) {
+function wp_remote_get($url, $args = []) {
 	$http = _wp_http_get_object();
 	return $http->get( $url, $args );
 }
@@ -184,7 +184,7 @@ function wp_remote_get($url, $args = array()) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return WP_Error|array The response or WP_Error on failure.
  */
-function wp_remote_post($url, $args = array()) {
+function wp_remote_post($url, $args = []) {
 	$http = _wp_http_get_object();
 	return $http->post( $url, $args );
 }
@@ -201,7 +201,7 @@ function wp_remote_post($url, $args = array()) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return WP_Error|array The response or WP_Error on failure.
  */
-function wp_remote_head($url, $args = array()) {
+function wp_remote_head($url, $args = []) {
 	$http = _wp_http_get_object();
 	return $http->head( $url, $args );
 }
@@ -219,7 +219,7 @@ function wp_remote_head($url, $args = array()) {
  */
 function wp_remote_retrieve_headers( $response ) {
 	if ( is_wp_error( $response ) || ! isset( $response['headers'] ) ) {
-		return array();
+		return [];
 	}
 
 	return $response['headers'];
@@ -305,7 +305,7 @@ function wp_remote_retrieve_body( $response ) {
  */
 function wp_remote_retrieve_cookies( $response ) {
 	if ( is_wp_error( $response ) || empty( $response['cookies'] ) ) {
-		return array();
+		return [];
 	}
 
 	return $response['cookies'];
@@ -366,7 +366,7 @@ function wp_remote_retrieve_cookie_value( $response, $name ) {
  *
  * @return bool
  */
-function wp_http_supports( $capabilities = array(), $url = null ) {
+function wp_http_supports( $capabilities = [], $url = null ) {
 	$http = _wp_http_get_object();
 
 	$capabilities = wp_parse_args( $capabilities );
@@ -616,7 +616,7 @@ function allowed_http_request_hosts( $is_external, $host ) {
 function ms_allowed_http_request_hosts( $is_external, $host ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-	static $queried = array();
+	static $queried = [];
 	if ( $is_external )
 		return $is_external;
 	if ( $host === get_current_site()->domain )
@@ -656,7 +656,7 @@ function ms_allowed_http_request_hosts( $is_external, $host ) {
  *               PHP_URL_PORT - integer when it does. See parse_url()'s return values.
  */
 function wp_parse_url( $url, $component = -1 ) {
-	$to_unset = array();
+	$to_unset = [];
 	$url = strval( $url );
 
 	if ( '//' === substr( $url, 0, 2 ) ) {

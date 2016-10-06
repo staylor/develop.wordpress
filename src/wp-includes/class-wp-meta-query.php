@@ -33,7 +33,7 @@ class WP_Meta_Query {
 	 * @access public
 	 * @var array
 	 */
-	public $queries = array();
+	public $queries = [];
 
 	/**
 	 * The relation between the queries. Can be one of 'AND' or 'OR'.
@@ -87,7 +87,7 @@ class WP_Meta_Query {
 	 * @access protected
 	 * @var array
 	 */
-	protected $table_aliases = array();
+	protected $table_aliases = [];
 
 	/**
 	 * A flat list of clauses, keyed by clause 'name'.
@@ -96,7 +96,7 @@ class WP_Meta_Query {
 	 * @access protected
 	 * @var array
 	 */
-	protected $clauses = array();
+	protected $clauses = [];
 
 	/**
 	 * Whether the query contains any OR relations.
@@ -164,7 +164,7 @@ class WP_Meta_Query {
 	 * @return array Sanitized array of query clauses.
 	 */
 	public function sanitize_query( $queries ) {
-		$clean_queries = array();
+		$clean_queries = [];
 
 		if ( ! is_array( $queries ) ) {
 			return $clean_queries;
@@ -179,7 +179,7 @@ class WP_Meta_Query {
 
 			// First-order clause.
 			} elseif ( $this->is_first_order_clause( $query ) ) {
-				if ( isset( $query['value'] ) && array() === $query['value'] ) {
+				if ( isset( $query['value'] ) && [] === $query['value'] ) {
 					unset( $query['value'] );
 				}
 
@@ -245,7 +245,7 @@ class WP_Meta_Query {
 	 * @param array $qv The query variables
 	 */
 	public function parse_query_vars( $qv ) {
-		$meta_query = array();
+		$meta_query = [];
 
 		/*
 		 * For orderby=meta_value to work correctly, simple query needs to be
@@ -253,7 +253,7 @@ class WP_Meta_Query {
 		 * needs to be its own clause (so it doesn't interfere with the logic of
 		 * the rest of the meta_query).
 		 */
-		$primary_meta_query = array();
+		$primary_meta_query = [];
 		foreach ( array( 'key', 'compare', 'type' ) as $key ) {
 			if ( ! empty( $qv[ "meta_$key" ] ) ) {
 				$primary_meta_query[ $key ] = $qv[ "meta_$key" ];
@@ -265,7 +265,7 @@ class WP_Meta_Query {
 			$primary_meta_query['value'] = $qv['meta_value'];
 		}
 
-		$existing_meta_query = isset( $qv['meta_query'] ) && is_array( $qv['meta_query'] ) ? $qv['meta_query'] : array();
+		$existing_meta_query = isset( $qv['meta_query'] ) && is_array( $qv['meta_query'] ) ? $qv['meta_query'] : [];
 
 		if ( ! empty( $primary_meta_query ) && ! empty( $existing_meta_query ) ) {
 			$meta_query = array(
@@ -330,7 +330,7 @@ class WP_Meta_Query {
 			return false;
 		}
 
-		$this->table_aliases = array();
+		$this->table_aliases = [];
 
 		$this->meta_table     = $meta_table;
 		$this->meta_id_column = sanitize_key( $type . '_id' );
@@ -415,8 +415,8 @@ class WP_Meta_Query {
 	 */
 	protected function get_sql_for_query( &$query, $depth = 0 ) {
 		$sql_chunks = array(
-			'join'  => array(),
-			'where' => array(),
+			'join'  => [],
+			'where' => [],
 		);
 
 		$sql = array(
@@ -503,8 +503,8 @@ class WP_Meta_Query {
 		$wpdb = $app['db'];
 
 		$sql_chunks = array(
-			'where' => array(),
-			'join' => array(),
+			'where' => [],
+			'join' => [],
 		);
 
 		if ( isset( $clause['compare'] ) ) {
@@ -705,7 +705,7 @@ class WP_Meta_Query {
 				continue;
 			}
 
-			$compatible_compares = array();
+			$compatible_compares = [];
 
 			// Clauses connected by OR can share joins as long as they have "positive" operators.
 			if ( 'OR' === $parent_query['relation'] ) {

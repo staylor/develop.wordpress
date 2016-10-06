@@ -428,7 +428,7 @@ function populate_options() {
 	'hack_file' => 0,
 	'blog_charset' => 'UTF-8',
 	'moderation_keys' => '',
-	'active_plugins' => array(),
+	'active_plugins' => [],
 	'category_base' => '',
 	'ping_sites' => 'http://rpc.pingomatic.com/',
 	'comment_max_links' => 2,
@@ -490,11 +490,11 @@ function populate_options() {
 	'comments_per_page' => 50,
 	'default_comments_page' => 'newest',
 	'comment_order' => 'asc',
-	'sticky_posts' => array(),
-	'widget_categories' => array(),
-	'widget_text' => array(),
-	'widget_rss' => array(),
-	'uninstall_plugins' => array(),
+	'sticky_posts' => [],
+	'widget_categories' => [],
+	'widget_text' => [],
+	'widget_rss' => [],
+	'uninstall_plugins' => [],
 
 	// 2.8
 	'timezone_string' => $timezone_string,
@@ -1016,7 +1016,7 @@ We hope you enjoy your new site. Thanks!
 		'global_terms_enabled' => global_terms_enabled() ? '1' : '0',
 		'ms_files_rewriting' => is_multisite() ? get_site_option( 'ms_files_rewriting' ) : '0',
 		'initial_db_version' => get_option( 'initial_db_version' ),
-		'active_sitewide_plugins' => array(),
+		'active_sitewide_plugins' => [],
 		'WPLANG' => get_locale(),
 	);
 	if ( ! $subdomain_install )

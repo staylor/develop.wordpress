@@ -46,7 +46,7 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 
 	$default_key     = 'put your unique phrase here';
 	$missing_key     = false;
-	$duplicated_keys = array();
+	$duplicated_keys = [];
 
 	foreach ( array( 'AUTH_KEY', 'SECURE_AUTH_KEY', 'LOGGED_IN_KEY', 'NONCE_KEY', 'AUTH_SALT', 'SECURE_AUTH_SALT', 'LOGGED_IN_SALT', 'NONCE_SALT' ) as $key ) {
 		if ( defined( $key ) ) {
@@ -80,7 +80,7 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 
 	$optimize = 2 == $_GET['repair'];
 	$okay = true;
-	$problems = array();
+	$problems = [];
 
 	$tables = $wpdb->tables();
 
@@ -97,7 +97,7 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 	 *
 	 * @param array $tables Array of prefixed table names to be repaired.
 	 */
-	$tables = array_merge( $tables, (array) apply_filters( 'tables_to_repair', array() ) );
+	$tables = array_merge( $tables, (array) apply_filters( 'tables_to_repair', [] ) );
 
 	// Loop over the tables, checking and repairing as needed.
 	foreach ( $tables as $table ) {

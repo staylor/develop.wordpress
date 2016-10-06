@@ -187,7 +187,7 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
 	$link_description = ( ! empty( $r['link_description'] ) ) ? $r['link_description'] : '';
 	$link_rss         = ( ! empty( $r['link_rss'] ) ) ? $r['link_rss'] : '';
 	$link_rel         = ( ! empty( $r['link_rel'] ) ) ? $r['link_rel'] : '';
-	$link_category    = ( ! empty( $r['link_category'] ) ) ? $r['link_category'] : array();
+	$link_category    = ( ! empty( $r['link_category'] ) ) ? $r['link_category'] : [];
 
 	// Make sure we set a valid category.
 	if ( ! is_array( $link_category ) || 0 == count( $link_category ) ) {
@@ -247,7 +247,7 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
  * @param int   $link_id         ID of the link to update.
  * @param array $link_categories Array of link categories to add the link to.
  */
-function wp_set_link_cats( $link_id = 0, $link_categories = array() ) {
+function wp_set_link_cats( $link_id = 0, $link_categories = [] ) {
 	// If $link_categories isn't already an array, make it one:
 	if ( !is_array( $link_categories ) || 0 == count( $link_categories ) )
 		$link_categories = array( get_option( 'default_link_category' ) );

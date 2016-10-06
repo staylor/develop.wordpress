@@ -42,7 +42,7 @@ class WP_List_Table {
 	 * @access protected
 	 * @var array
 	 */
-	protected $_pagination_args = array();
+	protected $_pagination_args = [];
 
 	/**
 	 * The current screen.
@@ -78,7 +78,7 @@ class WP_List_Table {
 	 * @access protected
 	 * @var array
 	 */
-	protected $modes = array();
+	protected $modes = [];
 
 	/**
 	 * Stores the value returned by ->get_column_info().
@@ -134,7 +134,7 @@ class WP_List_Table {
 	 *                            Default null.
 	 * }
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		$args = wp_parse_args( $args, array(
 			'plural' => '',
 			'singular' => '',
@@ -378,7 +378,7 @@ class WP_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -424,7 +424,7 @@ class WP_List_Table {
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -770,7 +770,7 @@ class WP_List_Table {
 
 		$current_url = remove_query_arg( $removable_query_args, $current_url );
 
-		$page_links = array();
+		$page_links = [];
 
 		$total_pages_before = '<span class="paging-input">';
 		$total_pages_after  = '</span></span>';
@@ -889,7 +889,7 @@ class WP_List_Table {
 	 * @return array
 	 */
 	protected function get_sortable_columns() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -982,7 +982,7 @@ class WP_List_Table {
 		if ( isset( $this->_column_headers ) && is_array( $this->_column_headers ) ) {
 			// Back-compat for list tables that have been manually setting $_column_headers for horse reasons.
 			// In 4.3, we added a fourth argument for primary column.
-			$column_headers = array( array(), array(), array(), $this->get_primary_column_name() );
+			$column_headers = array( [], [], [], $this->get_primary_column_name() );
 			foreach ( $this->_column_headers as $key => $value ) {
 				$column_headers[ $key ] = $value;
 			}
@@ -1006,7 +1006,7 @@ class WP_List_Table {
 		 */
 		$_sortable = apply_filters( "manage_{$this->screen->id}_sortable_columns", $sortable_columns );
 
-		$sortable = array();
+		$sortable = [];
 		foreach ( $_sortable as $id => $data ) {
 			if ( empty( $data ) )
 				continue;

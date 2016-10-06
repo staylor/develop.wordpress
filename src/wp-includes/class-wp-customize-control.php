@@ -108,20 +108,20 @@ class WP_Customize_Control {
 	 * @access public
 	 * @var array
 	 */
-	public $choices = array();
+	public $choices = [];
 
 	/**
 	 * @access public
 	 * @var array
 	 */
-	public $input_attrs = array();
+	public $input_attrs = [];
 
 	/**
 	 * @deprecated It is better to just call the json() method
 	 * @access public
 	 * @var array
 	 */
-	public $json = array();
+	public $json = [];
 
 	/**
 	 * @access public
@@ -184,7 +184,7 @@ class WP_Customize_Control {
 	 *                                                 'date' are supported implicitly. Default 'text'.
 	 * }
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	public function __construct( $manager, $id, $args = [] ) {
 		$keys = array_keys( get_object_vars( $this ) );
 		foreach ( $keys as $key ) {
 			if ( isset( $args[ $key ] ) ) {
@@ -205,7 +205,7 @@ class WP_Customize_Control {
 			$this->settings = $id;
 		}
 
-		$settings = array();
+		$settings = [];
 		if ( is_array( $this->settings ) ) {
 			foreach ( $this->settings as $key => $setting ) {
 				$settings[ $key ] = $this->manager->get_setting( $setting );
@@ -285,7 +285,7 @@ class WP_Customize_Control {
 	 * @since 3.4.0
 	 */
 	public function to_json() {
-		$this->json['settings'] = array();
+		$this->json['settings'] = [];
 		foreach ( $this->settings as $key => $setting ) {
 			$this->json['settings'][ $key ] = $setting->id;
 		}

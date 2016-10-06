@@ -30,7 +30,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		global $status, $page;
 
 		parent::__construct( array(
@@ -90,13 +90,13 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 		$plugins = array(
 			'all'                => $all_plugins,
-			'search'             => array(),
-			'active'             => array(),
-			'inactive'           => array(),
-			'recently_activated' => array(),
-			'upgrade'            => array(),
-			'mustuse'            => array(),
-			'dropins'            => array(),
+			'search'             => [],
+			'active'             => [],
+			'inactive'           => [],
+			'recently_activated' => [],
+			'upgrade'            => [],
+			'mustuse'            => [],
+			'dropins'            => [],
 		);
 
 		$screen = $this->screen;
@@ -158,9 +158,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		set_transient( 'plugin_slugs', array_keys( $plugins['all'] ), DAY_IN_SECONDS );
 
 		if ( $screen->in_admin( 'network' ) ) {
-			$recently_activated = get_site_option( 'recently_activated', array() );
+			$recently_activated = get_site_option( 'recently_activated', [] );
 		} else {
-			$recently_activated = get_option( 'recently_activated', array() );
+			$recently_activated = get_option( 'recently_activated', [] );
 		}
 
 		foreach ( $recently_activated as $key => $time ) {
@@ -231,14 +231,14 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			$plugins['search'] = array_filter( $plugins['all'], array( $this, '_search_callback' ) );
 		}
 
-		$totals = array();
+		$totals = [];
 		foreach ( $plugins as $type => $list )
 			$totals[ $type ] = count( $list );
 
 		if ( empty( $plugins[ $status ] ) && !in_array( $status, array( 'all', 'search' ) ) )
 			$status = 'all';
 
-		$this->items = array();
+		$this->items = [];
 		foreach ( $plugins[ $status ] as $plugin_file => $plugin_data ) {
 			// Translate, Don't Apply Markup, Sanitize HTML
 			$this->items[$plugin_file] = _get_plugin_data_markup_translate( $plugin_file, $plugin_data, false, true );
@@ -246,7 +246,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 		$total_this_page = $totals[ $status ];
 
-		$js_plugins = array();
+		$js_plugins = [];
 		foreach ( $plugins as $key => $list ) {
 			$js_plugins[ $key ] = array_keys( (array) $list );
 		}
@@ -391,7 +391,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_sortable_columns() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -403,7 +403,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	protected function get_views() {
 		global $totals, $status;
 
-		$status_links = array();
+		$status_links = [];
 		foreach ( $totals as $type => $count ) {
 			if ( !$count )
 				continue;
@@ -452,7 +452,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	protected function get_bulk_actions() {
 		global $status;
 
-		$actions = array();
+		$actions = [];
 
 		if ( 'active' != $status )
 			$actions['activate-selected'] = $this->screen->in_admin( 'network' ) ? __( 'Network Activate' ) : __( 'Activate' );
@@ -770,7 +770,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 						<div class='plugin-description'>$description</div>
 						<div class='$class second plugin-version-author-uri'>";
 
-					$plugin_meta = array();
+					$plugin_meta = [];
 					if ( !empty( $plugin_data['Version'] ) )
 						$plugin_meta[] = sprintf( __( 'Version %s' ), $plugin_data['Version'] );
 					if ( !empty( $plugin_data['Author'] ) ) {

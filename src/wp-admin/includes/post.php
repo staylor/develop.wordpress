@@ -272,7 +272,7 @@ function edit_post( $post_data = null ) {
 	if ( 'attachment' === $post_data['post_type'] && preg_match( '#^(audio|video)/#', $post_data['post_mime_type'] ) ) {
 		$id3data = wp_get_attachment_metadata( $post_ID );
 		if ( ! is_array( $id3data ) ) {
-			$id3data = array();
+			$id3data = [];
 		}
 
 		foreach ( wp_get_attachment_id3_keys( $post, 'edit' ) as $key => $label ) {
@@ -319,7 +319,7 @@ function edit_post( $post_data = null ) {
 			}
 		}
 
-		$attachment_data = isset( $post_data['attachments'][ $post_ID ] ) ? $post_data['attachments'][ $post_ID ] : array();
+		$attachment_data = isset( $post_data['attachments'][ $post_ID ] ) ? $post_data['attachments'][ $post_ID ] : [];
 
 		/** This filter is documented in wp-admin/includes/media.php */
 		$post_data = apply_filters( 'attachment_fields_to_save', $post_data, $attachment_data );
@@ -346,7 +346,7 @@ function edit_post( $post_data = null ) {
 				$terms = explode( ',', trim( $terms, " \n\t\r\0\x0B," ) );
 			}
 
-			$clean_terms = array();
+			$clean_terms = [];
 			foreach ( $terms as $term ) {
 				// Empty terms are invalid input.
 				if ( empty( $term ) ) {
@@ -471,7 +471,7 @@ function bulk_edit_posts( $post_data = null ) {
 			unset($post_data['post_category']);
 	}
 
-	$tax_input = array();
+	$tax_input = [];
 	if ( isset($post_data['tax_input'])) {
 		foreach ( $post_data['tax_input'] as $tax_name => $terms ) {
 			if ( empty($terms) )
@@ -489,7 +489,7 @@ function bulk_edit_posts( $post_data = null ) {
 
 	if ( isset($post_data['post_parent']) && ($parent = (int) $post_data['post_parent']) ) {
 		$pages = $wpdb->get_results("SELECT ID, post_parent FROM $wpdb->posts WHERE post_type = 'page'");
-		$children = array();
+		$children = [];
 
 		for ( $i = 0; $i < 50 && $parent > 0; $i++ ) {
 			$children[] = $parent;
@@ -503,7 +503,7 @@ function bulk_edit_posts( $post_data = null ) {
 		}
 	}
 
-	$updated = $skipped = $locked = array();
+	$updated = $skipped = $locked = [];
 	$shared_post_data = $post_data;
 
 	foreach ( $post_IDs as $post_ID ) {
@@ -529,7 +529,7 @@ function bulk_edit_posts( $post_data = null ) {
 			if ( isset( $tax_input[$tax_name]) && current_user_can( $taxonomy_obj->cap->assign_terms ) )
 				$new_terms = $tax_input[$tax_name];
 			else
-				$new_terms = array();
+				$new_terms = [];
 
 			if ( $taxonomy_obj->hierarchical )
 				$current_terms = (array) wp_get_object_terms( $post_ID, $tax_name, array('fields' => 'ids') );
@@ -681,7 +681,7 @@ function post_exists($title, $content = '', $date = '') {
 	$post_date = wp_unslash( sanitize_post_field( 'post_date', $date, 0, 'db' ) );
 
 	$query = "SELECT ID FROM $wpdb->posts WHERE 1=1";
-	$args = array();
+	$args = [];
 
 	if ( !empty ( $date ) ) {
 		$query .= ' AND post_date = %s';
@@ -1571,7 +1571,7 @@ function _admin_notice_post_locked() {
 	<?php
 
 	if ( $locked ) {
-		$query_args = array();
+		$query_args = [];
 		if ( get_post_type_object( $post->post_type )->public ) {
 			if ( 'publish' == $post->post_status || $user->ID != $post->post_author ) {
 				// Latest content is in autosave
@@ -1767,7 +1767,7 @@ function post_preview() {
 	if ( is_wp_error( $saved_post_id ) )
 		wp_die( $saved_post_id->get_error_message() );
 
-	$query_args = array();
+	$query_args = [];
 
 	if ( $is_autosave && $saved_post_id ) {
 		$query_args['preview_id'] = $post->ID;

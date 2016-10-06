@@ -15,7 +15,7 @@ use function WP\getApp;
  * @since 3.1.0
  */
 class WP_Admin_Bar {
-	private $nodes = array();
+	private $nodes = [];
 	private $bound = false;
 	public $user;
 
@@ -30,7 +30,7 @@ class WP_Admin_Bar {
 
 			case 'menu' :
 				_deprecated_argument( 'WP_Admin_Bar', '3.3.0', 'Modify admin bar nodes with WP_Admin_Bar::get_node(), WP_Admin_Bar::add_node(), and WP_Admin_Bar::remove_node(), not the <code>menu</code> property.' );
-				return array(); // Sorry, folks.
+				return []; // Sorry, folks.
 		}
 	}
 
@@ -140,7 +140,7 @@ class WP_Admin_Bar {
 			'parent' => false,
 			'href'   => false,
 			'group'  => false,
-			'meta'   => array(),
+			'meta'   => [],
 		);
 
 		// If the node already exists, keep any data that isn't provided.
@@ -285,7 +285,7 @@ class WP_Admin_Bar {
 
 		// Normalize nodes: define internal 'children' and 'type' properties.
 		foreach ( $this->_get_nodes() as $node ) {
-			$node->children = array();
+			$node->children = [];
 			$node->type = ( $node->group ) ? 'group' : 'item';
 			unset( $node->group );
 
@@ -327,7 +327,7 @@ class WP_Admin_Bar {
 						'id'        => $default_id,
 						'parent'    => $parent->id,
 						'type'      => 'group',
-						'children'  => array(),
+						'children'  => [],
 						'meta'      => array(
 							'class'     => $group_class,
 						),
@@ -356,7 +356,7 @@ class WP_Admin_Bar {
 						'parent'   => false,
 						'title'    => false,
 						'href'     => false,
-						'meta'     => array(),
+						'meta'     => [],
 					) );
 
 					$container = $this->_get_node( $container_id );

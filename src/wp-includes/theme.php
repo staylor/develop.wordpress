@@ -29,7 +29,7 @@ use function WP\getApp;
  *                      synonymous for the current blog.
  * @return array Array of WP_Theme objects.
  */
-function wp_get_themes( $args = array() ) {
+function wp_get_themes( $args = [] ) {
 	$app = getApp();
 
 	$defaults = array( 'errors' => false, 'allowed' => null, 'blog_id' => 0 );
@@ -50,7 +50,7 @@ function wp_get_themes( $args = array() ) {
 	}
 
 	if ( empty( $theme_directories ) )
-		return array();
+		return [];
 
 	if ( is_multisite() && null !== $args['allowed'] ) {
 		$allowed = $args['allowed'];
@@ -64,8 +64,8 @@ function wp_get_themes( $args = array() ) {
 			$theme_directories = array_diff_key( $theme_directories, WP_Theme::get_allowed( $args['blog_id'] ) );
 	}
 
-	$themes = array();
-	static $_themes = array();
+	$themes = [];
+	static $_themes = [];
 
 	foreach ( $theme_directories as $theme => $theme_root ) {
 		if ( isset( $_themes[ $theme_root['theme_root'] . '/' . $theme ] ) )
@@ -382,7 +382,7 @@ function register_theme_directory( $directory ) {
 	}
 
 	if ( ! is_array( $app->theme['directories'] ) ) {
-		$app->theme['directories'] = array();
+		$app->theme['directories'] = [];
 	}
 
 	$untrailed = untrailingslashit( $directory );
@@ -413,10 +413,10 @@ function search_theme_directories( $force = false ) {
 	if ( ! $force && isset( $found_themes ) )
 		return $found_themes;
 
-	$found_themes = array();
+	$found_themes = [];
 
 	$wp_theme_directories = (array) $app->theme['directories'];
-	$relative_theme_roots = array();
+	$relative_theme_roots = [];
 
 	// Set up maybe-relative, maybe-absolute array of theme directories.
 	// We always want to return absolute, but we need to cache relative
@@ -508,7 +508,7 @@ function search_theme_directories( $force = false ) {
 
 	asort( $found_themes );
 
-	$theme_roots = array();
+	$theme_roots = [];
 	$relative_theme_roots = array_flip( $relative_theme_roots );
 
 	foreach ( $found_themes as $theme_dir => $theme_data ) {
@@ -1010,7 +1010,7 @@ function get_header_image() {
  *                              to override the default attributes. Default empty.
  * @return string HTML image element markup or empty string on failure.
  */
-function get_header_image_tag( $attr = array() ) {
+function get_header_image_tag( $attr = [] ) {
 	$header = get_custom_header();
 
 	if ( empty( $header->url ) ) {
@@ -1074,7 +1074,7 @@ function get_header_image_tag( $attr = array() ) {
  *
  * @param array $attr Optional. Attributes for the image markup. Default empty.
  */
-function the_header_image_tag( $attr = array() ) {
+function the_header_image_tag( $attr = [] ) {
 	echo get_header_image_tag( $attr );
 }
 
@@ -1096,7 +1096,7 @@ function _get_random_header_data() {
 		$app = getApp();
 
 		$header_image_mod = get_theme_mod( 'header_image', '' );
-		$headers = array();
+		$headers = [];
 
 		if ( 'random-uploaded-image' == $header_image_mod )
 			$headers = get_uploaded_header_images();
@@ -1182,20 +1182,20 @@ function header_image() {
  * @return array
  */
 function get_uploaded_header_images() {
-	$header_images = array();
+	$header_images = [];
 
 	// @todo caching
 	$headers = get_posts( array( 'post_type' => 'attachment', 'meta_key' => '_wp_attachment_is_custom_header', 'meta_value' => get_option('stylesheet'), 'orderby' => 'none', 'nopaging' => true ) );
 
 	if ( empty( $headers ) )
-		return array();
+		return [];
 
 	foreach ( (array) $headers as $header ) {
 		$url = esc_url_raw( wp_get_attachment_url( $header->ID ) );
 		$header_data = wp_get_attachment_metadata( $header->ID );
 		$header_index = $header->ID;
 
-		$header_images[$header_index] = array();
+		$header_images[$header_index] = [];
 		$header_images[$header_index]['attachment_id'] = $header->ID;
 		$header_images[$header_index]['url'] =  $url;
 		$header_images[$header_index]['thumbnail_url'] = $url;
@@ -1226,7 +1226,7 @@ function get_custom_header() {
 		$data = get_theme_mod( 'header_image_data' );
 		if ( ! $data && current_theme_supports( 'custom-header', 'default-image' ) ) {
 			$directory_args = array( get_template_directory_uri(), get_stylesheet_directory_uri() );
-			$data = array();
+			$data = [];
 			$data['url'] = $data['thumbnail_url'] = vsprintf( get_theme_support( 'custom-header', 'default-image' ), $directory_args );
 			if ( ! empty( $app->theme['default_headers'] ) ) {
 				foreach ( (array) $app->theme['default_headers'] as $default_header ) {
@@ -1429,7 +1429,7 @@ function remove_editor_styles() {
 	_remove_theme_support( 'editor-style' );
 	if ( is_admin() ) {
 		$app = getApp();
-		$app->theme['editor_styles'] = array();
+		$app->theme['editor_styles'] = [];
 	}
 	return true;
 }
@@ -1444,7 +1444,7 @@ function remove_editor_styles() {
 function get_editor_stylesheets() {
 	$app = getApp();
 
-	$stylesheets = array();
+	$stylesheets = [];
 	// load editor_style.css if the current theme supports it
 	if ( ! empty( $app->theme['editor_styles'] ) ) {
 		$editor_styles = $app->theme['editor_styles'];
@@ -1560,7 +1560,7 @@ function add_theme_support( $feature ) {
 
 		case 'custom-logo':
 			if ( ! is_array( $args ) ) {
-				$args = array( 0 => array() );
+				$args = array( 0 => [] );
 			}
 			$defaults = array(
 				'width'       => null,
@@ -1583,7 +1583,7 @@ function add_theme_support( $feature ) {
 
 		case 'custom-header' :
 			if ( ! is_array( $args ) )
-				$args = array( 0 => array() );
+				$args = array( 0 => [] );
 
 			$defaults = array(
 				'default-image' => '',
@@ -1660,7 +1660,7 @@ function add_theme_support( $feature ) {
 
 		case 'custom-background' :
 			if ( ! is_array( $args ) )
-				$args = array( 0 => array() );
+				$args = array( 0 => [] );
 
 			$defaults = array(
 				'default-image'          => '',

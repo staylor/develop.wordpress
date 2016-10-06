@@ -73,12 +73,12 @@ class WP_Http_Curl {
 	 * @param string|array $args Optional. Override the defaults.
 	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
 	 */
-	public function request($url, $args = array()) {
+	public function request($url, $args = []) {
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 5,
 			'redirection' => 5, 'httpversion' => '1.0',
 			'blocking' => true,
-			'headers' => array(), 'body' => null, 'cookies' => array()
+			'headers' => [], 'body' => null, 'cookies' => []
 		);
 
 		$r = wp_parse_args( $args, $defaults );
@@ -193,7 +193,7 @@ class WP_Http_Curl {
 
 		if ( !empty( $r['headers'] ) ) {
 			// cURL expects full header strings in each element.
-			$headers = array();
+			$headers = [];
 			foreach ( $r['headers'] as $name => $value ) {
 				$headers[] = "{$name}: $value";
 			}
@@ -233,7 +233,7 @@ class WP_Http_Curl {
 			}
 
 			curl_close( $handle );
-			return array( 'headers' => array(), 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => array() );
+			return array( 'headers' => [], 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => [] );
 		}
 
 		curl_exec( $handle );
@@ -359,7 +359,7 @@ class WP_Http_Curl {
 	 * @param array $args Optional. Array of request arguments. Default empty array.
 	 * @return bool False means this class can not be used, true means it can.
 	 */
-	public static function test( $args = array() ) {
+	public static function test( $args = [] ) {
 		if ( ! function_exists( 'curl_init' ) || ! function_exists( 'curl_exec' ) )
 			return false;
 

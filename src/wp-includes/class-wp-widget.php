@@ -174,7 +174,7 @@ class WP_Widget {
 	 * @param array  $control_options Optional. Widget control options. See wp_register_widget_control() for
 	 *                                information on accepted arguments. Default empty array.
 	 */
-	public function __construct( $id_base, $name, $widget_options = array(), $control_options = array() ) {
+	public function __construct( $id_base, $name, $widget_options = [], $control_options = [] ) {
 		$this->id_base = empty($id_base) ? preg_replace( '/(wp_)?widget_/', '', strtolower(get_class($this)) ) : strtolower($id_base);
 		$this->name = $name;
 		$this->option_name = 'widget_' . $this->id_base;
@@ -198,7 +198,7 @@ class WP_Widget {
 	 * @param array  $control_options Optional. Widget control options. See wp_register_widget_control() for
 	 *                                information on accepted arguments. Default empty array.
 	 */
-	public function WP_Widget( $id_base, $name, $widget_options = array(), $control_options = array() ) {
+	public function WP_Widget( $id_base, $name, $widget_options = [], $control_options = [] ) {
 		_deprecated_constructor( 'WP_Widget', '4.3.0', get_class( $this ) );
 		WP_Widget::__construct( $id_base, $name, $widget_options, $control_options );
 	}
@@ -444,7 +444,7 @@ class WP_Widget {
 				$settings = $widget_id_base;
 			} elseif ( $id_base == $this->id_base ) {
 				$num = $multi_number ? (int) $multi_number : (int) $widget_number;
-				$settings = array( $num => array() );
+				$settings = array( $num => [] );
 			} else {
 				return;
 			}
@@ -453,7 +453,7 @@ class WP_Widget {
 				$new_instance = stripslashes_deep($new_instance);
 				$this->_set($number);
 
-				$old_instance = isset($all_instances[$number]) ? $all_instances[$number] : array();
+				$old_instance = isset($all_instances[$number]) ? $all_instances[$number] : [];
 
 				$was_cache_addition_suspended = wp_suspend_cache_addition();
 				if ( $this->is_preview() && ! $was_cache_addition_suspended ) {
@@ -516,7 +516,7 @@ class WP_Widget {
 		if ( -1 == $widget_args['number'] ) {
 			// We echo out a form where 'number' can be set later
 			$this->_set('__i__');
-			$instance = array();
+			$instance = [];
 		} else {
 			$this->_set($widget_args['number']);
 			$instance = $all_instances[ $widget_args['number'] ];
@@ -604,12 +604,12 @@ class WP_Widget {
 				$settings = get_option( $this->alt_option_name );
 			} else {
 				// Save an option so it can be autoloaded next time.
-				$this->save_settings( array() );
+				$this->save_settings( [] );
 			}
 		}
 
 		if ( ! is_array( $settings ) && ! ( $settings instanceof ArrayObject || $settings instanceof ArrayIterator ) ) {
-			$settings = array();
+			$settings = [];
 		}
 
 		if ( ! empty( $settings ) && ! isset( $settings['_multiwidget'] ) ) {

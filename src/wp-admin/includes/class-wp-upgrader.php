@@ -26,7 +26,7 @@ class WP_Upgrader {
 	 * @access public
 	 * @var array $strings
 	 */
-	public $strings = array();
+	public $strings = [];
 
 	/**
 	 * The upgrader skin being used.
@@ -61,7 +61,7 @@ class WP_Upgrader {
 	 *      @type bool   $clear_destination  Whether the destination folder was cleared.
 	 * }
 	 */
-	public $result = array();
+	public $result = [];
 
 	/**
 	 * The total number of updates being performed.
@@ -163,7 +163,7 @@ class WP_Upgrader {
 	 *                                            Default false.
 	 * @return bool|WP_Error True if able to connect, false or a WP_Error otherwise.
 	 */
-	public function fs_connect( $directories = array(), $allow_relaxed_file_ownership = false ) {
+	public function fs_connect( $directories = [], $allow_relaxed_file_ownership = false ) {
 		global $wp_filesystem;
 
 		if ( false === ( $credentials = $this->skin->request_filesystem_credentials( false, $directories[0], $allow_relaxed_file_ownership ) ) ) {
@@ -326,7 +326,7 @@ class WP_Upgrader {
 		}
 
 		// Check all files are writable before attempting to clear the destination.
-		$unwritable_files = array();
+		$unwritable_files = [];
 
 		$_files = $wp_filesystem->dirlist( $remote_destination, true, true );
 
@@ -397,7 +397,7 @@ class WP_Upgrader {
 	 *
 	 * @return array|WP_Error The result (also stored in `WP_Upgrader::$result`), or a WP_Error on failure.
 	 */
-	public function install_package( $args = array() ) {
+	public function install_package( $args = [] ) {
 		global $wp_filesystem;
 
 		$app = getApp();
@@ -408,7 +408,7 @@ class WP_Upgrader {
 			'clear_destination' => false,
 			'clear_working' => false,
 			'abort_if_destination_exists' => true,
-			'hook_extra' => array()
+			'hook_extra' => []
 		);
 
 		$args = wp_parse_args($args, $defaults);
@@ -620,7 +620,7 @@ class WP_Upgrader {
 			'abort_if_destination_exists' => true, // Abort if the Destination directory exists, Pass clear_destination as false please
 			'clear_working' => true,
 			'is_multi' => false,
-			'hook_extra' => array() // Pass any extra $hook_extra args here, this will be passed to any hooked filters.
+			'hook_extra' => [] // Pass any extra $hook_extra args here, this will be passed to any hooked filters.
 		);
 
 		$options = wp_parse_args( $options, $defaults );

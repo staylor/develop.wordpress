@@ -90,7 +90,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 * }
 	 * @return bool|WP_Error True if the install was successful, false or a WP_Error otherwise.
 	 */
-	public function install( $package, $args = array() ) {
+	public function install( $package, $args = [] ) {
 
 		$defaults = array(
 			'clear_update_cache' => true,
@@ -143,7 +143,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 * }
 	 * @return bool|WP_Error True if the upgrade was successful, false or a WP_Error object otherwise.
 	 */
-	public function upgrade( $plugin, $args = array() ) {
+	public function upgrade( $plugin, $args = [] ) {
 
 		$defaults = array(
 			'clear_update_cache' => true,
@@ -213,7 +213,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 * }
 	 * @return array|false An array of results indexed by plugin file, or false if unable to connect to the filesystem.
 	 */
-	public function bulk_upgrade( $plugins, $args = array() ) {
+	public function bulk_upgrade( $plugins, $args = [] ) {
 
 		$defaults = array(
 			'clear_update_cache' => true,
@@ -252,7 +252,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 		if ( $maintenance )
 			$this->maintenance_mode(true);
 
-		$results = array();
+		$results = [];
 
 		$this->update_count = count($plugins);
 		$this->update_current = 0;

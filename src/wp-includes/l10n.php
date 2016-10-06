@@ -828,7 +828,7 @@ function _load_textdomain_just_in_time( $domain ) {
 	}
 
 	if ( null === $cached_mofiles ) {
-		$cached_mofiles = array();
+		$cached_mofiles = [];
 
 		$locations = array(
 			WP_LANG_DIR . '/plugins',
@@ -926,7 +926,7 @@ function translate_user_role( $name ) {
  * @return array An array of language codes or an empty array if no languages are present. Language codes are formed by stripping the .mo extension from the language file names.
  */
 function get_available_languages( $dir = null ) {
-	$languages = array();
+	$languages = [];
 
 	$lang_files = glob( ( is_null( $dir) ? WP_LANG_DIR : $dir ) . '/*.mo' );
 	if ( $lang_files ) {
@@ -955,21 +955,21 @@ function get_available_languages( $dir = null ) {
  */
 function wp_get_installed_translations( $type ) {
 	if ( $type !== 'themes' && $type !== 'plugins' && $type !== 'core' )
-		return array();
+		return [];
 
 	$dir = 'core' === $type ? '' : "/$type";
 
 	if ( ! is_dir( WP_LANG_DIR ) )
-		return array();
+		return [];
 
 	if ( $dir && ! is_dir( WP_LANG_DIR . $dir ) )
-		return array();
+		return [];
 
 	$files = scandir( WP_LANG_DIR . $dir );
 	if ( ! $files )
-		return array();
+		return [];
 
-	$language_data = array();
+	$language_data = [];
 
 	foreach ( $files as $file ) {
 		if ( '.' === $file[0] || is_dir( WP_LANG_DIR . "$dir/$file" ) ) {
@@ -1041,13 +1041,13 @@ function wp_get_pomo_file_data( $po_file ) {
  * }
  * @return string HTML content
  */
-function wp_dropdown_languages( $args = array() ) {
+function wp_dropdown_languages( $args = [] ) {
 
 	$args = wp_parse_args( $args, array(
 		'id'           => '',
 		'name'         => '',
-		'languages'    => array(),
-		'translations' => array(),
+		'languages'    => [],
+		'translations' => [],
 		'selected'     => '',
 		'echo'         => 1,
 		'show_available_translations' => true,
@@ -1063,7 +1063,7 @@ function wp_dropdown_languages( $args = array() ) {
 	 * $args['languages'] should only contain the locales. Find the locale in
 	 * $translations to get the native name. Fall back to locale.
 	 */
-	$languages = array();
+	$languages = [];
 	foreach ( $args['languages'] as $locale ) {
 		if ( isset( $translations[ $locale ] ) ) {
 			$translation = $translations[ $locale ];
@@ -1089,7 +1089,7 @@ function wp_dropdown_languages( $args = array() ) {
 	$output = sprintf( '<select name="%s" id="%s">', esc_attr( $args['name'] ), esc_attr( $args['id'] ) );
 
 	// Holds the HTML markup.
-	$structure = array();
+	$structure = [];
 
 	// List installed languages.
 	if ( $translations_available ) {

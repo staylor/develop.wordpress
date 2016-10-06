@@ -143,7 +143,7 @@ class WP_Customize_Nav_Menu_Setting extends WP_Customize_Setting {
 	 *
 	 * @throws Exception If $id is not valid for this setting type.
 	 */
-	public function __construct( Manager $manager, $id, array $args = array() ) {
+	public function __construct( Manager $manager, $id, array $args = [] ) {
 		if ( empty( $manager->nav_menus ) ) {
 			throw new Exception( 'Expected Manager::$nav_menus to be set.' );
 		}
@@ -187,7 +187,7 @@ class WP_Customize_Nav_Menu_Setting extends WP_Customize_Setting {
 				if ( $term ) {
 					$value = wp_array_slice_assoc( (array) $term, array_keys( $this->default ) );
 
-					$nav_menu_options  = (array) get_option( 'nav_menu_options', array() );
+					$nav_menu_options  = (array) get_option( 'nav_menu_options', [] );
 					$value['auto_add'] = false;
 
 					if ( isset( $nav_menu_options['auto_add'] ) && is_array( $nav_menu_options['auto_add'] ) ) {
@@ -459,7 +459,7 @@ class WP_Customize_Nav_Menu_Setting extends WP_Customize_Setting {
 	 *
 	 * @see WP_Customize_Nav_Menu_Setting::amend_customize_save_response()
 	 */
-	protected $_widget_nav_menu_updates = array();
+	protected $_widget_nav_menu_updates = [];
 
 	/**
 	 * Create/update the nav_menu term for this setting.
@@ -547,7 +547,7 @@ class WP_Customize_Nav_Menu_Setting extends WP_Customize_Setting {
 
 		if ( null !== $auto_add ) {
 			$nav_menu_options = $this->filter_nav_menu_options_value(
-				(array) get_option( 'nav_menu_options', array() ),
+				(array) get_option( 'nav_menu_options', [] ),
 				$this->term_id,
 				$auto_add
 			);
@@ -607,7 +607,7 @@ class WP_Customize_Nav_Menu_Setting extends WP_Customize_Setting {
 	protected function filter_nav_menu_options_value( $nav_menu_options, $menu_id, $auto_add ) {
 		$nav_menu_options = (array) $nav_menu_options;
 		if ( ! isset( $nav_menu_options['auto_add'] ) ) {
-			$nav_menu_options['auto_add'] = array();
+			$nav_menu_options['auto_add'] = [];
 		}
 
 		$i = array_search( $menu_id, $nav_menu_options['auto_add'] );
@@ -633,10 +633,10 @@ class WP_Customize_Nav_Menu_Setting extends WP_Customize_Setting {
 	 */
 	public function amend_customize_save_response( $data ) {
 		if ( ! isset( $data['nav_menu_updates'] ) ) {
-			$data['nav_menu_updates'] = array();
+			$data['nav_menu_updates'] = [];
 		}
 		if ( ! isset( $data['widget_nav_menu_updates'] ) ) {
-			$data['widget_nav_menu_updates'] = array();
+			$data['widget_nav_menu_updates'] = [];
 		}
 
 		$data['nav_menu_updates'][] = array(
@@ -651,7 +651,7 @@ class WP_Customize_Nav_Menu_Setting extends WP_Customize_Setting {
 			$data['widget_nav_menu_updates'],
 			$this->_widget_nav_menu_updates
 		);
-		$this->_widget_nav_menu_updates = array();
+		$this->_widget_nav_menu_updates = [];
 
 		return $data;
 	}

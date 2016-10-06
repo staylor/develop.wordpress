@@ -94,7 +94,7 @@ $whitelist_options = array(
 	'reading' => array( 'posts_per_page', 'posts_per_rss', 'rss_use_excerpt', 'show_on_front', 'page_on_front', 'page_for_posts', 'blog_public' ),
 	'writing' => array( 'default_category', 'default_email_category', 'default_link_category', 'default_post_format' )
 );
-$whitelist_options['misc'] = $whitelist_options['options'] = $whitelist_options['privacy'] = array();
+$whitelist_options['misc'] = $whitelist_options['options'] = $whitelist_options['privacy'] = [];
 
 $mail_options = array('mailserver_url', 'mailserver_port', 'mailserver_login', 'mailserver_pass');
 
