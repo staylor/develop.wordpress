@@ -414,6 +414,10 @@ function require_wp_db() {
 	$app['db.table_prefix'] = $app->factory( function ( $app ) {
 		return $app['db']->get_blog_prefix();
 	} );
+
+	$app['globals.table_prefix'] = $app->factory( function ( $app ) {
+		return $GLOBALS['table_prefix'];
+	} );
 }
 
 /**
@@ -440,7 +444,7 @@ function wp_set_wpdb_vars() {
 		'active' => '%d', 'cat_id' => '%d', 'deleted' => '%d', 'lang_id' => '%d', 'mature' => '%d', 'public' => '%d', 'site_id' => '%d', 'spam' => '%d',
 	);
 
-	$prefix = $wpdb->set_prefix( $app['db.table_prefix'] );
+	$prefix = $wpdb->set_prefix( $app['globals.table_prefix'] );
 
 	if ( is_wp_error( $prefix ) ) {
 		wp_load_translations_early();

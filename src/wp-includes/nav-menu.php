@@ -7,6 +7,8 @@
  * @since 3.0.0
  */
 
+use function WP\getApp;
+
 /**
  * Returns a navigation menu object.
  *

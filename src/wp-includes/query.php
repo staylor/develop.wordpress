@@ -25,6 +25,9 @@ use function WP\getApp;
  */
 function get_query_var( $var, $default = '' ) {
 	$app = getApp();
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
 	return $app['wp']->current_query->get( $var, $default );
 }
 
@@ -40,6 +43,9 @@ function get_query_var( $var, $default = '' ) {
  */
 function get_queried_object() {
 	$app = getApp();
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
 	return $app['wp']->current_query->get_queried_object();
 }
 
@@ -54,6 +60,9 @@ function get_queried_object() {
  */
 function get_queried_object_id() {
 	$app = getApp();
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
 	return $app['wp']->current_query->get_queried_object_id();
 }
 
@@ -67,6 +76,9 @@ function get_queried_object_id() {
  */
 function set_query_var( $var, $value ) {
 	$app = getApp();
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
 	$app['wp']->current_query->set( $var, $value );
 }
 
@@ -86,10 +98,12 @@ function set_query_var( $var, $value ) {
  * @param array|string $query Array or string of WP_Query arguments.
  * @return array List of post objects.
  */
-function query_posts($query) {
+function query_posts( $params ) {
 	$app = getApp();
-	$app['wp']->current_query = new \WP_Query();
-	return $app['wp']->current_query->query($query);
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
+	return $app['wp']->current_query->query( $params );
 }
 
 /**
@@ -132,11 +146,17 @@ function _current_query_flag( $func, $args = [] ) {
 		return false;
 	}
 
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
 	return call_user_func_array( [ $app['wp']->current_query, $func ], $args );
 }
 
 function _current_query_proxy( $func ) {
 	$app = getApp();
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
 	return call_user_func( [ $app['wp']->current_query, $func ] );
 }
 
@@ -465,6 +485,9 @@ function is_main_query() {
 	}
 
 	$app = getApp();
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
 	return $app['wp']->current_query->is_main_query();
 }
 
@@ -486,6 +509,9 @@ function have_posts() {
  */
 function in_the_loop() {
 	$app = getApp();
+	if ( ! $app['wp']->current_query ) {
+		$app['wp']->current_query = new \WP_Query();
+	}
 	return $app['wp']->current_query->in_the_loop;
 }
 
