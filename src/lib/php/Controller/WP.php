@@ -551,7 +551,6 @@ class WP extends Observer {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @global string       $query_string Query string for the loop.
 	 * @global array        $posts The found posts.
 	 * @global WP_Post|null $post The current post, if available.
 	 * @global string       $request The SQL statement for the request.
@@ -565,7 +564,6 @@ class WP extends Observer {
 			$GLOBALS[ $key ] = $value;
 		}
 
-		$GLOBALS['query_string'] = $this->query_string;
 		$GLOBALS['posts'] =& $this->current_query->posts;
 		$GLOBALS['post'] = $this->current_query->post ?? null;
 		$GLOBALS['request'] = $this->current_query->request;
