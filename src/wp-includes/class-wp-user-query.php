@@ -323,6 +323,40 @@ class WP_User_Query {
 			$this->query_where .= " AND user_login NOT IN ( '$login__not_in' )";
 		}
 
+		// nicename
+		if ( '' !== $qv['nicename']) {
+			$this->query_where .= $this->db->prepare( ' AND user_nicename = %s', $qv['nicename'] );
+		}
+
+		if ( ! empty( $qv['nicename__in'] ) ) {
+			$sanitized_nicename__in = array_map( 'esc_sql', $qv['nicename__in'] );
+			$nicename__in = implode( "','", $sanitized_nicename__in );
+			$this->query_where .= " AND user_nicename IN ( '$nicename__in' )";
+		}
+
+		if ( ! empty( $qv['nicename__not_in'] ) ) {
+			$sanitized_nicename__not_in = array_map( 'esc_sql', $qv['nicename__not_in'] );
+			$nicename__not_in = implode( "','", $sanitized_nicename__not_in );
+			$this->query_where .= " AND user_nicename NOT IN ( '$nicename__not_in' )";
+		}
+
+		// login
+		if ( '' !== $qv['login']) {
+			$this->query_where .= $this->db->prepare( ' AND user_login = %s', $qv['login'] );
+		}
+
+		if ( ! empty( $qv['login__in'] ) ) {
+			$sanitized_login__in = array_map( 'esc_sql', $qv['login__in'] );
+			$login__in = implode( "','", $sanitized_login__in );
+			$this->query_where .= " AND user_login IN ( '$login__in' )";
+		}
+
+		if ( ! empty( $qv['login__not_in'] ) ) {
+			$sanitized_login__not_in = array_map( 'esc_sql', $qv['login__not_in'] );
+			$login__not_in = implode( "','", $sanitized_login__not_in );
+			$this->query_where .= " AND user_login NOT IN ( '$login__not_in' )";
+		}
+
 		// Meta query.
 		$this->meta_query = new WP_Meta_Query();
 		$this->meta_query->parse_query_vars( $qv );
