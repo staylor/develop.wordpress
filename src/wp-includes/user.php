@@ -31,13 +31,21 @@ use function WP\getApp;
 function wp_signon( $credentials = array(), $secure_cookie = '' ) {
 	if ( empty($credentials) ) {
 		$credentials = array(); // Back-compat for plugins passing an empty string.
+		$app = getApp();
 
-		if ( ! empty($_POST['log']) )
-			$credentials['user_login'] = $_POST['log'];
-		if ( ! empty($_POST['pwd']) )
-			$credentials['user_password'] = $_POST['pwd'];
-		if ( ! empty($_POST['rememberme']) )
-			$credentials['remember'] = $_POST['rememberme'];
+		$log = $app['request']->request->get( 'log' );
+		$pwd = $app['request']->request->get( 'pwd' );
+		$rememberme = $app['request']->request->get( 'rememberme' );
+
+		if ( ! empty( $log ) ) {
+			$credentials['user_login'] = $log;
+		}
+		if ( ! empty( $pwd ) ) {
+			$credentials['user_password'] = $pwd;
+		}
+		if ( ! empty( $rememberme ) ) {
+			$credentials['remember'] = $rememberme;
+		}
 	}
 
 	if ( !empty($credentials['remember']) )

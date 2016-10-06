@@ -1918,11 +1918,15 @@ function signup_nonce_fields() {
  */
 function signup_nonce_check( $result ) {
 	$app = getApp();
-	if ( !strpos( $app['request.php_self'], 'wp-signup.php' ) )
+	if ( ! strpos( $app['request.php_self'], 'wp-signup.php' ) ) {
 		return $result;
+	}
 
-	if ( wp_create_nonce('signup_form_' . $_POST[ 'signup_form_id' ]) != $_POST['_signup_form'] )
+	$signup_form_id = $app['request']->request->get( 'signup_form_id' );
+	$_signup_form = $app['request']->request->get( '_signup_form' );
+	if ( wp_create_nonce( 'signup_form_' . $signup_form_id ) !== $_signup_form ) {
 		wp_die( __( 'Please try again.' ) );
+	}
 
 	return $result;
 }

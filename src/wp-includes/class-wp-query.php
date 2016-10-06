@@ -1300,8 +1300,9 @@ class WP_Query {
 
 		// added slashes screw with quote grouping when done early, so done later
 		$q['s'] = stripslashes( $q['s'] );
-		if ( empty( $_GET['s'] ) && $this->is_main_query() )
+		if ( ! $app['request']->query->get( 's' ) && $this->is_main_query() ) {
 			$q['s'] = urldecode( $q['s'] );
+		}
 		// there are no line breaks in <input /> fields
 		$q['s'] = str_replace( array( "\r", "\n" ), '', $q['s'] );
 		$q['search_terms_count'] = 1;

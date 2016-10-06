@@ -252,8 +252,9 @@ add_action( 'init',                'check_theme_switched',            99    );
 add_action( 'after_switch_theme',  '_wp_sidebars_changed'                   );
 add_action( 'wp_print_styles',     'print_emoji_styles'                     );
 
-if ( isset( $_GET['replytocom'] ) )
+if ( $app['request']->query->get( 'replytocom' ) ) {
     add_action( 'wp_head', 'wp_no_robots' );
+}
 
 // Login actions
 add_filter( 'login_head',          'wp_resource_hints',             8     );

@@ -101,14 +101,16 @@ final class WP_Customize_Nav_Menus {
 			wp_die( -1 );
 		}
 
-		if ( empty( $_POST['type'] ) || empty( $_POST['object'] ) ) {
+		$app = getApp();
+		$type = sanitize_key( $app['request']->request->get( 'type' ) );
+		$object = sanitize_key( $app['request']->request->get( 'type' ) );
+		if ( empty( $type ) || empty( $object ) ) {
 			wp_send_json_error( 'nav_menus_missing_type_or_object_parameter' );
 		}
 
-		$type = sanitize_key( $_POST['type'] );
-		$object = sanitize_key( $_POST['object'] );
-		$page = empty( $_POST['page'] ) ? 0 : absint( $_POST['page'] );
-		$items = $this->load_available_items_query( $type, $object, $page );
+		$page = $app['request']->request->get( 'page' );
+		$parsed = empty( $page ) ? 0 : absint( $page );
+		$items = $this->load_available_items_query( $type, $object, $parsed );
 
 		if ( is_wp_error( $items ) ) {
 			wp_send_json_error( $items->get_error_code() );
@@ -241,16 +243,20 @@ final class WP_Customize_Nav_Menus {
 			wp_die( -1 );
 		}
 
-		if ( empty( $_POST['search'] ) ) {
+		$app = getApp();
+		$search = $app['request']->request->get( 'search' );
+		$page = $app['request']->request->get( 'page' );
+
+		if ( empty( $search ) ) {
 			wp_send_json_error( 'nav_menus_missing_search_parameter' );
 		}
 
-		$p = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 0;
+		$p = isset( $page ) ? absint( $page ) : 0;
 		if ( $p < 1 ) {
 			$p = 1;
 		}
 
-		$s = sanitize_text_field( wp_unslash( $_POST['search'] ) );
+		$s = sanitize_text_field( wp_unslash( $search ) );
 		$items = $this->search_available_items_query( array( 'pagenum' => $p, 's' => $s ) );
 
 		if ( empty( $items ) ) {
@@ -764,7 +770,9 @@ final class WP_Customize_Nav_Menus {
 			wp_send_json_error( 'customize_not_allowed', 403 );
 		}
 
-		if ( empty( $_POST['params'] ) || ! is_array( $_POST['params'] ) ) {
+		$app = getApp();
+		$params = $app['request']->request->get( 'params' );
+		if ( empty( $params ) || ! is_array( $params ) ) {
 			wp_send_json_error( 'missing_params', 400 );
 		}
 
@@ -774,7 +782,7 @@ final class WP_Customize_Nav_Menus {
 					'post_type' => '',
 					'post_title' => '',
 				),
-				wp_unslash( $_POST['params'] )
+				wp_unslash( $params )
 			),
 			array( 'post_type', 'post_title' )
 		);

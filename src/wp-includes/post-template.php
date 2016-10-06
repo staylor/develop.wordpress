@@ -967,9 +967,11 @@ function _wp_link_page( $i ) {
 
 	if ( is_preview() ) {
 
-		if ( ( 'draft' !== $post->post_status ) && isset( $_GET['preview_id'], $_GET['preview_nonce'] ) ) {
-			$query_args['preview_id'] = wp_unslash( $_GET['preview_id'] );
-			$query_args['preview_nonce'] = wp_unslash( $_GET['preview_nonce'] );
+		$id = $app['request']->query->get( 'preview_id' );
+		$nonce = $app['request']->query->get( 'preview_nonce' );
+		if ( 'draft' !== $post->post_status && $id && $nonce ) {
+			$query_args['preview_id'] = wp_unslash( $id );
+			$query_args['preview_nonce'] = wp_unslash( $nonce );
 		}
 
 		$url = get_preview_post_link( $post, $query_args, $url );

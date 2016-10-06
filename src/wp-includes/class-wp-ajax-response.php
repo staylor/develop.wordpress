@@ -1,4 +1,5 @@
 <?php
+use function WP\getApp;
 /**
  * Send XML response back to Ajax request.
  *
@@ -122,7 +123,8 @@ class WP_Ajax_Response {
 		}
 
 		if ( false === $action ) {
-			$action = $_POST['action'];
+			$app = getApp();
+			$action = $app['request']->request->get( 'action' );
 		}
 		$x = '';
 		$x .= "<response action='{$action}_$id'>"; // The action attribute in the xml output is formatted like a nonce action

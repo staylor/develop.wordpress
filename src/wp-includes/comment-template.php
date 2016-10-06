@@ -1473,8 +1473,6 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 		require( $include );
 	elseif ( file_exists( TEMPLATEPATH . $file ) )
 		require( TEMPLATEPATH . $file );
-	else // Backward compat code will be removed in a future release
-		require( ABSPATH . WPINC . '/theme-compat/comments.php');
 }
 
 /**
@@ -1777,11 +1775,13 @@ function post_reply_link($args = array(), $post = null) {
  * @return string
  */
 function get_cancel_comment_reply_link( $text = '' ) {
-	if ( empty($text) )
-		$text = __('Click here to cancel reply.');
+	$app = getApp();
 
-	$style = isset($_GET['replytocom']) ? '' : ' style="display:none;"';
-	$link = esc_html( remove_query_arg('replytocom') ) . '#respond';
+	if ( empty( $text ) ) {
+		$text = __('Click here to cancel reply.');
+	}
+	$style = $app['request']->query->get( 'replytocom' ) ? '' : ' style="display:none;"';
+	$link = esc_html( remove_query_arg( 'replytocom' ) ) . '#respond';
 
 	$formatted_link = '<a rel="nofollow" id="cancel-comment-reply-link" href="' . $link . '"' . $style . '>' . $text . '</a>';
 
@@ -1817,10 +1817,12 @@ function cancel_comment_reply_link( $text = '' ) {
  * @return string Hidden input HTML for replying to comments
  */
 function get_comment_id_fields( $id = 0 ) {
-	if ( empty( $id ) )
+	$app = getApp();
+	if ( empty( $id ) ) {
 		$id = get_the_ID();
-
-	$replytoid = isset($_GET['replytocom']) ? (int) $_GET['replytocom'] : 0;
+	}
+	$replytocom = $app['request']->query->get( 'replytocom' );
+	$replytoid = $replytocom ? (int) $replytocom : 0;
 	$result  = "<input type='hidden' name='comment_post_ID' value='$id' id='comment_post_ID' />\n";
 	$result .= "<input type='hidden' name='comment_parent' id='comment_parent' value='$replytoid' />\n";
 
@@ -1870,10 +1872,13 @@ function comment_id_fields( $id = 0 ) {
 function comment_form_title( $noreplytext = false, $replytext = false, $linktoparent = true ) {
 	global $comment;
 
+	$app = getApp();
+
 	if ( false === $noreplytext ) $noreplytext = __( 'Leave a Reply' );
 	if ( false === $replytext ) $replytext = __( 'Leave a Reply to %s' );
 
-	$replytoid = isset($_GET['replytocom']) ? (int) $_GET['replytocom'] : 0;
+	$replytocom = $app['request']->query->get( 'replytocom' );
+	$replytoid = $replytocom ? (int) $replytocom : 0;
 
 	if ( 0 == $replytoid )
 		echo $noreplytext;

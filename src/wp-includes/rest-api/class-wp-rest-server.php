@@ -7,6 +7,8 @@
  * @since 4.4.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement the WordPress REST API server.
  *
@@ -224,7 +226,9 @@ class WP_REST_Server {
 	 * @return false|null Null if not served and a HEAD request, false otherwise.
 	 */
 	public function serve_request( $path = null ) {
-		$content_type = isset( $_GET['_jsonp'] ) ? 'application/javascript' : 'application/json';
+		$app = getApp();
+
+		$content_type = $app['request']->query->get( '_jsonp' ) ? 'application/javascript' : 'application/json';
 		$this->send_header( 'Content-Type', $content_type . '; charset=' . get_option( 'blog_charset' ) );
 		$this->send_header( 'X-Robots-Tag', 'noindex' );
 
@@ -280,13 +284,13 @@ class WP_REST_Server {
 			echo $this->json_error( 'rest_disabled', __( 'The REST API is disabled on this site.' ), 404 );
 			return false;
 		}
-		if ( isset( $_GET['_jsonp'] ) ) {
+		if ( $app['request']->query->get( '_jsonp' ) ) {
 			if ( ! $jsonp_enabled ) {
 				echo $this->json_error( 'rest_callback_disabled', __( 'JSONP support is disabled on this site.' ), 400 );
 				return false;
 			}
 
-			$jsonp_callback = $_GET['_jsonp'];
+			$jsonp_callback = $app['request']->query->get( '_jsonp' );
 			if ( ! wp_check_jsonp_callback( $jsonp_callback ) ) {
 				echo $this->json_error( 'rest_callback_invalid', __( 'The JSONP callback function is invalid.' ), 400 );
 				return false;
@@ -294,19 +298,19 @@ class WP_REST_Server {
 		}
 
 		if ( empty( $path ) ) {
-			if ( isset( $_SERVER['PATH_INFO'] ) ) {
-				$path = $_SERVER['PATH_INFO'];
+			if ( $app['request.path_info'] ) {
+				$path = $app['request.path_info'];
 			} else {
 				$path = '/';
 			}
 		}
 
-		$request = new WP_REST_Request( $_SERVER['REQUEST_METHOD'], $path );
+		$request = new WP_REST_Request( $app['request.method'], $path );
 
-		$request->set_query_params( wp_unslash( $_GET ) );
-		$request->set_body_params( wp_unslash( $_POST ) );
+		$request->set_query_params( wp_unslash( $app['request']->query->all() ) );
+		$request->set_body_params( wp_unslash( $app['request']->request->all() ) );
 		$request->set_file_params( $_FILES );
-		$request->set_headers( $this->get_headers( wp_unslash( $_SERVER ) ) );
+		$request->set_headers( $this->get_headers( wp_unslash( $app['request']->server->all() ) ) );
 		$request->set_body( $this->get_raw_data() );
 
 		/*
@@ -314,10 +318,10 @@ class WP_REST_Server {
 		 * $_GET['_method']. If that is not set, we check for the HTTP_X_HTTP_METHOD_OVERRIDE
 		 * header.
 		 */
-		if ( isset( $_GET['_method'] ) ) {
-			$request->set_method( $_GET['_method'] );
-		} elseif ( isset( $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] ) ) {
-			$request->set_method( $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] );
+		if ( $app['request']->query->get( '_method' ) ) {
+			$request->set_method( $app['request']->query->get( '_method' ) );
+		} elseif ( $app['request']->server->get( 'HTTP_X_HTTP_METHOD_OVERRIDE' ) ) {
+			$request->set_method( $app['request']->server->get( 'HTTP_X_HTTP_METHOD_OVERRIDE' ) );
 		}
 
 		$result = $this->check_authentication();
@@ -349,8 +353,8 @@ class WP_REST_Server {
 		$result = apply_filters( 'rest_post_dispatch', rest_ensure_response( $result ), $this, $request );
 
 		// Wrap the response in an envelope if asked for.
-		if ( isset( $_GET['_envelope'] ) ) {
-			$result = $this->envelope_response( $result, isset( $_GET['_embed'] ) );
+		if ( $app['request']->query->get( '_envelope' ) ) {
+			$result = $this->envelope_response( $result, (bool) $app['request']->query->get( '_embed' ) );
 		}
 
 		// Send extra data from response objects.
@@ -382,7 +386,7 @@ class WP_REST_Server {
 			}
 
 			// Embed links inside the request.
-			$result = $this->response_to_data( $result, isset( $_GET['_embed'] ) );
+			$result = $this->response_to_data( $result, (bool) $app['request']->query->get( '_embed' ) );
 
 			$result = wp_json_encode( $result );
 

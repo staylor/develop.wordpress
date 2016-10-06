@@ -79,9 +79,11 @@ class WP_Embed {
 	 */
 	public function maybe_run_ajax_cache() {
 		$post = get_post();
+		$app = getApp();
 
-		if ( ! $post || empty( $_GET['message'] ) )
+		if ( ! $post || ! $app['request']->query->get( 'message' ) ) {
 			return;
+		}
 
 ?>
 <script type="text/javascript">

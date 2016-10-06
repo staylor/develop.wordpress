@@ -8,6 +8,8 @@
  * @subpackage Multisite
  */
 
+use function WP\getApp;
+
 define( 'SHORTINIT', true );
 require_once( dirname( dirname( __FILE__ ) ) . '/wp-load.php' );
 
@@ -23,7 +25,8 @@ if ( $current_blog->archived == '1' || $current_blog->spam == '1' || $current_bl
 	die( '404 &#8212; File not found.' );
 }
 
-$file = rtrim( BLOGUPLOADDIR, '/' ) . '/' . str_replace( '..', '', $_GET[ 'file' ] );
+$app = getApp();
+$file = rtrim( BLOGUPLOADDIR, '/' ) . '/' . str_replace( '..', '', $app['request']->query->get( 'file' ) );
 if ( !is_file( $file ) ) {
 	status_header( 404 );
 	die( '404 &#8212; File not found.' );

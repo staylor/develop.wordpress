@@ -1911,8 +1911,8 @@ function get_calendar( $initial = true, $echo = true ) {
 		}
 	}
 
-	if ( isset( $_GET['w'] ) ) {
-		$w = (int) $_GET['w'];
+	if ( $app['request']->query->get( 'w' ) ) {
+		$w = (int) $app['request']->query->get( 'w' );
 	}
 	// week_begins = 0 stands for Sunday
 	$week_begins = (int) get_option( 'start_of_week' );

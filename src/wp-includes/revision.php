@@ -544,11 +544,15 @@ function _set_preview( $post ) {
  * @access private
  */
 function _show_post_preview() {
-	if ( isset($_GET['preview_id']) && isset($_GET['preview_nonce']) ) {
-		$id = (int) $_GET['preview_id'];
+	$app = getApp();
+	$query = $app['request']->query;
 
-		if ( false === wp_verify_nonce( $_GET['preview_nonce'], 'post_preview_' . $id ) )
+	if ( $query->get( 'preview_id' ) && $query->get( 'preview_nonce' ) ) {
+		$id = (int) $query->get( 'preview_id' );
+
+		if ( false === wp_verify_nonce( $query->get( 'preview_nonce' ), 'post_preview_' . $id ) ) {
 			wp_die( __('Sorry, you are not allowed to preview drafts.') );
+		}
 
 		add_filter('the_preview', '_set_preview');
 	}

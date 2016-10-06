@@ -417,24 +417,33 @@ class WP_Widget {
 		if ( $this->updated )
 			return;
 
-		if ( isset($_POST['delete_widget']) && $_POST['delete_widget'] ) {
-			// Delete the settings for this instance of the widget
-			if ( isset($_POST['the-widget-id']) )
-				$del_id = $_POST['the-widget-id'];
-			else
-				return;
+		$delete_widget = $app['request']->request->get( 'delete_widget' );
+		$the_widget_id = $app['request']->request->get( 'the-widget-id' );
+		$widget_id_base = $app['request']->request->get( 'widget-' . $this->id_base );
+		$id_base = $app['request']->request->get( 'id_base' );
+		$multi_number = $app['request']->request->get( 'multi_number' );
+		$widget_number = $app['request']->request->get( 'widget_number' );
 
-			if ( isset($app->widgets['registered'][$del_id]['params'][0]['number']) ) {
+		if ( $delete_widget ) {
+			// Delete the settings for this instance of the widget
+			if ( $the_widget_id ) {
+				$del_id = $the_widget_id;
+			} else {
+				return;
+			}
+
+			if ( isset( $app->widgets['registered'][$del_id]['params'][0]['number'] ) ) {
 				$number = $app->widgets['registered'][$del_id]['params'][0]['number'];
 
-				if ( $this->id_base . '-' . $number == $del_id )
+				if ( $this->id_base . '-' . $number == $del_id ) {
 					unset($all_instances[$number]);
+				}
 			}
 		} else {
-			if ( isset($_POST['widget-' . $this->id_base]) && is_array($_POST['widget-' . $this->id_base]) ) {
-				$settings = $_POST['widget-' . $this->id_base];
-			} elseif ( isset($_POST['id_base']) && $_POST['id_base'] == $this->id_base ) {
-				$num = $_POST['multi_number'] ? (int) $_POST['multi_number'] : (int) $_POST['widget_number'];
+			if ( $widget_id_base && is_array( $widget_id_base ) ) {
+				$settings = $widget_id_base;
+			} elseif ( $id_base == $this->id_base ) {
+				$num = $multi_number ? (int) $multi_number : (int) $widget_number;
 				$settings = array( $num => array() );
 			} else {
 				return;

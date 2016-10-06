@@ -8,6 +8,7 @@
  */
 
 use WP\Customize\Manager;
+use function WP\getApp;
 
 /**
  * Core Customizer class for implementing selective refresh.
@@ -269,7 +270,8 @@ final class WP_Customize_Selective_Refresh {
 	 * @return bool Whether the request is for rendering partials.
 	 */
 	public function is_render_partials_request() {
-		return ! empty( $_POST[ self::RENDER_QUERY_VAR ] );
+		$app = getApp();
+		return ! empty( $app['request']->request->get( self::RENDER_QUERY_VAR ) );
 	}
 
 	/**
@@ -310,18 +312,20 @@ final class WP_Customize_Selective_Refresh {
 
 		$this->manager->remove_preview_signature();
 
+		$app = getApp();
 		/*
 		 * Note that is_customize_preview() returning true will entail that the
 		 * user passed the 'customize' capability check and the nonce check, since
 		 * Manager::setup_theme() is where the previewing flag is set.
 		 */
+		$partials = $app['request']->request->get( 'partials' );
 		if ( ! is_customize_preview() ) {
 			wp_send_json_error( 'expected_customize_preview', 403 );
-		} else if ( ! isset( $_POST['partials'] ) ) {
+		} else if ( ! $partials ) {
 			wp_send_json_error( 'missing_partials', 400 );
 		}
 
-		$partials = json_decode( wp_unslash( $_POST['partials'] ), true );
+		$partials = json_decode( wp_unslash( $partials ), true );
 
 		if ( ! is_array( $partials ) ) {
 			wp_send_json_error( 'malformed_partials' );

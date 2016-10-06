@@ -248,11 +248,13 @@ final class WP_Customize_Widgets {
 	 * @return mixed Unslashed post value or default value.
 	 */
 	protected function get_post_value( $name, $default = null ) {
-		if ( ! isset( $_POST[ $name ] ) ) {
+		$app = getApp();
+		$value = $app['request']->request->get( $name );
+		if ( ! isset( $value ) ) {
 			return $default;
 		}
 
-		return wp_unslash( $_POST[ $name ] );
+		return wp_unslash( $value );
 	}
 
 	/**
@@ -1353,7 +1355,7 @@ final class WP_Customize_Widgets {
 		 * with its values so that the widget update callback will read this instance
 		 */
 		$added_input_vars = array();
-		if ( ! empty( $_POST['sanitized_widget_setting'] ) ) {
+		if ( ! empty( $app['request']->request->get( 'sanitized_widget_setting' ) ) ) {
 			$sanitized_widget_setting = json_decode( $this->get_post_value( 'sanitized_widget_setting' ), true );
 			if ( false === $sanitized_widget_setting ) {
 				$this->stop_capturing_option_updates();
@@ -1464,7 +1466,9 @@ final class WP_Customize_Widgets {
 			wp_die( -1 );
 		}
 
-		if ( empty( $_POST['widget-id'] ) ) {
+		$app = getApp();
+		$widget_id = $app['request']->request->get( 'widget-id' );
+		if ( empty( $widget_id ) ) {
 			wp_send_json_error( 'missing_widget-id' );
 		}
 
@@ -1481,14 +1485,8 @@ final class WP_Customize_Widgets {
 		$parsed_id = $this->parse_widget_id( $widget_id );
 		$id_base = $parsed_id['id_base'];
 
-		$is_updating_widget_template = (
-			isset( $_POST[ 'widget-' . $id_base ] )
-			&&
-			is_array( $_POST[ 'widget-' . $id_base ] )
-			&&
-			preg_match( '/__i__|%i%/', key( $_POST[ 'widget-' . $id_base ] ) )
-		);
-		if ( $is_updating_widget_template ) {
+		$idx = $app['request']->request->get( 'widget-' . $id_base );
+		if ( $idx && is_array( $idx ) && preg_match( '/__i__|%i%/', key( $idx ) ) ) {
 			wp_send_json_error( 'template_widget_not_updatable' );
 		}
 

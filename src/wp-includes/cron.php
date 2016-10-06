@@ -252,11 +252,14 @@ function wp_next_scheduled( $hook, $args = array() ) {
  * @param int $gmt_time Optional. Unix timestamp (UTC). Default 0 (current time is used).
  */
 function spawn_cron( $gmt_time = 0 ) {
-	if ( ! $gmt_time )
+	$app = getApp();
+	if ( ! $gmt_time ) {
 		$gmt_time = microtime( true );
-
-	if ( defined('DOING_CRON') || isset($_GET['doing_wp_cron']) )
+	}
+	$doing = $app['request']->query->get( 'doing_wp_cron' );
+	if ( defined('DOING_CRON') || $doing ) {
 		return;
+	}
 
 	/*
 	 * Get the cron lock, which is a Unix timestamp of when the last cron was spawned
