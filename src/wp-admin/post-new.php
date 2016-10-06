@@ -10,17 +10,12 @@
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
 /**
- * @global string  $post_type
- * @global object  $post_type_object
  * @global WP_Post $post
  */
-global $post_type, $post_type_object, $post;
+global $post;
 
-if ( ! isset( $_GET['post_type'] ) ) {
-	$post_type = 'post';
-} elseif ( in_array( $_GET['post_type'], get_post_types( array('show_ui' => true ) ) ) ) {
-	$post_type = $_GET['post_type'];
-} else {
+$post_type = get_current_screen()->post_type;
+if ( ! $post_type ) {
 	wp_die( __( 'Invalid post type.' ) );
 }
 $post_type_object = get_post_type_object( $post_type );

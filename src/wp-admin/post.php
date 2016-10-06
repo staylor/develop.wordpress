@@ -24,11 +24,12 @@ else
  	$post_id = $post_ID = 0;
 
 /**
- * @global string  $post_type
- * @global object  $post_type_object
  * @global WP_Post $post
  */
-global $post_type, $post_type_object, $post;
+global $post;
+
+$post_type = get_current_screen()->post_type;
+$post_type_object = get_post_type_object( $post_type );
 
 if ( $post_id )
 	$post = get_post( $post_id );

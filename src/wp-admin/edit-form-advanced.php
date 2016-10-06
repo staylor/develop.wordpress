@@ -16,11 +16,12 @@ if ( !defined('ABSPATH') )
 $app = getApp();
 
 /**
- * @global string       $post_type
- * @global PostType $post_type_object
  * @global WP_Post      $post
  */
-global $post_type, $post_type_object, $post;
+global $post;
+
+$post_type = get_current_screen()->post_type;
+$post_type_object = get_post_type_object( $post_type );
 
 wp_enqueue_script('post');
 $_wp_editor_expand = $_content_editor_dfw = false;
@@ -137,6 +138,8 @@ if ( $viewable ) {
 /* translators: Publish box date format, see https://secure.php.net/date */
 $scheduled_date = date_i18n( __( 'M j, Y @ H:i' ), strtotime( $post->post_date ) );
 
+$revision = $app['request']->query->get( 'revision' );
+
 $messages['post'] = array(
 	 0 => '', // Unused. Messages start at index 1.
 	 1 => __( 'Post updated.' ) . $view_post_link_html,
@@ -144,7 +147,7 @@ $messages['post'] = array(
 	 3 => __( 'Custom field deleted.' ),
 	 4 => __( 'Post updated.' ),
 	/* translators: %s: date and time of the revision */
-	 5 => isset($_GET['revision']) ? sprintf( __( 'Post restored to revision from %s.' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+	 5 => $revision ? sprintf( __( 'Post restored to revision from %s.' ), wp_post_revision_title( (int) $revision, false ) ) : false,
 	 6 => __( 'Post published.' ) . $view_post_link_html,
 	 7 => __( 'Post saved.' ),
 	 8 => __( 'Post submitted.' ) . $preview_post_link_html,
@@ -158,7 +161,7 @@ $messages['page'] = array(
 	 3 => __( 'Custom field deleted.' ),
 	 4 => __( 'Page updated.' ),
 	/* translators: %s: date and time of the revision */
-	 5 => isset($_GET['revision']) ? sprintf( __( 'Page restored to revision from %s.' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+	 5 => $revision ? sprintf( __( 'Page restored to revision from %s.' ), wp_post_revision_title( (int) $revision, false ) ) : false,
 	 6 => __( 'Page published.' ) . $view_page_link_html,
 	 7 => __( 'Page saved.' ),
 	 8 => __( 'Page submitted.' ) . $preview_page_link_html,
@@ -176,13 +179,15 @@ $messages['attachment'] = array_fill( 1, 10, __( 'Media file updated.' ) ); // H
  */
 $messages = apply_filters( 'post_updated_messages', $messages );
 
-$message = false;
-if ( isset($_GET['message']) ) {
-	$_GET['message'] = absint( $_GET['message'] );
-	if ( isset($messages[$post_type][$_GET['message']]) )
-		$message = $messages[$post_type][$_GET['message']];
-	elseif ( !isset($messages[$post_type]) && isset($messages['post'][$_GET['message']]) )
-		$message = $messages['post'][$_GET['message']];
+$message = $app['request']->query->get( 'message', false );
+
+if ( $message ) {
+	$message = (int) $message;
+	if ( isset( $messages[ $post_type ][ $message ] ) ) {
+		$message = $messages[ $post_type ][ $message ];
+	} elseif ( ! isset( $messages[ $post_type ] ) && isset( $messages['post'][ $message ] ) ) {
+		$message = $messages['post'][ $message ];
+	}
 }
 
 $notice = false;

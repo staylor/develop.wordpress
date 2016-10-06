@@ -86,10 +86,11 @@ class Walker_Nav_Menu_Edit extends Walker_Nav_Menu {
 			}
 		}
 
+		$edit_menu_item = $app['request']->query->get( 'edit-menu-item' );
 		$classes = array(
 			'menu-item menu-item-depth-' . $depth,
 			'menu-item-' . esc_attr( $item->object ),
-			'menu-item-edit-' . ( ( isset( $_GET['edit-menu-item'] ) && $item_id == $_GET['edit-menu-item'] ) ? 'active' : 'inactive'),
+			'menu-item-edit-' . ( ( isset( $edit_menu_item ) && $item_id == $edit_menu_item ) ? 'active' : 'inactive' ),
 		);
 
 		$title = $item->title;
@@ -145,7 +146,7 @@ class Walker_Nav_Menu_Edit extends Walker_Nav_Menu {
 							?>" class="item-move-down" aria-label="<?php esc_attr_e( 'Move down' ) ?>">&#8595;</a>
 						</span>
 						<a class="item-edit" id="edit-<?php echo $item_id; ?>" href="<?php
-							echo ( isset( $_GET['edit-menu-item'] ) && $item_id == $_GET['edit-menu-item'] ) ? admin_url( 'nav-menus.php' ) : add_query_arg( 'edit-menu-item', $item_id, remove_query_arg( $removed_args, admin_url( 'nav-menus.php#menu-item-settings-' . $item_id ) ) );
+							echo ( isset( $edit_menu_item ) && $item_id == $edit_menu_item ) ? admin_url( 'nav-menus.php' ) : add_query_arg( 'edit-menu-item', $item_id, remove_query_arg( $removed_args, admin_url( 'nav-menus.php#menu-item-settings-' . $item_id ) ) );
 						?>" aria-label="<?php esc_attr_e( 'Edit menu item' ); ?>"><?php _e( 'Edit' ); ?></a>
 					</span>
 				</div>

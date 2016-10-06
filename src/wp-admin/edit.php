@@ -6,7 +6,6 @@
  * @subpackage Administration
  */
 
-use WP\Post\PostType;
 use function WP\getApp;
 
 /** WordPress Administration Bootstrap */
@@ -27,15 +26,7 @@ if ( 'attachment' === $typenow ) {
 
 $app = getApp();
 $wpdb = $app['db'];
-
-/**
- * @global string       $post_type
- * @global PostType $post_type_object
- */
-global $post_type, $post_type_object;
-
-$post_type = $typenow;
-$post_type_object = get_post_type_object( $post_type );
+$post_type_object = get_post_type_object( $typenow );
 
 if ( ! $post_type_object )
 	wp_die( __( 'Invalid post type.' ) );
@@ -60,10 +51,10 @@ foreach ( array( 'p', 'attachment_id', 'page_id' ) as $_redirect ) {
 }
 unset( $_redirect );
 
-if ( 'post' != $post_type ) {
-	$parent_file = "edit.php?post_type=$post_type";
-	$submenu_file = "edit.php?post_type=$post_type";
-	$post_new_file = "post-new.php?post_type=$post_type";
+if ( 'post' !== $typenow ) {
+	$parent_file = "edit.php?post_type={$typenow}";
+	$submenu_file = "edit.php?post_type={$typenow}";
+	$post_new_file = "post-new.php?post_type={$typenow}";
 } else {
 	$parent_file = 'edit.php';
 	$submenu_file = 'edit.php';
@@ -87,7 +78,7 @@ if ( $doaction ) {
 		$post_status = preg_replace('/[^a-z0-9_-]+/i', '', $_REQUEST['post_status']);
 		// Validate the post status exists.
 		if ( get_post_status_object( $post_status ) ) {
-			$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type=%s AND post_status = %s", $post_type, $post_status ) );
+			$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type=%s AND post_status = %s", $typenow, $post_status ) );
 		}
 		$doaction = 'delete';
 	} elseif ( isset( $_REQUEST['media'] ) ) {
@@ -201,7 +192,7 @@ wp_enqueue_script('heartbeat');
 
 $title = $post_type_object->labels->name;
 
-if ( 'post' == $post_type ) {
+if ( 'post' == $typenow ) {
 	get_current_screen()->add_help_tab( array(
 	'id'		=> 'overview',
 	'title'		=> __('Overview'),
@@ -246,7 +237,7 @@ if ( 'post' == $post_type ) {
 	'<p>' . __('<a href="https://wordpress.org/support/">Support Forums</a>') . '</p>'
 	);
 
-} elseif ( 'page' == $post_type ) {
+} elseif ( 'page' == $typenow ) {
 	get_current_screen()->add_help_tab( array(
 	'id'		=> 'overview',
 	'title'		=> __('Overview'),
@@ -275,7 +266,7 @@ get_current_screen()->set_screen_reader_content( array(
 	'heading_list'       => $post_type_object->labels->items_list,
 ) );
 
-add_screen_option( 'per_page', array( 'default' => 20, 'option' => 'edit_' . $post_type . '_per_page' ) );
+add_screen_option( 'per_page', array( 'default' => 20, 'option' => 'edit_' . $typenow . '_per_page' ) );
 
 $bulk_counts = array(
 	'updated'   => isset( $_REQUEST['updated'] )   ? absint( $_REQUEST['updated'] )   : 0,
@@ -335,14 +326,14 @@ if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
 // If we have a bulk message to issue:
 $messages = array();
 foreach ( $bulk_counts as $message => $count ) {
-	if ( isset( $bulk_messages[ $post_type ][ $message ] ) )
-		$messages[] = sprintf( $bulk_messages[ $post_type ][ $message ], number_format_i18n( $count ) );
+	if ( isset( $bulk_messages[ $typenow ][ $message ] ) )
+		$messages[] = sprintf( $bulk_messages[ $typenow ][ $message ], number_format_i18n( $count ) );
 	elseif ( isset( $bulk_messages['post'][ $message ] ) )
 		$messages[] = sprintf( $bulk_messages['post'][ $message ], number_format_i18n( $count ) );
 
 	if ( $message == 'trashed' && isset( $_REQUEST['ids'] ) ) {
 		$ids = preg_replace( '/[^0-9,]/', '', $_REQUEST['ids'] );
-		$messages[] = '<a href="' . esc_url( wp_nonce_url( "edit.php?post_type=$post_type&doaction=undo&action=untrash&ids=$ids", "bulk-posts" ) ) . '">' . __('Undo') . '</a>';
+		$messages[] = '<a href="' . esc_url( wp_nonce_url( "edit.php?post_type={$typenow}&doaction=undo&action=untrash&ids=$ids", "bulk-posts" ) ) . '">' . __('Undo') . '</a>';
 	}
 }
 
@@ -360,7 +351,7 @@ $_SERVER['REQUEST_URI'] = remove_query_arg( array( 'locked', 'skipped', 'updated
 <?php $wp_list_table->search_box( $post_type_object->labels->search_items, 'post' ); ?>
 
 <input type="hidden" name="post_status" class="post_status_page" value="<?php echo !empty($_REQUEST['post_status']) ? esc_attr($_REQUEST['post_status']) : 'all'; ?>" />
-<input type="hidden" name="post_type" class="post_type_page" value="<?php echo $post_type; ?>" />
+<input type="hidden" name="post_type" class="post_type_page" value="<?php echo $typenow; ?>" />
 <?php if ( ! empty( $_REQUEST['show_sticky'] ) ) { ?>
 <input type="hidden" name="show_sticky" value="1" />
 <?php } ?>

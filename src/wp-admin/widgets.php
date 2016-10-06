@@ -25,8 +25,8 @@ if ( ! current_user_can( 'edit_theme_options' ) ) {
 $app = getApp();
 
 $widgets_access = get_user_setting( 'widgets_access' );
-if ( isset($_GET['widgets-access']) ) {
-	$widgets_access = 'on' == $_GET['widgets-access'] ? 'on' : 'off';
+if ( $app['request']->query->get( 'widgets-access' ) ) {
+	$widgets_access = 'on' === $app['request']->query->get( 'widgets-access' ) ? 'on' : 'off';
 	set_user_setting( 'widgets_access', $widgets_access );
 }
 
@@ -125,29 +125,31 @@ register_sidebar(array(
 
 retrieve_widgets();
 
+
 // We're saving a widget without js
-if ( isset($_POST['savewidget']) || isset($_POST['removewidget']) ) {
-	$widget_id = $_POST['widget-id'];
+if ( $app['request']->request->get( 'savewidget' ) || $app['request']->request->get( 'removewidget' ) ) {
+	$widget_id = $app['request']->request->get( 'widget-id' );
 	check_admin_referer("save-delete-widget-$widget_id");
 
-	$number = isset($_POST['multi_number']) ? (int) $_POST['multi_number'] : '';
+	$post_data = [];
+	$number = intval( $app['request']->request->get( 'multi_number' ) ?? '' );
 	if ( $number ) {
-		foreach ( $_POST as $key => $val ) {
+		foreach ( $app['request']->request->all() as $key => $val ) {
 			if ( is_array($val) && preg_match('/__i__|%i%/', key($val)) ) {
-				$_POST[$key] = array( $number => array_shift($val) );
+				$post_data[ $key ] = array( $number => array_shift($val) );
 				break;
 			}
 		}
 	}
 
-	$sidebar_id = $_POST['sidebar'];
-	$position = isset($_POST[$sidebar_id . '_position']) ? (int) $_POST[$sidebar_id . '_position'] - 1 : 0;
+	$sidebar_id = $post_data['sidebar'];
+	$position = isset( $post_data[ $sidebar_id . '_position' ] ) ? (int) $post_data[ $sidebar_id . '_position' ] - 1 : 0;
 
-	$id_base = $_POST['id_base'];
+	$id_base = $post_data['id_base'];
 	$sidebar = isset($sidebars_widgets[$sidebar_id]) ? $sidebars_widgets[$sidebar_id] : array();
 
 	// Delete.
-	if ( isset($_POST['removewidget']) && $_POST['removewidget'] ) {
+	if ( isset($post_data['removewidget']) && $post_data['removewidget'] ) {
 
 		if ( !in_array($widget_id, $sidebar, true) ) {
 			wp_redirect( admin_url('widgets.php?error=0') );
@@ -155,7 +157,7 @@ if ( isset($_POST['savewidget']) || isset($_POST['removewidget']) ) {
 		}
 
 		$sidebar = array_diff( $sidebar, array($widget_id) );
-		$_POST = array('sidebar' => $sidebar_id, 'widget-' . $id_base => array(), 'the-widget-id' => $widget_id, 'delete_widget' => '1');
+		$post_data = array('sidebar' => $sidebar_id, 'widget-' . $id_base => array(), 'the-widget-id' => $widget_id, 'delete_widget' => '1');
 
 		/**
 		 * Fires immediately after a widget has been marked for deletion.
@@ -169,7 +171,9 @@ if ( isset($_POST['savewidget']) || isset($_POST['removewidget']) ) {
 		do_action( 'delete_widget', $widget_id, $sidebar_id, $id_base );
 	}
 
-	$_POST['widget-id'] = $sidebar;
+	$post_data['widget-id'] = $sidebar;
+
+	$app['request']->request->replace( $post_data );
 
 	foreach ( (array) $app->widgets['updates'] as $name => $control ) {
 		if ( $name != $id_base || !is_callable($control['callback']) )
@@ -185,7 +189,7 @@ if ( isset($_POST['savewidget']) || isset($_POST['removewidget']) ) {
 	$sidebars_widgets[$sidebar_id] = $sidebar;
 
 	// Remove old position.
-	if ( !isset($_POST['delete_widget']) ) {
+	if ( !isset($post_data['delete_widget']) ) {
 		foreach ( $sidebars_widgets as $key => $sb ) {
 			if ( is_array($sb) )
 				$sidebars_widgets[$key] = array_diff( $sb, array($widget_id) );
@@ -221,20 +225,23 @@ if ( isset( $_POST['removeinactivewidgets'] ) ) {
 }
 
 // Output the widget form without js
-if ( isset($_GET['editwidget']) && $_GET['editwidget'] ) {
-	$widget_id = $_GET['editwidget'];
+if ( $app['request']->query->get( 'editwidget' ) ) {
+	$widget_id = $app['request']->query->get( 'editwidget' );
 
-	if ( isset($_GET['addnew']) ) {
+	if ( $app['request']->query->get( 'addnew' ) ) {
 		// Default to the first sidebar
 		$keys = array_keys( $app->sidebars['registered'] );
 		$sidebar = reset( $keys );
 
-		if ( isset($_GET['base']) && isset($_GET['num']) ) { // multi-widget
+		$num = $app['request']->query->get( 'num' );
+		$base = $app['request']->query->get( 'base' );
+
+		if ( $base && $num ) { // multi-widget
 			// Copy minimal info from an existing instance of this widget to a new instance
 			foreach ( $app->widgets['controls'] as $control ) {
-				if ( $_GET['base'] === $control['id_base'] ) {
+				if ( $base === $control['id_base'] ) {
 					$control_callback = $control['callback'];
-					$multi_number = (int) $_GET['num'];
+					$multi_number = (int) $num;
 					$control['params'][0]['number'] = -1;
 					$widget_id = $control['id'] = $control['id_base'] . '-' . $multi_number;
 					$app->widgets['controls'][$control['id']] = $control;
@@ -255,7 +262,7 @@ if ( isset($_GET['editwidget']) && $_GET['editwidget'] ) {
 		$name = esc_html( strip_tags($control['name']) );
 
 	if ( !isset($sidebar) )
-		$sidebar = isset($_GET['sidebar']) ? $_GET['sidebar'] : 'wp_inactive_widgets';
+		$sidebar = $app['request']->query->get( 'sidebar' ) ?? 'wp_inactive_widgets';
 
 	if ( !isset($multi_number) )
 		$multi_number = isset($control['params'][0]['number']) ? $control['params'][0]['number'] : '';
@@ -264,7 +271,7 @@ if ( isset($_GET['editwidget']) && $_GET['editwidget'] ) {
 
 	// Show the widget form.
 	$width = ' style="width:' . max($control['width'], 350) . 'px"';
-	$key = isset($_GET['key']) ? (int) $_GET['key'] : 0;
+	$key = intval( $app['request']->query->get( 'key' ) ?? 0 );
 
 	require_once( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 	<div class="wrap">
@@ -295,8 +302,9 @@ if ( isset($_GET['editwidget']) && $_GET['editwidget'] ) {
 				$sidebars_widgets[$sbname] = array();
 			} else {
 				$j = count($sidebars_widgets[$sbname]);
-				if ( isset($_GET['addnew']) || !in_array($widget_id, $sidebars_widgets[$sbname], true) )
+				if ( $app['request']->query->get( 'addnew' ) || !in_array($widget_id, $sidebars_widgets[$sbname], true) ) {
 					$j++;
+				}
 			}
 			$selected = '';
 			echo "\t\t<select name='{$sbname}_position'>\n";
@@ -315,7 +323,7 @@ if ( isset($_GET['editwidget']) && $_GET['editwidget'] ) {
 
 	<div class="widget-control-actions">
 <?php
-	if ( isset($_GET['addnew']) ) { ?>
+	if ( $app['request']->query->get( 'addnew' ) ) { ?>
 	<a href="widgets.php" class="button alignleft"><?php _e('Cancel'); ?></a>
 <?php
 	} else {
@@ -367,11 +375,15 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 ?>
 </h1>
 
-<?php if ( isset($_GET['message']) && isset($messages[$_GET['message']]) ) { ?>
-<div id="message" class="updated notice is-dismissible"><p><?php echo $messages[$_GET['message']]; ?></p></div>
+<?php
+$message = $app['request']->query->get( 'message' );
+$error = $app['request']->query->get( 'error' );
+
+if ( $message && isset( $messages[ $message ] ) ) { ?>
+<div id="message" class="updated notice is-dismissible"><p><?php echo $messages[ $message ]; ?></p></div>
 <?php } ?>
-<?php if ( isset($_GET['error']) && isset($errors[$_GET['error']]) ) { ?>
-<div id="message" class="error"><p><?php echo $errors[$_GET['error']]; ?></p></div>
+<?php if ( $error && isset( $errors[ $error ] ) ) { ?>
+<div id="message" class="error"><p><?php echo $errors[ $error ]; ?></p></div>
 <?php } ?>
 
 <?php

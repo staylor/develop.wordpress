@@ -20,8 +20,9 @@ $wpdb = $app['db'];
 $mode = get_user_option( 'media_library_mode', get_current_user_id() ) ? get_user_option( 'media_library_mode', get_current_user_id() ) : 'grid';
 $modes = array( 'grid', 'list' );
 
-if ( isset( $_GET['mode'] ) && in_array( $_GET['mode'], $modes ) ) {
-	$mode = $_GET['mode'];
+$_mode = $app['request']->query->get( 'mode' );
+if ( $_mode && in_array( $_mode, $modes ) ) {
+	$mode = $_mode;
 	update_user_option( get_current_user_id(), 'media_library_mode', $mode );
 }
 
@@ -32,7 +33,7 @@ if ( 'grid' === $mode ) {
 
 	remove_action( 'admin_head', 'wp_admin_canonical_url' );
 
-	$q = $_GET;
+	$q = $app['request']->query->all();
 	// let JS handle this
 	unset( $q['s'] );
 	$vars = wp_edit_attachments_query_vars( $q );
@@ -186,8 +187,8 @@ if ( $doaction ) {
 
 	wp_redirect( $location );
 	exit;
-} elseif ( ! empty( $_GET['_wp_http_referer'] ) ) {
-	 wp_redirect( remove_query_arg( array( '_wp_http_referer', '_wpnonce' ), wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+} elseif ( $app['request']->query->get( '_wp_http_referer' ) ) {
+	 wp_redirect( remove_query_arg( array( '_wp_http_referer', '_wpnonce' ), wp_unslash( $app['request.uri'] ) ) );
 	 exit;
 }
 
