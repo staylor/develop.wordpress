@@ -159,5 +159,41 @@ class Provider implements ServiceProviderInterface {
 
 			return $pagenow;
 		};
+
+		$app['typenow'] = $app->factory( function ( $app ) {
+			if ( $app->current_screen ) {
+				return $app->current_screen->post_type;
+			}
+
+			$typenow = '';
+			if ( $app['request']->request->get( 'post_type' ) ) {
+				$typenow = $app['request']->request->get( 'post_type' );
+			} elseif ( $app['request']->query->get( 'post_type' ) ) {
+				$typenow = $app['request']->query->get( 'post_type' );
+			}
+
+			if ( $typenow && ! post_type_exists( $typenow ) ) {
+				$typenow = '';
+			}
+			return $typenow;
+		} );
+
+		$app['taxnow'] = $app->factory( function ( $app ) {
+			if ( $app->current_screen ) {
+				return $app->current_screen->taxonomy;
+			}
+
+			$taxnow = '';
+			if ( $app['request']->request->get( 'taxonomy' ) ) {
+				$taxnow = $app['request']->request->get( 'taxonomy' );
+			} elseif ( $app['request']->query->get( 'taxonomy' ) ) {
+				$taxnow = $app['request']->query->get( 'taxonomy' );
+			}
+
+			if ( $taxnow && ! taxonomy_exists( $taxnow ) ) {
+				$taxnow = '';
+			}
+			return $taxnow;
+		} );
 	}
 }

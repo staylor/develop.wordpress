@@ -108,12 +108,12 @@ wp_enqueue_script( 'common' );
  * @global array  $wp_importers
  * @global string $hook_suffix
  * @global string $plugin_page
- * @global string $typenow
- * @global string $taxnow
  */
-global $wp_importers, $hook_suffix, $plugin_page, $typenow, $taxnow;
+global $wp_importers, $hook_suffix, $plugin_page;
 
 $pagenow = $app['pagenow'];
+$typenow = $app['typenow'];
+$taxnow = $app['taxnow'];
 
 $page_hook = null;
 
@@ -123,16 +123,6 @@ if ( isset($_GET['page']) ) {
 	$plugin_page = wp_unslash( $_GET['page'] );
 	$plugin_page = plugin_basename($plugin_page);
 }
-
-if ( isset( $_REQUEST['post_type'] ) && post_type_exists( $_REQUEST['post_type'] ) )
-	$typenow = $_REQUEST['post_type'];
-else
-	$typenow = '';
-
-if ( isset( $_REQUEST['taxonomy'] ) && taxonomy_exists( $_REQUEST['taxonomy'] ) )
-	$taxnow = $_REQUEST['taxonomy'];
-else
-	$taxnow = '';
 
 if ( WP_NETWORK_ADMIN )
 	require(ABSPATH . 'wp-admin/network/menu.php');

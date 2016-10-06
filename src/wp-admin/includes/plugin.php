@@ -1501,7 +1501,6 @@ function menu_page_url($menu_slug, $echo = true) {
  * @global string $parent_file
  * @global array $menu
  * @global array $submenu
- * @global string $typenow
  * @global string $plugin_page
  * @global array $_wp_real_parent_file
  * @global array $_wp_menu_nopriv
@@ -1510,8 +1509,10 @@ function menu_page_url($menu_slug, $echo = true) {
 function get_admin_page_parent( $parent = '' ) {
 	$app = getApp();
 
-	global $parent_file, $menu, $submenu, $typenow,
+	global $parent_file, $menu, $submenu,
 		$plugin_page, $_wp_real_parent_file, $_wp_menu_nopriv, $_wp_submenu_nopriv;
+
+	$typenow = $app['typenow'];
 
 	if ( !empty ( $parent ) && 'admin.php' != $parent ) {
 		if ( isset( $_wp_real_parent_file[$parent] ) )
@@ -1571,21 +1572,22 @@ function get_admin_page_parent( $parent = '' ) {
  * @global array $menu
  * @global array $submenu
  * @global string $plugin_page
- * @global string $typenow
  */
 function get_admin_page_title() {
-	global $title, $menu, $submenu, $plugin_page, $typenow;
+	global $title, $menu, $submenu, $plugin_page;
 
 	$app = getApp();
 
 	if ( ! empty ( $title ) )
 		return $title;
 
+	$typenow = $app['typenow'];
+
 	$hook = get_plugin_page_hook( $plugin_page, $app['pagenow'] );
 
 	$parent = $parent1 = get_admin_page_parent();
 
-	if ( empty ( $parent) ) {
+	if ( empty( $parent ) ) {
 		foreach ( (array)$menu as $menu_array ) {
 			if ( isset( $menu_array[3] ) ) {
 				if ( $menu_array[2] == $app['pagenow'] ) {
