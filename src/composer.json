@@ -70,6 +70,7 @@
   "config": {
     "classmap-authoritative": true,
     "optimize-autoloader": true,
+    "autoloader-suffix": "WPd02c56a2fedd820876e05ce9580b834e",
     "vendor-dir": "wp-vendor"
   }
 }
