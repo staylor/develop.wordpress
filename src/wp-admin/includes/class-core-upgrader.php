@@ -60,7 +60,7 @@ class Core_Upgrader extends WP_Upgrader {
 	 * }
 	 * @return null|false|WP_Error False or WP_Error on failure, null on success.
 	 */
-	public function upgrade( $current, $args = array() ) {
+	public function upgrade( $current, $args = [] ) {
 		global $wp_filesystem;
 
 		$start_time = time();

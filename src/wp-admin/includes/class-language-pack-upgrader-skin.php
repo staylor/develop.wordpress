@@ -25,7 +25,7 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @param array $args
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		$defaults = array( 'url' => '', 'nonce' => '', 'title' => __( 'Update Translations' ), 'skip_header_footer' => false );
 		$args = wp_parse_args( $args, $defaults );
 		if ( $args['skip_header_footer'] ) {
@@ -69,7 +69,7 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 	 */
 	public function bulk_footer() {
 		$this->decrement_update_count( 'translation' );
-		$update_actions = array();
+		$update_actions = [];
 		$update_actions['updates_page'] = '<a href="' . self_admin_url( 'update-core.php' ) . '" target="_parent">' . __( 'Return to WordPress Updates page' ) . '</a>';
 
 		/**

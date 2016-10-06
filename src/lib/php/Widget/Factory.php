@@ -25,7 +25,7 @@ class Factory {
 	 * @access public
 	 * @var array
 	 */
-	public $widgets = array();
+	public $widgets = [];
 
 	/**
 	 * PHP5 constructor.
@@ -49,7 +49,7 @@ class Factory {
 	 *
 	 * @see WP_Widget_Factory::hash_object()
 	 */
-	private $hashed_class_counts = array();
+	private $hashed_class_counts = [];
 
 	/**
 	 * Hashes an object, doing fallback of `spl_object_hash()` if not available.

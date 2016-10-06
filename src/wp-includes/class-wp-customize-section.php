@@ -158,7 +158,7 @@ class WP_Customize_Section {
 	 * @param string               $id      An specific ID of the section.
 	 * @param array                $args    Section arguments.
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	public function __construct( $manager, $id, $args = [] ) {
 		$keys = array_keys( get_object_vars( $this ) );
 		foreach ( $keys as $key ) {
 			if ( isset( $args[ $key ] ) ) {
@@ -174,7 +174,7 @@ class WP_Customize_Section {
 		self::$instance_count += 1;
 		$this->instance_number = self::$instance_count;
 
-		$this->controls = array(); // Users cannot customize the $controls array.
+		$this->controls = []; // Users cannot customize the $controls array.
 	}
 
 	/**

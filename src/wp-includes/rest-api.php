@@ -29,7 +29,7 @@ define( 'REST_API_VERSION', '2.0' );
  *                          false merges (with newer overriding if duplicate keys exist). Default false.
  * @return bool True on success, false on error.
  */
-function register_rest_route( $namespace, $route, $args = array(), $override = false ) {
+function register_rest_route( $namespace, $route, $args = [], $override = false ) {
 	$app = getApp();
 	$wp_rest_server = $app['rest.server'];
 
@@ -54,7 +54,7 @@ function register_rest_route( $namespace, $route, $args = array(), $override = f
 	$defaults = array(
 		'methods'         => 'GET',
 		'callback'        => null,
-		'args'            => array(),
+		'args'            => [],
 	);
 	foreach ( $args as $key => &$arg_group ) {
 		if ( ! is_numeric( $arg_group ) ) {
@@ -384,7 +384,7 @@ function rest_handle_options_request( $response, $handler, $request ) {
 	}
 
 	$response = new WP_REST_Response();
-	$data = array();
+	$data = [];
 
 	foreach ( $handler->get_routes() as $route => $endpoints ) {
 		$match = preg_match( '@^' . $route . '$@i', $request->get_route() );
@@ -421,7 +421,7 @@ function rest_send_allow_header( $response, $server, $request ) {
 
 	$routes = $server->get_routes();
 
-	$allowed_methods = array();
+	$allowed_methods = [];
 
 	// Get the allowed methods across the routes.
 	foreach ( $routes[ $matched_route ] as $_handler ) {

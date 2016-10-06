@@ -117,7 +117,7 @@ function remove_shortcode($tag) {
  */
 function remove_all_shortcodes() {
 	$app = getApp();
-	$app->shortcode_tags = array();
+	$app->shortcode_tags = [];
 }
 
 /**
@@ -390,7 +390,7 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 		// Get element name
 		$front = array_shift( $attributes );
 		$back = array_pop( $attributes );
-		$matches = array();
+		$matches = [];
 		preg_match('%[a-zA-Z0-9]+%', $front, $matches);
 		$elname = $matches[0];
 
@@ -478,7 +478,7 @@ function get_shortcode_atts_regex() {
  *                      All other matches are checked for not empty().
  */
 function shortcode_parse_atts($text) {
-	$atts = array();
+	$atts = [];
 	$pattern = get_shortcode_atts_regex();
 	$text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
 	if ( preg_match_all($pattern, $text, $match, PREG_SET_ORDER) ) {
@@ -528,7 +528,7 @@ function shortcode_parse_atts($text) {
  */
 function shortcode_atts( $pairs, $atts, $shortcode = '' ) {
 	$atts = (array)$atts;
-	$out = array();
+	$out = [];
 	foreach ($pairs as $name => $default) {
 		if ( array_key_exists($name, $atts) )
 			$out[$name] = $atts[$name];

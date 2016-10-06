@@ -35,7 +35,7 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	 *
 	 * @param array $args Options for the upgrader, see WP_Upgrader_Skin::__construct().
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		parent::__construct( $args );
 
 		$this->errors = new WP_Error();
@@ -62,7 +62,7 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	 * @return string Error messages during an upgrade.
 	 */
 	public function get_error_messages() {
-		$messages = array();
+		$messages = [];
 
 		foreach ( $this->errors->get_error_codes() as $error_code ) {
 			if ( $this->errors->get_error_data( $error_code ) && is_string( $this->errors->get_error_data( $error_code ) ) ) {

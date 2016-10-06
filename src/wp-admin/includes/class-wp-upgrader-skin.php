@@ -27,13 +27,13 @@ class WP_Upgrader_Skin {
 	 * @var string|bool|WP_Error
 	 */
 	public $result = false;
-	public $options = array();
+	public $options = [];
 
 	/**
 	 *
 	 * @param array $args
 	 */
-	public function __construct($args = array()) {
+	public function __construct($args = []) {
 		$defaults = array( 'url' => '', 'nonce' => '', 'title' => '', 'context' => false );
 		$this->options = wp_parse_args($args, $defaults);
 	}
@@ -90,7 +90,7 @@ class WP_Upgrader_Skin {
 			$url = wp_nonce_url($url, $this->options['nonce']);
 		}
 
-		$extra_fields = array();
+		$extra_fields = [];
 
 		return request_filesystem_credentials( $url, '', $error, $context, $extra_fields, $allow_relaxed_file_ownership );
 	}

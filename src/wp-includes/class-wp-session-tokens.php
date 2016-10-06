@@ -139,7 +139,7 @@ abstract class WP_Session_Tokens {
 		 * @param array $session Array of extra data.
 		 * @param int   $user_id User ID.
 		 */
-		$session = apply_filters( 'attach_session_information', array(), $this->user_id );
+		$session = apply_filters( 'attach_session_information', [], $this->user_id );
 		$session['expiration'] = $expiration;
 
 		// IP address.

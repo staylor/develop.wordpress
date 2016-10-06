@@ -756,7 +756,7 @@ function wp_save_image( $post_id ) {
 	}
 
 	if ( !is_array($backup_sizes) )
-		$backup_sizes = array();
+		$backup_sizes = [];
 
 	// Generate new filename.
 	$path = get_attached_file( $post_id );
@@ -845,7 +845,7 @@ function wp_save_image( $post_id ) {
 	}
 
 	if ( isset( $sizes ) ) {
-		$_sizes = array();
+		$_sizes = [];
 
 		foreach ( $sizes as $size ) {
 			$tag = false;

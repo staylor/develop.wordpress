@@ -27,7 +27,7 @@ class WP_Links_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		parent::__construct( array(
 			'plural' => 'bookmarks',
 			'screen' => isset( $args['screen'] ) ? $args['screen'] : null,
@@ -80,7 +80,7 @@ class WP_Links_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
-		$actions = array();
+		$actions = [];
 		$actions['delete'] = __( 'Delete' );
 
 		return $actions;
@@ -218,7 +218,7 @@ class WP_Links_List_Table extends WP_List_Table {
 	public function column_categories( $link ) {
 		global $cat_id;
 
-		$cat_names = array();
+		$cat_names = [];
 		foreach ( $link->link_category as $category ) {
 			$cat = get_term( $category, 'link_category', OBJECT, 'display' );
 			if ( is_wp_error( $cat ) ) {
@@ -325,7 +325,7 @@ class WP_Links_List_Table extends WP_List_Table {
 
 		$edit_link = get_edit_bookmark_link( $link );
 
-		$actions = array();
+		$actions = [];
 		$actions['edit'] = '<a href="' . $edit_link . '">' . __('Edit') . '</a>';
 		$actions['delete'] = "<a class='submitdelete' href='" . wp_nonce_url("link.php?action=delete&amp;link_id=$link->link_id", 'delete-bookmark_' . $link->link_id) . "' onclick=\"if ( confirm( '" . esc_js(sprintf(__("You are about to delete this link '%s'\n  'Cancel' to stop, 'OK' to delete."), $link->link_name)) . "' ) ) { return true;}return false;\">" . __('Delete') . "</a>";
 		return $this->row_actions( $actions );

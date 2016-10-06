@@ -299,7 +299,7 @@ function refresh_blog_details( $blog_id = 0 ) {
  * @param array $details Array of details keyed by blogs table field names.
  * @return bool True if update succeeds, false otherwise.
  */
-function update_blog_details( $blog_id, $details = array() ) {
+function update_blog_details( $blog_id, $details = [] ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -318,7 +318,7 @@ function update_blog_details( $blog_id, $details = array() ) {
 	$details = array_merge($current_details, $details);
 	$details['last_updated'] = current_time('mysql', true);
 
-	$update_details = array();
+	$update_details = [];
 	$fields = array( 'site_id', 'domain', 'path', 'registered', 'last_updated', 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id');
 	foreach ( array_intersect( array_keys( $details ), $fields ) as $field ) {
 		if ( 'path' === $field ) {
@@ -601,7 +601,7 @@ function update_site_cache( $sites ) {
  * }
  * @return array List of sites.
  */
-function get_sites( $args = array() ) {
+function get_sites( $args = [] ) {
 	$query = new WP_Site_Query();
 
 	return $query->query( $args );
@@ -1062,7 +1062,7 @@ function get_last_updated( $deprecated = '', $start = 0, $quantity = 40 ) {
  *                           for information on accepted arguments. Default empty array.
  * @return int|array List of networks or number of found networks if `$count` argument is true.
  */
-function get_networks( $args = array() ) {
+function get_networks( $args = [] ) {
 	$query = new WP_Network_Query();
 
 	return $query->query( $args );

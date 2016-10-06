@@ -251,7 +251,7 @@ function get_terms_to_edit( $post_id, $taxonomy = 'post_tag' ) {
 	if ( is_wp_error( $terms ) ) {
 		return $terms;
 	}
-	$term_names = array();
+	$term_names = [];
 	foreach ( $terms as $term ) {
 		$term_names[] = $term->name;
 	}

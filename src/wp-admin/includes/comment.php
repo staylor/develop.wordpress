@@ -150,7 +150,7 @@ function get_pending_comments_num( $post_id ) {
 			return absint($pending[0]['num_comments']);
 	}
 
-	$pending_keyed = array();
+	$pending_keyed = [];
 
 	// Default to zero pending for all posts in request
 	foreach ( $post_id_array as $id )

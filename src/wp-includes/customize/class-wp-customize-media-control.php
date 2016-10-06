@@ -42,7 +42,7 @@ class WP_Customize_Media_Control extends WP_Customize_Control {
 	 * @access public
 	 * @var array
 	 */
-	public $button_labels = array();
+	public $button_labels = [];
 
 	/**
 	 * Constructor.
@@ -54,7 +54,7 @@ class WP_Customize_Media_Control extends WP_Customize_Control {
 	 * @param string               $id      Control ID.
 	 * @param array                $args    Optional. Arguments to override class property defaults.
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	public function __construct( $manager, $id, $args = [] ) {
 		parent::__construct( $manager, $id, $args );
 
 		if ( ! ( $this instanceof WP_Customize_Image_Control ) ) {

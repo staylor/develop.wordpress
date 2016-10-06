@@ -144,8 +144,8 @@ class WP_Site_Icon {
 	 * @param array $sizes List of additional sizes.
 	 * @return array Additional image sizes.
 	 */
-	public function additional_sizes( $sizes = array() ) {
-		$only_crop_sizes = array();
+	public function additional_sizes( $sizes = [] ) {
+		$only_crop_sizes = [];
 
 		/**
 		 * Filters the different dimensions that a site icon is saved in.
@@ -189,7 +189,7 @@ class WP_Site_Icon {
 	 * @param array $sizes List of image sizes.
 	 * @return array List of intermediate image sizes.
 	 */
-	public function intermediate_image_sizes( $sizes = array() ) {
+	public function intermediate_image_sizes( $sizes = [] ) {
 		/** This filter is documented in wp-admin/includes/class-wp-site-icon.php */
 		$this->site_icon_sizes = apply_filters( 'site_icon_image_sizes', $this->site_icon_sizes );
 		foreach ( $this->site_icon_sizes as $size ) {

@@ -85,7 +85,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $settings = array();
+	protected $settings = [];
 
 	/**
 	 * Sorted top-level instances of WP_Customize_Panel and WP_Customize_Section.
@@ -94,7 +94,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $containers = array();
+	protected $containers = [];
 
 	/**
 	 * Registered instances of WP_Customize_Panel.
@@ -103,7 +103,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $panels = array();
+	protected $panels = [];
 
 	/**
 	 * List of core components.
@@ -121,7 +121,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $sections = array();
+	protected $sections = [];
 
 	/**
 	 * Registered instances of WP_Customize_Control.
@@ -130,7 +130,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $controls = array();
+	protected $controls = [];
 
 	/**
 	 * Return value of check_ajax_referer() in customize_preview_init() method.
@@ -148,7 +148,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $registered_panel_types = array();
+	protected $registered_panel_types = [];
 
 	/**
 	 * Section types that may be rendered from JS templates.
@@ -157,7 +157,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $registered_section_types = array();
+	protected $registered_section_types = [];
 
 	/**
 	 * Control types that may be rendered from JS templates.
@@ -166,7 +166,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $registered_control_types = array();
+	protected $registered_control_types = [];
 
 	/**
 	 * Initial URL being previewed.
@@ -193,7 +193,7 @@ class Manager {
 	 * @access protected
 	 * @var array
 	 */
-	protected $autofocus = array();
+	protected $autofocus = [];
 
 	/**
 	 * Unsanitized values for Customize Settings parsed from $_POST['customized'].
@@ -601,11 +601,11 @@ class Manager {
 				$this->_post_values = json_decode( wp_unslash( $_POST['customized'] ), true );
 			}
 			if ( empty( $this->_post_values ) ) { // if not isset or if JSON error
-				$this->_post_values = array();
+				$this->_post_values = [];
 			}
 		}
 		if ( empty( $this->_post_values ) ) {
-			return array();
+			return [];
 		} else {
 			return $this->_post_values;
 		}
@@ -794,9 +794,9 @@ class Manager {
 				'self' => empty( $app['request.uri'] ) ? home_url( '/' ) : esc_url_raw( wp_unslash( $app['request.uri'] ) ),
 			),
 			'channel' => wp_unslash( $_POST['customize_messenger_channel'] ),
-			'activePanels' => array(),
-			'activeSections' => array(),
-			'activeControls' => array(),
+			'activePanels' => [],
+			'activeSections' => [],
+			'activeControls' => [],
 			'settingValidities' => $exported_setting_validities,
 			'nonce' => $this->get_nonces(),
 			'l10n' => array(
@@ -960,7 +960,7 @@ class Manager {
 	 * @return array Mapping of setting IDs to return value of validate method calls, either `true` or `WP_Error`.
 	 */
 	public function validate_setting_values( $setting_values ) {
-		$validities = array();
+		$validities = [];
 		foreach ( $setting_values as $setting_id => $unsanitized_value ) {
 			$setting = $this->get_setting( $setting_id );
 			if ( ! $setting || is_null( $unsanitized_value ) ) {
@@ -999,7 +999,7 @@ class Manager {
 	 */
 	public function prepare_setting_validity_for_js( $validity ) {
 		if ( is_wp_error( $validity ) ) {
-			$notification = array();
+			$notification = [];
 			foreach ( $validity->errors as $error_code => $error_messages ) {
 				$notification[ $error_code ] = array(
 					'message' => join( ' ', $error_messages ),
@@ -1132,7 +1132,7 @@ class Manager {
 	 *                                          constructor.
 	 * @return WP_Customize_Setting             The instance of the setting that was added.
 	 */
-	public function add_setting( $id, $args = array() ) {
+	public function add_setting( $id, $args = [] ) {
 		if ( $id instanceof \WP_Customize_Setting ) {
 			$setting = $id;
 		} else {
@@ -1167,7 +1167,7 @@ class Manager {
 	 * @return array The WP_Customize_Setting objects added.
 	 */
 	public function add_dynamic_settings( $setting_ids ) {
-		$new_settings = array();
+		$new_settings = [];
 		foreach ( $setting_ids as $setting_id ) {
 			// Skip settings already created
 			if ( $this->get_setting( $setting_id ) ) {
@@ -1250,7 +1250,7 @@ class Manager {
 	 *
 	 * @return WP_Customize_Panel             The instance of the panel that was added.
 	 */
-	public function add_panel( $id, $args = array() ) {
+	public function add_panel( $id, $args = [] ) {
 		if ( $id instanceof \WP_Customize_Panel ) {
 			$panel = $id;
 		} else {
@@ -1322,7 +1322,7 @@ class Manager {
 	 */
 	public function render_panel_templates() {
 		foreach ( $this->registered_panel_types as $panel_type ) {
-			$panel = new $panel_type( $this, 'temp', array() );
+			$panel = new $panel_type( $this, 'temp', [] );
 			$panel->print_template();
 		}
 	}
@@ -1339,7 +1339,7 @@ class Manager {
 	 *
 	 * @return WP_Customize_Section             The instance of the section that was added.
 	 */
-	public function add_section( $id, $args = array() ) {
+	public function add_section( $id, $args = [] ) {
 		if ( $id instanceof \WP_Customize_Section ) {
 			$section = $id;
 		} else {
@@ -1398,7 +1398,7 @@ class Manager {
 	 */
 	public function render_section_templates() {
 		foreach ( $this->registered_section_types as $section_type ) {
-			$section = new $section_type( $this, 'temp', array() );
+			$section = new $section_type( $this, 'temp', [] );
 			$section->print_template();
 		}
 	}
@@ -1415,7 +1415,7 @@ class Manager {
 	 *                                          constructor.
 	 * @return WP_Customize_Control             The instance of the control that was added.
 	 */
-	public function add_control( $id, $args = array() ) {
+	public function add_control( $id, $args = [] ) {
 		if ( $id instanceof \WP_Customize_Control ) {
 			$control = $id;
 		} else {
@@ -1474,7 +1474,7 @@ class Manager {
 	public function render_control_templates() {
 		foreach ( $this->registered_control_types as $control_type ) {
 			$control = new $control_type( $this, 'temp', array(
-				'settings' => array(),
+				'settings' => [],
 			) );
 			$control->print_template();
 		}
@@ -1517,7 +1517,7 @@ class Manager {
 	 */
 	public function prepare_controls() {
 
-		$controls = array();
+		$controls = [];
 		uasort( $this->controls, array( $this, '_cmp_priority' ) );
 
 		foreach ( $this->controls as $id => $control ) {
@@ -1532,7 +1532,7 @@ class Manager {
 
 		// Prepare sections.
 		uasort( $this->sections, array( $this, '_cmp_priority' ) );
-		$sections = array();
+		$sections = [];
 
 		foreach ( $this->sections as $section ) {
 			if ( ! $section->check_capabilities() ) {
@@ -1555,7 +1555,7 @@ class Manager {
 
 		// Prepare panels.
 		uasort( $this->panels, array( $this, '_cmp_priority' ) );
-		$panels = array();
+		$panels = [];
 
 		foreach ( $this->panels as $panel ) {
 			if ( ! $panel->check_capabilities() ) {
@@ -1809,8 +1809,8 @@ class Manager {
 				'mobile' => wp_is_mobile(),
 				'ios'    => $this->is_ios(),
 			),
-			'panels'   => array(),
-			'sections' => array(),
+			'panels'   => [],
+			'sections' => [],
 			'nonce'    => $this->get_nonces(),
 			'autofocus' => $this->get_autofocus(),
 			'documentTitleTmpl' => $this->get_document_title_template(),

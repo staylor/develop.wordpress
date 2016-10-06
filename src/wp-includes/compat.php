@@ -334,7 +334,7 @@ if ( ! function_exists( 'array_replace_recursive' ) ) :
 	 *
 	 * @return array
 	 */
-	function array_replace_recursive( $base = array(), $replacements = array() ) {
+	function array_replace_recursive( $base = [], $replacements = [] ) {
 		foreach ( array_slice( func_get_args(), 1 ) as $replacements ) {
 			$bref_stack = array( &$base );
 			$head_stack = array( $replacements );
@@ -367,7 +367,7 @@ endif;
 
 // SPL can be disabled on PHP 5.2
 if ( ! function_exists( 'spl_autoload_register' ) ):
-	$_wp_spl_autoloaders = array();
+	$_wp_spl_autoloaders = [];
 
 	/**
 	 * Autoloader compatibility callback.

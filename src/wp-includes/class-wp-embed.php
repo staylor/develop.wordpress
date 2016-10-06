@@ -9,11 +9,11 @@ use function WP\getApp;
  * @since 2.9.0
  */
 class WP_Embed {
-	public $handlers = array();
+	public $handlers = [];
 	public $post_ID;
 	public $usecache = true;
 	public $linkifunknown = true;
-	public $last_attr = array();
+	public $last_attr = [];
 	public $last_url = '';
 
 	/**
@@ -356,7 +356,7 @@ class WP_Embed {
 	public function autoembed_callback( $match ) {
 		$oldval = $this->linkifunknown;
 		$this->linkifunknown = false;
-		$return = $this->shortcode( array(), $match[2] );
+		$return = $this->shortcode( [], $match[2] );
 		$this->linkifunknown = $oldval;
 
 		return $match[1] . $return . $match[3];

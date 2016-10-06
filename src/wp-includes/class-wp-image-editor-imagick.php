@@ -45,7 +45,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @param array $args
 	 * @return bool
 	 */
-	public static function test( $args = array() ) {
+	public static function test( $args = [] ) {
 
 		// First, test Imagick's extension and classes.
 		if ( ! extension_loaded( 'imagick' ) || ! class_exists( 'Imagick', false ) || ! class_exists( 'ImagickPixel', false ) )
@@ -427,7 +427,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @return array An array of resized images' metadata by size.
 	 */
 	public function multi_resize( $sizes ) {
-		$metadata = array();
+		$metadata = [];
 		$orig_size = $this->size;
 		$orig_image = $this->image->getImage();
 

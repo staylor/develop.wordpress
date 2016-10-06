@@ -41,7 +41,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @param array $args
 	 * @return bool
 	 */
-	public static function test( $args = array() ) {
+	public static function test( $args = [] ) {
 		if ( ! extension_loaded('gd') || ! function_exists('gd_info') )
 			return false;
 
@@ -221,7 +221,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @return array An array of resized images' metadata by size.
 	 */
 	public function multi_resize( $sizes ) {
-		$metadata = array();
+		$metadata = [];
 		$orig_size = $this->size;
 
 		foreach ( $sizes as $size => $size_data ) {

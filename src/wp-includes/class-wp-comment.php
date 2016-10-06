@@ -278,7 +278,7 @@ final class WP_Comment {
 	 * }
 	 * @return array Array of `WP_Comment` objects.
 	 */
-	public function get_children( $args = array() ) {
+	public function get_children( $args = [] ) {
 		$defaults = array(
 			'format' => 'tree',
 			'status' => 'all',
@@ -291,14 +291,14 @@ final class WP_Comment {
 
 		if ( is_null( $this->children ) ) {
 			if ( $this->populated_children ) {
-				$this->children = array();
+				$this->children = [];
 			} else {
 				$this->children = get_comments( $_args );
 			}
 		}
 
 		if ( 'flat' === $_args['format'] ) {
-			$children = array();
+			$children = [];
 			foreach ( $this->children as $child ) {
 				$child_args = $_args;
 				$child_args['format'] = 'flat';

@@ -22,7 +22,7 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @param array $args
 	 */
-	public function __construct($args = array()) {
+	public function __construct($args = []) {
 		$defaults = array( 'url' => '', 'theme' => '', 'nonce' => '', 'title' => __('Update Theme') );
 		$args = wp_parse_args($args, $defaults);
 
@@ -37,7 +37,7 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 	public function after() {
 		$this->decrement_update_count( 'theme' );
 
-		$update_actions = array();
+		$update_actions = [];
 		if ( ! empty( $this->upgrader->result['destination_name'] ) && $theme_info = $this->upgrader->theme_info() ) {
 			$name       = $theme_info->display('Name');
 			$stylesheet = $this->upgrader->result['destination_name'];

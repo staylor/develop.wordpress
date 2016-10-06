@@ -112,7 +112,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
-		$actions = array();
+		$actions = [];
 		if ( current_user_can( 'delete_users' ) )
 			$actions['delete'] = __( 'Delete' );
 		$actions['spam'] = _x( 'Mark as Spam', 'user' );
@@ -141,7 +141,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 		$total_admins = count( $super_admins );
 
 		$class = $role != 'super' ? ' class="current"' : '';
-		$role_links = array();
+		$role_links = [];
 		$role_links['all'] = "<a href='" . network_admin_url('users.php') . "'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users, 'users' ), number_format_i18n( $total_users ) ) . '</a>';
 		$class = $role === 'super' ? ' class="current"' : '';
 		$role_links['super'] = "<a href='" . network_admin_url('users.php?role=super') . "'$class>" . sprintf( _n( 'Super Admin <span class="count">(%s)</span>', 'Super Admins <span class="count">(%s)</span>', $total_admins ), number_format_i18n( $total_admins ) ) . '</a>';
@@ -336,7 +336,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 			echo '<span class="site-' . $val->site_id . '" >';
 			echo '<a href="'. esc_url( network_admin_url( 'site-info.php?id=' . $val->userblog_id ) ) .'">' . str_replace( '.' . get_current_site()->domain, '', $val->domain . $path ) . '</a>';
 			echo ' <small class="row-actions">';
-			$actions = array();
+			$actions = [];
 			$actions['edit'] = '<a href="'. esc_url( network_admin_url( 'site-info.php?id=' . $val->userblog_id ) ) .'">' . __( 'Edit' ) . '</a>';
 
 			$class = '';
@@ -443,7 +443,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 		$super_admins = get_super_admins();
 		$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $user->ID ) ) );
 
-		$actions = array();
+		$actions = [];
 		$actions['edit'] = '<a href="' . $edit_link . '">' . __( 'Edit' ) . '</a>';
 
 		if ( current_user_can( 'delete_user', $user->ID ) && ! in_array( $user->user_login, $super_admins ) ) {

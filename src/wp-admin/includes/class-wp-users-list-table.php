@@ -48,7 +48,7 @@ class WP_Users_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		parent::__construct( array(
 			'singular' => 'user',
 			'plural'   => 'users',
@@ -192,7 +192,7 @@ class WP_Users_List_Table extends WP_List_Table {
 		unset($users_of_blog);
 
 		$class = empty($role) ? ' class="current"' : '';
-		$role_links = array();
+		$role_links = [];
 		$role_links['all'] = "<a href='$url'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users, 'users' ), number_format_i18n( $total_users ) ) . '</a>';
 		foreach ( $app['roles']->get_names() as $this_role => $name ) {
 			if ( !isset($avail_roles[$this_role]) )
@@ -237,7 +237,7 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @return array Array of bulk actions.
 	 */
 	protected function get_bulk_actions() {
-		$actions = array();
+		$actions = [];
 
 		if ( is_multisite() ) {
 			if ( current_user_can( 'remove_users' ) )
@@ -397,7 +397,7 @@ class WP_Users_List_Table extends WP_List_Table {
 		$user_roles = $this->get_role_list( $user_object );
 
 		// Set up the hover actions for this user
-		$actions = array();
+		$actions = [];
 		$checkbox = '';
 		// Check if the user for this row is editable
 		if ( current_user_can( 'list_users' ) ) {
@@ -539,7 +539,7 @@ class WP_Users_List_Table extends WP_List_Table {
 	protected function get_role_list( $user_object ) {
 		$app = getApp();
 
-		$role_list = array();
+		$role_list = [];
 
 		foreach ( $user_object->roles as $role ) {
 			if ( isset( $app['roles']->role_names[ $role ] ) ) {

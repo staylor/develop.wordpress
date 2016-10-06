@@ -701,9 +701,9 @@ function check_import_new_users( $permission ) {
  * @param array  $lang_files Optional. An array of the language files. Default empty array.
  * @param string $current    Optional. The current language code. Default empty.
  */
-function mu_dropdown_languages( $lang_files = array(), $current = '' ) {
+function mu_dropdown_languages( $lang_files = [], $current = '' ) {
 	$flag = false;
-	$output = array();
+	$output = [];
 
 	foreach ( (array) $lang_files as $val ) {
 		$code_lang = basename( $val, '.mo' );
@@ -1039,7 +1039,7 @@ jQuery(document).ready( function($) {
  *     @type string $selected The ID of the selected link.
  * }
  */
-function network_edit_site_nav( $args = array() ) {
+function network_edit_site_nav( $args = [] ) {
 	$app = getApp();
 
 	/**
@@ -1076,7 +1076,7 @@ function network_edit_site_nav( $args = array() ) {
 	) );
 
 	// Setup the links array
-	$screen_links = array();
+	$screen_links = [];
 
 	// Loop through tabs
 	foreach ( $r['links'] as $link_id => $link ) {

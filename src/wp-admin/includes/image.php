@@ -74,7 +74,7 @@ function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $s
 function wp_generate_attachment_metadata( $attachment_id, $file ) {
 	$attachment = get_post( $attachment_id );
 
-	$metadata = array();
+	$metadata = [];
 	$support = false;
 	if ( preg_match('!^image/!', get_post_mime_type( $attachment )) && file_is_displayable_image($file) ) {
 		$imagesize = getimagesize( $file );
@@ -87,7 +87,7 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 		// Make thumbnails and other intermediate sizes.
 		$_wp_additional_image_sizes = wp_get_additional_image_sizes();
 
-		$sizes = array();
+		$sizes = [];
 		foreach ( get_intermediate_image_sizes() as $s ) {
 			$sizes[$s] = array( 'width' => '', 'height' => '', 'crop' => false );
 			if ( isset( $_wp_additional_image_sizes[$s]['width'] ) ) {
@@ -132,7 +132,7 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 			if ( ! is_wp_error( $editor ) )
 				$metadata['sizes'] = $editor->multi_resize( $sizes );
 		} else {
-			$metadata['sizes'] = array();
+			$metadata['sizes'] = [];
 		}
 
 		// Fetch additional metadata from EXIF/IPTC.
@@ -288,10 +288,10 @@ function wp_read_image_metadata( $file ) {
 		'shutter_speed' => 0,
 		'title' => '',
 		'orientation' => 0,
-		'keywords' => array(),
+		'keywords' => [],
 	);
 
-	$iptc = array();
+	$iptc = [];
 	/*
 	 * Read IPTC first, since it might contain data not available in exif such
 	 * as caption, description etc.

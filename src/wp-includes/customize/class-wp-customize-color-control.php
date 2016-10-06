@@ -39,7 +39,7 @@ class WP_Customize_Color_Control extends WP_Customize_Control {
 	 * @param string               $id      Control ID.
 	 * @param array                $args    Optional. Arguments to override class property defaults.
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	public function __construct( $manager, $id, $args = [] ) {
 		$this->statuses = array( '' => __('Default') );
 		parent::__construct( $manager, $id, $args );
 	}

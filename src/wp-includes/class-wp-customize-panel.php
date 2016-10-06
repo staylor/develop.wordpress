@@ -149,7 +149,7 @@ class WP_Customize_Panel {
 	 * @param string               $id      An specific ID for the panel.
 	 * @param array                $args    Panel arguments.
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	public function __construct( $manager, $id, $args = [] ) {
 		$keys = array_keys( get_object_vars( $this ) );
 		foreach ( $keys as $key ) {
 			if ( isset( $args[ $key ] ) ) {
@@ -165,7 +165,7 @@ class WP_Customize_Panel {
 		self::$instance_count += 1;
 		$this->instance_number = self::$instance_count;
 
-		$this->sections = array(); // Users cannot customize the $sections array.
+		$this->sections = []; // Users cannot customize the $sections array.
 	}
 
 	/**

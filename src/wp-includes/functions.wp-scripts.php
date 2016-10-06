@@ -123,7 +123,7 @@ function wp_add_inline_script( $handle, $data, $position = 'after' ) {
  *                                    Default 'false'.
  * @return bool Whether the script has been registered. True on success, false on failure.
  */
-function wp_register_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false ) {
+function wp_register_script( $handle, $src, $deps = [], $ver = false, $in_footer = false ) {
 	$app = getApp();
 
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
@@ -238,7 +238,7 @@ function wp_deregister_script( $handle ) {
  * @param bool             $in_footer Optional. Whether to enqueue the script before </body> instead of in the <head>.
  *                                    Default 'false'.
  */
-function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
+function wp_enqueue_script( $handle, $src = '', $deps = [], $ver = false, $in_footer = false ) {
 	$app = getApp();
 
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );

@@ -25,7 +25,7 @@ class WP_Error {
 	 * @since 2.1.0
 	 * @var array
 	 */
-	public $errors = array();
+	public $errors = [];
 
 	/**
 	 * Stores the list of data for error codes.
@@ -33,7 +33,7 @@ class WP_Error {
 	 * @since 2.1.0
 	 * @var array
 	 */
-	public $error_data = array();
+	public $error_data = [];
 
 	/**
 	 * Initialize the error.
@@ -72,7 +72,7 @@ class WP_Error {
 	 */
 	public function get_error_codes() {
 		if ( empty($this->errors) )
-			return array();
+			return [];
 
 		return array_keys($this->errors);
 	}
@@ -105,7 +105,7 @@ class WP_Error {
 	public function get_error_messages($code = '') {
 		// Return all messages if no code specified.
 		if ( empty($code) ) {
-			$all_messages = array();
+			$all_messages = [];
 			foreach ( (array) $this->errors as $code => $messages )
 				$all_messages = array_merge($all_messages, $messages);
 
@@ -115,7 +115,7 @@ class WP_Error {
 		if ( isset($this->errors[$code]) )
 			return $this->errors[$code];
 		else
-			return array();
+			return [];
 	}
 
 	/**

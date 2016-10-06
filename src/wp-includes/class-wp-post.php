@@ -282,7 +282,7 @@ final class WP_Post {
 				$terms = get_the_terms( $this, 'category' );
 
 			if ( empty( $terms ) )
-				return array();
+				return [];
 
 			return wp_list_pluck( $terms, 'term_id' );
 		}
@@ -292,7 +292,7 @@ final class WP_Post {
 				$terms = get_the_terms( $this, 'post_tag' );
 
 			if ( empty( $terms ) )
-				return array();
+				return [];
 
 			return wp_list_pluck( $terms, 'name' );
 		}

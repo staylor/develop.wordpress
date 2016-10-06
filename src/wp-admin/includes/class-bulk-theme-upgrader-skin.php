@@ -16,7 +16,7 @@
  * @see Bulk_Upgrader_Skin
  */
 class Bulk_Theme_Upgrader_Skin extends Bulk_Upgrader_Skin {
-	public $theme_info = array(); // Theme_Upgrader::bulk() will fill this in.
+	public $theme_info = []; // Theme_Upgrader::bulk() will fill this in.
 
 	public function add_strings() {
 		parent::add_strings();

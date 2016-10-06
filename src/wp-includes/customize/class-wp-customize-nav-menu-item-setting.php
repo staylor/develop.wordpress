@@ -175,7 +175,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 	 *
 	 * @throws Exception If $id is not valid for this setting type.
 	 */
-	public function __construct( Manager $manager, $id, array $args = array() ) {
+	public function __construct( Manager $manager, $id, array $args = [] ) {
 		if ( empty( $manager->nav_menus ) ) {
 			throw new Exception( 'Expected Manager::$nav_menus to be set.' );
 		}
@@ -476,7 +476,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 			)
 		);
 		if ( $should_remove ) {
-			$filtered_items = array();
+			$filtered_items = [];
 			foreach ( $items as $item ) {
 				if ( $item->db_id !== $this->post_id ) {
 					$filtered_items[] = $item;
@@ -850,7 +850,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 	 */
 	public function amend_customize_save_response( $data ) {
 		if ( ! isset( $data['nav_menu_item_updates'] ) ) {
-			$data['nav_menu_item_updates'] = array();
+			$data['nav_menu_item_updates'] = [];
 		}
 
 		$data['nav_menu_item_updates'][] = array(

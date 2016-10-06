@@ -497,7 +497,7 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 			return false;
 		}
 
-		$ret = array();
+		$ret = [];
 		foreach ( $list as $struc ) {
 
 			if ( '.' == $struc['name'] || '..' == $struc['name'] )
@@ -513,7 +513,7 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 				if ( $recursive )
 					$struc['files'] = $this->dirlist($path . '/' . $struc['name'], $include_hidden, $recursive);
 				else
-					$struc['files'] = array();
+					$struc['files'] = [];
 			}
 
 			// Replace symlinks formatted as "source -> target" with just the source name

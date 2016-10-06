@@ -27,14 +27,14 @@ global $wp_filter, $wp_actions, $wp_current_filter;
 if ( $wp_filter ) {
 	$wp_filter = WP_Hook::build_preinitialized_hooks( $wp_filter );
 } else {
-	$wp_filter = array();
+	$wp_filter = [];
 }
 
 if ( ! isset( $wp_actions ) )
-	$wp_actions = array();
+	$wp_actions = [];
 
 if ( ! isset( $wp_current_filter ) )
-	$wp_current_filter = array();
+	$wp_current_filter = [];
 
 /**
  * Hook a function or method to a specific filter action.
@@ -173,7 +173,7 @@ function has_filter($tag, $function_to_check = false) {
 function apply_filters( $tag, $value ) {
 	global $wp_filter, $wp_current_filter;
 
-	$args = array();
+	$args = [];
 
 	// Do 'all' actions first.
 	if ( isset($wp_filter['all']) ) {
@@ -439,7 +439,7 @@ function do_action($tag, $arg = '') {
 	if ( !isset($wp_filter['all']) )
 		$wp_current_filter[] = $tag;
 
-	$args = array();
+	$args = [];
 	if ( is_array($arg) && 1 == count($arg) && isset($arg[0]) && is_object($arg[0]) ) // array(&$this)
 		$args[] =& $arg[0];
 	else

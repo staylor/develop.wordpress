@@ -41,7 +41,7 @@ abstract class WP_Image_Editor {
 	 * @param array $args
 	 * @return bool
 	 */
-	public static function test( $args = array() ) {
+	public static function test( $args = [] ) {
 		return false;
 	}
 

@@ -133,7 +133,7 @@ function network_step1( $errors = false ) {
 
 	wp_nonce_field( 'install-network-1' );
 
-	$error_codes = array();
+	$error_codes = [];
 	if ( is_wp_error( $errors ) ) {
 		echo '<div class="error"><p><strong>' . __( 'ERROR: The network could not be created.' ) . '</strong></p>';
 		foreach ( $errors->get_error_messages() as $error )

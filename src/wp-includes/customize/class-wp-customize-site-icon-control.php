@@ -39,7 +39,7 @@ class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control 
 	 * @param string               $id      Control ID.
 	 * @param array                $args    Optional. Arguments to override class property defaults.
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	public function __construct( $manager, $id, $args = [] ) {
 		parent::__construct( $manager, $id, $args );
 		add_action( 'customize_controls_print_styles', 'wp_site_icon', 99 );
 	}

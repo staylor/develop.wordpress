@@ -19,7 +19,7 @@
  *     @type array    $args     Extra meta box arguments.
  * }
  */
-function post_submit_meta_box( $post, $args = array() ) {
+function post_submit_meta_box( $post, $args = [] ) {
 	global $action;
 
 	$post_type = $post->post_type;
@@ -408,7 +408,7 @@ function post_format_meta_box( $post, $box ) {
 function post_tags_meta_box( $post, $box ) {
 	$defaults = array( 'taxonomy' => 'post_tag' );
 	if ( ! isset( $box['args'] ) || ! is_array( $box['args'] ) ) {
-		$args = array();
+		$args = [];
 	} else {
 		$args = $box['args'];
 	}
@@ -471,7 +471,7 @@ function post_tags_meta_box( $post, $box ) {
 function post_categories_meta_box( $post, $box ) {
 	$defaults = array( 'taxonomy' => 'category' );
 	if ( ! isset( $box['args'] ) || ! is_array( $box['args'] ) ) {
-		$args = array();
+		$args = [];
 	} else {
 		$args = $box['args'];
 	}
@@ -1210,7 +1210,7 @@ function post_thumbnail_meta_box( $post ) {
  * @param WP_Post $post A post object.
  */
 function attachment_id3_data_meta_box( $post ) {
-	$meta = array();
+	$meta = [];
 	if ( ! empty( $post->ID ) ) {
 		$meta = wp_get_attachment_metadata( $post->ID );
 	}

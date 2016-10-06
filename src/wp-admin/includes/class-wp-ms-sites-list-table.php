@@ -38,7 +38,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		$this->status_list = array(
 			'archived' => array( 'site-archived', __( 'Archived' ) ),
 			'spam'     => array( 'site-spammed', _x( 'Spam', 'site' ) ),
@@ -201,7 +201,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
-		$actions = array();
+		$actions = [];
 		if ( current_user_can( 'delete_sites' ) )
 			$actions['delete'] = __( 'Delete' );
 		$actions['spam'] = _x( 'Mark as Spam', 'site' );
@@ -307,7 +307,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		global $mode;
 
 		$blogname = untrailingslashit( $blog['domain'] . $blog['path'] );
-		$blog_states = array();
+		$blog_states = [];
 		reset( $this->status_list );
 
 		foreach ( $this->status_list as $status => $col ) {

@@ -19,7 +19,7 @@
  * @param array $args Optional. Arguments to pass to the class. Accepts 'screen'.
  * @return object|bool Object on success, false if the class does not exist.
  */
-function _get_list_table( $class, $args = array() ) {
+function _get_list_table( $class, $args = [] ) {
 	$core_classes = array(
 		//Site Admin
 		'WP_Posts_List_Table' => 'posts',

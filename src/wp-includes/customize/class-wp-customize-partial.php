@@ -49,7 +49,7 @@ class WP_Customize_Partial {
 	 *     @type array  $keys Keys for multidimensional.
 	 * }
 	 */
-	protected $id_data = array();
+	protected $id_data = [];
 
 	/**
 	 * Type of this partial.
@@ -151,7 +151,7 @@ class WP_Customize_Partial {
 	 *     @type array|string $settings All settings IDs tied to the partial. If undefined, `$id` will be used.
 	 * }
 	 */
-	public function __construct( WP_Customize_Selective_Refresh $component, $id, $args = array() ) {
+	public function __construct( WP_Customize_Selective_Refresh $component, $id, $args = [] ) {
 		$keys = array_keys( get_object_vars( $this ) );
 		foreach ( $keys as $key ) {
 			if ( isset( $args[ $key ] ) ) {
@@ -208,7 +208,7 @@ class WP_Customize_Partial {
 	 * @return string|array|false The rendered partial as a string, raw data array (for client-side JS template),
 	 *                            or false if no render applied.
 	 */
-	final public function render( $container_context = array() ) {
+	final public function render( $container_context = [] ) {
 		$partial  = $this;
 		$rendered = false;
 
@@ -276,7 +276,7 @@ class WP_Customize_Partial {
 	 * @param array                $context Context.
 	 * @return string|array|false
 	 */
-	public function render_callback( WP_Customize_Partial $partial, $context = array() ) {
+	public function render_callback( WP_Customize_Partial $partial, $context = [] ) {
 		unset( $partial, $context );
 		return false;
 	}

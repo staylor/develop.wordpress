@@ -22,7 +22,7 @@ class WP_Importer {
 		$app = getApp();
 		$wpdb = $app['db'];
 
-		$hashtable = array();
+		$hashtable = [];
 
 		$limit = 100;
 		$offset = 0;
@@ -88,7 +88,7 @@ class WP_Importer {
 		$app = getApp();
 		$wpdb = $app['db'];
 
-		$hashtable = array();
+		$hashtable = [];
 
 		$limit = 100;
 		$offset = 0;
@@ -197,8 +197,8 @@ class WP_Importer {
 		// Increase the timeout
 		add_filter( 'http_request_timeout', array( $this, 'bump_request_timeout' ) );
 
-		$headers = array();
-		$args = array();
+		$headers = [];
+		$args = [];
 		if ( true === $head )
 			$args['method'] = 'HEAD';
 		if ( !empty( $username ) && !empty( $password ) )
@@ -255,9 +255,9 @@ class WP_Importer {
 		$wpdb = $app['db'];
 
 		// Or define( 'WP_IMPORTING', true );
-		$wpdb->queries = array();
+		$wpdb->queries = [];
 		// Reset $wp_actions to keep it from growing out of control
-		$wp_actions = array();
+		$wp_actions = [];
 	}
 }
 
@@ -272,7 +272,7 @@ class WP_Importer {
 function get_cli_args( $param, $required = false ) {
 	$args = $_SERVER['argv'];
 
-	$out = array();
+	$out = [];
 
 	$last_arg = null;
 	$return = null;

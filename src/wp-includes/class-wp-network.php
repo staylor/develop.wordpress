@@ -302,7 +302,7 @@ class WP_Network {
 			}
 		}
 
-		$paths = array();
+		$paths = [];
 		if ( $using_paths ) {
 			$path_segments = array_filter( explode( '/', trim( $path, '/' ) ) );
 

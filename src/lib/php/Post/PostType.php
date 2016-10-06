@@ -220,7 +220,7 @@ class PostType extends Observable {
 	 * @since 4.6.0
 	 * @var array $taxonomies
 	 */
-	public $taxonomies = array();
+	public $taxonomies = [];
 
 	/**
 	 * Whether there should be post type archives, or if a string, the archive slug to use.
@@ -375,7 +375,7 @@ class PostType extends Observable {
 	 * @param array|string $args      Optional. Array or string of arguments for registering a post type.
 	 *                                Default empty array.
 	 */
-	public function __construct( $post_type, $args = array() ) {
+	public function __construct( $post_type, $args = [] ) {
 		$this->name = $post_type;
 
 		self::$instances[ $post_type ] = $this;
@@ -424,7 +424,7 @@ class PostType extends Observable {
 
 		// Args prefixed with an underscore are reserved for internal use.
 		$defaults = array(
-			'labels'               => array(),
+			'labels'               => [],
 			'description'          => '',
 			'public'               => false,
 			'hierarchical'         => false,
@@ -437,11 +437,11 @@ class PostType extends Observable {
 			'menu_position'        => null,
 			'menu_icon'            => null,
 			'capability_type'      => 'post',
-			'capabilities'         => array(),
+			'capabilities'         => [],
 			'map_meta_cap'         => null,
-			'supports'             => array(),
+			'supports'             => [],
 			'register_meta_box_cb' => null,
-			'taxonomies'           => array(),
+			'taxonomies'           => [],
 			'has_archive'          => false,
 			'rewrite'              => true,
 			'query_var'            => true,
@@ -517,7 +517,7 @@ class PostType extends Observable {
 
 		if ( false !== $args['rewrite'] && ( is_admin() || '' != get_option( 'permalink_structure' ) ) ) {
 			if ( ! is_array( $args['rewrite'] ) ) {
-				$args['rewrite'] = array();
+				$args['rewrite'] = [];
 			}
 			if ( empty( $args['rewrite']['slug'] ) ) {
 				$args['rewrite']['slug'] = $this->name;

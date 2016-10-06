@@ -36,7 +36,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		global $post_type, $taxonomy, $action, $tax;
 
 		parent::__construct( array(
@@ -150,7 +150,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
-		$actions = array();
+		$actions = [];
 
 		if ( current_user_can( get_taxonomy( $this->screen->taxonomy )->cap->delete_terms ) ) {
 			$actions['delete'] = __( 'Delete' );
@@ -243,7 +243,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 
 		if ( is_taxonomy_hierarchical( $taxonomy ) && ! isset( $args['orderby'] ) ) {
 			if ( ! empty( $args['search'] ) ) {// Ignore children on searches.
-				$children = array();
+				$children = [];
 			} else {
 				$children = _get_term_hierarchy( $taxonomy );
 			}
@@ -280,7 +280,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 
 			// If the page starts in a subtree, print the parents.
 			if ( $count == $start && $term->parent > 0 && empty( $_REQUEST['s'] ) ) {
-				$my_parents = $parent_ids = array();
+				$my_parents = $parent_ids = [];
 				$p = $term->parent;
 				while ( $p ) {
 					$my_parent = get_term( $p, $taxonomy );
@@ -433,7 +433,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 			get_edit_term_link( $tag->term_id, $taxonomy, $this->screen->post_type )
 		);
 
-		$actions = array();
+		$actions = [];
 		if ( current_user_can( 'edit_term', $tag->term_id ) ) {
 			$actions['edit'] = sprintf(
 				'<a href="%s" aria-label="%s">%s</a>',

@@ -217,7 +217,7 @@ class Rewrite extends Observable {
 	 * @access private
 	 * @var array
 	 */
-	var $extra_rules = array();
+	var $extra_rules = [];
 
 	/**
 	 * Additional rules that belong at the beginning to match first.
@@ -228,7 +228,7 @@ class Rewrite extends Observable {
 	 * @access private
 	 * @var array
 	 */
-	var $extra_rules_top = array();
+	var $extra_rules_top = [];
 
 	/**
 	 * Rules that don't redirect to WordPress' index.php.
@@ -240,7 +240,7 @@ class Rewrite extends Observable {
 	 * @access private
 	 * @var array
 	 */
-	var $non_wp_rules = array();
+	var $non_wp_rules = [];
 
 	/**
 	 * Extra permalink structures, e.g. categories, added by add_permastruct().
@@ -249,7 +249,7 @@ class Rewrite extends Observable {
 	 * @access private
 	 * @var array
 	 */
-	var $extra_permastructs = array();
+	var $extra_permastructs = [];
 
 	/**
 	 * Endpoints (like /trackback/) added by add_rewrite_endpoint().
@@ -466,13 +466,13 @@ class Rewrite extends Observable {
 
 		// If we have no pages get out quick.
 		if ( !$posts )
-			return array( array(), array() );
+			return array( [], [] );
 
 		// Now reverse it, because we need parents after children for rewrite rules to work properly.
 		$posts = array_reverse($posts, true);
 
-		$page_uris = array();
-		$page_attachment_uris = array();
+		$page_uris = [];
+		$page_attachment_uris = [];
 
 		foreach ( $posts as $id => $post ) {
 			// URL => page name
@@ -943,7 +943,7 @@ class Rewrite extends Observable {
 		 * Build a list from the rewritecode and queryreplace arrays, that will look something
 		 * like tagname=$matches[i] where i is the current $i.
 		 */
-		$queries = array();
+		$queries = [];
 		for ( $i = 0; $i < $num_tokens; ++$i ) {
 			if ( 0 < $i )
 				$queries[$i] = $queries[$i - 1] . '&';
@@ -972,7 +972,7 @@ class Rewrite extends Observable {
 		$front = preg_replace('|^/+|', '', $front);
 
 		// The main workhorse loop.
-		$post_rewrite = array();
+		$post_rewrite = [];
 		$struct = $front;
 		for ( $j = 0; $j < $num_dirs; ++$j ) {
 			// Get the struct for this dir, and trim slashes off the front.
@@ -1036,7 +1036,7 @@ class Rewrite extends Observable {
 			}
 
 			// Start creating the array of rewrites for this dir.
-			$rewrite = array();
+			$rewrite = [];
 
 			// ...adding on /feed/ regexes => queries
 			if ( $feed ) {
@@ -1271,14 +1271,14 @@ class Rewrite extends Observable {
 	 * @return array An associate array of matches and queries.
 	 */
 	public function rewrite_rules() {
-		$rewrite = array();
+		$rewrite = [];
 
 		if ( empty($this->permalink_structure) )
 			return $rewrite;
 
 		// robots.txt -only if installed at the root
 		$home_path = parse_url( home_url() );
-		$robots_rewrite = ( empty( $home_path['path'] ) || '/' == $home_path['path'] ) ? array( 'robots\.txt$' => $this->index . '?robots=1' ) : array();
+		$robots_rewrite = ( empty( $home_path['path'] ) || '/' == $home_path['path'] ) ? array( 'robots\.txt$' => $this->index . '?robots=1' ) : [];
 
 		// Old feed and service files.
 		$deprecated_files = array(
@@ -1287,7 +1287,7 @@ class Rewrite extends Observable {
 		);
 
 		// Registration rules.
-		$registration_pages = array();
+		$registration_pages = [];
 		if ( is_multisite() && is_main_site() ) {
 			$registration_pages['.*wp-signup.php$'] = $this->index . '?signup=true';
 			$registration_pages['.*wp-activate.php$'] = $this->index . '?activate=true';
@@ -1746,7 +1746,7 @@ class Rewrite extends Observable {
 	 *     @type bool $endpoints   Whether endpoints should be applied to the generated rules. Default true.
 	 * }
 	 */
-	public function add_permastruct( $name, $struct, $args = array() ) {
+	public function add_permastruct( $name, $struct, $args = [] ) {
 		// Back-compat for the old parameters: $with_front and $ep_mask.
 		if ( ! is_array( $args ) )
 			$args = array( 'with_front' => $args );
@@ -1846,7 +1846,7 @@ class Rewrite extends Observable {
 	 * @access public
 	 */
 	public function init() {
-		$this->extra_rules = $this->non_wp_rules = $this->endpoints = array();
+		$this->extra_rules = $this->non_wp_rules = $this->endpoints = [];
 		$this->permalink_structure = get_option('permalink_structure');
 		$this->front = substr($this->permalink_structure, 0, strpos($this->permalink_structure, '%'));
 		$this->root = '';

@@ -731,7 +731,7 @@ function wp_filter_oembed_result( $result, $data, $url ) {
 		'a'          => array(
 			'href'         => true,
 		),
-		'blockquote' => array(),
+		'blockquote' => [],
 		'iframe'     => array(
 			'src'          => true,
 			'width'        => true,

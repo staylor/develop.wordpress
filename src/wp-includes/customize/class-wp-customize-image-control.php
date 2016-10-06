@@ -30,7 +30,7 @@ class WP_Customize_Image_Control extends WP_Customize_Upload_Control {
 	 * @param string               $id      Control ID.
 	 * @param array                $args    Optional. Arguments to override class property defaults.
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	public function __construct( $manager, $id, $args = [] ) {
 		parent::__construct( $manager, $id, $args );
 
 		$this->button_labels = wp_parse_args( $this->button_labels, array(

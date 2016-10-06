@@ -40,7 +40,7 @@ function wp_unregister_GLOBALS() {
 	// Variables that shouldn't be unset
 	$no_unset = array( 'GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES', 'table_prefix' );
 
-	$input = array_merge( $_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset( $_SESSION ) && is_array( $_SESSION ) ? $_SESSION : array() );
+	$input = array_merge( $_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset( $_SESSION ) && is_array( $_SESSION ) ? $_SESSION : [] );
 	foreach ( $input as $k => $v )
 		if ( !in_array( $k, $no_unset ) && isset( $GLOBALS[$k] ) ) {
 			unset( $GLOBALS[$k] );
@@ -570,7 +570,7 @@ function wp_not_installed() {
  * @return array Files to include.
  */
 function wp_get_mu_plugins() {
-	$mu_plugins = array();
+	$mu_plugins = [];
 	if ( !is_dir( WPMU_PLUGIN_DIR ) )
 		return $mu_plugins;
 	if ( ! $dh = opendir( WPMU_PLUGIN_DIR ) )
@@ -600,8 +600,8 @@ function wp_get_mu_plugins() {
  * @return array Files.
  */
 function wp_get_active_and_valid_plugins() {
-	$plugins = array();
-	$active_plugins = (array) get_option( 'active_plugins', array() );
+	$plugins = [];
+	$active_plugins = (array) get_option( 'active_plugins', [] );
 
 	// Check for hacks file if the option is enabled
 	if ( get_option( 'hack_file' ) && file_exists( ABSPATH . 'my-hacks.php' ) ) {
@@ -872,7 +872,7 @@ function wp_load_translations_early() {
 
 	require_once ABSPATH . WPINC . '/l10n.php';
 
-	$locales = $locations = array();
+	$locales = $locations = [];
 
 	while ( true ) {
 		if ( defined( 'WPLANG' ) ) {

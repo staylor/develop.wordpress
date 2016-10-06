@@ -97,7 +97,7 @@ function wp_add_inline_style( $handle, $data ) {
  *                                 '(orientation: portrait)' and '(max-width: 640px)'.
  * @return bool Whether the style has been registered. True on success, false on failure.
  */
-function wp_register_style( $handle, $src, $deps = array(), $ver = false, $media = 'all' ) {
+function wp_register_style( $handle, $src, $deps = [], $ver = false, $media = 'all' ) {
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
 
 	$app = getApp();
@@ -143,7 +143,7 @@ function wp_deregister_style( $handle ) {
  *                                 Default 'all'. Accepts media types like 'all', 'print' and 'screen', or media queries like
  *                                 '(orientation: portrait)' and '(max-width: 640px)'.
  */
-function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
+function wp_enqueue_style( $handle, $src = '', $deps = [], $ver = false, $media = 'all' ) {
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
 
 	$app = getApp();

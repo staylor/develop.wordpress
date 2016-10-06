@@ -40,8 +40,8 @@ function get_post_format( $post = null ) {
  * @param object|int|null $post   Optional. The post to check. If not supplied, defaults to the current post if used in the loop.
  * @return bool True if the post has any of the given formats (or any format, if no format specified), false otherwise.
  */
-function has_post_format( $format = array(), $post = null ) {
-	$prefixed = array();
+function has_post_format( $format = [], $post = null ) {
+	$prefixed = [];
 
 	if ( $format ) {
 		foreach ( (array) $format as $single ) {

@@ -192,7 +192,7 @@ function remove_rewrite_tag( $tag ) {
  * @param array  $args   Optional. Arguments for building the rules from the permalink structure,
  *                       see WP_Rewrite::add_permastruct() for full details. Default empty array.
  */
-function add_permastruct( $name, $struct, $args = array() ) {
+function add_permastruct( $name, $struct, $args = [] ) {
 	// Back-compat for the old parameters: $with_front and $ep_mask.
 	if ( ! is_array( $args ) )
 		$args = array( 'with_front' => $args );
@@ -335,7 +335,7 @@ function _wp_filter_taxonomy_base( $base ) {
  *                          WP::parse_request(). Default empty array.
  * @return array Returns the original array of query vars, with date/post conflicts resolved.
  */
-function wp_resolve_numeric_slug_conflicts( $query_vars = array() ) {
+function wp_resolve_numeric_slug_conflicts( $query_vars = [] ) {
 	if ( ! isset( $query_vars['year'] ) && ! isset( $query_vars['monthnum'] ) && ! isset( $query_vars['day'] ) ) {
 		return $query_vars;
 	}
@@ -512,9 +512,9 @@ function url_to_postid( $url ) {
 	$url = trim($url, '/');
 
 	$request = $url;
-	$post_type_query_vars = array();
+	$post_type_query_vars = [];
 
-	foreach ( get_post_types( array() , 'objects' ) as $post_type => $t ) {
+	foreach ( get_post_types( [] , 'objects' ) as $post_type => $t ) {
 		if ( ! empty( $t->query_var ) )
 			$post_type_query_vars[ $t->query_var ] = $post_type;
 	}
@@ -553,7 +553,7 @@ function url_to_postid( $url ) {
 
 			// Filter out non-public query vars
 			parse_str( $query, $query_vars );
-			$query = array();
+			$query = [];
 			foreach ( (array) $query_vars as $key => $value ) {
 				if ( in_array( $key, $app['wp']->public_query_vars ) ){
 					$query[$key] = $value;

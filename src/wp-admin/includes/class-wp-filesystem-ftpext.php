@@ -474,7 +474,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			$is_windows = stripos( ftp_systype($this->link), 'win') !== false;
 
 		if ( $is_windows && preg_match('/([0-9]{2})-([0-9]{2})-([0-9]{2}) +([0-9]{2}):([0-9]{2})(AM|PM) +([0-9]+|<DIR>) +(.+)/', $line, $lucifer) ) {
-			$b = array();
+			$b = [];
 			if ( $lucifer[3] < 70 )
 				$lucifer[3] +=2000;
 			else
@@ -498,7 +498,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			$lcount = count($lucifer);
 			if ( $lcount < 8 )
 				return '';
-			$b = array();
+			$b = [];
 			$b['isdir'] = $lucifer[0]{0} === 'd';
 			$b['islink'] = $lucifer[0]{0} === 'l';
 			if ( $b['isdir'] )
@@ -568,7 +568,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 		if ( empty($list) ) // Empty array = non-existent folder (real folder will show . at least)
 			return false;
 
-		$dirlist = array();
+		$dirlist = [];
 		foreach ( $list as $k => $v ) {
 			$entry = $this->parselisting($v);
 			if ( empty($entry) )
@@ -586,13 +586,13 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			$dirlist[ $entry['name'] ] = $entry;
 		}
 
-		$ret = array();
+		$ret = [];
 		foreach ( (array)$dirlist as $struc ) {
 			if ( 'd' == $struc['type'] ) {
 				if ( $recursive )
 					$struc['files'] = $this->dirlist($path . '/' . $struc['name'], $include_hidden, $recursive);
 				else
-					$struc['files'] = array();
+					$struc['files'] = [];
 			}
 
 			$ret[ $struc['name'] ] = $struc;

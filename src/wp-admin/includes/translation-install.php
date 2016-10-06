@@ -103,10 +103,10 @@ function wp_get_available_translations() {
 	$api = translations_api( 'core', array( 'version' => $app['wp_version'] ) );
 
 	if ( is_wp_error( $api ) || empty( $api['translations'] ) ) {
-		return array();
+		return [];
 	}
 
-	$translations = array();
+	$translations = [];
 	// Key the array with the language code for now.
 	foreach ( $api['translations'] as $translation ) {
 		$translations[ $translation['language'] ] = $translation;
