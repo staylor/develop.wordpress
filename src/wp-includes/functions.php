@@ -1550,10 +1550,14 @@ function wp_get_referer() {
  * @return string|false Referer URL on success, false on failure.
  */
 function wp_get_raw_referer() {
-	if ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
-		return wp_unslash( $_REQUEST['_wp_http_referer'] );
-	} else if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-		return wp_unslash( $_SERVER['HTTP_REFERER'] );
+	$app = getApp();
+	$_request_referer = $app['request']->attributes->get( '_wp_http_referer' );
+	$_server_referer = $app['request']->server->get( 'HTTP_REFERER' );
+
+	if ( ! empty( $_request_referer ) ) {
+		return wp_unslash( $_request_referer );
+	} else if ( ! empty( $_server_referer ) ) {
+		return wp_unslash( $_server_referer );
 	}
 
 	return false;
@@ -1567,8 +1571,12 @@ function wp_get_raw_referer() {
  * @return string|false False if no original referer or original referer if set.
  */
 function wp_get_original_referer() {
-	if ( ! empty( $_REQUEST['_wp_original_http_referer'] ) && function_exists( 'wp_validate_redirect' ) )
-		return wp_validate_redirect( wp_unslash( $_REQUEST['_wp_original_http_referer'] ), false );
+	$app = getApp();
+	$_request_referer = $app['request']->attributes->get( '_wp_original_http_referer' );
+
+	if ( ! empty( $_request_referer ) && function_exists( 'wp_validate_redirect' ) ) {
+		return wp_validate_redirect( wp_unslash( $_request_referer ), false );
+	}
 	return false;
 }
 
@@ -2528,7 +2536,10 @@ function wp_nonce_ays( $action ) {
 			get_bloginfo( 'name' )
 		);
 		$html .= '</p><p>';
-		$redirect_to = isset( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+
+		$app = getApp();
+		$_request = $app['request']->attributes;
+		$redirect_to = $_request->has( 'redirect_to' ) ? $_request->get( 'redirect_to' ) : '';
 		$html .= sprintf(
 			/* translators: %s: logout URL */
 			__( 'Do you really want to <a href="%s">log out</a>?' ),

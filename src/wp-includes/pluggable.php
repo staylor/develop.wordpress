@@ -1041,12 +1041,19 @@ if ( !function_exists('check_admin_referer') ) :
  *                   0-12 hours ago, 2 if the nonce is valid and generated between 12-24 hours ago.
  */
 function check_admin_referer( $action = -1, $query_arg = '_wpnonce' ) {
-	if ( -1 == $action )
+	if ( -1 == $action ) {
 		_doing_it_wrong( __FUNCTION__, __( 'You should specify a nonce action to be verified by using the first parameter.' ), '3.2.0' );
+	}
 
-	$adminurl = strtolower(admin_url());
-	$referer = strtolower(wp_get_referer());
-	$result = isset($_REQUEST[$query_arg]) ? wp_verify_nonce($_REQUEST[$query_arg], $action) : false;
+	$adminurl = strtolower( admin_url() );
+	$referer = strtolower( wp_get_referer() );
+
+	$app = getApp();
+	$_request = $app['request']->attributes;
+
+	$result = $_request->has( $query_arg ) ?
+		wp_verify_nonce( $_request->get( $query_arg ), $action ) :
+		false;
 
 	/**
 	 * Fires once the admin request has been validated or not.
@@ -1090,13 +1097,16 @@ function check_ajax_referer( $action = -1, $query_arg = false, $die = true ) {
 
 	$nonce = '';
 
-	if ( $query_arg && isset( $_REQUEST[ $query_arg ] ) )
-		$nonce = $_REQUEST[ $query_arg ];
-	elseif ( isset( $_REQUEST['_ajax_nonce'] ) )
-		$nonce = $_REQUEST['_ajax_nonce'];
-	elseif ( isset( $_REQUEST['_wpnonce'] ) )
-		$nonce = $_REQUEST['_wpnonce'];
+	$app = getApp();
+	$_request = $app['request']->attributes;
 
+	if ( $query_arg && $_request->has( $query_arg ) ) {
+		$nonce = $_request->get( $query_arg );
+	} elseif ( $_request->has( '_ajax_nonce' ) ) {
+		$nonce = $_request->get( '_ajax_nonce' );
+	} elseif ( $_request->has( '_wpnonce' ) ) {
+		$nonce = $_request->get( '_wpnonce' );
+	}
 	$result = wp_verify_nonce( $nonce, $action );
 
 	/**

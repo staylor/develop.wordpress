@@ -7,7 +7,15 @@ use Symfony\Component\HttpFoundation\Request;
 class Provider implements ServiceProviderInterface {
 	public function register( Container $app ) {
 		$app['request'] = function () {
-			return Request::createFromGlobals();
+			$request = Request::createFromGlobals();
+
+			// use $attributes for $_REQUEST
+			$request->attributes->replace( array_merge(
+				$request->query->all(),
+				$request->request->all()
+			) );
+
+			return $request;
 		};
 
 		$app['request.method'] = function ( $app ) {
@@ -35,7 +43,7 @@ class Provider implements ServiceProviderInterface {
 		};
 
 		$app['request.path_info'] = function ( $app ) {
-			return $app['request']->server->get( 'PATH_INFO' );
+			return $app['request']->getPathInfo();
 		};
 
 		$app['request.server_name'] = function ( $app ) {

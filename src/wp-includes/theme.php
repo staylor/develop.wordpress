@@ -2042,7 +2042,9 @@ function check_theme_switched() {
 function _wp_customize_include() {
 	$app = getApp();
 
-	if ( ! ( ( isset( $_REQUEST['wp_customize'] ) && 'on' == $_REQUEST['wp_customize'] )
+	$wp_customize = $app['request']->attributes->get( 'wp_customize' );
+	if ( ! ( 
+		'on' === $wp_customize
 		|| ( is_admin() && 'customize.php' == basename( $app['request.php_self'] ) )
 	) ) {
 		return;

@@ -202,8 +202,11 @@ final class WP_Customize_Widgets {
 				$widget_setting_ids[] = $setting_id;
 			}
 		}
-		if ( $this->manager->doing_ajax( 'update-widget' ) && isset( $_REQUEST['widget-id'] ) ) {
-			$widget_setting_ids[] = $this->get_setting_id( wp_unslash( $_REQUEST['widget-id'] ) );
+
+		$app = getApp();
+		$_request = $app['request']->attributes;
+		if ( $this->manager->doing_ajax( 'update-widget' ) && $_request->has( 'widget-id' ) ) {
+			$widget_setting_ids[] = $this->get_setting_id( wp_unslash( $_request->get( 'widget-id' ) ) );
 		}
 
 		$settings = $this->manager->add_dynamic_settings( array_unique( $widget_setting_ids ) );
@@ -1372,11 +1375,16 @@ final class WP_Customize_Widgets {
 				$value = [];
 				$value[$parsed_id['number']] = $instance;
 				$key = 'widget-' . $parsed_id['id_base'];
-				$_REQUEST[$key] = $_POST[$key] = wp_slash( $value );
+
+				$app['request']->attributes->set( $key, wp_slash( $value ) );
+				$app['request']->request->set( $key, wp_slash( $value ) );
+
 				$added_input_vars[] = $key;
 			} else {
 				foreach ( $instance as $key => $value ) {
-					$_REQUEST[$key] = $_POST[$key] = wp_slash( $value );
+					$app['request']->attributes->set( $key, wp_slash( $value ) );
+					$app['request']->request->set( $key, wp_slash( $value ) );
+
 					$added_input_vars[] = $key;
 				}
 			}
@@ -1394,8 +1402,8 @@ final class WP_Customize_Widgets {
 
 		// Clean up any input vars that were manually added
 		foreach ( $added_input_vars as $key ) {
-			unset( $_POST[ $key ] );
-			unset( $_REQUEST[ $key ] );
+			$app['request']->attributes->remove( $key );
+			$app['request']->request->remove( $key );
 		}
 
 		// Make sure the expected option was updated.

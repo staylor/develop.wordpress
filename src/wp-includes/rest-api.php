@@ -537,8 +537,10 @@ function rest_cookie_check_errors( $result ) {
 	// Determine if there is a nonce.
 	$nonce = null;
 
-	if ( isset( $_REQUEST['_wpnonce'] ) ) {
-		$nonce = $_REQUEST['_wpnonce'];
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	if ( $_request->has( '_wpnonce' ) ) {
+		$nonce = $_request->get( '_wpnonce' );
 	} elseif ( isset( $_SERVER['HTTP_X_WP_NONCE'] ) ) {
 		$nonce = $_SERVER['HTTP_X_WP_NONCE'];
 	}
@@ -557,7 +559,6 @@ function rest_cookie_check_errors( $result ) {
 	}
 
 	// Send a refreshed nonce in header.
-	$app = getApp();
 	$app['rest.server']->send_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
 
 	return true;

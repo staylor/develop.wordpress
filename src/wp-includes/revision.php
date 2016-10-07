@@ -570,17 +570,25 @@ function _show_post_preview() {
  * @return array
  */
 function _wp_preview_terms_filter( $terms, $post_id, $taxonomy ) {
-	if ( ! $post = get_post() )
+	if ( ! $post = get_post() ) {
 		return $terms;
+	}
 
-	if ( empty( $_REQUEST['post_format'] ) || $post->ID != $post_id || 'post_format' != $taxonomy || 'revision' == $post->post_type )
+	$app = getApp();
+	$post_format = $app['request']->attributes->get( 'post_format' );
+
+	if ( empty( $post_format ) || $post->ID != $post_id || 'post_format' !== $taxonomy || 'revision' === $post->post_type ) {
 		return $terms;
+	}
 
-	if ( 'standard' == $_REQUEST['post_format'] )
+	if ( 'standard' === $post_format ) {
 		$terms = [];
-	elseif ( $term = get_term_by( 'slug', 'post-format-' . sanitize_key( $_REQUEST['post_format'] ), 'post_format' ) )
-		$terms = array( $term ); // Can only have one post format
-
+	} else {
+		$term = get_term_by( 'slug', 'post-format-' . sanitize_key( $post_format ), 'post_format' );
+		if ( $term ) {
+			$terms = [ $term ]; // Can only have one post format
+		}
+	}
 	return $terms;
 }
 
@@ -600,17 +608,20 @@ function _wp_preview_post_thumbnail_filter( $value, $post_id, $meta_key ) {
 		return $value;
 	}
 
-	if ( empty( $_REQUEST['_thumbnail_id'] ) ||
-	     empty( $_REQUEST['preview_id'] ) ||
+	$app = getApp();
+	$_request = $app['request']->attributes;
+
+	if ( empty( $_request->get( '_thumbnail_id' ) ) ||
+	     empty( $_request->get( 'preview_id' ) ) ||
 	     $post->ID != $post_id ||
 	     '_thumbnail_id' != $meta_key ||
 	     'revision' == $post->post_type ||
-	     $post_id != $_REQUEST['preview_id']
+	     $post_id != $_request->get( 'preview_id' )
 	) {
 		return $value;
 	}
 
-	$thumbnail_id = intval( $_REQUEST['_thumbnail_id'] );
+	$thumbnail_id = $_request->getInt( '_thumbnail_id' );
 	if ( $thumbnail_id <= 0 ) {
 		return '';
 	}

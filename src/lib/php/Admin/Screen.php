@@ -249,23 +249,26 @@ final class Screen {
 		}
 
 		$base = $id;
+		$_request = $this->app['request']->attributes;
+		$_get = $this->app['request']->query;
+		$_post = $this->app['request']->request;
 
 		// If this is the current screen, see if we can be more accurate for post types and taxonomies.
 		if ( ! $hook_name ) {
-			if ( isset( $_REQUEST['post_type'] ) ) {
-				$post_type = post_type_exists( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : false;
+			if ( $_request->has( 'post_type' ) ) {
+				$post_type = post_type_exists( $_request->get( 'post_type' ) ) ? $_request->get( 'post_type' ) : false;
 			}
 
-			if ( isset( $_REQUEST['taxonomy'] ) ) {
-				$taxonomy = taxonomy_exists( $_REQUEST['taxonomy'] ) ? $_REQUEST['taxonomy'] : false;
+			if ( $_request->has( 'taxonomy' ) ) {
+				$taxonomy = taxonomy_exists( $_request->get( 'taxonomy' ) ) ? $_request->get( 'taxonomy' ) : false;
 			}
 
 			switch ( $base ) {
 			case 'post' :
-				if ( isset( $_GET['post'] ) ) {
-					$post_id = (int) $_GET['post'];
-				} elseif ( isset( $_POST['post_ID'] ) ) {
-					$post_id = (int) $_POST['post_ID'];
+				if ( $_get->has( 'post' ) ) {
+					$post_id = $_get->getInt( 'post' );
+				} elseif ( $_post->has( 'post_ID' ) ) {
+					$post_id = $_post->getInt( 'post' );
 				} else {
 					$post_id = 0;
 				}
@@ -307,8 +310,8 @@ final class Screen {
 			// The edit-tags ID does not contain the post type. Look for it in the request.
 			if ( null === $post_type ) {
 				$post_type = 'post';
-				if ( isset( $_REQUEST['post_type'] ) && post_type_exists( $_REQUEST['post_type'] ) ) {
-					$post_type = $_REQUEST['post_type'];
+				if ( $_request->has( 'post_type' ) && post_type_exists( $_request->get( 'post_type' ) ) ) {
+					$post_type = $_request->get( 'post_type' );
 				}
 			}
 
@@ -1138,7 +1141,8 @@ final class Screen {
 		}
 
 		if ( 'edit_comments_per_page' == $option ) {
-			$comment_status = isset( $_REQUEST['comment_status'] ) ? $_REQUEST['comment_status'] : 'all';
+			$_request = $this->app['request']->attributes;
+			$comment_status = $_request->has( 'comment_status' ) ? $_request->get( 'comment_status' ) : 'all';
 
 			/** This filter is documented in wp-admin/includes/class-wp-comments-list-table.php */
 			$per_page = apply_filters( 'comments_per_page', $per_page, $comment_status );
