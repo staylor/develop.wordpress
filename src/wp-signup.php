@@ -1,20 +1,4 @@
 <?php
-use function WP\getApp;
-
-/** Sets up the WordPress Environment. */
-require( __DIR__ . '/wp-load.php' );
-
-add_action( 'wp_head', 'wp_no_robots' );
-
-require( __DIR__ . '/wp-blog-header.php' );
-
-if ( is_array( get_site_option( 'illegal_names' )) && isset( $_GET[ 'new' ] ) && in_array( $_GET[ 'new' ], get_site_option( 'illegal_names' ) ) ) {
-	wp_redirect( network_home_url() );
-	die();
-}
-
-$app = getApp();
-
 /**
  * Prints signup_header via wp_head
  *
@@ -28,17 +12,34 @@ function do_signup_header() {
 	 */
 	do_action( 'signup_header' );
 }
-add_action( 'wp_head', 'do_signup_header' );
 
-if ( !is_multisite() ) {
+/** Sets up the WordPress Environment. */
+require( __DIR__ . '/wp-load.php' );
+
+if ( ! is_multisite() ) {
 	wp_redirect( wp_registration_url() );
 	die();
 }
 
-if ( !is_main_site() ) {
+if ( ! is_main_site() ) {
 	wp_redirect( network_site_url( 'wp-signup.php' ) );
 	die();
 }
+
+$new = $app['request']->query->get( 'new' );
+if ( is_array( get_site_option( 'illegal_names' )) && $new && in_array( $new, get_site_option( 'illegal_names' ) ) ) {
+	wp_redirect( network_home_url() );
+	die();
+}
+
+// Set up the WordPress query.
+wp();
+
+add_action( 'wp_head', 'wp_no_robots' );
+add_action( 'wp_head', 'do_signup_header' );
+
+// Load the theme template.
+require_once( ABSPATH . WPINC . '/template-loader.php' );
 
 // Fix for page title
 $app['wp']->current_query->is_404 = false;
