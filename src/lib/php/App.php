@@ -49,4 +49,8 @@ class App extends Container {
 	public $suspend_cache_invalidation;
 	public $switched_stack = [];
 	public $switched = false;
+
+	public $xmlrpc = [
+		'post_default_title' => '',
+	];
 }

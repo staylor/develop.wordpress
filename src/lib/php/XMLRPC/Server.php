@@ -24,7 +24,7 @@ use WP\XMLRPC\Provider\ProviderInterface;
  * @subpackage Publishing
  * @since 1.5.0
  */
-class Server extends IXRServer {
+class Server extends IXRServer implements ServerInterface {
 	use Utils;
 
 	/**

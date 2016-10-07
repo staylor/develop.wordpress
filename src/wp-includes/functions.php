@@ -470,7 +470,8 @@ function xmlrpc_getposttitle( $content ) {
 	if ( preg_match( '/<title>(.+?)<\/title>/is', $content, $matchtitle ) ) {
 		$post_title = $matchtitle[1];
 	} else {
-		$post_title = $post_default_title;
+		$app = getApp();
+		$post_title = $app->xmlrpc['post_default_title'];
 	}
 	return $post_title;
 }

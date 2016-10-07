@@ -1,16 +1,15 @@
 <?php
 namespace WP\Admin;
 
-use WP\{App,Mustache};
+use WP\{App,View as BaseView};
 
-class View {
-	use Mustache;
+class View extends BaseView {
 
-	protected $app;
 	public $l10n;
 
 	public function __construct( App $app ) {
-		$this->app = $app;
+		parent::__construct( $app );
+
 		$this->l10n = new L10N();
 
 		$this->setConfig( [
