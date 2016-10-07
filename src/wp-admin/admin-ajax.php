@@ -14,10 +14,7 @@
  * @since 2.1.0
  */
 const DOING_AJAX = true;
-
-if ( ! defined( 'WP_ADMIN' ) ) {
-	define( 'WP_ADMIN', true );
-}
+const WP_ADMIN = true;
 
 /** Load WordPress Bootstrap */
 require_once( dirname( __DIR__ ) . '/wp-load.php' );
@@ -25,9 +22,15 @@ require_once( dirname( __DIR__ ) . '/wp-load.php' );
 /** Allow for cross-domain requests (from the front end). */
 send_origin_headers();
 
+$action_get = $app['request']->query->get( 'action' );
+$action_post = $app['request']->request->get( 'action' );
+
+$action = $action_get ?? $action_post;
+
 // Require an action parameter
-if ( empty( $_REQUEST['action'] ) )
+if ( empty( $action ) ) {
 	die( '0' );
+}
 
 /** Load WordPress Administration APIs */
 require_once( ABSPATH . 'wp-admin/includes/admin.php' );
@@ -35,8 +38,8 @@ require_once( ABSPATH . 'wp-admin/includes/admin.php' );
 /** Load Ajax Handlers for WordPress Core */
 require_once( ABSPATH . 'wp-admin/includes/ajax-actions.php' );
 
-@header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
-@header( 'X-Robots-Tag: noindex' );
+header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
+header( 'X-Robots-Tag: noindex' );
 
 send_nosniff_header();
 nocache_headers();
@@ -72,11 +75,13 @@ $core_actions_post = [
 $core_actions_post[] = 'wp-fullscreen-save-post';
 
 // Register core Ajax calls.
-if ( ! empty( $_GET['action'] ) && in_array( $_GET['action'], $core_actions_get ) )
-	add_action( 'wp_ajax_' . $_GET['action'], 'wp_ajax_' . str_replace( '-', '_', $_GET['action'] ), 1 );
+if ( ! empty( $action_get ) && in_array( $action_get, $core_actions_get ) ) {
+	add_action( 'wp_ajax_' . $action_get, 'wp_ajax_' . str_replace( '-', '_', $action_get ), 1 );
+}
 
-if ( ! empty( $_POST['action'] ) && in_array( $_POST['action'], $core_actions_post ) )
-	add_action( 'wp_ajax_' . $_POST['action'], 'wp_ajax_' . str_replace( '-', '_', $_POST['action'] ), 1 );
+if ( ! empty( $action_post ) && in_array( $action_post, $core_actions_post ) ) {
+	add_action( 'wp_ajax_' . $action_post, 'wp_ajax_' . str_replace( '-', '_', $action_post ), 1 );
+}
 
 add_action( 'wp_ajax_nopriv_heartbeat', 'wp_ajax_nopriv_heartbeat', 1 );
 
@@ -89,7 +94,7 @@ if ( is_user_logged_in() ) {
 	 *
 	 * @since 2.1.0
 	 */
-	do_action( 'wp_ajax_' . $_REQUEST['action'] );
+	do_action( 'wp_ajax_' . $action );
 } else {
 	/**
 	 * Fires non-authenticated Ajax actions for logged-out users.
@@ -99,7 +104,7 @@ if ( is_user_logged_in() ) {
 	 *
 	 * @since 2.8.0
 	 */
-	do_action( 'wp_ajax_nopriv_' . $_REQUEST['action'] );
+	do_action( 'wp_ajax_nopriv_' . $action );
 }
 // Default status
 die( '0' );
