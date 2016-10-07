@@ -1,0 +1,9 @@
+<fieldset class="screen-options">
+	<legend>{{ l10n.pagination }}</legend>
+	{{# per_page_label }}
+		<label for="{{ option }}">{{ . }}</label>
+		<input type="number" step="1" min="1" max="999" class="screen-per-page" name="wp_screen_options[value]"
+			id="{{ option }}" maxlength="3" value="{{ per_page }}" />
+	{{/ per_page_label }}
+		<input type="hidden" name="wp_screen_options[option]" value="{{ option }}" />
+</fieldset>

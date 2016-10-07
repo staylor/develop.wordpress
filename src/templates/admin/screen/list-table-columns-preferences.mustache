@@ -1,0 +1,9 @@
+<fieldset class="metabox-prefs">
+	<legend>{{ legend }}</legend>
+	{{# prefs }}
+	<label>
+		<input class="hide-column-tog" name="{{ id }}" type="checkbox" id="{{ id }}" value="{{ column }}" {{ checked }} />
+		{{ title }}
+	</label>
+	{{/ prefs }}
+</fieldset>

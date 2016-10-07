@@ -1,0 +1,9 @@
+<fieldset class="columns-prefs">
+<legend class="screen-layout">{{ l10n.layout }}</legend>
+	{{# prefs }}
+	<label class="columns-prefs-{{ i }}">
+		<input type="radio" name="screen_columns" value="{{ i }}" {{{ checked }}} />
+		{{ text }}
+	</label>
+	{{/ prefs }}
+</fieldset>

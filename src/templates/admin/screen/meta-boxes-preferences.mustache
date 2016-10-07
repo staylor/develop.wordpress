@@ -1,0 +1,14 @@
+<fieldset class="metabox-prefs">
+	<legend>{{ l10n.boxes }}</legend>
+
+	{{# prefs }}
+	<label for="{{ id }}-hide">
+		<input class="hide-postbox-tog" name="{{ id }}-hide" type="checkbox" id="{{ id }}-hide" value="{{ id }}" {{ checked }} />{{ title }}
+	</label>
+	{{/ prefs }}
+
+	{{# show_welcome }}
+	<label for="wp_welcome_panel-hide">
+	<input type="checkbox" id="wp_welcome_panel-hide" {{{ welcome_checked }}} />{{ l10n.welcome }}</label>
+	{{/ show_welcome }}
+</fieldset>

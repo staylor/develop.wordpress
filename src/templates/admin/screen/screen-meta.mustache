@@ -1,0 +1,36 @@
+<div id="screen-meta" class="metabox-prefs">
+	<div id="contextual-help-wrap" class="{{ help_class }}" tabindex="-1" aria-label="{{ l10n.contextual_help_tab }}">
+		<div id="contextual-help-back"></div>
+		<div id="contextual-help-columns">
+			<div class="contextual-help-tabs">
+				<ul>
+				{{# help_tabs }}
+					<li id="tab-link-{{ id }}" class="{{ class }}">
+						<a href="#tab-panel-{{ id }}" aria-controls="tab-panel-{{ id }}">{{ title }}</a>
+					</li>
+				{{/ help_tabs }}
+				</ul>
+			</div>
+			{{# help_sidebar }}
+			<div class="contextual-help-sidebar">{{{ . }}}</div>
+			{{/ help_sidebar }}
+			<div class="contextual-help-tabs-wrap">
+			{{# help_tab_panels }}
+				<div id="tab-panel-{{ id }}" class="{{ classes }}">
+					{{{ content }}}
+					{{{ callback_output }}}
+				</div>
+			{{/ help_tab_panels }}
+			</div>
+		</div>
+	</div>
+	{{{ screen_options }}}
+	<div id="screen-meta-links">
+		<div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle">
+			<button type="button" id="contextual-help-link" class="button show-settings" aria-controls="contextual-help-wrap" aria-expanded="false">{{ l10n.help }}</button>
+		</div>
+		<div id="screen-options-link-wrap" class="hide-if-no-js screen-meta-toggle">
+			<button type="button" id="show-settings-link" class="button show-settings" aria-controls="screen-options-wrap" aria-expanded="false">{{ l10n.screen_options }}</button>
+		</div>
+	</div>
+</div>

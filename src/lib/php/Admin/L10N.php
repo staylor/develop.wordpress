@@ -6,6 +6,19 @@ use WP\Magic;
 class L10N extends Magic {
 	public function __construct() {
 		$this->data = [
+			// Screen
+			'pagination' => __( 'Pagination' ),
+			'view_mode' => __( 'View Mode' ),
+			'list_view' => __( 'List View' ),
+			'excerpt_view' => __( 'Excerpt View' ),
+			'layout' => __( 'Layout' ),
+			'contextual_help_tab' => __( 'Contextual Help Tab' ),
+			'help' => __( 'Help' ),
+			'screen_options' => __( 'Screen Options' ),
+			'boxes' => __( 'Boxes' ),
+			'welcome' => _x( 'Welcome', 'Welcome panel' ),
+
+			// Freedoms
 			'freedoms' => __( 'Freedoms' ),
 			'welcome' => __( 'Welcome to WordPress %s' ),
 			'about' => __( 'Thank you for updating to the latest version. WordPress %s changes a lot behind the scenes to make your WordPress experience even better!' ),

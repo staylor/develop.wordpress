@@ -8,6 +8,7 @@ namespace WP\Admin;
  * @since 4.4.0
  */
 
+use WP\Mustache;
 use function WP\getApp;
 
 /**
@@ -16,12 +17,14 @@ use function WP\getApp;
  * @since 3.3.0
  */
 final class Screen {
+	use Mustache;
+
+	protected $app;
 	/**
 	 * Any action associated with the screen. 'add' for *-add.php and *-new.php screens. Empty otherwise.
 	 *
 	 * @since 3.3.0
 	 * @var string
-	 * @access public
 	 */
 	public $action;
 
@@ -31,7 +34,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var string
-	 * @access public
 	 */
 	public $base;
 
@@ -40,7 +42,6 @@ final class Screen {
 	 *
 	 * @since 3.4.0
 	 * @var int
-	 * @access private
 	 */
 	private $columns = 0;
 
@@ -49,7 +50,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var string
-	 * @access public
 	 */
 	public $id;
 
@@ -58,33 +58,8 @@ final class Screen {
 	 *
 	 * @since 3.5.0
 	 * @var string
-	 * @access protected
 	 */
 	protected $in_admin;
-
-	/**
-	 * Whether the screen is in the network admin.
-	 *
-	 * Deprecated. Use in_admin() instead.
-	 *
-	 * @since 3.3.0
-	 * @deprecated 3.5.0
-	 * @var bool
-	 * @access public
-	 */
-	public $is_network;
-
-	/**
-	 * Whether the screen is in the user admin.
-	 *
-	 * Deprecated. Use in_admin() instead.
-	 *
-	 * @since 3.3.0
-	 * @deprecated 3.5.0
-	 * @var bool
-	 * @access public
-	 */
-	public $is_user;
 
 	/**
 	 * The base menu parent.
@@ -93,7 +68,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var string
-	 * @access public
 	 */
 	public $parent_base;
 
@@ -103,7 +77,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var string
-	 * @access public
 	 */
 	public $parent_file;
 
@@ -114,7 +87,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var string
-	 * @access public
 	 */
 	public $post_type;
 
@@ -123,7 +95,6 @@ final class Screen {
 	 * The 'edit-tags.php?taxonomy=category' screen has a taxonomy of 'category'.
 	 * @since 3.3.0
 	 * @var string
-	 * @access public
 	 */
 	public $taxonomy;
 
@@ -132,7 +103,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var array
-	 * @access private
 	 */
 	private $_help_tabs = [];
 
@@ -141,7 +111,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var string
-	 * @access private
 	 */
 	private $_help_sidebar = '';
 
@@ -149,7 +118,6 @@ final class Screen {
 	 * The accessible hidden headings and text associated with the screen, if any.
 	 *
 	 * @since 4.4.0
-	 * @access private
 	 * @var array
 	 */
 	private $_screen_reader_content = [];
@@ -158,7 +126,6 @@ final class Screen {
 	 * Stores old string-based help.
 	 *
 	 * @static
-	 * @access private
 	 *
 	 * @var array
 	 */
@@ -169,7 +136,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var array
-	 * @access private
 	 */
 	private $_options = [];
 
@@ -179,7 +145,6 @@ final class Screen {
 	 * @since 3.3.0
 	 *
 	 * @static
-	 * @access private
 	 *
 	 * @var array
 	 */
@@ -190,7 +155,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var bool
-	 * @access private
 	 */
 	private $_show_screen_options;
 
@@ -199,7 +163,6 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 * @var string
-	 * @access private
 	 */
 	private $_screen_settings;
 
@@ -207,7 +170,6 @@ final class Screen {
 	 * Fetches a screen object.
 	 *
 	 * @since 3.3.0
-	 * @access public
 	 *
 	 * @static
 	 *
@@ -226,18 +188,19 @@ final class Screen {
 		$in_admin = false;
 		$action = '';
 
-		if ( $hook_name )
+		if ( $hook_name ) {
 			$id = $hook_name;
-		else
+		} else {
 			$id = $GLOBALS['hook_suffix'];
-
+		}
 		// For those pesky meta boxes.
 		if ( $hook_name && post_type_exists( $hook_name ) ) {
 			$post_type = $id;
 			$id = 'post'; // changes later. ends up being $base.
 		} else {
-			if ( '.php' == substr( $id, -4 ) )
+			if ( '.php' == substr( $id, -4 ) ) {
 				$id = substr( $id, 0, -4 );
+			}
 
 			if ( 'post-new' == $id || 'link-add' == $id || 'media-new' == $id || 'user-new' == $id ) {
 				$id = substr( $id, 0, -4 );
@@ -266,78 +229,91 @@ final class Screen {
 				}
 			}
 
-			if ( ! $in_admin )
+			if ( ! $in_admin ) {
 				$in_admin = 'site';
+			}
 		} else {
-			if ( defined( 'WP_NETWORK_ADMIN' ) && WP_NETWORK_ADMIN )
+			if ( defined( 'WP_NETWORK_ADMIN' ) && WP_NETWORK_ADMIN ) {
 				$in_admin = 'network';
-			elseif ( defined( 'WP_USER_ADMIN' ) && WP_USER_ADMIN )
+			} elseif ( defined( 'WP_USER_ADMIN' ) && WP_USER_ADMIN ) {
 				$in_admin = 'user';
-			else
+			} else {
 				$in_admin = 'site';
+			}
 		}
 
-		if ( 'index' == $id )
+		if ( 'index' == $id ) {
 			$id = 'dashboard';
-		elseif ( 'front' == $id )
+		} elseif ( 'front' == $id ) {
 			$in_admin = false;
+		}
 
 		$base = $id;
 
 		// If this is the current screen, see if we can be more accurate for post types and taxonomies.
 		if ( ! $hook_name ) {
-			if ( isset( $_REQUEST['post_type'] ) )
+			if ( isset( $_REQUEST['post_type'] ) ) {
 				$post_type = post_type_exists( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : false;
-			if ( isset( $_REQUEST['taxonomy'] ) )
+			}
+
+			if ( isset( $_REQUEST['taxonomy'] ) ) {
 				$taxonomy = taxonomy_exists( $_REQUEST['taxonomy'] ) ? $_REQUEST['taxonomy'] : false;
+			}
 
 			switch ( $base ) {
-				case 'post' :
-					if ( isset( $_GET['post'] ) )
-						$post_id = (int) $_GET['post'];
-					elseif ( isset( $_POST['post_ID'] ) )
-						$post_id = (int) $_POST['post_ID'];
-					else
-						$post_id = 0;
+			case 'post' :
+				if ( isset( $_GET['post'] ) ) {
+					$post_id = (int) $_GET['post'];
+				} elseif ( isset( $_POST['post_ID'] ) ) {
+					$post_id = (int) $_POST['post_ID'];
+				} else {
+					$post_id = 0;
+				}
 
-					if ( $post_id ) {
-						$post = get_post( $post_id );
-						if ( $post )
-							$post_type = $post->post_type;
+				if ( $post_id ) {
+					$post = get_post( $post_id );
+					if ( $post ) {
+						$post_type = $post->post_type;
 					}
-					break;
-				case 'edit-tags' :
-				case 'term' :
-					if ( null === $post_type && is_object_in_taxonomy( 'post', $taxonomy ? $taxonomy : 'post_tag' ) )
-						$post_type = 'post';
-					break;
+				}
+				break;
+			case 'edit-tags' :
+			case 'term' :
+				if ( null === $post_type && is_object_in_taxonomy( 'post', $taxonomy ? $taxonomy : 'post_tag' ) ) {
+					$post_type = 'post';
+				}
+				break;
 			}
 		}
 
 		switch ( $base ) {
-			case 'post' :
-				if ( null === $post_type )
-					$post_type = 'post';
-				$id = $post_type;
-				break;
-			case 'edit' :
-				if ( null === $post_type )
-					$post_type = 'post';
-				$id .= '-' . $post_type;
-				break;
-			case 'edit-tags' :
-			case 'term' :
-				if ( null === $taxonomy )
-					$taxonomy = 'post_tag';
-				// The edit-tags ID does not contain the post type. Look for it in the request.
-				if ( null === $post_type ) {
-					$post_type = 'post';
-					if ( isset( $_REQUEST['post_type'] ) && post_type_exists( $_REQUEST['post_type'] ) )
-						$post_type = $_REQUEST['post_type'];
+		case 'post' :
+			if ( null === $post_type ) {
+				$post_type = 'post';
+			}
+			$id = $post_type;
+			break;
+		case 'edit' :
+			if ( null === $post_type ) {
+				$post_type = 'post';
+			}
+			$id .= '-' . $post_type;
+			break;
+		case 'edit-tags' :
+		case 'term' :
+			if ( null === $taxonomy ) {
+				$taxonomy = 'post_tag';
+			}
+			// The edit-tags ID does not contain the post type. Look for it in the request.
+			if ( null === $post_type ) {
+				$post_type = 'post';
+				if ( isset( $_REQUEST['post_type'] ) && post_type_exists( $_REQUEST['post_type'] ) ) {
+					$post_type = $_REQUEST['post_type'];
 				}
+			}
 
-				$id = 'edit-' . $taxonomy;
-				break;
+			$id = 'edit-' . $taxonomy;
+			break;
 		}
 
 		if ( 'network' == $in_admin ) {
@@ -350,19 +326,18 @@ final class Screen {
 
 		if ( isset( self::$_registry[ $id ] ) ) {
 			$screen = self::$_registry[ $id ];
-			if ( $screen === get_current_screen() )
+			if ( $screen === get_current_screen() ) {
 				return $screen;
+			}
 		} else {
 			$screen = new Screen();
-			$screen->id     = $id;
+			$screen->id = $id;
 		}
 
 		$screen->base       = $base;
 		$screen->action     = $action;
 		$screen->post_type  = (string) $post_type;
 		$screen->taxonomy   = (string) $taxonomy;
-		$screen->is_user    = ( 'user' == $in_admin );
-		$screen->is_network = ( 'network' == $in_admin );
 		$screen->in_admin   = $in_admin;
 
 		self::$_registry[ $id ] = $screen;
@@ -377,8 +352,7 @@ final class Screen {
 	 * @since 3.3.0
 	 */
 	public function set_current_screen() {
-		$app = getApp();
-		$app->current_screen = $this;
+		$this->app->current_screen = $this;
 
 		/**
 		 * Fires after the current screen has been set.
@@ -387,16 +361,23 @@ final class Screen {
 		 *
 		 * @param Screen $current_screen Current Screen object.
 		 */
-		do_action( 'current_screen', $app->current_screen );
+		do_action( 'current_screen', $this->app->current_screen );
 	}
 
 	/**
 	 * Constructor
 	 *
 	 * @since 3.3.0
-	 * @access private
 	 */
-	private function __construct() {}
+	private function __construct() {
+		$this->app = getApp();
+
+		$this->setConfig( [
+			'helpers' => [
+				'l10n' => new L10N()
+			]
+		] );
+	}
 
 	/**
 	 * Indicates whether the screen is in a particular admin
@@ -408,9 +389,9 @@ final class Screen {
 	 * @return bool True if the screen is in the indicated admin, false otherwise.
 	 */
 	public function in_admin( $admin = null ) {
-		if ( empty( $admin ) )
+		if ( empty( $admin ) ) {
 			return (bool) $this->in_admin;
-
+		}
 		return ( $admin == $this->in_admin );
 	}
 
@@ -497,11 +478,14 @@ final class Screen {
 	 * @return string The option value if set, null otherwise.
 	 */
 	public function get_option( $option, $key = false ) {
-		if ( ! isset( $this->_options[ $option ] ) )
+		if ( ! isset( $this->_options[ $option ] ) ) {
 			return null;
+		}
+
 		if ( $key ) {
-			if ( isset( $this->_options[ $option ][ $key ] ) )
+			if ( isset( $this->_options[ $option ][ $key ] ) ) {
 				return $this->_options[ $option ][ $key ];
+			}
 			return null;
 		}
 		return $this->_options[ $option ];
@@ -548,8 +532,9 @@ final class Screen {
 	 * @return array Help tab arguments.
 	 */
 	public function get_help_tab( $id ) {
-		if ( ! isset( $this->_help_tabs[ $id ] ) )
+		if ( ! isset( $this->_help_tabs[ $id ] ) ) {
 			return null;
+		}
 		return $this->_help_tabs[ $id ];
 	}
 
@@ -578,16 +563,17 @@ final class Screen {
 			'callback' => false,
 			'priority' => 10,
 		);
-		$args = wp_parse_args( $args, $defaults );
+		$params = wp_parse_args( $args, $defaults );
 
-		$args['id'] = sanitize_html_class( $args['id'] );
+		$params['id'] = sanitize_html_class( $args['id'] );
 
 		// Ensure we have an ID and title.
-		if ( ! $args['id'] || ! $args['title'] )
+		if ( ! $params['id'] || ! $params['title'] ) {
 			return;
+		}
 
 		// Allows for overriding an existing tab with that ID.
-		$this->_help_tabs[ $args['id'] ] = $args;
+		$this->_help_tabs[ $params['id'] ] = $params;
 	}
 
 	/**
@@ -700,9 +686,8 @@ final class Screen {
 			'heading_pagination' => __( 'Items list navigation' ),
 			'heading_list'       => __( 'Items list' ),
 		);
-		$content = wp_parse_args( $content, $defaults );
 
-		$this->_screen_reader_content = $content;
+		$this->_screen_reader_content = wp_parse_args( $content, $defaults );
 	}
 
 	/**
@@ -766,8 +751,9 @@ final class Screen {
 			 * @param string $old_help_default Default contextual help text.
 			 */
 			$default_help = apply_filters( 'default_contextual_help', '' );
-			if ( $default_help )
+			if ( $default_help ) {
 				$old_help = '<p>' . $default_help . '</p>';
+			}
 		}
 
 		if ( $old_help ) {
@@ -781,68 +767,32 @@ final class Screen {
 		$help_sidebar = $this->get_help_sidebar();
 
 		$help_class = 'hidden';
-		if ( ! $help_sidebar )
+		if ( ! $help_sidebar ) {
 			$help_class .= ' no-sidebar';
-
+		}
 		// Time to render!
-		?>
-		<div id="screen-meta" class="metabox-prefs">
 
-			<div id="contextual-help-wrap" class="<?php echo esc_attr( $help_class ); ?>" tabindex="-1" aria-label="<?php esc_attr_e('Contextual Help Tab'); ?>">
-				<div id="contextual-help-back"></div>
-				<div id="contextual-help-columns">
-					<div class="contextual-help-tabs">
-						<ul>
-						<?php
-						$class = ' class="active"';
-						foreach ( $this->get_help_tabs() as $tab ) :
-							$link_id  = "tab-link-{$tab['id']}";
-							$panel_id = "tab-panel-{$tab['id']}";
-							?>
+		$tabs = array_values( $this->get_help_tabs() );
+		$content = $tabs;
+		if ( ! empty( $tabs ) ) {
+			$tabs[0]['class'] = 'active';
+		}
 
-							<li id="<?php echo esc_attr( $link_id ); ?>"<?php echo $class; ?>>
-								<a href="<?php echo esc_url( "#$panel_id" ); ?>" aria-controls="<?php echo esc_attr( $panel_id ); ?>">
-									<?php echo esc_html( $tab['title'] ); ?>
-								</a>
-							</li>
-						<?php
-							$class = '';
-						endforeach;
-						?>
-						</ul>
-					</div>
+		foreach ( $content as $i => &$c ) {
+			if ( 0 === $i ) {
+				$c['classes'] = 'help-tab-content active';
+			} else {
+				$c['classes'] = 'help-tab-content';
+			}
 
-					<?php if ( $help_sidebar ) : ?>
-					<div class="contextual-help-sidebar">
-						<?php echo $help_sidebar; ?>
-					</div>
-					<?php endif; ?>
+			// If it exists, fire tab callback.
+			if ( ! empty( $c['callback'] ) ) {
+				ob_start();
+				call_user_func_array( $c['callback'], [ $this, $c ] );
+				$c['callback_output'] = ob_get_clean();
+			}
+		}
 
-					<div class="contextual-help-tabs-wrap">
-						<?php
-						$classes = 'help-tab-content active';
-						foreach ( $this->get_help_tabs() as $tab ):
-							$panel_id = "tab-panel-{$tab['id']}";
-							?>
-
-							<div id="<?php echo esc_attr( $panel_id ); ?>" class="<?php echo $classes; ?>">
-								<?php
-								// Print tab content.
-								echo $tab['content'];
-
-								// If it exists, fire tab callback.
-								if ( ! empty( $tab['callback'] ) )
-									call_user_func_array( $tab['callback'], array( $this, $tab ) );
-								?>
-							</div>
-						<?php
-							$classes = 'help-tab-content';
-						endforeach;
-						?>
-					</div>
-				</div>
-			</div>
-		<?php
 		// Setup layout columns
 
 		/**
@@ -859,39 +809,33 @@ final class Screen {
 		 */
 		$columns = apply_filters( 'screen_layout_columns', [], $this->id, $this );
 
-		if ( ! empty( $columns ) && isset( $columns[ $this->id ] ) )
-			$this->add_option( 'layout_columns', array('max' => $columns[ $this->id ] ) );
+		if ( ! empty( $columns ) && isset( $columns[ $this->id ] ) ) {
+			$this->add_option( 'layout_columns', [ 'max' => $columns[ $this->id ] ] );
+		}
 
 		if ( $this->get_option( 'layout_columns' ) ) {
-			$this->columns = (int) get_user_option("screen_layout_$this->id");
+			$this->columns = (int) get_user_option( "screen_layout_{$this->id}" );
 
-			if ( ! $this->columns && $this->get_option( 'layout_columns', 'default' ) )
+			if ( ! $this->columns && $this->get_option( 'layout_columns', 'default' ) ) {
 				$this->columns = $this->get_option( 'layout_columns', 'default' );
+			}
 		}
-		$GLOBALS[ 'screen_layout_columns' ] = $this->columns; // Set the global for back-compat.
 
 		// Add screen options
-		if ( $this->show_screen_options() )
+		$screen_options = '';
+		if ( $this->show_screen_options() ) {
+			ob_start();
 			$this->render_screen_options();
-		?>
-		</div>
-		<?php
-		if ( ! $this->get_help_tabs() && ! $this->show_screen_options() )
-			return;
-		?>
-		<div id="screen-meta-links">
-		<?php if ( $this->get_help_tabs() ) : ?>
-			<div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle">
-			<button type="button" id="contextual-help-link" class="button show-settings" aria-controls="contextual-help-wrap" aria-expanded="false"><?php _e( 'Help' ); ?></button>
-			</div>
-		<?php endif;
-		if ( $this->show_screen_options() ) : ?>
-			<div id="screen-options-link-wrap" class="hide-if-no-js screen-meta-toggle">
-			<button type="button" id="show-settings-link" class="button show-settings" aria-controls="screen-options-wrap" aria-expanded="false"><?php _e( 'Screen Options' ); ?></button>
-			</div>
-		<?php endif; ?>
-		</div>
-		<?php
+			$screen_options = ob_get_clean();
+		}
+
+		echo $this->render( 'admin/screen/screen-meta', [
+			'help_class' => $help_class,
+			'help_tabs' => $tabs,
+			'help_sidebar' => $help_sidebar,
+			'help_tab_panels' => $content,
+			'screen_options' => $screen_options,
+		] );
 	}
 
 	/**
@@ -903,26 +847,27 @@ final class Screen {
 	public function show_screen_options() {
 		global $wp_meta_boxes;
 
-		if ( is_bool( $this->_show_screen_options ) )
+		if ( is_bool( $this->_show_screen_options ) ) {
 			return $this->_show_screen_options;
+		}
 
 		$columns = get_column_headers( $this );
 
 		$show_screen = ! empty( $wp_meta_boxes[ $this->id ] ) || $columns || $this->get_option( 'per_page' );
 
 		switch ( $this->base ) {
-			case 'widgets':
-				$this->_screen_settings = '<p><a id="access-on" href="widgets.php?widgets-access=on">' . __('Enable accessibility mode') . '</a><a id="access-off" href="widgets.php?widgets-access=off">' . __('Disable accessibility mode') . "</a></p>\n";
-				break;
-			case 'post' :
-				$expand = '<fieldset class="editor-expand hidden"><legend>' . __( 'Additional settings' ) . '</legend><label for="editor-expand-toggle">';
-				$expand .= '<input type="checkbox" id="editor-expand-toggle"' . checked( get_user_setting( 'editor_expand', 'on' ), 'on', false ) . ' />';
-				$expand .= __( 'Enable full-height editor and distraction-free functionality.' ) . '</label></fieldset>';
-				$this->_screen_settings = $expand;
-				break;
-			default:
-				$this->_screen_settings = '';
-				break;
+		case 'widgets':
+			$this->_screen_settings = '<p><a id="access-on" href="widgets.php?widgets-access=on">' . __('Enable accessibility mode') . '</a><a id="access-off" href="widgets.php?widgets-access=off">' . __('Disable accessibility mode') . "</a></p>\n";
+			break;
+		case 'post' :
+			$expand = '<fieldset class="editor-expand hidden"><legend>' . __( 'Additional settings' ) . '</legend><label for="editor-expand-toggle">';
+			$expand .= '<input type="checkbox" id="editor-expand-toggle"' . checked( get_user_setting( 'editor_expand', 'on' ), 'on', false ) . ' />';
+			$expand .= __( 'Enable full-height editor and distraction-free functionality.' ) . '</label></fieldset>';
+			$this->_screen_settings = $expand;
+			break;
+		default:
+			$this->_screen_settings = '';
+			break;
 		}
 
 		/**
@@ -938,8 +883,9 @@ final class Screen {
 		 */
 		$this->_screen_settings = apply_filters( 'screen_settings', $this->_screen_settings, $this );
 
-		if ( $this->_screen_settings || $this->_options )
+		if ( $this->_screen_settings || $this->_options ) {
 			$show_screen = true;
+		}
 
 		/**
 		 * Filters whether to show the Screen Options tab.
@@ -959,12 +905,12 @@ final class Screen {
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param array $options {
+	 * @param array $opts {
 	 *     @type bool $wrap  Whether the screen-options-wrap div will be included. Defaults to true.
 	 * }
 	 */
-	public function render_screen_options( $options = [] ) {
-		$options = wp_parse_args( $options, array(
+	public function render_screen_options( $opts = [] ) {
+		$options = wp_parse_args( $opts, array(
 			'wrap' => true,
 		) );
 
@@ -1009,6 +955,49 @@ final class Screen {
 		echo $form_end . $wrapper_end;
 	}
 
+	public function meta_box_prefs() {
+		global $wp_meta_boxes;
+
+		if ( empty($wp_meta_boxes[ $this->id ] ) ) {
+			return;
+		}
+
+		$hidden = get_hidden_meta_boxes( $this );
+		$boxes = $wp_meta_boxes[ $this->id ];
+		$priorities = [ 'high', 'core', 'default', 'low' ];
+
+		$prefs = [];
+		foreach ( array_keys( $boxes ) as $context ) {
+			foreach ( $priorities as $priority ) {
+				if ( ! isset( $boxes[ $context ][ $priority ] ) ) {
+					continue;
+				}
+				foreach ( $boxes[ $context ][ $priority ] as $box ) {
+					if ( false == $box || ! $box['title'] ) {
+						continue;
+					}
+					// Submit box cannot be hidden
+					if ( 'submitdiv' === $box['id'] || 'linksubmitdiv' === $box['id'] ) {
+						continue;
+					}
+
+					$widget_title = $box['title'];
+
+					if ( is_array( $box['args'] ) && isset( $box['args']['__widget_basename'] ) ) {
+						$widget_title = $box['args']['__widget_basename'];
+					}
+
+					$prefs[] = [
+						'id' => $box['id'],
+						'checked' => checked( in_array( $box['id'], $hidden ), false, false ),
+						'title' => $widget_title,
+					];
+				}
+			}
+		}
+		return $prefs;
+	}
+
 	/**
 	 * Render the meta boxes preferences.
 	 *
@@ -1022,29 +1011,26 @@ final class Screen {
 		if ( ! isset( $wp_meta_boxes[ $this->id ] ) ) {
 			return;
 		}
-		?>
-		<fieldset class="metabox-prefs">
-		<legend><?php _e( 'Boxes' ); ?></legend>
-		<?php
-			meta_box_prefs( $this );
 
-			if ( 'dashboard' === $this->id && has_action( 'welcome_panel' ) && current_user_can( 'edit_theme_options' ) ) {
-				if ( isset( $_GET['welcome'] ) ) {
-					$welcome_checked = empty( $_GET['welcome'] ) ? 0 : 1;
-					update_user_meta( get_current_user_id(), 'show_welcome_panel', $welcome_checked );
-				} else {
-					$welcome_checked = get_user_meta( get_current_user_id(), 'show_welcome_panel', true );
-					if ( 2 == $welcome_checked && wp_get_current_user()->user_email != get_option( 'admin_email' ) ) {
-						$welcome_checked = false;
-					}
+		$show_welcome = 'dashboard' === $this->id && has_action( 'welcome_panel' ) && current_user_can( 'edit_theme_options' );
+
+		if ( $show_welcome ) {
+			if ( isset( $_GET['welcome'] ) ) {
+				$welcome_checked = empty( $_GET['welcome'] ) ? 0 : 1;
+				update_user_meta( get_current_user_id(), 'show_welcome_panel', $welcome_checked );
+			} else {
+				$welcome_checked = get_user_meta( get_current_user_id(), 'show_welcome_panel', true );
+				if ( 2 == $welcome_checked && wp_get_current_user()->user_email != get_option( 'admin_email' ) ) {
+					$welcome_checked = false;
 				}
-				echo '<label for="wp_welcome_panel-hide">';
-				echo '<input type="checkbox" id="wp_welcome_panel-hide"' . checked( (bool) $welcome_checked, true, false ) . ' />';
-				echo _x( 'Welcome', 'Welcome panel' ) . "</label>\n";
 			}
-		?>
-		</fieldset>
-		<?php
+		}
+
+		echo $this->render( 'admin/screen/meta-boxes-preferences', [
+			'prefs' => $this->meta_box_prefs(),
+			'show_welcome' => $show_welcome,
+			'welcome_checked' => checked( (bool) $welcome_checked, true, false ),
+		] );
 	}
 
 	/**
@@ -1062,12 +1048,10 @@ final class Screen {
 		}
 
 		$legend = ! empty( $columns['_title'] ) ? $columns['_title'] : __( 'Columns' );
-		?>
-		<fieldset class="metabox-prefs">
-		<legend><?php echo $legend; ?></legend>
-		<?php
-		$special = array( '_title', 'cb', 'comment', 'media', 'name', 'title', 'username', 'blogname' );
 
+		$special = [ '_title', 'cb', 'comment', 'media', 'name', 'title', 'username', 'blogname' ];
+
+		$prefs = [];
 		foreach ( $columns as $column => $title ) {
 			// Can't hide these for they are special
 			if ( in_array( $column, $special ) ) {
@@ -1083,13 +1067,19 @@ final class Screen {
 			}
 
 			$id = "$column-hide";
-			echo '<label>';
-			echo '<input class="hide-column-tog" name="' . $id . '" type="checkbox" id="' . $id . '" value="' . $column . '"' . checked( ! in_array( $column, $hidden ), true, false ) . ' />';
-			echo "$title</label>\n";
+
+			$prefs[] = [
+				'column' => $column,
+				'title' => $title,
+				'id' => $id,
+				'checked' => checked( ! in_array( $column, $hidden ), true, false ),
+			];
 		}
-		?>
-		</fieldset>
-		<?php
+
+		echo $this->render( 'admin/screen/list-table-columns-preferences', [
+			'legend' => $legend,
+			'prefs' => $prefs,
+		] );
 	}
 
 	/**
@@ -1105,20 +1095,18 @@ final class Screen {
 		$screen_layout_columns = $this->get_columns();
 		$num = $this->get_option( 'layout_columns', 'max' );
 
-		?>
-		<fieldset class='columns-prefs'>
-		<legend class="screen-layout"><?php _e( 'Layout' ); ?></legend><?php
-			for ( $i = 1; $i <= $num; ++$i ):
-				?>
-				<label class="columns-prefs-<?php echo $i; ?>">
-					<input type='radio' name='screen_columns' value='<?php echo esc_attr( $i ); ?>'
-						<?php checked( $screen_layout_columns, $i ); ?> />
-					<?php printf( _n( '%s column', '%s columns', $i ), number_format_i18n( $i ) ); ?>
-				</label>
-				<?php
-			endfor; ?>
-		</fieldset>
-		<?php
+		$prefs = [];
+		for ( $i = 1; $i <= $num; ++$i ) {
+			$prefs[] = [
+				'checked' => checked( $screen_layout_columns, $i, false ),
+				'i' => $i,
+				'text' => sprintf( _n( '%s column', '%s columns', $i ), number_format_i18n( $i ) )
+			];
+		}
+
+		echo $this->render( 'admin/screen/screen-layout', [
+			'prefs' => $prefs
+		] );
 	}
 
 	/**
@@ -1171,18 +1159,11 @@ final class Screen {
 		// This needs a submit button
 		add_filter( 'screen_options_show_submit', '__return_true' );
 
-		?>
-		<fieldset class="screen-options">
-		<legend><?php _e( 'Pagination' ); ?></legend>
-			<?php if ( $per_page_label ) : ?>
-				<label for="<?php echo esc_attr( $option ); ?>"><?php echo $per_page_label; ?></label>
-				<input type="number" step="1" min="1" max="999" class="screen-per-page" name="Screen_options[value]"
-					id="<?php echo esc_attr( $option ); ?>" maxlength="3"
-					value="<?php echo esc_attr( $per_page ); ?>" />
-			<?php endif; ?>
-				<input type="hidden" name="Screen_options[option]" value="<?php echo esc_attr( $option ); ?>" />
-		</fieldset>
-		<?php
+		echo $this->render( 'admin/screen/per-page-options', [
+			'option' => $option,
+			'per_page' => $per_page,
+			'per_page_label' => $per_page_label,
+		] );
 	}
 
 	/**
@@ -1218,19 +1199,11 @@ final class Screen {
 
 		// This needs a submit button
 		add_filter( 'screen_options_show_submit', '__return_true' );
-?>
-		<fieldset class="metabox-prefs view-mode">
-		<legend><?php _e( 'View Mode' ); ?></legend>
-				<label for="list-view-mode">
-					<input id="list-view-mode" type="radio" name="mode" value="list" <?php checked( 'list', $mode ); ?> />
-					<?php _e( 'List View' ); ?>
-				</label>
-				<label for="excerpt-view-mode">
-					<input id="excerpt-view-mode" type="radio" name="mode" value="excerpt" <?php checked( 'excerpt', $mode ); ?> />
-					<?php _e( 'Excerpt View' ); ?>
-				</label>
-		</fieldset>
-<?php
+
+		echo $this->render( 'admin/screen/view-mode', [
+			'list_checked' => checked( 'list', $mode, false ),
+			'excerpt_checked' => checked( 'excerpt', $mode, false ),
+		] );
 	}
 
 	/**
@@ -1246,6 +1219,10 @@ final class Screen {
 		if ( ! isset( $this->_screen_reader_content[ $key ] ) ) {
 			return;
 		}
-		echo "<$tag class='screen-reader-text'>" . $this->_screen_reader_content[ $key ] . "</$tag>";
+
+		echo $this->render( 'admin/screen/screen-reader-content', [
+			'tag' => $tag,
+			'content' => $this->_screen_reader_content[ $key ]
+		] );
 	}
 }
