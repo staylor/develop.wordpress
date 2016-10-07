@@ -216,7 +216,7 @@ function get_object_taxonomies( $object, $output = 'names' ) {
  * @since 2.3.0
  *
  * @param string $taxonomy Name of taxonomy object to return.
- * @return object|false The Taxonomy Object or false if $taxonomy doesn't exist.
+ * @return WP_Taxonomy|false The Taxonomy Object or false if $taxonomy doesn't exist.
  */
 function get_taxonomy( $taxonomy ) {
 	$app = getApp();
@@ -279,6 +279,8 @@ function is_taxonomy_hierarchical($taxonomy) {
  * @since 4.4.0 The `show_ui` argument is now enforced on the term editing screen.
  * @since 4.4.0 The `public` argument now controls whether the taxonomy can be queried on the front end.
  * @since 4.5.0 Introduced `publicly_queryable` argument.
+ *
+ * @global array $wp_taxonomies Registered taxonomies.
  *
  * @param string       $taxonomy    Taxonomy key, must not exceed 32 characters.
  * @param array|string $object_type Object type or array of object types with which the taxonomy should be associated.
@@ -348,133 +350,25 @@ function is_taxonomy_hierarchical($taxonomy) {
  */
 function register_taxonomy( $taxonomy, $object_type, $args = [] ) {
 	$app = getApp();
+	global $wp_taxonomies;
 
 	if ( ! is_array( $app->taxonomies ) )
 		$app->taxonomies = [];
 
 	$args = wp_parse_args( $args );
 
-	/**
-	 * Filters the arguments for registering a taxonomy.
-	 *
-	 * @since 4.4.0
-	 *
-	 * @param array  $args        Array of arguments for registering a taxonomy.
-	 * @param string $taxonomy    Taxonomy key.
-	 * @param array  $object_type Array of names of object types for the taxonomy.
-	 */
-	$args = apply_filters( 'register_taxonomy_args', $args, $taxonomy, (array) $object_type );
-
-	$defaults = [
-		'labels'                => [],
-		'description'           => '',
-		'public'                => true,
-		'publicly_queryable'    => null,
-		'hierarchical'          => false,
-		'show_ui'               => null,
-		'show_in_menu'          => null,
-		'show_in_nav_menus'     => null,
-		'show_tagcloud'         => null,
-		'show_in_quick_edit'	=> null,
-		'show_admin_column'     => false,
-		'meta_box_cb'           => null,
-		'capabilities'          => [],
-		'rewrite'               => true,
-		'query_var'             => $taxonomy,
-		'update_count_callback' => '',
-		'_builtin'              => false,
-	];
-	$args = array_merge( $defaults, $args );
-
 	if ( empty( $taxonomy ) || strlen( $taxonomy ) > 32 ) {
 		_doing_it_wrong( __FUNCTION__, __( 'Taxonomy names must be between 1 and 32 characters in length.' ), '4.2.0' );
 		return new WP_Error( 'taxonomy_length_invalid', __( 'Taxonomy names must be between 1 and 32 characters in length.' ) );
 	}
 
-	// If not set, default to the setting for public.
-	if ( null === $args['publicly_queryable'] ) {
-		$args['publicly_queryable'] = $args['public'];
-	}
+	$taxonomy_object = new WP_Taxonomy( $taxonomy, $object_type, $args );
+	$taxonomy_object->add_rewrite_rules();
 
-	// Non-publicly queryable taxonomies should not register query vars, except in the admin.
-	if ( false !== $args['query_var'] && ( is_admin() || false !== $args['publicly_queryable'] ) && ! empty( $wp ) ) {
-		if ( true === $args['query_var'] )
-			$args['query_var'] = $taxonomy;
-		else
-			$args['query_var'] = sanitize_title_with_dashes( $args['query_var'] );
-		$app['wp']->add_query_var( $args['query_var'] );
-	} else {
-		// Force query_var to false for non-public taxonomies.
-		$args['query_var'] = false;
-	}
+	$wp_taxonomies[ $taxonomy ] = $taxonomy_object;
 
-	if ( false !== $args['rewrite'] && ( is_admin() || '' != get_option( 'permalink_structure' ) ) ) {
-		$args['rewrite'] = wp_parse_args( $args['rewrite'], [
-			'with_front' => true,
-			'hierarchical' => false,
-			'ep_mask' => EP_NONE,
-		] );
+	$taxonomy_object->add_hooks();
 
-		if ( empty( $args['rewrite']['slug'] ) )
-			$args['rewrite']['slug'] = sanitize_title_with_dashes( $taxonomy );
-
-		if ( $args['hierarchical'] && $args['rewrite']['hierarchical'] )
-			$tag = '(.+?)';
-		else
-			$tag = '([^/]+)';
-
-		add_rewrite_tag( "%$taxonomy%", $tag, $args['query_var'] ? "{$args['query_var']}=" : "taxonomy=$taxonomy&term=" );
-		add_permastruct( $taxonomy, "{$args['rewrite']['slug']}/%$taxonomy%", $args['rewrite'] );
-	}
-
-	// If not set, default to the setting for public.
-	if ( null === $args['show_ui'] )
-		$args['show_ui'] = $args['public'];
-
-	// If not set, default to the setting for show_ui.
-	if ( null === $args['show_in_menu' ] || ! $args['show_ui'] )
-		$args['show_in_menu' ] = $args['show_ui'];
-
-	// If not set, default to the setting for public.
-	if ( null === $args['show_in_nav_menus'] )
-		$args['show_in_nav_menus'] = $args['public'];
-
-	// If not set, default to the setting for show_ui.
-	if ( null === $args['show_tagcloud'] )
-		$args['show_tagcloud'] = $args['show_ui'];
-
-	// If not set, default to the setting for show_ui.
-	if ( null === $args['show_in_quick_edit'] ) {
-		$args['show_in_quick_edit'] = $args['show_ui'];
-	}
-
-	$default_caps = [
-		'manage_terms' => 'manage_categories',
-		'edit_terms'   => 'manage_categories',
-		'delete_terms' => 'manage_categories',
-		'assign_terms' => 'edit_posts',
-	];
-	$args['cap'] = (object) array_merge( $default_caps, $args['capabilities'] );
-	unset( $args['capabilities'] );
-
-	$args['name'] = $taxonomy;
-	$args['object_type'] = array_unique( (array) $object_type );
-
-	$args['labels'] = get_taxonomy_labels( (object) $args );
-	$args['label'] = $args['labels']->name;
-
-	// If not set, use the default meta box
-	if ( null === $args['meta_box_cb'] ) {
-		if ( $args['hierarchical'] )
-			$args['meta_box_cb'] = 'post_categories_meta_box';
-		else
-			$args['meta_box_cb'] = 'post_tags_meta_box';
-	}
-
-	$app->taxonomies[ $taxonomy ] = (object) $args;
-
-	// Register callback handling for meta box.
- 	add_filter( 'wp_ajax_add-' . $taxonomy, '_wp_ajax_add_hierarchical_term' );
 
 	/**
 	 * Fires after a taxonomy is registered.
@@ -503,28 +397,18 @@ function unregister_taxonomy( $taxonomy ) {
 		return new WP_Error( 'invalid_taxonomy', __( 'Invalid taxonomy.' ) );
 	}
 
-	$taxonomy_args = get_taxonomy( $taxonomy );
+	$taxonomy_object = get_taxonomy( $taxonomy );
 
 	// Do not allow unregistering internal taxonomies.
-	if ( $taxonomy_args->_builtin ) {
+	if ( $taxonomy_object->_builtin ) {
 		return new WP_Error( 'invalid_taxonomy', __( 'Unregistering a built-in taxonomy is not allowed' ) );
 	}
 
+	global $wp_taxonomies;
 	$app = getApp();
 
-	// Remove query var.
-	if ( false !== $taxonomy_args->query_var ) {
-		$app['wp']->remove_query_var( $taxonomy_args->query_var );
-	}
-
-	// Remove rewrite tags and permastructs.
-	if ( false !== $taxonomy_args->rewrite ) {
-		remove_rewrite_tag( "%$taxonomy%" );
-		remove_permastruct( $taxonomy );
-	}
-
-	// Unregister callback handling for meta box.
-	remove_filter( 'wp_ajax_add-' . $taxonomy, '_wp_ajax_add_hierarchical_term' );
+	$taxonomy_object->remove_rewrite_rules();
+	$taxonomy_object->remove_hooks();
 
 	// Remove the taxonomy.
 	unset( $app->taxonomies[ $taxonomy ] );
@@ -574,7 +458,7 @@ function unregister_taxonomy( $taxonomy ) {
  * @since 4.3.0 Added the `no_terms` label.
  * @since 4.4.0 Added the `items_list_navigation` and `items_list` labels.
  *
- * @param object $tax Taxonomy object.
+ * @param WP_Taxonomy $tax Taxonomy object.
  * @return object object with all the labels as member variables.
  */
 function get_taxonomy_labels( $tax ) {
