@@ -22,6 +22,7 @@ if ( ! current_user_can( 'list_users' ) ) {
 }
 
 $app = getApp();
+$_request = $app['request']->attributes;
 $wpdb = $app['db'];
 
 $wp_list_table = _get_list_table('WP_Users_List_Table');
@@ -54,11 +55,11 @@ $help = '<p>' . __('Hovering over a row in the users list will display action li
 	'<ul>' .
 	'<li>' . __('Edit takes you to the editable profile screen for that user. You can also reach that screen by clicking on the username.') . '</li>';
 
-if ( is_multisite() )
+if ( is_multisite() ) {
 	$help .= '<li>' . __( 'Remove allows you to remove a user from your site. It does not delete their content. You can also remove multiple users at once by using Bulk Actions.' ) . '</li>';
-else
+} else {
 	$help .= '<li>' . __( 'Delete brings you to the Delete Users screen for confirmation, where you can permanently remove a user from your site and delete their content. You can also delete multiple users at once by using Bulk Actions.' ) . '</li>';
-
+}
 $help .= '</ul>';
 
 get_current_screen()->add_help_tab( array(
@@ -81,10 +82,10 @@ get_current_screen()->set_screen_reader_content( array(
 	'heading_list'       => __( 'Users list' ),
 ) );
 
-if ( empty($_REQUEST) ) {
-	$referer = '<input type="hidden" name="wp_http_referer" value="'. esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) . '" />';
-} elseif ( isset($_REQUEST['wp_http_referer']) ) {
-	$redirect = remove_query_arg(array('wp_http_referer', 'updated', 'delete_count'), wp_unslash( $_REQUEST['wp_http_referer'] ) );
+if ( empty( $_request->all() ) ) {
+	$referer = '<input type="hidden" name="wp_http_referer" value="'. esc_attr( wp_unslash( $app['request.uri'] ) ) . '" />';
+} elseif ( $_request->has( 'wp_http_referer' ) ) {
+	$redirect = remove_query_arg(array('wp_http_referer', 'updated', 'delete_count'), wp_unslash( $_request->get( 'wp_http_referer' ) ) );
 	$referer = '<input type="hidden" name="wp_http_referer" value="' . esc_attr($redirect) . '" />';
 } else {
 	$redirect = 'users.php';
@@ -99,27 +100,28 @@ switch ( $wp_list_table->current_action() ) {
 case 'promote':
 	check_admin_referer('bulk-users');
 
-	if ( ! current_user_can( 'promote_users' ) )
+	if ( ! current_user_can( 'promote_users' ) ) {
 		wp_die( __( 'You can&#8217;t edit that user.' ) );
+	}
 
-	if ( empty($_REQUEST['users']) ) {
-		wp_redirect($redirect);
+	if ( empty( $_request->get( 'users' ) ) ) {
+		wp_redirect( $redirect );
 		exit();
 	}
 
 	$editable_roles = get_editable_roles();
 	$role = false;
-	if ( ! empty( $_REQUEST['new_role2'] ) ) {
-		$role = $_REQUEST['new_role2'];
-	} elseif ( ! empty( $_REQUEST['new_role'] ) ) {
-		$role = $_REQUEST['new_role'];
+	if ( ! empty( $_request->get( 'new_role2' ) ) ) {
+		$role = $_request->get( 'new_role2' );
+	} elseif ( ! empty( $_request->get( 'new_role' ) ) ) {
+		$role = $_request->get( 'new_role' );
 	}
 
 	if ( ! $role || empty( $editable_roles[ $role ] ) ) {
 		wp_die( __( 'You can&#8217;t give users that role.' ) );
 	}
 
-	$userids = $_REQUEST['users'];
+	$userids = $_request->get( 'users' );
 	$update = 'promote';
 	foreach ( $userids as $id ) {
 		$id = (int) $id;
@@ -146,49 +148,52 @@ case 'promote':
 		$user->set_role( $role );
 	}
 
-	wp_redirect(add_query_arg('update', $update, $redirect));
+	wp_redirect( add_query_arg( 'update', $update, $redirect ) );
 	exit();
 
 case 'dodelete':
-	if ( is_multisite() )
+	if ( is_multisite() ) {
 		wp_die( __('User deletion is not allowed from this screen.') );
-
+	}
 	check_admin_referer('delete-users');
 
-	if ( empty($_REQUEST['users']) ) {
+	if ( empty( $_request->get( 'users' ) ) ) {
 		wp_redirect($redirect);
 		exit();
 	}
 
-	$userids = array_map( 'intval', (array) $_REQUEST['users'] );
+	$userids = array_map( 'intval', (array) $_request->get( 'users' ) );
 
-	if ( empty( $_REQUEST['delete_option'] ) ) {
+	if ( empty( $_request->get( 'delete_option' ) ) ) {
 		$url = self_admin_url( 'users.php?action=delete&users[]=' . implode( '&users[]=', $userids ) . '&error=true' );
 		$url = str_replace( '&amp;', '&', wp_nonce_url( $url, 'bulk-users' ) );
 		wp_redirect( $url );
 		exit;
 	}
 
-	if ( ! current_user_can( 'delete_users' ) )
-		wp_die(__('You can&#8217;t delete users.'));
+	if ( ! current_user_can( 'delete_users' ) ) {
+		wp_die( __( 'You can&#8217;t delete users.' ) );
+	}
 
 	$update = 'del';
 	$delete_count = 0;
 
 	foreach ( $userids as $id ) {
-		if ( ! current_user_can( 'delete_user', $id ) )
-			wp_die(__( 'You can&#8217;t delete that user.' ) );
+		if ( ! current_user_can( 'delete_user', $id ) ) {
+			wp_die( __( 'You can&#8217;t delete that user.' ) );
+		}
 
 		if ( $id == $current_user->ID ) {
 			$update = 'err_admin_del';
 			continue;
 		}
-		switch ( $_REQUEST['delete_option'] ) {
+		switch ( $_request->get( 'delete_option' ) ) {
 		case 'delete':
 			wp_delete_user( $id );
 			break;
+
 		case 'reassign':
-			wp_delete_user( $id, $_REQUEST['reassign_user'] );
+			wp_delete_user( $id, $_request->get( 'reassign_user' ) );
 			break;
 		}
 		++$delete_count;
@@ -204,18 +209,20 @@ case 'delete':
 
 	check_admin_referer('bulk-users');
 
-	if ( empty($_REQUEST['users']) && empty($_REQUEST['user']) ) {
+	if ( empty( $_request->get( 'users' ) ) && empty( $_request->get( 'user' ) ) ) {
 		wp_redirect($redirect);
 		exit();
 	}
 
-	if ( ! current_user_can( 'delete_users' ) )
+	if ( ! current_user_can( 'delete_users' ) ) {
 		$errors = new WP_Error( 'edit_users', __( 'You can&#8217;t delete users.' ) );
+	}
 
-	if ( empty($_REQUEST['users']) )
-		$userids = array( intval( $_REQUEST['user'] ) );
-	else
-		$userids = array_map( 'intval', (array) $_REQUEST['users'] );
+	if ( empty( $_request->get( 'users' ) ) ) {
+		$userids = [ $_request->getInt( 'user' ) ];
+	} else {
+		$userids = array_map( 'intval', (array) $_request->get( 'users' ) );
+	}
 
 	$users_have_content = false;
 	if ( $wpdb->get_var( "SELECT ID FROM {$wpdb->posts} WHERE post_author IN( " . implode( ',', $userids ) . " ) LIMIT 1" ) ) {
@@ -236,7 +243,7 @@ case 'delete':
 
 <div class="wrap">
 <h1><?php _e( 'Delete Users' ); ?></h1>
-<?php if ( isset( $_REQUEST['error'] ) ) : ?>
+<?php if ( $_request->get( 'error' ) ) : ?>
 	<div class="error">
 		<p><strong><?php _e( 'ERROR:' ); ?></strong> <?php _e( 'Please select an option.' ); ?></p>
 	</div>
@@ -311,18 +318,20 @@ break;
 case 'doremove':
 	check_admin_referer('remove-users');
 
-	if ( ! is_multisite() )
+	if ( ! is_multisite() ) {
 		wp_die( __( 'You can&#8217;t remove users.' ) );
+	}
 
-	if ( empty($_REQUEST['users']) ) {
+	if ( empty( $_request->get( 'users' ) ) ) {
 		wp_redirect($redirect);
 		exit;
 	}
 
-	if ( ! current_user_can( 'remove_users' ) )
+	if ( ! current_user_can( 'remove_users' ) ) {
 		wp_die( __( 'You can&#8217;t remove users.' ) );
+	}
 
-	$userids = $_REQUEST['users'];
+	$userids = $_request->get( 'users' );
 
 	$update = 'remove';
  	foreach ( $userids as $id ) {
@@ -339,28 +348,30 @@ case 'doremove':
 	}
 
 	$redirect = add_query_arg( array('update' => $update), $redirect);
-	wp_redirect($redirect);
+	wp_redirect( $redirect );
 	exit;
 
 case 'remove':
 
 	check_admin_referer('bulk-users');
 
-	if ( ! is_multisite() )
+	if ( ! is_multisite() ) {
 		wp_die( __( 'You can&#8217;t remove users.' ) );
+	}
 
-	if ( empty($_REQUEST['users']) && empty($_REQUEST['user']) ) {
-		wp_redirect($redirect);
+	if ( empty( $_request->get( 'users' ) ) && empty( $_request->get( 'user' ) ) ) {
+		wp_redirect( $redirect );
 		exit();
 	}
 
 	if ( !current_user_can('remove_users') )
 		$error = new WP_Error('edit_users', __('You can&#8217;t remove users.'));
 
-	if ( empty($_REQUEST['users']) )
-		$userids = array(intval($_REQUEST['user']));
-	else
-		$userids = $_REQUEST['users'];
+	if ( empty( $_request->get( 'users' ) ) ) {
+		$userids = [ $_request->getInt( 'user' ) ];
+	} else {
+		$userids = array_map( 'intval', (array) $_request->get( 'users' ) );
+	}
 
 	include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
@@ -416,8 +427,8 @@ default:
 		exit;
 	}
 
-	if ( $wp_list_table->current_action() && ! empty( $_REQUEST['users'] ) ) {
-		$userids = $_REQUEST['users'];
+	if ( $wp_list_table->current_action() && ! empty( $_request->get( 'users' ) ) ) {
+		$userids = $_request->get( 'users' );
 		$sendback = wp_get_referer();
 
 		/**
