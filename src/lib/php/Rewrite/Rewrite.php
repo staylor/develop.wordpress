@@ -1478,7 +1478,11 @@ class Rewrite extends Observable {
 		if ( empty($this->rules) ) {
 			$this->matches = 'matches';
 			$this->rewrite_rules();
-			update_option('rewrite_rules', $this->rules);
+			if ( ! did_action( 'wp_loaded' ) ) {
+ 				add_action( 'wp_loaded', [ $this, 'flush_rules' ] );
+ 				return $this->rules;
+ 			}			
+			update_option( 'rewrite_rules', $this->rules );
 		}
 
 		return $this->rules;
