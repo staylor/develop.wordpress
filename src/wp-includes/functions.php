@@ -5,6 +5,7 @@
  * @package WordPress
  */
 
+use WP\Admin\Screen;
 use WP\User\User;
 use function WP\getApp;
 
@@ -5138,7 +5139,7 @@ function wp_auth_check_load() {
 	 * @since 3.6.0
 	 *
 	 * @param bool      $show   Whether to load the authentication check.
-	 * @param WP_Screen $screen The current screen object.
+	 * @param Screen $screen The current screen object.
 	 */
 	if ( apply_filters( 'wp_auth_check_load', $show, $screen ) ) {
 		wp_enqueue_style( 'wp-auth-check' );

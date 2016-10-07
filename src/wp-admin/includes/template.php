@@ -8,6 +8,7 @@
  * @subpackage Administration
  */
 
+use WP\Admin\Screen;
 use function WP\getApp;
 
 //
@@ -878,9 +879,9 @@ function wp_import_upload_form( $action ) {
  * @param string                 $title         Title of the meta box.
  * @param callable               $callback      Function that fills the box with the desired content.
  *                                              The function should echo its output.
- * @param string|array|WP_Screen $screen        Optional. The screen or screens on which to show the box
+ * @param string|array|Screen $screen        Optional. The screen or screens on which to show the box
  *                                              (such as a post type, 'link', or 'comment'). Accepts a single
- *                                              screen ID, WP_Screen object, or array of screen IDs. Default
+ *                                              screen ID, Screen object, or array of screen IDs. Default
  *                                              is the current screen.
  * @param string                 $context       Optional. The context within the screen where the boxes
  *                                              should display. Available contexts vary from screen to
@@ -976,7 +977,7 @@ function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advan
  * @global array $wp_meta_boxes
  *
  * @staticvar bool $already_sorted
- * @param string|WP_Screen $screen  Screen identifier
+ * @param string|Screen $screen  Screen identifier
  * @param string           $context box context
  * @param mixed            $object  gets passed to the box callback function as first parameter
  * @return int number of meta_boxes
@@ -1059,9 +1060,9 @@ function do_meta_boxes( $screen, $context, $object ) {
  * @global array $wp_meta_boxes
  *
  * @param string                 $id      Meta box ID (used in the 'id' attribute for the meta box).
- * @param string|array|WP_Screen $screen  The screen or screens on which the meta box is shown (such as a
+ * @param string|array|Screen $screen  The screen or screens on which the meta box is shown (such as a
  *                                        post type, 'link', or 'comment'). Accepts a single screen ID,
- *                                        WP_Screen object, or array of screen IDs.
+ *                                        Screen object, or array of screen IDs.
  * @param string                 $context The context within the screen where the box is set to display.
  *                                        Contexts vary from screen to screen. Post edit screen contexts
  *                                        include 'normal', 'side', and 'advanced'. Comments screen contexts
@@ -1984,15 +1985,15 @@ function _wp_admin_html_begin() {
  * @since 3.0.0
  *
  * @param string $hook_name The hook name (also known as the hook suffix) used to determine the screen.
- * @return WP_Screen Screen object.
+ * @return Screen Screen object.
  */
 function convert_to_screen( $hook_name ) {
-	if ( ! class_exists( 'WP_Screen' ) ) {
+	if ( ! class_exists( 'Screen' ) ) {
 		_doing_it_wrong( 'convert_to_screen(), add_meta_box()', __( "Likely direct inclusion of wp-admin/includes/template.php in order to use add_meta_box(). This is very wrong. Hook the add_meta_box() call into the add_meta_boxes action instead." ), '3.3.0' );
 		return (object) array( 'id' => '_invalid', 'base' => '_are_belong_to_us' );
 	}
 
-	return WP_Screen::get( $hook_name );
+	return Screen::get( $hook_name );
 }
 
 /**

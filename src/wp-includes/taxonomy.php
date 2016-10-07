@@ -404,7 +404,6 @@ function unregister_taxonomy( $taxonomy ) {
 		return new WP_Error( 'invalid_taxonomy', __( 'Unregistering a built-in taxonomy is not allowed' ) );
 	}
 
-	global $wp_taxonomies;
 	$app = getApp();
 
 	$taxonomy_object->remove_rewrite_rules();
