@@ -34,13 +34,11 @@
 			"wp-admin/"
 		],
 		"exclude-from-classmap": [
-			"wp-admin/includes/deprecated.php",
 			"wp-includes/atomlib.php",
 			"wp-includes/cache.php",
 			"wp-includes/class-phpmailer.php",
 			"wp-includes/class-snoopy.php",
 			"wp-includes/compat.php",
-			"wp-includes/pluggable-deprecated.php",
 			"wp-includes/rss.php",
 			"wp-includes/widgets/"
 		],
