@@ -1,0 +1,99 @@
+{{# subheading }}
+<h2 id="create-new-user">{{{ . }}}</h2>
+{{/ subheading }}
+
+{{# description }}<p>{{{ . }}}</p>{{/ description }}
+
+<form method="post" name="createuser" id="createuser" class="validate" novalidate="novalidate"{{# doAction }}user_new_form_tag{{/ doAction }}>
+	<input name="action" type="hidden" value="createuser" />
+	<table class="form-table">
+		<tr class="form-field form-required">
+			<th scope="row"><label for="user_login">{{ l10n.username }} <span class="description">{{ l10n.required }}</span></label></th>
+			<td><input name="user_login" type="text" id="user_login" value="{{ user_login }}" aria-required="true" autocapitalize="none" autocorrect="off" maxlength="60" /></td>
+		</tr>
+		<tr class="form-field form-required">
+			<th scope="row"><label for="email">{{ l10n.email }} <span class="description">{{ l10n.required }}</span></label></th>
+			<td><input name="email" type="email" id="email" value="{{ user_email }}" /></td>
+		</tr>
+		{{^ multisite }}
+		<tr class="form-field">
+			<th scope="row"><label for="first_name">{{ l10n.first_name }} </label></th>
+			<td><input name="first_name" type="text" id="first_name" value="{{ first_name }}" /></td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row"><label for="last_name">{{ l10n.last_name }} </label></th>
+			<td><input name="last_name" type="text" id="last_name" value="{{ last_name }}" /></td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row"><label for="url">{{ l10n.website }}</label></th>
+			<td><input name="url" type="url" id="url" class="code" value="{{ url }}" /></td>
+		</tr>
+		<tr class="form-field form-required user-pass1-wrap">
+			<th scope="row">
+				<label for="pass1">{{ l10n.password }} <span class="description hide-if-js">{{ l10n.required }}</span></label>
+			</th>
+			<td>
+				<input class="hidden" value=" " /><!-- #24364 workaround -->
+				<button type="button" class="button wp-generate-pw hide-if-no-js">{{ l10n.show_password }}</button>
+				<div class="wp-pwd hide-if-js">
+					<span class="password-input-wrapper">
+						<input type="password" name="pass1" id="pass1" class="regular-text" autocomplete="off" data-reveal="1" data-pw="{{ initial_password }}" aria-describedby="pass-strength-result" />
+					</span>
+					<button type="button" class="button wp-hide-pw hide-if-no-js" data-toggle="0" aria-label="{{ l10n.hide_password }}">
+						<span class="dashicons dashicons-hidden"></span>
+						<span class="text">{{ l10n.hide }}</span>
+					</button>
+					<button type="button" class="button wp-cancel-pw hide-if-no-js" data-toggle="0" aria-label="{{ l10n.cancel_password_change }}">
+						<span class="text">{{ l10n.cancel }}</span>
+					</button>
+					<div style="display:none" id="pass-strength-result" aria-live="polite"></div>
+				</div>
+			</td>
+		</tr>
+		<tr class="form-field form-required user-pass2-wrap hide-if-js">
+			<th scope="row"><label for="pass2"><?php _e( 'Repeat Password' ); ?> <span class="description"><?php _e( '(required)' ); ?></span></label></th>
+			<td>
+			<input name="pass2" type="password" id="pass2" autocomplete="off" />
+			</td>
+		</tr>
+		<tr class="pw-weak">
+			<th>{{ l10n.confirm_password }}</th>
+			<td>
+				<label>
+					<input type="checkbox" name="pw_weak" class="pw-checkbox" />
+					{{ l10n.confirm_weak_password }}
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">{{ l10n.send_user_notification }}</th>
+			<td><label for="send_user_notification"><input type="checkbox" name="send_user_notification" id="send_user_notification" value="1" {{{ noconfirmation }}} />
+			 {{ l10n.send_user_notification_description }}</label></td>
+		</tr>
+		{{/ multisite }}
+		<tr class="form-field">
+			<th scope="row"><label for="role">{{ l10n.role }}</label></th>
+			<td>
+				<select name="role" id="role">
+				{{{ roles_dropdown }}}
+				</select>
+			</td>
+		</tr>
+		{{# multisite }}
+		{{# manage_network_users }}
+		<tr>
+			<th scope="row"><label for="noconfirmation">{{{ l10n.skip_confirmation_label }}}</label></th>
+			<td>
+				<label for="noconfirmation">
+					<input type="checkbox" name="noconfirmation" id="noconfirmation" value="1" {{{ noconfirmation }}} />
+					 {{{ l10n.skip_confirmation_description }}}
+				</label>
+			</td>
+		</tr>
+		{{/ manage_network_users }}
+		{{/ multisite }}
+	</table>
+
+	{{# doAction }}user_new_form["add-new-user"]{{/ doAction }}
+	{{{ submit_button }}}
+</form>

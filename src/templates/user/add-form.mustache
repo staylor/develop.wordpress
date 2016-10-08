@@ -1,0 +1,54 @@
+{{# subheading }}
+<h2 id="add-existing-user">{{ . }}</h2>
+{{/ subheading }}
+
+{{# description }}<p>{{{ . }}}</p>{{/ description }}
+
+<form method="post" name="adduser" id="adduser" class="validate" novalidate="novalidate"{{# doAction }}{{!
+/**
+ * Fires inside the adduser form tag.
+ *
+ * @since 3.0.0
+ */
+}}user_new_form_tag{{/ doAction }}>
+	<input name="action" type="hidden" value="adduser" />
+	{{{ nonce }}}
+
+	<table class="form-table">
+		<tr class="form-field form-required">
+			<th scope="row"><label for="adduser-email">{{{ label }}}</label></th>
+			<td><input name="email" type="{{ type }}" id="adduser-email" class="wp-suggest-user" value="" /></td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row"><label for="adduser-role">{{ l10n.role }}</label></th>
+			<td>
+				<select name="role" id="adduser-role">{{{ roles_dropdown }}}</select>
+			</td>
+		</tr>
+		{{# manage_network_users }}
+		<tr>
+			<th scope="row"><label for="adduser-noconfirmation">{{{ l10n.skip_confirmation_label }}}</label></th>
+			<td>
+				<label for="adduser-noconfirmation">
+					<input type="checkbox" name="noconfirmation" id="adduser-noconfirmation" value="1" />
+					 {{{ l10n.skip_confirmation_description }}}
+				</label>
+			</td>
+		</tr>
+		{{/ manage_network_users }}
+	</table>
+	{{# doAction }}{{!
+	/**
+	 * Fires at the end of the new user form.
+	 *
+	 * Passes a contextual string to make both types of new user forms
+	 * uniquely targetable. Contexts are 'add-existing-user' (Multisite),
+	 * and 'add-new-user' (single site and network admin).
+	 *
+	 * @since 3.7.0
+	 *
+	 * @param string $type A contextual string specifying which type of new user form the hook follows.
+	 */
+	}}user_new_form["add-existing-user"]{{/ doAction }}
+	{{{ submit_button }}}
+</form>

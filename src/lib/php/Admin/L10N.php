@@ -6,6 +6,30 @@ use WP\Magic;
 class L10N extends Magic {
 	public function __construct() {
 		$this->data = [
+			// User
+			'add_existing_user' => __( 'Add Existing User' ),
+			'add_new_user' => __( 'Add New User' ),
+			'role' => __( 'Role' ),
+			'skip_confirmation_label' => __( 'Skip Confirmation Email' ),
+			'skip_confirmation_description' => __( 'Add the user without sending an email that requires their confirmation' ),
+			'username' => __( 'Username' ),
+			'email' => __( 'Email' ),
+			'required' => __( '(required)' ),
+			'first_name' => __( 'First Name' ),
+			'last_name' => __( 'Last Name' ),
+			'website' => __( 'Website' ),
+			'password' => __( 'Password' ),
+			'show_password' => __( 'Show password' ),
+			'hide' => __( 'Hide' ),
+			'cancel' => __( 'Cancel' ),
+			'hide_password' => __( 'Hide password' ),
+			'cancel_password_change' => __( 'Cancel password change' ),
+			'confirm_password' => __( 'Confirm Password' ),
+			'confirm_weak_password' => __( 'Confirm use of weak password' ),
+			'send_user_notification' => __( 'Send User Notification' ),
+			'send_user_notification_description' => __( 'Send the new user an email about their account.' ),
+			'role' => __( 'Role' ),
+
 			// Screen
 			'pagination' => __( 'Pagination' ),
 			'view_mode' => __( 'View Mode' ),

@@ -1,0 +1,33 @@
+<div class="wrap">
+	<h1 id="add-new-user">{{ title }}</h1>
+
+	{{# messages }}
+	<div id="message" class="updated notice is-dismissible">
+		<p>{{{ . }}}</p>
+	</div>
+	{{/ messages }}
+
+	{{# errors? }}
+	<div class="error">
+		<ul>
+		{{# errors }}
+		<li>{{{ . }}}</li>
+		{{/ errors }}
+		</ul>
+	</div>
+	{{/ errors? }}
+
+	<div id="ajax-response"></div>
+
+	{{# multisite }}
+		{{# add_form }}
+			{{> user/add-form }}
+		{{/ add_form }}
+	{{/ multisite }}
+
+	{{# create_users }}
+		{{# create_form }}
+			{{> user/create-form }}
+		{{/ create_form }}
+	{{/ create_users }}
+</div>

@@ -350,10 +350,10 @@ function is_taxonomy_hierarchical($taxonomy) {
  */
 function register_taxonomy( $taxonomy, $object_type, $args = [] ) {
 	$app = getApp();
-	global $wp_taxonomies;
 
-	if ( ! is_array( $app->taxonomies ) )
+	if ( ! is_array( $app->taxonomies ) ) {
 		$app->taxonomies = [];
+	}
 
 	$args = wp_parse_args( $args );
 
@@ -365,7 +365,7 @@ function register_taxonomy( $taxonomy, $object_type, $args = [] ) {
 	$taxonomy_object = new WP_Taxonomy( $taxonomy, $object_type, $args );
 	$taxonomy_object->add_rewrite_rules();
 
-	$wp_taxonomies[ $taxonomy ] = $taxonomy_object;
+	$app->taxonomies[ $taxonomy ] = $taxonomy_object;
 
 	$taxonomy_object->add_hooks();
 

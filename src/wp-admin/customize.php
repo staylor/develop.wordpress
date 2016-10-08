@@ -20,7 +20,6 @@ if ( ! current_user_can( 'customize' ) ) {
 	);
 }
 
-$app = WP\getApp();
 $wp_customize = $app['customize'];
 
 wp_reset_vars( [ 'url', 'return', 'autofocus' ] );

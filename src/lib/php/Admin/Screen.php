@@ -249,26 +249,27 @@ final class Screen {
 		}
 
 		$base = $id;
-		$_request = $this->app['request']->attributes;
-		$_get = $this->app['request']->query;
-		$_post = $this->app['request']->request;
+		$app = getApp();
+		$_request = $app['request']->attributes;
+		$_get = $app['request']->query;
+		$_post = $app['request']->request;
 
 		// If this is the current screen, see if we can be more accurate for post types and taxonomies.
 		if ( ! $hook_name ) {
-			if ( $_request->has( 'post_type' ) ) {
+			if ( $_request->get( 'post_type' ) ) {
 				$post_type = post_type_exists( $_request->get( 'post_type' ) ) ? $_request->get( 'post_type' ) : false;
 			}
 
-			if ( $_request->has( 'taxonomy' ) ) {
+			if ( $_request->get( 'taxonomy' ) ) {
 				$taxonomy = taxonomy_exists( $_request->get( 'taxonomy' ) ) ? $_request->get( 'taxonomy' ) : false;
 			}
 
 			switch ( $base ) {
 			case 'post' :
-				if ( $_get->has( 'post' ) ) {
+				if ( $_get->getInt( 'post' ) ) {
 					$post_id = $_get->getInt( 'post' );
-				} elseif ( $_post->has( 'post_ID' ) ) {
-					$post_id = $_post->getInt( 'post' );
+				} elseif ( $_post->getInt( 'post_ID' ) ) {
+					$post_id = $_post->getInt( 'post_ID' );
 				} else {
 					$post_id = 0;
 				}
@@ -310,7 +311,7 @@ final class Screen {
 			// The edit-tags ID does not contain the post type. Look for it in the request.
 			if ( null === $post_type ) {
 				$post_type = 'post';
-				if ( $_request->has( 'post_type' ) && post_type_exists( $_request->get( 'post_type' ) ) ) {
+				if ( $_request->get( 'post_type' ) && post_type_exists( $_request->get( 'post_type' ) ) ) {
 					$post_type = $_request->get( 'post_type' );
 				}
 			}
@@ -510,7 +511,7 @@ final class Screen {
 			if ( isset( $priorities[ $help_tab['priority'] ] ) ) {
 				$priorities[ $help_tab['priority'] ][] = $help_tab;
 			} else {
-				$priorities[ $help_tab['priority'] ] = array( $help_tab );
+				$priorities[ $help_tab['priority'] ] = [ $help_tab ];
 			}
 		}
 
@@ -568,7 +569,7 @@ final class Screen {
 		);
 		$params = wp_parse_args( $args, $defaults );
 
-		$params['id'] = sanitize_html_class( $args['id'] );
+		$params['id'] = sanitize_html_class( $params['id'] );
 
 		// Ensure we have an ID and title.
 		if ( ! $params['id'] || ! $params['title'] ) {

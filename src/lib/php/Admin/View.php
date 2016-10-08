@@ -4,8 +4,10 @@ namespace WP\Admin;
 use WP\{App,View as BaseView};
 
 class View extends BaseView {
-
 	public $l10n;
+	
+	public $help;
+	public $handler;
 
 	public function __construct( App $app ) {
 		parent::__construct( $app );
