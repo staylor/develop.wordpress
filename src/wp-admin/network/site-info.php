@@ -57,7 +57,7 @@ if ( isset( $_REQUEST['action'] ) && 'update-site' == $_REQUEST['action'] ) {
 	// Rewrite rules can't be flushed during switch to blog.
 	delete_option( 'rewrite_rules' );
 
-	$blog_data = wp_unslash( $_POST['blog'] );
+	$blog_data = wp_unslash( $_post->get( 'blog' ) );
 	$blog_data['scheme'] = $parsed_scheme;
 
 	if ( $is_main_site ) {
@@ -90,7 +90,8 @@ if ( isset( $_REQUEST['action'] ) && 'update-site' == $_REQUEST['action'] ) {
 		if ( ! in_array( $existing_details->$c, array( 0, 1 ) ) ) {
 			$blog_data[ $c ] = $existing_details->$c;
 		} else {
-			$blog_data[ $c ] = isset( $_POST['blog'][ $c ] ) ? 1 : 0;
+			$blog = $_post->get( 'blog' );
+			$blog_data[ $c ] = isset( $blog[ $c ] ) ? 1 : 0;
 		}
 	}
 

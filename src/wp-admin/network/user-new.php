@@ -33,10 +33,10 @@ if ( isset($_REQUEST['action']) && 'add-user' == $_REQUEST['action'] ) {
 	if ( ! current_user_can( 'manage_network_users' ) )
 		wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
-	if ( ! is_array( $_POST['user'] ) )
+	if ( ! is_array( $_post->get( 'user' ) ) )
 		wp_die( __( 'Cannot create an empty user.' ) );
 
-	$user = wp_unslash( $_POST['user'] );
+	$user = wp_unslash( $_post->get( 'user' ) );
 
 	$user_details = wpmu_validate_user_signup( $user['username'], $user['email'] );
 	if ( is_wp_error( $user_details[ 'errors' ] ) && ! empty( $user_details[ 'errors' ]->errors ) ) {

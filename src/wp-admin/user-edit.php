@@ -7,12 +7,10 @@
  */
 
 use WP\User\User;
-use function WP\getApp;
 
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-$app = getApp();
 $wpdb = $app['db'];
 
 wp_reset_vars( array( 'action', 'user_id', 'wp_http_referer' ) );

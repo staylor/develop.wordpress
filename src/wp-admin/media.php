@@ -16,7 +16,7 @@ wp_reset_vars(array('action'));
 
 switch ( $action ) {
 case 'editattachment' :
-	$attachment_id = (int) $_POST['attachment_id'];
+	$attachment_id = $_post->getInt( 'attachment_id' );
 	check_admin_referer('media-form');
 
 	if ( !current_user_can('edit_post', $attachment_id) )

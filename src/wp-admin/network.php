@@ -90,7 +90,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 <h1><?php echo esc_html( $title ); ?></h1>
 
 <?php
-if ( $_POST ) {
+if ( 'POST' === $app['request.method'] ) {
 
 	check_admin_referer( 'install-network-1' );
 
@@ -98,9 +98,9 @@ if ( $_POST ) {
 	// Create network tables.
 	install_network();
 	$base              = parse_url( trailingslashit( get_option( 'home' ) ), PHP_URL_PATH );
-	$subdomain_install = allow_subdomain_install() ? !empty( $_POST['subdomain_install'] ) : false;
+	$subdomain_install = allow_subdomain_install() ? ! empty( $_post->get( 'subdomain_install' ) ) : false;
 	if ( ! network_domain_check() ) {
-		$result = populate_network( 1, get_clean_basedomain(), sanitize_email( $_POST['email'] ), wp_unslash( $_POST['sitename'] ), $base, $subdomain_install );
+		$result = populate_network( 1, get_clean_basedomain(), sanitize_email( $_post->get( 'email' ) ), wp_unslash( $_post->get( 'sitename' ) ), $base, $subdomain_install );
 		if ( is_wp_error( $result ) ) {
 			if ( 1 == count( $result->get_error_codes() ) && 'no_wildcard_dns' == $result->get_error_code() )
 				network_step2( $result );

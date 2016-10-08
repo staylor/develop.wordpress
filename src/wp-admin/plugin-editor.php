@@ -66,7 +66,7 @@ if ( isset( $_REQUEST['action'] ) && 'update' === $_REQUEST['action'] ) {
 
 	check_admin_referer('edit-plugin_' . $file);
 
-	$newcontent = wp_unslash( $_POST['newcontent'] );
+	$newcontent = wp_unslash( $_post->get( 'newcontent' ) );
 	if ( is_writeable($real_file) ) {
 		$f = fopen($real_file, 'w+');
 		fwrite($f, $newcontent);
@@ -75,7 +75,7 @@ if ( isset( $_REQUEST['action'] ) && 'update' === $_REQUEST['action'] ) {
 		$network_wide = is_plugin_active_for_network( $file );
 
 		// Deactivate so we can test it.
-		if ( is_plugin_active( $plugin ) || isset( $_POST['phperror'] ) ) {
+		if ( is_plugin_active( $plugin ) || $_post->has( 'phperror' ) ) {
 			if ( is_plugin_active( $plugin ) ) {
 				deactivate_plugins( $plugin, true );
 			}

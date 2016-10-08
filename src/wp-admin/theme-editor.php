@@ -109,7 +109,7 @@ $scrollto = isset( $_REQUEST['scrollto'] ) ? (int) $_REQUEST['scrollto'] : 0;
 switch( $action ) {
 case 'update':
 	check_admin_referer( 'edit-theme_' . $file . $stylesheet );
-	$newcontent = wp_unslash( $_POST['newcontent'] );
+	$newcontent = wp_unslash( $_post->get( 'newcontent' ) );
 	$location = 'theme-editor.php?file=' . urlencode( $relative_file ) . '&theme=' . urlencode( $stylesheet ) . '&scrollto=' . $scrollto;
 	if ( is_writeable( $file ) ) {
 		// is_writable() not always reliable, check return value. see comments @ https://secure.php.net/is_writable
