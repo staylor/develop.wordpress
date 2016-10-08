@@ -29,9 +29,6 @@ if ( ! current_user_can( 'edit_theme_options' ) ) {
 	);
 }
 
-$_request = $app['request']->attributes;
-$_post = $app['request']->request;
-
 wp_enqueue_script( 'nav-menu' );
 
 if ( wp_is_mobile() ) {

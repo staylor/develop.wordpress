@@ -25,10 +25,6 @@ if ( is_multisite() ) {
 	);
 }
 
-$_request = $app['request']->attributes;
-$_post = $app['request']->request;
-$_get = $app['request']->query;
-
 $wpdb = $app['db'];
 $action = $_request->get( 'action' );
 $email = $_request->get( 'email' );

@@ -8,7 +8,6 @@
  */
 
 use WP\User\User;
-use function WP\getApp;
 
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
@@ -21,8 +20,6 @@ if ( ! current_user_can( 'list_users' ) ) {
 	);
 }
 
-$app = getApp();
-$_request = $app['request']->attributes;
 $wpdb = $app['db'];
 
 $wp_list_table = _get_list_table('WP_Users_List_Table');
