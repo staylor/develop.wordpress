@@ -124,14 +124,14 @@ retrieve_widgets();
 
 
 // We're saving a widget without js
-if ( $app['request']->request->get( 'savewidget' ) || $app['request']->request->get( 'removewidget' ) ) {
-	$widget_id = $app['request']->request->get( 'widget-id' );
+if ( $$_get->has( 'savewidget' ) || $_get->has( 'removewidget' ) ) {
+	$widget_id = $_get->get( 'widget-id' );
 	check_admin_referer("save-delete-widget-$widget_id");
 
 	$post_data = [];
-	$number = intval( $app['request']->request->get( 'multi_number' ) ?? '' );
+	$number = $_get->getInt( 'multi_number', 0 );
 	if ( $number ) {
-		foreach ( $app['request']->request->all() as $key => $val ) {
+		foreach ( $_post->all() as $key => $val ) {
 			if ( is_array($val) && preg_match('/__i__|%i%/', key($val)) ) {
 				$post_data[ $key ] = array( $number => array_shift($val) );
 				break;
@@ -170,7 +170,7 @@ if ( $app['request']->request->get( 'savewidget' ) || $app['request']->request->
 
 	$post_data['widget-id'] = $sidebar;
 
-	$app['request']->request->replace( $post_data );
+	$_post->replace( $post_data );
 
 	foreach ( (array) $app->widgets['updates'] as $name => $control ) {
 		if ( $name != $id_base || !is_callable($control['callback']) )
@@ -257,7 +257,7 @@ if ( $_get->has( 'editwidget' ) ) {
 		$name = esc_html( strip_tags($control['name']) );
 
 	if ( !isset($sidebar) )
-		$sidebar = $app['request']->query->get( 'sidebar' ) ?? 'wp_inactive_widgets';
+		$sidebar = $_get->get( 'sidebar', 'wp_inactive_widgets' );
 
 	if ( !isset($multi_number) )
 		$multi_number = isset($control['params'][0]['number']) ? $control['params'][0]['number'] : '';
@@ -266,7 +266,7 @@ if ( $_get->has( 'editwidget' ) ) {
 
 	// Show the widget form.
 	$width = ' style="width:' . max($control['width'], 350) . 'px"';
-	$key = intval( $app['request']->query->get( 'key' ) ?? 0 );
+	$key = $_get->getInt( 'key', 0 );
 
 	require_once( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 	<div class="wrap">
@@ -297,7 +297,7 @@ if ( $_get->has( 'editwidget' ) ) {
 				$sidebars_widgets[$sbname] = [];
 			} else {
 				$j = count($sidebars_widgets[$sbname]);
-				if ( $app['request']->query->get( 'addnew' ) || !in_array($widget_id, $sidebars_widgets[$sbname], true) ) {
+				if ( $_get->get( 'addnew' ) || ! in_array($widget_id, $sidebars_widgets[$sbname], true) ) {
 					$j++;
 				}
 			}
@@ -318,7 +318,7 @@ if ( $_get->has( 'editwidget' ) ) {
 
 	<div class="widget-control-actions">
 <?php
-	if ( $app['request']->query->get( 'addnew' ) ) { ?>
+	if ( $_get->has( 'addnew' ) ) { ?>
 	<a href="widgets.php" class="button alignleft"><?php _e('Cancel'); ?></a>
 <?php
 	} else {
@@ -371,8 +371,8 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 </h1>
 
 <?php
-$message = $app['request']->query->get( 'message' );
-$error = $app['request']->query->get( 'error' );
+$message = $_get->get( 'message' );
+$error = $_get->get( 'error' );
 
 if ( $message && isset( $messages[ $message ] ) ) { ?>
 <div id="message" class="updated notice is-dismissible"><p><?php echo $messages[ $message ]; ?></p></div>
