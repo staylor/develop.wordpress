@@ -6,8 +6,6 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
@@ -22,21 +20,20 @@ if ( ! current_user_can( 'edit_theme_options' ) ) {
 	);
 }
 
-$app = getApp();
-
 $widgets_access = get_user_setting( 'widgets_access' );
-if ( $app['request']->query->get( 'widgets-access' ) ) {
-	$widgets_access = 'on' === $app['request']->query->get( 'widgets-access' ) ? 'on' : 'off';
+if ( $_get->get( 'widgets-access' ) ) {
+	$widgets_access = 'on' === $_get->get( 'widgets-access' ) ? 'on' : 'off';
 	set_user_setting( 'widgets_access', $widgets_access );
 }
 
 if ( 'on' == $widgets_access ) {
 	add_filter( 'admin_body_class', 'wp_widgets_access_body_class' );
 } else {
-	wp_enqueue_script('admin-widgets');
+	wp_enqueue_script( 'admin-widgets' );
 
-	if ( wp_is_mobile() )
+	if ( wp_is_mobile() ) {
 		wp_enqueue_script( 'jquery-touch-punch' );
+	}
 }
 
 /**
@@ -203,38 +200,36 @@ if ( $app['request']->request->get( 'savewidget' ) || $app['request']->request->
 }
 
 // Remove inactive widgets without js
-if ( isset( $_POST['removeinactivewidgets'] ) ) {
+if ( $_post->get( 'removeinactivewidgets' ) ) {
 	check_admin_referer( 'remove-inactive-widgets', '_wpnonce_remove_inactive_widgets' );
 
-	if ( $_POST['removeinactivewidgets'] ) {
-		foreach ( $sidebars_widgets['wp_inactive_widgets'] as $key => $widget_id ) {
-			$pieces = explode( '-', $widget_id );
-			$multi_number = array_pop( $pieces );
-			$id_base = implode( '-', $pieces );
-			$widget = get_option( 'widget_' . $id_base );
-			unset( $widget[$multi_number] );
-			update_option( 'widget_' . $id_base, $widget );
-			unset( $sidebars_widgets['wp_inactive_widgets'][$key] );
-		}
-
-		wp_set_sidebars_widgets( $sidebars_widgets );
+	foreach ( $sidebars_widgets['wp_inactive_widgets'] as $key => $widget_id ) {
+		$pieces = explode( '-', $widget_id );
+		$multi_number = array_pop( $pieces );
+		$id_base = implode( '-', $pieces );
+		$widget = get_option( 'widget_' . $id_base );
+		unset( $widget[$multi_number] );
+		update_option( 'widget_' . $id_base, $widget );
+		unset( $sidebars_widgets['wp_inactive_widgets'][$key] );
 	}
+
+	wp_set_sidebars_widgets( $sidebars_widgets );
 
 	wp_redirect( admin_url( 'widgets.php?message=0' ) );
 	exit;
 }
 
 // Output the widget form without js
-if ( $app['request']->query->get( 'editwidget' ) ) {
-	$widget_id = $app['request']->query->get( 'editwidget' );
+if ( $_get->has( 'editwidget' ) ) {
+	$widget_id = $_get->get( 'editwidget' );
 
-	if ( $app['request']->query->get( 'addnew' ) ) {
+	if ( $_get->get( 'addnew' ) ) {
 		// Default to the first sidebar
 		$keys = array_keys( $app->sidebars['registered'] );
 		$sidebar = reset( $keys );
 
-		$num = $app['request']->query->get( 'num' );
-		$base = $app['request']->query->get( 'base' );
+		$num = $_get->get( 'num' );
+		$base = $_get->get( 'base' );
 
 		if ( $base && $num ) { // multi-widget
 			// Copy minimal info from an existing instance of this widget to a new instance
