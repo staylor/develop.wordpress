@@ -6,8 +6,6 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
@@ -27,18 +25,25 @@ if ( is_multisite() ) {
 	);
 }
 
-$app = getApp();
+$_request = $app['request']->attributes;
+$_post = $app['request']->request;
+$_get = $app['request']->query;
+
 $wpdb = $app['db'];
+$action = $_request->get( 'action' );
+$email = $_request->get( 'email' );
+$user_login = $_request->get( 'user_login' );
+$role = $_request->get( 'role' );
 
 if ( is_multisite() ) {
 	add_filter( 'wpmu_signup_user_notification_email', 'admin_created_user_email' );
 }
 
-if ( isset($_REQUEST['action']) && 'adduser' == $_REQUEST['action'] ) {
+if ( 'adduser' === $action ) {
 	check_admin_referer( 'add-user', '_wpnonce_add-user' );
 
 	$user_details = null;
-	$user_email = wp_unslash( $_REQUEST['email'] );
+	$user_email = wp_unslash( $email );
 	if ( false !== strpos( $user_email, '@' ) ) {
 		$user_details = get_user_by( 'email', $user_email );
 	} else {
@@ -72,14 +77,14 @@ if ( isset($_REQUEST['action']) && 'adduser' == $_REQUEST['action'] ) {
 		$redirect = add_query_arg( array('update' => 'addexisting'), 'user-new.php' );
 	} else {
 		if ( isset( $_POST[ 'noconfirmation' ] ) && current_user_can( 'manage_network_users' ) ) {
-			add_existing_user_to_blog( array( 'user_id' => $user_id, 'role' => $_REQUEST[ 'role' ] ) );
+			add_existing_user_to_blog( array( 'user_id' => $user_id, 'role' => $role ) );
 			$redirect = add_query_arg( array( 'update' => 'addnoconfirmation' , 'user_id' => $user_id ), 'user-new.php' );
 		} else {
 			$newuser_key = substr( md5( $user_id ), 0, 5 );
-			add_option( 'new_user_' . $newuser_key, array( 'user_id' => $user_id, 'email' => $user_details->user_email, 'role' => $_REQUEST[ 'role' ] ) );
+			add_option( 'new_user_' . $newuser_key, array( 'user_id' => $user_id, 'email' => $user_details->user_email, 'role' => $role ) );
 
 			$roles = get_editable_roles();
-			$role = $roles[ $_REQUEST['role'] ];
+			$role = $roles[ $role ];
 
 			/**
 			 * Fires immediately after a user is invited to join a site, but before the notification is sent.
@@ -106,7 +111,8 @@ Please click the following link to confirm the invite:
 	}
 	wp_redirect( $redirect );
 	die();
-} elseif ( isset($_REQUEST['action']) && 'createuser' == $_REQUEST['action'] ) {
+
+} elseif ( 'createuser' === $action ) {
 	check_admin_referer( 'create-user', '_wpnonce_create-user' );
 
 	if ( ! current_user_can( 'create_users' ) ) {
@@ -132,8 +138,8 @@ Please click the following link to confirm the invite:
 		}
 	} else {
 		// Adding a new user to this site
-		$new_user_email = wp_unslash( $_REQUEST['email'] );
-		$user_details = wpmu_validate_user_signup( $_REQUEST['user_login'], $new_user_email );
+		$new_user_email = wp_unslash( $email );
+		$user_details = wpmu_validate_user_signup( $user_login, $new_user_email );
 		if ( is_wp_error( $user_details[ 'errors' ] ) && !empty( $user_details[ 'errors' ]->errors ) ) {
 			$add_user_errors = $user_details[ 'errors' ];
 		} else {
@@ -144,12 +150,12 @@ Please click the following link to confirm the invite:
 			 *
 			 * @param string $user_login The sanitized username.
 			 */
-			$new_user_login = apply_filters( 'pre_user_login', sanitize_user( wp_unslash( $_REQUEST['user_login'] ), true ) );
+			$new_user_login = apply_filters( 'pre_user_login', sanitize_user( wp_unslash( $user_login ), true ) );
 			if ( isset( $_POST[ 'noconfirmation' ] ) && current_user_can( 'manage_network_users' ) ) {
 				add_filter( 'wpmu_signup_user_notification', '__return_false' ); // Disable confirmation email
 				add_filter( 'wpmu_welcome_user_notification', '__return_false' ); // Disable welcome email
 			}
-			wpmu_signup_user( $new_user_login, $new_user_email, array( 'add_to_blog' => $wpdb->blogid, 'new_role' => $_REQUEST['role'] ) );
+			wpmu_signup_user( $new_user_login, $new_user_email, array( 'add_to_blog' => $wpdb->blogid, 'new_role' => $role ) );
 			if ( isset( $_POST[ 'noconfirmation' ] ) && current_user_can( 'manage_network_users' ) ) {
 				$key = $wpdb->get_var( $wpdb->prepare( "SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s AND user_email = %s", $new_user_login, $new_user_email ) );
 				$new_user = wpmu_activate_signup( $key );
@@ -230,45 +236,48 @@ if ( is_multisite() && current_user_can( 'promote_users' ) && ! wp_is_large_netw
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
-if ( isset($_GET['update']) ) {
+if ( $_get->has( 'update' ) ) {
 	$messages = [];
+	$user_id = $_get->getInt( 'user_id' );
+
 	if ( is_multisite() ) {
 		$edit_link = '';
-		if ( ( isset( $_GET['user_id'] ) ) ) {
-			$user_id_new = absint( $_GET['user_id'] );
-			if ( $user_id_new ) {
-				$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $user_id_new ) ) );
-			}
+		if ( $user_id ) {
+			$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $user_id ) ) );
 		}
 
-		switch ( $_GET['update'] ) {
-			case "newuserconfirmation":
-				$messages[] = __('Invitation email sent to new user. A confirmation link must be clicked before their account is created.');
-				break;
-			case "add":
-				$messages[] = __('Invitation email sent to user. A confirmation link must be clicked for them to be added to your site.');
-				break;
-			case "addnoconfirmation":
-				if ( empty( $edit_link ) ) {
-					$messages[] = __( 'User has been added to your site.' );
-				} else {
-					/* translators: %s: edit page url */
-					$messages[] = sprintf( __( 'User has been added to your site. <a href="%s">Edit user</a>' ), $edit_link );
-				}
-				break;
-			case "addexisting":
-				$messages[] = __('That user is already a member of this site.');
-				break;
-			case "does_not_exist":
-				$messages[] = __('The requested user does not exist.');
-				break;
-			case "enter_email":
-				$messages[] = __('Please enter a valid email address.');
-				break;
+		switch ( $_get->get( 'update' ) ) {
+		case 'newuserconfirmation':
+			$messages[] = __('Invitation email sent to new user. A confirmation link must be clicked before their account is created.');
+			break;
+
+		case 'add':
+			$messages[] = __('Invitation email sent to user. A confirmation link must be clicked for them to be added to your site.');
+			break;
+
+		case 'addnoconfirmation':
+			if ( empty( $edit_link ) ) {
+				$messages[] = __( 'User has been added to your site.' );
+			} else {
+				/* translators: %s: edit page url */
+				$messages[] = sprintf( __( 'User has been added to your site. <a href="%s">Edit user</a>' ), $edit_link );
+			}
+			break;
+
+		case 'addexisting':
+			$messages[] = __('That user is already a member of this site.');
+			break;
+
+		case 'does_not_exist':
+			$messages[] = __('The requested user does not exist.');
+			break;
+
+		case 'enter_email':
+			$messages[] = __('Please enter a valid email address.');
+			break;
 		}
-	} else {
-		if ( 'add' == $_GET['update'] )
-			$messages[] = __('User added.');
+	} elseif ( 'add' === $_get->get( 'update' ) ) {
+		$messages[] = __('User added.');
 	}
 }
 ?>
@@ -383,16 +392,16 @@ if ( current_user_can( 'create_users') ) {
 <?php wp_nonce_field( 'create-user', '_wpnonce_create-user' ); ?>
 <?php
 // Load up the passed data, else set to a default.
-$creating = isset( $_POST['createuser'] );
+$creating = $_post->get( 'createuser' );
 
-$new_user_login = $creating && isset( $_POST['user_login'] ) ? wp_unslash( $_POST['user_login'] ) : '';
-$new_user_firstname = $creating && isset( $_POST['first_name'] ) ? wp_unslash( $_POST['first_name'] ) : '';
-$new_user_lastname = $creating && isset( $_POST['last_name'] ) ? wp_unslash( $_POST['last_name'] ) : '';
-$new_user_email = $creating && isset( $_POST['email'] ) ? wp_unslash( $_POST['email'] ) : '';
-$new_user_uri = $creating && isset( $_POST['url'] ) ? wp_unslash( $_POST['url'] ) : '';
-$new_user_role = $creating && isset( $_POST['role'] ) ? wp_unslash( $_POST['role'] ) : '';
-$new_user_send_notification = $creating && ! isset( $_POST['send_user_notification'] ) ? false : true;
-$new_user_ignore_pass = $creating && isset( $_POST['noconfirmation'] ) ? wp_unslash( $_POST['noconfirmation'] ) : '';
+$new_user_login = $creating ? wp_unslash( $_post->get( 'user_login' ) ) : '';
+$new_user_firstname = $creating ? wp_unslash( $_post->get( 'first_name' ) ) : '';
+$new_user_lastname = $creating ? wp_unslash( $_post->get( 'last_name' ) ) : '';
+$new_user_email = $creating ? wp_unslash( $_post->get( 'email' ) ) : '';
+$new_user_uri = $creating ? wp_unslash( $_post->get( 'url' ) ) : '';
+$new_user_role = $creating ? wp_unslash( $_post->get( 'role' ) ) : '';
+$new_user_send_notification = $creating && $_post->get( 'send_user_notification' );
+$new_user_ignore_pass = $creating ? wp_unslash( $_post->get( 'noconfirmation' ) ) : '';
 
 ?>
 <table class="form-table">
@@ -467,8 +476,9 @@ $new_user_ignore_pass = $creating && isset( $_POST['noconfirmation'] ) ? wp_unsl
 		<th scope="row"><label for="role"><?php _e('Role'); ?></label></th>
 		<td><select name="role" id="role">
 			<?php
-			if ( !$new_user_role )
+			if ( !$new_user_role ) {
 				$new_user_role = !empty($current_role) ? $current_role : get_option('default_role');
+			}
 			wp_dropdown_roles($new_user_role);
 			?>
 			</select>
