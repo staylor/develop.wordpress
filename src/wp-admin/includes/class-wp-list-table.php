@@ -8,7 +8,7 @@
  */
 
 use function WP\getApp;
-
+use WP\MagicRequest;
 /**
  * Base class for displaying a list of items in an ajaxified HTML table.
  *
@@ -16,6 +16,7 @@ use function WP\getApp;
  * @access private
  */
 class WP_List_Table {
+	use MagicRequest;
 
 	/**
 	 * The current list of items.
@@ -33,7 +34,7 @@ class WP_List_Table {
 	 * @access protected
 	 * @var array
 	 */
-	protected $_args;
+	public $_args;
 
 	/**
 	 * Various information needed for displaying the pagination.
@@ -42,7 +43,7 @@ class WP_List_Table {
 	 * @access protected
 	 * @var array
 	 */
-	protected $_pagination_args = [];
+	public $_pagination_args = [];
 
 	/**
 	 * The current screen.
@@ -51,7 +52,7 @@ class WP_List_Table {
 	 * @access protected
 	 * @var object
 	 */
-	protected $screen;
+	public $screen;
 
 	/**
 	 * Cached bulk actions.
@@ -60,7 +61,7 @@ class WP_List_Table {
 	 * @access private
 	 * @var array
 	 */
-	private $_actions;
+	public $_actions;
 
 	/**
 	 * Cached pagination output.
@@ -69,7 +70,7 @@ class WP_List_Table {
 	 * @access private
 	 * @var string
 	 */
-	private $_pagination;
+	public $_pagination;
 
 	/**
 	 * The view switcher modes.
@@ -88,14 +89,6 @@ class WP_List_Table {
 	 * @var array
 	 */
 	protected $_column_headers;
-
-	/**
-	 * {@internal Missing Summary}
-	 *
-	 * @access protected
-	 * @var array
-	 */
-	protected $compat_fields = array( '_args', '_pagination_args', 'screen', '_actions', '_pagination' );
 
 	/**
 	 * {@internal Missing Summary}
@@ -164,66 +157,6 @@ class WP_List_Table {
 				'list'    => __( 'List View' ),
 				'excerpt' => __( 'Excerpt View' )
 			);
-		}
-	}
-
-	/**
-	 * Make private properties readable for backward compatibility.
-	 *
-	 * @since 4.0.0
-	 * @access public
-	 *
-	 * @param string $name Property to get.
-	 * @return mixed Property.
-	 */
-	public function __get( $name ) {
-		if ( in_array( $name, $this->compat_fields ) ) {
-			return $this->$name;
-		}
-	}
-
-	/**
-	 * Make private properties settable for backward compatibility.
-	 *
-	 * @since 4.0.0
-	 * @access public
-	 *
-	 * @param string $name  Property to check if set.
-	 * @param mixed  $value Property value.
-	 * @return mixed Newly-set property.
-	 */
-	public function __set( $name, $value ) {
-		if ( in_array( $name, $this->compat_fields ) ) {
-			return $this->$name = $value;
-		}
-	}
-
-	/**
-	 * Make private properties checkable for backward compatibility.
-	 *
-	 * @since 4.0.0
-	 * @access public
-	 *
-	 * @param string $name Property to check if set.
-	 * @return bool Whether the property is set.
-	 */
-	public function __isset( $name ) {
-		if ( in_array( $name, $this->compat_fields ) ) {
-			return isset( $this->$name );
-		}
-	}
-
-	/**
-	 * Make private properties un-settable for backward compatibility.
-	 *
-	 * @since 4.0.0
-	 * @access public
-	 *
-	 * @param string $name Property to unset.
-	 */
-	public function __unset( $name ) {
-		if ( in_array( $name, $this->compat_fields ) ) {
-			unset( $this->$name );
 		}
 	}
 

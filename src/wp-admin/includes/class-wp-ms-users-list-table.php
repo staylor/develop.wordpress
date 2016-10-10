@@ -39,11 +39,11 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 		$app = getApp();
 		$wpdb = $app['db'];
 
-		$usersearch = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST['s'] ) ) : '';
+		$usersearch = wp_unslash( trim( $this->_request->get( 's' ) ) );
 
 		$users_per_page = $this->get_items_per_page( 'users_network_per_page' );
 
-		$role = isset( $_REQUEST['role'] ) ? $_REQUEST['role'] : '';
+		$role = $this->_request->get( 'role', '' );
 
 		$paged = $this->get_pagenum();
 
@@ -72,22 +72,27 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 		 * show only the latest users with no paging in order to avoid
 		 * expensive count queries.
 		 */
-		if ( !$usersearch && wp_is_large_network( 'users' ) ) {
-			if ( !isset($_REQUEST['orderby']) )
-				$_GET['orderby'] = $_REQUEST['orderby'] = 'id';
-			if ( !isset($_REQUEST['order']) )
-				$_GET['order'] = $_REQUEST['order'] = 'DESC';
+		if ( ! $usersearch && wp_is_large_network( 'users' ) ) {
+			if ( ! $this->_request->has( 'orderby' ) ){
+				$this->_get->set( 'orderby', 'id' );
+				$this->_request->set( 'orderby', 'id' );
+			}
+
+			if ( ! $this->_request->has( 'order' ) ){
+				$this->_get->set( 'order', 'DESC' );
+				$this->_request->set( 'order', 'DESC' );
+			}
 			$args['count_total'] = false;
 		}
 
-		if ( isset( $_REQUEST['orderby'] ) )
-			$args['orderby'] = $_REQUEST['orderby'];
-
-		if ( isset( $_REQUEST['order'] ) )
-			$args['order'] = $_REQUEST['order'];
-
-		if ( ! empty( $_REQUEST['mode'] ) ) {
-			$mode = $_REQUEST['mode'] === 'excerpt' ? 'excerpt' : 'list';
+		if ( $this->_request->get( 'orderby' ) ) {
+			$args['orderby'] = $this->_request->get( 'orderby' );
+		}
+		if ( $this->_request->get( 'order' ) ) {
+			$args['order'] = $this->_request->get( 'order' );
+		}
+		if ( $this->_request->get( 'mode' ) ) {
+			$mode = $this->_request->get( 'mode' ) === 'excerpt' ? 'excerpt' : 'list';
 			set_user_setting( 'network_users_list_mode', $mode );
 		} else {
 			$mode = get_user_setting( 'network_users_list_mode', 'list' );

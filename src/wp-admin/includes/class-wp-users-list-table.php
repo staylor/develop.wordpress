@@ -58,7 +58,7 @@ class WP_Users_List_Table extends WP_List_Table {
 		$this->is_site_users = 'site-users-network' === $this->screen->id;
 
 		if ( $this->is_site_users )
-			$this->site_id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+			$this->site_id = $this->_request->getInt( 'id', 0 );
 	}
 
 	/**
@@ -88,9 +88,9 @@ class WP_Users_List_Table extends WP_List_Table {
 	public function prepare_items() {
 		global $role, $usersearch;
 
-		$usersearch = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST['s'] ) ) : '';
+		$usersearch = wp_unslash( trim( $this->_request->get( 's' ) ) );
 
-		$role = isset( $_REQUEST['role'] ) ? $_REQUEST['role'] : '';
+		$role = $this->_request->get( 'role', '' );
 
 		$per_page = ( $this->is_site_users ) ? 'site_users_network_per_page' : 'users_per_page';
 		$users_per_page = $this->get_items_per_page( $per_page );
@@ -121,12 +121,12 @@ class WP_Users_List_Table extends WP_List_Table {
 		if ( $this->is_site_users )
 			$args['blog_id'] = $this->site_id;
 
-		if ( isset( $_REQUEST['orderby'] ) )
-			$args['orderby'] = $_REQUEST['orderby'];
-
-		if ( isset( $_REQUEST['order'] ) )
-			$args['order'] = $_REQUEST['order'];
-
+		if ( $this->_request->get( 'orderby' ) ) {
+			$args['orderby'] = $this->_request->get( 'orderby' );
+		}
+		if ( $this->_request->get( 'order' ) ) {
+			$args['order'] = $this->_request->get( 'order' );
+		}
 		/**
 		 * Filters the query arguments used to retrieve users for the current users list table.
 		 *
@@ -298,8 +298,10 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @return string The bulk action required.
 	 */
 	public function current_action() {
-		if ( isset( $_REQUEST['changeit'] ) &&
-			( ! empty( $_REQUEST['new_role'] ) || ! empty( $_REQUEST['new_role2'] ) ) ) {
+		if (
+			$this->_request->get( 'changeit' ) &&
+			( ! empty( $this->_request->get( 'new_role' ) ) || ! empty( $this->_request->get( 'new_role2' ) ) )
+		) {
 			return 'promote';
 		}
 

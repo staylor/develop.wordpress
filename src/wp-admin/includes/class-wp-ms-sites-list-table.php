@@ -74,8 +74,8 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		$app = getApp();
 		$wpdb = $app['db'];
 
-		if ( ! empty( $_REQUEST['mode'] ) ) {
-			$mode = $_REQUEST['mode'] === 'excerpt' ? 'excerpt' : 'list';
+		if ( $this->_request->get( 'mode' ) ) {
+			$mode = $this->_request->get( 'mode' ) === 'excerpt' ? 'excerpt' : 'list';
 			set_user_setting( 'sites_list_mode', $mode );
 		} else {
 			$mode = get_user_setting( 'sites_list_mode', 'list' );
@@ -85,29 +85,34 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 
 		$pagenum = $this->get_pagenum();
 
-		$s = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST[ 's' ] ) ) : '';
+		$s = $this->_request->get( 's' ) ? wp_unslash( trim( $this->_request->get( 's' ) ) ) : '';
 		$wild = '';
 		if ( false !== strpos($s, '*') ) {
 			$wild = '*';
-			$s = trim($s, '*');
+			$s = trim( $s, '*' );
 		}
 
 		/*
 		 * If the network is large and a search is not being performed, show only
 		 * the latest sites with no paging in order to avoid expensive count queries.
 		 */
-		if ( !$s && wp_is_large_network() ) {
-			if ( !isset($_REQUEST['orderby']) )
-				$_GET['orderby'] = $_REQUEST['orderby'] = '';
-			if ( !isset($_REQUEST['order']) )
-				$_GET['order'] = $_REQUEST['order'] = 'DESC';
+		if ( ! $s && wp_is_large_network() ) {
+			if ( ! $this->_request->has( 'orderby' ) ){
+				$this->_get->set( 'orderby', '' );
+				$this->_request->set( 'orderby', '' );
+			}
+
+			if ( ! $this->_request->has( 'order' ) ){
+				$this->_get->set( 'order', 'DESC' );
+				$this->_request->set( 'order', 'DESC' );
+			}
 		}
 
-		$args = array(
+		$args = [
 			'number'     => intval( $per_page ),
 			'offset'     => intval( ( $pagenum - 1 ) * $per_page ),
 			'network_id' => get_current_network_id(),
-		);
+		];
 
 		if ( empty($s) ) {
 			// Nothing to do.
@@ -132,7 +137,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 			}
 		}
 
-		$order_by = isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
+		$order_by = $this->_request->get( 'orderby', '' );
 		if ( 'registered' === $order_by ) {
 			// registered is a valid field name.
 		} elseif ( 'lastupdated' === $order_by ) {
@@ -152,7 +157,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		$args['orderby'] = $order_by;
 
 		if ( $order_by ) {
-			$args['order'] = ( isset( $_REQUEST['order'] ) && 'DESC' === strtoupper( $_REQUEST['order'] ) ) ? "DESC" : "ASC";
+			$args['order'] = 'DESC' === strtoupper( $this->_request->get( 'order' ) ) ? "DESC" : "ASC";
 		}
 
 		if ( wp_is_large_network() ) {

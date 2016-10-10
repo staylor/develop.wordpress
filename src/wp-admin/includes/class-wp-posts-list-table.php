@@ -99,8 +99,13 @@ class WP_Posts_List_Table extends WP_List_Table {
 			AND post_author = %d
 		", $post_type, get_current_user_id() ) ) );
 
-		if ( $this->user_posts_count && ! current_user_can( $post_type_object->cap->edit_others_posts ) && empty( $_REQUEST['post_status'] ) && empty( $_REQUEST['all_posts'] ) && empty( $_REQUEST['author'] ) && empty( $_REQUEST['show_sticky'] ) ) {
-			$_GET['author'] = get_current_user_id();
+		if ( $this->user_posts_count && ! current_user_can( $post_type_object->cap->edit_others_posts ) &&
+			! $this->_request->get( 'post_status' ) &&
+			! $this->_request->get( 'all_posts' ) &&
+			! $this->_request->get( 'author' ) &&
+			! $this->_request->get( 'show_sticky' )
+		) {
+			$this->_get->set( 'author', get_current_user_id() );
 		}
 
 		if ( 'post' === $post_type && $sticky_posts = get_option( 'sticky_posts' ) ) {
@@ -158,11 +163,11 @@ class WP_Posts_List_Table extends WP_List_Table {
 		} else {
 			$post_counts = (array) wp_count_posts( $post_type, 'readable' );
 
-			if ( isset( $_REQUEST['post_status'] ) && in_array( $_REQUEST['post_status'] , $avail_post_stati ) ) {
-				$total_items = $post_counts[ $_REQUEST['post_status'] ];
-			} elseif ( isset( $_REQUEST['show_sticky'] ) && $_REQUEST['show_sticky'] ) {
+			if ( $this->_request->get( 'post_status' ) && in_array( $this->_request->get( 'post_status' ), $avail_post_stati ) ) {
+				$total_items = $post_counts[ $this->_request->get( 'post_status' ) ];
+			} elseif ( $this->_request->get( 'show_sticky' ) ) {
 				$total_items = $this->sticky_posts_count;
-			} elseif ( isset( $_GET['author'] ) && $_GET['author'] == get_current_user_id() ) {
+			} elseif ( $this->_request->get( 'author' ) == get_current_user_id() ) {
 				$total_items = $this->user_posts_count;
 			} else {
 				$total_items = array_sum( $post_counts );
@@ -174,14 +179,14 @@ class WP_Posts_List_Table extends WP_List_Table {
 			}
 		}
 
-		if ( ! empty( $_REQUEST['mode'] ) ) {
-			$mode = $_REQUEST['mode'] === 'excerpt' ? 'excerpt' : 'list';
+		if ( $this->_request->get( 'mode' ) ) {
+			$mode = $this->_request->get( 'mode' ) === 'excerpt' ? 'excerpt' : 'list';
 			set_user_setting( 'posts_list_mode', $mode );
 		} else {
 			$mode = get_user_setting( 'posts_list_mode', 'list' );
 		}
 
-		$this->is_trash = isset( $_REQUEST['post_status'] ) && $_REQUEST['post_status'] === 'trash';
+		$this->is_trash = $this->_request->get( 'post_status' ) === 'trash';
 
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
@@ -201,10 +206,11 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @access public
 	 */
 	public function no_items() {
-		if ( isset( $_REQUEST['post_status'] ) && 'trash' === $_REQUEST['post_status'] )
+		if ( 'trash' === $this->_request->get( 'post_status' ) ) {
 			echo get_post_type_object( $this->screen->post_type )->labels->not_found_in_trash;
-		else
+		} else {
 			echo get_post_type_object( $this->screen->post_type )->labels->not_found;
+		}
 	}
 
 	/**
@@ -311,7 +317,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			$class = '';
 		}
 
-		if ( empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ) ) {
+		if ( empty( $class ) && ( $this->is_base_request() || $this->_request->get( 'all_posts' ) ) ) {
 			$class = 'current';
 		}
 
@@ -339,7 +345,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 				continue;
 			}
 
-			if ( isset($_REQUEST['post_status']) && $status_name === $_REQUEST['post_status'] ) {
+			if ( $status_name === $this->_request->get( 'post_status' ) ) {
 				$class = 'current';
 			}
 
@@ -357,7 +363,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 
 		if ( ! empty( $this->sticky_posts_count ) ) {
-			$class = ! empty( $_REQUEST['show_sticky'] ) ? 'current' : '';
+			$class = $this->_request->get( 'show_sticky' ) ? 'current' : '';
 
 			$sticky_args = array(
 				'post_type'	=> $post_type,
@@ -506,8 +512,9 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function current_action() {
-		if ( isset( $_REQUEST['delete_all'] ) || isset( $_REQUEST['delete_all2'] ) )
+		if ( $this->_request->get( 'delete_all' ) || $this->_request->get( 'delete_all2' ) ) {
 			return 'delete_all';
+		}
 
 		return parent::current_action();
 	}
@@ -566,7 +573,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			$posts_columns[ $column_key ] = get_taxonomy( $taxonomy )->labels->name;
 		}
 
-		$post_status = !empty( $_REQUEST['post_status'] ) ? $_REQUEST['post_status'] : 'all';
+		$post_status = $this->_request->get( 'post_status', 'all' );
 		if ( post_type_supports( $post_type, 'comments' ) && !in_array( $post_status, array( 'pending', 'draft', 'future' ) ) )
 			$posts_columns['comments'] = '<span class="vers comment-grey-bubble" title="' . esc_attr__( 'Comments' ) . '"><span class="screen-reader-text">' . __( 'Comments' ) . '</span></span>';
 
@@ -684,7 +691,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		 * It only takes O( N ) to arrange this and it takes O( 1 ) for subsequent lookup operations
 		 * If searching, ignore hierarchy and treat everything as top level
 		 */
-		if ( empty( $_REQUEST['s'] ) ) {
+		if ( ! $this->_request->get( 's' ) ) {
 
 			$top_level_pages = [];
 			$children_pages = [];

@@ -107,7 +107,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 			$tags_per_page = apply_filters( 'edit_categories_per_page', $tags_per_page );
 		}
 
-		$search = !empty( $_REQUEST['s'] ) ? trim( wp_unslash( $_REQUEST['s'] ) ) : '';
+		$search = $this->_request->get( 's', '' );
 
 		$args = array(
 			'search' => $search,
@@ -115,12 +115,13 @@ class WP_Terms_List_Table extends WP_List_Table {
 			'number' => $tags_per_page,
 		);
 
-		if ( !empty( $_REQUEST['orderby'] ) )
-			$args['orderby'] = trim( wp_unslash( $_REQUEST['orderby'] ) );
+		if ( $this->_request->get( 'orderby' ) ) {
+			$args['orderby'] = trim( wp_unslash( $this->_request->get( 'orderby' ) ) );
+		}
 
-		if ( !empty( $_REQUEST['order'] ) )
-			$args['order'] = trim( wp_unslash( $_REQUEST['order'] ) );
-
+		if ( $this->_request->get( 'order' ) ) {
+			$args['order'] = trim( wp_unslash( $this->_request->get( 'order' ) ) );
+		}
 		$this->callback_args = $args;
 
 		$this->set_pagination_args( array(
@@ -164,8 +165,13 @@ class WP_Terms_List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function current_action() {
-		if ( isset( $_REQUEST['action'] ) && isset( $_REQUEST['delete_tags'] ) && ( 'delete' === $_REQUEST['action'] || 'delete' === $_REQUEST['action2'] ) )
+		if (
+			$this->_request->get( 'action' ) &&
+			$this->_request->get( 'delete_tags' ) &&
+			( 'delete' === $this->_request->get( 'action' ) || 'delete' === $this->_request->get( 'action2' ) )
+		) {
 			return 'bulk-delete';
+		}
 
 		return parent::current_action();
 	}
@@ -275,11 +281,11 @@ class WP_Terms_List_Table extends WP_List_Table {
 			if ( $count >= $end )
 				break;
 
-			if ( $term->parent != $parent && empty( $_REQUEST['s'] ) )
+			if ( $term->parent != $parent && ! $this->_request->get( 's' ) )
 				continue;
 
 			// If the page starts in a subtree, print the parents.
-			if ( $count == $start && $term->parent > 0 && empty( $_REQUEST['s'] ) ) {
+			if ( $count == $start && $term->parent > 0 && ! $this->_request->get( 's' ) ) {
 				$my_parents = $parent_ids = [];
 				$p = $term->parent;
 				while ( $p ) {
@@ -309,7 +315,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 
 			unset( $terms[$key] );
 
-			if ( isset( $children[$term->term_id] ) && empty( $_REQUEST['s'] ) )
+			if ( isset( $children[$term->term_id] ) && ! $this->_request->get( 's' ) )
 				$this->_rows( $taxonomy, $terms, $children, $start, $per_page, $count, $term->term_id, $level + 1 );
 		}
 	}
