@@ -7,7 +7,6 @@
  */
 
 use WP\Admin\View\User as UserView;
-use WP\User\User;
 
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
@@ -123,8 +122,8 @@ $show_avatars = get_option( 'show_avatars' );
  * @since 2.8.0 Added the `$profileuser` parameter.
  * @since 4.4.0 Now evaluated only in user-edit.php.
  *
- * @param bool    $show        Whether to show the password fields. Default true.
- * @param User    $profileuser User object for the current user to edit.
+ * @param bool         $show        Whether to show the password fields. Default true.
+ * @param WP\User\User $profileuser User object for the current user to edit.
  */
 $show_password_fields = apply_filters( 'show_password_fields', true, $profileuser );
 
@@ -141,8 +140,8 @@ $show_additional_caps = count( $profileuser->caps ) > count( $profileuser->roles
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param bool    $enable      Whether to display the capabilities. Default true.
-	 * @param User    $profileuser The current User object.
+	 * @param bool         $enable      Whether to display the capabilities. Default true.
+	 * @param WP\User\User $profileuser The current User object.
 	 */
 	&& apply_filters( 'additional_capabilities_display', true, $profileuser );
 
@@ -201,8 +200,8 @@ if ( $show_avatars ) {
 	 * @since 4.4.0
 	 * @since 4.7.0 Added the `$profileuser` parameter.
 	 *
-	 * @param string  $description The description that will be printed.
-	 * @param User $profileuser The current User object.
+	 * @param string       $description The description that will be printed.
+	 * @param WP\User\User $profileuser The current User object.
 	 */
 	$data['profile_description'] = apply_filters( 'user_profile_picture_description', $description, $profileuser );
 }
@@ -390,7 +389,7 @@ $view->setActions( [
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param User $profileuser The current User object.
+	 * @param WP\User\User $profileuser The current User object.
 	 */
 	'personal_options' => [ $profileuser ],
 	/**
@@ -400,7 +399,7 @@ $view->setActions( [
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param User $profileuser The current User object.
+	 * @param WP\User\User $profileuser The current User object.
 	 */
 	'profile_personal_options' => [ $profileuser ],
 	/**
@@ -410,7 +409,7 @@ $view->setActions( [
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param User $profileuser The current User object.
+	 * @param WP\User\User $profileuser The current User object.
 	 */
 	'show_user_profile' => [ $profileuser ],
 	/**
@@ -418,7 +417,7 @@ $view->setActions( [
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param User $profileuser The current User object.
+	 * @param WP\User\User $profileuser The current User object.
 	 */
 	'edit_user_profile' => [ $profileuser ],
 ] );

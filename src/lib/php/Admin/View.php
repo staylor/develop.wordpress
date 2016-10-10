@@ -3,7 +3,7 @@ namespace WP\Admin;
 
 use WP\{App,View as BaseView};
 
-class View extends BaseView {
+abstract class View extends BaseView {
 	public $l10n;
 
 	public $help;

@@ -1,0 +1,30 @@
+{{# errors? }}
+<div class="{{ class }}">
+	<p>{{# label }}<strong>{{ . }}</strong> {{/ label }}{{{ message }}}</p>
+</div>
+{{/ errors? }}
+
+{{# messages }}
+<div id="{{ id }}" class="{{ class }}">
+	<p>{{{ message }}}</p>
+</div>
+{{/ messages }}
+
+<div class="wrap">
+	<h1>{{ title }}
+	 {{# title_link_text }}<a href="{{ title_link_url }}" class="page-title-action">{{ . }}</a>{{/ title_link_text }}
+	 {{# usersearch }}<span class="subtitle">{{{ . }}}</span>{{/ usersearch }}
+	</h1>
+
+	{{{ list_table_views }}}
+
+	<form method="get">
+
+		{{{ list_table_search_box }}}
+
+		{{{ list_table_display }}}
+
+	</form>
+
+	<br class="clear" />
+</div>

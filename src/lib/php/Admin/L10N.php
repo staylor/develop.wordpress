@@ -7,6 +7,20 @@ class L10N extends MagicData {
 	public function __construct() {
 		$this->data = [
 			// User
+			'remove_users_from_site' => __( 'Remove Users from Site' ),
+			'specified_this_user_removal' => __( 'You have specified this user for removal:' ),
+			'specified_these_users_removal' => __( 'You have specified these users for removal:' ),
+			'no_valid_users_removal' => __( 'There are no valid users selected for removal.' ),
+			'delete_users' => __( 'Delete Users' ),
+			'specified_this_user_deletion' => __( 'You have specified this user for deletion:' ),
+			'specified_these_users_deletion' => __( 'You have specified these users for deletion:' ),
+			'no_valid_users_deletion' => __( 'There are no valid users selected for deletion.' ),
+			'owned_by_this_user' => __( 'What should be done with content owned by this user?' ),
+			'owned_by_these_users' => __( 'What should be done with content owned by these users?' ),
+			'delete_all_content' => __( 'Delete all content.' ),
+			'attribute_all_content_to' => __( 'Attribute all content to:' ),
+			'add_new' => _x( 'Add New', 'user' ),
+			'add_existing' => _x( 'Add Existing', 'user' ),
 			'add_existing_user' => __( 'Add Existing User' ),
 			'add_new_user' => __( 'Add New User' ),
 			'role' => __( 'Role' ),

@@ -36,6 +36,112 @@ class User extends View {
 		wp_enqueue_script( 'user-profile' );
 	}
 
+	public function getMessages() {
+		$messages = [];
+
+		$update = $this->_get->get( 'update' );
+		if ( ! $update ) {
+			return $messages;
+		}
+
+		switch( $update ) {
+		case 'del':
+		case 'del_many':
+			$delete_count = $this->_get->getInt( 'delete_count', 0 );
+			if ( 1 === $delete_count ) {
+				$message = __( 'User deleted.' );
+			} else {
+				$message = _n( '%s user deleted.', '%s users deleted.', $delete_count );
+			}
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'updated notice is-dismissible',
+				'message' => sprintf( $message, number_format_i18n( $delete_count ) )
+			];
+			break;
+
+		case 'add':
+			$user_id = $this->_get->getInt( 'id' );
+
+			if ( $user_id && current_user_can( 'edit_user', $user_id ) ) {
+				/* translators: %s: edit page url */
+				$messages[] = [
+					'id' => 'message',
+					'class' => 'updated notice is-dismissible',
+					'message' => sprintf(
+						__( 'New user created. <a href="%s">Edit user</a>' ),
+						esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $this->app['request.uri'] ) ),
+						self_admin_url( 'user-edit.php?user_id=' . $user_id ) ) )
+					)
+				];
+			} else {
+				$messages[] = [
+					'id' => 'message',
+					'class' => 'updated notice is-dismissible',
+					'message' => __( 'New user created.' )
+				];
+			}
+			break;
+
+		case 'promote':
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'updated notice is-dismissible',
+				'message' => __( 'Changed roles.' )
+			];
+			break;
+
+		case 'err_admin_role':
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'error notice is-dismissible',
+				'message' => __( 'The current user&#8217;s role must have user editing capabilities.' )
+			];
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'updated notice is-dismissible',
+				'message' => __( 'Other user roles have been changed.' )
+			];
+			break;
+
+		case 'err_admin_del':
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'error notice is-dismissible',
+				'message' => __( 'You can&#8217;t delete the current user.' )
+			];
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'updated notice is-dismissible',
+				'message' => __( 'Other users have been deleted.' )
+			];
+			break;
+
+		case 'remove':
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'updated notice is-dismissible fade',
+				'message' => __( 'User removed from this site.' )
+			];
+			break;
+
+		case 'err_admin_remove':
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'error notice is-dismissible',
+				'message' => __( "You can't remove the current user." )
+			];
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'updated notice is-dismissible fade',
+				'message' => __( 'Other users have been removed.' )
+			];
+			break;
+		}
+
+		return $messages;
+	}
+
 	public function getAddMessages() {
 		$messages = [];
 		if ( ! $this->_get->has( 'update' ) ) {

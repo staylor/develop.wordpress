@@ -1,0 +1,31 @@
+<div class="wrap">
+
+	<h1>{{ l10n.remove_users_from_site }}</h1>
+
+	{{# one_user }}
+	<p>{{ l10n.specified_this_user_removal }}</p>
+	{{/ one_user }}
+	{{^ one_user }}
+	<p>{{ l10n.specified_these_users_removal }}</p>
+	{{/ one_user }}
+
+	<form method="post" name="updateusers" id="updateusers">
+		{{{ nonce }}}
+		{{{ referer }}}
+
+		<ul>
+		{{# list_items }}
+			<li>{{{ . }}}</li>
+		{{/ list_items }}
+		</ul>
+
+		{{# remove }}
+		<input type="hidden" name="action" value="doremove" />
+		{{{ submit_button }}}
+		{{/ remove }}
+		{{^ remove }}
+		<p>{{ l10n.no_valid_users_removal }}</p>
+		{{/ remove }}
+	</form>
+
+</div>

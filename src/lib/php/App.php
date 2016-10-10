@@ -53,4 +53,12 @@ class App extends Container {
 	public $xmlrpc = [
 		'post_default_title' => '',
 	];
+
+	public function mute( callable $callback ) {
+		return function () use ( $callback ) {
+			ob_start();
+			call_user_func( $callback );
+			return ob_get_clean();
+		};
+	}
 }

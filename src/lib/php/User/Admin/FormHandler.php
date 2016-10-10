@@ -298,5 +298,158 @@ class FormHandler {
 		$location = add_query_arg( [ 'updated' => 'true' ], self_admin_url( 'profile.php' ) );
 		$this->redirect( $location );
 	}
+
+	public function doPromoteUsers( $redirect ) {
+		check_admin_referer( 'bulk-users' );
+
+		if ( ! current_user_can( 'promote_users' ) ) {
+			wp_die( __( 'You can&#8217;t edit that user.' ) );
+		}
+
+		if ( empty( $this->_request->get( 'users' ) ) ) {
+			$this->redirect( $redirect );
+		}
+
+		$editable_roles = get_editable_roles();
+		$role = false;
+		if ( ! empty( $this->_request->get( 'new_role2' ) ) ) {
+			$role = $this->_request->get( 'new_role2' );
+		} elseif ( ! empty( $this->_request->get( 'new_role' ) ) ) {
+			$role = $this->_request->get( 'new_role' );
+		}
+
+		if ( ! $role || empty( $editable_roles[ $role ] ) ) {
+			wp_die( __( 'You can&#8217;t give users that role.' ) );
+		}
+
+		$current_user_id = get_current_user_id();
+		$userids = array_map( 'intval', $this->_request->get( 'users' ) );
+		$update = 'promote';
+		foreach ( $userids as $id ) {
+			if ( ! current_user_can( 'promote_user', $id ) ) {
+				wp_die( __( 'You can&#8217;t edit that user.' ) );
+			}
+			// The new role of the current user must also have the promote_users cap or be a multisite super admin
+			if (
+				$id == $current_user_id &&
+				! $this->app['roles']->role_objects[ $role ]->has_cap( 'promote_users' )
+				&& ! ( is_multisite() && is_super_admin() )
+			) {
+				$update = 'err_admin_role';
+				continue;
+			}
+
+			// If the user doesn't already belong to the blog, bail.
+			if ( is_multisite() && ! is_user_member_of_blog( $id ) ) {
+				wp_die(
+					'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+					'<p>' . __( 'One of the selected users is not a member of this site.' ) . '</p>',
+					403
+				);
+			}
+
+			$user = get_userdata( $id );
+			$user->set_role( $role );
+		}
+
+		$location = add_query_arg( 'update', $update, $redirect );
+		$this->redirect( $location );
+	}
+
+	public function doDeleteOrReassign( $redirect ) {
+		if ( is_multisite() ) {
+			wp_die( __('User deletion is not allowed from this screen.') );
+		}
+		check_admin_referer( 'delete-users' );
+
+		if ( empty( $this->_request->get( 'users' ) ) ) {
+			$this->redirect( $redirect );
+		}
+
+		$userids = array_map( 'intval', (array) $this->_request->get( 'users' ) );
+
+		if ( empty( $this->_request->get( 'delete_option' ) ) ) {
+			$url = self_admin_url( 'users.php?action=delete&users[]=' . implode( '&users[]=', $userids ) . '&error=true' );
+			$location = str_replace( '&amp;', '&', wp_nonce_url( $url, 'bulk-users' ) );
+			$this->redirect( $location );
+		}
+
+		if ( ! current_user_can( 'delete_users' ) ) {
+			wp_die( __( 'You can&#8217;t delete users.' ) );
+		}
+
+		$update = 'del';
+		$delete_count = 0;
+		$current_user_id = get_current_user_id();
+
+		foreach ( $userids as $id ) {
+			if ( ! current_user_can( 'delete_user', $id ) ) {
+				wp_die( __( 'You can&#8217;t delete that user.' ) );
+			}
+
+			if ( $id === $current_user_id ) {
+				$update = 'err_admin_del';
+				continue;
+			}
+
+			switch ( $this->_request->get( 'delete_option' ) ) {
+			case 'delete':
+				wp_delete_user( $id );
+				break;
+
+			case 'reassign':
+				wp_delete_user( $id, $this->_request->getInt( 'reassign_user' ) );
+				break;
+			}
+			++$delete_count;
+		}
+
+		$location = add_query_arg(
+			[ 'delete_count' => $delete_count, 'update' => $update ],
+			$redirect
+		);
+		$this->redirect( $location );
+	}
+
+	public function doDoRemove( $redirect ) {
+		check_admin_referer( 'remove-users' );
+
+		if ( ! is_multisite() ) {
+			wp_die( __( 'You can&#8217;t remove users.' ) );
+		}
+
+		if ( empty( $this->_request->get( 'users' ) ) ) {
+			$this->redirect( $redirect );
+		}
+
+		if ( ! current_user_can( 'remove_users' ) ) {
+			wp_die( __( 'You can&#8217;t remove users.' ) );
+		}
+
+		$userids = array_map( 'intval', (array) $this->_request->get( 'users' ) );
+
+		$update = 'remove';
+		$current_user_id = get_current_user_id();
+		$blog_id = get_current_blog_id();
+
+		foreach ( $userids as $id ) {
+			if ( $id === $current_user_id && ! is_super_admin() ) {
+				$update = 'err_admin_remove';
+				continue;
+			}
+
+			if ( ! current_user_can( 'remove_user', $id ) ) {
+				$update = 'err_admin_remove';
+				continue;
+			}
+			remove_user_from_blog( $id, $blog_id );
+		}
+
+		$location = add_query_arg(
+			[ 'update' => $update ],
+			$redirect
+		);
+		$this->redirect( $location );
+	}
 }
 

@@ -10,6 +10,57 @@ class Help {
 		$this->screen = $screen;
 	}
 
+	public function addUsers() {
+		// contextual help - choose Help on the top right of admin panel to preview this.
+		$this->screen->add_help_tab( array(
+			'id'      => 'overview',
+			'title'   => __( 'Overview' ),
+			'content' => '<p>' . __( 'This screen lists all the existing users for your site. Each user has one of five defined roles as set by the site admin: Site Administrator, Editor, Author, Contributor, or Subscriber. Users with roles other than Administrator will see fewer options in the dashboard navigation when they are logged in, based on their role.' ) . '</p>' .
+						 '<p>' . __( 'To add a new user for your site, click the Add New button at the top of the screen or Add New in the Users menu section.' ) . '</p>'
+		) ) ;
+
+		$this->screen->add_help_tab( array(
+			'id'      => 'screen-display',
+			'title'   => __( 'Screen Display' ),
+			'content' => '<p>' . __( 'You can customize the display of this screen in a number of ways:' ) . '</p>' .
+							'<ul>' .
+							'<li>' . __( 'You can hide/display columns based on your needs and decide how many users to list per screen using the Screen Options tab.' ) . '</li>' .
+							'<li>' . __( 'You can filter the list of users by User Role using the text links above the users list to show All, Administrator, Editor, Author, Contributor, or Subscriber. The default view is to show all users. Unused User Roles are not listed.' ) . '</li>' .
+							'<li>' . __( 'You can view all posts made by a user by clicking on the number under the Posts column.' ) . '</li>' .
+							'</ul>'
+		) );
+
+		$help = '<p>' . __( 'Hovering over a row in the users list will display action links that allow you to manage users. You can perform the following actions:' ) . '</p>' .
+			'<ul>' .
+			'<li>' . __( 'Edit takes you to the editable profile screen for that user. You can also reach that screen by clicking on the username.' ) . '</li>';
+
+		if ( is_multisite() ) {
+			$help .= '<li>' . __( 'Remove allows you to remove a user from your site. It does not delete their content. You can also remove multiple users at once by using Bulk Actions.' ) . '</li>';
+		} else {
+			$help .= '<li>' . __( 'Delete brings you to the Delete Users screen for confirmation, where you can permanently remove a user from your site and delete their content. You can also delete multiple users at once by using Bulk Actions.' ) . '</li>';
+		}
+		$help .= '</ul>';
+
+		$this->screen->add_help_tab( array(
+			'id'      => 'actions',
+			'title'   => __( 'Actions' ),
+			'content' => $help,
+		) );
+
+		$this->screen->set_help_sidebar(
+			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Users_Screen">Documentation on Managing Users</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Roles_and_Capabilities">Descriptions of Roles and Capabilities</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
+		);
+
+		$this->screen->set_screen_reader_content( array(
+			'heading_views'      => __( 'Filter users list' ),
+			'heading_pagination' => __( 'Users list navigation' ),
+			'heading_list'       => __( 'Users list' ),
+		) );
+	}
+
 	public function addUserNew() {
 		$help = '<p>' . __( 'To add a new user to your site, fill in the form on this screen and click the Add New User button at the bottom.' ) . '</p>';
 

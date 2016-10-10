@@ -1,25 +1,37 @@
 <?php
 namespace WP;
 
-use WP\{App,Mustache};
-
+/**
+ * @property-read Symfony\Component\HttpFoundation\ParameterBag $_get
+ * @property-read Symfony\Component\HttpFoundation\ParameterBag $_post
+ * @property-read Symfony\Component\HttpFoundation\ParameterBag $_request
+ */
 class View extends MagicData {
 	use Mustache;
 
 	protected $app;
-	public $_get;
-	public $_post;
-	public $_request;
 
 	protected $actions = [];
 
 	public function __construct( App $app ) {
 		$this->app = $app;
+	}
 
-		$request = $app['request'];
-		$this->_get = $request->query;
-		$this->_post = $request->request;
-		$this->_request = $request->attributes;
+	public function __get( string $name ) {
+		if ( array_key_exists( $name, $this->data ) ) {
+			return $this->data[ $name ];
+		}
+
+		switch ( $name ) {
+		case '_get':
+			return $this->app['request']->query;
+
+		case '_post':
+			return $this->app['request']->request;
+
+		case '_request':
+			return $this->app['request']->attributes;
+		}
 	}
 
 	public function setData( $data = [] ) {

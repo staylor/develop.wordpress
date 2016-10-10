@@ -1,0 +1,66 @@
+<div class="wrap">
+	<h1>{{ l10n.delete_users }}</h1>
+
+	{{# errors }}
+	<div class="{{ class }}">
+		<p>{{# label }}<strong>{{ . }}</strong> {{/ label }}{{{ message }}}</p>
+	</div>
+	{{/ errors }}
+
+	{{# one_user }}
+	<p>{{ l10n.specified_this_user_deletion }}</p>
+	{{/ one_user }}
+	{{^ one_user }}
+	<p>{{ l10n.specified_these_users_deletion }}</p>
+	{{/ one_user }}
+
+	<form method="post" name="updateusers" id="updateusers">
+		{{{ nonce }}}
+		{{{ referer }}}
+
+		<ul>
+		{{# list_items }}
+			<li>{{{ . }}}</li>
+		{{/ list_items }}
+		</ul>
+
+		{{# delete }}
+
+		{{# users_have_content }}
+			<fieldset>
+			{{# one_delete }}
+				<p><legend>{{ l10n.owned_by_this_user }}</legend></p>
+			{{/ one_delete }}
+			{{^ one_delete }}
+				<p><legend>{{ l10n.owned_by_these_users }}</legend></p>
+			{{/ one_delete }}
+				<ul style="list-style:none;">
+					<li>
+						<label>
+							<input type="radio" id="delete_option0" name="delete_option" value="delete" />
+							 {{ l10n.delete_all_content }}
+						</label>
+					</li>
+					<li>
+						<input type="radio" id="delete_option1" name="delete_option" value="reassign" />
+						<label for="delete_option1">{{ l10n.attribute_all_content_to }}</label>
+						{{{ users_dropdown }}}
+					</li>
+				</ul>
+			</fieldset>
+		{{/ users_have_content }}
+		{{^ users_have_content }}
+		<input type="hidden" name="delete_option" value="delete" />
+		{{/ users_have_content }}
+
+		{{# doAction }}delete_user_form{{/ doAction }}
+		<input type="hidden" name="action" value="dodelete" />
+		{{{ submit_button }}}
+
+		{{/ delete }}
+		{{^ delete }}
+			<p>{{ l10n.no_valid_users_deletion }}</p>
+		{{/ delete }}
+	</form>
+
+</div>
