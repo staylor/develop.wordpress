@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use WP\Admin\View\Term as TermView;
+
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
@@ -28,6 +30,8 @@ if ( ! current_user_can( $tax->cap->manage_terms ) ) {
 		403
 	);
 }
+
+$view = new TermView( $app );
 
 $wp_list_table = _get_list_table('WP_Terms_List_Table');
 $pagenum = $wp_list_table->get_pagenum();
@@ -55,7 +59,7 @@ get_current_screen()->set_screen_reader_content( array(
 $location = false;
 $referer = wp_get_referer();
 if ( ! $referer ) { // For POST requests.
-	$referer = wp_unslash( $_SERVER['REQUEST_URI'] );
+	$referer = wp_unslash( $app['request.uri'] );
 }
 $referer = remove_query_arg( array( '_wp_http_referer', '_wpnonce', 'error', 'message', 'paged' ), $referer );
 
@@ -72,20 +76,20 @@ case 'add-tag':
 		);
 	}
 
-	$ret = wp_insert_term( $_POST['tag-name'], $taxonomy, $_POST );
-	if ( $ret && !is_wp_error( $ret ) )
+	$ret = wp_insert_term( $view->_post->get( 'tag-name' ), $taxonomy, $view->_post->all() );
+	if ( $ret && ! is_wp_error( $ret ) ) {
 		$location = add_query_arg( 'message', 1, $location );
-	else
-		$location = add_query_arg( array( 'error' => true, 'message' => 4 ), $referer );
-
+	} else {
+		$location = add_query_arg( [ 'error' => true, 'message' => 4 ], $referer );
+	}
 	break;
 
 case 'delete':
-	if ( ! isset( $_REQUEST['tag_ID'] ) ) {
+	$tag_ID = $view->_request->getInt( 'tag_ID' );
+	if ( ! $tag_ID ) {
 		break;
 	}
 
-	$tag_ID = (int) $_REQUEST['tag_ID'];
 	check_admin_referer( 'delete-tag_' . $tag_ID );
 
 	if ( ! current_user_can( 'delete_term', $tag_ID ) ) {
@@ -113,7 +117,7 @@ case 'bulk-delete':
 		);
 	}
 
-	$tags = (array) $_REQUEST['delete_tags'];
+	$tags = (array) $view->_request->get( 'delete_tags' );
 	foreach ( $tags as $tag_ID ) {
 		wp_delete_term( $tag_ID, $taxnow );
 	}
@@ -123,12 +127,12 @@ case 'bulk-delete':
 	break;
 
 case 'edit':
-	if ( ! isset( $_REQUEST['tag_ID'] ) ) {
+	$term_id = $view->_request->getInt( 'tag_ID' );
+	if ( ! $term_id ) {
 		break;
 	}
 
-	$term_id = (int) $_REQUEST['tag_ID'];
-	$term    = get_term( $term_id );
+	$term = get_term( $term_id );
 
 	if ( ! $term instanceof WP_Term ) {
 		wp_die( __( 'You attempted to edit an item that doesn&#8217;t exist. Perhaps it was deleted?' ) );
@@ -138,7 +142,7 @@ case 'edit':
 	exit;
 
 case 'editedtag':
-	$tag_ID = (int) $_POST['tag_ID'];
+	$tag_ID = $view->_post->getInt( 'tag_ID' );
 	check_admin_referer( 'update-tag_' . $tag_ID );
 
 	if ( ! current_user_can( 'edit_term', $tag_ID ) ) {
@@ -150,23 +154,23 @@ case 'editedtag':
 	}
 
 	$tag = get_term( $tag_ID, $taxnow );
-	if ( ! $tag )
+	if ( ! $tag ) {
 		wp_die( __( 'You attempted to edit an item that doesn&#8217;t exist. Perhaps it was deleted?' ) );
-
-	$ret = wp_update_term( $tag_ID, $taxnow, $_POST );
+	}
+	$ret = wp_update_term( $tag_ID, $taxnow, $view->_post->all() );
 
 	if ( $ret && ! is_wp_error( $ret ) ) {
 		$location = add_query_arg( 'message', 3, $referer );
 	} else {
-		$location = add_query_arg( array( 'error' => true, 'message' => 5 ), $referer );
+		$location = add_query_arg( [ 'error' => true, 'message' => 5 ], $referer );
 	}
 	break;
 default:
-	if ( ! $wp_list_table->current_action() || ! isset( $_REQUEST['delete_tags'] ) ) {
+	if ( ! $wp_list_table->current_action() || ! $view->_request->get( 'delete_tags' ) ) {
 		break;
 	}
 	check_admin_referer( 'bulk-tags' );
-	$tags = (array) $_REQUEST['delete_tags'];
+	$tags = (array) $view->_request->get( 'delete_tags' );
 	/**
 	 * Fires when a custom bulk action should be handled.
 	 *
@@ -183,8 +187,11 @@ default:
 	break;
 }
 
-if ( ! $location && ! empty( $_REQUEST['_wp_http_referer'] ) ) {
-	$location = remove_query_arg( array( '_wp_http_referer', '_wpnonce' ), wp_unslash( $_SERVER['REQUEST_URI'] ) );
+if ( ! $location && $view->_request->get( '_wp_http_referer' ) ) {
+	$location = remove_query_arg(
+		[ '_wp_http_referer', '_wpnonce' ],
+		wp_unslash( $app['request.uri'] )
+	);
 }
 
 if ( $location ) {
@@ -217,65 +224,7 @@ if ( current_user_can($tax->cap->edit_terms) )
 	wp_enqueue_script('inline-edit-tax');
 
 if ( 'category' == $taxnow || 'link_category' == $taxnow || 'post_tag' == $taxnow  ) {
-	$help ='';
-	if ( 'category' == $taxnow )
-		$help = '<p>' . sprintf(__( 'You can use categories to define sections of your site and group related posts. The default category is &#8220;Uncategorized&#8221; until you change it in your <a href="%s">writing settings</a>.' ) , 'options-writing.php' ) . '</p>';
-	elseif ( 'link_category' == $taxnow )
-		$help = '<p>' . __( 'You can create groups of links by using Link Categories. Link Category names must be unique and Link Categories are separate from the categories you use for posts.' ) . '</p>';
-	else
-		$help = '<p>' . __( 'You can assign keywords to your posts using <strong>tags</strong>. Unlike categories, tags have no hierarchy, meaning there&#8217;s no relationship from one tag to another.' ) . '</p>';
-
-	if ( 'link_category' == $taxnow )
-		$help .= '<p>' . __( 'You can delete Link Categories in the Bulk Action pull-down, but that action does not delete the links within the category. Instead, it moves them to the default Link Category.' ) . '</p>';
-	else
-		$help .='<p>' . __( 'What&#8217;s the difference between categories and tags? Normally, tags are ad-hoc keywords that identify important information in your post (names, subjects, etc) that may or may not recur in other posts, while categories are pre-determined sections. If you think of your site like a book, the categories are like the Table of Contents and the tags are like the terms in the index.' ) . '</p>';
-
-	get_current_screen()->add_help_tab( array(
-		'id'      => 'overview',
-		'title'   => __('Overview'),
-		'content' => $help,
-	) );
-
-	if ( 'category' == $taxnow || 'post_tag' == $taxnow ) {
-		if ( 'category' == $taxnow )
-			$help = '<p>' . __( 'When adding a new category on this screen, you&#8217;ll fill in the following fields:' ) . '</p>';
-		else
-			$help = '<p>' . __( 'When adding a new tag on this screen, you&#8217;ll fill in the following fields:' ) . '</p>';
-
-		$help .= '<ul>' .
-		'<li>' . __( '<strong>Name</strong> &mdash; The name is how it appears on your site.' ) . '</li>';
-
-		if ( ! global_terms_enabled() )
-			$help .= '<li>' . __( '<strong>Slug</strong> &mdash; The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.' ) . '</li>';
-
-		if ( 'category' == $taxnow )
-			$help .= '<li>' . __( '<strong>Parent</strong> &mdash; Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have child categories for Bebop and Big Band. Totally optional. To create a subcategory, just choose another category from the Parent dropdown.' ) . '</li>';
-
-		$help .= '<li>' . __( '<strong>Description</strong> &mdash; The description is not prominent by default; however, some themes may display it.' ) . '</li>' .
-		'</ul>' .
-		'<p>' . __( 'You can change the display of this screen using the Screen Options tab to set how many items are displayed per screen and to display/hide columns in the table.' ) . '</p>';
-
-		get_current_screen()->add_help_tab( array(
-			'id'      => 'adding-terms',
-			'title'   => 'category' == $taxnow ? __( 'Adding Categories' ) : __( 'Adding Tags' ),
-			'content' => $help,
-		) );
-	}
-
-	$help = '<p><strong>' . __( 'For more information:' ) . '</strong></p>';
-
-	if ( 'category' == $taxnow )
-		$help .= '<p>' . __( '<a href="https://codex.wordpress.org/Posts_Categories_Screen">Documentation on Categories</a>' ) . '</p>';
-	elseif ( 'link_category' == $taxnow )
-		$help .= '<p>' . __( '<a href="https://codex.wordpress.org/Links_Link_Categories_Screen">Documentation on Link Categories</a>' ) . '</p>';
-	else
-		$help .= '<p>' . __( '<a href="https://codex.wordpress.org/Posts_Tags_Screen">Documentation on Tags</a>' ) . '</p>';
-
-	$help .= '<p>' . __('<a href="https://wordpress.org/support/">Support Forums</a>') . '</p>';
-
-	get_current_screen()->set_help_sidebar( $help );
-
-	unset( $help );
+	$view->help->addEditTags( $taxnow );
 }
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
@@ -283,7 +232,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 /** Also used by the Edit Tag  form */
 require_once( ABSPATH . 'wp-admin/includes/edit-tag-messages.php' );
 
-$class = ( isset( $_REQUEST['error'] ) ) ? 'error' : 'updated';
+$class = $view->_request->get( 'error' ) ? 'error' : 'updated';
 
 if ( is_plugin_active( 'wpcat2tag-importer/wpcat2tag-importer.php' ) ) {
 	$import_link = admin_url( 'admin.php?import=wpcat2tag' );
@@ -295,16 +244,19 @@ if ( is_plugin_active( 'wpcat2tag-importer/wpcat2tag-importer.php' ) ) {
 
 <div class="wrap nosubsub">
 <h1><?php echo esc_html( $title );
-if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
+if ( strlen( $view->_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
-	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( wp_unslash( $_REQUEST['s'] ) ) );
+	printf(
+		'<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>',
+		esc_html( wp_unslash( $view->_request->get( 's' ) ) )
+	);
 }
 ?>
 </h1>
 
 <?php if ( $message ) : ?>
 <div id="message" class="<?php echo $class; ?> notice is-dismissible"><p><?php echo $message; ?></p></div>
-<?php $_SERVER['REQUEST_URI'] = remove_query_arg( array( 'message', 'error' ), $_SERVER['REQUEST_URI'] );
+<?php $_SERVER['REQUEST_URI'] = remove_query_arg( [ 'message', 'error' ], $app['request.uri'] );
 endif; ?>
 <div id="ajax-response"></div>
 
