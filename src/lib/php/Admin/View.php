@@ -5,7 +5,7 @@ use WP\{App,View as BaseView};
 
 class View extends BaseView {
 	public $l10n;
-	
+
 	public $help;
 	public $handler;
 

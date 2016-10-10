@@ -1,7 +1,7 @@
 <?php
 namespace WP;
 
-class Magic {
+class MagicData {
 	protected $data = [];
 
 	public function __set( string $name, $value ) {

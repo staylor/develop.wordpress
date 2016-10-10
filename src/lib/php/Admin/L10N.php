@@ -1,9 +1,9 @@
 <?php
 namespace WP\Admin;
 
-use WP\Magic;
+use WP\MagicData;
 
-class L10N extends Magic {
+class L10N extends MagicData {
 	public function __construct() {
 		$this->data = [
 			// User
@@ -13,6 +13,7 @@ class L10N extends Magic {
 			'skip_confirmation_label' => __( 'Skip Confirmation Email' ),
 			'skip_confirmation_description' => __( 'Add the user without sending an email that requires their confirmation' ),
 			'username' => __( 'Username' ),
+			'nickname' => __( 'Nickname' ),
 			'email' => __( 'Email' ),
 			'required' => __( '(required)' ),
 			'first_name' => __( 'First Name' ),
@@ -29,6 +30,43 @@ class L10N extends Magic {
 			'send_user_notification' => __( 'Send User Notification' ),
 			'send_user_notification_description' => __( 'Send the new user an email about their account.' ),
 			'role' => __( 'Role' ),
+			'no_role' => __( '&mdash; No role for this site &mdash;' ),
+			'super_admin' => __( 'Super Admin' ),
+			'grant_super_admin' => __( 'Grant this user super admin privileges for the Network.' ),
+			'cannot_remove_super_admin' => __( 'Super admin privileges cannot be removed because this user has the network admin email.' ),
+			'display_name_publicly_as' => __( 'Display name publicly as' ),
+			'contact_info' => __( 'Contact Info' ),
+			'personal_options' => __( 'Personal Options' ),
+			'visual_editor' => __( 'Visual Editor' ),
+			'visual_editor_description' => __( 'Disable the visual editor when writing' ),
+			'admin_color_scheme' => __( 'Admin Color Scheme' ),
+			'keyboard_shortcuts' => __( 'Keyboard Shortcuts' ),
+			'comment_shortcuts_description' => __( 'Enable keyboard shortcuts for comment moderation.' ),
+			'comment_shortcuts_info' => __( '<a href="https://codex.wordpress.org/Keyboard_Shortcuts" target="_blank">More information</a>' ),
+			'toolbar' => __( 'Toolbar' ),
+			'toolbar_description' => __( 'Show Toolbar when viewing site' ),
+			'site_language' => __( 'Site Language' ),
+			'name' => __( 'Name' ),
+			'usernames_cannot_be_changed' => __( 'Usernames cannot be changed.' ),
+			'about_yourself' => __( 'About Yourself' ),
+			'about_the_user' => __( 'About the user' ),
+			'biographical_info' => __( 'Biographical Info' ),
+			'biographical_info_description' => __( 'Share a little biographical information to fill out your profile. This may be shown publicly.' ),
+			'profile_picture' => __( 'Profile Picture' ),
+			'account_management' => __( 'Account Management' ),
+			'new_password' => __( 'New Password' ),
+			'generate_password' => __( 'Generate Password' ),
+			'repeat_new_password' => __( 'Repeat New Password' ),
+			'type_new_password_again' => __( 'Type your new password again.' ),
+			'confirm_use_of_weak_password' => __( 'Confirm use of potentially weak password' ),
+			'sessions' => __( 'Sessions' ),
+			'log_out_everywhere' => __( 'Log Out Everywhere' ),
+			'log_out_everywhere_else' => __( 'Log Out Everywhere Else' ),
+			'log_out_of_all_locations' => __( 'Log %s out of all locations.' ),
+			'log_out_one_description' => __( 'You are only logged in at this location.' ),
+			'log_out_everywhere_description' => __( ( 'Did you lose your phone or leave your account logged in at a public computer? You can log out everywhere else, and stay logged in here.' ) ),
+			'additional_capabilities' => __( 'Additional Capabilities' ),
+			'capabilities' => __( 'Capabilities' ),
 
 			// Screen
 			'pagination' => __( 'Pagination' ),

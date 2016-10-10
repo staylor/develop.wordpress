@@ -14,7 +14,7 @@ class User extends View {
 		$this->handler = new FormHandler( $app );
 	}
 
-	public function enqueueScripts() {
+	public function enqueueAddScripts() {
 		wp_enqueue_script( 'wp-ajax-response' );
 		wp_enqueue_script( 'user-profile' );
 
@@ -32,7 +32,11 @@ class User extends View {
 		}
 	}
 
-	public function getMessages() {
+	public function enqueueEditScripts() {
+		wp_enqueue_script( 'user-profile' );
+	}
+
+	public function getAddMessages() {
 		$messages = [];
 		if ( ! $this->_get->has( 'update' ) ) {
 			return $messages;
@@ -79,6 +83,57 @@ class User extends View {
 		} elseif ( 'add' === $this->_get->get( 'update' ) ) {
 			$messages[] = __('User added.');
 		}
+
+		return $messages;
+	}
+
+	public function getEditMessages( $profileuser ) {
+		$messages = [];
+
+		if ( ! IS_PROFILE_PAGE && is_super_admin( $profileuser->ID ) && current_user_can( 'manage_network_options' ) ) {
+			$messages[] = [
+				'class' => 'updated',
+				'label' => __( 'Important:' ),
+				'message' => __( 'This user has super admin privileges.' ),
+			];
+		}
+
+		if ( ! $this->_get->get( 'updated' ) ) {
+			return $messages;
+		}
+
+		if ( IS_PROFILE_PAGE ) {
+			$messages[] = [
+				'id' => 'message',
+				'class' => 'updated notice is-dismissible',
+				'label' => __( 'Profile updated.'),
+				'message' => '',
+			];
+
+			return $messages;
+		}
+
+		$wp_http_referer = remove_query_arg(
+			[ 'update', 'delete_count', 'user_id' ],
+			$this->_request->get( 'wp_http_referer' )
+		);
+
+		$extra = '';
+		if ( $wp_http_referer && false === strpos( $wp_http_referer, 'user-new.php' ) ) {
+			$extra = sprintf(
+				'<a href="%s">%s</a>',
+				'//' . esc_url( $wp_http_referer ),
+				__( '&larr; Back to Users' )
+			);
+		}
+
+		$messages[] = [
+			'id' => 'message',
+			'class' => 'updated notice is-dismissible',
+			'label' => __( 'User updated.' ),
+			'message' => '',
+			'extra' => $extra,
+		];
 
 		return $messages;
 	}

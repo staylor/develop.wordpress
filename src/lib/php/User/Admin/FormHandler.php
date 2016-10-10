@@ -12,7 +12,14 @@ class FormHandler {
 		$this->app = $app;
 		$this->_request = $app['request']->attributes;
 		$this->_post = $app['request']->request;
+	}
 
+	public function redirect( $location ) {
+		wp_redirect( $location );
+		exit();
+	}
+
+	public function doAddUser() {
 		if ( is_multisite() ) {
 			if ( ! current_user_can( 'create_users' ) && ! current_user_can( 'promote_users' ) ) {
 				wp_die(
@@ -28,14 +35,7 @@ class FormHandler {
 				403
 			);
 		}
-	}
 
-	public function redirect( $location ) {
-		wp_redirect( $location );
-		exit();
-	}
-
-	public function doAddUser() {
 		check_admin_referer( 'add-user', '_wpnonce_add-user' );
 
 		$user_details = null;
@@ -198,6 +198,105 @@ class FormHandler {
 		}
 
 		$this->redirect( $redirect );
+	}
+
+	public function doUpdateUser( $user_id ) {
+		check_admin_referer( 'update-user_' . $user_id );
+
+		if ( ! current_user_can( 'edit_user', $user_id ) ) {
+			wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
+		}
+
+		if ( IS_PROFILE_PAGE ) {
+			/**
+			 * Fires before the page loads on the 'Your Profile' editing screen.
+			 *
+			 * The action only fires if the current user is editing their own profile.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param int $user_id The user ID.
+			 */
+			do_action( 'personal_options_update', $user_id );
+		} else {
+			/**
+			 * Fires before the page loads on the 'Edit User' screen.
+			 *
+			 * @since 2.7.0
+			 *
+			 * @param int $user_id The user ID.
+			 */
+			do_action( 'edit_user_profile_update', $user_id );
+		}
+
+		// Update the email address in signups, if present.
+		if ( is_multisite() ) {
+			$user = get_userdata( $user_id );
+
+			$wpdb = $this->app['db'];
+			$email = $this->_post->get( 'email' );
+			if ( $user->user_login && $email && is_email( $email ) && $wpdb->get_var( $wpdb->prepare( "SELECT user_login FROM {$wpdb->signups} WHERE user_login = %s", $user->user_login ) ) ) {
+				$sql = "UPDATE {$wpdb->signups} SET user_email = %s WHERE user_login = %s";
+				$wpdb->query( $wpdb->prepare( $sql, $email, $user->user_login ) );
+			}
+		}
+
+		// Update the user.
+		$errors = edit_user( $user_id );
+
+		// Grant or revoke super admin status if requested.
+		if ( is_multisite() && is_network_admin() && !IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && !isset($super_admins) && empty( $_POST['super_admin'] ) == is_super_admin( $user_id ) ) {
+			if ( empty( $this->_post->get( 'super_admin' ) ) ) {
+				revoke_super_admin( $user_id );
+			} else {
+				grant_super_admin( $user_id );
+			}
+
+		}
+
+		if ( ! is_wp_error( $errors ) ) {
+			$location = add_query_arg( 'updated', true, get_edit_user_link( $user_id ) );
+			$wp_http_referer = remove_query_arg(
+				[ 'update', 'delete_count', 'user_id' ],
+				$this->_request->get( 'wp_http_referer' )
+			);
+			if ( $wp_http_referer ) {
+				$location = add_query_arg( 'wp_http_referer', urlencode( $wp_http_referer ), $location );
+			}
+			$this->redirect( $location );
+		}
+
+		return $errors;
+	}
+
+	public function doNewUserEmail( $current_user ) {
+		$new_email = get_user_meta( $current_user->ID, '_new_email', true );
+		if ( $new_email && hash_equals( $new_email['hash'], $this->_get->get( 'newuseremail' ) ) ) {
+			$user = new stdClass;
+			$user->ID = $current_user->ID;
+			$user->user_email = esc_html( trim( $new_email[ 'newemail' ] ) );
+
+			$wpdb = $this->app['db'];
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT user_login FROM {$wpdb->signups} WHERE user_login = %s", $current_user->user_login ) ) ) {
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->signups} SET user_email = %s WHERE user_login = %s", $user->user_email, $current_user->user_login ) );
+			}
+			wp_update_user( $user );
+			delete_user_meta( $current_user->ID, '_new_email' );
+
+			$location = add_query_arg( [ 'updated' => 'true' ], self_admin_url( 'profile.php' ) );
+			$this->redirect( $location );
+		}
+
+		$location = add_query_arg( [ 'error' => 'new-email' ], self_admin_url( 'profile.php' ) );
+		$this->redirect( $location );
+	}
+
+	public function doDismissNewEmail( $current_user ) {
+		check_admin_referer( 'dismiss-' . $current_user->ID . '_new_email' );
+		delete_user_meta( $current_user->ID, '_new_email' );
+
+		$location = add_query_arg( [ 'updated' => 'true' ], self_admin_url( 'profile.php' ) );
+		$this->redirect( $location );
 	}
 }
 

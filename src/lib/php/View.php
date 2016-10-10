@@ -3,13 +3,15 @@ namespace WP;
 
 use WP\{App,Mustache};
 
-class View extends Magic {
+class View extends MagicData {
 	use Mustache;
 
 	protected $app;
 	public $_get;
 	public $_post;
 	public $_request;
+
+	protected $actions = [];
 
 	public function __construct( App $app ) {
 		$this->app = $app;
@@ -24,20 +26,23 @@ class View extends Magic {
 		$this->data = $data;
 	}
 
+	public function setActions( $actions = [] ) {
+		$this->actions = $actions;
+	}
+
 	public function doAction() {
 		return function ( $text, \Mustache_LambdaHelper $helper ) {
-			if ( false === strpos( $text, '[' ) ) {
+			$action = $helper->render( $text );
+			if ( empty( $this->actions[ $action ] ) ) {
 				ob_start();
-				do_action( $text );
+				do_action( $action );
 				return ob_get_clean();
 			}
 
-			list( $action, $frag ) = explode( '[', $text, 2 );
-			$data = $helper->render( '[' . $frag );
-			$args = json_decode( $data, true );
+			$args = $this->actions[ $action ];
+			array_unshift( $args, $action );
 
 			ob_start();
-			array_unshift( $args, $action );
 			call_user_func_array( 'do_action', $args );
 			return ob_get_clean();
 		};

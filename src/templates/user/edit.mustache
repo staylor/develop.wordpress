@@ -1,0 +1,324 @@
+{{# messages }}
+<div class="{{ class }}"{{# id }} id="{{ . }}"{{/ id }}>
+	<p>
+		{{# label }}<strong>{{{ . }}}</strong>{{/ label}}
+		{{# message }}{{ . }}{{/ message }}
+	</p>
+	{{# extra }}
+	<p>{{{ . }}}</p>
+	{{/ extra }}
+</div>
+{{/ messages }}
+
+{{# errors }}
+<div class="{{ class }}">
+	<p>{{# message }}{{ . }}{{/ message }}</p>
+</div>
+{{/ errors }}
+
+<div class="wrap" id="profile-page">
+	<h1>{{ title }}{{# title_link }} <a href="user-new.php" class="page-title-action">{{{ . }}}</a>{{/ title_link }}</h1>
+
+	<form id="your-profile" action="{{ action }}" method="post" novalidate="novalidate"{{# doAction }}user_edit_form_tag{{/ doAction }}>
+		{{{ nonce }}}
+		{{# wp_http_referer }}
+		<input type="hidden" name="wp_http_referer" value="{{ . }}" />
+		{{/ wp_http_referer }}
+		<input type="hidden" name="from" value="profile" />
+		<input type="hidden" name="checkuser_id" value="{{ user_id }}" />
+
+		<h2>{{ l10n.personal_options }}</h2>
+
+		<table class="form-table">
+			{{# show_visual_editor }}
+			<tr class="user-rich-editing-wrap">
+				<th scope="row">{{ l10n.visual_editor }}</th>
+				<td>
+					<label for="rich_editing">
+						<input name="rich_editing" type="checkbox" id="rich_editing" value="false" {{{ visual_editor_checked }}} />
+						 {{ l10n.visual_editor_description }}
+					</label>
+				</td>
+			</tr>
+			{{/ show_visual_editor }}
+
+			{{# show_admin_color }}
+			<tr class="user-admin-color-wrap">
+				<th scope="row">{{ l10n.admin_color_scheme }}</th>
+				<td>{{# doAction }}admin_color_scheme_picker{{/ doAction }}</td>
+			</tr>
+			{{/ show_admin_color }}
+
+			{{# show_comment_shortcuts }}
+			<tr class="user-comment-shortcuts-wrap">
+				<th scope="row">{{ l10n.keyboard_shortcuts }}</th>
+				<td>
+					<label for="comment_shortcuts">
+						<input type="checkbox" name="comment_shortcuts" id="comment_shortcuts" value="true" {{{ comment_shortcuts_checked }}} />
+						 {{ l10n.comment_shortcuts_description }}
+					</label>
+					{{{ l10n.comment_shortcuts_info }}}
+				</td>
+			</tr>
+			{{/ show_comment_shortcuts }}
+
+			<tr class="show-admin-bar user-admin-bar-front-wrap">
+				<th scope="row">{{ l10n.toolbar }}</th>
+				<td>
+					<fieldset>
+						<legend class="screen-reader-text"><span>{{ l10n.toolbar }}</span></legend>
+						<label for="admin_bar_front">
+							<input name="admin_bar_front" type="checkbox" id="admin_bar_front" value="1"{{{ admin_bar_checked }}} />
+							{{ l10n.toolbar_description }}
+						</label><br />
+					</fieldset>
+				</td>
+			</tr>
+
+			{{# languages_dropdown }}
+			<tr class="user-language-wrap">
+				<th scope="row">
+					<label for="site_language">{{ l10n.site_language }}</label>
+				</th>
+				<td>{{{ . }}}</td>
+			</tr>
+			{{/ languages_dropdown }}
+
+			{{# doAction }}personal_options{{/ doAction }}
+		</table>
+
+		{{# is_profile_page }}
+			{{# doAction }}profile_personal_options{{/ doAction }}
+		{{/ is_profile_page }}
+
+		<h2>{{ l10n.name }}</h2>
+
+		<table class="form-table">
+			<tr class="user-user-login-wrap">
+				<th><label for="user_login">{{ l10n.username }}</label></th>
+				<td>
+					<input type="text" name="user_login" id="user_login" value="{{ profileuser.user_login }}" disabled="disabled" class="regular-text" />
+					 <span class="description">{{ l10n.usernames_cannot_be_changed }}</span>
+				</td>
+			</tr>
+
+			{{^ is_profile_page }}
+				{{^ is_network_admin }}
+			<tr class="user-role-wrap">
+				<th><label for="role">{{ l10n.role }}</label></th>
+				<td>
+					<select name="role" id="role">
+						{{{ roles_dropdown }}}
+						{{! print the 'no role' option. Make it selected if the user has no role yet. }}
+						<option value=""{{^ user_role }} selected="selected"{{/ user_role }}>{{ l10n.no_role }}</option>
+					</select>
+				</td>
+			</tr>
+				{{/ is_network_admin }}
+			{{/ is_profile_page }}
+
+			{{# show_super_admin }}
+			<tr class="user-super-admin-wrap">
+				<th>{{ l10n.super_admin }}</th>
+				<td>
+					{{# not_super_admin }}
+					<p>
+						<label>
+							<input type="checkbox" id="super_admin" name="super_admin" {{{ super_admin_checked }}} />
+							 {{ l10n.grant_super_admin }}
+						</label>
+					</p>
+					{{/ not_super_admin }}
+					{{^ not_super_admin }}
+					<p>{{ l10n.cannot_remove_super_admin }}</p>
+					{{/ not_super_admin }}
+				</td>
+			</tr>
+			{{/ show_super_admin }}
+
+			<tr class="user-first-name-wrap">
+				<th><label for="first_name">{{ l10n.first_name }}</label></th>
+				<td>
+					<input type="text" name="first_name" id="first_name" value="{{ profileuser.first_name }}" class="regular-text" />
+				</td>
+			</tr>
+
+			<tr class="user-last-name-wrap">
+				<th><label for="last_name">{{ l10n.last_name }}</label></th>
+				<td>
+					<input type="text" name="last_name" id="last_name" value="{{ profileuser.last_name }}" class="regular-text" />
+				</td>
+			</tr>
+
+			<tr class="user-nickname-wrap">
+				<th><label for="nickname">{{ l10n.nickname }} <span class="description">{{ l10n.required }}</span></label></th>
+				<td>
+					<input type="text" name="nickname" id="nickname" value="{{ profileuser.nickname }}" class="regular-text" />
+				</td>
+			</tr>
+
+			<tr class="user-display-name-wrap">
+				<th><label for="display_name">{{ l10n.display_name_publicly_as }}</label></th>
+				<td>
+					<select name="display_name" id="display_name">
+					{{# public_display }}
+						<option{{{ selected }}}>{{ value }}</option>
+					{{/ public_display }}
+					</select>
+				</td>
+			</tr>
+		</table>
+
+		<h2>{{ l10n.contact_info }}</h2>
+
+		<table class="form-table">
+			<tr class="user-email-wrap">
+				<th><label for="email">{{ l10n.email }} <span class="description">{{ l10n.required }}</span></label></th>
+				<td>
+					<input type="email" name="email" id="email" value="{{ profileuser.user_email }}" class="regular-text ltr" />
+					{{# pending_email }}
+					<div class="updated inline">
+						<p>{{{ pending_email_message }}}</p>
+					</div>
+					{{/ pending_email }}
+				</td>
+			</tr>
+
+			<tr class="user-url-wrap">
+				<th><label for="url">{{ l10n.website }}</label></th>
+				<td><input type="url" name="url" id="url" value="{{ profileuser.user_url }}" class="regular-text code" /></td>
+			</tr>
+
+			{{# contact_methods }}
+			<tr class="user-{{ name }}-wrap">
+				<th><label for="{{ name }}">{{{ label }}}</label></th>
+				<td><input type="text" name="{{ name }}" id="{{ name }}" value="{{ value }}" class="regular-text" /></td>
+			</tr>
+			{{/ contact_methods }}
+		</table>
+
+		<h2>
+			{{# is_profile_page }}{{ l10n.about_yourself }}{{/ is_profile_page }}
+			{{^ is_profile_page }}{{ l10n.about_the_user }}{{/ is_profile_page }}
+		</h2>
+
+		<table class="form-table">
+			<tr class="user-description-wrap">
+				<th><label for="description">{{ l10n.biographical_info }}</label></th>
+				<td>
+					<textarea name="description" id="description" rows="5" cols="30">{{{ profileuser.description }}}</textarea>
+					<p class="description">{{ l10n.biographical_info_description }}</p>
+				</td>
+			</tr>
+
+			{{# show_avatars }}
+			<tr class="user-profile-picture">
+				<th>{{ l10n.profile_picture }}</th>
+				<td>
+					{{{ avatar }}}
+					<p class="description">{{{ profile_description }}}</p>
+				</td>
+			</tr>
+			{{/ show_avatars }}
+
+			{{# show_password_fields }}
+		</table>
+
+		<h2>{{ l10n.account_management }}</h2>
+		<table class="form-table">
+			<tr id="password" class="user-pass1-wrap">
+				<th><label for="pass1">{{ l10n.new_password }}</label></th>
+				<td>
+					<input class="hidden" value=" " /><!-- #24364 workaround -->
+					<button type="button" class="button wp-generate-pw hide-if-no-js">{{ l10n.generate_password }}</button>
+					<div class="wp-pwd hide-if-js">
+						<span class="password-input-wrapper">
+							<input type="password" name="pass1" id="pass1" class="regular-text" value="" autocomplete="off" data-pw="{{ new_password }}" aria-describedby="pass-strength-result" />
+						</span>
+						<button type="button" class="button wp-hide-pw hide-if-no-js" data-toggle="0" aria-label="{{ l10n.hide_password }}">
+							<span class="dashicons dashicons-hidden"></span>
+							<span class="text">{{ l10n.hide }}</span>
+						</button>
+						<button type="button" class="button wp-cancel-pw hide-if-no-js" data-toggle="0" aria-label="{{ l10n.cancel_password_change }}">
+							<span class="text">{{ l10n.cancel }}</span>
+						</button>
+						<div style="display:none" id="pass-strength-result" aria-live="polite"></div>
+					</div>
+				</td>
+			</tr>
+			<tr class="user-pass2-wrap hide-if-js">
+				<th scope="row"><label for="pass2">{{ l10n.repeat_new_password }}</label></th>
+				<td>
+				<input name="pass2" type="password" id="pass2" class="regular-text" value="" autocomplete="off" />
+				<p class="description">{{ l10n.type_new_password_again }}</p>
+				</td>
+			</tr>
+			<tr class="pw-weak">
+				<th>{{ l10n.confirm_password }}</th>
+				<td>
+					<label>
+						<input type="checkbox" name="pw_weak" class="pw-checkbox" />
+						<span id="pw-weak-text-label">{{ l10n.confirm_use_of_weak_password }}</span>
+					</label>
+				</td>
+			</tr>
+			{{/ show_password_fields }}
+
+			{{# has_sessions }}
+			<tr class="user-sessions-wrap hide-if-no-js">
+				<th>{{ l10n.sessions }}</th>
+				<td{{^ is_profile_page }} aria-live="assertive"{{/ is_profile_page }}>
+				{{# is_profile_page }}
+					{{# has_one_session }}
+					<div class="destroy-sessions">
+						<button type="button" disabled class="button">{{ l10n.log_out_everywhere_else }}</button>
+					</div>
+					<p class="description">{{ l10n.log_out_one_description }}</p>
+					{{/ has_one_session }}
+					{{^ has_one_session }}
+					<div class="destroy-sessions">
+						<button type="button" class="button" id="destroy-sessions">{{ l10n.log_out_everywhere_else }}</button>
+					</div>
+					<p class="description">{{ l10n.log_out_everywhere_description }}</p>
+					{{/ has_one_session }}
+				{{/ is_profile_page }}
+				{{^ is_profile_page }}
+					<p>
+						<button type="button" class="button" id="destroy-sessions">{{ l10n.log_out_everywhere }}</button>
+					</p>
+					<p class="description">{{ log_out_all_text }}</p>
+				{{/ is_profile_page }}
+				</td>
+			</tr>
+			{{/ has_sessions }}
+
+		</table>
+
+		{{# is_profile_page }}
+		{{# doAction }}show_user_profile{{/ doAction }}
+		{{/ is_profile_page }}
+		{{^ is_profile_page }}
+		{{# doAction }}edit_user_profile{{/ doAction }}
+		{{/ is_profile_page }}
+
+		{{# show_additional_caps }}
+		<h2>{{ l10n.show_additional_caps }}</h2>
+		<table class="form-table">
+			<tr class="user-capabilities-wrap">
+				<th scope="row">{{ l10n.capabilities }}</th>
+				<td>{{ additional_caps }}</td>
+			</tr>
+		</table>
+		{{/ show_additional_caps }}
+
+		<input type="hidden" name="action" value="update" />
+		<input type="hidden" name="user_id" id="user_id" value="{{ user_id }}" />
+
+		{{{ submit_button }}}
+	</form>
+</div>
+<script type="text/javascript">
+if (window.location.hash === '#password') {
+	document.getElementById('pass1').focus();
+}
+</script>

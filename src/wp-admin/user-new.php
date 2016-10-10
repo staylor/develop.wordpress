@@ -56,7 +56,7 @@ if ( isset( $form_errors ) && is_wp_error( $form_errors ) ) {
 $data = [
 	'title' => $title,
 	'errors' => $errors,
-	'messages' => $view->getMessages(),
+	'messages' => $view->getAddMessages(),
 	'multisite' => is_multisite(),
 	'create_users' => current_user_can( 'create_users' ),
 	'manage_network_users' => current_user_can( 'manage_network_users' ),
