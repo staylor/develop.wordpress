@@ -39,12 +39,13 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		) );
 
 		$status = 'all';
-		if ( isset( $_REQUEST['plugin_status'] ) && in_array( $_REQUEST['plugin_status'], array( 'active', 'inactive', 'recently_activated', 'upgrade', 'mustuse', 'dropins', 'search' ) ) )
-			$status = $_REQUEST['plugin_status'];
+		if ( $this->_request->get( 'plugin_status' ) &&
+			in_array( $this->_request->get( 'plugin_status' ), array( 'active', 'inactive', 'recently_activated', 'upgrade', 'mustuse', 'dropins', 'search' ) ) )
+			$status = $this->_request->get( 'plugin_status' );
 
-		if ( isset($_REQUEST['s']) )
-			$_SERVER['REQUEST_URI'] = add_query_arg('s', wp_unslash($_REQUEST['s']) );
-
+		if ( $this->_request->get( 's' ) ) {
+			$this->_server->set( 'REQUEST_URI', add_query_arg('s', wp_unslash( $this->_request->get( 's' ) ) ) );
+		}
 		$page = $this->get_pagenum();
 	}
 
@@ -326,8 +327,8 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	public function no_items() {
 		global $plugins;
 
-		if ( ! empty( $_REQUEST['s'] ) ) {
-			$s = esc_html( wp_unslash( $_REQUEST['s'] ) );
+		if ( $this->_request->get( 's' ) ) {
+			$s = esc_html( wp_unslash( $this->_request->get( 's' ) ) );
 
 			printf( __( 'No plugins found for &#8220;%s&#8221;.' ), $s );
 
@@ -351,17 +352,17 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @param string $input_id ID attribute value for the search input field.
 	 */
 	public function search_box( $text, $input_id ) {
-		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
+		if ( empty( $this->_request->get( 's' ) ) && ! $this->has_items() ) {
 			return;
 		}
 
 		$input_id = $input_id . '-search-input';
 
-		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+		if ( $this->_request->get( 'orderby' ) ) {
+			echo '<input type="hidden" name="orderby" value="' . esc_attr( $this->_request->get( 'orderby' ) ) . '" />';
 		}
-		if ( ! empty( $_REQUEST['order'] ) ) {
-			echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
+		if ( $this->_request->get( 'order' ) ) {
+			echo '<input type="hidden" name="order" value="' . esc_attr( $this->_request->get( 'order' ) ) . '" />';
 		}
 		?>
 		<p class="search-box">

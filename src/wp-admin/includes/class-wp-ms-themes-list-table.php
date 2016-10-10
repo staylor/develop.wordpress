@@ -43,7 +43,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 			'screen' => isset( $args['screen'] ) ? $args['screen'] : null,
 		) );
 
-		$status = isset( $_REQUEST['theme_status'] ) ? $_REQUEST['theme_status'] : 'all';
+		$status = $this->_request->get( 'theme_status', 'all' );
 		if ( !in_array( $status, array( 'all', 'enabled', 'disabled', 'upgrade', 'search', 'broken' ) ) )
 			$status = 'all';
 
@@ -52,7 +52,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 		$this->is_site_themes = ( 'site-themes-network' === $this->screen->id ) ? true : false;
 
 		if ( $this->is_site_themes )
-			$this->site_id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+			$this->site_id = $this->_request->getInt( 'id', 0 );
 	}
 
 	/**
@@ -185,7 +185,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	public function _search_callback( $theme ) {
 		static $term = null;
 		if ( is_null( $term ) )
-			$term = wp_unslash( $_REQUEST['s'] );
+			$term = wp_unslash( $this->_request->get( 's' ) );
 
 		foreach ( array( 'Name', 'Description', 'Author', 'Author', 'AuthorURI' ) as $field ) {
 			// Don't mark up; Do translate.

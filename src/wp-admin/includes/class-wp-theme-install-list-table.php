@@ -43,13 +43,14 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 
 		$search_terms = [];
 		$search_string = '';
-		if ( ! empty( $_REQUEST['s'] ) ){
-			$search_string = strtolower( wp_unslash( $_REQUEST['s'] ) );
+		if ( ! empty( $this->_request->get( 's' ) ) ){
+			$search_string = strtolower( wp_unslash( $this->_request->get( 's' ) ) );
 			$search_terms = array_unique( array_filter( array_map( 'trim', explode( ',', $search_string ) ) ) );
 		}
 
-		if ( ! empty( $_REQUEST['features'] ) )
-			$this->features = $_REQUEST['features'];
+		if ( ! empty( $this->_request->get( 'features' ) ) ) {
+			$this->features = $this->_request->get( 'features' );
+		}
 
 		$paged = $this->get_pagenum();
 
@@ -89,23 +90,23 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 
 		switch ( $tab ) {
 			case 'search':
-				$type = isset( $_REQUEST['type'] ) ? wp_unslash( $_REQUEST['type'] ) : 'term';
+				$type = $this->_request->get( 'type', 'term' );
 				switch ( $type ) {
-					case 'tag':
-						$args['tag'] = array_map( 'sanitize_key', $search_terms );
-						break;
-					case 'term':
-						$args['search'] = $search_string;
-						break;
-					case 'author':
-						$args['author'] = $search_string;
-						break;
+				case 'tag':
+					$args['tag'] = array_map( 'sanitize_key', $search_terms );
+					break;
+				case 'term':
+					$args['search'] = $search_string;
+					break;
+				case 'author':
+					$args['author'] = $search_string;
+					break;
 				}
 
 				if ( ! empty( $this->features ) ) {
 					$args['tag'] = $this->features;
-					$_REQUEST['s'] = implode( ',', $this->features );
-					$_REQUEST['type'] = 'tag';
+					$this->_request->set( 's', implode( ',', $this->features ) );
+					$this->_request->set( 'type', 'tag' );
 				}
 
 				add_action( 'install_themes_table_header', 'install_theme_search_form', 10, 0 );

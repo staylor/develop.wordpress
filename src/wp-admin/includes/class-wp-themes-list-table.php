@@ -52,11 +52,11 @@ class WP_Themes_List_Table extends WP_List_Table {
 	public function prepare_items() {
 		$themes = wp_get_themes( array( 'allowed' => true ) );
 
-		if ( ! empty( $_REQUEST['s'] ) )
-			$this->search_terms = array_unique( array_filter( array_map( 'trim', explode( ',', strtolower( wp_unslash( $_REQUEST['s'] ) ) ) ) ) );
+		if ( ! empty( $this->_request->get( 's' ) ) )
+			$this->search_terms = array_unique( array_filter( array_map( 'trim', explode( ',', strtolower( wp_unslash( $this->_request->get( 's' ) ) ) ) ) ) );
 
-		if ( ! empty( $_REQUEST['features'] ) )
-			$this->features = $_REQUEST['features'];
+		if ( ! empty( $this->_request->get( 'features' ) ) )
+			$this->features = $this->_request->get( 'features' );
 
 		if ( $this->search_terms || $this->features ) {
 			foreach ( $themes as $key => $theme ) {
@@ -291,7 +291,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 	 * @param array $extra_args
 	 */
 	public function _js_vars( $extra_args = [] ) {
-		$search_string = isset( $_REQUEST['s'] ) ? esc_attr( wp_unslash( $_REQUEST['s'] ) ) : '';
+		$search_string = esc_attr( wp_unslash( $this->_request->get( 's' ) ) );
 
 		$args = array(
 			'search' => $search_string,

@@ -143,8 +143,8 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 
 		switch ( $tab ) {
 			case 'search':
-				$type = isset( $_REQUEST['type'] ) ? wp_unslash( $_REQUEST['type'] ) : 'term';
-				$term = isset( $_REQUEST['s'] ) ? wp_unslash( $_REQUEST['s'] ) : '';
+				$type = wp_unslash( $this->_request->get( 'type', 'term' ) );
+				$term = wp_unslash( $this->_request->get( 's', '' ) );
 
 				switch ( $type ) {
 					case 'tag':
