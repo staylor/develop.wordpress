@@ -8,7 +8,7 @@
  */
 
 use function WP\getApp;
-use WP\MagicRequest;
+use WP\Magic\Request;
 /**
  * Base class for displaying a list of items in an ajaxified HTML table.
  *
@@ -16,7 +16,7 @@ use WP\MagicRequest;
  * @access private
  */
 class WP_List_Table {
-	use MagicRequest;
+	use Request;
 
 	/**
 	 * The current list of items.

@@ -7,15 +7,29 @@ namespace WP;
  * @property-read Symfony\Component\HttpFoundation\ParameterBag $_request
  * @property-read Symfony\Component\HttpFoundation\ParameterBag $_server
  */
-class View extends MagicData {
+class View {
 	use Mustache;
 
 	protected $app;
 
 	protected $actions = [];
+	protected $data = [];
 
 	public function __construct( App $app ) {
 		$this->app = $app;
+	}
+
+	public function __set( string $name, $value ) {
+		$this->data[ $name ] = $value;
+	}
+
+	public function __unset( string $name ) {
+		unset( $this->data[ $name ] );
+	}
+
+	public function __isset( string $name ): bool
+	{
+		return array_key_exists( $name, $this->data );
 	}
 
 	public function __get( string $name ) {

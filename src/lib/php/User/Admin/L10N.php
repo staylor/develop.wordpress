@@ -1,9 +1,11 @@
 <?php
 namespace WP\User\Admin;
 
-use WP\MagicData;
+use WP\Magic\Data;
 
-class L10N extends MagicData {
+class L10N {
+	use Data;
+
 	public function __construct() {
 		$this->data = [
 			// User
