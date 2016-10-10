@@ -9,12 +9,11 @@
  */
 
 use WP\User\User;
-use function WP\getApp;
 
 /** Make sure that the WordPress bootstrap has run before continuing. */
 require( __DIR__ . '/wp-load.php' );
 
-$app = getApp();
+$_request = $app['request']->attributes;
 
 // Redirect to https login if forced to use SSL
 if ( force_ssl_admin() && ! is_ssl() ) {
@@ -383,7 +382,7 @@ function retrieve_password() {
 // Main
 //
 
-$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
+$action = $_request->get( 'action', 'login' );
 $errors = new WP_Error();
 
 if ( isset($_GET['key']) )
@@ -431,8 +430,8 @@ do_action( 'login_init' );
  */
 do_action( "login_form_{$action}" );
 
-$http_post = ('POST' == $app['request.method']);
-$interim_login = isset($_REQUEST['interim-login']);
+$http_post = ( 'POST' === $app['request.method'] );
+$interim_login = $_request->has( 'interim-login' );
 
 switch ($action) {
 
@@ -473,8 +472,8 @@ case 'logout' :
 
 	wp_logout();
 
-	if ( ! empty( $_REQUEST['redirect_to'] ) ) {
-		$redirect_to = $requested_redirect_to = $_REQUEST['redirect_to'];
+	if ( $_request->get( 'redirect_to' ) ) {
+		$redirect_to = $requested_redirect_to = $_request->get( 'redirect_to' );
 	} else {
 		$redirect_to = 'wp-login.php?loggedout=true';
 		$requested_redirect_to = '';
@@ -499,7 +498,7 @@ case 'retrievepassword' :
 	if ( $http_post ) {
 		$errors = retrieve_password();
 		if ( !is_wp_error($errors) ) {
-			$redirect_to = !empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : 'wp-login.php?checkemail=confirm';
+			$redirect_to = $_request->get( 'redirect_to', 'wp-login.php?checkemail=confirm' );
 			wp_safe_redirect( $redirect_to );
 			exit();
 		}
@@ -513,7 +512,7 @@ case 'retrievepassword' :
 		}
 	}
 
-	$lostpassword_redirect = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+	$lostpassword_redirect = $_request->get( 'redirect_to', '' );
 	/**
 	 * Filters the URL redirected to after submitting the lostpassword/retrievepassword form.
 	 *
@@ -712,7 +711,7 @@ case 'register' :
 		}
 	}
 
-	$registration_redirect = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+	$registration_redirect = $_request->get( 'redirect_to', '' );
 	/**
 	 * Filters the registration redirect URL.
 	 *
@@ -758,7 +757,7 @@ break;
 case 'login' :
 default:
 	$secure_cookie = '';
-	$customize_login = isset( $_REQUEST['customize-login'] );
+	$customize_login = $_request->has( 'customize-login' );
 	if ( $customize_login )
 		wp_enqueue_script( 'customize-base' );
 
@@ -779,8 +778,8 @@ default:
 		}
 	}
 
-	if ( isset( $_REQUEST['redirect_to'] ) ) {
-		$redirect_to = $_REQUEST['redirect_to'];
+	if ( $_request->get( 'redirect_to' ) ) {
+		$redirect_to = $_request->get( 'redirect_to' );
 		// Redirect to https if user wants ssl
 		if ( $secure_cookie && false !== strpos($redirect_to, 'wp-admin') )
 			$redirect_to = preg_replace('|^http://|', 'https://', $redirect_to);
@@ -788,7 +787,7 @@ default:
 		$redirect_to = admin_url();
 	}
 
-	$reauth = empty($_REQUEST['reauth']) ? false : true;
+	$reauth = $_request->get( 'reauth' );
 
 	$user = wp_signon( array(), $secure_cookie );
 
@@ -803,7 +802,7 @@ default:
 		}
 	}
 
-	$requested_redirect_to = isset( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+	$requested_redirect_to = $_request->get( 'redirect_to', '' );
 	/**
 	 * Filters the login redirect URL.
 	 *
