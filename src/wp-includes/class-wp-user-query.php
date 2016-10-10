@@ -325,7 +325,7 @@ class WP_User_Query {
 
 		// nicename
 		if ( '' !== $qv['nicename']) {
-			$this->query_where .= $this->db->prepare( ' AND user_nicename = %s', $qv['nicename'] );
+			$this->query_where .= $wpdb->prepare( ' AND user_nicename = %s', $qv['nicename'] );
 		}
 
 		if ( ! empty( $qv['nicename__in'] ) ) {
@@ -342,7 +342,7 @@ class WP_User_Query {
 
 		// login
 		if ( '' !== $qv['login']) {
-			$this->query_where .= $this->db->prepare( ' AND user_login = %s', $qv['login'] );
+			$this->query_where .= $wpdb->prepare( ' AND user_login = %s', $qv['login'] );
 		}
 
 		if ( ! empty( $qv['login__in'] ) ) {

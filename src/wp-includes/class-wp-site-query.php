@@ -608,7 +608,7 @@ class WP_Site_Query {
 		$wpdb = $app['db'];
 
 		if ( false !== strpos( $string, '*' ) ) {
-			$like = '%' . implode( '%', array_map( array( $this->db, 'esc_like' ), explode( '*', $string ) ) ) . '%';
+			$like = '%' . implode( '%', array_map( array( $wpdb, 'esc_like' ), explode( '*', $string ) ) ) . '%';
 		} else {
 			$like = '%' . $wpdb->esc_like( $string ) . '%';
 		}
