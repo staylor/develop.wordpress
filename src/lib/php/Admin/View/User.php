@@ -3,7 +3,7 @@ namespace WP\Admin\View;
 
 use WP\App;
 use WP\Admin\View;
-use WP\User\Admin\{Help,FormHandler};
+use WP\User\Admin\{Help,FormHandler,L10N};
 
 class User extends View {
 
@@ -12,6 +12,7 @@ class User extends View {
 
 		$this->help = new Help( get_current_screen() );
 		$this->handler = new FormHandler( $app );
+		$this->setL10n( new L10N() );
 	}
 
 	public function enqueueAddScripts() {

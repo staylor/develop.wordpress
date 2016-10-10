@@ -1,22 +1,19 @@
 <?php
 namespace WP\Admin;
 
-use WP\{App,View as BaseView};
+use WP\{MagicData,View as BaseView};
 
 abstract class View extends BaseView {
 	public $l10n;
-
 	public $help;
 	public $handler;
 
-	public function __construct( App $app ) {
-		parent::__construct( $app );
-
-		$this->l10n = new L10N();
+	public function setL10n( MagicData $l10n ) {
+		$this->l10n = $l10n;
 
 		$this->setConfig( [
 			'helpers' => [
-				'l10n' => $this->l10n
+				'l10n' => $l10n
 			]
 		] );
 	}

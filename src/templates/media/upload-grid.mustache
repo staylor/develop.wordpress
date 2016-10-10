@@ -1,0 +1,10 @@
+<div class="wrap" id="wp-media-grid" data-search="{{ _admin_search_query }}">
+	<h1>
+		{{ title }}
+		{{# title_link_url }}<a href="{{ . }}" class="page-title-action">{{ l10n.add_new }}</a>{{/ title_link_url }}
+	</h1>
+
+	<div class="error hide-if-js">
+		<p>{{{ js_error }}}</p>
+	</div>
+</div>

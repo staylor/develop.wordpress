@@ -1,23 +1,9 @@
 <?php
 namespace WP\User\Admin;
 
-use WP\App;
+use WP\Admin\FormHandler as AdminHandler;
 
-class FormHandler {
-	protected $app;
-	protected $_request;
-	protected $_post;
-
-	public function __construct( App $app ) {
-		$this->app = $app;
-		$this->_request = $app['request']->attributes;
-		$this->_post = $app['request']->request;
-	}
-
-	public function redirect( $location ) {
-		wp_redirect( $location );
-		exit();
-	}
+class FormHandler extends AdminHandler {
 
 	public function doAddUser() {
 		if ( is_multisite() ) {

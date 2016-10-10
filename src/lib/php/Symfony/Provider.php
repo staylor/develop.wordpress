@@ -26,9 +26,10 @@ class Provider implements ServiceProviderInterface {
 			return $app['request']->getHttpHost();
 		};
 
-		$app['request.uri'] = function ( $app ) {
-			return $app['request']->getRequestUri();
-		};
+		// WordPress awesomely directly alters this at times
+		$app['request.uri'] = $app->factory( function ( $app ) {
+			return $app['request']->server->get( 'REQUEST_URI' );
+		} );
 
 		$app['request.useragent'] = function ( $app ) {
 			return $app['request']->headers->get( 'User-Agent' );

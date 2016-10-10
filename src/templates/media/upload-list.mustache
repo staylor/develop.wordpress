@@ -1,0 +1,23 @@
+<div class="wrap">
+	<h1>
+		{{ title }}
+		{{# title_link_url }}<a href="{{ . }}" class="page-title-action">{{ l10n.add_new }}</a>{{/ title_link_url }}
+		{{{ search }}}
+	</h1>
+
+	{{# message }}
+	<div id="message" class="updated notice is-dismissible">
+		<p>{{{ . }}}</p>
+	</div>
+	{{/ message }}
+
+	<form id="posts-filter" method="get">
+		{{{ list_table_views }}}
+
+		{{{ list_table_display }}}
+
+		<div id="ajax-response"></div>
+
+		{{{ find_posts_div }}}
+	</form>
+</div>

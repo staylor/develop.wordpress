@@ -5,6 +5,7 @@ namespace WP;
  * @property-read Symfony\Component\HttpFoundation\ParameterBag $_get
  * @property-read Symfony\Component\HttpFoundation\ParameterBag $_post
  * @property-read Symfony\Component\HttpFoundation\ParameterBag $_request
+ * @property-read Symfony\Component\HttpFoundation\ParameterBag $_server
  */
 class View extends MagicData {
 	use Mustache;
@@ -31,6 +32,9 @@ class View extends MagicData {
 
 		case '_request':
 			return $this->app['request']->attributes;
+
+		case '_server':
+			return $this->app['request']->server;
 		}
 	}
 
