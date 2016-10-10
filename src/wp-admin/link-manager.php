@@ -16,11 +16,11 @@ $wp_list_table = _get_list_table('WP_Links_List_Table');
 // Handle bulk deletes
 $doaction = $wp_list_table->current_action();
 
-if ( $doaction && isset( $_REQUEST['linkcheck'] ) ) {
+if ( $doaction && $_request->get( 'linkcheck' ) ) {
 	check_admin_referer( 'bulk-bookmarks' );
 
 	$redirect_to = admin_url( 'link-manager.php' );
-	$bulklinks = (array) $_REQUEST['linkcheck'];
+	$bulklinks = (array) $_request->get( 'linkcheck' );
 
 	if ( 'delete' == $doaction ) {
 		foreach ( $bulklinks as $link_id ) {
@@ -91,17 +91,17 @@ if ( ! current_user_can('manage_links') )
 
 <div class="wrap nosubsub">
 <h1><?php echo esc_html( $title ); ?> <a href="link-add.php" class="page-title-action"><?php echo esc_html_x('Add New', 'link'); ?></a> <?php
-if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
+if ( strlen( $_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
-	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( wp_unslash( $_REQUEST['s'] ) ) );
+	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( wp_unslash( $_request->get( 's' ) ) ) );
 }
 ?>
 </h1>
 
 <?php
-if ( isset($_REQUEST['deleted']) ) {
+if ( $_request->get( 'deleted' ) ) {
 	echo '<div id="message" class="updated notice is-dismissible"><p>';
-	$deleted = (int) $_REQUEST['deleted'];
+	$deleted = (int) $_request->get( 'deleted' );
 	printf(_n('%s link deleted.', '%s links deleted', $deleted), $deleted);
 	echo '</p></div>';
 	$_SERVER['REQUEST_URI'] = remove_query_arg(array('deleted'), $_SERVER['REQUEST_URI']);

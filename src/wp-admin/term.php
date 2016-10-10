@@ -10,7 +10,8 @@
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( empty( $_REQUEST['tag_ID'] ) ) {
+$tag_ID = $_request->getInt( 'tag_ID' );
+if ( empty( $tag_ID ) ) {
 	$sendback = admin_url( 'edit-tags.php' );
 	if ( ! empty( $taxnow ) ) {
 		$sendback = add_query_arg( array( 'taxonomy' => $taxnow ), $sendback );
@@ -19,7 +20,6 @@ if ( empty( $_REQUEST['tag_ID'] ) ) {
 	exit;
 }
 
-$tag_ID = absint( $_REQUEST['tag_ID'] );
 $tag    = get_term( $tag_ID, $taxnow, OBJECT, 'edit' );
 
 if ( ! $tag instanceof WP_Term ) {

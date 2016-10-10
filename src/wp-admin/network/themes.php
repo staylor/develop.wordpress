@@ -18,7 +18,7 @@ $pagenum = $wp_list_table->get_pagenum();
 
 $action = $wp_list_table->current_action();
 
-$s = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
+$s = $_request->get( 's', '' );
 
 // Clean up request URI from temporary args for screen options/paging uri's to work as expected.
 $temp_args = array( 'enabled', 'disabled', 'deleted', 'error' );
@@ -92,7 +92,7 @@ if ( $action ) {
 
 			check_admin_referer( 'bulk-themes' );
 
-			$themes = isset( $_REQUEST['checked'] ) ? (array) $_REQUEST['checked'] : [];
+			$themes = (array) $_request->get( 'checked', [] );
 
 			if ( empty( $themes ) ) {
 				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
@@ -115,7 +115,7 @@ if ( $action ) {
 
 			$parent_file = 'themes.php';
 
-			if ( ! isset( $_REQUEST['verify-delete'] ) ) {
+			if ( ! $_request->get( 'verify-delete' ) ) {
 				wp_enqueue_script( 'jquery' );
 				require_once( ABSPATH . 'wp-admin/admin-header.php' );
 				$themes_to_delete = count( $themes );
@@ -180,12 +180,12 @@ if ( $action ) {
 				$delete_result = delete_theme( $theme, esc_url( add_query_arg( array(
 					'verify-delete' => 1,
 					'action' => 'delete-selected',
-					'checked' => $_REQUEST['checked'],
-					'_wpnonce' => $_REQUEST['_wpnonce']
+					'checked' => $_request->get( 'checked' ),
+					'_wpnonce' => $_request->get( '_wpnonce' )
 				), network_admin_url( 'themes.php' ) ) ) );
 			}
 
-			$paged = ( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
+			$paged = $_request->getInt( 'paged', 1 );
 			wp_redirect( add_query_arg( array(
 				'deleted' => count( $themes ),
 				'paged' => $paged,
@@ -259,7 +259,7 @@ require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 <div class="wrap">
 <h1><?php echo esc_html( $title ); if ( current_user_can('install_themes') ) { ?> <a href="theme-install.php" class="page-title-action"><?php echo esc_html_x('Add New', 'theme'); ?></a><?php }
-if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
+if ( strlen( $_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( $s ) );
 }

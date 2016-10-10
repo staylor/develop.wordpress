@@ -63,7 +63,7 @@ if ( ! $sendback ||
 switch($action) {
 case 'post-quickdraft-save':
 	// Check nonce and capabilities
-	$nonce = $_REQUEST['_wpnonce'];
+	$nonce = $_request->get( '_wpnonce' );
 	$error_msg = false;
 
 	// For output of the quickdraft dashboard widget
@@ -79,7 +79,7 @@ case 'post-quickdraft-save':
 	if ( $error_msg )
 		return wp_dashboard_quick_press( $error_msg );
 
-	$post = get_post( $_REQUEST['post_ID'] );
+	$post = get_post( $_request->getInt( 'post_ID' ) );
 	check_admin_referer( 'add-' . $post->post_type );
 
 	$_POST['comment_status'] = get_default_comment_status( $post->post_type );

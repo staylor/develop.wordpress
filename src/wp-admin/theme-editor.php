@@ -104,7 +104,7 @@ if ( empty( $file ) ) {
 }
 
 validate_file_to_edit( $file, $allowed_files );
-$scrollto = isset( $_REQUEST['scrollto'] ) ? (int) $_REQUEST['scrollto'] : 0;
+$scrollto = $_request->getInt( 'scrollto', 0 );
 
 switch( $action ) {
 case 'update':

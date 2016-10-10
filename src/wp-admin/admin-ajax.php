@@ -89,7 +89,7 @@ if ( is_user_logged_in() ) {
 	/**
 	 * Fires authenticated Ajax actions for logged-in users.
 	 *
-	 * The dynamic portion of the hook name, `$_REQUEST['action']`,
+	 * The dynamic portion of the hook name, `$_*['action']`,
 	 * refers to the name of the Ajax action callback being fired.
 	 *
 	 * @since 2.1.0
@@ -99,7 +99,7 @@ if ( is_user_logged_in() ) {
 	/**
 	 * Fires non-authenticated Ajax actions for logged-out users.
 	 *
-	 * The dynamic portion of the hook name, `$_REQUEST['action']`,
+	 * The dynamic portion of the hook name, `$_*['action']`,
 	 * refers to the name of the Ajax action callback being fired.
 	 *
 	 * @since 2.8.0

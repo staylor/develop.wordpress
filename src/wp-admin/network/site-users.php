@@ -42,11 +42,12 @@ get_current_screen()->set_screen_reader_content( array(
 $_SERVER['REQUEST_URI'] = remove_query_arg( 'update', $_SERVER['REQUEST_URI'] );
 $referer = remove_query_arg( 'update', wp_get_referer() );
 
-if ( ! empty( $_REQUEST['paged'] ) ) {
-	$referer = add_query_arg( 'paged', (int) $_REQUEST['paged'], $referer );
+$paged = $_request->getInt( 'paged', 0 );
+if ( $paged ) {
+	$referer = add_query_arg( 'paged', $paged, $referer );
 }
 
-$id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+$id = $_request->getInt( 'id', 0 );
 
 if ( ! $id )
 	wp_die( __('Invalid site ID.') );

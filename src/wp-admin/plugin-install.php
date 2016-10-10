@@ -25,11 +25,12 @@ if ( is_multisite() && ! is_network_admin() ) {
 $wp_list_table = _get_list_table('WP_Plugin_Install_List_Table');
 $pagenum = $wp_list_table->get_pagenum();
 
-if ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
+if ( $_request->get( '_wp_http_referer' ) ) {
 	$location = remove_query_arg( '_wp_http_referer', wp_unslash( $_SERVER['REQUEST_URI'] ) );
 
-	if ( ! empty( $_REQUEST['paged'] ) ) {
-		$location = add_query_arg( 'paged', (int) $_REQUEST['paged'], $location );
+	$paged = $_request->getInt( 'paged' );
+	if ( $paged ) {
+		$location = add_query_arg( 'paged', $paged, $location );
 	}
 
 	wp_redirect( $location );

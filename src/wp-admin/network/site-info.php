@@ -31,7 +31,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __( '<a href="https://wordpress.org/support/forum/multisite/">Support Forums</a>' ) . '</p>'
 );
 
-$id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+$id = $_request->getInt( 'id', 0 );
 
 if ( ! $id ) {
 	wp_die( __('Invalid site ID.') );
@@ -49,7 +49,7 @@ if ( ! can_edit_network( $details->site_id ) ) {
 $parsed_scheme = parse_url( $details->siteurl, PHP_URL_SCHEME );
 $is_main_site = is_main_site( $id );
 
-if ( isset( $_REQUEST['action'] ) && 'update-site' == $_REQUEST['action'] ) {
+if ( 'update-site' == $_request->get( 'action' ) ) {
 	check_admin_referer( 'edit-site' );
 
 	switch_to_blog( $id );

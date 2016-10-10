@@ -27,7 +27,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __('<a href="https://wordpress.org/support/forum/multisite/">Support Forums</a>') . '</p>'
 );
 
-if ( isset($_REQUEST['action']) && 'add-user' == $_REQUEST['action'] ) {
+if ( 'add-user' == $_request->get( 'action' ) ) {
 	check_admin_referer( 'add-user', '_wpnonce_add-user' );
 
 	if ( ! current_user_can( 'manage_network_users' ) )

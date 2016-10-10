@@ -36,12 +36,12 @@ if ( empty( $plugins ) ) {
 
 $file = '';
 $plugin = '';
-if ( isset( $_REQUEST['file'] ) ) {
-	$file = sanitize_text_field( $_REQUEST['file'] );
+if ( $_request->get( 'file' ) ) {
+	$file = sanitize_text_field( $_request->get( 'file' ) );
 }
 
-if ( isset( $_REQUEST['plugin'] ) ) {
-	$plugin = sanitize_text_field( $_REQUEST['plugin'] );
+if ( $_request->get( 'plugin' ) ) {
+	$plugin = sanitize_text_field( $_request->get( 'plugin' ) );
 }
 
 if ( empty( $plugin ) ) {
@@ -60,9 +60,9 @@ if ( empty($file) )
 
 $file = validate_file_to_edit($file, $plugin_files);
 $real_file = WP_PLUGIN_DIR . '/' . $file;
-$scrollto = isset($_REQUEST['scrollto']) ? (int) $_REQUEST['scrollto'] : 0;
+$scrollto = $_request->getInt( 'scrollto', 0 );
 
-if ( isset( $_REQUEST['action'] ) && 'update' === $_REQUEST['action'] ) {
+if ( 'update' === $_request->get( 'action' ) ) {
 
 	check_admin_referer('edit-plugin_' . $file);
 

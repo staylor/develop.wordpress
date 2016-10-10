@@ -6,8 +6,6 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 /**
  * In WordPress Administration Screens
  *
@@ -33,8 +31,6 @@ if ( isset($_GET['import']) && !defined('WP_LOAD_IMPORTERS') )
 require_once(dirname( __DIR__ ) . '/wp-load.php');
 
 nocache_headers();
-
-$app = getApp();
 
 if ( get_option('db_upgraded') ) {
 	flush_rewrite_rules();
@@ -344,14 +340,15 @@ if ( isset($plugin_page) ) {
 	}
 }
 
-if ( ! empty( $_REQUEST['action'] ) ) {
+$action = $_request->get( 'action' );
+if ( ! empty( $action ) ) {
 	/**
 	 * Fires when an 'action' request variable is sent.
 	 *
-	 * The dynamic portion of the hook name, `$_REQUEST['action']`,
+	 * The dynamic portion of the hook name, `$_*['action']`,
 	 * refers to the action derived from the `GET` or `POST` request.
 	 *
 	 * @since 2.6.0
 	 */
-	do_action( 'admin_action_' . $_REQUEST['action'] );
+	do_action( 'admin_action_' . $action );
 }

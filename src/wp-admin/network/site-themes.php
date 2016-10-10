@@ -40,18 +40,19 @@ $wp_list_table = _get_list_table('WP_MS_Themes_List_Table');
 
 $action = $wp_list_table->current_action();
 
-$s = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
+$s = $_request->get( 's', '' );
 
 // Clean up request URI from temporary args for screen options/paging uri's to work as expected.
 $temp_args = array( 'enabled', 'disabled', 'error' );
 $_SERVER['REQUEST_URI'] = remove_query_arg( $temp_args, $_SERVER['REQUEST_URI'] );
 $referer = remove_query_arg( $temp_args, wp_get_referer() );
 
-if ( ! empty( $_REQUEST['paged'] ) ) {
-	$referer = add_query_arg( 'paged', (int) $_REQUEST['paged'], $referer );
+$paged = $_request->getInt( 'paged', 0 );
+if ( $paged ) {
+	$referer = add_query_arg( 'paged', $paged, $referer );
 }
 
-$id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+$id = $_request->getInt( 'id', 0 );
 
 if ( ! $id )
 	wp_die( __('Invalid site ID.') );

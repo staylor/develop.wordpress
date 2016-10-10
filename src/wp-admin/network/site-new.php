@@ -35,7 +35,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __('<a href="https://wordpress.org/support/forum/multisite/">Support Forums</a>') . '</p>'
 );
 
-if ( isset($_REQUEST['action']) && 'add-site' == $_REQUEST['action'] ) {
+if ( 'add-site' == $_request->get( 'action' ) ) {
 	check_admin_referer( 'add-blog', '_wpnonce_add-blog' );
 
 	if ( ! is_array( $_POST['blog'] ) )

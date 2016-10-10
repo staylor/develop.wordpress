@@ -40,7 +40,7 @@ if ( isset( $action ) && $action == 'edit' && !$ID ) {
 	);
 }
 
-if ( ! empty( $_REQUEST['post_id'] ) && ! current_user_can( 'edit_post' , $_REQUEST['post_id'] ) ) {
+if ( $_request->get( 'post_id' ) && ! current_user_can( 'edit_post' , $_request->get( 'post_id' ) ) ) {
 	wp_die(
 		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
 		'<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>',

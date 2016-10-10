@@ -48,7 +48,7 @@ get_current_screen()->set_screen_reader_content( array(
 	'heading_list'       => __( 'Sites list' ),
 ) );
 
-$id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+$id = $_request->getInt( 'id', 0 );
 
 if ( isset( $_GET['action'] ) ) {
 	/** This action is documented in wp-admin/network/edit.php */
@@ -179,8 +179,9 @@ if ( isset( $_GET['action'] ) ) {
 				}
 			} else {
 				$location = network_admin_url( 'sites.php' );
-				if ( ! empty( $_REQUEST['paged'] ) ) {
-					$location = add_query_arg( 'paged', (int) $_REQUEST['paged'], $location );
+				$paged = $_request->get( 'paged', 0 );
+				if ( $paged ) {
+					$location = add_query_arg( 'paged', $paged, $location );
 				}
 				wp_redirect( $location );
 				exit();
@@ -241,51 +242,51 @@ if ( isset( $_GET['action'] ) ) {
 $msg = '';
 if ( isset( $_GET['updated'] ) ) {
 	switch ( $_GET['updated'] ) {
-		case 'all_notspam':
-			$msg = __( 'Sites removed from spam.' );
+	case 'all_notspam':
+		$msg = __( 'Sites removed from spam.' );
 		break;
-		case 'all_spam':
-			$msg = __( 'Sites marked as spam.' );
+	case 'all_spam':
+		$msg = __( 'Sites marked as spam.' );
 		break;
-		case 'all_delete':
-			$msg = __( 'Sites deleted.' );
+	case 'all_delete':
+		$msg = __( 'Sites deleted.' );
 		break;
-		case 'delete':
-			$msg = __( 'Site deleted.' );
+	case 'delete':
+		$msg = __( 'Site deleted.' );
 		break;
-		case 'not_deleted':
-			$msg = __( 'Sorry, you are not allowed to delete that site.' );
+	case 'not_deleted':
+		$msg = __( 'Sorry, you are not allowed to delete that site.' );
 		break;
-		case 'archiveblog':
-			$msg = __( 'Site archived.' );
+	case 'archiveblog':
+		$msg = __( 'Site archived.' );
 		break;
-		case 'unarchiveblog':
-			$msg = __( 'Site unarchived.' );
+	case 'unarchiveblog':
+		$msg = __( 'Site unarchived.' );
 		break;
-		case 'activateblog':
-			$msg = __( 'Site activated.' );
+	case 'activateblog':
+		$msg = __( 'Site activated.' );
 		break;
-		case 'deactivateblog':
-			$msg = __( 'Site deactivated.' );
+	case 'deactivateblog':
+		$msg = __( 'Site deactivated.' );
 		break;
-		case 'unspamblog':
-			$msg = __( 'Site removed from spam.' );
+	case 'unspamblog':
+		$msg = __( 'Site removed from spam.' );
 		break;
-		case 'spamblog':
-			$msg = __( 'Site marked as spam.' );
+	case 'spamblog':
+		$msg = __( 'Site marked as spam.' );
 		break;
-		default:
-			/**
-			 * Filters a specific, non-default site-updated message in the Network admin.
-			 *
-			 * The dynamic portion of the hook name, `$_GET['updated']`, refers to the
-			 * non-default site update action.
-			 *
-			 * @since 3.1.0
-			 *
-			 * @param string $msg The update message. Default 'Settings saved'.
-			 */
-			$msg = apply_filters( 'network_sites_updated_message_' . $_GET['updated'], __( 'Settings saved.' ) );
+	default:
+		/**
+		 * Filters a specific, non-default site-updated message in the Network admin.
+		 *
+		 * The dynamic portion of the hook name, `$_GET['updated']`, refers to the
+		 * non-default site update action.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param string $msg The update message. Default 'Settings saved'.
+		 */
+		$msg = apply_filters( 'network_sites_updated_message_' . $_GET['updated'], __( 'Settings saved.' ) );
 		break;
 	}
 
@@ -306,7 +307,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 <?php endif; ?>
 
 <?php
-if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
+if ( strlen( $_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( $s ) );
 } ?>

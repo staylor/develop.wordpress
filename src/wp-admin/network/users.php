@@ -116,8 +116,9 @@ if ( isset( $_GET['action'] ) ) {
 			} else {
 				$location = network_admin_url( 'users.php' );
 
-				if ( ! empty( $_REQUEST['paged'] ) )
-					$location = add_query_arg( 'paged', (int) $_REQUEST['paged'], $location );
+				$paged = $_request->getInt( 'paged', 0 );
+				if ( $paged )
+					$location = add_query_arg( 'paged', $paged, $location );
 				wp_redirect( $location );
 			}
 			exit();
@@ -199,25 +200,25 @@ get_current_screen()->set_screen_reader_content( array(
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
-if ( isset( $_REQUEST['updated'] ) && $_REQUEST['updated'] == 'true' && ! empty( $_REQUEST['action'] ) ) {
+if ( $_request->get( 'updated' ) == 'true' && ! empty( $_request->get( 'action' ) ) ) {
 	?>
 	<div id="message" class="updated notice is-dismissible"><p>
 		<?php
-		switch ( $_REQUEST['action'] ) {
-			case 'delete':
-				_e( 'User deleted.' );
+		switch ( $_request->get( 'action' ) ) {
+		case 'delete':
+			_e( 'User deleted.' );
 			break;
-			case 'all_spam':
-				_e( 'Users marked as spam.' );
+		case 'all_spam':
+			_e( 'Users marked as spam.' );
 			break;
-			case 'all_notspam':
-				_e( 'Users removed from spam.' );
+		case 'all_notspam':
+			_e( 'Users removed from spam.' );
 			break;
-			case 'all_delete':
-				_e( 'Users deleted.' );
+		case 'all_delete':
+			_e( 'Users deleted.' );
 			break;
-			case 'add':
-				_e( 'User added.' );
+		case 'add':
+			_e( 'User added.' );
 			break;
 		}
 		?>

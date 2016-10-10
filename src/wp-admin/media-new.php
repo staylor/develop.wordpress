@@ -17,14 +17,14 @@ if (!current_user_can('upload_files'))
 
 wp_enqueue_script('plupload-handlers');
 
-$post_id = 0;
-if ( isset( $_REQUEST['post_id'] ) ) {
-	$post_id = absint( $_REQUEST['post_id'] );
-	if ( ! get_post( $post_id ) || ! current_user_can( 'edit_post', $post_id ) )
+$post_id = $_request->getInt( 'post_id', 0 );
+if ( $post_id ) {
+	if ( ! get_post( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
 		$post_id = 0;
+	}
 }
 
-if ( $_POST ) {
+if ( $_post->all() ) {
 	if ( $_post->has( 'html-upload' ) && !empty($_FILES) ) {
 		check_admin_referer('media-form');
 		// Upload File button was clicked

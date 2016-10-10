@@ -13,9 +13,9 @@ if ( ! defined( 'IFRAME_REQUEST' ) && isset( $_GET['action'] ) && in_array( $_GE
 require_once( __DIR__ . '/admin.php' );
 
 if ( isset($_GET['action']) ) {
-	$plugin = isset($_REQUEST['plugin']) ? trim($_REQUEST['plugin']) : '';
-	$theme = isset($_REQUEST['theme']) ? urldecode($_REQUEST['theme']) : '';
-	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+	$plugin = trim( $_request->get( 'plugin', '' ) );
+	$theme = urldecode( $_request->get( 'theme', '' ) );
+	$action = $_request->get( 'action', '' );
 
 	if ( 'update-selected' == $action ) {
 		if ( ! current_user_can( 'update_plugins' ) )
