@@ -119,7 +119,7 @@ class Custom_Background {
 		if ( empty( $_post->all() ) )
 			return;
 
-		if ( isset($_POST['reset-background']) ) {
+		if ( $_post->get( 'reset-background' ) ) {
 			check_admin_referer('custom-background-reset', '_wpnonce-custom-background-reset');
 			remove_theme_mod('background_image');
 			remove_theme_mod('background_image_thumb');
@@ -127,46 +127,46 @@ class Custom_Background {
 			return;
 		}
 
-		if ( isset($_POST['remove-background']) ) {
+		if ( $_post->get( 'remove-background' ) ) {
 			// @TODO: Uploaded files are not removed here.
 			check_admin_referer('custom-background-remove', '_wpnonce-custom-background-remove');
 			set_theme_mod('background_image', '');
 			set_theme_mod('background_image_thumb', '');
 			$this->updated = true;
-			wp_safe_redirect( $_POST['_wp_http_referer'] );
+			wp_safe_redirect( $_post->get( '_wp_http_referer' ) );
 			return;
 		}
 
-		if ( isset($_POST['background-repeat']) ) {
+		if ( $_post->get( 'background-repeat' ) ) {
 			check_admin_referer('custom-background');
-			if ( in_array($_POST['background-repeat'], array('repeat', 'no-repeat', 'repeat-x', 'repeat-y')) )
-				$repeat = $_POST['background-repeat'];
+			if ( in_array( $_post->get( 'background-repeat' ), array('repeat', 'no-repeat', 'repeat-x', 'repeat-y')) )
+				$repeat = $_post->get( 'background-repeat' );
 			else
 				$repeat = 'repeat';
 			set_theme_mod('background_repeat', $repeat);
 		}
 
-		if ( isset($_POST['background-position-x']) ) {
+		if ( $_post->get( 'background-position-x' ) ) {
 			check_admin_referer('custom-background');
-			if ( in_array($_POST['background-position-x'], array('center', 'right', 'left')) )
-				$position = $_POST['background-position-x'];
+			if ( in_array( $_post->get( 'background-position-x' ), array('center', 'right', 'left')) )
+				$position = $_post->get( 'background-position-x' );
 			else
 				$position = 'left';
 			set_theme_mod('background_position_x', $position);
 		}
 
-		if ( isset($_POST['background-attachment']) ) {
+		if ( $_post->get( 'background-attachment' ) ) {
 			check_admin_referer('custom-background');
-			if ( in_array($_POST['background-attachment'], array('fixed', 'scroll')) )
-				$attachment = $_POST['background-attachment'];
+			if ( in_array( $_post->get( 'background-attachment' ), array('fixed', 'scroll')) )
+				$attachment = $_post->get( 'background-attachment' );
 			else
 				$attachment = 'fixed';
 			set_theme_mod('background_attachment', $attachment);
 		}
 
-		if ( isset($_POST['background-color']) ) {
+		if ( $_post->get( 'background-color' ) ) {
 			check_admin_referer('custom-background');
-			$color = preg_replace('/[^0-9a-fA-F]/', '', $_POST['background-color']);
+			$color = preg_replace('/[^0-9a-fA-F]/', '', $_post->get( 'background-color' ) );
 			if ( strlen($color) == 6 || strlen($color) == 3 )
 				set_theme_mod('background_color', $color);
 			else
@@ -428,7 +428,9 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) )
 			wp_send_json_error();
 		}
 
-		$attachment_id = absint( $_POST['attachment_id'] );
+		$app = getApp();
+		$_post = $app['request']->request;
+		$attachment_id = $_post->getInt( 'attachment_id' );
 		if ( $attachment_id < 1 ) {
 			wp_send_json_error();
 		}
@@ -468,13 +470,19 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) )
 	 * @deprecated 3.5.0
 	 */
 	public function wp_set_background_image() {
-		if ( ! current_user_can('edit_theme_options') || ! isset( $_POST['attachment_id'] ) ) exit;
-		$attachment_id = absint($_POST['attachment_id']);
+		$app = getApp();
+		$_post = $app['request']->request;
+		$attachment_id = $_post->getInt( 'attachment_id' );
+		if ( ! current_user_can('edit_theme_options') || ! $attachment_id ) {
+			exit;
+		}
+
 		/** This filter is documented in wp-admin/includes/media.php */
 		$sizes = array_keys(apply_filters( 'image_size_names_choose', array('thumbnail' => __('Thumbnail'), 'medium' => __('Medium'), 'large' => __('Large'), 'full' => __('Full Size')) ));
 		$size = 'thumbnail';
-		if ( in_array( $_POST['size'], $sizes ) )
-			$size = esc_attr( $_POST['size'] );
+		if ( in_array( $_post->get( 'size' ), $sizes ) ) {
+			$size = esc_attr( $_post->get( 'size' ) );
+		}
 
 		update_post_meta( $attachment_id, '_wp_attachment_is_custom_background', get_option('stylesheet' ) );
 		$url = wp_get_attachment_image_src( $attachment_id, $size );

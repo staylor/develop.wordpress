@@ -430,8 +430,10 @@ function do_core_upgrade( $reinstall = false ) {
 		$url = 'update-core.php?action=do-core-upgrade';
 	$url = wp_nonce_url($url, 'upgrade-core');
 
-	$version = isset( $_POST['version'] )? $_POST['version'] : false;
-	$locale = isset( $_POST['locale'] )? $_POST['locale'] : 'en_US';
+	$app = getApp();
+	$_post = $app['request']->request;
+	$version = $_post->get( 'version', false );
+	$locale = $_post->get( 'locale', 'en_US' );
 	$update = find_core_update( $version, $locale );
 	if ( !$update )
 		return;
@@ -497,11 +499,14 @@ function do_core_upgrade( $reinstall = false ) {
  * @since 2.7.0
  */
 function do_dismiss_core_update() {
-	$version = isset( $_POST['version'] )? $_POST['version'] : false;
-	$locale = isset( $_POST['locale'] )? $_POST['locale'] : 'en_US';
+	$app = getApp();
+	$_post = $app['request']->request;
+	$version = $_post->get( 'version', false );
+	$locale = $_post->get( 'locale', 'en_US' );
 	$update = find_core_update( $version, $locale );
-	if ( !$update )
+	if ( ! $update ) {
 		return;
+	}
 	dismiss_core_update( $update );
 	wp_redirect( wp_nonce_url('update-core.php?action=upgrade-core', 'upgrade-core') );
 	exit;
@@ -511,11 +516,14 @@ function do_dismiss_core_update() {
  * @since 2.7.0
  */
 function do_undismiss_core_update() {
-	$version = isset( $_POST['version'] )? $_POST['version'] : false;
-	$locale = isset( $_POST['locale'] )? $_POST['locale'] : 'en_US';
+	$app = getApp();
+	$_post = $app['request']->request;
+	$version = $_post->get( 'version', false );
+	$locale = $_post->get( 'locale', 'en_US' );
 	$update = find_core_update( $version, $locale );
-	if ( !$update )
+	if ( ! $update ) {
 		return;
+	}
 	undismiss_core_update( $version, $locale );
 	wp_redirect( wp_nonce_url('update-core.php?action=upgrade-core', 'upgrade-core') );
 	exit;
@@ -525,7 +533,7 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'upgrade-core';
 
 $upgrade_error = false;
 if ( ( 'do-theme-upgrade' == $action || ( 'do-plugin-upgrade' == $action && ! isset( $_GET['plugins'] ) ) )
-	&& ! isset( $_POST['checked'] ) ) {
+	&& ! isset( $_post->get( 'checked' ) ) ) {
 	$upgrade_error = $action == 'do-theme-upgrade' ? 'themes' : 'plugins';
 	$action = 'upgrade-core';
 }
@@ -619,9 +627,9 @@ if ( 'upgrade-core' == $action ) {
 	check_admin_referer('upgrade-core');
 
 	// Do the (un)dismiss actions before headers, so that they can redirect.
-	if ( isset( $_POST['dismiss'] ) )
+	if ( $_post->get( 'dismiss' ) )
 		do_dismiss_core_update();
-	elseif ( isset( $_POST['undismiss'] ) )
+	elseif ( $_post->get( 'undismiss' ) )
 		do_undismiss_core_update();
 
 	require_once(ABSPATH . 'wp-admin/admin-header.php');
@@ -630,7 +638,7 @@ if ( 'upgrade-core' == $action ) {
 	else
 		$reinstall = false;
 
-	if ( isset( $_POST['upgrade'] ) )
+	if ( $_post->get( 'upgrade' ) )
 		do_core_upgrade($reinstall);
 
 	include(ABSPATH . 'wp-admin/admin-footer.php');
@@ -644,8 +652,8 @@ if ( 'upgrade-core' == $action ) {
 
 	if ( isset( $_GET['plugins'] ) ) {
 		$plugins = explode( ',', $_GET['plugins'] );
-	} elseif ( isset( $_POST['checked'] ) ) {
-		$plugins = (array) $_POST['checked'];
+	} elseif ( $_post->get( 'checked' ) ) {
+		$plugins = (array) $_post->get( 'checked' );
 	} else {
 		wp_redirect( admin_url('update-core.php') );
 		exit;
@@ -672,8 +680,8 @@ if ( 'upgrade-core' == $action ) {
 
 	if ( isset( $_GET['themes'] ) ) {
 		$themes = explode( ',', $_GET['themes'] );
-	} elseif ( isset( $_POST['checked'] ) ) {
-		$themes = (array) $_POST['checked'];
+	} elseif ( $_post->get( 'checked' ) ) {
+		$themes = (array) $_post->get( 'checked' );
 	} else {
 		wp_redirect( admin_url('update-core.php') );
 		exit;

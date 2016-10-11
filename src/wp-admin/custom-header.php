@@ -200,39 +200,41 @@ class Custom_Image_Header {
 		if ( ! current_user_can('edit_theme_options') )
 			return;
 
-		if ( empty( $_POST ) )
+		$app = getApp();
+		$_post = $app['request']->request;
+		if ( empty( $_post->all() ) )
 			return;
 
 		$this->updated = true;
 
-		if ( isset( $_POST['resetheader'] ) ) {
+		if ( $_post->get( 'resetheader' ) ) {
 			check_admin_referer( 'custom-header-options', '_wpnonce-custom-header-options' );
 			$this->reset_header_image();
 			return;
 		}
 
-		if ( isset( $_POST['removeheader'] ) ) {
+		if ( $_post->get( 'removeheader' ) ) {
 			check_admin_referer( 'custom-header-options', '_wpnonce-custom-header-options' );
 			$this->remove_header_image();
 			return;
 		}
 
-		if ( isset( $_POST['text-color'] ) && ! isset( $_POST['display-header-text'] ) ) {
+		if ( $_post->get( 'text-color' ) && ! $_post->get( 'display-header-text' ) ) {
 			check_admin_referer( 'custom-header-options', '_wpnonce-custom-header-options' );
 			set_theme_mod( 'header_textcolor', 'blank' );
-		} elseif ( isset( $_POST['text-color'] ) ) {
+		} elseif ( $_post->get( 'text-color' ) ) {
 			check_admin_referer( 'custom-header-options', '_wpnonce-custom-header-options' );
-			$_POST['text-color'] = str_replace( '#', '', $_POST['text-color'] );
-			$color = preg_replace('/[^0-9a-fA-F]/', '', $_POST['text-color']);
+			$_post->set( 'text-color',  str_replace( '#', '', $_post->get( 'text-color' ) ) );
+			$color = preg_replace('/[^0-9a-fA-F]/', '', $_post->get( 'text-color' ) );
 			if ( strlen($color) == 6 || strlen($color) == 3 )
 				set_theme_mod('header_textcolor', $color);
 			elseif ( ! $color )
 				set_theme_mod( 'header_textcolor', 'blank' );
 		}
 
-		if ( isset( $_POST['default-header'] ) ) {
+		if ( $_post->get( 'default-header' ) ) {
 			check_admin_referer( 'custom-header-options', '_wpnonce-custom-header-options' );
-			$this->set_header_image( $_POST['default-header'] );
+			$this->set_header_image( $_post->get( 'default-header' ) );
 			return;
 		}
 	}
@@ -737,12 +739,14 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			);
 		}
 
-		if ( empty( $_POST ) && isset( $_GET['file'] ) ) {
+		$app = getApp();
+		$_post = $app['request']->request;
+		if ( empty( $_post->all() ) && isset( $_GET['file'] ) ) {
 			$attachment_id = absint( $_GET['file'] );
 			$file = get_attached_file( $attachment_id, true );
 			$url = wp_get_attachment_image_src( $attachment_id, 'full' );
 			$url = $url[0];
-		} elseif ( isset( $_POST ) ) {
+		} elseif ( $_post->all() ) {
 			$data = $this->step_2_manage_upload();
 			$attachment_id = $data['attachment_id'];
 			$file = $data['file'];
@@ -822,7 +826,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 	<input type="hidden" name="height" id="height" value="<?php echo esc_attr( $height ); ?>"/>
 	<input type="hidden" name="attachment_id" id="attachment_id" value="<?php echo esc_attr( $attachment_id ); ?>" />
 	<input type="hidden" name="oitar" id="oitar" value="<?php echo esc_attr( $oitar ); ?>" />
-	<?php if ( empty( $_POST ) && isset( $_GET['file'] ) ) { ?>
+	<?php if ( empty( $_post->all() ) && isset( $_GET['file'] ) ) { ?>
 	<input type="hidden" name="create-new-attachment" value="true" />
 	<?php } ?>
 	<?php wp_nonce_field( 'custom-header-crop-image' ) ?>
@@ -895,7 +899,9 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			);
 		}
 
-		if ( ! empty( $_POST['skip-cropping'] ) && ! ( current_theme_supports( 'custom-header', 'flex-height' ) || current_theme_supports( 'custom-header', 'flex-width' ) ) ) {
+		$app = getApp();
+		$_post = $app['request']->request;
+		if ( ! empty( $_post->get( 'skip-cropping' ) ) && ! ( current_theme_supports( 'custom-header', 'flex-height' ) || current_theme_supports( 'custom-header', 'flex-width' ) ) ) {
 			wp_die(
 				'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
 				'<p>' . __( 'The current theme does not support a flexible sized header image.' ) . '</p>',
@@ -903,26 +909,34 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			);
 		}
 
-		if ( $_POST['oitar'] > 1 ) {
-			$_POST['x1'] = $_POST['x1'] * $_POST['oitar'];
-			$_POST['y1'] = $_POST['y1'] * $_POST['oitar'];
-			$_POST['width'] = $_POST['width'] * $_POST['oitar'];
-			$_POST['height'] = $_POST['height'] * $_POST['oitar'];
+		if ( $_post->get( 'oitar' ) > 1 ) {
+			$_post->set( 'x1', $_post->get( 'x1' ) * $_post->get( 'oitar' ) );
+			$_post->set( 'y1', $_post->get( 'y1' ) * $_post->get( 'oitar' ) );
+			$_post->set( 'width', $_post->get( 'width' ) * $_post->get( 'oitar' ) );
+			$_post->set( 'height', $_post->get( 'height' ) * $_post->get( 'oitar' ) );
 		}
 
-		$attachment_id = absint( $_POST['attachment_id'] );
-		$original = get_attached_file($attachment_id);
+		$attachment_id = $_post->getInt( 'attachment_id' );
+		$original = get_attached_file( $attachment_id );
 
 		$dimensions = $this->get_header_dimensions( array(
-			'height' => $_POST['height'],
-			'width'  => $_POST['width'],
+			'height' => $_post->get( 'height' ),
+			'width'  => $_post->get( 'width' ),
 		) );
 		$height = $dimensions['dst_height'];
 		$width = $dimensions['dst_width'];
 
-		if ( empty( $_POST['skip-cropping'] ) )
-			$cropped = wp_crop_image( $attachment_id, (int) $_POST['x1'], (int) $_POST['y1'], (int) $_POST['width'], (int) $_POST['height'], $width, $height );
-		elseif ( ! empty( $_POST['create-new-attachment'] ) )
+		if ( ! $_post->get( 'skip-cropping' ) ) {
+			$cropped = wp_crop_image(
+				$attachment_id,
+				(int) $_post->get( 'x1' ),
+				(int) $_post->get( 'y1' ),
+				(int) $_post->get( 'width' ),
+				(int) $_post->get( 'height' ),
+				$width,
+				$height
+			);
+		} elseif ( $_post->get( 'create-new-attachment' ) )
 			$cropped = _copy_image_file( $attachment_id );
 		else
 			$cropped = get_attached_file( $attachment_id );
@@ -935,7 +949,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 
 		$object = $this->create_attachment_object( $cropped, $attachment_id );
 
-		if ( ! empty( $_POST['create-new-attachment'] ) )
+		if ( $_post->get( 'create-new-attachment' ) )
 			unset( $object['ID'] );
 
 		// Update the attachment
@@ -950,7 +964,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			wp_delete_file( $medium );
 		}
 
-		if ( empty( $_POST['create-new-attachment'] ) && empty( $_POST['skip-cropping'] ) ) {
+		if ( empty( $_post->get( 'create-new-attachment' ) ) && empty( $_post->get( 'skip-cropping' ) ) ) {
 			wp_delete_file( $original );
 		}
 
@@ -1209,7 +1223,9 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 	 * new object. Returns JSON-encoded object details.
 	 */
 	public function ajax_header_crop() {
-		check_ajax_referer( 'image_editor-' . $_POST['id'], 'nonce' );
+		$app = getApp();
+		$_post = $app['request']->request;
+		check_ajax_referer( 'image_editor-' . $_post->get( 'id' ), 'nonce' );
 
 		if ( ! current_user_can( 'edit_theme_options' ) ) {
 			wp_send_json_error();
@@ -1219,14 +1235,14 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			wp_send_json_error();
 		}
 
-		$crop_details = $_POST['cropDetails'];
+		$crop_details = $_post->get( 'cropDetails' );
 
 		$dimensions = $this->get_header_dimensions( array(
 			'height' => $crop_details['height'],
 			'width'  => $crop_details['width'],
 		) );
 
-		$attachment_id = absint( $_POST['id'] );
+		$attachment_id = absint( $_post->get( 'id' ) );
 
 		$cropped = wp_crop_image(
 			$attachment_id,
@@ -1273,7 +1289,9 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			wp_send_json_error();
 		}
 
-		$attachment_id = absint( $_POST['attachment_id'] );
+		$app = getApp();
+		$_post = $app['request']->request;
+		$attachment_id = $_post->getInt( 'attachment_id' );
 		if ( $attachment_id < 1 ) {
 			wp_send_json_error();
 		}
@@ -1299,7 +1317,9 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			wp_send_json_error();
 		}
 
-		$attachment_id = absint( $_POST['attachment_id'] );
+		$app = getApp();
+		$_post = $app['request']->request;
+		$attachment_id = $_post->getInt( 'attachment_id' );
 		if ( $attachment_id < 1 ) {
 			wp_send_json_error();
 		}

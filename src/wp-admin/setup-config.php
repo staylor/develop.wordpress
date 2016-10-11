@@ -104,11 +104,6 @@ function setup_config_display_header( $body_classes = [] ) {
 <?php
 } // end function setup_config_display_header();
 
-$app = getApp();
-$_request = $app['request']->attributes;
-$_post = $app['request']->request;
-$_get = $app['request']->query;
-
 $language = '';
 if ( ! empty( $_request->get( 'language' ) ) ) {
 	$language = preg_replace( '/[^a-zA-Z_]/', '', $_request->get( 'language' ) );
@@ -234,11 +229,11 @@ case 0:
 	unset( $app['locale'] );
 	$app['locale'] = $app['locale.factory'];
 
-	$dbname = trim( wp_unslash( $_POST[ 'dbname' ] ) );
-	$uname = trim( wp_unslash( $_POST[ 'uname' ] ) );
-	$pwd = trim( wp_unslash( $_POST[ 'pwd' ] ) );
-	$dbhost = trim( wp_unslash( $_POST[ 'dbhost' ] ) );
-	$prefix = trim( wp_unslash( $_POST[ 'prefix' ] ) );
+	$dbname = trim( wp_unslash( $_post->get( 'dbname' ) ) );
+	$uname = trim( wp_unslash( $_post->get( 'uname' ) ) );
+	$pwd = trim( wp_unslash( $_post->get( 'pwd' ) ) );
+	$dbhost = trim( wp_unslash( $_post->get( 'dbhost' ) ) );
+	$prefix = trim( wp_unslash( $_post->get( 'prefix' ) ) );
 
 	$step_1 = 'setup-config.php?step=1';
 	$install = 'install.php';

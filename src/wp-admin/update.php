@@ -25,8 +25,8 @@ if ( isset($_GET['action']) ) {
 
 		if ( isset( $_GET['plugins'] ) )
 			$plugins = explode( ',', stripslashes($_GET['plugins']) );
-		elseif ( isset( $_POST['checked'] ) )
-			$plugins = (array) $_POST['checked'];
+		elseif ( $_post->get( 'checked' ) )
+			$plugins = (array) $_post->get( 'checked' );
 		else
 			$plugins = [];
 
@@ -194,8 +194,8 @@ if ( isset($_GET['action']) ) {
 
 		if ( isset( $_GET['themes'] ) )
 			$themes = explode( ',', stripslashes($_GET['themes']) );
-		elseif ( isset( $_POST['checked'] ) )
-			$themes = (array) $_POST['checked'];
+		elseif ( $_post->get( 'checked' ) )
+			$themes = (array) $_post->get( 'checked' );
 		else
 			$themes = [];
 
