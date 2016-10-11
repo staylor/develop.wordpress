@@ -50,7 +50,7 @@ get_current_screen()->set_screen_reader_content( array(
 
 $id = $_request->getInt( 'id', 0 );
 
-if ( isset( $_GET['action'] ) ) {
+if ( $_get->get( 'action' ) ) {
 	/** This action is documented in wp-admin/network/edit.php */
 	do_action( 'wpmuadminedit' );
 
@@ -67,9 +67,9 @@ if ( isset( $_GET['action'] ) ) {
 		'matureblog'     => __( 'You are about to mark the site %s as not mature.' ),
 	);
 
-	if ( 'confirm' === $_GET['action'] ) {
+	if ( 'confirm' === $_get->get( 'action' ) ) {
 		// The action2 parameter contains the action being taken on the site.
-		$site_action = $_GET['action2'];
+		$site_action = $_get->get( 'action2' );
 
 		if ( ! array_key_exists( $site_action, $manage_actions ) ) {
 			wp_die( __( 'The requested action is not valid.' ) );
@@ -110,16 +110,16 @@ if ( isset( $_GET['action'] ) ) {
 		<?php
 		require_once( ABSPATH . 'wp-admin/admin-footer.php' );
 		exit();
-	} elseif ( array_key_exists( $_GET['action'], $manage_actions ) ) {
-		$action = $_GET['action'];
+	} elseif ( array_key_exists( $_get->get( 'action' ), $manage_actions ) ) {
+		$action = $_get->get( 'action' );
 		check_admin_referer( $action . '_' . $id );
-	} elseif ( 'allblogs' === $_GET['action'] ) {
+	} elseif ( 'allblogs' === $_get->get( 'action' ) ) {
 		check_admin_referer( 'bulk-sites' );
 	}
 
 	$updated_action = '';
 
-	switch ( $_GET['action'] ) {
+	switch ( $_get->get( 'action' ) ) {
 
 		case 'deleteblog':
 			if ( ! current_user_can( 'delete_sites' ) )
@@ -190,7 +190,7 @@ if ( isset( $_GET['action'] ) ) {
 
 		case 'archiveblog':
 		case 'unarchiveblog':
-			update_blog_status( $id, 'archived', ( 'archiveblog' === $_GET['action'] ) ? '1' : '0' );
+			update_blog_status( $id, 'archived', ( 'archiveblog' === $_get->get( 'action' ) ) ? '1' : '0' );
 		break;
 
 		case 'activateblog':
@@ -220,17 +220,17 @@ if ( isset( $_GET['action'] ) ) {
 
 		case 'unspamblog':
 		case 'spamblog':
-			update_blog_status( $id, 'spam', ( 'spamblog' === $_GET['action'] ) ? '1' : '0' );
+			update_blog_status( $id, 'spam', ( 'spamblog' === $_get->get( 'action' ) ) ? '1' : '0' );
 		break;
 
 		case 'unmatureblog':
 		case 'matureblog':
-			update_blog_status( $id, 'mature', ( 'matureblog' === $_GET['action'] ) ? '1' : '0' );
+			update_blog_status( $id, 'mature', ( 'matureblog' === $_get->get( 'action' ) ) ? '1' : '0' );
 		break;
 	}
 
-	if ( empty( $updated_action ) && array_key_exists( $_GET['action'], $manage_actions ) ) {
-		$updated_action = $_GET['action'];
+	if ( empty( $updated_action ) && array_key_exists( $_get->get( 'action' ), $manage_actions ) ) {
+		$updated_action = $_get->get( 'action' );
 	}
 
 	if ( ! empty( $updated_action ) ) {
@@ -240,8 +240,8 @@ if ( isset( $_GET['action'] ) ) {
 }
 
 $msg = '';
-if ( isset( $_GET['updated'] ) ) {
-	switch ( $_GET['updated'] ) {
+if ( $_get->get( 'updated' ) ) {
+	switch ( $_get->get( 'updated' ) ) {
 	case 'all_notspam':
 		$msg = __( 'Sites removed from spam.' );
 		break;
@@ -286,7 +286,7 @@ if ( isset( $_GET['updated'] ) ) {
 		 *
 		 * @param string $msg The update message. Default 'Settings saved'.
 		 */
-		$msg = apply_filters( 'network_sites_updated_message_' . $_GET['updated'], __( 'Settings saved.' ) );
+		$msg = apply_filters( 'network_sites_updated_message_' . $_get->get( 'updated' ), __( 'Settings saved.' ) );
 		break;
 	}
 

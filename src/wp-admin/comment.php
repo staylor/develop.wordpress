@@ -30,10 +30,10 @@ if ( 'cdc' == $action )
 elseif ( 'mac' == $action )
 	$action = 'approve';
 
-if ( isset( $_GET['dt'] ) ) {
-	if ( 'spam' == $_GET['dt'] )
+if ( $_get->get( 'dt' ) ) {
+	if ( 'spam' == $_get->get( 'dt' ) )
 		$action = 'spam';
-	elseif ( 'trash' == $_GET['dt'] )
+	elseif ( 'trash' == $_get->get( 'dt' ) )
 		$action = 'trash';
 }
 
@@ -47,7 +47,7 @@ case 'editcomment' :
 	wp_enqueue_script('comment');
 	require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
-	$comment_id = absint( $_GET['c'] );
+	$comment_id = $_get->getInt( 'c' );
 
 	if ( !$comment = get_comment( $comment_id ) )
 		comment_footer_die( __( 'Invalid comment ID.' ) . sprintf(' <a href="%s">' . __('Go back') . '</a>.', 'javascript:history.go(-1)') );
@@ -71,7 +71,7 @@ case 'spam'    :
 
 	$title = __('Moderate Comment');
 
-	$comment_id = absint( $_GET['c'] );
+	$comment_id = $_get->getInt( 'c' );
 
 	if ( ! $comment = get_comment( $comment_id ) ) {
 		wp_redirect( admin_url('edit-comments.php?error=1') );

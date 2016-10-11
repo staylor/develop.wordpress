@@ -161,8 +161,8 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 		<div class="favorites-form">
 			<?php
 			$action = 'save_wporg_username_' . get_current_user_id();
-			if ( isset( $_GET['_wpnonce'] ) && wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), $action ) ) {
-				$user = isset( $_GET['user'] ) ? wp_unslash( $_GET['user'] ) : get_user_option( 'wporg_favorites' );
+			if ( $_get->get( '_wpnonce' ) && wp_verify_nonce( wp_unslash( $_get->get( '_wpnonce' ) ), $action ) ) {
+				$user = $_get->get( 'user' ) ? wp_unslash( $_get->get( 'user' ) ) : get_user_option( 'wporg_favorites' );
 				update_user_meta( get_current_user_id(), 'wporg_favorites', $user );
 			} else {
 				$user = get_user_option( 'wporg_favorites' );

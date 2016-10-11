@@ -10,7 +10,7 @@
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( empty( $_GET['action'] ) ) {
+if ( empty( $_get->get( 'action' ) ) ) {
 	wp_redirect( network_admin_url() );
 	exit;
 }
@@ -33,7 +33,7 @@ do_action( 'wpmuadminedit' );
  *
  * @since 3.1.0
  */
-do_action( 'network_admin_edit_' . $_GET['action'] );
+do_action( 'network_admin_edit_' . $_get->get( 'action' ) );
 
 wp_redirect( network_admin_url() );
 exit();

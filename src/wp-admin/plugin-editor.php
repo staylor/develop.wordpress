@@ -97,7 +97,7 @@ if ( 'update' === $_request->get( 'action' ) ) {
 
 } else {
 
-	if ( isset($_GET['liveupdate']) ) {
+	if ( $_get->get( 'liveupdate' ) ) {
 		check_admin_referer('edit-plugin-test_' . $file);
 
 		$error = validate_plugin( $plugin );
@@ -106,8 +106,8 @@ if ( 'update' === $_request->get( 'action' ) ) {
 			wp_die( $error );
 		}
 
-		if ( ( ! empty( $_GET['networkwide'] ) && ! is_plugin_active_for_network( $file ) ) || ! is_plugin_active( $file ) ) {
-			activate_plugin( $plugin, "plugin-editor.php?file=$file&phperror=1", ! empty( $_GET['networkwide'] ) );
+		if ( ( $_get->get( 'networkwide' ) && ! is_plugin_active_for_network( $file ) ) || ! is_plugin_active( $file ) ) {
+			activate_plugin( $plugin, "plugin-editor.php?file=$file&phperror=1", $_get->get( 'networkwide' ) );
 		} // we'll override this later if the plugin can be included without fatal error
 
 		wp_redirect( self_admin_url("plugin-editor.php?file=$file&plugin=$plugin&a=te&scrollto=$scrollto") );
@@ -178,16 +178,16 @@ if ( 'update' === $_request->get( 'action' ) ) {
 
 	$content = esc_textarea( $content );
 	?>
-<?php if (isset($_GET['a'])) : ?>
+<?php if ( $_get->get( 'a' ) ) : ?>
  <div id="message" class="updated notice is-dismissible"><p><?php _e('File edited successfully.') ?></p></div>
-<?php elseif (isset($_GET['phperror'])) : ?>
+<?php elseif ( $_get->get( 'phperror' ) ) : ?>
  <div id="message" class="updated"><p><?php _e('This plugin has been deactivated because your changes resulted in a <strong>fatal error</strong>.') ?></p>
 	<?php
-		if ( wp_verify_nonce( $_GET['_error_nonce'], 'plugin-activation-error_' . $file ) ) {
+		if ( wp_verify_nonce( $_get->get( '_error_nonce' ), 'plugin-activation-error_' . $file ) ) {
 			$iframe_url = add_query_arg( array(
 				'action'   => 'error_scrape',
 				'plugin'   => urlencode( $file ),
-				'_wpnonce' => urlencode( $_GET['_error_nonce'] ),
+				'_wpnonce' => urlencode( $_get->get( '_error_nonce' ) ),
 			), admin_url( 'plugins.php' ) );
 			?>
 	<iframe style="border:0" width="100%" height="70px" src="<?php echo esc_url( $iframe_url ); ?>"></iframe>
@@ -280,7 +280,7 @@ foreach ( $plugin_files as $plugin_file ) :
 	<?php } ?>
 	<p class="submit">
 	<?php
-		if ( isset($_GET['phperror']) ) {
+		if ( $_get->get( 'phperror' ) ) {
 			echo "<input type='hidden' name='phperror' value='1' />";
 			submit_button( __( 'Update File and Attempt to Reactivate' ), 'primary', 'submit', false );
 		} else {

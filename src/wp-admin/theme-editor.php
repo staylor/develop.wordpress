@@ -152,7 +152,7 @@ default:
 		$content = esc_textarea( $content );
 	}
 
-	if ( isset( $_GET['updated'] ) ) : ?>
+	if ( $_get->get( 'updated' ) ) : ?>
  <div id="message" class="updated notice is-dismissible"><p><?php _e( 'File edited successfully.' ) ?></p></div>
 <?php endif;
 

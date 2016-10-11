@@ -195,7 +195,7 @@ if ( $action ) {
 
 restore_current_blog();
 
-if ( isset( $_GET['action'] ) && 'update-site' == $_GET['action'] ) {
+if ( 'update-site' == $_get->get( 'action' ) ) {
 	wp_safe_redirect( $referer );
 	exit();
 }
@@ -235,8 +235,8 @@ network_edit_site_nav( array(
 	'selected' => 'site-users'
 ) );
 
-if ( isset($_GET['update']) ) :
-	switch($_GET['update']) {
+if ( $_get->get( 'update' ) ) :
+	switch( $_get->get( 'update' ) ) {
 	case 'adduser':
 		echo '<div id="message" class="updated notice is-dismissible"><p>' . __( 'User added.' ) . '</p></div>';
 		break;

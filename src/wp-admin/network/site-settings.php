@@ -76,10 +76,11 @@ if ( 'update-site' == $_request->get( 'action' ) && is_array( $_post->get( 'opti
 	exit;
 }
 
-if ( isset($_GET['update']) ) {
+if ( $_get->get( 'update' ) ) {
 	$messages = [];
-	if ( 'updated' == $_GET['update'] )
+	if ( 'updated' == $_get->get( 'update' ) ) {
 		$messages[] = __('Site options updated.');
+	}
 }
 
 /* translators: %s: site name */

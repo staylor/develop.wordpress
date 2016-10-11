@@ -740,9 +740,11 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		}
 
 		$app = getApp();
+		$_get = $app['request']->query;
 		$_post = $app['request']->request;
-		if ( empty( $_post->all() ) && isset( $_GET['file'] ) ) {
-			$attachment_id = absint( $_GET['file'] );
+
+		if ( empty( $_post->all() ) && $_get->get( 'file' ) ) {
+			$attachment_id = $_get->getInt( 'file' );
 			$file = get_attached_file( $attachment_id, true );
 			$url = wp_get_attachment_image_src( $attachment_id, 'full' );
 			$url = $url[0];
@@ -826,7 +828,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 	<input type="hidden" name="height" id="height" value="<?php echo esc_attr( $height ); ?>"/>
 	<input type="hidden" name="attachment_id" id="attachment_id" value="<?php echo esc_attr( $attachment_id ); ?>" />
 	<input type="hidden" name="oitar" id="oitar" value="<?php echo esc_attr( $oitar ); ?>" />
-	<?php if ( empty( $_post->all() ) && isset( $_GET['file'] ) ) { ?>
+	<?php if ( empty( $_post->all() ) && $_get->get( 'file' ) ) { ?>
 	<input type="hidden" name="create-new-attachment" value="true" />
 	<?php } ?>
 	<?php wp_nonce_field( 'custom-header-crop-image' ) ?>

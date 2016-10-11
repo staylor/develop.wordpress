@@ -38,9 +38,9 @@ if ( current_user_can( 'install_plugins' ) ) {
 }
 
 // Detect and redirect invalid importers like 'movabletype', which is registered as 'mt'
-if ( ! empty( $_GET['invalid'] ) && isset( $popular_importers[ $_GET['invalid'] ] ) ) {
-	$importer_id = $popular_importers[ $_GET['invalid'] ]['importer-id'];
-	if ( $importer_id != $_GET['invalid'] ) { // Prevent redirect loops.
+if ( $_get->get( 'invalid' ) && isset( $popular_importers[ $_get->get( 'invalid' ) ] ) ) {
+	$importer_id = $popular_importers[ $_get->get( 'invalid' ) ]['importer-id'];
+	if ( $importer_id != $_get->get( 'invalid' ) ) { // Prevent redirect loops.
 		wp_redirect( admin_url( 'admin.php?import=' . $importer_id ) );
 		exit;
 	}
@@ -57,11 +57,11 @@ $parent_file = 'tools.php';
 
 <div class="wrap">
 <h1><?php echo esc_html( $title ); ?></h1>
-<?php if ( ! empty( $_GET['invalid'] ) ) : ?>
+<?php if ( ! empty( $_get->get( 'invalid' ) ) ) : ?>
 	<div class="error">
 		<p><strong><?php _e( 'ERROR:' ); ?></strong> <?php
 			/* translators: %s: importer slug */
-			printf( __( 'The %s importer is invalid or is not installed.' ), '<strong>' . esc_html( $_GET['invalid'] ) . '</strong>' );
+			printf( __( 'The %s importer is invalid or is not installed.' ), '<strong>' . esc_html( $_get->get( 'invalid' ) ) . '</strong>' );
 		?></p>
 	</div>
 <?php endif; ?>

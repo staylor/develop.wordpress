@@ -42,11 +42,11 @@ if ( ! current_user_can( 'manage_network' ) )
 echo '<div class="wrap">';
 echo '<h1>' . __( 'Upgrade Network' ) . '</h1>';
 
-$action = isset($_GET['action']) ? $_GET['action'] : 'show';
+$action = $_get->get( 'action', 'show' );
 
 switch ( $action ) {
 	case "upgrade":
-		$n = ( isset($_GET['n']) ) ? intval($_GET['n']) : 0;
+		$n = $_get->getInt( 'n', 0 );
 
 		if ( $n < 5 ) {
 			update_site_option( 'wpmu_upgrade_site', $app['wp_db_version'] );

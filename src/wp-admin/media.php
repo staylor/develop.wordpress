@@ -47,11 +47,11 @@ case 'edit' :
 	if ( empty($errors) )
 		$errors = null;
 
-	if ( empty( $_GET['attachment_id'] ) ) {
+	if ( empty( $_get->get( 'attachment_id' ) ) ) {
 		wp_redirect( admin_url('upload.php') );
 		exit();
 	}
-	$att_id = (int) $_GET['attachment_id'];
+	$att_id = $_get->getInt( 'attachment_id' );
 
 	if ( !current_user_can('edit_post', $att_id) )
 		wp_die ( __('Sorry, you are not allowed to edit this attachment.') );
@@ -89,12 +89,12 @@ case 'edit' :
 	$parent_file = 'upload.php';
 	$message = '';
 	$class = '';
-	if ( isset($_GET['message']) ) {
-		switch ( $_GET['message'] ) {
-			case 'updated' :
-				$message = __('Media file updated.');
-				$class = 'updated';
-				break;
+	if ( $_get->get( 'message' ) ) {
+		switch ( $_get->get( 'message' ) ) {
+		case 'updated' :
+			$message = __('Media file updated.');
+			$class = 'updated';
+			break;
 		}
 	}
 	if ( $message )

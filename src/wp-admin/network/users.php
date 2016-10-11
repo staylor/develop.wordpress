@@ -13,18 +13,18 @@ require_once( __DIR__ . '/admin.php' );
 if ( ! current_user_can( 'manage_network_users' ) )
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
-if ( isset( $_GET['action'] ) ) {
+if ( $_get->get( 'action' ) ) {
 	/** This action is documented in wp-admin/network/edit.php */
 	do_action( 'wpmuadminedit' );
 
-	switch ( $_GET['action'] ) {
+	switch ( $_get->get( 'action' ) ) {
 		case 'deleteuser':
 			if ( ! current_user_can( 'manage_network_users' ) )
 				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
 			check_admin_referer( 'deleteuser' );
 
-			$id = intval( $_GET['id'] );
+			$id = $_get->getInt( 'id' );
 			if ( $id != '0' && $id != '1' ) {
 				$_post->set( 'allusers', array( $id ) ); // confirm_delete_users() can only handle with arrays
 				$title = __( 'Users' );

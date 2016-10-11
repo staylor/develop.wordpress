@@ -529,10 +529,10 @@ function do_undismiss_core_update() {
 	exit;
 }
 
-$action = isset($_GET['action']) ? $_GET['action'] : 'upgrade-core';
+$action = $_get->get( 'action', 'upgrade-core' );
 
 $upgrade_error = false;
-if ( ( 'do-theme-upgrade' == $action || ( 'do-plugin-upgrade' == $action && ! isset( $_GET['plugins'] ) ) )
+if ( ( 'do-theme-upgrade' == $action || ( 'do-plugin-upgrade' == $action && ! $_get->get( 'plugins' ) ) )
 	&& ! isset( $_post->get( 'checked' ) ) ) {
 	$upgrade_error = $action == 'do-theme-upgrade' ? 'themes' : 'plugins';
 	$action = 'upgrade-core';
@@ -678,8 +678,8 @@ if ( 'upgrade-core' == $action ) {
 
 	check_admin_referer('upgrade-core');
 
-	if ( isset( $_GET['themes'] ) ) {
-		$themes = explode( ',', $_GET['themes'] );
+	if ( $_get->get( 'themes' ) ) {
+		$themes = explode( ',', $_get->get( 'themes' ) );
 	} elseif ( $_post->get( 'checked' ) ) {
 		$themes = (array) $_post->get( 'checked' );
 	} else {

@@ -28,16 +28,16 @@ $referer = remove_query_arg( $temp_args, wp_get_referer() );
 if ( $action ) {
 	switch ( $action ) {
 		case 'enable':
-			check_admin_referer('enable-theme_' . $_GET['theme']);
-			WP_Theme::network_enable_theme( $_GET['theme'] );
+			check_admin_referer('enable-theme_' . $_get->get( 'theme' ) );
+			WP_Theme::network_enable_theme( $_get->get( 'theme' ) );
 			if ( false === strpos( $referer, '/network/themes.php' ) )
 				wp_redirect( network_admin_url( 'themes.php?enabled=1' ) );
 			else
 				wp_safe_redirect( add_query_arg( 'enabled', 1, $referer ) );
 			exit;
 		case 'disable':
-			check_admin_referer('disable-theme_' . $_GET['theme']);
-			WP_Theme::network_disable_theme( $_GET['theme'] );
+			check_admin_referer('disable-theme_' . $_get->get( 'theme' ) );
+			WP_Theme::network_disable_theme( $_get->get( 'theme' ) );
 			wp_safe_redirect( add_query_arg( 'disabled', '1', $referer ) );
 			exit;
 		case 'enable-selected':
@@ -63,8 +63,8 @@ if ( $action ) {
 		case 'update-selected' :
 			check_admin_referer( 'bulk-themes' );
 
-			if ( isset( $_GET['themes'] ) )
-				$themes = explode( ',', $_GET['themes'] );
+			if ( $_get->get( 'themes' ) )
+				$themes = explode( ',', $_get->get( 'themes' ) );
 			elseif ( $_post->get( 'checked' ) )
 				$themes = (array) $_post->get( 'checked' );
 			else
@@ -267,33 +267,33 @@ if ( strlen( $_request->get( 's' ) ) ) {
 </h1>
 
 <?php
-if ( isset( $_GET['enabled'] ) ) {
-	$enabled = absint( $_GET['enabled'] );
+if ( $_get->get( 'enabled' ) ) {
+	$enabled = $_get->getInt( 'enabled' );
 	if ( 1 == $enabled ) {
 		$message = __( 'Theme enabled.' );
 	} else {
 		$message = _n( '%s theme enabled.', '%s themes enabled.', $enabled );
 	}
 	echo '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( $message, number_format_i18n( $enabled ) ) . '</p></div>';
-} elseif ( isset( $_GET['disabled'] ) ) {
-	$disabled = absint( $_GET['disabled'] );
+} elseif ( $_get->getInt( 'disabled' ) ) {
+	$disabled = $_get->getInt( 'disabled' );
 	if ( 1 == $disabled ) {
 		$message = __( 'Theme disabled.' );
 	} else {
 		$message = _n( '%s theme disabled.', '%s themes disabled.', $disabled );
 	}
 	echo '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( $message, number_format_i18n( $disabled ) ) . '</p></div>';
-} elseif ( isset( $_GET['deleted'] ) ) {
-	$deleted = absint( $_GET['deleted'] );
+} elseif ( $_get->getInt( 'deleted' ) ) {
+	$deleted = $_get->getInt( 'deleted' );
 	if ( 1 == $deleted ) {
 		$message = __( 'Theme deleted.' );
 	} else {
 		$message = _n( '%s theme deleted.', '%s themes deleted.', $deleted );
 	}
 	echo '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( $message, number_format_i18n( $deleted ) ) . '</p></div>';
-} elseif ( isset( $_GET['error'] ) && 'none' == $_GET['error'] ) {
+} elseif ( 'none' == $_get->get( 'error' ) ) {
 	echo '<div id="message" class="error notice is-dismissible"><p>' . __( 'No theme selected.' ) . '</p></div>';
-} elseif ( isset( $_GET['error'] ) && 'main' == $_GET['error'] ) {
+} elseif ( 'main' == $_get->get( 'error' ) ) {
 	echo '<div class="error notice is-dismissible"><p>' . __( 'You cannot delete a theme while it is active on the main site.' ) . '</p></div>';
 }
 

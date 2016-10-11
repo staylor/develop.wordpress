@@ -62,12 +62,12 @@ if ( 'add-user' == $_request->get( 'action' ) ) {
 	}
 }
 
-if ( isset($_GET['update']) ) {
+if ( $_get->get( 'update' ) ) {
 	$messages = [];
-	if ( 'added' == $_GET['update'] ) {
+	if ( 'added' == $_get->get( 'update' ) ) {
 		$edit_link = '';
-		if ( isset( $_GET['user_id'] ) ) {
-			$user_id_new = absint( $_GET['user_id'] );
+		if ( $_get->get( 'user_id' ) ) {
+			$user_id_new = $_get->getInt( 'user_id' );
 			if ( $user_id_new ) {
 				$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $app['request.uri'] ) ), get_edit_user_link( $user_id_new ) ) );
 			}

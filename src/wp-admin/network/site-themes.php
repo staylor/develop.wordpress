@@ -75,8 +75,8 @@ if ( $action ) {
 
 	switch ( $action ) {
 		case 'enable':
-			check_admin_referer( 'enable-theme_' . $_GET['theme'] );
-			$theme = $_GET['theme'];
+			check_admin_referer( 'enable-theme_' . $_get->get( 'theme' ) );
+			$theme = $_get->get( 'theme' );
 			$action = 'enabled';
 			$n = 1;
 			if ( !$allowed_themes )
@@ -85,8 +85,8 @@ if ( $action ) {
 				$allowed_themes[$theme] = true;
 			break;
 		case 'disable':
-			check_admin_referer( 'disable-theme_' . $_GET['theme'] );
-			$theme = $_GET['theme'];
+			check_admin_referer( 'disable-theme_' . $_get->get( 'theme' ) );
+			$theme = $_get->get( 'theme' );
 			$action = 'disabled';
 			$n = 1;
 			if ( !$allowed_themes )
@@ -152,7 +152,7 @@ if ( $action ) {
 	exit;
 }
 
-if ( isset( $_GET['action'] ) && 'update-site' == $_GET['action'] ) {
+if ( 'update-site' === $_get->get( 'action' ) ) {
 	wp_safe_redirect( $referer );
 	exit();
 }
@@ -178,23 +178,23 @@ network_edit_site_nav( array(
 	'selected' => 'site-themes'
 ) );
 
-if ( isset( $_GET['enabled'] ) ) {
-	$enabled = absint( $_GET['enabled'] );
+if ( $_get->get( 'enabled' ) ) {
+	$enabled = $_get->getInt( 'enabled' );
 	if ( 1 == $enabled ) {
 		$message = __( 'Theme enabled.' );
 	} else {
 		$message = _n( '%s theme enabled.', '%s themes enabled.', $enabled );
 	}
 	echo '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( $message, number_format_i18n( $enabled ) ) . '</p></div>';
-} elseif ( isset( $_GET['disabled'] ) ) {
-	$disabled = absint( $_GET['disabled'] );
+} elseif ( $_get->get( 'disabled' ) ) {
+	$disabled = $_get->getInt( 'disabled' );
 	if ( 1 == $disabled ) {
 		$message = __( 'Theme disabled.' );
 	} else {
 		$message = _n( '%s theme disabled.', '%s themes disabled.', $disabled );
 	}
 	echo '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( $message, number_format_i18n( $disabled ) ) . '</p></div>';
-} elseif ( isset( $_GET['error'] ) && 'none' == $_GET['error'] ) {
+} elseif ( 'none' == $_get->get( 'error' ) ) {
 	echo '<div id="message" class="error notice is-dismissible"><p>' . __( 'No theme selected.' ) . '</p></div>';
 } ?>
 

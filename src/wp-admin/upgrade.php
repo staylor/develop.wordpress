@@ -6,8 +6,6 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 /**
  * We are upgrading WordPress.
  *
@@ -19,7 +17,6 @@ const WP_INSTALLING = true;
 /** Load WordPress Bootstrap */
 require( dirname( __DIR__ ) . '/wp-load.php' );
 
-$app = getApp();
 $wpdb = $app['db'];
 
 nocache_headers();
@@ -29,18 +26,15 @@ require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 delete_site_transient('update_core');
 
-if ( isset( $_GET['step'] ) )
-	$step = $_GET['step'];
-else
-	$step = 0;
+$value = $_get->get( 'step', 0 );
 
 // Do it. No output.
-if ( 'upgrade_db' === $step ) {
+if ( 'upgrade_db' === $value ) {
 	wp_upgrade();
 	die( '0' );
 }
 
-$step = (int) $step;
+$step = (int) $value;
 
 $php_version    = phpversion();
 $mysql_version  = $wpdb->db_version();
@@ -99,7 +93,7 @@ switch ( $step ) :
 	case 1:
 		wp_upgrade();
 
-			$backto = !empty($_GET['backto']) ? wp_unslash( urldecode( $_GET['backto'] ) ) : __get_option( 'home' ) . '/';
+			$backto = $_get->get( 'backto' ) ? wp_unslash( urldecode( $_get->get( 'backto' ) ) ) : __get_option( 'home' ) . '/';
 			$backto = esc_url( $backto );
 			$backto = wp_validate_redirect($backto, __get_option( 'home' ) . '/');
 ?>

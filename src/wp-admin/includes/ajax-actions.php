@@ -87,10 +87,13 @@ function wp_ajax_nopriv_heartbeat() {
  * @since 3.1.0
  */
 function wp_ajax_fetch_list() {
-	$list_class = $_GET['list_args']['class'];
+	$app = getApp();
+	$_get = $app['request']->query;
+	$list_args = $_get->get( 'list_args' );
+	$list_class = $list_args['class'];
 	check_ajax_referer( "fetch-list-$list_class", '_ajax_fetch_list_nonce' );
 
-	$wp_list_table = _get_list_table( $list_class, array( 'screen' => $_GET['list_args']['screen']['id'] ) );
+	$wp_list_table = _get_list_table( $list_class, array( 'screen' => $list_args['screen']['id'] ) );
 	if ( ! $wp_list_table ) {
 		wp_die( 0 );
 	}
@@ -110,11 +113,14 @@ function wp_ajax_fetch_list() {
  * @since 3.1.0
  */
 function wp_ajax_ajax_tag_search() {
-	if ( ! isset( $_GET['tax'] ) ) {
+	$app = getApp();
+	$_get = $app['request']->query;
+
+	if ( ! $_get->get( 'tax' ) ) {
 		wp_die( 0 );
 	}
 
-	$taxonomy = sanitize_key( $_GET['tax'] );
+	$taxonomy = sanitize_key( $_get->get( 'tax' ) );
 	$tax = get_taxonomy( $taxonomy );
 	if ( ! $tax ) {
 		wp_die( 0 );
@@ -124,7 +130,7 @@ function wp_ajax_ajax_tag_search() {
 		wp_die( -1 );
 	}
 
-	$s = wp_unslash( $_GET['q'] );
+	$s = wp_unslash( $_get->get( 'q' ) );
 
 	$comma = _x( ',', 'tag delimiter' );
 	if ( ',' !== $comma )
@@ -174,7 +180,9 @@ function wp_ajax_wp_compression_test() {
 		wp_die( 0 );
 	}
 
-	if ( isset($_GET['test']) ) {
+	$app = getApp();
+	$_get = $app['request']->query;
+	if ( $_get->get( 'test' ) ) {
 		header( 'Expires: Wed, 11 Jan 1984 05:00:00 GMT' );
 		header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s' ) . ' GMT' );
 		header( 'Cache-Control: no-cache, must-revalidate, max-age=0' );
@@ -182,10 +190,10 @@ function wp_ajax_wp_compression_test() {
 		$force_gzip = ( defined('ENFORCE_GZIP') && ENFORCE_GZIP );
 		$test_str = '"wpCompressionTest Lorem ipsum dolor sit amet consectetuer mollis sapien urna ut a. Eu nonummy condimentum fringilla tempor pretium platea vel nibh netus Maecenas. Hac molestie amet justo quis pellentesque est ultrices interdum nibh Morbi. Cras mattis pretium Phasellus ante ipsum ipsum ut sociis Suspendisse Lorem. Ante et non molestie. Porta urna Vestibulum egestas id congue nibh eu risus gravida sit. Ac augue auctor Ut et non a elit massa id sodales. Elit eu Nulla at nibh adipiscing mattis lacus mauris at tempus. Netus nibh quis suscipit nec feugiat eget sed lorem et urna. Pellentesque lacus at ut massa consectetuer ligula ut auctor semper Pellentesque. Ut metus massa nibh quam Curabitur molestie nec mauris congue. Volutpat molestie elit justo facilisis neque ac risus Ut nascetur tristique. Vitae sit lorem tellus et quis Phasellus lacus tincidunt nunc Fusce. Pharetra wisi Suspendisse mus sagittis libero lacinia Integer consequat ac Phasellus. Et urna ac cursus tortor aliquam Aliquam amet tellus volutpat Vestibulum. Justo interdum condimentum In augue congue tellus sollicitudin Quisque quis nibh."';
 
-		 if ( 1 == $_GET['test'] ) {
+		 if ( 1 == $_get->get( 'test' ) ) {
 		 	echo $test_str;
 		 	wp_die();
-		 } elseif ( 2 == $_GET['test'] ) {
+		 } elseif ( 2 == $_get->get( 'test' ) ) {
 			if ( !isset($_SERVER['HTTP_ACCEPT_ENCODING']) )
 				wp_die( -1 );
 			if ( false !== stripos( $_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') && function_exists('gzdeflate') && ! $force_gzip ) {
@@ -199,10 +207,10 @@ function wp_ajax_wp_compression_test() {
 			}
 			echo $out;
 			wp_die();
-		} elseif ( 'no' == $_GET['test'] ) {
+		} elseif ( 'no' == $_get->get( 'test' ) ) {
 			check_ajax_referer( 'update_can_compress_scripts' );
 			update_site_option('can_compress_scripts', 0);
-		} elseif ( 'yes' == $_GET['test'] ) {
+		} elseif ( 'yes' == $_get->get( 'test' ) ) {
 			check_ajax_referer( 'update_can_compress_scripts' );
 			update_site_option('can_compress_scripts', 1);
 		}
@@ -217,7 +225,10 @@ function wp_ajax_wp_compression_test() {
  * @since 3.1.0
  */
 function wp_ajax_imgedit_preview() {
-	$post_id = intval($_GET['postid']);
+	$app = getApp();
+	$_get = $app['request']->query;
+
+	$post_id = $_get->getInt( 'postid' );
 	if ( empty($post_id) || !current_user_can('edit_post', $post_id) )
 		wp_die( -1 );
 
@@ -238,7 +249,10 @@ function wp_ajax_imgedit_preview() {
  * @global WP_Embed $wp_embed
  */
 function wp_ajax_oembed_cache() {
-	$GLOBALS['wp_embed']->cache_oembed( $_GET['post'] );
+	$app = getApp();
+	$_get = $app['request']->query;
+
+	$GLOBALS['wp_embed']->cache_oembed( $_get->get( 'post' ) );
 	wp_die( 0 );
 }
 
@@ -313,15 +327,18 @@ function wp_ajax_autocomplete_user() {
 function wp_ajax_dashboard_widgets() {
 	require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 
-	$pagenow = $_GET['pagenow'];
+	$app = getApp();
+	$_get = $app['request']->query;
+
+	$pagenow =  $_get->get( 'pagenow' );
 	if ( $pagenow === 'dashboard-user' || $pagenow === 'dashboard-network' || $pagenow === 'dashboard' ) {
 		set_current_screen( $pagenow );
 	}
 
-	switch ( $_GET['widget'] ) {
-		case 'dashboard_primary' :
-			wp_dashboard_primary();
-			break;
+	switch ( $_get->get( 'widget' ) ) {
+	case 'dashboard_primary' :
+		wp_dashboard_primary();
+		break;
 	}
 	wp_die();
 }
@@ -473,7 +490,7 @@ function _wp_ajax_add_hierarchical_term() {
 		wp_die( -1 );
 	}
 	$names = explode(',', $_post->get( 'new' . $taxonomy->name ) );
-	$parent = isset( $_post->get( 'new' . $taxonomy->name . '_parent' ) ) ?
+	$parent = $_post->get( 'new' . $taxonomy->name . '_parent' ) ?
 		$_post->getInt( 'new' . $taxonomy->name . '_parent' ) : 0;
 
 	if ( 0 > $parent ) {

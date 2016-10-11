@@ -115,9 +115,8 @@ $page_hook = null;
 
 $editing = false;
 
-if ( isset($_GET['page']) ) {
-	$plugin_page = wp_unslash( $_GET['page'] );
-	$plugin_page = plugin_basename($plugin_page);
+if ( $_get->get( 'page' ) ) {
+	$plugin_page = plugin_basename( wp_unslash( $_get->get( 'page' ) ) );
 }
 
 if ( WP_NETWORK_ADMIN )
@@ -203,9 +202,9 @@ if ( isset($plugin_page) ) {
 		 * @since 2.1.0
 		 */
 		do_action( "load-{$page_hook}" );
-		if (! isset($_GET['noheader']))
+		if ( ! $_get->get( 'noheader' ) ) {
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
-
+		}
 		/**
 		 * Used to call the registered callback for a plugin screen.
 		 *
@@ -234,9 +233,9 @@ if ( isset($plugin_page) ) {
 		 */
 		do_action( "load-{$plugin_page}" );
 
-		if ( !isset($_GET['noheader']))
+		if ( ! $_get->get( 'noheader' ) ) {
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
-
+		}
 		if ( file_exists(WPMU_PLUGIN_DIR . "/$plugin_page") )
 			include(WPMU_PLUGIN_DIR . "/$plugin_page");
 		else
@@ -246,9 +245,9 @@ if ( isset($plugin_page) ) {
 	include(ABSPATH . 'wp-admin/admin-footer.php');
 
 	exit();
-} elseif ( isset( $_GET['import'] ) ) {
+} elseif ( $_get->get( 'import' ) ) {
 
-	$importer = $_GET['import'];
+	$importer = $_get->get( 'import' );
 
 	if ( ! current_user_can( 'import' ) ) {
 		wp_die( __( 'Sorry, you are not allowed to import content.' ) );
@@ -277,9 +276,9 @@ if ( isset($plugin_page) ) {
 	$submenu_file = 'import.php';
 	$title = __('Import');
 
-	if (! isset($_GET['noheader']))
+	if ( ! $_get->get( 'noheader' ) ) {
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
-
+	}
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 	define('WP_IMPORTING', true);

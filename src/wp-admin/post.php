@@ -16,13 +16,13 @@ $submenu_file = 'edit.php';
 
 wp_reset_vars( array( 'action' ) );
 
-if ( isset( $_GET['post'] ) )
- 	$post_id = $post_ID = (int) $_GET['post'];
-elseif ( $_post->get( 'post_ID' ) )
+if ( $_get->get( 'post' ) ) {
+ 	$post_id = $post_ID = $_get->getInt( 'post' );
+} elseif ( $_post->get( 'post_ID' ) ) {
  	$post_id = $post_ID = $_post->getInt( 'post_ID' );
-else
+} else {
  	$post_id = $post_ID = 0;
-
+}
 /**
  * @global WP_Post $post
  */
@@ -120,7 +120,7 @@ case 'edit':
 	if ( 'trash' == $post->post_status )
 		wp_die( __( 'You can&#8217;t edit this item because it is in the Trash. Please restore it and try again.' ) );
 
-	if ( ! empty( $_GET['get-post-lock'] ) ) {
+	if ( $_get->get( 'get-post-lock' ) ) {
 		check_admin_referer( 'lock-post_' . $post_id );
 		wp_set_post_lock( $post_id );
 		wp_redirect( get_edit_post_link( $post_id, 'url' ) );

@@ -43,7 +43,7 @@ function edit_link( $link_id = 0 ) {
 	$_post->set( 'link_name', esc_html( $_post->get( 'link_name' ) ) );
 	$_post->set( 'link_image', esc_html( $_post->get( 'link_image' ) ) );
 	$_post->set( 'link_rss', esc_url( $_post->get( 'link_rss' ) ) );
-	if ( !isset( $_post->get( 'link_visible' ) ) || 'N' !=  $_post->get( 'link_visible' ) ) {
+	if ( ! $_post->get( 'link_visible' ) || 'N' !=  $_post->get( 'link_visible' ) ) {
 		$_post->set( 'link_visible', 'Y' );
 	}
 
@@ -63,14 +63,17 @@ function edit_link( $link_id = 0 ) {
  * @return stdClass Default link object.
  */
 function get_default_link_to_edit() {
+	$app = getApp();
+	$_get = $app['request']->query;
+
 	$link = new stdClass;
-	if ( isset( $_GET['linkurl'] ) )
-		$link->link_url = esc_url( wp_unslash( $_GET['linkurl'] ) );
+	if ( $_get->get( 'linkurl' ) )
+		$link->link_url = esc_url( wp_unslash( $_get->get( 'linkurl' ) ) );
 	else
 		$link->link_url = '';
 
-	if ( isset( $_GET['name'] ) )
-		$link->link_name = esc_attr( wp_unslash( $_GET['name'] ) );
+	if ( $_get->get( 'name' ) )
+		$link->link_name = esc_attr( wp_unslash( $_get->get( 'name' ) ) );
 	else
 		$link->link_name = '';
 

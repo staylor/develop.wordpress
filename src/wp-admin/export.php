@@ -58,50 +58,55 @@ get_current_screen()->set_help_sidebar(
 );
 
 // If the 'download' URL parameter is set, a WXR export file is baked and returned.
-if ( isset( $_GET['download'] ) ) {
+if ( $_get->get( 'download' ) ) {
 	$args = [];
 
-	if ( ! isset( $_GET['content'] ) || 'all' == $_GET['content'] ) {
+	if ( ! $_get->get( 'content' ) || 'all' == $_get->get( 'content' ) ) {
 		$args['content'] = 'all';
-	} elseif ( 'posts' == $_GET['content'] ) {
+	} elseif ( 'posts' == $_get->get( 'content' ) ) {
 		$args['content'] = 'post';
 
-		if ( $_GET['cat'] )
-			$args['category'] = (int) $_GET['cat'];
-
-		if ( $_GET['post_author'] )
-			$args['author'] = (int) $_GET['post_author'];
-
-		if ( $_GET['post_start_date'] || $_GET['post_end_date'] ) {
-			$args['start_date'] = $_GET['post_start_date'];
-			$args['end_date'] = $_GET['post_end_date'];
+		if ( $_get->get( 'cat' ) ) {
+			$args['category'] = $_get->getInt( 'cat' );
 		}
 
-		if ( $_GET['post_status'] )
-			$args['status'] = $_GET['post_status'];
-	} elseif ( 'pages' == $_GET['content'] ) {
+		if ( $_get->get( 'post_author' ) ) {
+			$args['author'] = $_get->getInt( 'post_author' );
+		}
+
+		if ( $_get->get( 'post_start_date' ) || $_get->get( 'post_end_date' ) ) {
+			$args['start_date'] = $_get->get( 'post_start_date' );
+			$args['end_date'] = $_get->get( 'post_end_date' );
+		}
+
+		if ( $_get->get( 'post_status' ) ) {
+			$args['status'] = $_get->get( 'post_status' );
+		}
+	} elseif ( 'pages' == $_get->get( 'content' ) ) {
 		$args['content'] = 'page';
 
-		if ( $_GET['page_author'] )
-			$args['author'] = (int) $_GET['page_author'];
-
-		if ( $_GET['page_start_date'] || $_GET['page_end_date'] ) {
-			$args['start_date'] = $_GET['page_start_date'];
-			$args['end_date'] = $_GET['page_end_date'];
+		if ( $_get->get( 'page_author' ) ) {
+			$args['author'] = $_get->getInt( 'page_author' );
 		}
 
-		if ( $_GET['page_status'] )
-			$args['status'] = $_GET['page_status'];
-	} elseif ( 'attachment' == $_GET['content'] ) {
+		if ( $_get->get( 'page_start_date' ) || $_get->get( 'page_end_date' ) ) {
+			$args['start_date'] = $_get->get( 'page_start_date' );
+			$args['end_date'] = $_get->get( 'page_end_date' );
+		}
+
+		if ( $_get->get( 'page_status' ) ) {
+			$args['status'] = $_get->get( 'page_status' );
+		}
+	} elseif ( 'attachment' == $_get->get( 'content' ) ) {
 		$args['content'] = 'attachment';
 
-		if ( $_GET['attachment_start_date'] || $_GET['attachment_end_date'] ) {
-			$args['start_date'] = $_GET['attachment_start_date'];
-			$args['end_date'] = $_GET['attachment_end_date'];
+		if ( $_get->get( 'attachment_start_date' ) || $_get->get( 'attachment_end_date' ) ) {
+			$args['start_date'] = $_get->get( 'attachment_start_date' );
+			$args['end_date'] = $_get->get( 'attachment_end_date' );
 		}
 	}
 	else {
-		$args['content'] = $_GET['content'];
+		$args['content'] = $_get->get( 'content' );
 	}
 
 	/**

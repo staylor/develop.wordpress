@@ -17,10 +17,10 @@ if ( ! current_user_can( 'switch_themes' ) && ! current_user_can( 'edit_theme_op
 	);
 }
 
-if ( current_user_can( 'switch_themes' ) && isset($_GET['action'] ) ) {
-	if ( 'activate' == $_GET['action'] ) {
-		check_admin_referer('switch-theme_' . $_GET['stylesheet']);
-		$theme = wp_get_theme( $_GET['stylesheet'] );
+if ( current_user_can( 'switch_themes' ) && $_get->get( 'action' ) ) {
+	if ( 'activate' == $_get->get( 'action' ) ) {
+		check_admin_referer('switch-theme_' . $_get->get( 'stylesheet' ) );
+		$theme = wp_get_theme( $_get->get( 'stylesheet' ) );
 
 		if ( ! $theme->exists() || ! $theme->is_allowed() ) {
 			wp_die(
@@ -33,9 +33,9 @@ if ( current_user_can( 'switch_themes' ) && isset($_GET['action'] ) ) {
 		switch_theme( $theme->get_stylesheet() );
 		wp_redirect( admin_url('themes.php?activated=true') );
 		exit;
-	} elseif ( 'delete' == $_GET['action'] ) {
-		check_admin_referer('delete-theme_' . $_GET['stylesheet']);
-		$theme = wp_get_theme( $_GET['stylesheet'] );
+	} elseif ( 'delete' == $_get->get( 'action' ) ) {
+		check_admin_referer('delete-theme_' . $_get->get( 'stylesheet' ) );
+		$theme = wp_get_theme( $_get->get( 'stylesheet' ) );
 
 		if ( ! current_user_can( 'delete_themes' ) ) {
 			wp_die(
@@ -54,10 +54,10 @@ if ( current_user_can( 'switch_themes' ) && isset($_GET['action'] ) ) {
 		}
 
 		$active = wp_get_theme();
-		if ( $active->get( 'Template' ) == $_GET['stylesheet'] ) {
+		if ( $active->get( 'Template' ) == $_get->get( 'stylesheet' ) ) {
 			wp_redirect( admin_url( 'themes.php?delete-active-child=true' ) );
 		} else {
-			delete_theme( $_GET['stylesheet'] );
+			delete_theme( $_get->get( 'stylesheet' ) );
 			wp_redirect( admin_url( 'themes.php?deleted=true' ) );
 		}
 		exit;
@@ -159,17 +159,17 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	<?php endif; ?>
 	</h1>
 <?php
-if ( ! validate_current_theme() || isset( $_GET['broken'] ) ) : ?>
+if ( ! validate_current_theme() || $_get->get( 'broken' ) ) : ?>
 <div id="message1" class="updated notice is-dismissible"><p><?php _e('The active theme is broken. Reverting to the default theme.'); ?></p></div>
-<?php elseif ( isset($_GET['activated']) ) :
-		if ( isset( $_GET['previewed'] ) ) { ?>
+<?php elseif ( $_get->get( 'activated' ) ) :
+		if ( $_get->get( 'previewed' ) ) { ?>
 		<div id="message2" class="updated notice is-dismissible"><p><?php _e( 'Settings saved and theme activated.' ); ?> <a href="<?php echo home_url( '/' ); ?>"><?php _e( 'Visit site' ); ?></a></p></div>
 		<?php } else { ?>
 <div id="message2" class="updated notice is-dismissible"><p><?php _e( 'New theme activated.' ); ?> <a href="<?php echo home_url( '/' ); ?>"><?php _e( 'Visit site' ); ?></a></p></div><?php
 		}
-	elseif ( isset($_GET['deleted']) ) : ?>
+	elseif ( $_get->get( 'deleted' ) ) : ?>
 <div id="message3" class="updated notice is-dismissible"><p><?php _e('Theme deleted.') ?></p></div>
-<?php elseif ( isset( $_GET['delete-active-child'] ) ) : ?>
+<?php elseif ( $_get->get( 'delete-active-child' ) ) : ?>
 	<div id="message4" class="error"><p><?php _e( 'You cannot delete a theme while it has an active child theme.' ); ?></p></div>
 <?php
 endif;

@@ -15,8 +15,6 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
@@ -24,7 +22,6 @@ $title = __('Settings');
 $this_file = 'options.php';
 $parent_file = 'options-general.php';
 
-$app = getApp();
 $wpdb = $app['db'];
 
 wp_reset_vars(array('action', 'option_page'));
@@ -59,10 +56,10 @@ if ( ! current_user_can( $capability ) ) {
 
 // Handle admin email change requests
 if ( is_multisite() ) {
-	if ( ! empty($_GET[ 'adminhash' ] ) ) {
+	if ( $_get->get( 'adminhash' ) ) {
 		$new_admin_details = get_option( 'adminhash' );
 		$redirect = 'options-general.php?updated=false';
-		if ( is_array( $new_admin_details ) && hash_equals( $new_admin_details[ 'hash' ], $_GET[ 'adminhash' ] ) && !empty($new_admin_details[ 'newemail' ]) ) {
+		if ( is_array( $new_admin_details ) && hash_equals( $new_admin_details[ 'hash' ], $_get->get( 'adminhash' ) ) && !empty($new_admin_details[ 'newemail' ]) ) {
 			update_option( 'admin_email', $new_admin_details[ 'newemail' ] );
 			delete_option( 'adminhash' );
 			delete_option( 'new_admin_email' );
@@ -70,7 +67,7 @@ if ( is_multisite() ) {
 		}
 		wp_redirect( admin_url( $redirect ) );
 		exit;
-	} elseif ( ! empty( $_GET['dismiss'] ) && 'new_admin_email' == $_GET['dismiss'] ) {
+	} elseif ( 'new_admin_email' == $_get->get( 'dismiss' ) ) {
 		check_admin_referer( 'dismiss-' . get_current_blog_id() . '-new_admin_email' );
 		delete_option( 'adminhash' );
 		delete_option( 'new_admin_email' );

@@ -63,7 +63,7 @@ if ( $action ) {
 				update_site_option( 'recently_activated', $recent );
 			}
 
-			if ( isset($_GET['from']) && 'import' == $_GET['from'] ) {
+			if ( 'import' == $_get->get( 'from' ) ) {
 				wp_redirect( self_admin_url("import.php?import=" . str_replace('-importer', '', dirname($plugin))) ); // overrides the ?error=true one above and redirects to the Imports page, stripping the -importer suffix
 			} else {
 				wp_redirect( self_admin_url("plugins.php?activate=true&plugin_status=$status&paged=$page&s=$s") ); // overrides the ?error=true one above
@@ -124,8 +124,8 @@ if ( $action ) {
 
 			check_admin_referer( 'bulk-plugins' );
 
-			if ( isset( $_GET['plugins'] ) )
-				$plugins = explode( ',', $_GET['plugins'] );
+			if ( $_get->get( 'plugins' ) )
+				$plugins = explode( ',', $_get->get( 'plugins' ) );
 			elseif ( $_post->get( 'checked' ) )
 				$plugins = (array) $_post->get( 'checked');
 			else
@@ -450,22 +450,22 @@ if ( ! empty( $invalid ) ) {
 }
 ?>
 
-<?php if ( isset($_GET['error']) ) :
+<?php if ( $_get->get( 'error' ) ) :
 
-	if ( isset( $_GET['main'] ) )
+	if ( $_get->get( 'main' ) )
 		$errmsg = __( 'You cannot delete a plugin while it is active on the main site.' );
-	elseif ( isset($_GET['charsout']) )
+	elseif ( $_get->get( 'charsout' ) )
 		$errmsg = sprintf(__('The plugin generated %d characters of <strong>unexpected output</strong> during activation. If you notice &#8220;headers already sent&#8221; messages, problems with syndication feeds or other issues, try deactivating or removing this plugin.'), $_GET['charsout']);
 	else
 		$errmsg = __('Plugin could not be activated because it triggered a <strong>fatal error</strong>.');
 	?>
 	<div id="message" class="error"><p><?php echo $errmsg; ?></p>
 	<?php
-		if ( ! isset( $_GET['main'] ) && ! isset( $_GET['charsout'] ) && wp_verify_nonce( $_GET['_error_nonce'], 'plugin-activation-error_' . $plugin ) ) {
+		if ( ! $_get->get( 'main' ) && ! $_get->get( 'charsout' ) && wp_verify_nonce( $_get->get( '_error_nonce' ), 'plugin-activation-error_' . $plugin ) ) {
 			$iframe_url = add_query_arg( array(
 				'action'   => 'error_scrape',
 				'plugin'   => urlencode( $plugin ),
-				'_wpnonce' => urlencode( $_GET['_error_nonce'] ),
+				'_wpnonce' => urlencode( $_get->get( '_error_nonce' ) ),
 			), admin_url( 'plugins.php' ) );
 		?>
 		<iframe style="border:0" width="100%" height="70px" src="<?php echo esc_url( $iframe_url ); ?>"></iframe>
@@ -473,7 +473,7 @@ if ( ! empty( $invalid ) ) {
 		}
 	?>
 	</div>
-<?php elseif ( isset($_GET['deleted']) ) :
+<?php elseif ( $_get->get( 'deleted' ) ) :
 		$delete_result = get_transient( 'plugins_delete_result_' . $user_ID );
 		// Delete it once we're done.
 		delete_transient( 'plugins_delete_result_' . $user_ID );
@@ -484,7 +484,7 @@ if ( ! empty( $invalid ) ) {
 		<div id="message" class="updated notice is-dismissible">
 			<p>
 				<?php
-				if ( 1 == (int) $_GET['deleted'] ) {
+				if ( 1 === $_get->getInt( 'deleted' ) ) {
 					_e( 'The selected plugin has been <strong>deleted</strong>.' );
 				} else {
 					_e( 'The selected plugins have been <strong>deleted</strong>.' );
@@ -493,13 +493,13 @@ if ( ! empty( $invalid ) ) {
 			</p>
 		</div>
 		<?php endif; ?>
-<?php elseif ( isset($_GET['activate']) ) : ?>
+<?php elseif ( $_get->get( 'activate' ) ) : ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Plugin <strong>activated</strong>.') ?></p></div>
-<?php elseif (isset($_GET['activate-multi'])) : ?>
+<?php elseif ( $_get->get( 'activate-multi' ) ) : ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Selected plugins <strong>activated</strong>.'); ?></p></div>
-<?php elseif ( isset($_GET['deactivate']) ) : ?>
+<?php elseif ( $_get->get( 'deactivate' ) ) : ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Plugin <strong>deactivated</strong>.') ?></p></div>
-<?php elseif (isset($_GET['deactivate-multi'])) : ?>
+<?php elseif ( $_get->get( 'deactivate-multi' ) ) : ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Selected plugins <strong>deactivated</strong>.'); ?></p></div>
 <?php elseif ( 'update-selected' == $action ) : ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('All selected plugins are up to date.'); ?></p></div>
