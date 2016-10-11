@@ -256,7 +256,11 @@ if ( strlen( $view->_request->get( 's' ) ) ) {
 
 <?php if ( $message ) : ?>
 <div id="message" class="<?php echo $class; ?> notice is-dismissible"><p><?php echo $message; ?></p></div>
-<?php $_SERVER['REQUEST_URI'] = remove_query_arg( [ 'message', 'error' ], $app['request.uri'] );
+<?php
+$_server->set( 'REQUEST_URI', remove_query_arg(
+	[ 'message', 'error' ],
+	$app['request.uri']
+) );
 endif; ?>
 <div id="ajax-response"></div>
 

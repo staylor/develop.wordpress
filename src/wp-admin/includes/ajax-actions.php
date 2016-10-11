@@ -3855,13 +3855,16 @@ function wp_ajax_search_plugins() {
 		wp_send_json_error( $status );
 	}
 
+	$app = getApp();
+	$_post = $app['request']->request;
+	$_server = $app['request']->server;
 	// Set the correct requester, so pagination works.
-	$_SERVER['REQUEST_URI'] = add_query_arg( array_diff_key( $_POST, array(
+	$_server->set( 'REQUEST_URI', add_query_arg( array_diff_key( $_post->all(), [
 		'_ajax_nonce' => null,
 		'action'      => null,
-	) ), network_admin_url( 'plugins.php', 'relative' ) );
+	] ), network_admin_url( 'plugins.php', 'relative' ) ) );
 
-	$GLOBALS['s'] = wp_unslash( $_POST['s'] );
+	$GLOBALS['s'] = wp_unslash( $_post->get( 's' ) );
 
 	$wp_list_table->prepare_items();
 
@@ -3898,11 +3901,14 @@ function wp_ajax_search_install_plugins() {
 		wp_send_json_error( $status );
 	}
 
+	$app = getApp();
+	$_post = $app['request']->request;
+	$_server = $app['request']->server;
 	// Set the correct requester, so pagination works.
-	$_SERVER['REQUEST_URI'] = add_query_arg( array_diff_key( $_POST, array(
+	$_server->set( 'REQUEST_URI', add_query_arg( array_diff_key( $_post->all(), [
 		'_ajax_nonce' => null,
 		'action'      => null,
-	) ), network_admin_url( 'plugin-install.php', 'relative' ) );
+	] ), network_admin_url( 'plugin-install.php', 'relative' ) ) );
 
 	$wp_list_table->prepare_items();
 

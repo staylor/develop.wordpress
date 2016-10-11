@@ -293,10 +293,10 @@ if ( $messages ) {
 }
 unset( $messages );
 
-$_SERVER['REQUEST_URI'] = remove_query_arg(
+$_server->set( 'REQUEST_URI', remove_query_arg(
 	[ 'locked', 'skipped', 'updated', 'deleted', 'trashed', 'untrashed' ],
 	$app['request.uri']
-);
+) );
 ?>
 
 <?php $wp_list_table->views(); ?>

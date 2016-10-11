@@ -39,7 +39,7 @@ get_current_screen()->set_screen_reader_content( array(
 	'heading_list'       => __( 'Site users list' ),
 ) );
 
-$_SERVER['REQUEST_URI'] = remove_query_arg( 'update', $app['request.uri'] );
+$_server->set( 'REQUEST_URI', remove_query_arg( 'update', $app['request.uri'] ) );
 $referer = remove_query_arg( 'update', wp_get_referer() );
 
 $paged = $_request->getInt( 'paged', 0 );

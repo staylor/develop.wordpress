@@ -21,7 +21,10 @@ $plugin = $_request->get( 'plugin', '' );
 $s = urlencode( wp_unslash( $_request->get( 's', '' ) ) );
 
 // Clean up request URI from temporary args for screen options/paging uri's to work as expected.
-$_SERVER['REQUEST_URI'] = remove_query_arg(array('error', 'deleted', 'activate', 'activate-multi', 'deactivate', 'deactivate-multi', '_error_nonce'), $app['request.uri'] );
+$_server->set( 'REQUEST_URI', remove_query_arg(
+	[ 'error', 'deleted', 'activate', 'activate-multi', 'deactivate', 'deactivate-multi', '_error_nonce' ],
+	$app['request.uri']
+) );
 
 wp_enqueue_script( 'updates' );
 

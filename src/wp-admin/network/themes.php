@@ -22,7 +22,7 @@ $s = $_request->get( 's', '' );
 
 // Clean up request URI from temporary args for screen options/paging uri's to work as expected.
 $temp_args = array( 'enabled', 'disabled', 'deleted', 'error' );
-$_SERVER['REQUEST_URI'] = remove_query_arg( $temp_args, $app['request.uri'] );
+$_server->set( 'REQUEST_URI', remove_query_arg( $temp_args, $app['request.uri'] ) );
 $referer = remove_query_arg( $temp_args, wp_get_referer() );
 
 if ( $action ) {
@@ -147,7 +147,7 @@ if ( $action ) {
 				<?php else : ?>
 					<p><?php _e( 'Are you sure you wish to delete these themes?' ); ?></p>
 				<?php endif; ?>
-				<form method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>" style="display:inline;">
+				<form method="post" action="<?php echo esc_url( $app['request.uri'] ); ?>" style="display:inline;">
 					<input type="hidden" name="verify-delete" value="1" />
 					<input type="hidden" name="action" value="delete-selected" />
 					<?php

@@ -104,7 +104,10 @@ if ( $_request->get( 'deleted' ) ) {
 	$deleted = (int) $_request->get( 'deleted' );
 	printf(_n('%s link deleted.', '%s links deleted', $deleted), $deleted);
 	echo '</p></div>';
-	$_SERVER['REQUEST_URI'] = remove_query_arg( array('deleted'), $app['request.uri'] );
+	$_server->set( 'REQUEST_URI', remove_query_arg(
+		[ 'deleted' ],
+		$app['request.uri']
+	) );
 }
 ?>
 
