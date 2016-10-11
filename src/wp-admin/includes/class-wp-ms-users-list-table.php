@@ -244,9 +244,11 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 * @param User $user The current User object.
 	 */
 	public function column_username( $user ) {
+		$app = getApp();
+
 		$super_admins = get_super_admins();
 		$avatar	= get_avatar( $user->user_email, 32 );
-		$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $user->ID ) ) );
+		$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $app['request.uri'] ) ), get_edit_user_link( $user->ID ) ) );
 
 		echo $avatar;
 
@@ -445,14 +447,15 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 			return '';
 		}
 
+		$app = getApp();
 		$super_admins = get_super_admins();
-		$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $user->ID ) ) );
+		$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $app['request.uri'] ) ), get_edit_user_link( $user->ID ) ) );
 
 		$actions = [];
 		$actions['edit'] = '<a href="' . $edit_link . '">' . __( 'Edit' ) . '</a>';
 
 		if ( current_user_can( 'delete_user', $user->ID ) && ! in_array( $user->user_login, $super_admins ) ) {
-			$actions['delete'] = '<a href="' . $delete = esc_url( network_admin_url( add_query_arg( '_wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), wp_nonce_url( 'users.php', 'deleteuser' ) . '&amp;action=deleteuser&amp;id=' . $user->ID ) ) ) . '" class="delete">' . __( 'Delete' ) . '</a>';
+			$actions['delete'] = '<a href="' . $delete = esc_url( network_admin_url( add_query_arg( '_wp_http_referer', urlencode( wp_unslash( $app['request.uri'] ) ), wp_nonce_url( 'users.php', 'deleteuser' ) . '&amp;action=deleteuser&amp;id=' . $user->ID ) ) ) . '" class="delete">' . __( 'Delete' ) . '</a>';
 		}
 
 		/**

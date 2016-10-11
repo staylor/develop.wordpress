@@ -592,7 +592,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 				' <a class="page-title-action hide-if-no-customize" href="%1$s">%2$s</a>',
 				esc_url( add_query_arg( array(
 					array( 'autofocus' => $focus ),
-					'return' => urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ),
+					'return' => urlencode( wp_unslash( $app['request.uri'] ) ),
 				), admin_url( 'customize.php' ) ) ),
 				__( 'Manage with Live Preview' )
 			);

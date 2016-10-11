@@ -907,9 +907,12 @@ function media_sideload_image( $file, $post_id, $desc = null, $return = 'html' )
  * @return string|null
  */
 function media_upload_gallery() {
+	$app = getApp();
+	$_post = $app['request']->request;
+
 	$errors = [];
 
-	if ( !empty($_POST) ) {
+	if ( !empty( $_post->all() ) ) {
 		$return = media_upload_form_handler();
 
 		if ( is_string($return) )
@@ -930,8 +933,11 @@ function media_upload_gallery() {
  * @return string|null
  */
 function media_upload_library() {
+	$app = getApp();
+	$_post = $app['request']->request;
+
 	$errors = [];
-	if ( !empty($_POST) ) {
+	if ( !empty( $_post->all() ) ) {
 		$return = media_upload_form_handler();
 
 		if ( is_string($return) )

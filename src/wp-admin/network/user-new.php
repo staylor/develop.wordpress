@@ -69,7 +69,7 @@ if ( isset($_GET['update']) ) {
 		if ( isset( $_GET['user_id'] ) ) {
 			$user_id_new = absint( $_GET['user_id'] );
 			if ( $user_id_new ) {
-				$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $user_id_new ) ) );
+				$edit_link = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $app['request.uri'] ) ), get_edit_user_link( $user_id_new ) ) );
 			}
 		}
 

@@ -360,7 +360,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 			esc_url( add_query_arg(
 				array(
 					array( 'autofocus' => array( 'panel' => 'widgets' ) ),
-					'return' => urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) )
+					'return' => urlencode( wp_unslash( $app['request.uri'] ) )
 				),
 				admin_url( 'customize.php' )
 			) ),

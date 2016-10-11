@@ -48,7 +48,7 @@ if ( $doaction && $_request->get( 'linkcheck' ) ) {
 	wp_redirect( $redirect_to );
 	exit;
 } elseif ( ! empty( $_GET['_wp_http_referer'] ) ) {
-	 wp_redirect( remove_query_arg( array( '_wp_http_referer', '_wpnonce' ), wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+	 wp_redirect( remove_query_arg( array( '_wp_http_referer', '_wpnonce' ), wp_unslash( $app['request.uri'] ) ) );
 	 exit;
 }
 
@@ -104,7 +104,7 @@ if ( $_request->get( 'deleted' ) ) {
 	$deleted = (int) $_request->get( 'deleted' );
 	printf(_n('%s link deleted.', '%s links deleted', $deleted), $deleted);
 	echo '</p></div>';
-	$_SERVER['REQUEST_URI'] = remove_query_arg(array('deleted'), $_SERVER['REQUEST_URI']);
+	$_SERVER['REQUEST_URI'] = remove_query_arg( array('deleted'), $app['request.uri'] );
 }
 ?>
 

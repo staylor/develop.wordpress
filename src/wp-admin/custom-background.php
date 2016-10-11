@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * The custom background class.
  *
@@ -112,7 +114,9 @@ class Custom_Background {
 	 * @since 3.0.0
 	 */
 	public function take_action() {
-		if ( empty($_POST) )
+		$app = getApp();
+		$_post = $app['request']->request;
+		if ( empty( $_post->all() ) )
 			return;
 
 		if ( isset($_POST['reset-background']) ) {

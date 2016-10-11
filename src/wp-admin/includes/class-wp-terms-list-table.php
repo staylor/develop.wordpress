@@ -7,6 +7,8 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement displaying terms in a list table.
  *
@@ -354,6 +356,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_name( $tag ) {
+		$app = getApp();
 		$taxonomy = $this->screen->taxonomy;
 
 		$pad = str_repeat( '&#8212; ', max( 0, $this->level ) );
@@ -375,7 +378,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 
 		$qe_data = get_term( $tag->term_id, $taxonomy, OBJECT, 'edit' );
 
-		$uri = wp_doing_ajax() ? wp_get_referer() : $_SERVER['REQUEST_URI'];
+		$uri = wp_doing_ajax() ? wp_get_referer() : $app['request.uri'];
 
 		$edit_link = add_query_arg(
 			'wp_http_referer',
@@ -429,9 +432,10 @@ class WP_Terms_List_Table extends WP_List_Table {
 			return '';
 		}
 
+		$app = getApp();
 		$taxonomy = $this->screen->taxonomy;
 		$tax = get_taxonomy( $taxonomy );
-		$uri = wp_doing_ajax() ? wp_get_referer() : $_SERVER['REQUEST_URI'];
+		$uri = wp_doing_ajax() ? wp_get_referer() : $app['request.uri'];
 
 		$edit_link = add_query_arg(
 			'wp_http_referer',

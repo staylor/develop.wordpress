@@ -21,7 +21,7 @@ $plugin = $_request->get( 'plugin', '' );
 $s = urlencode( wp_unslash( $_request->get( 's', '' ) ) );
 
 // Clean up request URI from temporary args for screen options/paging uri's to work as expected.
-$_SERVER['REQUEST_URI'] = remove_query_arg(array('error', 'deleted', 'activate', 'activate-multi', 'deactivate', 'deactivate-multi', '_error_nonce'), $_SERVER['REQUEST_URI']);
+$_SERVER['REQUEST_URI'] = remove_query_arg(array('error', 'deleted', 'activate', 'activate-multi', 'deactivate', 'deactivate-multi', '_error_nonce'), $app['request.uri'] );
 
 wp_enqueue_script( 'updates' );
 
@@ -318,7 +318,7 @@ if ( $action ) {
 				else
 					_e('Are you sure you wish to delete these files?');
 				?></p>
-				<form method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>" style="display:inline;">
+				<form method="post" action="<?php echo esc_url( $app['request.uri'] ); ?>" style="display:inline;">
 					<input type="hidden" name="verify-delete" value="1" />
 					<input type="hidden" name="action" value="delete-selected" />
 					<?php

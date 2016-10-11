@@ -22,7 +22,7 @@ $s = $_request->get( 's', '' );
 
 // Clean up request URI from temporary args for screen options/paging uri's to work as expected.
 $temp_args = array( 'enabled', 'disabled', 'deleted', 'error' );
-$_SERVER['REQUEST_URI'] = remove_query_arg( $temp_args, $_SERVER['REQUEST_URI'] );
+$_SERVER['REQUEST_URI'] = remove_query_arg( $temp_args, $app['request.uri'] );
 $referer = remove_query_arg( $temp_args, wp_get_referer() );
 
 if ( $action ) {

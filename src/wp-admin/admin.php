@@ -42,9 +42,9 @@ if ( get_option('db_upgraded') ) {
 	 * @since 2.8.0
 	 */
 	do_action( 'after_db_upgrade' );
-} elseif ( get_option('db_version') != $app['wp_db_version'] && empty($_POST) ) {
+} elseif ( get_option('db_version') != $app['wp_db_version'] && empty( $_post->all() ) ) {
 	if ( !is_multisite() ) {
-		wp_redirect( admin_url( 'upgrade.php?_wp_http_referer=' . urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) );
+		wp_redirect( admin_url( 'upgrade.php?_wp_http_referer=' . urlencode( wp_unslash( $app['request.uri'] ) ) ) );
 		exit;
 
 	/**

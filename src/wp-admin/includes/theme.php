@@ -539,6 +539,7 @@ function wp_prepare_themes_for_js( $themes = null ) {
 	WP_Theme::sort_by_name( $themes );
 
 	$parents = [];
+	$app = getApp();
 
 	foreach ( $themes as $theme ) {
 		$slug = $theme->get_stylesheet();
@@ -554,7 +555,7 @@ function wp_prepare_themes_for_js( $themes = null ) {
 		if ( current_user_can( 'edit_theme_options' ) && current_user_can( 'customize' ) ) {
 			$customize_action = esc_url( add_query_arg(
 				array(
-					'return' => urlencode( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ),
+					'return' => urlencode( esc_url_raw( wp_unslash( $app['request.uri'] ) ) ),
 				),
 				wp_customize_url( $slug )
 			) );
