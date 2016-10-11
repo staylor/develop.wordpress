@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * Loads the WP image-editing interface.
  *
@@ -577,12 +579,14 @@ function image_edit_apply_changes( $image, $changes ) {
 
 /**
  * Streams image in post to browser, along with enqueued changes
- * in $_REQUEST['history']
+ * in $_*['history']
  *
  * @param int $post_id
  * @return bool
  */
 function stream_preview_image( $post_id ) {
+	$app = getApp();
+	$_request = $app['request']->attributes;
 	$post = get_post( $post_id );
 
 	wp_raise_memory_limit( 'admin' );
@@ -593,7 +597,7 @@ function stream_preview_image( $post_id ) {
 		return false;
 	}
 
-	$changes = !empty($_REQUEST['history']) ? json_decode( wp_unslash($_REQUEST['history']) ) : null;
+	$changes = $_request->get( 'history' ) ? json_decode( wp_unslash( $_request->get( 'history' ) ) ) : null;
 	if ( $changes )
 		$img = image_edit_apply_changes( $img, $changes );
 
@@ -698,12 +702,14 @@ function wp_restore_image($post_id) {
 
 /**
  * Saves image to post along with enqueued changes
- * in $_REQUEST['history']
+ * in $_*['history']
  *
  * @param int $post_id
  * @return \stdClass
  */
 function wp_save_image( $post_id ) {
+	$app = getApp();
+	$_request = $app['request']->attributes;
 	$_wp_additional_image_sizes = wp_get_additional_image_sizes();
 
 	$return = new stdClass;
@@ -716,10 +722,10 @@ function wp_save_image( $post_id ) {
 		return $return;
 	}
 
-	$fwidth = !empty($_REQUEST['fwidth']) ? intval($_REQUEST['fwidth']) : 0;
-	$fheight = !empty($_REQUEST['fheight']) ? intval($_REQUEST['fheight']) : 0;
-	$target = !empty($_REQUEST['target']) ? preg_replace('/[^a-z0-9_-]+/i', '', $_REQUEST['target']) : '';
-	$scale = !empty($_REQUEST['do']) && 'scale' == $_REQUEST['do'];
+	$fwidth = $_request->getInt( 'fwidth', 0 );
+	$fheight = $_request->getInt( 'fheight', 0 );
+	$target = $_request->get( 'target' ) ? preg_replace('/[^a-z0-9_-]+/i', '', $_request->get( 'target' ) ) : '';
+	$scale = 'scale' === $_request->get( 'do' );
 
 	if ( $scale && $fwidth > 0 && $fheight > 0 ) {
 		$size = $img->get_size();
@@ -738,10 +744,11 @@ function wp_save_image( $post_id ) {
 			$return->error = esc_js( __('Error while saving the scaled image. Please reload the page and try again.') );
 			return $return;
 		}
-	} elseif ( !empty($_REQUEST['history']) ) {
-		$changes = json_decode( wp_unslash($_REQUEST['history']) );
-		if ( $changes )
+	} elseif ( $_request->get( 'history' ) ) {
+		$changes = json_decode( wp_unslash( $_request->get( 'history' ) ) );
+		if ( $changes ) {
 			$img = image_edit_apply_changes($img, $changes);
+		}
 	} else {
 		$return->error = esc_js( __('Nothing to save, the image has not changed.') );
 		return $return;
@@ -885,7 +892,7 @@ function wp_save_image( $post_id ) {
 
 		if ( $target == 'thumbnail' || $target == 'all' || $target == 'full' ) {
 			// Check if it's an image edit from attachment edit screen
-			if ( ! empty( $_REQUEST['context'] ) && 'edit-attachment' == $_REQUEST['context'] ) {
+			if ( 'edit-attachment' === $_request->get( 'context' ) ) {
 				$thumb_url = wp_get_attachment_image_src( $post_id, array( 900, 600 ), true );
 				$return->thumbnail = $thumb_url[0];
 			} else {

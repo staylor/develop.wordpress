@@ -140,15 +140,21 @@ class Custom_Image_Header {
 	 * @return int Current step
 	 */
 	public function step() {
-		if ( ! isset( $_GET['step'] ) )
-			return 1;
+		$app = getApp();
+		$_request = $app['request']->attributes;
+		$_get = $app['request']->query;
 
-		$step = (int) $_GET['step'];
-		if ( $step < 1 || 3 < $step ||
-			( 2 == $step && ! wp_verify_nonce( $_REQUEST['_wpnonce-custom-header-upload'], 'custom-header-upload' ) ) ||
-			( 3 == $step && ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'custom-header-crop-image' ) )
-		)
+		$step = $_get->getInt( 'step' );
+		if ( ! $step ) {
 			return 1;
+		}
+
+		if ( $step < 1 || 3 < $step ||
+			( 2 === $step && ! wp_verify_nonce( $_request->get( '_wpnonce-custom-header-upload' ), 'custom-header-upload' ) ) ||
+			( 3 === $step && ! wp_verify_nonce( $_request->get( '_wpnonce' ), 'custom-header-crop-image' ) )
+		) {
+			return 1;
+		}
 
 		return $step;
 	}

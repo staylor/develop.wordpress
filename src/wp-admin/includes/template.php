@@ -1555,7 +1555,9 @@ function _draft_or_post_title( $post = 0 ) {
  * @since 2.7.0
  */
 function _admin_search_query() {
-	echo isset($_REQUEST['s']) ? esc_attr( wp_unslash( $_REQUEST['s'] ) ) : '';
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	echo esc_attr( wp_unslash( $_request->get( 's', '' ) ) );
 }
 
 /**
@@ -1684,11 +1686,10 @@ function iframe_footer() {
  * @param WP_Post $post
  */
 function _post_states($post) {
+	$app = getApp();
+	$_request = $app['request']->attributes;
 	$post_states = [];
-	if ( isset( $_REQUEST['post_status'] ) )
-		$post_status = $_REQUEST['post_status'];
-	else
-		$post_status = '';
+	$post_status = $_request->get( 'post_status', '' );
 
 	if ( !empty($post->post_password) )
 		$post_states['protected'] = __('Password protected');

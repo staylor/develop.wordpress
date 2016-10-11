@@ -43,20 +43,19 @@ function media_upload_tabs() {
  */
 function update_gallery_tab($tabs) {
 	$app = getApp();
-	$wpdb = $app['db'];
+	$_request = $app['request']->attributes;
 
-	if ( !isset($_REQUEST['post_id']) ) {
+	$post_id = $_request->getInt( 'post_id', 0 );
+	if ( ! $post_id ) {
 		unset($tabs['gallery']);
 		return $tabs;
 	}
 
-	$post_id = intval($_REQUEST['post_id']);
+	$wpdb = $app['db'];
+	$attachments = intval( $wpdb->get_var( $wpdb->prepare( "SELECT count(*) FROM $wpdb->posts WHERE post_type = 'attachment' AND post_status != 'trash' AND post_parent = %d", $post_id ) ) );
 
-	if ( $post_id )
-		$attachments = intval( $wpdb->get_var( $wpdb->prepare( "SELECT count(*) FROM $wpdb->posts WHERE post_type = 'attachment' AND post_status != 'trash' AND post_parent = %d", $post_id ) ) );
-
-	if ( empty($attachments) ) {
-		unset($tabs['gallery']);
+	if ( empty( $attachments ) ) {
+		unset( $tabs['gallery'] );
 		return $tabs;
 	}
 
@@ -744,13 +743,15 @@ function media_upload_form_handler() {
  * @return null|string
  */
 function wp_media_upload_handler() {
+	$app = getApp();
+	$_request = $app['request']->attributes;
 	$errors = [];
 	$id = 0;
 
 	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		check_admin_referer('media-form');
 		// Upload File button was clicked
-		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
+		$id = media_handle_upload('async-upload', $_request->get( 'post_id' ) );
 		unset($_FILES);
 		if ( is_wp_error($id) ) {
 			$errors['upload_error'] = $id;
@@ -1354,6 +1355,9 @@ function get_media_items( $post_id, $errors ) {
 function get_media_item( $attachment_id, $args = null ) {
 	global $redir_tab;
 
+	$app = getApp();
+	$_request = $app['request']->attributes;
+
 	if ( ( $attachment_id = intval( $attachment_id ) ) && $thumb_url = wp_get_attachment_image_src( $attachment_id, 'thumbnail', true ) )
 		$thumb_url = $thumb_url[0];
 	else
@@ -1409,7 +1413,7 @@ function get_media_item( $attachment_id, $args = null ) {
 	$display_title = ( !empty( $title ) ) ? $title : $filename; // $title shouldn't ever be empty, but just in case
 	$display_title = $r['show_title'] ? "<div class='filename new'><span class='title'>" . wp_html_excerpt( $display_title, 60, '&hellip;' ) . "</span></div>" : '';
 
-	$gallery = ( ( isset( $_REQUEST['tab'] ) && 'gallery' == $_REQUEST['tab'] ) || ( isset( $redir_tab ) && 'gallery' == $redir_tab ) );
+	$gallery = ( 'gallery' === $_request->get( 'tab' ) || ( isset( $redir_tab ) && 'gallery' == $redir_tab ) );
 	$order = '';
 
 	foreach ( $form_fields as $key => $val ) {
@@ -1592,8 +1596,8 @@ function get_media_item( $attachment_id, $args = null ) {
 	foreach ( $hidden_fields as $name => $value )
 		$item .= "\t<input type='hidden' name='$name' id='$name' value='" . esc_attr( $value ) . "' />\n";
 
-	if ( $post->post_parent < 1 && isset( $_REQUEST['post_id'] ) ) {
-		$parent = (int) $_REQUEST['post_id'];
+	$parent = $_request->getInt( 'post_id' );
+	if ( $post->post_parent < 1 && $parent ) {;
 		$parent_name = "attachments[$attachment_id][post_parent]";
 		$item .= "\t<input type='hidden' name='$parent_name' id='$parent_name' value='$parent' />\n";
 	}
@@ -1768,7 +1772,9 @@ function get_compat_media_markup( $attachment_id, $args = null ) {
  * @since 2.5.0
  */
 function media_upload_header() {
-	$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0;
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	$post_id = $_request->getInt( 'post_id', 0 );
 
 	echo '<script type="text/javascript">post_id = ' . $post_id . ';</script>';
 	if ( empty( $_GET['chromeless'] ) ) {
@@ -1790,7 +1796,7 @@ function media_upload_header() {
  * @param array $errors
  */
 function media_upload_form( $errors = null ) {
-	global $type, $tab, $is_opera;
+	global $type, $tab;
 
 	if ( ! _device_can_upload() ) {
 		echo '<p>' . sprintf( __('The web browser on your device cannot be used to upload files. You may be able to use the <a href="%s">native app for your device</a> instead.'), 'https://apps.wordpress.org/' ) . '</p>';
@@ -1798,7 +1804,9 @@ function media_upload_form( $errors = null ) {
 	}
 
 	$upload_action_url = admin_url('async-upload.php');
-	$post_id = isset($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : 0;
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	$post_id = $_request->getInt( 'post_id', 0 );
 	$_type = isset($type) ? $type : '';
 	$_tab = isset($tab) ? $tab : '';
 
@@ -1871,7 +1879,6 @@ $plupload_init = array(
 	'multipart_params'    => $post_params,
 );
 
-$app = getApp();
 $ua = $app['request.useragent'];
 // Currently only iOS Safari supports multiple files uploading but iOS 7.x has a bug that prevents uploading of videos
 // when enabled. See #29602.
@@ -1984,7 +1991,9 @@ function media_upload_type_form($type = 'file', $errors = null, $id = null) {
 
 	media_upload_header();
 
-	$post_id = isset( $_REQUEST['post_id'] )? intval( $_REQUEST['post_id'] ) : 0;
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	$post_id = $_request->getInt( 'post_id', 0 );
 
 	$form_action_url = admin_url("media-upload.php?type=$type&tab=type&post_id=$post_id");
 
@@ -2056,7 +2065,9 @@ function media_upload_type_url_form($type = null, $errors = null, $id = null) {
 
 	media_upload_header();
 
-	$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0;
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	$post_id = $_request->getInt( 'post_id', 0 );
 
 	$form_action_url = admin_url("media-upload.php?type=$type&tab=type&post_id=$post_id");
 	/** This filter is documented in wp-admin/includes/media.php */
@@ -2200,7 +2211,9 @@ function media_upload_gallery_form($errors) {
 	$redir_tab = 'gallery';
 	media_upload_header();
 
-	$post_id = intval($_REQUEST['post_id']);
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	$post_id = $_request->getInt( 'post_id', 0 );
 	$form_action_url = admin_url("media-upload.php?type=$type&tab=gallery&post_id=$post_id");
 	/** This filter is documented in wp-admin/includes/media.php */
 	$form_action_url = apply_filters( 'media_upload_form_url', $form_action_url, $type );
@@ -2350,7 +2363,8 @@ function media_upload_library_form($errors) {
 
 	media_upload_header();
 
-	$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0;
+	$_request = $app['request']->attributes;
+	$post_id = $_request->getInt( 'post_id', 0 );
 
 	$form_action_url = admin_url("media-upload.php?type=$type&tab=library&post_id=$post_id");
 	/** This filter is documented in wp-admin/includes/media.php */
@@ -3119,7 +3133,8 @@ function wp_media_attach_action( $parent_id, $action = 'attach' ) {
 		wp_die( __( 'Sorry, you are not allowed to edit this post.' ) );
 	}
 	$ids = [];
-	foreach ( (array) $_REQUEST['media'] as $att_id ) {
+	$_request = $app['request']->attributes;
+	foreach ( (array) $_request->get( 'media' ) as $att_id ) {
 		$att_id = (int) $att_id;
 
 		if ( ! current_user_can( 'edit_post', $att_id ) ) {

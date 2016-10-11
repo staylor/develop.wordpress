@@ -122,15 +122,15 @@ if ( $action ) {
 			check_admin_referer( 'bulk-users' );
 
 			$update = 'remove';
-			if ( isset( $_REQUEST['users'] ) ) {
-				$userids = $_REQUEST['users'];
+			if ( $_request->get( 'users' ) ) {
+				$userids = $_request->get( 'users' );
 
 				foreach ( $userids as $user_id ) {
 					$user_id = (int) $user_id;
 					remove_user_from_blog( $user_id, $id );
 				}
-			} elseif ( isset( $_GET['user'] ) ) {
-				remove_user_from_blog( $_GET['user'] );
+			} elseif ( $_get->get( 'user' ) ) {
+				remove_user_from_blog( $_get->get( 'user' ) );
 			} else {
 				$update = 'err_remove';
 			}
@@ -139,12 +139,12 @@ if ( $action ) {
 		case 'promote':
 			check_admin_referer( 'bulk-users' );
 			$editable_roles = get_editable_roles();
-			if ( empty( $editable_roles[ $_REQUEST['new_role'] ] ) ) {
+			if ( empty( $editable_roles[ $_request->get( 'new_role' ) ] ) ) {
 				wp_die( __( 'Sorry, you are not allowed to give users that role.' ) );
 			}
 
-			if ( isset( $_REQUEST['users'] ) ) {
-				$userids = $_REQUEST['users'];
+			if ( $_request->get( 'users' ) ) {
+				$userids = $_request->get( 'users' );
 				$update = 'promote';
 				foreach ( $userids as $user_id ) {
 					$user_id = (int) $user_id;
@@ -159,18 +159,18 @@ if ( $action ) {
 					}
 
 					$user = get_userdata( $user_id );
-					$user->set_role( $_REQUEST['new_role'] );
+					$user->set_role( $_request->get( 'new_role' ) );
 				}
 			} else {
 				$update = 'err_promote';
 			}
 			break;
 		default:
-			if ( ! isset( $_REQUEST['users'] ) ) {
+			if ( ! $_request->get( 'users' ) ) {
 				break;
 			}
 			check_admin_referer( 'bulk-users' );
-			$userids = $_REQUEST['users'];
+			$userids = $_request->get( 'users' );
 			/**
 			 * Fires when a custom bulk action should be handled.
 			 *

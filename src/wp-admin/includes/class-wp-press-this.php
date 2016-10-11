@@ -666,6 +666,9 @@ class WP_Press_This {
 		// Get data from $_POST and $_GET, as appropriate ($_POST > $_GET), to remain backward compatible.
 		$data = [];
 
+		$app = getApp();
+		$_request = $app['request']->attributes;
+
 		// Only instantiate the keys we want. Sanity check and sanitize each one.
 		foreach ( array( 'u', 's', 't', 'v' ) as $key ) {
 			if ( ! empty( $_POST[ $key ] ) ) {
@@ -757,7 +760,7 @@ class WP_Press_This {
 			}
 
 			// Support passing a single image src as `i`
-			if ( ! empty( $_REQUEST['i'] ) && ( $img_src = $this->_limit_img( wp_unslash( $_REQUEST['i'] ) ) ) ) {
+			if ( ! empty( $_request->get( 'i' ) ) && ( $img_src = $this->_limit_img( wp_unslash( $_request->get( 'i' ) ) ) ) ) {
 				if ( empty( $data['_images'] ) ) {
 					$data['_images'] = array( $img_src );
 				} elseif ( ! in_array( $img_src, $data['_images'], true ) ) {

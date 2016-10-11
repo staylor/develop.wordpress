@@ -6,6 +6,8 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 $themes_allowedtags = array('a' => array('href' => [], 'title' => [], 'target' => []),
 	'abbr' => array('title' => []), 'acronym' => array('title' => []),
 	'code' => [], 'pre' => [], 'em' => [], 'strong' => [],
@@ -54,8 +56,10 @@ function install_themes_feature_list() {
  * @param bool $type_selector
  */
 function install_theme_search_form( $type_selector = true ) {
-	$type = isset( $_REQUEST['type'] ) ? wp_unslash( $_REQUEST['type'] ) : 'term';
-	$term = isset( $_REQUEST['s'] ) ? wp_unslash( $_REQUEST['s'] ) : '';
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	$type = wp_unslash( $_request->get( 'type', 'term' ) );
+	$term = wp_unslash( $_request->get( 's', '' ) );
 	if ( ! $type_selector )
 		echo '<p class="install-help">' . __( 'Search for themes by keyword.' ) . '</p>';
 	?>
@@ -197,7 +201,9 @@ function display_themes() {
 function install_theme_information() {
 	global $wp_list_table;
 
-	$theme = themes_api( 'theme_information', array( 'slug' => wp_unslash( $_REQUEST['theme'] ) ) );
+	$app = getApp();
+	$_request = $app['request']->attributes;
+	$theme = themes_api( 'theme_information', array( 'slug' => wp_unslash( $_request->get( 'theme' ) ) ) );
 
 	if ( is_wp_error( $theme ) )
 		wp_die( $theme );

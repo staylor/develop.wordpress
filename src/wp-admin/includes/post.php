@@ -590,17 +590,12 @@ function bulk_edit_posts( $post_data = null ) {
  * @return WP_Post Post object containing all the default post data as attributes
  */
 function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) {
-	$post_title = '';
-	if ( !empty( $_REQUEST['post_title'] ) )
-		$post_title = esc_html( wp_unslash( $_REQUEST['post_title'] ));
+	$app = getApp();
+	$_request = $app['request']->attributes;
 
-	$post_content = '';
-	if ( !empty( $_REQUEST['content'] ) )
-		$post_content = esc_html( wp_unslash( $_REQUEST['content'] ));
-
-	$post_excerpt = '';
-	if ( !empty( $_REQUEST['excerpt'] ) )
-		$post_excerpt = esc_html( wp_unslash( $_REQUEST['excerpt'] ));
+	$post_title = esc_html( wp_unslash( $_request->get( 'post_title', '' ) ) );
+	$post_content = esc_html( wp_unslash( $_request->get( 'content', '' ) ) );
+	$post_excerpt = esc_html( wp_unslash( $_request->get( 'excerpt', '' ) ) );
 
 	if ( $create_in_db ) {
 		$post_id = wp_insert_post( array( 'post_title' => __( 'Auto Draft' ), 'post_type' => $post_type, 'post_status' => 'auto-draft' ) );

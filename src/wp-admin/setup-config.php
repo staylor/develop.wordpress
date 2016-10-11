@@ -16,12 +16,12 @@ use function WP\getApp;
 /**
  * We are installing.
  */
-define('WP_INSTALLING', true);
+const WP_INSTALLING = true;
 
 /**
  * We are blissfully unaware of anything.
  */
-define('WP_SETUP_CONFIG', true);
+const WP_SETUP_CONFIG = true;
 
 /**
  * Disable error reporting
@@ -71,7 +71,7 @@ if ( @file_exists( ABSPATH . '../wp-config.php' ) && ! @file_exists( ABSPATH . '
 	);
 }
 
-$step = isset( $_GET['step'] ) ? (int) $_GET['step'] : -1;
+$step = $_get->getInt( 'step', -1 );;
 
 /**
  * Display setup wp-config.php file header.
@@ -105,45 +105,48 @@ function setup_config_display_header( $body_classes = [] ) {
 } // end function setup_config_display_header();
 
 $app = getApp();
+$_request = $app['request']->attributes;
+$_post = $app['request']->request;
+$_get = $app['request']->query;
 
 $language = '';
-if ( ! empty( $_REQUEST['language'] ) ) {
-	$language = preg_replace( '/[^a-zA-Z_]/', '', $_REQUEST['language'] );
+if ( ! empty( $_request->get( 'language' ) ) ) {
+	$language = preg_replace( '/[^a-zA-Z_]/', '', $_request->get( 'language' ) );
 } elseif ( isset( $app['wp_local_package'] ) ) {
 	$language = $app['wp_local_package'];
 }
 
 switch($step) {
-	case -1:
-		if ( wp_can_install_language_pack() && empty( $language ) && ( $languages = wp_get_available_translations() ) ) {
-			setup_config_display_header( 'language-chooser' );
-			echo '<h1 class="screen-reader-text">Select a default language</h1>';
-			echo '<form id="setup" method="post" action="?step=0">';
-			wp_install_language_form( $languages );
-			echo '</form>';
-			break;
-		}
+case -1:
+	if ( wp_can_install_language_pack() && empty( $language ) && ( $languages = wp_get_available_translations() ) ) {
+		setup_config_display_header( 'language-chooser' );
+		echo '<h1 class="screen-reader-text">Select a default language</h1>';
+		echo '<form id="setup" method="post" action="?step=0">';
+		wp_install_language_form( $languages );
+		echo '</form>';
+		break;
+	}
 
-		// Deliberately fall through if we can't reach the translations API.
+	// Deliberately fall through if we can't reach the translations API.
 
-	case 0:
-		if ( ! empty( $language ) ) {
-			$loaded_language = wp_download_language_pack( $language );
-			if ( $loaded_language ) {
-				load_default_textdomain( $loaded_language );
-				unset( $app['locale'] );
-				$app['locale'] = $app['locale.factory'];
-			}
+case 0:
+	if ( ! empty( $language ) ) {
+		$loaded_language = wp_download_language_pack( $language );
+		if ( $loaded_language ) {
+			load_default_textdomain( $loaded_language );
+			unset( $app['locale'] );
+			$app['locale'] = $app['locale.factory'];
 		}
+	}
 
-		setup_config_display_header();
-		$step_1 = 'setup-config.php?step=1';
-		if ( isset( $_REQUEST['noapi'] ) ) {
-			$step_1 .= '&amp;noapi';
-		}
-		if ( ! empty( $loaded_language ) ) {
-			$step_1 .= '&amp;language=' . $loaded_language;
-		}
+	setup_config_display_header();
+	$step_1 = 'setup-config.php?step=1';
+	if ( $_request->get( 'noapi' ) ) {
+		$step_1 .= '&amp;noapi';
+	}
+	if ( ! empty( $loaded_language ) ) {
+		$step_1 .= '&amp;language=' . $loaded_language;
+	}
 ?>
 <h1 class="screen-reader-text"><?php _e( 'Before getting started' ) ?></h1>
 <p><?php _e( 'Welcome to WordPress. Before getting started, we need some information on the database. You will need to know the following items before proceeding.' ) ?></p>
@@ -219,7 +222,7 @@ switch($step) {
 			<td><?php _e( 'If you want to run multiple WordPress installations in a single database, change this.' ); ?></td>
 		</tr>
 	</table>
-	<?php if ( isset( $_GET['noapi'] ) ) { ?><input name="noapi" type="hidden" value="1" /><?php } ?>
+	<?php if ( $_get->get( 'noapi' ) ) { ?><input name="noapi" type="hidden" value="1" /><?php } ?>
 	<input type="hidden" name="language" value="<?php echo esc_attr( $language ); ?>" />
 	<p class="step"><input name="submit" type="submit" value="<?php echo htmlspecialchars( __( 'Submit' ), ENT_QUOTES ); ?>" class="button button-large" /></p>
 </form>
@@ -239,7 +242,7 @@ switch($step) {
 
 	$step_1 = 'setup-config.php?step=1';
 	$install = 'install.php';
-	if ( isset( $_REQUEST['noapi'] ) ) {
+	if ( $_request->get( 'noapi' ) ) {
 		$step_1 .= '&amp;noapi';
 	}
 

@@ -72,6 +72,7 @@ function display_header( $body_classes = '' ) {
  */
 function display_setup_form( $error = null ) {
 	$app = getApp();
+	$_request = $app['request']->attributes;
 	$wpdb = $app['db'];
 
 	$sql = $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->esc_like( $wpdb->users ) );
@@ -185,7 +186,7 @@ function display_setup_form( $error = null ) {
 		</tr>
 	</table>
 	<p class="step"><?php submit_button( __( 'Install WordPress' ), 'large', 'Submit', false, array( 'id' => 'submit' ) ); ?></p>
-	<input type="hidden" name="language" value="<?php echo isset( $_REQUEST['language'] ) ? esc_attr( $_REQUEST['language'] ) : ''; ?>" />
+	<input type="hidden" name="language" value="<?php echo esc_attr( $_request->get( 'language', '' ) ) ?>" />
 </form>
 <?php
 } // end display_setup_form()
@@ -243,11 +244,9 @@ if ( defined( 'DO_NOT_UPGRADE_GLOBAL_TABLES' ) ) {
 	);
 }
 
-$app = getApp();
-
 $language = '';
-if ( ! empty( $_REQUEST['language'] ) ) {
-	$language = preg_replace( '/[^a-zA-Z_]/', '', $_REQUEST['language'] );
+if ( ! empty( $_request->get( 'language' ) ) ) {
+	$language = preg_replace( '/[^a-zA-Z_]/', '', $_request->get( 'language' ) );
 } elseif ( isset( $app['wp_local_package'] ) ) {
 	$language = $app['wp_local_package'];
 }
