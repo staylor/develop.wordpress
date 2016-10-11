@@ -12,7 +12,7 @@ $wp_db_version = 38590;
 /**
  * Holds the TinyMCE version
  */
-$tinymce_version = '4401-20160726';
+$tinymce_version = '4403-20160901';
 
 /**
  * Holds the required PHP version
