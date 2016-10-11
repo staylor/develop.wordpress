@@ -45,4 +45,19 @@ class Help {
 		] );
 	}
 
+	public function addEditComment() {
+		$this->screen->add_help_tab( [
+			'id'      => 'overview',
+			'title'   => __('Overview'),
+			'content' =>
+				'<p>' . __( 'You can edit the information left in a comment if needed. This is often useful when you notice that a commenter has made a typographical error.' ) . '</p>' .
+				'<p>' . __( 'You can also moderate the comment from this screen using the Status box, where you can also change the timestamp of the comment.' ) . '</p>'
+		] );
+
+		$this->screen->set_help_sidebar(
+			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Administration_Screens#Comments">Documentation on Comments</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
+		);
+	}
 }

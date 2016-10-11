@@ -38,7 +38,7 @@ final class WP_Taxonomy {
 	 * @access public
 	 * @var object
 	 */
-	public $labels = array();
+	public $labels = [];
 
 	/**
 	 * A short descriptive summary of what the taxonomy is for.
@@ -208,7 +208,7 @@ final class WP_Taxonomy {
 	 * @param array|string $args        Optional. Array or query string of arguments for registering a taxonomy.
 	 *                                  Default empty array.
 	 */
-	public function __construct( $taxonomy, $object_type, $args = array() ) {
+	public function __construct( $taxonomy, $object_type, $args = [] ) {
 		$this->name = $taxonomy;
 
 		$this->set_props( $object_type, $args );
@@ -238,7 +238,7 @@ final class WP_Taxonomy {
 		$args = apply_filters( 'register_taxonomy_args', $args, $this->name, (array) $object_type );
 
 		$defaults = array(
-			'labels'                => array(),
+			'labels'                => [],
 			'description'           => '',
 			'public'                => true,
 			'publicly_queryable'    => null,
@@ -250,7 +250,7 @@ final class WP_Taxonomy {
 			'show_in_quick_edit'    => null,
 			'show_admin_column'     => false,
 			'meta_box_cb'           => null,
-			'capabilities'          => array(),
+			'capabilities'          => [],
 			'rewrite'               => true,
 			'query_var'             => $this->name,
 			'update_count_callback' => '',
