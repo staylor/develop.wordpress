@@ -22,9 +22,14 @@ use function WP\getApp;
  * @return object|bool WP_Error on failure, true on success.
  */
 function _wp_translate_postdata( $update = false, $post_data = null ) {
+	$app = getApp();
+	$_post = $app['request']->request;
 
-	if ( empty($post_data) )
-		$post_data = &$_POST;
+	$reset = false;
+	if ( empty($post_data) ) {
+		$reset = true;
+		$post_data = $_post->all();
+	}
 
 	if ( $update )
 		$post_data['ID'] = (int) $post_data['post_ID'];
@@ -175,6 +180,10 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 		}
 	}
 
+	if ( $reset ) {
+		$_post->replace( $post_data );
+	}
+
 	return $post_data;
 }
 
@@ -188,10 +197,14 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
  */
 function edit_post( $post_data = null ) {
 	$app = getApp();
+	$_post = $app['request']->request;
 	$wpdb = $app['db'];
 
-	if ( empty($post_data) )
-		$post_data = &$_POST;
+	$reset = false;
+	if ( empty($post_data) ) {
+		$reset = true;
+		$post_data = $_post->all();
+	}
 
 	// Clear out any data in internal vars.
 	unset( $post_data['filter'] );
@@ -389,6 +402,10 @@ function edit_post( $post_data = null ) {
 		wp_update_post( $post_data );
 	}
 
+	if ( $reset ) {
+		$_post->replace( $post_data );
+	}
+
 	// Now that we have an ID we can fix any attachment anchor hrefs
 	_fix_attachment_links( $post_ID );
 
@@ -417,10 +434,14 @@ function edit_post( $post_data = null ) {
  */
 function bulk_edit_posts( $post_data = null ) {
 	$app = getApp();
+	$_post = $app['request']->request;
 	$wpdb = $app['db'];
 
-	if ( empty($post_data) )
-		$post_data = &$_POST;
+	$reset = false;
+	if ( empty($post_data) ) {
+		$reset = true;
+		$post_data = $_post->all();
+	}
 
 	if ( isset($post_data['post_type']) )
 		$ptype = get_post_type_object($post_data['post_type']);
@@ -501,6 +522,10 @@ function bulk_edit_posts( $post_data = null ) {
 				}
 			}
 		}
+	}
+
+	if ( $reset ) {
+		$_post->replace( $post_data );
 	}
 
 	$updated = $skipped = $locked = [];
@@ -709,8 +734,11 @@ function post_exists($title, $content = '', $date = '') {
  * @return int|WP_Error
  */
 function wp_write_post() {
-	if ( isset($_POST['post_type']) )
-		$ptype = get_post_type_object($_POST['post_type']);
+	$app = getApp();
+	$_post = $app['request']->request;
+
+	if ( $_post->get( 'post_type' ) )
+		$ptype = get_post_type_object( $_post->get( 'post_type' ) );
 	else
 		$ptype = get_post_type_object('post');
 
@@ -721,28 +749,31 @@ function wp_write_post() {
 			return new WP_Error( 'edit_posts', __( 'Sorry, you are not allowed to create posts or drafts on this site.' ) );
 	}
 
-	$_POST['post_mime_type'] = '';
+	$_post->set( 'post_mime_type', '' );
 
 	// Clear out any data in internal vars.
-	unset( $_POST['filter'] );
+	$_post->remove( 'filter' );
 
 	// Edit don't write if we have a post id.
-	if ( isset( $_POST['post_ID'] ) )
+	if ( $_post->get( 'post_ID' ) ) {
 		return edit_post();
+	}
 
-	if ( isset($_POST['visibility']) ) {
-		switch ( $_POST['visibility'] ) {
-			case 'public' :
-				$_POST['post_password'] = '';
-				break;
-			case 'password' :
-				unset( $_POST['sticky'] );
-				break;
-			case 'private' :
-				$_POST['post_status'] = 'private';
-				$_POST['post_password'] = '';
-				unset( $_POST['sticky'] );
-				break;
+	if ( $_post->get( 'visibility' ) ) {
+		switch ( $_post->get( 'visibility' ) ) {
+		case 'public' :
+			$_post->set( 'post_password', '' );
+			break;
+
+		case 'password' :
+			$_post->remove( 'sticky' );
+			break;
+
+		case 'private' :
+			$_post->set( 'post_status', 'private' );
+			$_post->set( 'post_password', '' );
+			$_post->remove( 'sticky' );
+			break;
 		}
 	}
 
@@ -751,7 +782,7 @@ function wp_write_post() {
 		return $translated;
 
 	// Create the post.
-	$post_ID = wp_insert_post( $_POST );
+	$post_ID = wp_insert_post( $_post->all() );
 	if ( is_wp_error( $post_ID ) )
 		return $post_ID;
 
@@ -760,7 +791,7 @@ function wp_write_post() {
 
 	add_meta( $post_ID );
 
-	add_post_meta( $post_ID, '_edit_last', $GLOBALS['current_user']->ID );
+	add_post_meta( $post_ID, '_edit_last', get_current_user_id() );
 
 	// Now that we have an ID we can fix any attachment anchor hrefs
 	_fix_attachment_links( $post_ID );
@@ -800,9 +831,12 @@ function write_post() {
 function add_meta( $post_ID ) {
 	$post_ID = (int) $post_ID;
 
-	$metakeyselect = isset($_POST['metakeyselect']) ? wp_unslash( trim( $_POST['metakeyselect'] ) ) : '';
-	$metakeyinput = isset($_POST['metakeyinput']) ? wp_unslash( trim( $_POST['metakeyinput'] ) ) : '';
-	$metavalue = isset($_POST['metavalue']) ? $_POST['metavalue'] : '';
+	$app = getApp();
+	$_post = $app['request']->request;
+
+	$metakeyselect = wp_unslash( trim( $_post->get( 'metakeyselect', '' ) ) );
+	$metakeyinput = wp_unslash( trim( $_post->get( 'metakeyinput', '' ) ) );
+	$metavalue = $_post->get( 'metavalue', '' );
 	if ( is_string( $metavalue ) )
 		$metavalue = trim( $metavalue );
 
@@ -1672,9 +1706,12 @@ function _admin_notice_post_locked() {
  * @return mixed The autosave revision ID. WP_Error or 0 on error.
  */
 function wp_create_post_autosave( $post_data ) {
+	$app = getApp();
+	$_post = $app['request']->request;
+
 	if ( is_numeric( $post_data ) ) {
 		$post_id = $post_data;
-		$post_data = $_POST;
+		$post_data = $_post->all();
 	} else {
 		$post_id = (int) $post_data['post_ID'];
 	}
@@ -1734,9 +1771,11 @@ function wp_create_post_autosave( $post_data ) {
  * @return str URL to redirect to show the preview
  */
 function post_preview() {
+	$app = getApp();
+	$_post = $app['request']->request;
 
-	$post_ID = (int) $_POST['post_ID'];
-	$_POST['ID'] = $post_ID;
+	$post_ID = $_post->getInt( 'post_ID' );
+	$_post->set( 'ID', $post_ID );
 
 	if ( ! $post = get_post( $post_ID ) ) {
 		wp_die( __( 'Sorry, you are not allowed to edit this post.' ) );
@@ -1753,8 +1792,9 @@ function post_preview() {
 	} else {
 		$is_autosave = true;
 
-		if ( isset( $_POST['post_status'] ) && 'auto-draft' == $_POST['post_status'] )
-			$_POST['post_status'] = 'draft';
+		if ( $_post->get( 'post_status' ) && 'auto-draft' == $_post->get( 'post_status' ) ) {
+			$_post->set( 'post_status', 'draft' );
+		}
 
 		$saved_post_id = wp_create_post_autosave( $post->ID );
 	}
@@ -1768,12 +1808,12 @@ function post_preview() {
 		$query_args['preview_id'] = $post->ID;
 		$query_args['preview_nonce'] = wp_create_nonce( 'post_preview_' . $post->ID );
 
-		if ( isset( $_POST['post_format'] ) ) {
-			$query_args['post_format'] = empty( $_POST['post_format'] ) ? 'standard' : sanitize_key( $_POST['post_format'] );
+		if ( $_post->get( 'post_format' ) ) {
+			$query_args['post_format'] = empty( $_post->get( 'post_format' ) ) ? 'standard' : sanitize_key( $_post->get( 'post_format' ) );
 		}
 
-		if ( isset( $_POST['_thumbnail_id'] ) ) {
-			$query_args['_thumbnail_id'] = ( intval( $_POST['_thumbnail_id'] ) <= 0 ) ? '-1' : intval( $_POST['_thumbnail_id'] );
+		if ( $_post->get( '_thumbnail_id' ) ) {
+			$query_args['_thumbnail_id'] = $_post->getInt( '_thumbnail_id' ) <= 0 ? '-1' : $_post->getInt( '_thumbnail_id' );
 		}
 	}
 
@@ -1830,10 +1870,13 @@ function wp_autosave( $post_data ) {
  * @param int $post_id Optional. Post ID.
  */
 function redirect_post($post_id = '') {
-	if ( isset($_POST['save']) || isset($_POST['publish']) ) {
+	$app = getApp();
+	$_post = $app['request']->request;
+
+	if ( $_post->get( 'save' ) || $_post->get( 'publish' ) ) {
 		$status = get_post_status( $post_id );
 
-		if ( isset( $_POST['publish'] ) ) {
+		if ( $_post->get( 'publish' ) ) {
 			switch ( $status ) {
 				case 'pending':
 					$message = 8;
@@ -1849,11 +1892,11 @@ function redirect_post($post_id = '') {
 		}
 
 		$location = add_query_arg( 'message', $message, get_edit_post_link( $post_id, 'url' ) );
-	} elseif ( isset($_POST['addmeta']) && $_POST['addmeta'] ) {
+	} elseif ( $_post->get( 'addmeta' ) ) {
 		$location = add_query_arg( 'message', 2, wp_get_referer() );
 		$location = explode('#', $location);
 		$location = $location[0] . '#postcustom';
-	} elseif ( isset($_POST['deletemeta']) && $_POST['deletemeta'] ) {
+	} elseif ( $_post->get( 'deletemeta' ) ) {
 		$location = add_query_arg( 'message', 3, wp_get_referer() );
 		$location = explode('#', $location);
 		$location = $location[0] . '#postcustom';

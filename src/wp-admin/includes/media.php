@@ -635,69 +635,73 @@ function media_upload_form_handler() {
 	check_admin_referer('media-form');
 
 	$errors = null;
+	$app = getApp();
+	$_post = $app['request']->request;
 
-	if ( isset($_POST['send']) ) {
-		$keys = array_keys( $_POST['send'] );
+	if ( $_post->get( 'send' ) ) {
+		$keys = array_keys( $_post->get( 'send' ) );
 		$send_id = (int) reset( $keys );
 	}
 
-	if ( !empty($_POST['attachments']) ) foreach ( $_POST['attachments'] as $attachment_id => $attachment ) {
-		$post = $_post = get_post($attachment_id, ARRAY_A);
+	if ( ! empty( $_post->get( 'attachments' ) ) ) {
+		foreach ( $_post->get( 'attachments' ) as $attachment_id => $attachment ) {
+			$post = $_p = get_post($attachment_id, ARRAY_A);
 
-		if ( !current_user_can( 'edit_post', $attachment_id ) )
-			continue;
+			if ( !current_user_can( 'edit_post', $attachment_id ) )
+				continue;
 
-		if ( isset($attachment['post_content']) )
-			$post['post_content'] = $attachment['post_content'];
-		if ( isset($attachment['post_title']) )
-			$post['post_title'] = $attachment['post_title'];
-		if ( isset($attachment['post_excerpt']) )
-			$post['post_excerpt'] = $attachment['post_excerpt'];
-		if ( isset($attachment['menu_order']) )
-			$post['menu_order'] = $attachment['menu_order'];
+			if ( isset($attachment['post_content']) )
+				$post['post_content'] = $attachment['post_content'];
+			if ( isset($attachment['post_title']) )
+				$post['post_title'] = $attachment['post_title'];
+			if ( isset($attachment['post_excerpt']) )
+				$post['post_excerpt'] = $attachment['post_excerpt'];
+			if ( isset($attachment['menu_order']) )
+				$post['menu_order'] = $attachment['menu_order'];
 
-		if ( isset($send_id) && $attachment_id == $send_id ) {
-			if ( isset($attachment['post_parent']) )
-				$post['post_parent'] = $attachment['post_parent'];
-		}
-
-		/**
-		 * Filters the attachment fields to be saved.
-		 *
-		 * @since 2.5.0
-		 *
-		 * @see wp_get_attachment_metadata()
-		 *
-		 * @param array $post       An array of post data.
-		 * @param array $attachment An array of attachment metadata.
-		 */
-		$post = apply_filters( 'attachment_fields_to_save', $post, $attachment );
-
-		if ( isset($attachment['image_alt']) ) {
-			$image_alt = wp_unslash( $attachment['image_alt'] );
-			if ( $image_alt != get_post_meta($attachment_id, '_wp_attachment_image_alt', true) ) {
-				$image_alt = wp_strip_all_tags( $image_alt, true );
-
-				// Update_meta expects slashed.
-				update_post_meta( $attachment_id, '_wp_attachment_image_alt', wp_slash( $image_alt ) );
+			if ( isset($send_id) && $attachment_id == $send_id ) {
+				if ( isset($attachment['post_parent']) )
+					$post['post_parent'] = $attachment['post_parent'];
 			}
-		}
 
-		if ( isset($post['errors']) ) {
-			$errors[$attachment_id] = $post['errors'];
-			unset($post['errors']);
-		}
+			/**
+			 * Filters the attachment fields to be saved.
+			 *
+			 * @since 2.5.0
+			 *
+			 * @see wp_get_attachment_metadata()
+			 *
+			 * @param array $post       An array of post data.
+			 * @param array $attachment An array of attachment metadata.
+			 */
+			$post = apply_filters( 'attachment_fields_to_save', $post, $attachment );
 
-		if ( $post != $_post )
-			wp_update_post($post);
+			if ( isset($attachment['image_alt']) ) {
+				$image_alt = wp_unslash( $attachment['image_alt'] );
+				if ( $image_alt != get_post_meta($attachment_id, '_wp_attachment_image_alt', true) ) {
+					$image_alt = wp_strip_all_tags( $image_alt, true );
 
-		foreach ( get_attachment_taxonomies($post) as $t ) {
-			if ( isset($attachment[$t]) )
-				wp_set_object_terms($attachment_id, array_map('trim', preg_split('/,+/', $attachment[$t])), $t, false);
+					// Update_meta expects slashed.
+					update_post_meta( $attachment_id, '_wp_attachment_image_alt', wp_slash( $image_alt ) );
+				}
+			}
+
+			if ( isset($post['errors']) ) {
+				$errors[$attachment_id] = $post['errors'];
+				unset($post['errors']);
+			}
+
+			if ( $post != $_p )
+				wp_update_post($post);
+
+			foreach ( get_attachment_taxonomies($post) as $t ) {
+				if ( isset($attachment[$t]) )
+					wp_set_object_terms($attachment_id, array_map('trim', preg_split('/,+/', $attachment[$t])), $t, false);
+			}
 		}
 	}
 
-	if ( isset($_POST['insert-gallery']) || isset($_POST['update-gallery']) ) { ?>
+	if ( $_post->get( 'insert-gallery' ) || $_post->get( 'update-gallery' ) ) { ?>
 		<script type="text/javascript">
 		var win = window.dialogArguments || opener || parent || top;
 		win.tb_remove();
@@ -706,8 +710,9 @@ function media_upload_form_handler() {
 		exit;
 	}
 
-	if ( isset($send_id) ) {
-		$attachment = wp_unslash( $_POST['attachments'][$send_id] );
+	if ( isset( $send_id ) ) {
+		$attachments = $_post->get( 'attachments' );
+		$attachment = wp_unslash( $attachments[ $send_id ] );
 
 		$html = isset( $attachment['post_title'] ) ? $attachment['post_title'] : '';
 		if ( !empty($attachment['url']) ) {
@@ -744,11 +749,12 @@ function media_upload_form_handler() {
  */
 function wp_media_upload_handler() {
 	$app = getApp();
+	$_post = $app['request']->request;
 	$_request = $app['request']->attributes;
 	$errors = [];
 	$id = 0;
 
-	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
+	if ( $_post->get( 'html-upload' ) && !empty($_FILES) ) {
 		check_admin_referer('media-form');
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_request->get( 'post_id' ) );
@@ -759,13 +765,14 @@ function wp_media_upload_handler() {
 		}
 	}
 
-	if ( !empty($_POST['insertonlybutton']) ) {
-		$src = $_POST['src'];
-		if ( !empty($src) && !strpos($src, '://') )
+	if ( !empty( $_post->get( 'insertonlybutton' ) ) ) {
+		$src = $_post->get( 'src' );
+		if ( !empty($src) && !strpos($src, '://') ) {
 			$src = "http://$src";
+		}
 
-		if ( isset( $_POST['media_type'] ) && 'image' != $_POST['media_type'] ) {
-			$title = esc_html( wp_unslash( $_POST['title'] ) );
+		if ( $_post->get( 'media_type' ) && 'image' != $_post->get( 'media_type' ) ) {
+			$title = esc_html( wp_unslash( $_post->get( 'title' ) ) );
 			if ( empty( $title ) )
 				$title = esc_html( basename( $src ) );
 
@@ -792,9 +799,9 @@ function wp_media_upload_handler() {
 			$html = apply_filters( "{$type}_send_to_editor_url", $html, esc_url_raw( $src ), $title );
 		} else {
 			$align = '';
-			$alt = esc_attr( wp_unslash( $_POST['alt'] ) );
-			if ( isset($_POST['align']) ) {
-				$align = esc_attr( wp_unslash( $_POST['align'] ) );
+			$alt = esc_attr( wp_unslash( $_post->get( 'alt' ) ) );
+			if ( $_post->get( 'align' ) ) {
+				$align = esc_attr( wp_unslash( $_post->get( 'align' ) ) );
 				$class = " class='align$align'";
 			}
 			if ( !empty($src) )
@@ -817,12 +824,12 @@ function wp_media_upload_handler() {
 		return media_send_to_editor($html);
 	}
 
-	if ( isset( $_POST['save'] ) ) {
+	if ( $_post->get( 'save' ) ) {
 		$errors['upload_notice'] = __('Saved.');
 		wp_enqueue_script( 'admin-gallery' );
  		return wp_iframe( 'media_upload_gallery_form', $errors );
 
-	} elseif ( ! empty( $_POST ) ) {
+	} elseif ( ! empty( $_post->all()  ) ) {
 		$return = media_upload_form_handler();
 
 		if ( is_string($return) )
@@ -1362,6 +1369,7 @@ function get_media_item( $attachment_id, $args = null ) {
 	global $redir_tab;
 
 	$app = getApp();
+	$_post = $app['request']->request;
 	$_request = $app['request']->attributes;
 
 	if ( ( $attachment_id = intval( $attachment_id ) ) && $thumb_url = wp_get_attachment_image_src( $attachment_id, 'thumbnail', true ) )
@@ -1520,7 +1528,7 @@ function get_media_item( $attachment_id, $args = null ) {
 	$calling_post_id = 0;
 	if ( isset( $_GET['post_id'] ) ) {
 		$calling_post_id = absint( $_GET['post_id'] );
-	} elseif ( isset( $_POST ) && count( $_POST ) ) {// Like for async-upload where $_GET['post_id'] isn't set
+	} elseif ( count( $_post->all() ) ) {// Like for async-upload where $_GET['post_id'] isn't set
 		$calling_post_id = $post->post_parent;
 	}
 	if ( 'image' == $type && $calling_post_id && current_theme_supports( 'post-thumbnails', get_post_type( $calling_post_id ) )

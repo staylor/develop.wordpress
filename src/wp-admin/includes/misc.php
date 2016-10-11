@@ -296,15 +296,19 @@ function update_home_siteurl( $old_value, $value ) {
  * @param array $vars An array of globals to reset.
  */
 function wp_reset_vars( $vars ) {
+	$app = getApp();
+	$_get = $app['request']->query;
+	$_post = $app['request']->request;
+
 	foreach ( $vars as $var ) {
-		if ( empty( $_POST[ $var ] ) ) {
-			if ( empty( $_GET[ $var ] ) ) {
+		if ( empty( $_post->get( $var ) ) ) {
+			if ( empty( $_get->get( $var ) ) ) {
 				$GLOBALS[ $var ] = '';
 			} else {
-				$GLOBALS[ $var ] = $_GET[ $var ];
+				$GLOBALS[ $var ] = $_get->get( $var );
 			}
 		} else {
-			$GLOBALS[ $var ] = $_POST[ $var ];
+			$GLOBALS[ $var ] = $_post->get( $var );
 		}
 	}
 }
@@ -390,14 +394,18 @@ function wp_doc_link_parse( $content ) {
  * @since 2.8.0
  */
 function set_screen_options() {
+	$app = getApp();
+	$_post = $app['request']->request;
 
-	if ( isset($_POST['wp_screen_options']) && is_array($_POST['wp_screen_options']) ) {
+	if ( $_post->get( 'wp_screen_options' ) && is_array( $_post->get( 'wp_screen_options' ) ) ) {
 		check_admin_referer( 'screen-options-nonce', 'screenoptionnonce' );
 
 		if ( !$user = wp_get_current_user() )
 			return;
-		$option = $_POST['wp_screen_options']['option'];
-		$value = $_POST['wp_screen_options']['value'];
+
+		$wp_screen_options = $_post->get( 'wp_screen_options' );
+		$option = $wp_screen_options['option'];
+		$value = $wp_screen_options['value'];
 
 		if ( $option != sanitize_key( $option ) )
 			return;
@@ -458,8 +466,8 @@ function set_screen_options() {
 		update_user_meta($user->ID, $option, $value);
 
 		$url = remove_query_arg( array( 'pagenum', 'apage', 'paged' ), wp_get_referer() );
-		if ( isset( $_POST['mode'] ) ) {
-			$url = add_query_arg( array( 'mode' => $_POST['mode'] ), $url );
+		if ( $_post->get( 'mode' ) ) {
+			$url = add_query_arg( array( 'mode' => $_post->get( 'mode' ) ), $url );
 		}
 
 		wp_safe_redirect( $url );

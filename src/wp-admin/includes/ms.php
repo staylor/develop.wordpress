@@ -43,7 +43,9 @@ function check_upload_size( $file ) {
 		$file['error'] = __( 'You have used your space quota. Please delete files before uploading.' );
 	}
 
-	if ( $file['error'] != '0' && ! isset( $_POST['html-upload'] ) && ! wp_doing_ajax() ) {
+	$app = getApp();
+	$_post = $app['request']->request;
+	if ( $file['error'] != '0' && ! $_post->get( 'html-upload' ) && ! wp_doing_ajax() ) {
 		wp_die( $file['error'] . ' <a href="javascript:history.go(-1)">' . __( 'Back' ) . '</a>' );
 	}
 
@@ -328,31 +330,32 @@ All at ###SITENAME###
 function send_confirmation_on_profile_email() {
 	global $errors;
 	$app = getApp();
+	$_post = $app['request']->request;
 	$wpdb = $app['db'];
 
 	$current_user = wp_get_current_user();
 	if ( ! is_object($errors) )
 		$errors = new WP_Error();
 
-	if ( $current_user->ID != $_POST['user_id'] )
+	if ( $current_user->ID != $_post->get( 'user_id' ) )
 		return false;
 
-	if ( $current_user->user_email != $_POST['email'] ) {
-		if ( !is_email( $_POST['email'] ) ) {
+	if ( $current_user->user_email != $_post->get( 'email' ) ) {
+		if ( !is_email( $_post->get( 'email' ) ) ) {
 			$errors->add( 'user_email', __( "<strong>ERROR</strong>: The email address isn&#8217;t correct." ), array( 'form-field' => 'email' ) );
 			return;
 		}
 
-		if ( $wpdb->get_var( $wpdb->prepare( "SELECT user_email FROM {$wpdb->users} WHERE user_email=%s", $_POST['email'] ) ) ) {
+		if ( $wpdb->get_var( $wpdb->prepare( "SELECT user_email FROM {$wpdb->users} WHERE user_email=%s", $_post->get( 'email' ) ) ) ) {
 			$errors->add( 'user_email', __( "<strong>ERROR</strong>: The email address is already used." ), array( 'form-field' => 'email' ) );
 			delete_user_meta( $current_user->ID, '_new_email' );
 			return;
 		}
 
-		$hash = md5( $_POST['email'] . time() . mt_rand() );
+		$hash = md5( $_post->get( 'email' ) . time() . mt_rand() );
 		$new_user_email = array(
 			'hash' => $hash,
-			'newemail' => $_POST['email']
+			'newemail' => $_post->get( 'email' )
 		);
 		update_user_meta( $current_user->ID, '_new_email', $new_user_email );
 
@@ -392,12 +395,12 @@ All at ###SITENAME###
 
 		$content = str_replace( '###USERNAME###', $current_user->user_login, $content );
 		$content = str_replace( '###ADMIN_URL###', esc_url( admin_url( 'profile.php?newuseremail='.$hash ) ), $content );
-		$content = str_replace( '###EMAIL###', $_POST['email'], $content);
+		$content = str_replace( '###EMAIL###', $_post->get( 'email' ), $content);
 		$content = str_replace( '###SITENAME###', get_site_option( 'site_name' ), $content );
 		$content = str_replace( '###SITEURL###', network_home_url(), $content );
 
-		wp_mail( $_POST['email'], sprintf( __( '[%s] New Email Address' ), wp_specialchars_decode( get_option( 'blogname' ) ) ), $content );
-		$_POST['email'] = $current_user->user_email;
+		wp_mail( $_post->get( 'email' ), sprintf( __( '[%s] New Email Address' ), wp_specialchars_decode( get_option( 'blogname' ) ) ), $content );
+		$_post->set( 'email', $current_user->user_email );
 	}
 }
 
@@ -920,7 +923,11 @@ function confirm_delete_users( $users ) {
 	$site_admins = get_super_admins();
 	$admin_out = '<option value="' . esc_attr( $current_user->ID ) . '">' . $current_user->user_login . '</option>'; ?>
 	<table class="form-table">
-	<?php foreach ( ( $allusers = (array) $_POST['allusers'] ) as $user_id ) {
+	<?php
+	$app = getApp();
+	$_post = $app['request']->request;
+
+	foreach ( ( $allusers = (array) $_post->get( 'allusers' ) ) as $user_id ) {
 		if ( $user_id != '' && $user_id != '0' ) {
 			$delete_user = get_userdata( $user_id );
 

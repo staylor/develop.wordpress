@@ -1012,6 +1012,9 @@ function _wp_delete_orphaned_draft_menu_items() {
  * @return array $messages The menu updated message
  */
 function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_selected_title ) {
+	$app = getApp();
+	$_post = $app['request']->request;
+
 	$unsorted_menu_items = wp_get_nav_menu_items( $nav_menu_selected_id, array( 'orderby' => 'ID', 'output' => ARRAY_A, 'output_key' => 'ID', 'post_status' => 'draft,publish' ) );
 	$messages = [];
 	$menu_items = [];
@@ -1028,18 +1031,22 @@ function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_select
 
 	wp_defer_term_counting( true );
 	// Loop through all the menu items' POST variables
-	if ( ! empty( $_POST['menu-item-db-id'] ) ) {
-		foreach ( (array) $_POST['menu-item-db-id'] as $_key => $k ) {
+	$menu_item_db_id = $_post->get( 'menu-item-db-id' );
+	if ( ! empty( $menu_item_db_id ) ) {
+		foreach ( (array) $menu_item_db_id as $_key => $k ) {
 
 			// Menu item title can't be blank
-			if ( ! isset( $_POST['menu-item-title'][ $_key ] ) || '' == $_POST['menu-item-title'][ $_key ] )
+			$menu_item_title = $_post->get( 'menu-item-title' );
+			if ( ! isset( $menu_item_title[ $_key ] ) || '' == $menu_item_title[ $_key ] ) {
 				continue;
+			}
 
 			$args = [];
-			foreach ( $post_fields as $field )
-				$args[$field] = isset( $_POST[$field][$_key] ) ? $_POST[$field][$_key] : '';
-
-			$menu_item_db_id = wp_update_nav_menu_item( $nav_menu_selected_id, ( $_POST['menu-item-db-id'][$_key] != $_key ? 0 : $_key ), $args );
+			foreach ( $post_fields as $field ) {
+				$f = $_post->get( $field );
+				$args[$field] = isset( $f[ $_key ] ) ? $f[ $_key ] : '';
+			}
+			$menu_item_db_id = wp_update_nav_menu_item( $nav_menu_selected_id, ( $menu_item_db_id[ $_key ] != $_key ? 0 : $_key ), $args );
 
 			if ( is_wp_error( $menu_item_db_id ) ) {
 				$messages[] = '<div id="message" class="error"><p>' . $menu_item_db_id->get_error_message() . '</p></div>';
@@ -1059,7 +1066,7 @@ function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_select
 	}
 
 	// Store 'auto-add' pages.
-	$auto_add = ! empty( $_POST['auto-add-pages'] );
+	$auto_add = ! empty( $_post->get( 'auto-add-pages' ) );
 	$nav_menu_option = (array) get_option( 'nav_menu_options' );
 	if ( ! isset( $nav_menu_option['auto_add'] ) )
 		$nav_menu_option['auto_add'] = [];
@@ -1099,11 +1106,13 @@ function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_select
  * @access private
  */
 function _wp_expand_nav_menu_post_data() {
-	if ( ! isset( $_POST['nav-menu-data'] ) ) {
+	$app = getApp();
+	$_post = $app['request']->request;
+	if ( ! $_post->get( 'nav-menu-data' ) ) {
 		return;
 	}
 
-	$data = json_decode( stripslashes( $_POST['nav-menu-data'] ) );
+	$data = json_decode( stripslashes( $_post->get( 'nav-menu-data' ) ) );
 
 	if ( ! is_null( $data ) && $data ) {
 		foreach ( $data as $post_input_data ) {
@@ -1128,7 +1137,7 @@ function _wp_expand_nav_menu_post_data() {
 				}
 			}
 
-			$_POST = array_replace_recursive( $_POST, $new_post_data );
+			$_post->replace( array_replace_recursive( $_post->all(), $new_post_data ) );
 		}
 	}
 }
