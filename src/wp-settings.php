@@ -24,7 +24,7 @@ $app = WP\getApp();
 $_request = $app['request']->attributes;
 $_post = $app['request']->request;
 $_get = $app['request']->query;
-$_cookies = $app['request']->cookies;
+$_cookie = $app['request']->cookies;
 
 // Set initial default constants including WP_MEMORY_LIMIT, WP_MAX_MEMORY_LIMIT, WP_DEBUG, SCRIPT_DEBUG, WP_CONTENT_DIR and WP_CACHE.
 wp_initial_constants();
