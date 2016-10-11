@@ -2139,21 +2139,23 @@ function wp_ajax_upload_attachment() {
 	 * as the html4 Plupload handler requires a text/html content-type for older IE.
 	 * See https://core.trac.wordpress.org/ticket/31037
 	 */
+	$app = getApp();
+	$_files = $app['request']->files;
+	$_request = $app['request']->attributes;
+	$async_upload = $_files->get( 'async-upload' );
 
 	if ( ! current_user_can( 'upload_files' ) ) {
 		echo wp_json_encode( array(
 			'success' => false,
 			'data'    => array(
 				'message'  => __( 'Sorry, you are not allowed to upload files.' ),
-				'filename' => $_FILES['async-upload']['name'],
+				'filename' => $async_upload['name'],
 			)
 		) );
 
 		wp_die();
 	}
 
-	$app = getApp();
-	$_request = $app['request']->attributes;
 	if ( $_request->has( 'post_id' ) ) {
 		$post_id = $_request->getInt( 'post_id' );
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
@@ -2161,7 +2163,7 @@ function wp_ajax_upload_attachment() {
 				'success' => false,
 				'data'    => array(
 					'message'  => __( 'Sorry, you are not allowed to attach files to this post.' ),
-					'filename' => $_FILES['async-upload']['name'],
+					'filename' => $async_upload['name'],
 				)
 			) );
 
@@ -2175,13 +2177,13 @@ function wp_ajax_upload_attachment() {
 
 	// If the context is custom header or background, make sure the uploaded file is an image.
 	if ( isset( $post_data['context'] ) && in_array( $post_data['context'], array( 'custom-header', 'custom-background' ) ) ) {
-		$wp_filetype = wp_check_filetype_and_ext( $_FILES['async-upload']['tmp_name'], $_FILES['async-upload']['name'] );
+		$wp_filetype = wp_check_filetype_and_ext( $async_upload['tmp_name'], $async_upload['name'] );
 		if ( ! wp_match_mime_types( 'image', $wp_filetype['type'] ) ) {
 			echo wp_json_encode( array(
 				'success' => false,
 				'data'    => array(
 					'message'  => __( 'The uploaded file is not a valid image. Please try again.' ),
-					'filename' => $_FILES['async-upload']['name'],
+					'filename' => $async_upload['name'],
 				)
 			) );
 
@@ -2196,7 +2198,7 @@ function wp_ajax_upload_attachment() {
 			'success' => false,
 			'data'    => array(
 				'message'  => $attachment_id->get_error_message(),
-				'filename' => $_FILES['async-upload']['name'],
+				'filename' => $async_upload['name'],
 			)
 		) );
 

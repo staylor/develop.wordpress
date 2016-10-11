@@ -309,7 +309,7 @@ class WP_REST_Server {
 
 		$request->set_query_params( wp_unslash( $app['request']->query->all() ) );
 		$request->set_body_params( wp_unslash( $app['request']->request->all() ) );
-		$request->set_file_params( $_FILES );
+		$request->set_file_params( $app['request']->files->all() );
 		$request->set_headers( $this->get_headers( wp_unslash( $app['request']->server->all() ) ) );
 		$request->set_body( $this->get_raw_data() );
 

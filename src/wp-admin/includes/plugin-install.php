@@ -323,21 +323,24 @@ function install_plugins_favorites_form() {
 function display_plugins_table() {
 	global $wp_list_table;
 
+	$app = getApp();
+	$_get = $app['request']->query;
+
 	switch ( current_filter() ) {
-		case 'install_plugins_favorites' :
-			if ( empty( $_GET['user'] ) && ! get_user_option( 'wporg_favorites' ) ) {
-				return;
-			}
-			break;
-		case 'install_plugins_recommended' :
-			echo '<p>' . __( 'These suggestions are based on the plugins you and other users have installed.' ) . '</p>';
-			break;
-		case 'install_plugins_beta' :
-			printf(
-				'<p>' . __( 'You are using a development version of WordPress. These feature plugins are also under development. <a href="%s">Learn more</a>.' ) . '</p>',
-				'https://make.wordpress.org/core/handbook/about/release-cycle/features-as-plugins/'
-			);
-			break;
+	case 'install_plugins_favorites' :
+		if ( empty( $_get->get( 'user' ) ) && ! get_user_option( 'wporg_favorites' ) ) {
+			return;
+		}
+		break;
+	case 'install_plugins_recommended' :
+		echo '<p>' . __( 'These suggestions are based on the plugins you and other users have installed.' ) . '</p>';
+		break;
+	case 'install_plugins_beta' :
+		printf(
+			'<p>' . __( 'You are using a development version of WordPress. These feature plugins are also under development. <a href="%s">Learn more</a>.' ) . '</p>',
+			'https://make.wordpress.org/core/handbook/about/release-cycle/features-as-plugins/'
+		);
+		break;
 	}
 
 	?>
@@ -357,6 +360,9 @@ function display_plugins_table() {
  * @return type
  */
 function install_plugin_install_status($api, $loop = false) {
+	$app = getApp();
+	$_get = $app['request']->query;
+
 	// This function is called recursively, $loop prevents further loops.
 	if ( is_array($api) )
 		$api = (object) $api;
@@ -414,9 +420,9 @@ function install_plugin_install_status($api, $loop = false) {
 				$url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=' . $api->slug), 'install-plugin_' . $api->slug);
 		}
 	}
-	if ( isset($_GET['from']) )
-		$url .= '&amp;from=' . urlencode( wp_unslash( $_GET['from'] ) );
-
+	if ( $_get->get( 'from' ) ) {
+		$url .= '&amp;from=' . urlencode( wp_unslash( $_get->get( 'from' ) ) );
+	}
 	$file = $update_file;
 	return compact( 'status', 'url', 'version', 'file' );
 }

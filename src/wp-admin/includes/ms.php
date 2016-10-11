@@ -412,7 +412,8 @@ All at ###SITENAME###
  */
 function new_user_email_admin_notice() {
 	$app = getApp();
-	if ( 'profile.php' === $app['pagenow'] && isset( $_GET['updated'] ) && $email = get_user_meta( get_current_user_id(), '_new_email', true ) ) {
+	$_get = $app['request']->query;
+	if ( 'profile.php' === $app['pagenow'] && $_get->get( 'updated' ) && $email = get_user_meta( get_current_user_id(), '_new_email', true ) ) {
 		/* translators: %s: New email address */
 		echo '<div class="notice notice-info"><p>' . sprintf( __( 'Your email address has not been updated yet. Please check your inbox at %s for a confirmation email.' ), '<code>' . esc_html( $email['newemail'] ) . '</code>' ) . '</p></div>';
 	}
@@ -1048,6 +1049,7 @@ jQuery(document).ready( function($) {
  */
 function network_edit_site_nav( $args = [] ) {
 	$app = getApp();
+	$_get = $app['request']->query;
 
 	/**
 	 * Filters the links that appear on site-editing network pages.
@@ -1077,7 +1079,7 @@ function network_edit_site_nav( $args = [] ) {
 
 	// Parse arguments
 	$r = wp_parse_args( $args, array(
-		'blog_id'  => isset( $_GET['blog_id'] ) ? (int) $_GET['blog_id'] : 0,
+		'blog_id'  => $_get->getInt( 'blog_id', 0 ),
 		'links'    => $links,
 		'selected' => 'site-info',
 	) );

@@ -852,9 +852,12 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 	 * @since 3.4.0
 	 */
 	public function step_2_manage_upload() {
+		$app = getApp();
+		$_files = $app['request']->files;
+
 		$overrides = array('test_form' => false);
 
-		$uploaded_file = $_FILES['import'];
+		$uploaded_file = $_files->get( 'import' );
 		$wp_filetype = wp_check_filetype_and_ext( $uploaded_file['tmp_name'], $uploaded_file['name'] );
 		if ( ! wp_match_mime_types( 'image', $wp_filetype['type'] ) )
 			wp_die( __( 'The uploaded file is not a valid image. Please try again.' ) );

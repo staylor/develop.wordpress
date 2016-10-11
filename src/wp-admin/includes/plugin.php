@@ -539,12 +539,14 @@ function is_network_only_plugin( $plugin ) {
  * @return WP_Error|null WP_Error on invalid file or null on success.
  */
 function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silent = false ) {
+	$app = getApp();
+	$_get = $app['request']->query;
 	$plugin = plugin_basename( trim( $plugin ) );
 
 	if ( is_multisite() && ( $network_wide || is_network_only_plugin($plugin) ) ) {
 		$network_wide = true;
 		$current = get_site_option( 'active_sitewide_plugins', [] );
-		$_GET['networkwide'] = 1; // Back compat for plugins looking for this value.
+		$_get->set( 'networkwide', 1 ); // Back compat for plugins looking for this value.
 	} else {
 		$current = get_option( 'active_plugins', [] );
 	}
@@ -1603,6 +1605,8 @@ function get_admin_page_title() {
 			}
 		}
 	} else {
+		$app = getApp();
+		$_get = $app['request']->query;
 		foreach ( array_keys( $submenu ) as $parent ) {
 			foreach ( $submenu[$parent] as $submenu_array ) {
 				if ( isset( $plugin_page ) &&
@@ -1619,7 +1623,7 @@ function get_admin_page_title() {
 						return $submenu_array[3];
 					}
 
-				if ( $submenu_array[2] != $app['pagenow'] || isset( $_GET['page'] ) ) // not the current page
+				if ( $submenu_array[2] != $app['pagenow'] || $_get->get( 'page' ) ) // not the current page
 					continue;
 
 				if ( isset( $submenu_array[3] ) ) {

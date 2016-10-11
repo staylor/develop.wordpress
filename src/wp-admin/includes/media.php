@@ -77,11 +77,14 @@ function the_media_upload_tabs() {
 	$default = 'type';
 
 	if ( !empty($tabs) ) {
+		$app = getApp();
+		$_get = $app['request']->query;
+
 		echo "<ul id='sidemenu'>\n";
 		if ( isset($redir_tab) && array_key_exists($redir_tab, $tabs) ) {
 			$current = $redir_tab;
-		} elseif ( isset($_GET['tab']) && array_key_exists($_GET['tab'], $tabs) ) {
-			$current = $_GET['tab'];
+		} elseif ( $_get->get( 'tab' ) && array_key_exists( $_get->get( 'tab' ), $tabs ) ) {
+			$current = $_get->get( 'tab' );
 		} else {
 			/** This filter is documented in wp-admin/media-upload.php */
 			$current = apply_filters( 'media_upload_default_tab', $default );
@@ -90,8 +93,9 @@ function the_media_upload_tabs() {
 		foreach ( $tabs as $callback => $text ) {
 			$class = '';
 
-			if ( $current == $callback )
+			if ( $current == $callback ) {
 				$class = " class='current'";
+			}
 
 			$href = add_query_arg(array('tab' => $callback, 's' => false, 'paged' => false, 'post_mime_type' => false, 'm' => false));
 			$link = "<a href='" . esc_url($href) . "'$class>$text</a>";
@@ -271,6 +275,8 @@ win.send_to_editor( <?php echo wp_json_encode( $html ); ?> );
  * @return int|WP_Error ID of the attachment or a WP_Error object on failure.
  */
 function media_handle_upload($file_id, $post_id, $post_data = [], $overrides = array( 'test_form' => false )) {
+	$app = getApp();
+	$_files = $app['request']->files;
 
 	$time = current_time('mysql');
 	if ( $post = get_post($post_id) ) {
@@ -278,12 +284,13 @@ function media_handle_upload($file_id, $post_id, $post_data = [], $overrides = a
 			$time = $post->post_date;
 	}
 
-	$file = wp_handle_upload($_FILES[$file_id], $overrides, $time);
+	$f = $_files->get( $file_id );
+	$file = wp_handle_upload( $f, $overrides, $time);
 
 	if ( isset($file['error']) )
 		return new WP_Error( 'upload_error', $file['error'] );
 
-	$name = $_FILES[$file_id]['name'];
+	$name = $f['name'];
 	$ext  = pathinfo( $name, PATHINFO_EXTENSION );
 	$name = wp_basename( $name, ".$ext" );
 
@@ -749,16 +756,18 @@ function media_upload_form_handler() {
  */
 function wp_media_upload_handler() {
 	$app = getApp();
+	$_get = $app['request']->query;
 	$_post = $app['request']->request;
 	$_request = $app['request']->attributes;
+	$_files = $app['request']->files;
 	$errors = [];
 	$id = 0;
 
-	if ( $_post->get( 'html-upload' ) && !empty($_FILES) ) {
+	if ( $_post->get( 'html-upload' ) && !empty( $_files->all() ) ) {
 		check_admin_referer('media-form');
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_request->get( 'post_id' ) );
-		unset($_FILES);
+		$_files->replace( [] );
 		if ( is_wp_error($id) ) {
 			$errors['upload_error'] = $id;
 			$id = false;
@@ -838,10 +847,11 @@ function wp_media_upload_handler() {
 			$errors = $return;
 	}
 
-	if ( isset($_GET['tab']) && $_GET['tab'] == 'type_url' ) {
+	if ( $_get->get( 'tab' ) == 'type_url' ) {
 		$type = 'image';
-		if ( isset( $_GET['type'] ) && in_array( $_GET['type'], array( 'video', 'audio', 'file' ) ) )
-			$type = $_GET['type'];
+		if ( $_get->get( 'type' ) && in_array( $_get->get( 'type' ), array( 'video', 'audio', 'file' ) ) ) {
+			$type = $_get->get( 'type' );
+		}
 		return wp_iframe( 'media_upload_type_url_form', $type, $errors, $id );
 	}
 
@@ -1369,6 +1379,7 @@ function get_media_item( $attachment_id, $args = null ) {
 	global $redir_tab;
 
 	$app = getApp();
+	$_get = $app['request']->query;
 	$_post = $app['request']->request;
 	$_request = $app['request']->attributes;
 
@@ -1378,7 +1389,7 @@ function get_media_item( $attachment_id, $args = null ) {
 		$thumb_url = false;
 
 	$post = get_post( $attachment_id );
-	$current_post_id = !empty( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
+	$current_post_id = $_get->getInt( 'post_id', 0 );
 
 	$default_args = array(
 		'errors' => null,
@@ -1525,10 +1536,8 @@ function get_media_item( $attachment_id, $args = null ) {
 	}
 
 	$thumbnail = '';
-	$calling_post_id = 0;
-	if ( isset( $_GET['post_id'] ) ) {
-		$calling_post_id = absint( $_GET['post_id'] );
-	} elseif ( count( $_post->all() ) ) {// Like for async-upload where $_GET['post_id'] isn't set
+	$calling_post_id = $_get->getInt( 'post_id', 0 );
+	if ( ! $calling_post_id &&  count( $_post->all() ) ) {// Like for async-upload where $_GET['post_id'] isn't set
 		$calling_post_id = $post->post_parent;
 	}
 	if ( 'image' == $type && $calling_post_id && current_theme_supports( 'post-thumbnails', get_post_type( $calling_post_id ) )
@@ -1787,11 +1796,12 @@ function get_compat_media_markup( $attachment_id, $args = null ) {
  */
 function media_upload_header() {
 	$app = getApp();
+	$_get = $app['request']->query;
 	$_request = $app['request']->attributes;
 	$post_id = $_request->getInt( 'post_id', 0 );
 
 	echo '<script type="text/javascript">post_id = ' . $post_id . ';</script>';
-	if ( empty( $_GET['chromeless'] ) ) {
+	if ( empty( $_get->get( 'chromeless' ) ) ) {
 		echo '<div id="media-upload-header">';
 		the_media_upload_tabs();
 		echo '</div>';
@@ -2373,6 +2383,7 @@ jQuery(function($){
 function media_upload_library_form($errors) {
 	global $type, $tab, $post_mime_types;
 	$app = getApp();
+	$_get = $app['request']->query;
 	$wpdb = $app['db'];
 
 	media_upload_header();
@@ -2388,7 +2399,7 @@ function media_upload_library_form($errors) {
 	if ( get_user_setting('uploader') )
 		$form_class .= ' html-uploader';
 
-	$q = $_GET;
+	$q = $_get->all();
 	$q['posts_per_page'] = 10;
 	$q['paged'] = isset( $q['paged'] ) ? intval( $q['paged'] ) : 0;
 	if ( $q['paged'] < 1 ) {
@@ -2407,8 +2418,8 @@ function media_upload_library_form($errors) {
 <input type="hidden" name="type" value="<?php echo esc_attr( $type ); ?>" />
 <input type="hidden" name="tab" value="<?php echo esc_attr( $tab ); ?>" />
 <input type="hidden" name="post_id" value="<?php echo (int) $post_id; ?>" />
-<input type="hidden" name="post_mime_type" value="<?php echo isset( $_GET['post_mime_type'] ) ? esc_attr( $_GET['post_mime_type'] ) : ''; ?>" />
-<input type="hidden" name="context" value="<?php echo isset( $_GET['context'] ) ? esc_attr( $_GET['context'] ) : ''; ?>" />
+<input type="hidden" name="post_mime_type" value="<?php echo esc_attr( $_get->get( 'post_mime_type', '' ) ); ?>" />
+<input type="hidden" name="context" value="<?php echo esc_attr( $_get->get( 'context', '' ) ); ?>" />
 
 <p id="media-search" class="search-box">
 	<label class="screen-reader-text" for="media-search-input"><?php _e('Search Media');?>:</label>
@@ -2428,14 +2439,15 @@ foreach ( $matches as $_type => $reals )
 		else
 			$num_posts[$_type] = $_num_posts[$real];
 // If available type specified by media button clicked, filter by that type
-if ( empty($_GET['post_mime_type']) && !empty($num_posts[$type]) ) {
-	$_GET['post_mime_type'] = $type;
+if ( empty( $_get->get( 'post_mime_type' ) ) && !empty($num_posts[$type]) ) {
+	$_get->set( 'post_mime_type', $type );
 	list($post_mime_types, $avail_post_mime_types) = wp_edit_attachments_query();
 }
-if ( empty($_GET['post_mime_type']) || $_GET['post_mime_type'] == 'all' )
+if ( empty( $_get->get( 'post_mime_type' ) ) || $_get->get( 'post_mime_type' ) == 'all' ) {
 	$class = ' class="current"';
-else
+} else {
 	$class = '';
+}
 $type_links[] = '<li><a href="' . esc_url(add_query_arg(array('post_mime_type'=>'all', 'paged'=>false, 'm'=>false))) . '"' . $class . '>' . __('All Types') . '</a>';
 foreach ( $post_mime_types as $mime_type => $label ) {
 	$class = '';
@@ -2443,8 +2455,9 @@ foreach ( $post_mime_types as $mime_type => $label ) {
 	if ( !wp_match_mime_types($mime_type, $avail_post_mime_types) )
 		continue;
 
-	if ( isset($_GET['post_mime_type']) && wp_match_mime_types($mime_type, $_GET['post_mime_type']) )
+	if ( $_get->get( 'post_mime_type' ) && wp_match_mime_types($mime_type, $_get->get( 'post_mime_type' ) ) ) {
 		$class = ' class="current"';
+	}
 
 	$type_links[] = '<li><a href="' . esc_url(add_query_arg(array('post_mime_type'=>$mime_type, 'paged'=>false))) . '"' . $class . '>' . sprintf( translate_nooped_plural( $label[2], $num_posts[$mime_type] ), '<span id="' . $mime_type . '-counter">' . number_format_i18n( $num_posts[$mime_type] ) . '</span>') . '</a>';
 }
@@ -2486,7 +2499,7 @@ $arc_query = "SELECT DISTINCT YEAR(post_date) AS yyear, MONTH(post_date) AS mmon
 $arc_result = $wpdb->get_results( $arc_query );
 
 $month_count = count($arc_result);
-$selected_month = isset( $_GET['m'] ) ? $_GET['m'] : 0;
+$selected_month = $_get->getInt( 'm', 0 );
 
 if ( $month_count && !( 1 == $month_count && 0 == $arc_result[0]->mmonth ) ) { ?>
 <select name='m'>
@@ -2734,7 +2747,9 @@ function multisite_over_quota_message() {
  * @param WP_Post $post A post object.
  */
 function edit_form_image_editor( $post ) {
-	$open = isset( $_GET['image-editor'] );
+	$app = getApp();
+	$_get = $app['request']->query;
+	$open = $_get->get( 'image-editor' );
 	if ( $open )
 		require_once ABSPATH . 'wp-admin/includes/image-edit.php';
 

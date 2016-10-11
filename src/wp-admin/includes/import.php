@@ -81,15 +81,19 @@ function wp_import_cleanup( $id ) {
  * @return array Uploaded file's details on success, error message on failure
  */
 function wp_import_handle_upload() {
-	if ( ! isset( $_FILES['import'] ) ) {
+	$app = getApp();
+	$_files = $app['request']->files;
+
+	$import = $_files->get( 'import' );
+	if ( ! $import ) {
 		return array(
 			'error' => __( 'File is empty. Please upload something more substantial. This error could also be caused by uploads being disabled in your php.ini or by post_max_size being defined as smaller than upload_max_filesize in php.ini.' )
 		);
 	}
 
 	$overrides = array( 'test_form' => false, 'test_type' => false );
-	$_FILES['import']['name'] .= '.txt';
-	$upload = wp_handle_upload( $_FILES['import'], $overrides );
+	$import['name'] .= '.txt';
+	$upload = wp_handle_upload( $import, $overrides );
 
 	if ( isset( $upload['error'] ) ) {
 		return $upload;

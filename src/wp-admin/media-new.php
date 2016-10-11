@@ -25,7 +25,7 @@ if ( $post_id ) {
 }
 
 if ( $_post->all() ) {
-	if ( $_post->has( 'html-upload' ) && !empty($_FILES) ) {
+	if ( $_post->has( 'html-upload' ) && !empty( $_files->all() ) ) {
 		check_admin_referer('media-form');
 		// Upload File button was clicked
 		$upload_id = media_handle_upload( 'async-upload', $post_id );

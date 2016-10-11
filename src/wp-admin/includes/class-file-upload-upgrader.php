@@ -7,6 +7,8 @@
  * @since 4.6.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used for handling file uploads.
  *
@@ -55,19 +57,24 @@ class File_Upload_Upgrader {
 	 * @param string $urlholder The name of the `GET` parameter that holds the filename.
 	 */
 	public function __construct( $form, $urlholder ) {
+		$app = getApp();
+		$_get = $app['request']->query;
+		$_files = $app['request']->files;
 
-		if ( empty($_FILES[$form]['name']) && empty($_GET[$urlholder]) )
-			wp_die(__('Please select a file'));
+		$f = $_files->get( $form );
+		if ( empty( $f['name'] ) && empty( $_get->get( $urlholder ) ) ) {
+			wp_die( __( 'Please select a file' ) );
+		}
 
 		//Handle a newly uploaded file, Else assume it's already been uploaded
-		if ( ! empty($_FILES) ) {
+		if ( ! empty( $_files->all() ) ) {
 			$overrides = array( 'test_form' => false, 'test_type' => false );
-			$file = wp_handle_upload( $_FILES[$form], $overrides );
+			$file = wp_handle_upload( $f, $overrides );
 
 			if ( isset( $file['error'] ) )
 				wp_die( $file['error'] );
 
-			$this->filename = $_FILES[$form]['name'];
+			$this->filename = $f['name'];
 			$this->package = $file['file'];
 
 			// Construct the object array
@@ -86,9 +93,9 @@ class File_Upload_Upgrader {
 			// Schedule a cleanup for 2 hours from now in case of failed install.
 			wp_schedule_single_event( time() + 2 * HOUR_IN_SECONDS, 'upgrader_scheduled_cleanup', array( $this->id ) );
 
-		} elseif ( is_numeric( $_GET[$urlholder] ) ) {
+		} elseif ( is_numeric( $_get->get( $urlholder ) ) ) {
 			// Numeric Package = previously uploaded file, see above.
-			$this->id = (int) $_GET[$urlholder];
+			$this->id = $_get->getInt( $urlholder );
 			$attachment = get_post( $this->id );
 			if ( empty($attachment) )
 				wp_die(__('Please select a file'));
@@ -100,7 +107,7 @@ class File_Upload_Upgrader {
 			if ( ! ( ( $uploads = wp_upload_dir() ) && false === $uploads['error'] ) )
 				wp_die( $uploads['error'] );
 
-			$this->filename = sanitize_file_name( $_GET[ $urlholder ] );
+			$this->filename = sanitize_file_name( $_get->get( $urlholder ) );
 			$this->package = $uploads['basedir'] . '/' . $this->filename;
 
 			if ( 0 !== strpos( realpath( $this->package ), realpath( $uploads['basedir'] ) ) ) {

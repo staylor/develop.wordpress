@@ -366,13 +366,17 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) )
 	 * @since 3.0.0
 	 */
 	public function handle_upload() {
-		if ( empty($_FILES) )
+		$app = getApp();
+		$_files = $app['request']->files;
+
+		if ( empty( $_files->all() ) ) {
 			return;
+		}
 
 		check_admin_referer('custom-background-upload', '_wpnonce-custom-background-upload');
 		$overrides = array('test_form' => false);
 
-		$uploaded_file = $_FILES['import'];
+		$uploaded_file = $_files->get( 'import' );
 		$wp_filetype = wp_check_filetype_and_ext( $uploaded_file['tmp_name'], $uploaded_file['name'] );
 		if ( ! wp_match_mime_types( 'image', $wp_filetype['type'] ) )
 			wp_die( __( 'The uploaded file is not a valid image. Please try again.' ) );
