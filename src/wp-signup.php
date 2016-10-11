@@ -834,7 +834,7 @@ if ( is_super_admin() ) {
 	echo '<div class="mu_alert">' . sprintf( __( 'Greetings Site Administrator! You are currently allowing &#8220;%s&#8221; registrations. To change or disable registration go to your <a href="%s">Options page</a>.' ), $i18n_signup[$active_signup], esc_url( network_admin_url( 'settings.php' ) ) ) . '</div>';
 }
 
-$newblogname = $_get->get( 'new' ) ? strtolower(preg_replace('/^-|-$|[^-a-zA-Z0-9]/', '', $_get->get( 'new' ) : null;
+$newblogname = $_get->get( 'new' ) ? strtolower( preg_replace('/^-|-$|[^-a-zA-Z0-9]/', '', $_get->get( 'new' ) ) ) : null;
 
 $current_user = wp_get_current_user();
 if ( $active_signup == 'none' ) {
