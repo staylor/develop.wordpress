@@ -7,15 +7,12 @@
  * @since 3.1.0
  */
 
-use function WP\getApp;
-
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
 if ( ! current_user_can( 'manage_sites' ) )
 	wp_die( __( 'Sorry, you are not allowed to edit this site.' ) );
 
-$app = getApp();
 $wpdb = $app['db'];
 
 get_current_screen()->add_help_tab( array(
@@ -50,13 +47,13 @@ if ( !can_edit_network( $details->site_id ) )
 
 $is_main_site = is_main_site( $id );
 
-if ( 'update-site' == $_request->get( 'action' ) && is_array( $_POST['option'] ) ) {
+if ( 'update-site' == $_request->get( 'action' ) && is_array( $_post->get( 'option' ) ) ) {
 	check_admin_referer( 'edit-site' );
 
 	switch_to_blog( $id );
 
 	$skip_options = array( 'allowedthemes' ); // Don't update these options since they are handled elsewhere in the form.
-	foreach ( (array) $_POST['option'] as $key => $val ) {
+	foreach ( (array) $_post->get( 'option' ) as $key => $val ) {
 		$key = wp_unslash( $key );
 		$val = wp_unslash( $val );
 		if ( $key === 0 || is_array( $val ) || in_array($key, $skip_options) )

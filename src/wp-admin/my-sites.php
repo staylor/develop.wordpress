@@ -15,17 +15,17 @@ if ( !is_multisite() )
 if ( ! current_user_can('read') )
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ) );
 
-$action = isset( $_POST['action'] ) ? $_POST['action'] : 'splash';
+$action = $_post->get( 'action', 'splash' );
 
 $blogs = get_blogs_of_user( $current_user->ID );
 
 $updated = false;
-if ( 'updateblogsettings' == $action && isset( $_POST['primary_blog'] ) ) {
+if ( 'updateblogsettings' == $action && $_post->get( 'primary_blog' ) ) {
 	check_admin_referer( 'update-my-sites' );
 
-	$blog = get_blog_details( (int) $_POST['primary_blog'] );
+	$blog = get_blog_details( $_post->getInt( 'primary_blog' ) );
 	if ( $blog && isset( $blog->domain ) ) {
-		update_user_option( $current_user->ID, 'primary_blog', (int) $_POST['primary_blog'], true );
+		update_user_option( $current_user->ID, 'primary_blog', $_post->getInt( 'primary_blog' ), true );
 		$updated = true;
 	} else {
 		wp_die( __( 'The primary site you chose does not exist.' ) );

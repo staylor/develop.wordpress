@@ -42,7 +42,7 @@ if ( $action ) {
 			exit;
 		case 'enable-selected':
 			check_admin_referer('bulk-themes');
-			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
+			$themes = (array) $_post->get( 'checked', [] );
 			if ( empty($themes) ) {
 				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 				exit;
@@ -52,7 +52,7 @@ if ( $action ) {
 			exit;
 		case 'disable-selected':
 			check_admin_referer('bulk-themes');
-			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
+			$themes = (array) $_post->get( 'checked', [] );
 			if ( empty($themes) ) {
 				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 				exit;
@@ -65,8 +65,8 @@ if ( $action ) {
 
 			if ( isset( $_GET['themes'] ) )
 				$themes = explode( ',', $_GET['themes'] );
-			elseif ( isset( $_POST['checked'] ) )
-				$themes = (array) $_POST['checked'];
+			elseif ( $_post->get( 'checked' ) )
+				$themes = (array) $_post->get( 'checked' );
 			else
 				$themes = [];
 
@@ -193,7 +193,7 @@ if ( $action ) {
 			), network_admin_url( 'themes.php' ) ) );
 			exit;
 		default:
-			$themes = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
+			$themes = (array) $_post->get( 'checked', [] );
 			if ( empty( $themes ) ) {
 				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 				exit;

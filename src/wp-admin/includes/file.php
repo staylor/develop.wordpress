@@ -253,6 +253,9 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 		}
 	}
 
+	$app = getApp();
+	$_post = $app['request']->request;
+
 	/**
 	 * Filters the data for a file before it is uploaded to WordPress.
 	 *
@@ -314,7 +317,7 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 	$mimes = isset( $overrides['mimes'] ) ? $overrides['mimes'] : false;
 
 	// A correct form post will pass this test.
-	if ( $test_form && ( ! isset( $_POST['action'] ) || ( $_POST['action'] != $action ) ) ) {
+	if ( $test_form && ( ! $_post->get( 'action' ) || ( $_post->get( 'action' ) != $action ) ) ) {
 		return call_user_func_array( $upload_error_handler, array( &$file, __( 'Invalid form submission.' ) ) );
 	}
 	// A successful upload will pass this test. It makes no sense to override this one.
@@ -1102,14 +1105,16 @@ function request_filesystem_credentials( $form_post, $type = '', $error = false,
 
 	$credentials = get_option('ftp_credentials', array( 'hostname' => '', 'username' => ''));
 
+	$_post = $app['request']->request;
+
 	// If defined, set it to that, Else, If POST'd, set it to that, If not, Set it to whatever it previously was(saved details in option)
-	$credentials['hostname'] = defined('FTP_HOST') ? FTP_HOST : (!empty($_POST['hostname']) ? wp_unslash( $_POST['hostname'] ) : $credentials['hostname']);
-	$credentials['username'] = defined('FTP_USER') ? FTP_USER : (!empty($_POST['username']) ? wp_unslash( $_POST['username'] ) : $credentials['username']);
-	$credentials['password'] = defined('FTP_PASS') ? FTP_PASS : (!empty($_POST['password']) ? wp_unslash( $_POST['password'] ) : '');
+	$credentials['hostname'] = defined('FTP_HOST') ? FTP_HOST : wp_unslash( $_post->get( 'hostname', $credentials['hostname'] ) );
+	$credentials['username'] = defined('FTP_USER') ? FTP_USER : wp_unslash( $_post->get( 'username', $credentials['username'] ) );
+	$credentials['password'] = defined('FTP_PASS') ? FTP_PASS : wp_unslash( $_post->get( 'password', '' ) );
 
 	// Check to see if we are setting the public/private keys for ssh
-	$credentials['public_key'] = defined('FTP_PUBKEY') ? FTP_PUBKEY : (!empty($_POST['public_key']) ? wp_unslash( $_POST['public_key'] ) : '');
-	$credentials['private_key'] = defined('FTP_PRIKEY') ? FTP_PRIKEY : (!empty($_POST['private_key']) ? wp_unslash( $_POST['private_key'] ) : '');
+	$credentials['public_key'] = defined('FTP_PUBKEY') ? FTP_PUBKEY : wp_unslash( $_post->get( 'public_key', '' ) );
+	$credentials['private_key'] = defined('FTP_PRIKEY') ? FTP_PRIKEY : wp_unslash( $_post->get( 'private_key', '' ) );
 
 	// Sanitize the hostname, Some people might pass in odd-data:
 	$credentials['hostname'] = preg_replace('|\w+://|', '', $credentials['hostname']); //Strip any schemes off
@@ -1126,8 +1131,8 @@ function request_filesystem_credentials( $form_post, $type = '', $error = false,
 		$credentials['connection_type'] = 'ssh';
 	} elseif ( ( defined( 'FTP_SSL' ) && FTP_SSL ) && 'ftpext' == $type ) { //Only the FTP Extension understands SSL
 		$credentials['connection_type'] = 'ftps';
-	} elseif ( ! empty( $_POST['connection_type'] ) ) {
-		$credentials['connection_type'] = wp_unslash( $_POST['connection_type'] );
+	} elseif ( $_post->get( 'connection_type' ) ) {
+		$credentials['connection_type'] = wp_unslash( $_post->get( 'connection_type' ) );
 	} elseif ( ! isset( $credentials['connection_type'] ) ) { //All else fails (And it's not defaulted to something else saved), Default to FTP
 		$credentials['connection_type'] = 'ftp';
 	}
@@ -1266,8 +1271,8 @@ if ( isset( $types['ssh'] ) ) {
 }
 
 foreach ( (array) $extra_fields as $field ) {
-	if ( isset( $_POST[ $field ] ) )
-		echo '<input type="hidden" name="' . esc_attr( $field ) . '" value="' . esc_attr( wp_unslash( $_POST[ $field ] ) ) . '" />';
+	if ( $_post->get( $field ) )
+		echo '<input type="hidden" name="' . esc_attr( $field ) . '" value="' . esc_attr( wp_unslash( $_post->get( $field ) ) ) . '" />';
 }
 ?>
 	<p class="request-filesystem-credentials-action-buttons">

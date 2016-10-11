@@ -98,6 +98,7 @@ function get_clean_basedomain() {
  */
 function network_step1( $errors = false ) {
 	$app = getApp();
+	$_post = $app['request']->request;
 
 	if ( defined('DO_NOT_UPGRADE_GLOBAL_TABLES') ) {
 		echo '<div class="error"><p><strong>' . __('ERROR:') . '</strong> ' . __( 'The constant DO_NOT_UPGRADE_GLOBAL_TABLES cannot be defined when creating a network.' ) . '</p></div>';
@@ -142,15 +143,15 @@ function network_step1( $errors = false ) {
 		$error_codes = $errors->get_error_codes();
 	}
 
-	if ( ! empty( $_POST['sitename'] ) && ! in_array( 'empty_sitename', $error_codes ) ) {
-		$site_name = $_POST['sitename'];
+	if ( $_post->get( 'sitename' ) && ! in_array( 'empty_sitename', $error_codes ) ) {
+		$site_name = $_post->get( 'sitename' );
 	} else {
 		/* translators: %s: Default network name */
 		$site_name = sprintf( __( '%s Sites' ), get_option( 'blogname' ) );
 	}
 
-	if ( ! empty( $_POST['email'] ) && ! in_array( 'invalid_email', $error_codes ) ) {
-		$admin_email = $_POST['email'];
+	if ( $_post->get( 'email' ) && ! in_array( 'invalid_email', $error_codes ) ) {
+		$admin_email = $_post->get( 'email' );
 	} else {
 		$admin_email = get_option( 'admin_email' );
 	}
@@ -159,8 +160,8 @@ function network_step1( $errors = false ) {
 	<p><?php _e( 'Fill in the information below and you&#8217;ll be on your way to creating a network of WordPress sites. We will create configuration files in the next step.' ); ?></p>
 	<?php
 
-	if ( isset( $_POST['subdomain_install'] ) ) {
-		$subdomain_install = (bool) $_POST['subdomain_install'];
+	if ( $_post->get( 'subdomain_install' ) ) {
+		$subdomain_install = (bool) $_post->get( 'subdomain_install' );
 	} elseif ( apache_mod_loaded('mod_rewrite') ) { // assume nothing
 		$subdomain_install = true;
 	} elseif ( !allow_subdirectory_install() ) {
@@ -331,6 +332,7 @@ function network_step1( $errors = false ) {
  */
 function network_step2( $errors = false ) {
 	$app = getApp();
+	$_post = $app['request']->request;
 	$wpdb = $app['db'];
 
 	$hostname          = get_clean_basedomain();
@@ -353,9 +355,9 @@ function network_step2( $errors = false ) {
 	if ( is_wp_error( $errors ) )
 		echo '<div class="error">' . $errors->get_error_message() . '</div>';
 
-	if ( $_POST ) {
+	if ( $_post->all() ) {
 		if ( allow_subdomain_install() )
-			$subdomain_install = allow_subdirectory_install() ? ! empty( $_POST['subdomain_install'] ) : true;
+			$subdomain_install = allow_subdirectory_install() ? ! empty( $_post->get( 'subdomain_install' ) ) : true;
 		else
 			$subdomain_install = false;
 	} else {
@@ -377,7 +379,7 @@ function network_step2( $errors = false ) {
 	$subdir_replacement_01 = $subdomain_install ? '' : '$1';
 	$subdir_replacement_12 = $subdomain_install ? '$1' : '$2';
 
-	if ( $_POST || ! is_multisite() ) {
+	if ( $_post->all() || ! is_multisite() ) {
 ?>
 		<h3><?php esc_html_e( 'Enabling the Network' ); ?></h3>
 		<p><?php _e( 'Complete the following steps to enable the features for creating a network of sites.' ); ?></p>

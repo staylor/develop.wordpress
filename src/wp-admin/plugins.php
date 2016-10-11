@@ -76,7 +76,7 @@ if ( $action ) {
 
 			check_admin_referer('bulk-plugins');
 
-			$plugins = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
+			$plugins = (array) $_post->get( 'checked', [] );
 
 			if ( is_network_admin() ) {
 				foreach ( $plugins as $i => $plugin ) {
@@ -126,8 +126,8 @@ if ( $action ) {
 
 			if ( isset( $_GET['plugins'] ) )
 				$plugins = explode( ',', $_GET['plugins'] );
-			elseif ( isset( $_POST['checked'] ) )
-				$plugins = (array) $_POST['checked'];
+			elseif ( $_post->get( 'checked' ) )
+				$plugins = (array) $_post->get( 'checked');
 			else
 				$plugins = [];
 
@@ -200,7 +200,7 @@ if ( $action ) {
 
 			check_admin_referer('bulk-plugins');
 
-			$plugins = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
+			$plugins = (array) $_post->get( 'checked', [] );
 			// Do not deactivate plugins which are already deactivated.
 			if ( is_network_admin() ) {
 				$plugins = array_filter( $plugins, 'is_plugin_active_for_network' );
@@ -361,9 +361,9 @@ if ( $action ) {
 			break;
 
 		default:
-			if ( isset( $_POST['checked'] ) ) {
+			if ( $_post->get( 'checked' ) ) {
 				check_admin_referer('bulk-plugins');
-				$plugins = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : [];
+				$plugins = (array) $_post->get( 'checked', [] );
 				$sendback = wp_get_referer();
 
 				/**

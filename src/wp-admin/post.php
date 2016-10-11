@@ -18,8 +18,8 @@ wp_reset_vars( array( 'action' ) );
 
 if ( isset( $_GET['post'] ) )
  	$post_id = $post_ID = (int) $_GET['post'];
-elseif ( isset( $_POST['post_ID'] ) )
- 	$post_id = $post_ID = (int) $_POST['post_ID'];
+elseif ( $_post->get( 'post_ID' ) )
+ 	$post_id = $post_ID = $_post->getInt( 'post_ID' );
 else
  	$post_id = $post_ID = 0;
 
@@ -39,9 +39,9 @@ if ( $post ) {
 	$post_type_object = get_post_type_object( $post_type );
 }
 
-if ( isset( $_POST['deletepost'] ) )
+if ( $_post->get( 'deletepost' ) )
 	$action = 'delete';
-elseif ( isset($_POST['wp-preview']) && 'dopreview' == $_POST['wp-preview'] )
+elseif ( 'dopreview' == $_post->get( 'wp-preview' ) )
 	$action = 'preview';
 
 $sendback = wp_get_referer();
@@ -82,8 +82,8 @@ case 'post-quickdraft-save':
 	$post = get_post( $_request->getInt( 'post_ID' ) );
 	check_admin_referer( 'add-' . $post->post_type );
 
-	$_POST['comment_status'] = get_default_comment_status( $post->post_type );
-	$_POST['ping_status']    = get_default_comment_status( $post->post_type, 'pingback' );
+	$_post->set( 'comment_status', get_default_comment_status( $post->post_type ) );
+	$_post->set( 'ping_status', get_default_comment_status( $post->post_type, 'pingback' ) );
 
 	edit_post();
 	wp_dashboard_quick_press();
@@ -179,12 +179,12 @@ case 'editattachment':
 	check_admin_referer('update-post_' . $post_id);
 
 	// Don't let these be changed
-	unset($_POST['guid']);
-	$_POST['post_type'] = 'attachment';
+	$_post->remove( 'guid' );
+	$_post->set( 'post_type', 'attachment' );
 
 	// Update the thumbnail filename
 	$newmeta = wp_get_attachment_metadata( $post_id, true );
-	$newmeta['thumb'] = $_POST['thumb'];
+	$newmeta['thumb'] = $_post->get( 'thumb' );
 
 	wp_update_attachment_metadata( $post_id, $newmeta );
 

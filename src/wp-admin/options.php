@@ -153,7 +153,7 @@ $whitelist_options = apply_filters( 'whitelist_options', $whitelist_options );
  * If $_GET['action'] == 'update' we are saving settings sent from a settings page
  */
 if ( 'update' == $action ) {
-	if ( 'options' == $option_page && !isset( $_POST['option_page'] ) ) { // This is for back compat and will eventually be removed.
+	if ( 'options' == $option_page && ! $_post->get( 'option_page' ) ) { // This is for back compat and will eventually be removed.
 		$unregistered = true;
 		check_admin_referer( 'update-options' );
 	} else {
@@ -167,32 +167,32 @@ if ( 'update' == $action ) {
 	if ( 'options' == $option_page ) {
 		if ( is_multisite() && ! is_super_admin() )
 			wp_die( __( 'Sorry, you are not allowed to modify unregistered settings for this site.' ) );
-		$options = explode( ',', wp_unslash( $_POST[ 'page_options' ] ) );
+		$options = explode( ',', wp_unslash( $_post->get( 'page_options' ) ) );
 	} else {
 		$options = $whitelist_options[ $option_page ];
 	}
 
 	if ( 'general' == $option_page ) {
 		// Handle custom date/time formats.
-		if ( !empty($_POST['date_format']) && isset($_POST['date_format_custom']) && '\c\u\s\t\o\m' == wp_unslash( $_POST['date_format'] ) )
-			$_POST['date_format'] = $_POST['date_format_custom'];
-		if ( !empty($_POST['time_format']) && isset($_POST['time_format_custom']) && '\c\u\s\t\o\m' == wp_unslash( $_POST['time_format'] ) )
-			$_POST['time_format'] = $_POST['time_format_custom'];
+		if ( $_post->get( 'date_format' ) && $_post->get( 'date_format_custom' ) && '\c\u\s\t\o\m' == wp_unslash( $_post->get( 'date_format' ) ) )
+			$_post->set( 'date_format', $_post->get( 'date_format_custom' ) );
+		if ( $_post->get( 'time_format' ) && $_post->get( 'time_format_custom' ) && '\c\u\s\t\o\m' == wp_unslash( $_post->get( 'time_format' ) ) )
+			$_post->set( 'time_format', $_post->get( 'time_format_custom' ) );
 		// Map UTC+- timezones to gmt_offsets and set timezone_string to empty.
-		if ( !empty($_POST['timezone_string']) && preg_match('/^UTC[+-]/', $_POST['timezone_string']) ) {
-			$_POST['gmt_offset'] = $_POST['timezone_string'];
-			$_POST['gmt_offset'] = preg_replace('/UTC\+?/', '', $_POST['gmt_offset']);
-			$_POST['timezone_string'] = '';
+		if ( $_post->get( 'timezone_string' ) && preg_match('/^UTC[+-]/', $_post->get( 'timezone_string' ) ) ) {
+			$_post->set( 'gmt_offset', $_post->get( 'timezone_string' ) );
+			$_post->set( 'gmt_offset', preg_replace('/UTC\+?/', '', $_post->get( 'gmt_offset' ) ) );
+			$_post->set( 'timezone_string', '' );
 		}
 
 		// Handle translation install.
-		if ( ! empty( $_POST['WPLANG'] ) && ( ! is_multisite() || is_super_admin() ) ) { // @todo: Skip if already installed
+		if ( ! empty( $_post->get( 'WPLANG' ) ) && ( ! is_multisite() || is_super_admin() ) ) { // @todo: Skip if already installed
 			require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
 			if ( wp_can_install_language_pack() ) {
-				$language = wp_download_language_pack( $_POST['WPLANG'] );
+				$language = wp_download_language_pack( $_post->get( 'WPLANG' ) );
 				if ( $language ) {
-					$_POST['WPLANG'] = $language;
+					$_post->set( 'WPLANG', $language );
 				}
 			}
 		}
@@ -212,8 +212,8 @@ if ( 'update' == $action ) {
 
 			$option = trim( $option );
 			$value = null;
-			if ( isset( $_POST[ $option ] ) ) {
-				$value = $_POST[ $option ];
+			if ( $_post->get(  $option ) ) {
+				$value = $_post->get( $option );
 				if ( ! is_array( $value ) ) {
 					$value = trim( $value );
 				}

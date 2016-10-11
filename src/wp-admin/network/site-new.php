@@ -38,10 +38,10 @@ get_current_screen()->set_help_sidebar(
 if ( 'add-site' == $_request->get( 'action' ) ) {
 	check_admin_referer( 'add-blog', '_wpnonce_add-blog' );
 
-	if ( ! is_array( $_POST['blog'] ) )
+	if ( ! is_array( $_post->get( 'blog' ) ) )
 		wp_die( __( 'Can&#8217;t create an empty site.' ) );
 
-	$blog = $_POST['blog'];
+	$blog = $_post->get( 'blog' );
 	$domain = '';
 	if ( preg_match( '|^([a-zA-Z0-9-])+$|', $blog['domain'] ) )
 		$domain = strtolower( $blog['domain'] );
@@ -67,11 +67,11 @@ if ( 'add-site' == $_request->get( 'action' ) ) {
 	);
 
 	// Handle translation install for the new site.
-	if ( isset( $_POST['WPLANG'] ) ) {
-		if ( '' === $_POST['WPLANG'] ) {
+	if ( $_post->get( 'WPLANG' ) ) {
+		if ( '' === $_post->get( 'WPLANG' ) ) {
 			$meta['WPLANG'] = ''; // en_US
 		} elseif ( wp_can_install_language_pack() ) {
-			$language = wp_download_language_pack( wp_unslash( $_POST['WPLANG'] ) );
+			$language = wp_download_language_pack( wp_unslash( $_post->get( 'WPLANG' ) ) );
 			if ( $language ) {
 				$meta['WPLANG'] = $language;
 			}

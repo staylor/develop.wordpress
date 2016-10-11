@@ -106,11 +106,16 @@ class WP_Press_This {
 	 * @access public
 	 */
 	public function save_post() {
-		if ( empty( $_POST['post_ID'] ) || ! $post_id = (int) $_POST['post_ID'] ) {
+		$app = getApp();
+		$_post = $app['request']->request;
+
+		$post_id = $_post->getInt( 'post_ID' );
+
+		if ( ! $post_id ) {
 			wp_send_json_error( array( 'errorMessage' => __( 'Missing post ID.' ) ) );
 		}
 
-		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'update-post_' . $post_id ) ||
+		if ( empty( $_post->get( '_wpnonce' ) ) || ! wp_verify_nonce( $_post->get( '_wpnonce' ), 'update-post_' . $post_id ) ||
 			! current_user_can( 'edit_post', $post_id ) ) {
 
 			wp_send_json_error( array( 'errorMessage' => __( 'Invalid post.' ) ) );
@@ -118,16 +123,16 @@ class WP_Press_This {
 
 		$post_data = array(
 			'ID'            => $post_id,
-			'post_title'    => ( ! empty( $_POST['post_title'] ) ) ? sanitize_text_field( trim( $_POST['post_title'] ) ) : '',
-			'post_content'  => ( ! empty( $_POST['post_content'] ) ) ? trim( $_POST['post_content'] ) : '',
+			'post_title'    => $_post->get( 'post_title' ) ? sanitize_text_field( trim( $_post->get( 'post_title' ) ) ) : '',
+			'post_content'  => $_post->get( 'post_content' ) ? trim( $_post->get( 'post_content' ) ) : '',
 			'post_type'     => 'post',
 			'post_status'   => 'draft',
-			'post_format'   => ( ! empty( $_POST['post_format'] ) ) ? sanitize_text_field( $_POST['post_format'] ) : '',
-			'tax_input'     => ( ! empty( $_POST['tax_input'] ) ) ? $_POST['tax_input'] : [],
-			'post_category' => ( ! empty( $_POST['post_category'] ) ) ? $_POST['post_category'] : [],
+			'post_format'   => $_post->get( 'post_format' ) ? sanitize_text_field( $_post->get( 'post_format' ) ) : '',
+			'tax_input'     => $_post->get( 'tax_input', [] ),
+			'post_category' => $_post->get( 'post_category', [] ),
 		);
 
-		if ( ! empty( $_POST['post_status'] ) && 'publish' === $_POST['post_status'] ) {
+		if ( ! empty( $_post->get( 'post_status' ) ) && 'publish' === $_post->get( 'post_status' ) ) {
 			if ( current_user_can( 'publish_posts' ) ) {
 				$post_data['post_status'] = 'publish';
 			} else {
@@ -165,7 +170,7 @@ class WP_Press_This {
 
 			if ( 'publish' === get_post_status( $post_id ) ) {
 				$redirect = get_post_permalink( $post_id );
-			} elseif ( isset( $_POST['pt-force-redirect'] ) && $_POST['pt-force-redirect'] === 'true' ) {
+			} elseif ( $_post->get( 'pt-force-redirect' ) && $_post->get( 'pt-force-redirect' ) === 'true' ) {
 				$forceRedirect = true;
 				$redirect = get_edit_post_link( $post_id, 'js' );
 			} else {
@@ -199,18 +204,21 @@ class WP_Press_This {
 	 * @access public
 	 */
 	public function add_category() {
-		if ( false === wp_verify_nonce( $_POST['new_cat_nonce'], 'add-category' ) ) {
+		$app = getApp();
+		$_post = $app['request']->request;
+
+		if ( false === wp_verify_nonce( $_post->get( 'new_cat_nonce' ), 'add-category' ) ) {
 			wp_send_json_error();
 		}
 
 		$taxonomy = get_taxonomy( 'category' );
 
-		if ( ! current_user_can( $taxonomy->cap->edit_terms ) || empty( $_POST['name'] ) ) {
+		if ( ! current_user_can( $taxonomy->cap->edit_terms ) || empty( $_post->get( 'name' ) ) ) {
 			wp_send_json_error();
 		}
 
-		$parent = isset( $_POST['parent'] ) && (int) $_POST['parent'] > 0 ? (int) $_POST['parent'] : 0;
-		$names = explode( ',', $_POST['name'] );
+		$parent = $_post->getInt( 'parent', 0 );
+		$names = explode( ',', $_post->get( 'name' ) );
 		$added = $data = [];
 
 		foreach ( $names as $cat_name ) {
@@ -668,11 +676,12 @@ class WP_Press_This {
 
 		$app = getApp();
 		$_request = $app['request']->attributes;
+		$_post = $app['request']->request;
 
 		// Only instantiate the keys we want. Sanity check and sanitize each one.
 		foreach ( array( 'u', 's', 't', 'v' ) as $key ) {
-			if ( ! empty( $_POST[ $key ] ) ) {
-				$value = wp_unslash( $_POST[ $key ] );
+			if ( ! empty( $_post->get( $key ) ) ) {
+				$value = wp_unslash( $_post->get( $key ) );
 			} else if ( ! empty( $_GET[ $key ] ) ) {
 				$value = wp_unslash( $_GET[ $key ] );
 			} else {
@@ -706,16 +715,16 @@ class WP_Press_This {
 			 * If no title, _images, _embed, and _meta was passed via $_POST, fetch data from source as fallback,
 			 * making PT fully backward compatible with the older bookmarklet.
 			 */
-			if ( empty( $_POST ) && ! empty( $data['u'] ) ) {
+			if ( empty( $_post->all() ) && ! empty( $data['u'] ) ) {
 				$data = $this->source_data_fetch_fallback( $data['u'], $data );
 			} else {
 				foreach ( array( '_images', '_embeds' ) as $type ) {
-					if ( empty( $_POST[ $type ] ) ) {
+					if ( empty( $_post->get( $type ) ) ) {
 						continue;
 					}
 
 					$data[ $type ] = [];
-					$items = $this->_limit_array( $_POST[ $type ] );
+					$items = $this->_limit_array( $_post->get( $type ) );
 
 					foreach ( $items as $key => $value ) {
 						if ( $type === '_images' ) {
@@ -731,12 +740,12 @@ class WP_Press_This {
 				}
 
 				foreach ( array( '_meta', '_links' ) as $type ) {
-					if ( empty( $_POST[ $type ] ) ) {
+					if ( empty( $_post->get( $type ) ) ) {
 						continue;
 					}
 
 					$data[ $type ] = [];
-					$items = $this->_limit_array( $_POST[ $type ] );
+					$items = $this->_limit_array( $_post->get( $type ) );
 
 					foreach ( $items as $key => $value ) {
 						// Sanity check. These are associative arrays, $key is usually things like 'title', 'description', 'keywords', etc.

@@ -7,11 +7,8 @@
  * @since 3.0.0
  */
 
-use function WP\getApp;
-
 require_once( __DIR__ . '/admin.php' );
 
-$app = getApp();
 $wpdb = $app['db'];
 
 if ( !is_multisite() )
@@ -39,7 +36,10 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 echo '<div class="wrap">';
 echo '<h1>' . esc_html( $title ) . '</h1>';
 
-if ( isset( $_POST['action'] ) && $_POST['action'] == 'deleteblog' && isset( $_POST['confirmdelete'] ) && $_POST['confirmdelete'] == '1' ) {
+if (
+	$_post->get( 'action' ) == 'deleteblog' &&
+	$_post->get( 'confirmdelete' ) == '1'
+) {
 	check_admin_referer( 'delete-blog' );
 
 	$hash = wp_generate_password( 20, false );

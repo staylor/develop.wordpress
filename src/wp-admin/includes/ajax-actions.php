@@ -2439,7 +2439,7 @@ function wp_ajax_wp_remove_post_lock() {
 	$_post = $app['request']->request;
 
 	$post_id = $_post->getInt( 'post_ID' );
-	if ( ! $post_id || empty( $_POST['active_post_lock'] ) )
+	if ( ! $post_id || empty( $_post->get( 'active_post_lock' ) ) )
 		wp_die( 0 );
 
 	if ( ! $post = get_post( $post_id ) )

@@ -41,7 +41,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __('<a href="https://wordpress.org/support/">Support Forums</a>') . '</p>'
 );
 
-if ( $_POST ) {
+if ( $_post->all() ) {
 	/** This action is documented in wp-admin/network/edit.php */
 	do_action( 'wpmuadminedit' );
 
@@ -49,8 +49,8 @@ if ( $_POST ) {
 
 	$checked_options = array( 'menu_items' => [], 'registrationnotification' => 'no', 'upload_space_check_disabled' => 1, 'add_new_users' => 0 );
 	foreach ( $checked_options as $option_name => $option_unchecked_value ) {
-		if ( ! isset( $_POST[$option_name] ) )
-			$_POST[$option_name] = $option_unchecked_value;
+		if ( ! $_post->get( $option_name ) )
+			$_post->set( $option_name, $option_unchecked_value );
 	}
 
 	$options = array(
@@ -63,17 +63,17 @@ if ( $_POST ) {
 	);
 
 	// Handle translation install.
-	if ( ! empty( $_POST['WPLANG'] ) && wp_can_install_language_pack() ) {  // @todo: Skip if already installed
-		$language = wp_download_language_pack( $_POST['WPLANG'] );
+	if ( $_post->get( 'WPLANG' ) && wp_can_install_language_pack() ) {  // @todo: Skip if already installed
+		$language = wp_download_language_pack( $_post->get( 'WPLANG' ) );
 		if ( $language ) {
-			$_POST['WPLANG'] = $language;
+			$_post->set( 'WPLANG', $language );
 		}
 	}
 
 	foreach ( $options as $option_name ) {
-		if ( ! isset($_POST[$option_name]) )
+		if ( ! $_post->get( $option_name ) )
 			continue;
-		$value = wp_unslash( $_POST[$option_name] );
+		$value = wp_unslash( $_post->get( $option_name ) );
 		update_site_option( $option_name, $value );
 	}
 

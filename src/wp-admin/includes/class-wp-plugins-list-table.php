@@ -516,9 +516,12 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function current_action() {
-		if ( isset($_POST['clear-recent-list']) )
-			return 'clear-recent-list';
+		$app = getApp();
+		$_post = $app['request']->request;
 
+		if ( $_post->get( 'clear-recent-list' ) ) {
+			return 'clear-recent-list';
+		}
 		return parent::current_action();
 	}
 

@@ -36,19 +36,22 @@ function edit_link( $link_id = 0 ) {
 		);
 	}
 
-	$_POST['link_url'] = esc_html( $_POST['link_url'] );
-	$_POST['link_url'] = esc_url($_POST['link_url']);
-	$_POST['link_name'] = esc_html( $_POST['link_name'] );
-	$_POST['link_image'] = esc_html( $_POST['link_image'] );
-	$_POST['link_rss'] = esc_url($_POST['link_rss']);
-	if ( !isset($_POST['link_visible']) || 'N' != $_POST['link_visible'] )
-		$_POST['link_visible'] = 'Y';
+	$app = getApp();
+	$_post = $app['request']->request;
+
+	$_post->set( 'link_url', esc_url( $_post->get( 'link_url' ) ) );
+	$_post->set( 'link_name', esc_html( $_post->get( 'link_name' ) ) );
+	$_post->set( 'link_image', esc_html( $_post->get( 'link_image' ) ) );
+	$_post->set( 'link_rss', esc_url( $_post->get( 'link_rss' ) ) );
+	if ( !isset( $_post->get( 'link_visible' ) ) || 'N' !=  $_post->get( 'link_visible' ) ) {
+		$_post->set( 'link_visible', 'Y' );
+	}
 
 	if ( !empty( $link_id ) ) {
-		$_POST['link_id'] = $link_id;
-		return wp_update_link( $_POST );
+		$_post->set( 'link_id', $link_id );
+		return wp_update_link( $_post->all() );
 	} else {
-		return wp_insert_link( $_POST );
+		return wp_insert_link( $_post->all() );
 	}
 }
 

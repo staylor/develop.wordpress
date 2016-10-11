@@ -72,6 +72,7 @@ function display_header( $body_classes = '' ) {
  */
 function display_setup_form( $error = null ) {
 	$app = getApp();
+	$_post = $app['request']->request;
 	$_request = $app['request']->attributes;
 	$wpdb = $app['db'];
 
@@ -80,13 +81,13 @@ function display_setup_form( $error = null ) {
 
 	// Ensure that Blogs appear in search engines by default.
 	$blog_public = 1;
-	if ( isset( $_POST['weblog_title'] ) ) {
-		$blog_public = isset( $_POST['blog_public'] );
+	if ( $_post->get( 'weblog_title' ) ) {
+		$blog_public = $_post->has( 'blog_public' );
 	}
 
-	$weblog_title = isset( $_POST['weblog_title'] ) ? trim( wp_unslash( $_POST['weblog_title'] ) ) : '';
-	$user_name = isset($_POST['user_name']) ? trim( wp_unslash( $_POST['user_name'] ) ) : '';
-	$admin_email  = isset( $_POST['admin_email']  ) ? trim( wp_unslash( $_POST['admin_email'] ) ) : '';
+	$weblog_title = trim( wp_unslash( $_post->get( 'weblog_title', '' ) ) );
+	$user_name = trim( wp_unslash( $_post->get( 'user_name', '' ) ) );
+	$admin_email  = trim( wp_unslash( $_post->get( 'admin_email', '' ) ) );
 
 	if ( ! is_null( $error ) ) {
 ?>
@@ -122,9 +123,9 @@ function display_setup_form( $error = null ) {
 			</th>
 			<td>
 				<div class="">
-					<?php $initial_password = isset( $_POST['admin_password'] ) ? stripslashes( $_POST['admin_password'] ) : wp_generate_password( 18 ); ?>
+					<?php $initial_password = $_post->get( 'admin_password' ) ? stripslashes( $_post->get( 'admin_password' ) ) : wp_generate_password( 18 ); ?>
 					<input type="password" name="admin_password" id="pass1" class="regular-text" autocomplete="off" data-reveal="1" data-pw="<?php echo esc_attr( $initial_password ); ?>" aria-describedby="pass-strength-result" />
-					<button type="button" class="button wp-hide-pw hide-if-no-js" data-start-masked="<?php echo (int) isset( $_POST['admin_password'] ); ?>" data-toggle="0" aria-label="<?php esc_attr_e( 'Hide password' ); ?>">
+					<button type="button" class="button wp-hide-pw hide-if-no-js" data-start-masked="<?php echo (int) $_post->has( 'admin_password' ); ?>" data-toggle="0" aria-label="<?php esc_attr_e( 'Hide password' ); ?>">
 						<span class="dashicons dashicons-hidden"></span>
 						<span class="text"><?php _e( 'Hide' ); ?></span>
 					</button>
@@ -304,12 +305,12 @@ switch($step) {
 		$scripts_to_print[] = 'user-profile';
 
 		// Fill in the data we gathered
-		$weblog_title = isset( $_POST['weblog_title'] ) ? trim( wp_unslash( $_POST['weblog_title'] ) ) : '';
-		$user_name = isset($_POST['user_name']) ? trim( wp_unslash( $_POST['user_name'] ) ) : '';
-		$admin_password = isset($_POST['admin_password']) ? wp_unslash( $_POST['admin_password'] ) : '';
-		$admin_password_check = isset($_POST['admin_password2']) ? wp_unslash( $_POST['admin_password2'] ) : '';
-		$admin_email  = isset( $_POST['admin_email'] ) ?trim( wp_unslash( $_POST['admin_email'] ) ) : '';
-		$public       = isset( $_POST['blog_public'] ) ? (int) $_POST['blog_public'] : 1;
+		$weblog_title = trim( wp_unslash( $_post->get( 'weblog_title', '' ) ) );
+		$user_name = trim( wp_unslash( $_post->get( 'user_name', '' ) ) );
+		$admin_password = wp_unslash( $_post->get( 'admin_password', '' ) );
+		$admin_password_check = wp_unslash( $_post->get( 'admin_password2', '' ) );
+		$admin_email  = wp_unslash( $_post->get( 'admin_email', '' ) );
+		$public       = $_post->getInt( 'blog_public', 1 );
 
 		// Check email address.
 		$error = false;

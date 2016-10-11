@@ -17,12 +17,12 @@ wp_reset_vars( array( 'action', 'cat_id', 'link_id' ) );
 if ( ! current_user_can('manage_links') )
 	wp_link_manager_disabled_message();
 
-if ( !empty($_POST['deletebookmarks']) )
+if ( $_post->get( 'deletebookmarks' ) )
 	$action = 'deletebookmarks';
-if ( !empty($_POST['move']) )
+if ( $_post->get( 'move' ) )
 	$action = 'move';
-if ( !empty($_POST['linkcheck']) )
-	$linkcheck = $_POST['linkcheck'];
+if ( $_post->get( 'linkcheck' ) )
+	$linkcheck = $_post->get( 'linkcheck' );
 
 $this_file = admin_url('link-manager.php');
 
@@ -75,7 +75,7 @@ switch ($action) {
 		exit;
 
 	case 'save' :
-		$link_id = (int) $_POST['link_id'];
+		$link_id = $_post->getInt( 'link_id' );
 		check_admin_referer('update-bookmark_' . $link_id);
 
 		edit_link($link_id);

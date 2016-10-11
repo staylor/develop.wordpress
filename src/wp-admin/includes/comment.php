@@ -46,44 +46,54 @@ function comment_exists( $comment_author, $comment_date, $timezone = 'blog' ) {
  * @since 2.0.0
  */
 function edit_comment() {
-	if ( ! current_user_can( 'edit_comment', (int) $_POST['comment_ID'] ) )
-		wp_die ( __( 'Sorry, you are not allowed to edit comments on this post.' ) );
+	$app = getApp();
+	$_post = $app['request']->request;
 
-	if ( isset( $_POST['newcomment_author'] ) )
-		$_POST['comment_author'] = $_POST['newcomment_author'];
-	if ( isset( $_POST['newcomment_author_email'] ) )
-		$_POST['comment_author_email'] = $_POST['newcomment_author_email'];
-	if ( isset( $_POST['newcomment_author_url'] ) )
-		$_POST['comment_author_url'] = $_POST['newcomment_author_url'];
-	if ( isset( $_POST['comment_status'] ) )
-		$_POST['comment_approved'] = $_POST['comment_status'];
-	if ( isset( $_POST['content'] ) )
-		$_POST['comment_content'] = $_POST['content'];
-	if ( isset( $_POST['comment_ID'] ) )
-		$_POST['comment_ID'] = (int) $_POST['comment_ID'];
+	if ( ! current_user_can( 'edit_comment', $_post->getInt( 'comment_ID' ) ) ) {
+		wp_die ( __( 'Sorry, you are not allowed to edit comments on this post.' ) );
+	}
+
+	if ( $_post->get( 'newcomment_author' ) ) {
+		$_post->set( 'comment_author', $_post->get( 'newcomment_author' ) );
+	}
+	if ( $_post->get( 'newcomment_author_email' ) ) {
+		$_post->set( 'comment_author_email', $_post->get( 'newcomment_author_email' ) );
+	}
+	if ( $_post->get( 'newcomment_author_url' ) ) {
+		$_post->set( 'comment_author_url', $_post->get( 'newcomment_author_url' ) );
+	}
+	if ( $_post->get( 'comment_status' ) ) {
+		$_post->set( 'comment_approved', $_post->get( 'comment_status' ) );
+	}
+	if ( $_post->get( 'content' ) ) {
+		$_post->set( 'comment_content', $_post->get( 'content' ) );
+	}
+	if ( $_post->get( 'comment_ID' ) ) {
+		$_post->set( 'comment_ID', $_post->getInt( 'comment_ID' ) );
+	}
 
 	foreach ( array ('aa', 'mm', 'jj', 'hh', 'mn') as $timeunit ) {
-		if ( !empty( $_POST['hidden_' . $timeunit] ) && $_POST['hidden_' . $timeunit] != $_POST[$timeunit] ) {
-			$_POST['edit_date'] = '1';
+		if ( $_post->get( 'hidden_' . $timeunit ) && $_post->get( 'hidden_' . $timeunit ) != $_post->get( $timeunit ) ) {
+			$_post->set( 'edit_date', '1' );
 			break;
 		}
 	}
 
-	if ( !empty ( $_POST['edit_date'] ) ) {
-		$aa = $_POST['aa'];
-		$mm = $_POST['mm'];
-		$jj = $_POST['jj'];
-		$hh = $_POST['hh'];
-		$mn = $_POST['mn'];
-		$ss = $_POST['ss'];
+	if ( ! empty ( $_post->get( 'edit_date' ) ) ) {
+		$aa = $_post->get( 'aa' );
+		$mm = $_post->get( 'mm' );
+		$jj = $_post->get( 'jj' );
+		$hh = $_post->get( 'hh' );
+		$mn = $_post->get( 'mn' );
+		$ss = $_post->get( 'ss' );
 		$jj = ($jj > 31 ) ? 31 : $jj;
 		$hh = ($hh > 23 ) ? $hh -24 : $hh;
 		$mn = ($mn > 59 ) ? $mn -60 : $mn;
 		$ss = ($ss > 59 ) ? $ss -60 : $ss;
-		$_POST['comment_date'] = "$aa-$mm-$jj $hh:$mn:$ss";
+		$_post->set( 'comment_date', "$aa-$mm-$jj $hh:$mn:$ss" );
 	}
 
-	wp_update_comment( $_POST );
+	wp_update_comment( $_post->all() );
 }
 
 /**

@@ -23,6 +23,7 @@ function wp_dashboard_setup() {
 	$screen = get_current_screen();
 
 	$app = getApp();
+	$_post = $app['request']->request;
 
 	/* Register Widgets and Controls */
 
@@ -119,10 +120,10 @@ function wp_dashboard_setup() {
 		wp_add_dashboard_widget( $widget_id, $name, $registered[ $widget_id ]['callback'], $app->widgets['controls'][$widget_id]['callback'] );
 	}
 
-	if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset($_POST['widget_id']) ) {
-		check_admin_referer( 'edit-dashboard-widget_' . $_POST['widget_id'], 'dashboard-widget-nonce' );
+	if ( 'POST' == $app['request.method'] && $_post->get( 'widget_id' ) ) {
+		check_admin_referer( 'edit-dashboard-widget_' . $_post->get( 'widget_id' ), 'dashboard-widget-nonce' );
 		ob_start(); // hack - but the same hack wp-admin/widgets.php uses
-		wp_dashboard_trigger_widget_control( $_POST['widget_id'] );
+		wp_dashboard_trigger_widget_control( $_post->get( 'widget_id' ) );
 		ob_end_clean();
 		wp_redirect( remove_query_arg( 'edit' ) );
 		exit;
@@ -1039,6 +1040,9 @@ function wp_dashboard_trigger_widget_control( $widget_control_id = false ) {
  * @param array $form_inputs
  */
 function wp_dashboard_rss_control( $widget_id, $form_inputs = [] ) {
+	$app = getApp();
+	$_post = $app['request']->request;
+
 	if ( !$widget_options = get_option( 'dashboard_widget_options' ) )
 		$widget_options = [];
 
@@ -1048,13 +1052,16 @@ function wp_dashboard_rss_control( $widget_id, $form_inputs = [] ) {
 	$number = 1; // Hack to use wp_widget_rss_form()
 	$widget_options[$widget_id]['number'] = $number;
 
-	if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset($_POST['widget-rss'][$number]) ) {
-		$_POST['widget-rss'][$number] = wp_unslash( $_POST['widget-rss'][$number] );
-		$widget_options[$widget_id] = wp_widget_rss_process( $_POST['widget-rss'][$number] );
+	$widget_rss = $_post->get( 'widget-rss' );
+	if ( 'POST' == $app['request.method'] && isset( $widget_rss[ $number ] ) ) {
+		$widget_rss[ $number ] = wp_unslash( $widget_rss[ $number ] );
+		$_post->set( 'widget-rss', $widget_rss );
+
+		$widget_options[$widget_id] = wp_widget_rss_process( $widget_rss[ $number ] );
 		$widget_options[$widget_id]['number'] = $number;
 
 		// Title is optional. If black, fill it if possible.
-		if ( !$widget_options[$widget_id]['title'] && isset($_POST['widget-rss'][$number]['title']) ) {
+		if ( !$widget_options[$widget_id]['title'] && isset( $widget_rss[ $number ]['title'] ) ) {
 			$rss = fetch_feed($widget_options[$widget_id]['url']);
 			if ( is_wp_error($rss) ) {
 				$widget_options[$widget_id]['title'] = htmlentities(__('Unknown Feed'));

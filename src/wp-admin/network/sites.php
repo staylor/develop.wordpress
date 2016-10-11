@@ -133,10 +133,10 @@ if ( isset( $_GET['action'] ) ) {
 		break;
 
 		case 'allblogs':
-			if ( ( isset( $_POST['action'] ) || isset( $_POST['action2'] ) ) && isset( $_POST['allblogs'] ) ) {
-				$doaction = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+			if ( $_post->get( 'action' ) || $_post->get( 'action2' ) && $_post->get( 'allblogs' ) ) {
+				$doaction = $_post->get( 'action' ) != -1 ? $_post->get( 'action' ) : $_post->get( 'action2' );
 
-				foreach ( (array) $_POST['allblogs'] as $key => $val ) {
+				foreach ( (array) $_post->get( 'allblogs' ) as $key => $val ) {
 					if ( $val != '0' && $val != $current_site->blog_id ) {
 						switch ( $doaction ) {
 							case 'delete':
@@ -159,7 +159,7 @@ if ( isset( $_GET['action'] ) ) {
 				}
 				if ( ! in_array( $doaction, array( 'delete', 'spam', 'notspam' ), true ) ) {
 					$redirect_to = wp_get_referer();
-					$blogs = (array) $_POST['allblogs'];
+					$blogs = (array) $_post->get( 'allblogs' );
 					/**
 					 * Fires when a custom bulk action should be handled.
 					 *

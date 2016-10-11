@@ -96,8 +96,8 @@ if ( $action ) {
 			break;
 		case 'enable-selected':
 			check_admin_referer( 'bulk-themes' );
-			if ( isset( $_POST['checked'] ) ) {
-				$themes = (array) $_POST['checked'];
+			if ( $_post->get( 'checked' ) ) {
+				$themes = (array) $_post->get( 'checked' );
 				$action = 'enabled';
 				$n = count( $themes );
 				foreach ( (array) $themes as $theme )
@@ -109,8 +109,8 @@ if ( $action ) {
 			break;
 		case 'disable-selected':
 			check_admin_referer( 'bulk-themes' );
-			if ( isset( $_POST['checked'] ) ) {
-				$themes = (array) $_POST['checked'];
+			if ( $_post->get( 'checked' ) ) {
+				$themes = (array) $_post->get( 'checked' );
 				$action = 'disabled';
 				$n = count( $themes );
 				foreach ( (array) $themes as $theme )
@@ -121,9 +121,9 @@ if ( $action ) {
 			}
 			break;
 		default:
-			if ( isset( $_POST['checked'] ) ) {
+			if ( $_post->get( 'checked' ) ) {
 				check_admin_referer( 'bulk-themes' );
-				$themes = (array) $_POST['checked'];
+				$themes = (array) $_post->get( 'checked' );
 				$n = count( $themes );
 				/**
 				 * Fires when a custom bulk action should be handled.

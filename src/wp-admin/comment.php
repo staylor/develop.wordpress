@@ -22,7 +22,7 @@ $submenu_file = 'edit-comments.php';
 global $action;
 wp_reset_vars( [ 'action' ] );
 
-if ( isset( $_POST['deletecomment'] ) )
+if ( $_post->get( 'deletecomment' ) )
 	$action = 'deletecomment';
 
 if ( 'cdc' == $action )
@@ -295,14 +295,14 @@ case 'unapprovecomment' :
 
 case 'editedcomment' :
 
-	$comment_id = absint( $_POST['comment_ID'] );
-	$comment_post_id = absint( $_POST['comment_post_ID'] );
+	$comment_id = $_post->getInt( 'comment_ID' );
+	$comment_post_id = $_post->getInt( 'comment_post_ID' );
 
 	check_admin_referer( 'update-comment_' . $comment_id );
 
 	edit_comment();
 
-	$location = ( empty( $_POST['referredby'] ) ? "edit-comments.php?p=$comment_post_id" : $_POST['referredby'] ) . '#comment-' . $comment_id;
+	$location = ( empty( $_post->get( 'referredby' ) ) ? "edit-comments.php?p=$comment_post_id" : $_post->get( 'referredby' ) ) . '#comment-' . $comment_id;
 
 	/**
 	 * Filters the URI the user is redirected to after editing a comment in the admin.

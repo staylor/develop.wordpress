@@ -298,7 +298,7 @@ case 0:
 			$secret_keys[] = $key;
 		}
 	} catch ( Exception $ex ) {
-		$no_api = isset( $_POST['noapi'] );
+		$no_api = $_post->get( 'noapi' );
 
 		if ( ! $no_api ) {
 			$secret_keys = wp_remote_get( 'https://api.wordpress.org/secret-key/1.1/salt/' );

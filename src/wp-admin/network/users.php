@@ -26,12 +26,12 @@ if ( isset( $_GET['action'] ) ) {
 
 			$id = intval( $_GET['id'] );
 			if ( $id != '0' && $id != '1' ) {
-				$_POST['allusers'] = array( $id ); // confirm_delete_users() can only handle with arrays
+				$_post->set( 'allusers', array( $id ) ); // confirm_delete_users() can only handle with arrays
 				$title = __( 'Users' );
 				$parent_file = 'users.php';
 				require_once( ABSPATH . 'wp-admin/admin-header.php' );
 				echo '<div class="wrap">';
-				confirm_delete_users( $_POST['allusers'] );
+				confirm_delete_users( $_post->get( 'allusers' ) );
 				echo '</div>';
 				require_once( ABSPATH . 'wp-admin/admin-footer.php' );
 			} else {
@@ -43,13 +43,13 @@ if ( isset( $_GET['action'] ) ) {
 			if ( !current_user_can( 'manage_network_users' ) )
 				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
-			if ( ( isset( $_POST['action']) || isset($_POST['action2'] ) ) && isset( $_POST['allusers'] ) ) {
+			if ( ( $_post->get( 'action' ) || $_post->get( 'action2' ) ) && $_post->get( 'allusers' ) ) {
 				check_admin_referer( 'bulk-users-network' );
 
-				$doaction = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+				$doaction = $_post->get( 'action' ) != -1 ? $_post->get( 'action' ) : $_post->get( 'action2' );
 				$userfunction = '';
 
-				foreach ( (array) $_POST['allusers'] as $user_id ) {
+				foreach ( (array) $_post->get( 'allusers' ) as $user_id ) {
 					if ( !empty( $user_id ) ) {
 						switch ( $doaction ) {
 							case 'delete':
@@ -59,7 +59,7 @@ if ( isset( $_GET['action'] ) ) {
 								$parent_file = 'users.php';
 								require_once( ABSPATH . 'wp-admin/admin-header.php' );
 								echo '<div class="wrap">';
-								confirm_delete_users( $_POST['allusers'] );
+								confirm_delete_users( $_post->get( 'allusers' ) );
 								echo '</div>';
 								require_once( ABSPATH . 'wp-admin/admin-footer.php' );
 								exit();
@@ -93,7 +93,7 @@ if ( isset( $_GET['action'] ) ) {
 				if ( ! in_array( $doaction, array( 'delete', 'spam', 'notspam' ), true ) ) {
 					$sendback = wp_get_referer();
 
-					$user_ids = (array) $_POST['allusers'];
+					$user_ids = (array) $_post->get( 'allusers' );
 					/**
 					 * Fires when a custom bulk action should be handled.
 					 *
@@ -128,13 +128,14 @@ if ( isset( $_GET['action'] ) ) {
 			if ( ! ( current_user_can( 'manage_network_users' ) && current_user_can( 'delete_users' ) ) )
 				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
-			if ( ! empty( $_POST['blog'] ) && is_array( $_POST['blog'] ) ) {
-				foreach ( $_POST['blog'] as $id => $users ) {
+			if ( $_post->get( 'blog' ) && is_array( $_post->get( 'blog' ) ) ) {
+				foreach ( $_post->get( 'blog' ) as $id => $users ) {
 					foreach ( $users as $blogid => $user_id ) {
 						if ( ! current_user_can( 'delete_user', $id ) )
 							continue;
 
-						if ( ! empty( $_POST['delete'] ) && 'reassign' == $_POST['delete'][$blogid][$id] )
+						$d = $_post->get( 'delete' );
+						if ( $d && 'reassign' == $d[ $blogid ][ $id ] )
 							remove_user_from_blog( $id, $blogid, $user_id );
 						else
 							remove_user_from_blog( $id, $blogid );
@@ -142,8 +143,8 @@ if ( isset( $_GET['action'] ) ) {
 				}
 			}
 			$i = 0;
-			if ( is_array( $_POST['user'] ) && ! empty( $_POST['user'] ) )
-				foreach ( $_POST['user'] as $id ) {
+			if ( is_array( $_post->get( 'user' ) ) && ! empty( $_post->get( 'user' ) ) )
+				foreach ( $_post->get( 'user' ) as $id ) {
 					if ( ! current_user_can( 'delete_user', $id ) )
 						continue;
 					wpmu_delete_user( $id );

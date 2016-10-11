@@ -71,8 +71,8 @@ if ( $action ) {
 	switch ( $action ) {
 		case 'newuser':
 			check_admin_referer( 'add-user', '_wpnonce_add-new-user' );
-			$user = $_POST['user'];
-			if ( ! is_array( $_POST['user'] ) || empty( $user['username'] ) || empty( $user['email'] ) ) {
+			$user = $_post->get( 'user' );
+			if ( ! is_array( $_post->get( 'user' ) ) || empty( $user['username'] ) || empty( $user['email'] ) ) {
 				$update = 'err_new';
 			} else {
 				$password = wp_generate_password( 12, false);
@@ -81,7 +81,7 @@ if ( $action ) {
 				if ( false === $user_id ) {
 		 			$update = 'err_new_dup';
 				} else {
-					add_user_to_blog( $id, $user_id, $_POST['new_role'] );
+					add_user_to_blog( $id, $user_id, $_post->get( 'new_role' ) );
 					$update = 'newuser';
 					/**
 					  * Fires after a user has been created via the network site-users.php page.
@@ -97,13 +97,13 @@ if ( $action ) {
 
 		case 'adduser':
 			check_admin_referer( 'add-user', '_wpnonce_add-user' );
-			if ( !empty( $_POST['newuser'] ) ) {
+			if ( !empty( $_post->get( 'newuser' ) ) ) {
 				$update = 'adduser';
-				$newuser = $_POST['newuser'];
+				$newuser = $_post->get( 'newuser' );
 				$user = get_user_by( 'login', $newuser );
 				if ( $user && $user->exists() ) {
 					if ( ! is_user_member_of_blog( $user->ID, $id ) )
-						add_user_to_blog( $id, $user->ID, $_POST['new_role'] );
+						add_user_to_blog( $id, $user->ID, $_post->get( 'new_role' ) );
 					else
 						$update = 'err_add_member';
 				} else {
