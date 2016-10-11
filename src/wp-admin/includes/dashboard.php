@@ -152,6 +152,9 @@ function wp_dashboard_setup() {
  *                                   (which is the second parameter passed to your callback). Default null.
  */
 function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_callback = null, $callback_args = null ) {
+	$app = getApp();
+	$_get = $app['request']->query;
+
 	$screen = get_current_screen();
 	global $wp_dashboard_control_callbacks;
 
@@ -165,7 +168,7 @@ function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_
 
 	if ( $control_callback && current_user_can( 'edit_dashboard' ) && is_callable( $control_callback ) ) {
 		$wp_dashboard_control_callbacks[$widget_id] = $control_callback;
-		if ( isset( $_GET['edit'] ) && $widget_id == $_GET['edit'] ) {
+		if ( $widget_id == $_get->get( 'edit' ) ) {
 			list($url) = explode( '#', add_query_arg( 'edit', false ), 2 );
 			$widget_name .= ' <span class="postbox-title-action"><a href="' . esc_url( $url ) . '">' . __( 'Cancel' ) . '</a></span>';
 			$callback = '_wp_dashboard_control_callback';

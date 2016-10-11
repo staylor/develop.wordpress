@@ -571,7 +571,7 @@ get_current_screen()->set_help_sidebar(
 
 if ( 'upgrade-core' == $action ) {
 	// Force a update check when requested
-	$force_check = ! empty( $_GET['force-check'] );
+	$force_check = ! empty( $_get->get( 'force-check' ) );
 	wp_version_check( [], $force_check );
 
 	require_once(ABSPATH . 'wp-admin/admin-header.php');
@@ -650,8 +650,8 @@ if ( 'upgrade-core' == $action ) {
 
 	check_admin_referer('upgrade-core');
 
-	if ( isset( $_GET['plugins'] ) ) {
-		$plugins = explode( ',', $_GET['plugins'] );
+	if ( $_get->get( 'plugins' ) ) {
+		$plugins = explode( ',', $_get->get( 'plugins' ) );
 	} elseif ( $_post->get( 'checked' ) ) {
 		$plugins = (array) $_post->get( 'checked' );
 	} else {

@@ -49,8 +49,8 @@ if ( $_request->get( 'post_id' ) && ! current_user_can( 'edit_post' , $_request-
 }
 
 // Upload type: image, video, file, ..?
-if ( isset($_GET['type']) ) {
-	$type = strval($_GET['type']);
+if ( $_get->get( 'type' ) ) {
+	$type = $_get->get( 'type' );
 } else {
 	/**
 	 * Filters the default media upload type in the legacy (pre-3.5.0) media popup.
@@ -64,8 +64,8 @@ if ( isset($_GET['type']) ) {
 }
 
 // Tab: gallery, library, or type-specific.
-if ( isset($_GET['tab']) ) {
-	$tab = strval($_GET['tab']);
+if ( $_get->get( 'tab' ) ) {
+	$tab = $_get->get( 'tab' );
 } else {
 	/**
 	 * Filters the default tab in the legacy (pre-3.5.0) media popup.

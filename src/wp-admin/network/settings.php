@@ -90,7 +90,7 @@ if ( $_post->all() ) {
 
 include( ABSPATH . 'wp-admin/admin-header.php' );
 
-if ( isset( $_GET['updated'] ) ) {
+if ( $_get->get( 'updated' ) ) {
 	?><div id="message" class="updated notice is-dismissible"><p><?php _e( 'Settings saved.' ) ?></p></div><?php
 }
 ?>

@@ -27,7 +27,7 @@ require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
 nocache_headers();
 
-$step = isset( $_GET['step'] ) ? (int) $_GET['step'] : 0;
+$step = $_get->getInt( 'step', 0 );
 
 /**
  * Display install header.

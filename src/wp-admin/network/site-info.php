@@ -121,9 +121,9 @@ if ( 'update-site' == $_request->get( 'action' ) ) {
 	exit;
 }
 
-if ( isset( $_GET['update'] ) ) {
+if ( $_get->get( 'update' ) ) {
 	$messages = [];
-	if ( 'updated' == $_GET['update'] ) {
+	if ( 'updated' == $_get->get( 'update' ) ) {
 		$messages[] = __( 'Site info updated.' );
 	}
 }

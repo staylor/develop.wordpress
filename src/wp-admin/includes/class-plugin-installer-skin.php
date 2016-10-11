@@ -7,6 +7,8 @@
  * @since 4.6.0
  */
 
+use function WP\getApp;
+
 /**
  * Plugin Installer Skin for WordPress Plugin Installer.
  *
@@ -45,11 +47,14 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	 * @access public
 	 */
 	public function after() {
+		$app = getApp();
+		$_get = $app['request']->query;
+
 		$plugin_file = $this->upgrader->plugin_info();
 
 		$install_actions = [];
 
-		$from = isset($_GET['from']) ? wp_unslash( $_GET['from'] ) : 'plugins';
+		$from = wp_unslash( $_get->get( 'from', 'plugins' ) );
 
 		if ( 'import' == $from )
 			$install_actions['activate_plugin'] = '<a class="button button-primary" href="' . wp_nonce_url( 'plugins.php?action=activate&amp;from=import&amp;plugin=' . urlencode( $plugin_file ), 'activate-plugin_' . $plugin_file ) . '" target="_parent">' . __( 'Activate Plugin &amp; Run Importer' ) . '</a>';

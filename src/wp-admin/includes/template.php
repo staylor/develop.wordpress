@@ -1399,6 +1399,9 @@ function add_settings_error( $setting, $code, $message, $type = 'error' ) {
 function get_settings_errors( $setting = '', $sanitize = false ) {
 	global $wp_settings_errors;
 
+	$app = getApp();
+	$_get = $app['request']->query;
+
 	/*
 	 * If $sanitize is true, manually re-run the sanitization for this option
 	 * This allows the $sanitize_callback from register_setting() to run, adding
@@ -1408,7 +1411,7 @@ function get_settings_errors( $setting = '', $sanitize = false ) {
 		sanitize_option( $setting, get_option( $setting ) );
 
 	// If settings were passed back from options.php then use them.
-	if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] && get_transient( 'settings_errors' ) ) {
+	if ( $_get->get( 'settings-updated' ) && get_transient( 'settings_errors' ) ) {
 		$wp_settings_errors = array_merge( (array) $wp_settings_errors, get_transient( 'settings_errors' ) );
 		delete_transient( 'settings_errors' );
 	}
@@ -1458,8 +1461,10 @@ function get_settings_errors( $setting = '', $sanitize = false ) {
  *                               already been submitted.
  */
 function settings_errors( $setting = '', $sanitize = false, $hide_on_update = false ) {
+	$app = getApp();
+	$_get = $app['request']->query;
 
-	if ( $hide_on_update && ! empty( $_GET['settings-updated'] ) )
+	if ( $hide_on_update && ! empty( $_get->get( 'settings-updated' ) ) )
 		return;
 
 	$settings_errors = get_settings_errors( $setting, $sanitize );

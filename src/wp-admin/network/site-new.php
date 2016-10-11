@@ -169,14 +169,14 @@ Name: %3$s' ),
 	}
 }
 
-if ( isset($_GET['update']) ) {
+if ( $_get->get( 'update' ) ) {
 	$messages = [];
-	if ( 'added' == $_GET['update'] )
+	if ( 'added' == $_get->get( 'update' ) )
 		$messages[] = sprintf(
 			/* translators: 1: dashboard url, 2: network admin edit url */
 			__( 'Site added. <a href="%1$s">Visit Dashboard</a> or <a href="%2$s">Edit Site</a>' ),
-			esc_url( get_admin_url( absint( $_GET['id'] ) ) ),
-			network_admin_url( 'site-info.php?id=' . absint( $_GET['id'] ) )
+			esc_url( get_admin_url( $_get->getInt( 'id' ) ) ),
+			network_admin_url( 'site-info.php?id=' . $_get->getInt( 'id' ) )
 		);
 }
 

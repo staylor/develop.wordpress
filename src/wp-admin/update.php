@@ -12,7 +12,7 @@ if ( ! defined( 'IFRAME_REQUEST' ) && isset( $_GET['action'] ) && in_array( $_GE
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( isset($_GET['action']) ) {
+if ( $_get->get( 'action' ) ) {
 	$plugin = trim( $_request->get( 'plugin', '' ) );
 	$theme = urldecode( $_request->get( 'theme', '' ) );
 	$action = $_request->get( 'action', '' );
@@ -23,8 +23,8 @@ if ( isset($_GET['action']) ) {
 
 		check_admin_referer( 'bulk-update-plugins' );
 
-		if ( isset( $_GET['plugins'] ) )
-			$plugins = explode( ',', stripslashes($_GET['plugins']) );
+		if ( $_get->get( 'plugins' ) )
+			$plugins = explode( ',', stripslashes( $_get->get( 'plugins' ) ) );
 		elseif ( $_post->get( 'checked' ) )
 			$plugins = (array) $_post->get( 'checked' );
 		else
@@ -69,17 +69,17 @@ if ( isset($_GET['action']) ) {
 			wp_die(__('Sorry, you are not allowed to update plugins for this site.'));
 
 		check_admin_referer('activate-plugin_' . $plugin);
-		if ( ! isset($_GET['failure']) && ! isset($_GET['success']) ) {
-			wp_redirect( admin_url('update.php?action=activate-plugin&failure=true&plugin=' . urlencode( $plugin ) . '&_wpnonce=' . $_GET['_wpnonce']) );
-			activate_plugin( $plugin, '', ! empty( $_GET['networkwide'] ), true );
-			wp_redirect( admin_url('update.php?action=activate-plugin&success=true&plugin=' . urlencode( $plugin ) . '&_wpnonce=' . $_GET['_wpnonce']) );
+		if ( ! $_get->get( 'failure' ) && ! $_get->get( 'success' ) ) {
+			wp_redirect( admin_url('update.php?action=activate-plugin&failure=true&plugin=' . urlencode( $plugin ) . '&_wpnonce=' . $_get->get( '_wpnonce' ) ) );
+			activate_plugin( $plugin, '', ! empty( $_get->get( 'networkwide' ) ), true );
+			wp_redirect( admin_url('update.php?action=activate-plugin&success=true&plugin=' . urlencode( $plugin ) . '&_wpnonce=' . $_get->get( '_wpnonce' ) ) );
 			die();
 		}
 		iframe_header( __('Plugin Reactivation'), true );
-		if ( isset($_GET['success']) )
+		if ( $_get->get( 'success' ) )
 			echo '<p>' . __('Plugin reactivated successfully.') . '</p>';
 
-		if ( isset($_GET['failure']) ){
+		if ( $_get->get( 'failure' ) ){
 			echo '<p>' . __('Plugin failed to reactivate due to a fatal error.') . '</p>';
 
 			error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_RECOVERABLE_ERROR );
@@ -126,8 +126,8 @@ if ( isset($_GET['action']) ) {
 		$title = sprintf( __('Installing Plugin: %s'), $api->name . ' ' . $api->version );
 		$nonce = 'install-plugin_' . $plugin;
 		$url = 'update.php?action=install-plugin&plugin=' . urlencode( $plugin );
-		if ( isset($_GET['from']) )
-			$url .= '&from=' . urlencode(stripslashes($_GET['from']));
+		if ( $_get->get( 'from' ) )
+			$url .= '&from=' . urlencode( stripslashes( $_get->get( 'from' ) ) );
 
 		$type = 'web'; //Install plugin type, From Web or an Upload.
 
@@ -192,8 +192,8 @@ if ( isset($_GET['action']) ) {
 
 		check_admin_referer( 'bulk-update-themes' );
 
-		if ( isset( $_GET['themes'] ) )
-			$themes = explode( ',', stripslashes($_GET['themes']) );
+		if ( $_get->get( 'themes' ) )
+			$themes = explode( ',', stripslashes( $_get->get( 'themes' ) ) );
 		elseif ( $_post->get( 'checked' ) )
 			$themes = (array) $_post->get( 'checked' );
 		else

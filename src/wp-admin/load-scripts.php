@@ -26,14 +26,14 @@ if ( empty($load) )
 
 require( ABSPATH . 'vendor/autoload.php' );
 
+$app = WP\getApp();
+
 require( ABSPATH . 'wp-admin/includes/noop.php' );
 require( ABSPATH . WPINC . '/script-loader.php' );
 require( ABSPATH . WPINC . '/version.php' );
 
-$app = WP\getApp();
-
-$compress = ( isset($_GET['c']) && $_GET['c'] );
-$force_gzip = ( $compress && 'gzip' == $_GET['c'] );
+$compress = ( $_get->get( 'c' ) );
+$force_gzip = ( $compress && 'gzip' == $_get->get( 'c' ) );
 $expires_offset = 31536000; // 1 year
 $out = '';
 

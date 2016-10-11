@@ -481,6 +481,7 @@ class WP_List_Table {
 	 */
 	protected function months_dropdown( $post_type ) {
 		$app = getApp();
+		$_get = $app['request']->query;
 		$wpdb = $app['db'];
 
 		/**
@@ -496,10 +497,10 @@ class WP_List_Table {
 		}
 
 		$extra_checks = "AND post_status != 'auto-draft'";
-		if ( ! isset( $_GET['post_status'] ) || 'trash' !== $_GET['post_status'] ) {
+		if ( ! $_get->get( 'post_status' ) || 'trash' !== $_get->get( 'post_status' ) ) {
 			$extra_checks .= " AND post_status != 'trash'";
-		} elseif ( isset( $_GET['post_status'] ) ) {
-			$extra_checks = $wpdb->prepare( ' AND post_status = %s', $_GET['post_status'] );
+		} elseif ( $_get->get( 'post_status' ) ) {
+			$extra_checks = $wpdb->prepare( ' AND post_status = %s', $_get->get( 'post_status' ) );
 		}
 
 		$months = $wpdb->get_results( $wpdb->prepare( "
@@ -525,7 +526,7 @@ class WP_List_Table {
 		if ( !$month_count || ( 1 == $month_count && 0 == $months[0]->month ) )
 			return;
 
-		$m = isset( $_GET['m'] ) ? (int) $_GET['m'] : 0;
+		$m = $_get->getInt( 'm', 0 );
 ?>
 		<label for="filter-by-date" class="screen-reader-text"><?php _e( 'Filter by date' ); ?></label>
 		<select name="m" id="filter-by-date">
@@ -996,16 +997,14 @@ class WP_List_Table {
 		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
 
 		$app = getApp();
+		$_get = $app['request']->query;
+
 		$current_url = set_url_scheme( 'http://' . $app['request.host'] . $app['request.uri'] );
 		$current_url = remove_query_arg( 'paged', $current_url );
 
-		if ( isset( $_GET['orderby'] ) ) {
-			$current_orderby = $_GET['orderby'];
-		} else {
-			$current_orderby = '';
-		}
+		$current_orderby = $_get->get( 'orderby', '' );
 
-		if ( isset( $_GET['order'] ) && 'desc' === $_GET['order'] ) {
+		if ( 'desc' === $_get->get( 'order' ) ) {
 			$current_order = 'desc';
 		} else {
 			$current_order = 'asc';

@@ -675,6 +675,7 @@ class WP_Press_This {
 		$data = [];
 
 		$app = getApp();
+		$_get = $app['request']->query;
 		$_request = $app['request']->attributes;
 		$_post = $app['request']->request;
 
@@ -682,8 +683,8 @@ class WP_Press_This {
 		foreach ( array( 'u', 's', 't', 'v' ) as $key ) {
 			if ( ! empty( $_post->get( $key ) ) ) {
 				$value = wp_unslash( $_post->get( $key ) );
-			} else if ( ! empty( $_GET[ $key ] ) ) {
-				$value = wp_unslash( $_GET[ $key ] );
+			} else if ( ! empty( $_get->get( $key ) ) ) {
+				$value = wp_unslash( $_get->get( $key ) );
 			} else {
 				continue;
 			}

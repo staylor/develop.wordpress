@@ -221,7 +221,10 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @return bool Whether the current view is the "All" view.
 	 */
 	protected function is_base_request() {
-		$vars = $_GET;
+		$app = getApp();
+		$_get = $app['request']->query;
+
+		$vars = $_get->all();
 		unset( $vars['paged'] );
 
 		if ( empty( $vars ) ) {
@@ -277,6 +280,9 @@ class WP_Posts_List_Table extends WP_List_Table {
 		if ( !empty($locked_post_status) )
 			return [];
 
+		$app = getApp();
+		$_get = $app['request']->query;
+
 		$status_links = [];
 		$num_posts = wp_count_posts( $post_type, 'readable' );
 		$total_posts = array_sum( (array) $num_posts );
@@ -292,7 +298,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 
 		if ( $this->user_posts_count && $this->user_posts_count !== $total_posts ) {
-			if ( isset( $_GET['author'] ) && ( $_GET['author'] == $current_user_id ) ) {
+			if ( $_get->get( 'author' ) == $current_user_id ) {
 				$class = 'current';
 			}
 

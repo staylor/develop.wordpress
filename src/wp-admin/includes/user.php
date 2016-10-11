@@ -438,7 +438,7 @@ function default_password_nag_handler($errors = false) {
 		return;
 
 	// get_user_setting = JS saved UI setting. else no-js-fallback code.
-	if ( 'hide' == get_user_setting('default_password_nag') || isset($_GET['default_password_nag']) && '0' == $_GET['default_password_nag'] ) {
+	if ( 'hide' == get_user_setting('default_password_nag') || $_get->get( 'default_password_nag' ) && '0' == $_get->get( 'default_password_nag' ) ) {
 		delete_user_setting('default_password_nag');
 		update_user_option($user_ID, 'default_password_nag', false, true);
 	}

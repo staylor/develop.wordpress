@@ -95,9 +95,12 @@ class WP_Media_List_Table extends WP_List_Table {
 	protected function get_views() {
 		global $post_mime_types, $avail_post_mime_types;
 
+		$app = getApp();
+		$_get = $app['request']->query;
+
 		$type_links = [];
 
-		$filter = empty( $_GET['attachment-filter'] ) ? '' : $_GET['attachment-filter'];
+		$filter = $_get->get( 'attachment-filter', '' );
 
 		$type_links['all'] = sprintf(
 			'<option value=""%s>%s</option>',

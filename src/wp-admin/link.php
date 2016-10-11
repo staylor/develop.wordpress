@@ -84,7 +84,7 @@ switch ($action) {
 		exit;
 
 	case 'delete' :
-		$link_id = (int) $_GET['link_id'];
+		$link_id = $_get->getInt( 'link_id' );
 		check_admin_referer('delete-bookmark_' . $link_id);
 
 		wp_delete_link($link_id);
@@ -103,7 +103,7 @@ switch ($action) {
 		$submenu_file = 'link-manager.php';
 		$title = __('Edit Link');
 
-		$link_id = (int) $_GET['link_id'];
+		$link_id = $_get->getInt( 'link_id' );
 
 		if (!$link = get_link_to_edit($link_id))
 			wp_die(__('Link not found.'));

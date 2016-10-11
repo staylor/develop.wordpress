@@ -22,7 +22,7 @@ require( ABSPATH . 'wp-admin/includes/noop.php' );
 require( ABSPATH . WPINC . '/script-loader.php' );
 require( ABSPATH . WPINC . '/version.php' );
 
-$load = $_GET['load'];
+$load = $_get->get( 'load' );
 if ( is_array( $load ) ) {
 	$load = implode( '', $load );
 }
@@ -32,9 +32,9 @@ $load = array_unique( explode( ',', $load ) );
 if ( empty($load) )
 	exit;
 
-$compress = ( isset($_GET['c']) && $_GET['c'] );
-$force_gzip = ( $compress && 'gzip' == $_GET['c'] );
-$rtl = ( isset($_GET['dir']) && 'rtl' == $_GET['dir'] );
+$compress = ( $_get->get( 'c' ) );
+$force_gzip = ( $compress && 'gzip' == $_get->get( 'c' ) );
+$rtl = ( 'rtl' == $_get->get( 'dir' ) );
 $expires_offset = 31536000; // 1 year
 $out = '';
 

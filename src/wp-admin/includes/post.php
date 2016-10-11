@@ -1020,8 +1020,12 @@ function get_available_post_statuses($type = 'post') {
  * @return array
  */
 function wp_edit_posts_query( $q = false ) {
-	if ( false === $q )
-		$q = $_GET;
+	$app = getApp();
+	$_get = $app['request']->query;
+
+	if ( false === $q ) {
+		$q = $_get->all();
+	}
 	$q['m'] = isset($q['m']) ? (int) $q['m'] : 0;
 	$q['cat'] = isset($q['cat']) ? (int) $q['cat'] : 0;
 	$post_stati  = get_post_stati();
@@ -1125,8 +1129,11 @@ function get_available_post_mime_types($type = 'attachment') {
  * @return array The parsed query vars.
  */
 function wp_edit_attachments_query_vars( $q = false ) {
+	$app = getApp();
+	$_get = $app['request']->query;
+
 	if ( false === $q ) {
-		$q = $_GET;
+		$q = $_get->all();
 	}
 	$q['m']   = isset( $q['m'] ) ? (int) $q['m'] : 0;
 	$q['cat'] = isset( $q['cat'] ) ? (int) $q['cat'] : 0;
@@ -1234,7 +1241,10 @@ function wp_edit_attachments_query( $q = false ) {
  * @return string
  */
 function postbox_classes( $id, $page ) {
-	if ( isset( $_GET['edit'] ) && $_GET['edit'] == $id ) {
+	$app = getApp();
+	$_get = $app['request']->query;
+
+	if ( $_get->get( 'edit' ) == $id ) {
 		$classes = array( '' );
 	} elseif ( $closed = get_user_option('closedpostboxes_'.$page ) ) {
 		if ( !is_array( $closed ) ) {
