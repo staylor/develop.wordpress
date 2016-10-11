@@ -6,7 +6,7 @@
  * @subpackage Press_This
  */
 
-define('IFRAME_REQUEST' , true);
+const IFRAME_REQUEST = true;
 
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );

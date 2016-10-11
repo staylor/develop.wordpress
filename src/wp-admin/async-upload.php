@@ -14,7 +14,6 @@ require_once( $abspath . 'vendor/autoload.php' );
 
 $app = getApp();
 $_request = $app['request']->attributes;
-$_cookies = $app['request']->cookies;
 
 if ( 'upload-attachment' === $_request->get( 'action' ) ) {
 	define( 'DOING_AJAX', true );
@@ -29,14 +28,14 @@ if ( 'upload-attachment' !== $_request->get( 'action' ) ) {
 	$_request_logged_in_cookie = $_request->get( 'logged_in_cookie' );
 
 
-	if ( is_ssl() && empty( $_cookies->get( SECURE_AUTH_COOKIE ) ) && ! empty( $_request_auth_cookie ) ) {
-		$_cookies->set( SECURE_AUTH_COOKIE, $_request_auth_cookie );
-	} elseif ( empty( $_cookies->get( AUTH_COOKIE ) ) && ! empty( $_request_auth_cookie ) ) {
-		$_cookies->set( AUTH_COOKIE, $_request_auth_cookie );
+	if ( is_ssl() && empty( $_cookie->get( SECURE_AUTH_COOKIE ) ) && ! empty( $_request_auth_cookie ) ) {
+		$_cookie->set( SECURE_AUTH_COOKIE, $_request_auth_cookie );
+	} elseif ( empty( $_cookie->get( AUTH_COOKIE ) ) && ! empty( $_request_auth_cookie ) ) {
+		$_cookie->set( AUTH_COOKIE, $_request_auth_cookie );
 	}
 
-	if ( empty($_cookies->get( LOGGED_IN_COOKIE ) ) && ! empty( $_request_logged_in_cookie ) ) {
-		$_cookies->set( LOGGED_IN_COOKIE, $_request_logged_in_cookie );
+	if ( empty($_cookie->get( LOGGED_IN_COOKIE ) ) && ! empty( $_request_logged_in_cookie ) ) {
+		$_cookie->set( LOGGED_IN_COOKIE, $_request_logged_in_cookie );
 	}
 	unset( $current_user );
 }

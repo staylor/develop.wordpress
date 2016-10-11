@@ -7,7 +7,7 @@
  * @since 3.1.0
  */
 
-define('WP_USER_ADMIN', true);
+const WP_USER_ADMIN = true;
 
 require_once( dirname( __DIR__ ) . '/admin.php' );
 

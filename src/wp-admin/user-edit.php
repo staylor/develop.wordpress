@@ -15,7 +15,9 @@ $view = new UserView( $app );
 $user_id = $view->_request->getInt( 'user_id' );
 
 $current_user = wp_get_current_user();
-define( 'IS_PROFILE_PAGE', ( $user_id === (int) $current_user->ID ) );
+if ( ! defined( 'IS_PROFILE_PAGE' ) ) {
+	define( 'IS_PROFILE_PAGE', ( $user_id === (int) $current_user->ID ) );
+}
 
 if ( ! $user_id && IS_PROFILE_PAGE ) {
 	$user_id = $current_user->ID;

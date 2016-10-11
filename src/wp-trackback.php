@@ -15,7 +15,6 @@ if (empty($wp)) {
 	wp( array( 'tb' => '1' ) );
 }
 
-$app = getApp();
 $wpdb = $app['db'];
 /**
  * Response to a trackback.
@@ -48,18 +47,18 @@ function trackback_response($error = 0, $error_message = '') {
 // Trackback is done by a POST.
 $request_array = 'HTTP_POST_VARS';
 
-if ( !isset($_GET['tb_id']) || !$_GET['tb_id'] ) {
+if ( ! $_get->get( 'tb_id' ) ) {
 	$tb_id = explode( '/', $app['request.uri'] );
 	$tb_id = intval( $tb_id[ count($tb_id) - 1 ] );
 }
 
-$tb_url  = isset($_POST['url'])     ? $_POST['url']     : '';
-$charset = isset($_POST['charset']) ? $_POST['charset'] : '';
+$tb_url  = $_post->get( 'url', '' );
+$charset = $_post->get( 'charset', '' );
 
 // These three are stripslashed here so they can be properly escaped after mb_convert_encoding().
-$title     = isset($_POST['title'])     ? wp_unslash($_POST['title'])      : '';
-$excerpt   = isset($_POST['excerpt'])   ? wp_unslash($_POST['excerpt'])    : '';
-$blog_name = isset($_POST['blog_name']) ? wp_unslash($_POST['blog_name'])  : '';
+$title     = wp_unslash( $_post->get( 'title', '' ) );
+$excerpt   = wp_unslash( $_post->get( 'excerpt', '' ) );
+$blog_name = wp_unslash( $_post->get( 'blog_name', '' ) );
 
 if ($charset)
 	$charset = str_replace( array(',', ' '), '', strtoupper( trim($charset) ) );

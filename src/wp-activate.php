@@ -6,9 +6,7 @@
  * @package WordPress
  */
 
-use function WP\getApp;
-
-define( 'WP_INSTALLING', true );
+const WP_INSTALLING = true;
 
 /** Sets up the WordPress Environment. */
 require( __DIR__ . '/wp-load.php' );
@@ -24,7 +22,6 @@ if ( is_object( $wp_object_cache ) )
 	$wp_object_cache->cache_enabled = false;
 
 // Fix for page title
-$app = getApp();
 $app['wp']->current_query->is_404 = false;
 
 /**
@@ -76,7 +73,7 @@ get_header( 'wp-activate' );
 
 <div id="signup-content" class="widecolumn">
 	<div class="wp-activate-container">
-	<?php if ( empty($_GET['key']) && empty($_POST['key']) ) { ?>
+	<?php if ( empty( $_get->get( 'key' ) ) && empty( $_post->get( 'key') ) ) { ?>
 
 		<h2><?php _e('Activation Key Required') ?></h2>
 		<form name="activateform" id="activateform" method="post" action="<?php echo network_site_url('wp-activate.php'); ?>">
@@ -91,7 +88,7 @@ get_header( 'wp-activate' );
 
 	<?php } else {
 
-		$key = !empty($_GET['key']) ? $_GET['key'] : $_POST['key'];
+		$key = ! empty( $_get->get( 'key' ) ) ? $_get->get( 'key' ) : $_post->get( 'key' );
 		$result = wpmu_activate_signup( $key );
 		if ( is_wp_error($result) ) {
 			if ( 'already_active' == $result->get_error_code() || 'blog_taken' == $result->get_error_code() ) {

@@ -41,6 +41,8 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		return;
 	}
 
+	$_get = $app['request']->query;
+
 	$wp = $app['wp'];
 	$wp_query = $app['wp']->current_query;
 	$wpdb = $app['db'];
@@ -49,8 +51,8 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 	// If we're not in wp-admin and the post has been published and preview nonce
 	// is non-existent or invalid then no need for preview in query
 	if ( is_preview() && get_query_var( 'p' ) && 'publish' == get_post_status( get_query_var( 'p' ) ) ) {
-		$preview_id = $app['request']->query->get( 'preview_id' );
-		$preview_nonce = $app['request']->query->get( 'preview_nonce' );
+		$preview_id = $_get->get( 'preview_id' );
+		$preview_nonce = $_get->get( 'preview_nonce' );
 		if ( ! isset( $preview_id ) || ! isset( $preview_nonce )
 			|| ! wp_verify_nonce( $preview_nonce, 'post_preview_' . (int) $preview_id ) ) {
 			$wp_query->is_preview = false;
@@ -194,7 +196,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 			! array_diff( array_keys( $wp->query_vars ), array( 'attachment', 'attachment_id' ) ) &&
 			! $redirect_url
 		) {
-			$attachment_id = $app['request']->query->get( 'attachment_id' );
+			$attachment_id = $_get->get( 'attachment_id' );
 			if ( ! empty( $attachment_id ) ) {
 				$redirect_url = get_attachment_link( get_query_var( 'attachment_id' ) );
 				if ( $redirect_url ) {
@@ -204,19 +206,19 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 				$redirect_url = get_attachment_link();
 			}
 
-		} elseif ( is_single() && $app['request']->query->get( 'p' ) && ! $redirect_url ) {
+		} elseif ( is_single() && $_get->get( 'p' ) && ! $redirect_url ) {
 			$redirect_url = get_permalink( get_query_var( 'p' ) );
 			if ( $redirect_url ) {
 				$redirect['query'] = remove_query_arg( array( 'p', 'post_type' ), $redirect['query'] );
 			}
 
-		} elseif ( is_single() && $app['request']->query->get( 'name' )  && ! $redirect_url ) {
+		} elseif ( is_single() && $_get->get( 'name' )  && ! $redirect_url ) {
 			$redirect_url = get_permalink( $wp_query->get_queried_object_id() );
 			if ( $redirect_url ) {
 				$redirect['query'] = remove_query_arg( 'name', $redirect['query'] );
 			}
 
-		} elseif ( is_page() && $app['request']->query->get( 'page_id' ) && ! $redirect_url ) {
+		} elseif ( is_page() && $_get->get( 'page_id' ) && ! $redirect_url ) {
 			$redirect_url = get_permalink( get_query_var( 'page_id' ) );
 			if ( $redirect_url ) {
 				$redirect['query'] = remove_query_arg( 'page_id', $redirect['query'] );
@@ -224,13 +226,13 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 
 		} elseif ( is_page() && !is_feed() && 'page' == get_option( 'show_on_front' ) && get_queried_object_id() == get_option( 'page_on_front' )  && ! $redirect_url ) {
 			$redirect_url = home_url( '/' );
-		} elseif ( is_home() && $app['request']->query->get( 'page_id' ) && 'page' == get_option( 'show_on_front' ) && get_query_var( 'page_id' ) == get_option( 'page_for_posts' )  && ! $redirect_url ) {
+		} elseif ( is_home() && $_get->get( 'page_id' ) && 'page' == get_option( 'show_on_front' ) && get_query_var( 'page_id' ) == get_option( 'page_for_posts' )  && ! $redirect_url ) {
 			$redirect_url = get_permalink( get_option( 'page_for_posts' ) );
 			if ( $redirect_url ) {
 				$redirect['query'] = remove_query_arg( 'page_id', $redirect['query'] );
 			}
 
-		} elseif ( $app['request']->query->get( 'm' ) && ( is_year() || is_month() || is_day() ) ) {
+		} elseif ( $_get->get( 'm' ) && ( is_year() || is_month() || is_day() ) ) {
 			$m = get_query_var( 'm' );
 			switch ( strlen( $m ) ) {
 			case 4: // Yearly
@@ -249,22 +251,22 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 				$redirect['query'] = remove_query_arg( 'm', $redirect['query'] );
 			}
 		// now moving on to non ?m=X year/month/day links
-		} elseif ( is_day() && get_query_var( 'year' ) && get_query_var( 'monthnum' ) && $app['request']->query->get( 'day' ) ) {
+		} elseif ( is_day() && get_query_var( 'year' ) && get_query_var( 'monthnum' ) && $_get->get( 'day' ) ) {
 			$redirect_url = get_day_link(get_query_var( 'year' ), get_query_var( 'monthnum' ), get_query_var( 'day' ) );
 			if ( $redirect_url ) {
 				$redirect['query'] = remove_query_arg( array( 'year', 'monthnum', 'day' ), $redirect['query'] );
 			}
-		} elseif ( is_month() && get_query_var( 'year' ) && $app['request']->query->get( 'monthnum' ) ) {
+		} elseif ( is_month() && get_query_var( 'year' ) && $_get->get( 'monthnum' ) ) {
 			$redirect_url = get_month_link(get_query_var( 'year' ), get_query_var( 'monthnum' ) );
 			if ( $redirect_url ) {
 				$redirect['query'] = remove_query_arg( array( 'year', 'monthnum' ), $redirect['query'] );
 			}
-		} elseif ( is_year() && $app['request']->query->get( 'year' ) ) {
+		} elseif ( is_year() && $_get->get( 'year' ) ) {
 			$redirect_url = get_year_link( get_query_var( 'year' ) );
 			if ( $redirect_url ) {
 				$redirect['query'] = remove_query_arg( 'year', $redirect['query'] );
 			}
-		} elseif ( is_author() && $app['request']->query->get( 'author' ) && preg_match( '|^[0-9]+$|', $app['request']->query->get( 'author' ) ) ) {
+		} elseif ( is_author() && $_get->get( 'author' ) && preg_match( '|^[0-9]+$|', $_get->get( 'author' ) ) ) {
 			$author = get_userdata( get_query_var( 'author' ) );
 			$sql = "SELECT ID FROM $wpdb->posts WHERE $wpdb->posts.post_author = %d AND $wpdb->posts.post_status = 'publish' LIMIT 1";
 			if ( ( false !== $author ) && $wpdb->get_var( $wpdb->prepare( $sql, $author->ID ) ) ) {
@@ -298,9 +300,9 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 						}
 					}
 
-					$rewrite_vars = array_diff( array_keys( $wp_query->query ), array_keys( $app['request']->query->all() ) );
+					$rewrite_vars = array_diff( array_keys( $wp_query->query ), array_keys( $_get->all() ) );
 
-					if ( !array_diff( $rewrite_vars, array_keys( $app['request']->query->all() ) )  ) { // Check to see if all the Query vars are coming from the rewrite, none are set via $_GET
+					if ( !array_diff( $rewrite_vars, array_keys( $_get->all() ) )  ) { // Check to see if all the Query vars are coming from the rewrite, none are set via $_GET
 						$redirect['query'] = remove_query_arg( $qv_remove, $redirect['query'] ); //Remove all of the per-tax qv's
 
 						// Create the destination url for this taxonomy

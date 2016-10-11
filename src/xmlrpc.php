@@ -19,10 +19,10 @@ const XMLRPC_REQUEST = true;
 require_once( __DIR__ . '/wp-load.php' );
 
 // Some browser-embedded clients send cookies. We don't want them.
-$app['request']->cookies->replace( [] );
+$_cookie->replace( [] );
 
 // http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
-if ( $app['request']->query->has( 'rsd' ) ) {
+if ( $_get->has( 'rsd' ) ) {
 
 	$charset =	get_option( 'blog_charset' );
 	header( 'Content-Type: text/xml; charset=' . $charset, true );

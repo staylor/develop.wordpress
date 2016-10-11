@@ -21,7 +21,7 @@ if ( !empty($_POST) || defined('DOING_AJAX') || defined('DOING_CRON') )
  *
  * @var bool
  */
-define('DOING_CRON', true);
+const DOING_CRON = true;
 
 if ( !defined('ABSPATH') ) {
 	/** Set up WordPress environment */
@@ -73,14 +73,15 @@ $doing_cron_transient = get_transient( 'doing_cron' );
 
 // Use global $doing_wp_cron lock otherwise use the GET lock. If no lock, trying grabbing a new lock.
 if ( empty( $doing_wp_cron ) ) {
-	if ( empty( $_GET[ 'doing_wp_cron' ] ) ) {
+	if ( empty( $_get->get( 'doing_wp_cron' ) ) ) {
 		// Called from external script/job. Try setting a lock.
-		if ( $doing_cron_transient && ( $doing_cron_transient + WP_CRON_LOCK_TIMEOUT > $gmt_time ) )
+		if ( $doing_cron_transient && ( $doing_cron_transient + WP_CRON_LOCK_TIMEOUT > $gmt_time ) ) {
 			return;
+		}
 		$doing_cron_transient = $doing_wp_cron = sprintf( '%.22F', microtime( true ) );
 		set_transient( 'doing_cron', $doing_wp_cron );
 	} else {
-		$doing_wp_cron = $_GET[ 'doing_wp_cron' ];
+		$doing_wp_cron = $_get->get( 'doing_wp_cron' );
 	}
 }
 
