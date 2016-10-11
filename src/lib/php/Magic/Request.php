@@ -6,7 +6,7 @@ use function WP\getApp;
  * @property-read Symfony\Component\HttpFoundation\ParameterBag $_get
  * @property-read Symfony\Component\HttpFoundation\ParameterBag $_post
  * @property-read Symfony\Component\HttpFoundation\ParameterBag $_request
- * @property-read Symfony\Component\HttpFoundation\ParameterBag $_server
+ * @property-read Symfony\Component\HttpFoundation\ServerBag    $_server
  */
 trait Request {
 	public function __get( string $name ) {

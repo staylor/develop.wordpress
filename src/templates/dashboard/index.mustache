@@ -1,0 +1,15 @@
+<div class="wrap">
+	<h1>{{ title }}</h1>
+
+	{{# show_welcome_panel }}
+	<div id="welcome-panel" class="{{ classes }}">
+		{{{ nonce }}}
+		<a class="welcome-panel-close" href="{{ welcome_close_url }}" aria-label="{{ l10n.dismiss_the_welcome_panel }}">{{ l10n.dismiss }}</a>
+		{{# doAction }}welcome_panel{{/ doAction }}
+	</div>
+	{{/ show_welcome_panel }}
+
+	<div id="dashboard-widgets-wrap">
+		{{{ wp_dashboard }}}
+	</div>
+</div>
