@@ -73,6 +73,7 @@ if ( $action ) {
 
 			$title = __( 'Update Themes' );
 			$parent_file = 'themes.php';
+			$app->current_screen->set_parentage( $parent_file );
 
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
 
@@ -115,6 +116,7 @@ if ( $action ) {
 			include(ABSPATH . 'wp-admin/update.php');
 
 			$parent_file = 'themes.php';
+			$app->current_screen->set_parentage( $parent_file );
 
 			if ( ! $_request->get( 'verify-delete' ) ) {
 				wp_enqueue_script( 'jquery' );
@@ -231,6 +233,7 @@ add_screen_option( 'per_page' );
 
 $title = __('Themes');
 $parent_file = 'themes.php';
+$app->current_screen->set_parentage( $parent_file );
 
 wp_enqueue_script( 'updates' );
 wp_enqueue_script( 'theme-preview' );

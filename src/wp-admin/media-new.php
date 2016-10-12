@@ -40,6 +40,7 @@ if ( $_post->all() ) {
 
 $title = __('Upload New Media');
 $parent_file = 'upload.php';
+$app->current_screen->set_parentage( $parent_file );
 
 ( new MediaHelp( get_current_screen() ) )->addNew();
 

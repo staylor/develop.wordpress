@@ -20,6 +20,7 @@ if ( ! current_user_can( 'manage_network' ) )
 
 $title = __( 'Dashboard' );
 $parent_file = 'index.php';
+$app->current_screen->set_parentage( $parent_file );
 
 ( new DashboardHelp( get_current_screen() ) )->addMultisiteIndex();
 

@@ -19,6 +19,7 @@ $app = getApp();
 
 $title = __('Permalink Settings');
 $parent_file = 'options-general.php';
+$app->current_screen->set_parentage( $parent_file );
 
 ( new OptionHelp( get_current_screen() ) )->addPermalink();
 

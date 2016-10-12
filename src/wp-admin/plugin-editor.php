@@ -20,6 +20,7 @@ if ( !current_user_can('edit_plugins') )
 
 $title = __("Edit Plugins");
 $parent_file = 'plugins.php';
+$app->current_screen->set_parentage( $parent_file );
 
 $plugins = get_plugins();
 

@@ -118,6 +118,7 @@ if ( $_get->get( 'update' ) ) {
 $title = sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) );
 
 $parent_file = 'sites.php';
+$app->current_screen->set_parentage( $parent_file );
 $submenu_file = 'sites.php';
 
 require( ABSPATH . 'wp-admin/admin-header.php' );

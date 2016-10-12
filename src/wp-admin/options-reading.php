@@ -16,6 +16,7 @@ if ( ! current_user_can( 'manage_options' ) )
 
 $title = __( 'Reading Settings' );
 $parent_file = 'options-general.php';
+$app->current_screen->set_parentage( $parent_file );
 
 add_action('admin_head', 'options_reading_add_js');
 

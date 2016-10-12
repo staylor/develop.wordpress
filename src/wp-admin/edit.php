@@ -62,6 +62,7 @@ if ( 'post' !== $typenow ) {
 	$submenu_file = 'edit.php';
 	$post_new_file = 'post-new.php';
 }
+$app->current_screen->set_parentage( $parent_file );
 
 $doaction = $wp_list_table->current_action();
 

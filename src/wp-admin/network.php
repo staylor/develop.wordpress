@@ -60,6 +60,8 @@ if ( is_network_admin() ) {
 	$parent_file = 'tools.php';
 }
 
+$app->current_screen->set_parentage( $parent_file );
+
 ( new InstallHelp( get_current_screen() ) )->addNetwork();
 
 include( ABSPATH . 'wp-admin/admin-header.php' );

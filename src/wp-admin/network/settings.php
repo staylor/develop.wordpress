@@ -19,6 +19,7 @@ if ( ! current_user_can( 'manage_network_options' ) )
 
 $title = __( 'Network Settings' );
 $parent_file = 'settings.php';
+$app->current_screen->set_parentage( $parent_file );
 
 add_action( 'admin_head', 'network_settings_add_js' );
 

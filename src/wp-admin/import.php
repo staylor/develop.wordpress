@@ -44,6 +44,7 @@ wp_enqueue_script( 'updates' );
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 $parent_file = 'tools.php';
+$app->current_screen->set_parentage( $parent_file );
 ?>
 
 <div class="wrap">

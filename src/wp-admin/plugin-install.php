@@ -50,6 +50,7 @@ if ( $pagenum > $total_pages && $total_pages > 0 ) {
 
 $title = __( 'Add Plugins' );
 $parent_file = 'plugins.php';
+$app->current_screen->set_parentage( $parent_file );
 
 wp_enqueue_script( 'plugin-install' );
 if ( 'plugin-information' != $tab )

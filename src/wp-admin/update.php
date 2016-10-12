@@ -51,6 +51,7 @@ if ( $_get->get( 'action' ) ) {
 
 		$title = __('Update Plugin');
 		$parent_file = 'plugins.php';
+		$app->current_screen->set_parentage( $parent_file );
 		$submenu_file = 'plugins.php';
 
 		wp_enqueue_script( 'updates' );
@@ -120,6 +121,7 @@ if ( $_get->get( 'action' ) ) {
 
 		$title = __('Plugin Install');
 		$parent_file = 'plugins.php';
+		$app->current_screen->set_parentage( $parent_file );
 		$submenu_file = 'plugin-install.php';
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
@@ -148,6 +150,7 @@ if ( $_get->get( 'action' ) ) {
 
 		$title = __('Upload Plugin');
 		$parent_file = 'plugins.php';
+		$app->current_screen->set_parentage( $parent_file );
 		$submenu_file = 'plugin-install.php';
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
@@ -176,6 +179,7 @@ if ( $_get->get( 'action' ) ) {
 
 		$title = __('Update Theme');
 		$parent_file = 'themes.php';
+		$app->current_screen->set_parentage( $parent_file );
 		$submenu_file = 'themes.php';
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
@@ -226,6 +230,7 @@ if ( $_get->get( 'action' ) ) {
 
 		$title = __('Install Themes');
 		$parent_file = 'themes.php';
+		$app->current_screen->set_parentage( $parent_file );
 		$submenu_file = 'themes.php';
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
@@ -253,6 +258,7 @@ if ( $_get->get( 'action' ) ) {
 
 		$title = __('Upload Theme');
 		$parent_file = 'themes.php';
+		$app->current_screen->set_parentage( $parent_file );
 		$submenu_file = 'theme-install.php';
 
 		require_once(ABSPATH . 'wp-admin/admin-header.php');

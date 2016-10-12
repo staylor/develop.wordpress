@@ -22,6 +22,7 @@ $app = getApp();
 
 $title = __('General Settings');
 $parent_file = 'options-general.php';
+$app->current_screen->set_parentage( $parent_file );
 /* translators: date and time format for exact current time, mainly about timezones, see https://secure.php.net/date */
 $timezone_format = _x('Y-m-d H:i:s', 'timezone date format');
 

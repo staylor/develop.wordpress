@@ -59,6 +59,7 @@ $wp_list_table->prepare_items();
 
 $title = __('Links');
 $this_file = $parent_file = 'link-manager.php';
+$app->current_screen->set_parentage( $parent_file );
 
 ( new LinkHelp( get_current_screen() ) )->addManager();
 

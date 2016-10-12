@@ -49,6 +49,8 @@ if ( 'post' !== $typenow ) {
 	$submenu_file = "edit-tags.php?taxonomy={$taxnow}";
 }
 
+$app->current_screen->set_parentage( $parent_file );
+
 add_screen_option( 'per_page', array( 'default' => 20, 'option' => 'edit_' . $tax->name . '_per_page' ) );
 
 get_current_screen()->set_screen_reader_content( array(

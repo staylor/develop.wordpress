@@ -16,6 +16,7 @@ if ( ! current_user_can( 'manage_options' ) )
 
 $title = __('Discussion Settings');
 $parent_file = 'options-general.php';
+$app->current_screen->set_parentage( $parent_file );
 
 add_action( 'admin_print_footer_scripts', 'options_discussion_add_js' );
 

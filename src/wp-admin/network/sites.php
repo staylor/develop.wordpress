@@ -19,6 +19,7 @@ $pagenum = $wp_list_table->get_pagenum();
 
 $title = __( 'Sites' );
 $parent_file = 'sites.php';
+$app->current_screen->set_parentage( $parent_file );
 
 add_screen_option( 'per_page' );
 

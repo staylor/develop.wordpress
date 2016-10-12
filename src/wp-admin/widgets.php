@@ -50,6 +50,7 @@ do_action( 'sidebar_admin_setup' );
 
 $title = __( 'Widgets' );
 $parent_file = 'themes.php';
+$app->current_screen->set_parentage( $parent_file );
 
 $view->help->addWidgets();
 

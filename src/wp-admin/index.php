@@ -22,6 +22,7 @@ $view->enqueueIndexScripts();
 
 $title = $view->l10n->dashboard;
 $parent_file = 'index.php';
+$app->current_screen->set_parentage( $parent_file );
 
 $view->help->addIndex();
 

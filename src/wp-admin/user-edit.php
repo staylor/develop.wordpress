@@ -62,6 +62,7 @@ if ( current_user_can( 'edit_users' ) && ! is_user_admin() ) {
 } else {
 	$parent_file = 'profile.php';
 }
+$app->current_screen->set_parentage( $parent_file );
 
 $view->help->addUserEdit();
 

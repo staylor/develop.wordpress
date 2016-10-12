@@ -14,6 +14,7 @@ if ( ! current_user_can('manage_links') )
 
 $title = __('Add New Link');
 $parent_file = 'link-manager.php';
+$app->current_screen->set_parentage( $parent_file );
 
 wp_reset_vars( array('action', 'cat_id', 'link_id' ) );
 

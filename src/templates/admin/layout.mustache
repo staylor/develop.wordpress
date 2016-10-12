@@ -1,3 +1,44 @@
+<script type="text/javascript">
+addLoadEvent = function(func){
+	if(typeof jQuery!=="undefined"){jQuery(document).ready(func);}else if(typeof wpOnload!=='function'){wpOnload=func;}else {var oldonload=wpOnload;wpOnload=function(){oldonload();func();};}};
+////
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+{{# doAction }}admin_enqueue_scripts{{/ doAction }}
+{{# doAction }}admin_print_styles-{{ hook_suffix }}{{/ doAction }}
+{{# doAction }}admin_print_styles{{/ doAction }}
+{{# doAction }}admin_print_scripts-{{ hook_suffix }}{{/ doAction }}
+{{# doAction }}admin_print_scripts{{/ doAction }}
+{{# doAction }}admin_head-{{ hook_suffix }}{{/ doAction }}
+{{# doAction }}admin_head{{/ doAction }}
+</head>
+<body class="wp-admin wp-core-ui no-js {{ admin_body_classes }} {{ admin_body_class }}">
+<script type="text/javascript">
+document.body.className = document.body.className.replace('no-js','js');
+</script>
+//// CUSTOMIZE SUPPORT SCRIPT
+<div id="wpwrap">
+	//// MENU HEADER
+	<div id="wpcontent">
+		{{# doAction }}in_admin_header{{/ doAction }}
+		<div id="wpbody" role="main">
+			<div id="wpbody-content" aria-label="{{ l10n.main_content }}" tabindex="0">
+				{{{ screen_meta }}}
+
+				{{# is_network_admin }}
+					{{# doAction }}network_admin_notices{{/ doAction }}
+				{{/ is_network_admin }}
+				{{^ is_network_admin }}
+					{{# is_user_admin }}
+						{{# doAction }}user_admin_notices{{/ doAction }}
+					{{/ is_user_admin }}
+					{{^ is_user_admin }}
+						{{# doAction }}admin_notices{{/ doAction }}
+					{{/ is_user_admin }}
+				{{/ is_network_admin }}
+
+				{{# doAction }}all_admin_notices{{/ doAction }}
+
 				{{$ content }}... CONTENT GOES HERE ...{{/ content }}
 				<div class="clear"></div>
 			</div><!-- wpbody-content -->

@@ -21,6 +21,7 @@ if ( !current_user_can('edit_themes') )
 
 $title = __("Edit Themes");
 $parent_file = 'themes.php';
+$app->current_screen->set_parentage( $parent_file );
 
 ( new ThemeHelp( get_current_screen() ) )->addEditor();
 

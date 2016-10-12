@@ -44,6 +44,7 @@ if ( 'post' == $post_type ) {
 		$parent_file = "edit.php?post_type=$post_type";
 	}
 }
+$app->current_screen->set_parentage( $parent_file );
 
 $title = $post_type_object->labels->add_new_item;
 

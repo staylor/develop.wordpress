@@ -31,6 +31,7 @@ $user = wp_get_current_user();
 
 $title = __( 'Delete Site' );
 $parent_file = 'tools.php';
+$app->current_screen->set_parentage( $parent_file );
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 echo '<div class="wrap">';

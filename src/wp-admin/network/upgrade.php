@@ -16,6 +16,7 @@ require_once( ABSPATH . WPINC . '/http.php' );
 
 $title = __( 'Upgrade Network' );
 $parent_file = 'upgrade.php';
+$app->current_screen->set_parentage( $parent_file );
 
 ( new InstallHelp( get_current_screen() ) )->addUpgradeNetwork();
 

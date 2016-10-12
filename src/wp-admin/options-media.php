@@ -16,7 +16,7 @@ if ( ! current_user_can( 'manage_options' ) )
 
 $title = __('Media Settings');
 $parent_file = 'options-general.php';
-
+$app->current_screen->set_parentage( $parent_file );
 
 ( new OptionHelp( get_current_screen() ) )->addMedia();
 

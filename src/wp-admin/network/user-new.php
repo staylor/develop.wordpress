@@ -73,6 +73,7 @@ if ( $_get->get( 'update' ) ) {
 
 $title = __('Add New User');
 $parent_file = 'users.php';
+$app->current_screen->set_parentage( $parent_file );
 
 require( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 

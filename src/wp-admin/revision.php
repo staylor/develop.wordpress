@@ -98,6 +98,8 @@ if ( ! empty( $post->post_type ) && 'post' != $post->post_type )
 else
 	$parent_file = $submenu_file = 'edit.php';
 
+$app->current_screen->set_parentage( $parent_file );
+
 wp_enqueue_script( 'revisions' );
 wp_localize_script( 'revisions', '_wpRevisionsSettings', wp_prepare_revisions_for_js( $post, $revision_id, $from ) );
 

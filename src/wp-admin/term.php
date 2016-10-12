@@ -57,6 +57,7 @@ if ( 'post' != $post_type ) {
 	$parent_file  = 'edit.php';
 	$submenu_file = "edit-tags.php?taxonomy=$taxonomy";
 }
+$app->current_screen->set_parentage( $parent_file );
 
 get_current_screen()->set_screen_reader_content( array(
 	'heading_pagination' => $tax->labels->items_list_navigation,

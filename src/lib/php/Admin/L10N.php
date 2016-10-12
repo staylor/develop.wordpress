@@ -8,6 +8,9 @@ class L10N {
 
 	public function __construct() {
 		$this->data = [
+			// Layout
+			'main_content' => __( 'Main content' ),
+
 			// Screen
 			'pagination' => __( 'Pagination' ),
 			'view_mode' => __( 'View Mode' ),

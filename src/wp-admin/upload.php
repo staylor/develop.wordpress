@@ -54,6 +54,7 @@ if ( 'grid' === $mode ) {
 
 	$title = __('Media Library');
 	$parent_file = 'upload.php';
+	$app->current_screen->set_parentage( $parent_file );
 
 	$data = [
 		'_admin_search_query' => $app->mute( '_admin_search_query'),
@@ -151,6 +152,7 @@ $wp_list_table->prepare_items();
 
 $title = __( 'Media Library' );
 $parent_file = 'upload.php';
+$app->current_screen->set_parentage( $parent_file );
 
 wp_enqueue_script( 'media' );
 

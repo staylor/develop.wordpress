@@ -11,6 +11,7 @@ use WP\Media\Admin\Help as MediaHelp;
 require_once( __DIR__ . '/admin.php' );
 
 $parent_file = 'upload.php';
+$app->current_screen->set_parentage( $parent_file );
 $submenu_file = 'upload.php';
 
 wp_reset_vars(array('action'));
@@ -74,6 +75,7 @@ case 'edit' :
 	require( ABSPATH . 'wp-admin/admin-header.php' );
 
 	$parent_file = 'upload.php';
+	$app->current_screen->set_parentage( $parent_file );
 	$message = '';
 	$class = '';
 	if ( $_get->get( 'message' ) ) {

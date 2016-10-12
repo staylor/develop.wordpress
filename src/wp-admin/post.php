@@ -144,6 +144,7 @@ case 'edit':
 		$submenu_file = "edit.php?post_type=$post_type";
 		$post_new_file = "post-new.php?post_type=$post_type";
 	}
+	$app->current_screen->set_parentage( $parent_file );
 
 	if ( ! wp_check_post_lock( $post->ID ) ) {
 		$active_post_lock = wp_set_post_lock( $post->ID );

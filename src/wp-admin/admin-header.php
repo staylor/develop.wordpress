@@ -6,13 +6,9 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 @header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
 if ( ! defined( 'WP_ADMIN' ) )
 	require_once( __DIR__ . '/admin.php' );
-
-$app = getApp();
 
 /**
  * In case admin-header.php is included in a function.
@@ -255,5 +251,13 @@ if ( is_network_admin() ) {
  */
 do_action( 'all_admin_notices' );
 
-if ( $parent_file == 'options-general.php' )
-	require(ABSPATH . 'wp-admin/options-head.php');
+if ( $parent_file == 'options-general.php' ) {
+	wp_reset_vars( [ 'action' ] );
+
+	if ( $_get->get( 'updated' ) && $_get->get( 'page' ) ) {
+		// For back-compat with plugins that don't use the Settings API and just set updated=1 in the redirect.
+		add_settings_error('general', 'settings_updated', __('Settings saved.'), 'updated');
+	}
+
+	settings_errors();
+}

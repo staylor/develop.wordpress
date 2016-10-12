@@ -100,6 +100,7 @@ switch ($action) {
 			wp_enqueue_script( 'jquery-touch-punch' );
 
 		$parent_file = 'link-manager.php';
+		$app->current_screen->set_parentage( $parent_file );
 		$submenu_file = 'link-manager.php';
 		$title = __('Edit Link');
 

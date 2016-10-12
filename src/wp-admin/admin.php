@@ -272,6 +272,7 @@ if ( isset($plugin_page) ) {
 	do_action( "load-importer-{$importer}" );
 
 	$parent_file = 'tools.php';
+	$app->current_screen->set_parentage( $parent_file );
 	$submenu_file = 'import.php';
 	$title = __('Import');
 
