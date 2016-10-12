@@ -5,6 +5,9 @@
  * @package WordPress
  * @subpackage Administration
  */
+
+use WP\Option\Admin\Help as OptionHelp;
+
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
@@ -16,18 +19,7 @@ $parent_file = 'options-general.php';
 
 add_action( 'admin_print_footer_scripts', 'options_discussion_add_js' );
 
-get_current_screen()->add_help_tab( array(
-	'id'      => 'overview',
-	'title'   => __('Overview'),
-	'content' => '<p>' . __('This screen provides many options for controlling the management and display of comments and links to your posts/pages. So many, in fact, they won&#8217;t all fit here! :) Use the documentation links to get information on what each discussion setting does.') . '</p>' .
-		'<p>' . __('You must click the Save Changes button at the bottom of the screen for new settings to take effect.') . '</p>',
-) );
-
-get_current_screen()->set_help_sidebar(
-	'<p><strong>' . __('For more information:') . '</strong></p>' .
-	'<p>' . __('<a href="https://codex.wordpress.org/Settings_Discussion_Screen">Documentation on Discussion Settings</a>') . '</p>' .
-	'<p>' . __('<a href="https://wordpress.org/support/">Support Forums</a>') . '</p>'
-);
+( new OptionHelp( get_current_screen() ) )->addDiscussion();
 
 include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
