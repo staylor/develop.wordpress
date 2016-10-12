@@ -18,7 +18,7 @@ class WP extends Observer {
 	 * @since 2.0.0
 	 * @var array
 	 */
-	public $public_query_vars = array('m', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots', 'taxonomy', 'term', 'cpage', 'post_type', 'embed' );
+	public $public_query_vars = [ 'm', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots', 'taxonomy', 'term', 'cpage', 'post_type', 'embed' ];
 
 	/**
 	 * Private query variables.
@@ -28,7 +28,7 @@ class WP extends Observer {
 	 * @since 2.0.0
 	 * @var array
 	 */
-	public $private_query_vars = array( 'offset', 'posts_per_page', 'posts_per_archive_page', 'showposts', 'nopaging', 'post_type', 'post_status', 'category__in', 'category__not_in', 'category__and', 'tag__in', 'tag__not_in', 'tag__and', 'tag_slug__in', 'tag_slug__and', 'tag_id', 'post_mime_type', 'perm', 'comments_per_page', 'post__in', 'post__not_in', 'post_parent', 'post_parent__in', 'post_parent__not_in', 'title', 'fields' );
+	public $private_query_vars = [ 'offset', 'posts_per_page', 'posts_per_archive_page', 'showposts', 'nopaging', 'post_type', 'post_status', 'category__in', 'category__not_in', 'category__and', 'tag__in', 'tag__not_in', 'tag__and', 'tag_slug__in', 'tag_slug__and', 'tag_id', 'post_mime_type', 'perm', 'comments_per_page', 'post__in', 'post__not_in', 'post_parent', 'post_parent__in', 'post_parent__not_in', 'title', 'fields' ];
 
 	/**
 	 * Extra query variables set by the user.
@@ -116,7 +116,7 @@ class WP extends Observer {
 	 * @param string $name Query variable name.
 	 */
 	public function remove_query_var( $name ) {
-		$this->public_query_vars = array_diff( $this->public_query_vars, array( $name ) );
+		$this->public_query_vars = array_diff( $this->public_query_vars, [ $name ] );
 	}
 
 	/**
@@ -220,7 +220,7 @@ class WP extends Observer {
 				if ( isset( $rewrite['$'] ) ) {
 					$this->matched_rule = '$';
 					$query = $rewrite['$'];
-					$matches = array('');
+					$matches = [ '' ];
 				}
 			} else {
 				foreach ( (array) $rewrite as $match => $query ) {
@@ -334,7 +334,7 @@ class WP extends Observer {
 
 		// Don't allow non-publicly queryable taxonomies to be queried from the front end.
 		if ( ! is_admin() ) {
-			foreach ( get_taxonomies( array( 'publicly_queryable' => false ), 'objects' ) as $taxonomy => $t ) {
+			foreach ( get_taxonomies( [ 'publicly_queryable' => false ], 'objects' ) as $taxonomy => $t ) {
 				/*
 				 * Disallow when set to the 'taxonomy' query var.
 				 * Non-publicly queryable taxonomies cannot register custom query vars. See register_taxonomy().
@@ -347,7 +347,7 @@ class WP extends Observer {
 
 		// Limit publicly queried post_types to those that are publicly_queryable
 		if ( isset( $this->query_vars['post_type']) ) {
-			$queryable_post_types = get_post_types( array('publicly_queryable' => true) );
+			$queryable_post_types = get_post_types( [ 'publicly_queryable' => true ] );
 			if ( ! is_array( $this->query_vars['post_type'] ) ) {
 				if ( ! in_array( $this->query_vars['post_type'], $queryable_post_types ) )
 					unset( $this->query_vars['post_type'] );
@@ -383,7 +383,7 @@ class WP extends Observer {
 		 *
 		 * @param WP &$this Current WordPress environment instance (passed by reference).
 		 */
-		do_action_ref_array( 'parse_request', array( &$this ) );
+		do_action_ref_array( 'parse_request', [ &$this ] );
 	}
 
 	/**
@@ -408,7 +408,7 @@ class WP extends Observer {
 				if ( ! is_user_logged_in() )
 					$headers = array_merge($headers, wp_get_nocache_headers());
 				$headers['Content-Type'] = get_option('html_type') . '; charset=' . get_option('blog_charset');
-			} elseif ( in_array( $status, array( 403, 500, 502, 503 ) ) ) {
+			} elseif ( in_array( $status, [ 403, 500, 502, 503 ] ) ) {
 				$exit_required = true;
 			}
 		} elseif ( empty( $this->query_vars['feed'] ) ) {
@@ -506,7 +506,7 @@ class WP extends Observer {
 		 *
 		 * @param WP &$this Current WordPress environment instance (passed by reference).
 		 */
-		do_action_ref_array( 'send_headers', array( &$this ) );
+		do_action_ref_array( 'send_headers', [ &$this ] );
 	}
 
 	/**
@@ -714,7 +714,7 @@ class WP extends Observer {
 		 *
 		 * @param WP &$this Current WordPress environment instance (passed by reference).
 		 */
-		do_action_ref_array( 'wp', array( &$this ) );
+		do_action_ref_array( 'wp', [ &$this ] );
 	}
 
 	public function update( \SplSubject $subject ) {

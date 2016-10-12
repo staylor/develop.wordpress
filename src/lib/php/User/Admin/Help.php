@@ -12,23 +12,23 @@ class Help {
 
 	public function addUsers() {
 		// contextual help - choose Help on the top right of admin panel to preview this.
-		$this->screen->add_help_tab( array(
+		$this->screen->add_help_tab( [
 			'id'      => 'overview',
 			'title'   => __( 'Overview' ),
 			'content' => '<p>' . __( 'This screen lists all the existing users for your site. Each user has one of five defined roles as set by the site admin: Site Administrator, Editor, Author, Contributor, or Subscriber. Users with roles other than Administrator will see fewer options in the dashboard navigation when they are logged in, based on their role.' ) . '</p>' .
 						 '<p>' . __( 'To add a new user for your site, click the Add New button at the top of the screen or Add New in the Users menu section.' ) . '</p>'
-		) ) ;
+		] );
 
-		$this->screen->add_help_tab( array(
+		$this->screen->add_help_tab( [
 			'id'      => 'screen-display',
 			'title'   => __( 'Screen Display' ),
 			'content' => '<p>' . __( 'You can customize the display of this screen in a number of ways:' ) . '</p>' .
-							'<ul>' .
-							'<li>' . __( 'You can hide/display columns based on your needs and decide how many users to list per screen using the Screen Options tab.' ) . '</li>' .
-							'<li>' . __( 'You can filter the list of users by User Role using the text links above the users list to show All, Administrator, Editor, Author, Contributor, or Subscriber. The default view is to show all users. Unused User Roles are not listed.' ) . '</li>' .
-							'<li>' . __( 'You can view all posts made by a user by clicking on the number under the Posts column.' ) . '</li>' .
-							'</ul>'
-		) );
+				'<ul>' .
+				'<li>' . __( 'You can hide/display columns based on your needs and decide how many users to list per screen using the Screen Options tab.' ) . '</li>' .
+				'<li>' . __( 'You can filter the list of users by User Role using the text links above the users list to show All, Administrator, Editor, Author, Contributor, or Subscriber. The default view is to show all users. Unused User Roles are not listed.' ) . '</li>' .
+				'<li>' . __( 'You can view all posts made by a user by clicking on the number under the Posts column.' ) . '</li>' .
+				'</ul>'
+		] );
 
 		$help = '<p>' . __( 'Hovering over a row in the users list will display action links that allow you to manage users. You can perform the following actions:' ) . '</p>' .
 			'<ul>' .
@@ -41,11 +41,11 @@ class Help {
 		}
 		$help .= '</ul>';
 
-		$this->screen->add_help_tab( array(
+		$this->screen->add_help_tab( [
 			'id'      => 'actions',
 			'title'   => __( 'Actions' ),
 			'content' => $help,
-		) );
+		] );
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
@@ -54,11 +54,11 @@ class Help {
 			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
 		);
 
-		$this->screen->set_screen_reader_content( array(
+		$this->screen->set_screen_reader_content( [
 			'heading_views'      => __( 'Filter users list' ),
 			'heading_pagination' => __( 'Users list navigation' ),
 			'heading_list'       => __( 'Users list' ),
-		) );
+		] );
 	}
 
 	public function addUserNew() {
@@ -75,13 +75,13 @@ class Help {
 
 		$help .= '<p>' . __( 'Remember to click the Add New User button at the bottom of this screen when you are finished.' ) . '</p>';
 
-		$this->screen->add_help_tab( array(
+		$this->screen->add_help_tab( [
 			'id'      => 'overview',
 			'title'   => __( 'Overview' ),
 			'content' => $help,
-		) );
+		] );
 
-		$this->screen->add_help_tab( array(
+		$this->screen->add_help_tab( [
 			'id'      => 'user-roles',
 			'title'   => __( 'User Roles' ),
 			'content' => '<p>' . __( 'Here is a basic overview of the different user roles and the permissions associated with each one:' ) . '</p>' .
@@ -92,7 +92,7 @@ class Help {
 				'<li>' . __( 'Editors can publish posts, manage posts as well as manage other people&#8217;s posts, etc.' ) . '</li>' .
 				'<li>' . __( 'Administrators have access to all the administration features.' ) . '</li>' .
 				'</ul>'
-		) );
+		] );
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .

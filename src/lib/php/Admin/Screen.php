@@ -560,13 +560,13 @@ final class Screen {
 	 * }
 	 */
 	public function add_help_tab( $args ) {
-		$defaults = array(
+		$defaults = [
 			'title'    => false,
 			'id'       => false,
 			'content'  => '',
 			'callback' => false,
 			'priority' => 10,
-		);
+		];
 		$params = wp_parse_args( $args, $defaults );
 
 		$params['id'] = sanitize_html_class( $params['id'] );
@@ -685,11 +685,11 @@ final class Screen {
 	 * }
 	 */
 	public function set_screen_reader_content( $content = [] ) {
-		$defaults = array(
+		$defaults = [
 			'heading_views'      => __( 'Filter items list' ),
 			'heading_pagination' => __( 'Items list navigation' ),
 			'heading_list'       => __( 'Items list' ),
-		);
+		];
 
 		$this->_screen_reader_content = wp_parse_args( $content, $defaults );
 	}
@@ -761,11 +761,11 @@ final class Screen {
 		}
 
 		if ( $old_help ) {
-			$this->add_help_tab( array(
+			$this->add_help_tab( [
 				'id'      => 'old-contextual-help',
 				'title'   => __('Overview'),
 				'content' => $old_help,
-			) );
+			] );
 		}
 
 		$help_sidebar = $this->get_help_sidebar();
@@ -914,9 +914,9 @@ final class Screen {
 	 * }
 	 */
 	public function render_screen_options( $opts = [] ) {
-		$options = wp_parse_args( $opts, array(
+		$options = wp_parse_args( $opts, [
 			'wrap' => true,
-		) );
+		] );
 
 		$wrapper_start = $wrapper_end = $form_start = $form_end = '';
 
@@ -1184,7 +1184,10 @@ final class Screen {
 			return;
 		}
 
-		$view_mode_post_types = get_post_types( array( 'hierarchical' => false, 'show_ui' => true ) );
+		$view_mode_post_types = get_post_types( [
+			'hierarchical' => false,
+			'show_ui' => true
+		] );
 
 		/**
 		 * Filters the post types that have different view mode options.

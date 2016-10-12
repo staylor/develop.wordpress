@@ -144,7 +144,7 @@ class Scripts extends Dependencies {
 	 */
 	public function __construct() {
 		$this->init();
-		add_action( 'init', array( $this, 'init' ), 0 );
+		add_action( 'init', [ $this, 'init' ], 0 );
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Scripts extends Dependencies {
 		 *
 		 * @param Scripts $this Scripts instance, passed by reference.
 		 */
-		do_action_ref_array( 'wp_default_scripts', array( &$this ) );
+		do_action_ref_array( 'wp_default_scripts', [ &$this ] );
 	}
 
 	/**

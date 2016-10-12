@@ -215,7 +215,7 @@ class Locale {
 			$thousands_sep = str_replace( ' ', '&nbsp;', $thousands_sep );
 		} else {
 			// PHP < 5.4.0 does not support multiple bytes in thousands separator.
-			$thousands_sep = str_replace( array( '&nbsp;', '&#160;' ), ' ', $thousands_sep );
+			$thousands_sep = str_replace( [ '&nbsp;', '&#160;' ], ' ', $thousands_sep );
 		}
 
 		$this->number_format['thousands_sep'] = ( 'number_format_thousands_sep' === $thousands_sep ) ? ',' : $thousands_sep;
@@ -232,7 +232,7 @@ class Locale {
 		$app = getApp();
 		if ( 'rtl' === $this->text_direction && strpos( $app['wp_version'], '-src' ) ) {
 			$this->text_direction = 'ltr';
-			add_action( 'all_admin_notices', array( $this, 'rtl_src_admin_notice' ) );
+			add_action( 'all_admin_notices', [ $this, 'rtl_src_admin_notice' ] );
 		}
 	}
 

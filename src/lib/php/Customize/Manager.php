@@ -233,13 +233,13 @@ class Manager {
 			$this->nav_menus = new \WP_Customize_Nav_Menus( $this );
 		}
 
-		add_filter( 'wp_die_handler', array( $this, 'wp_die_handler' ) );
+		add_filter( 'wp_die_handler', [ $this, 'wp_die_handler' ] );
 
-		add_action( 'setup_theme', array( $this, 'setup_theme' ) );
-		add_action( 'wp_loaded',   array( $this, 'wp_loaded' ) );
+		add_action( 'setup_theme', [ $this, 'setup_theme' ] );
+		add_action( 'wp_loaded',   [ $this, 'wp_loaded' ] );
 
 		// Run wp_redirect_status late to make sure we override the status last.
-		add_action( 'wp_redirect_status', array( $this, 'wp_redirect_status' ), 1000 );
+		add_action( 'wp_redirect_status', [ $this, 'wp_redirect_status' ], 1000 );
 
 		// Do not spawn cron (especially the alternate cron) while running the Customizer.
 		remove_action( 'init', 'wp_cron' );
@@ -249,21 +249,21 @@ class Manager {
 		remove_action( 'admin_init', '_maybe_update_plugins' );
 		remove_action( 'admin_init', '_maybe_update_themes' );
 
-		add_action( 'wp_ajax_customize_save',           array( $this, 'save' ) );
-		add_action( 'wp_ajax_customize_refresh_nonces', array( $this, 'refresh_nonces' ) );
+		add_action( 'wp_ajax_customize_save',           [ $this, 'save' ] );
+		add_action( 'wp_ajax_customize_refresh_nonces', [ $this, 'refresh_nonces' ] );
 
-		add_action( 'customize_register',                 array( $this, 'register_controls' ) );
-		add_action( 'customize_register',                 array( $this, 'register_dynamic_settings' ), 11 ); // allow code to create settings first
-		add_action( 'customize_controls_init',            array( $this, 'prepare_controls' ) );
-		add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_control_scripts' ) );
+		add_action( 'customize_register',                 [ $this, 'register_controls' ] );
+		add_action( 'customize_register',                 [ $this, 'register_dynamic_settings' ], 11 ); // allow code to create settings first
+		add_action( 'customize_controls_init',            [ $this, 'prepare_controls' ] );
+		add_action( 'customize_controls_enqueue_scripts', [ $this, 'enqueue_control_scripts' ] );
 
 		// Render Panel, Section, and Control templates.
-		add_action( 'customize_controls_print_footer_scripts', array( $this, 'render_panel_templates' ), 1 );
-		add_action( 'customize_controls_print_footer_scripts', array( $this, 'render_section_templates' ), 1 );
-		add_action( 'customize_controls_print_footer_scripts', array( $this, 'render_control_templates' ), 1 );
+		add_action( 'customize_controls_print_footer_scripts', [ $this, 'render_panel_templates' ], 1 );
+		add_action( 'customize_controls_print_footer_scripts', [ $this, 'render_section_templates' ], 1 );
+		add_action( 'customize_controls_print_footer_scripts', [ $this, 'render_control_templates' ], 1 );
 
 		// Export the settings to JS via the _wpCustomizeSettings variable.
-		add_action( 'customize_controls_print_footer_scripts', array( $this, 'customize_pane_settings' ), 1000 );
+		add_action( 'customize_controls_print_footer_scripts', [ $this, 'customize_pane_settings' ], 1000 );
 	}
 
 	/**
@@ -357,7 +357,7 @@ class Manager {
 
 		if ( $this->is_theme_active() ) {
 			// Once the theme is loaded, we'll validate it.
-			add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
+			add_action( 'after_setup_theme', [ $this, 'after_setup_theme' ] );
 		} else {
 			// If the requested theme is not the active theme and the user doesn't have the
 			// switch_themes cap, bail.
@@ -407,17 +407,17 @@ class Manager {
 		$this->previewing = true;
 
 		if ( ! $this->is_theme_active() ) {
-			add_filter( 'template', array( $this, 'get_template' ) );
-			add_filter( 'stylesheet', array( $this, 'get_stylesheet' ) );
-			add_filter( 'pre_option_current_theme', array( $this, 'current_theme' ) );
+			add_filter( 'template', [ $this, 'get_template' ] );
+			add_filter( 'stylesheet', [ $this, 'get_stylesheet' ] );
+			add_filter( 'pre_option_current_theme', [ $this, 'current_theme' ] );
 
 			// @link: https://core.trac.wordpress.org/ticket/20027
-			add_filter( 'pre_option_stylesheet', array( $this, 'get_stylesheet' ) );
-			add_filter( 'pre_option_template', array( $this, 'get_template' ) );
+			add_filter( 'pre_option_stylesheet', [ $this, 'get_stylesheet' ] );
+			add_filter( 'pre_option_template', [ $this, 'get_template' ] );
 
 			// Handle custom theme roots.
-			add_filter( 'pre_option_stylesheet_root', array( $this, 'get_stylesheet_root' ) );
-			add_filter( 'pre_option_template_root', array( $this, 'get_template_root' ) );
+			add_filter( 'pre_option_stylesheet_root', [ $this, 'get_stylesheet_root' ] );
+			add_filter( 'pre_option_template_root', [ $this, 'get_template_root' ] );
 		}
 
 		/**
@@ -445,17 +445,17 @@ class Manager {
 		$this->previewing = false;
 
 		if ( ! $this->is_theme_active() ) {
-			remove_filter( 'template', array( $this, 'get_template' ) );
-			remove_filter( 'stylesheet', array( $this, 'get_stylesheet' ) );
-			remove_filter( 'pre_option_current_theme', array( $this, 'current_theme' ) );
+			remove_filter( 'template', [ $this, 'get_template' ] );
+			remove_filter( 'stylesheet', [ $this, 'get_stylesheet' ] );
+			remove_filter( 'pre_option_current_theme', [ $this, 'current_theme' ] );
 
 			// @link: https://core.trac.wordpress.org/ticket/20027
-			remove_filter( 'pre_option_stylesheet', array( $this, 'get_stylesheet' ) );
-			remove_filter( 'pre_option_template', array( $this, 'get_template' ) );
+			remove_filter( 'pre_option_stylesheet', [ $this, 'get_stylesheet' ] );
+			remove_filter( 'pre_option_template', [ $this, 'get_template' ] );
 
 			// Handle custom theme roots.
-			remove_filter( 'pre_option_stylesheet_root', array( $this, 'get_stylesheet_root' ) );
-			remove_filter( 'pre_option_template_root', array( $this, 'get_template_root' ) );
+			remove_filter( 'pre_option_stylesheet_root', [ $this, 'get_stylesheet_root' ] );
+			remove_filter( 'pre_option_template_root', [ $this, 'get_template_root' ] );
 		}
 
 		/**
@@ -700,12 +700,12 @@ class Manager {
 		$this->prepare_controls();
 
 		wp_enqueue_script( 'customize-preview' );
-		add_action( 'wp', array( $this, 'customize_preview_override_404_status' ) );
-		add_action( 'wp_head', array( $this, 'customize_preview_base' ) );
-		add_action( 'wp_head', array( $this, 'customize_preview_loading_style' ) );
-		add_action( 'wp_footer', array( $this, 'customize_preview_settings' ), 20 );
-		add_action( 'shutdown', array( $this, 'customize_preview_signature' ), 1000 );
-		add_filter( 'wp_die_handler', array( $this, 'remove_preview_signature' ) );
+		add_action( 'wp', [ $this, 'customize_preview_override_404_status' ] );
+		add_action( 'wp_head', [ $this, 'customize_preview_base' ] );
+		add_action( 'wp_head', [ $this, 'customize_preview_loading_style' ] );
+		add_action( 'wp_footer', [ $this, 'customize_preview_settings' ], 20 );
+		add_action( 'shutdown', [ $this, 'customize_preview_signature' ], 1000 );
+		add_filter( 'wp_die_handler', [ $this, 'remove_preview_signature' ] );
 
 		foreach ( $this->settings as $setting ) {
 			$setting->preview();
@@ -781,7 +781,7 @@ class Manager {
 	 */
 	public function customize_preview_settings() {
 		$setting_validities = $this->validate_setting_values( $this->unsanitized_post_values() );
-		$exported_setting_validities = array_map( array( $this, 'prepare_setting_validity_for_js' ), $setting_validities );
+		$exported_setting_validities = array_map( [ $this, 'prepare_setting_validity_for_js' ], $setting_validities );
 
 		$app = getApp();
 
@@ -870,7 +870,7 @@ class Manager {
 	 * @return mixed Value passed through for {@see 'wp_die_handler'} filter.
 	 */
 	public function remove_preview_signature( $return = null ) {
-		remove_action( 'shutdown', array( $this, 'customize_preview_signature' ), 1000 );
+		remove_action( 'shutdown', [ $this, 'customize_preview_signature' ], 1000 );
 
 		return $return;
 	}
@@ -1050,7 +1050,7 @@ class Manager {
 		// Validate settings.
 		$setting_validities = $this->validate_setting_values( $this->unsanitized_post_values() );
 		$invalid_setting_count = count( array_filter( $setting_validities, 'is_wp_error' ) );
-		$exported_setting_validities = array_map( array( $this, 'prepare_setting_validity_for_js' ), $setting_validities );
+		$exported_setting_validities = array_map( [ $this, 'prepare_setting_validity_for_js' ], $setting_validities );
 		if ( $invalid_setting_count > 0 ) {
 			$response = array(
 				'setting_validities' => $exported_setting_validities,
@@ -1525,7 +1525,7 @@ class Manager {
 	public function prepare_controls() {
 
 		$controls = [];
-		uasort( $this->controls, array( $this, '_cmp_priority' ) );
+		uasort( $this->controls, [ $this, '_cmp_priority' ] );
 
 		foreach ( $this->controls as $id => $control ) {
 			if ( ! isset( $this->sections[ $control->section ] ) || ! $control->check_capabilities() ) {
@@ -1538,7 +1538,7 @@ class Manager {
 		$this->controls = $controls;
 
 		// Prepare sections.
-		uasort( $this->sections, array( $this, '_cmp_priority' ) );
+		uasort( $this->sections, [ $this, '_cmp_priority' ] );
 		$sections = [];
 
 		foreach ( $this->sections as $section ) {
@@ -1546,7 +1546,7 @@ class Manager {
 				continue;
 			}
 
-			usort( $section->controls, array( $this, '_cmp_priority' ) );
+			usort( $section->controls, [ $this, '_cmp_priority' ] );
 
 			if ( ! $section->panel ) {
 				// Top-level section.
@@ -1561,7 +1561,7 @@ class Manager {
 		$this->sections = $sections;
 
 		// Prepare panels.
-		uasort( $this->panels, array( $this, '_cmp_priority' ) );
+		uasort( $this->panels, [ $this, '_cmp_priority' ] );
 		$panels = [];
 
 		foreach ( $this->panels as $panel ) {
@@ -1569,14 +1569,14 @@ class Manager {
 				continue;
 			}
 
-			uasort( $panel->sections, array( $this, '_cmp_priority' ) );
+			uasort( $panel->sections, [ $this, '_cmp_priority' ] );
 			$panels[ $panel->id ] = $panel;
 		}
 		$this->panels = $panels;
 
 		// Sort panels and top-level sections together.
 		$this->containers = array_merge( $this->panels, $this->sections );
-		uasort( $this->containers, array( $this, '_cmp_priority' ) );
+		uasort( $this->containers, [ $this, '_cmp_priority' ] );
 	}
 
 	/**
@@ -2072,7 +2072,7 @@ class Manager {
 		$this->selective_refresh->add_partial( 'custom_logo', array(
 			'settings'            => array( 'custom_logo' ),
 			'selector'            => '.custom-logo-link',
-			'render_callback'     => array( $this, '_render_custom_logo_partial' ),
+			'render_callback'     => [ $this, '_render_custom_logo_partial' ],
 			'container_inclusive' => true,
 		) );
 
@@ -2087,7 +2087,7 @@ class Manager {
 			'theme_supports' => array( 'custom-header', 'header-text' ),
 			'default'        => get_theme_support( 'custom-header', 'default-text-color' ),
 
-			'sanitize_callback'    => array( $this, '_sanitize_header_textcolor' ),
+			'sanitize_callback'    => [ $this, '_sanitize_header_textcolor' ],
 			'sanitize_js_callback' => 'maybe_hash_hex_color',
 		) );
 
@@ -2227,7 +2227,7 @@ class Manager {
 			'title' => __( 'Static Front Page' ),
 			'priority' => 120,
 			'description' => __( 'Your theme supports a static front page.' ),
-			'active_callback' => array( $this, 'has_published_pages' ),
+			'active_callback' => [ $this, 'has_published_pages' ],
 		) );
 
 		$this->add_setting( 'show_on_front', array(

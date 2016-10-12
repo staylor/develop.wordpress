@@ -125,7 +125,7 @@ class Styles extends Dependencies {
 		 *
 		 * @param Styles $this Styles instance, passed by reference.
 		 */
-		do_action_ref_array( 'wp_default_styles', array( &$this ) );
+		do_action_ref_array( 'wp_default_styles', [ &$this ] );
 	}
 
 	/**

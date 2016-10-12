@@ -26,11 +26,11 @@ class Help {
 			$help .='<p>' . __( 'What&#8217;s the difference between categories and tags? Normally, tags are ad-hoc keywords that identify important information in your post (names, subjects, etc) that may or may not recur in other posts, while categories are pre-determined sections. If you think of your site like a book, the categories are like the Table of Contents and the tags are like the terms in the index.' ) . '</p>';
 		}
 
-		$this->screen->add_help_tab( array(
+		$this->screen->add_help_tab( [
 			'id'      => 'overview',
 			'title'   => __('Overview'),
 			'content' => $help,
-		) );
+		] );
 
 		if ( 'category' == $taxnow || 'post_tag' == $taxnow ) {
 			if ( 'category' == $taxnow ) {
@@ -51,11 +51,11 @@ class Help {
 			'</ul>' .
 			'<p>' . __( 'You can change the display of this screen using the Screen Options tab to set how many items are displayed per screen and to display/hide columns in the table.' ) . '</p>';
 
-			$this->screen->add_help_tab( array(
+			$this->screen->add_help_tab( [
 				'id'      => 'adding-terms',
 				'title'   => 'category' == $taxnow ? __( 'Adding Categories' ) : __( 'Adding Tags' ),
 				'content' => $help,
-			) );
+			] );
 		}
 
 		$help = '<p><strong>' . __( 'For more information:' ) . '</strong></p>';
