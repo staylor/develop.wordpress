@@ -38,7 +38,7 @@ if ( ( 'do-theme-upgrade' == $action || ( 'do-plugin-upgrade' == $action && ! $_
 $title = __('WordPress Updates');
 $parent_file = 'index.php';
 
-( new InstallHelp() )->addUpdateCore();
+( new InstallHelp( get_current_screen() ) )->addUpdateCore();
 
 if ( 'upgrade-core' == $action ) {
 	// Force a update check when requested
