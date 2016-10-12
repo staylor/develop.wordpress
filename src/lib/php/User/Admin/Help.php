@@ -1,14 +1,9 @@
 <?php
 namespace WP\User\Admin;
 
-use WP\Admin\Screen;
+use WP\Admin\Help as AdminHelp;
 
-class Help {
-	protected $screen;
-
-	public function __construct( Screen $screen ) {
-		$this->screen = $screen;
-	}
+class Help extends AdminHelp {
 
 	public function addUsers() {
 		// contextual help - choose Help on the top right of admin panel to preview this.

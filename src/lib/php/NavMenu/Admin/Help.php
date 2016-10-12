@@ -1,14 +1,9 @@
 <?php
 namespace WP\NavMenu\Admin;
 
-use WP\Admin\Screen;
+use WP\Admin\Help as AdminHelp;
 
-class Help {
-	protected $screen;
-
-	public function __construct( Screen $screen ) {
-		$this->screen = $screen;
-	}
+class Help extends AdminHelp {
 
 	protected function addSidebar() {
 		$this->screen->set_help_sidebar(

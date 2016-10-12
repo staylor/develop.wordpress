@@ -1,14 +1,9 @@
 <?php
 namespace WP\Dashboard;
 
-use WP\Admin\Screen;
+use WP\Admin\Help as AdminHelp;
 
-class Help {
-	protected $screen;
-
-	public function __construct( Screen $screen ) {
-		$this->screen = $screen;
-	}
+class Help extends AdminHelp {
 
 	public function addIndex() {
 		$help = '<p>' . __( 'Welcome to your WordPress Dashboard! This is the screen you will see when you log in to your site, and gives you access to all the site management features of WordPress. You can get help for any screen by clicking the Help tab above the screen title.' ) . '</p>';

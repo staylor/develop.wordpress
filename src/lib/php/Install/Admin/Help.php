@@ -1,14 +1,9 @@
 <?php
 namespace WP\Install\Admin;
 
-use WP\Admin\Screen;
+use WP\Admin\Help as AdminHelp;
 
-class Help {
-	protected $screen;
-
-	public function __construct( Screen $screen ) {
-		$this->screen = $screen;
-	}
+class Help extends AdminHelp {
 
 	public function addUpdateCore() {
 		$updates_overview  = '<p>' . __( 'On this screen, you can update to the latest version of WordPress, as well as update your themes, plugins, and translations from the WordPress.org repositories.' ) . '</p>';

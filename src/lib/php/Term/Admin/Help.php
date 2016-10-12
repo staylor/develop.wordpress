@@ -1,14 +1,9 @@
 <?php
 namespace WP\Term\Admin;
 
-use WP\Admin\Screen;
+use WP\Admin\Help as AdminHelp;
 
-class Help {
-	protected $screen;
-
-	public function __construct( Screen $screen ) {
-		$this->screen = $screen;
-	}
+class Help extends AdminHelp {
 
 	public function addEditTags( $taxnow ) {
 		$help ='';
