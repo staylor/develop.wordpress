@@ -1,0 +1,24 @@
+				{{$ content }}... CONTENT GOES HERE ...{{/ content }}
+				<div class="clear"></div>
+			</div><!-- wpbody-content -->
+			<div class="clear"></div>
+		</div><!-- wpbody -->
+		<div class="clear"></div>
+	</div><!-- wpcontent -->
+	<div id="wpfooter" role="contentinfo">
+		{{# doAction }}in_admin_footer{{/ doAction }}
+		<p id="footer-left" class="alignleft">{{{ admin_footer_text }}}</p>
+		<p id="footer-upgrade" class="alignright">{{{ update_footer }}}</p>
+		<div class="clear"></div>
+	</div>
+	{{# doAction }}admin_footer{{/ doAction }}
+	{{# doAction }}admin_print_footer_scripts-{{ hook_suffix }}{{/ doAction }}
+	{{# doAction }}admin_print_footer_scripts{{/ doAction }}
+	{{# doAction }}admin_footer-{{ hook_suffix }}{{/ doAction }}
+
+	{{{ compressionTest }}}
+	<div class="clear"></div>
+</div><!-- wpwrap -->
+<script type="text/javascript">if(typeof wpOnload=='function')wpOnload();</script>
+</body>
+</html>

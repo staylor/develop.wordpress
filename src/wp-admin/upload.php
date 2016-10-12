@@ -70,8 +70,7 @@ if ( 'grid' === $mode ) {
 
 	echo $view->render( 'media/upload-grid', $view );
 
-	require_once( ABSPATH . 'wp-admin/admin-footer.php' );
-	exit;
+	exit();
 }
 
 $wp_list_table = _get_list_table( 'WP_Media_List_Table' );
@@ -190,5 +189,3 @@ $view->setData( $data );
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 echo $view->render( 'media/upload-list', $view );
-
-require_once( ABSPATH . 'wp-admin/admin-footer.php' );

@@ -102,10 +102,9 @@ wp_enqueue_script( 'common' );
  * The remaining variables are imported as globals elsewhere, declared as globals here
  *
  * @global array  $wp_importers
- * @global string $hook_suffix
  * @global string $plugin_page
  */
-global $wp_importers, $hook_suffix, $plugin_page;
+global $wp_importers, $plugin_page;
 
 $pagenow = $app['pagenow'];
 $typenow = $app['typenow'];
@@ -164,13 +163,13 @@ if ( isset($plugin_page) ) {
 	unset($the_parent);
 }
 
-$hook_suffix = '';
+$app->hook_suffix = '';
 if ( isset( $page_hook ) ) {
-	$hook_suffix = $page_hook;
+	$app->hook_suffix = $page_hook;
 } elseif ( isset( $plugin_page ) ) {
-	$hook_suffix = $plugin_page;
+	$app->hook_suffix = $plugin_page;
 } elseif ( isset( $pagenow ) ) {
-	$hook_suffix = $pagenow;
+	$app->hook_suffix = $pagenow;
 }
 
 set_current_screen();

@@ -57,7 +57,7 @@ class View {
 	}
 
 	public function setActions( $actions = [] ) {
-		$this->actions = $actions;
+		$this->actions = array_merge( $this->actions, $actions );
 	}
 
 	public function doAction() {

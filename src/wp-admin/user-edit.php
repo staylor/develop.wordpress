@@ -425,5 +425,3 @@ $view->setActions( [
 ] );
 
 echo $view->render( 'user/edit', $view );
-
-include( ABSPATH . 'wp-admin/admin-footer.php');

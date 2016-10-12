@@ -166,7 +166,7 @@ case 'delete':
 
 	include( ABSPATH . 'wp-admin/admin-header.php' );
 
-	$view->render( 'user/delete-form', $view );
+	echo $view->render( 'user/delete-form', $view );
 
 	include( ABSPATH . 'wp-admin/admin-footer.php' );
 

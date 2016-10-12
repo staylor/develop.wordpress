@@ -18,12 +18,11 @@ $app = getApp();
  * In case admin-header.php is included in a function.
  *
  * @global string    $title
- * @global string    $hook_suffix
  * @global string    $update_title
  * @global int       $total_update_count
  * @global string    $parent_file
  */
-global $title, $hook_suffix, $update_title, $total_update_count, $parent_file;
+global $title, $update_title, $total_update_count, $parent_file;
 
 // Catch plugins that include admin-header.php before admin.php completes.
 if ( empty( $app->current_screen ) )
@@ -66,7 +65,7 @@ wp_enqueue_style( 'ie' );
 wp_enqueue_script('utils');
 wp_enqueue_script( 'svg-painter' );
 
-$admin_body_class = preg_replace('/[^a-z0-9_-]+/i', '-', $hook_suffix);
+$admin_body_class = preg_replace('/[^a-z0-9_-]+/i', '-', $app->hook_suffix );
 ?>
 <script type="text/javascript">
 addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function'){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
@@ -88,14 +87,14 @@ var ajaxurl = '<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>',
  *
  * @param string $hook_suffix The current admin page.
  */
-do_action( 'admin_enqueue_scripts', $hook_suffix );
+do_action( 'admin_enqueue_scripts', $app->hook_suffix );
 
 /**
  * Fires when styles are printed for a specific admin page based on $hook_suffix.
  *
  * @since 2.6.0
  */
-do_action( "admin_print_styles-{$hook_suffix}" );
+do_action( "admin_print_styles-{$app->hook_suffix}" );
 
 /**
  * Fires when styles are printed for all admin pages.
@@ -109,7 +108,7 @@ do_action( 'admin_print_styles' );
  *
  * @since 2.1.0
  */
-do_action( "admin_print_scripts-{$hook_suffix}" );
+do_action( "admin_print_scripts-{$app->hook_suffix}" );
 
 /**
  * Fires when scripts are printed for all admin pages.
@@ -126,7 +125,7 @@ do_action( 'admin_print_scripts' );
  *
  * @since 2.1.0
  */
-do_action( "admin_head-{$hook_suffix}" );
+do_action( "admin_head-{$app->hook_suffix}" );
 
 /**
  * Fires in head section for all admin pages.

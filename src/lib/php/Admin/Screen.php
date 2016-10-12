@@ -173,8 +173,6 @@ final class Screen {
 	 *
 	 * @static
 	 *
-	 * @global string $hook_suffix
-	 *
 	 * @param string|Screen $hook_name Optional. The hook name (also known as the hook suffix) used to determine the screen.
 	 * 	                                  Defaults to the current $hook_suffix global.
 	 * @return Screen Screen object.
@@ -184,6 +182,7 @@ final class Screen {
 			return $hook_name;
 		}
 
+		$app = getApp();
 		$post_type = $taxonomy = null;
 		$in_admin = false;
 		$action = '';
@@ -191,7 +190,7 @@ final class Screen {
 		if ( $hook_name ) {
 			$id = $hook_name;
 		} else {
-			$id = $GLOBALS['hook_suffix'];
+			$id = $app->hook_suffix;
 		}
 		// For those pesky meta boxes.
 		if ( $hook_name && post_type_exists( $hook_name ) ) {
@@ -249,7 +248,6 @@ final class Screen {
 		}
 
 		$base = $id;
-		$app = getApp();
 		$_request = $app['request']->attributes;
 		$_get = $app['request']->query;
 		$_post = $app['request']->request;

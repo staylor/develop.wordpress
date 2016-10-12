@@ -64,5 +64,3 @@ $view->setActions( [
 ] );
 
 echo $view->render( 'dashboard/index', $view );
-
-require_once( __DIR__ . '/admin-footer.php' );

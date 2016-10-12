@@ -1570,20 +1570,21 @@ function _admin_search_query() {
  *
  * @since 2.7.0
  *
- * @global string    $hook_suffix
  * @global string    $admin_body_class
  *
  * @param string $title      Optional. Title of the Iframe page. Default empty.
  * @param bool   $deprecated Not used.
  */
 function iframe_header( $title = '', $deprecated = false ) {
+	$app = getApp();
+
 	show_admin_bar( false );
-	global $hook_suffix, $admin_body_class;
-	$admin_body_class = preg_replace('/[^a-z0-9_-]+/i', '-', $hook_suffix);
+	global $admin_body_class;
+	$admin_body_class = preg_replace( '/[^a-z0-9_-]+/i', '-', $app->hook_suffix );
 
 	$current_screen = get_current_screen();
 
-	$app = getApp();
+
 
 	@header( 'Content-Type: ' . get_option( 'html_type' ) . '; charset=' . get_option( 'blog_charset' ) );
 	_wp_admin_html_begin();
@@ -1605,22 +1606,22 @@ var ajaxurl = '<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>',
 </script>
 <?php
 /** This action is documented in wp-admin/admin-header.php */
-do_action( 'admin_enqueue_scripts', $hook_suffix );
+do_action( 'admin_enqueue_scripts', $app->hook_suffix );
 
 /** This action is documented in wp-admin/admin-header.php */
-do_action( "admin_print_styles-$hook_suffix" );
+do_action( "admin_print_styles-{$app->hook_suffix}" );
 
 /** This action is documented in wp-admin/admin-header.php */
 do_action( 'admin_print_styles' );
 
 /** This action is documented in wp-admin/admin-header.php */
-do_action( "admin_print_scripts-$hook_suffix" );
+do_action( "admin_print_scripts-{$app->hook_suffix}" );
 
 /** This action is documented in wp-admin/admin-header.php */
 do_action( 'admin_print_scripts' );
 
 /** This action is documented in wp-admin/admin-header.php */
-do_action( "admin_head-$hook_suffix" );
+do_action( "admin_head-{$app->hook_suffix}" );
 
 /** This action is documented in wp-admin/admin-header.php */
 do_action( 'admin_head' );
@@ -1663,18 +1664,15 @@ function iframe_footer() {
 	 * or other needed content.
 	 */
 
-	/**
-	 * @global string $hook_suffix
-	 */
-	global $hook_suffix;
+	$app = getApp();
 	?>
 	<div class="hidden">
 <?php
 	/** This action is documented in wp-admin/admin-footer.php */
-	do_action( 'admin_footer', $hook_suffix );
+	do_action( 'admin_footer', $app->hook_suffix );
 
 	/** This action is documented in wp-admin/admin-footer.php */
-	do_action( "admin_print_footer_scripts-$hook_suffix" );
+	do_action( "admin_print_footer_scripts-{$app->hook_suffix}" );
 
 	/** This action is documented in wp-admin/admin-footer.php */
 	do_action( 'admin_print_footer_scripts' );

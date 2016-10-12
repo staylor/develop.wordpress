@@ -232,7 +232,6 @@ if ( $view->_get->has( 'editwidget' ) ) {
 
 	echo $view->render( 'widget/edit', $view );
 
-	require_once( __DIR__ . '/admin-footer.php' );
 	exit();
 }
 
@@ -368,5 +367,3 @@ $view->setActions( [
 require_once( __DIR__ . '/admin-header.php' );
 
 echo $view->render( 'widget/widgets', $view );
-
-require_once( __DIR__ . '/admin-footer.php' );

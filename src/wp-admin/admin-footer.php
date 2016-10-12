@@ -9,11 +9,6 @@
 // don't load directly
 if ( !defined('ABSPATH') )
 	die('-1');
-
-/**
- * @global string $hook_suffix
- */
-global $hook_suffix;
 ?>
 
 <div class="clear"></div></div><!-- wpbody-content -->
@@ -79,11 +74,9 @@ do_action( 'admin_footer', '' );
  *
  * @since 4.6.0
  *
- * @global string $hook_suffix
- *
  * @param string $hook_suffix The current admin page.
  */
-do_action( "admin_print_footer_scripts-{$hook_suffix}" );
+do_action( "admin_print_footer_scripts-{$app->hook_suffix}" );
 
 /**
  * Prints any scripts and data queued for the footer.
@@ -100,10 +93,9 @@ do_action( 'admin_print_footer_scripts' );
  *
  * @since 2.8.0
  *
- * @global string $hook_suffix
  * @param string $hook_suffix The current admin page.
  */
-do_action( "admin_footer-{$hook_suffix}" );
+do_action( "admin_footer-{$app->hook_suffix}" );
 
 // get_site_option() won't exist when auto upgrading from <= 2.7
 if ( function_exists('get_site_option') ) {

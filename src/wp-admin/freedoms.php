@@ -34,5 +34,3 @@ $data = [
 ];
 
 echo $view->render( 'admin/freedoms', $data );
-
-include( ABSPATH . 'wp-admin/admin-footer.php' );

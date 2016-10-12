@@ -8,6 +8,7 @@
  */
 
 use WP\Admin\Screen;
+use function WP\getApp;
 
 /**
  * Fetch an instance of a WP_List_Table class.
@@ -15,13 +16,13 @@ use WP\Admin\Screen;
  * @access private
  * @since 3.1.0
  *
- * @global string $hook_suffix
- *
  * @param string $class The type of the list table, which is the class name.
  * @param array $args Optional. Arguments to pass to the class. Accepts 'screen'.
  * @return object|bool Object on success, false if the class does not exist.
  */
 function _get_list_table( $class, $args = [] ) {
+	$app = getApp();
+
 	$core_classes = array(
 		//Site Admin
 		'WP_Posts_List_Table' => 'posts',
@@ -42,13 +43,13 @@ function _get_list_table( $class, $args = [] ) {
 	);
 
 	if ( isset( $core_classes[ $class ] ) ) {
-		if ( isset( $args['screen'] ) )
+		if ( isset( $args['screen'] ) ) {
 			$args['screen'] = convert_to_screen( $args['screen'] );
-		elseif ( isset( $GLOBALS['hook_suffix'] ) )
+		} elseif ( isset( $app->hook_suffix ) ) {
 			$args['screen'] = get_current_screen();
-		else
+		} else {
 			$args['screen'] = null;
-
+		}
 		return new $class( $args );
 	}
 

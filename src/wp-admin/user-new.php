@@ -146,5 +146,3 @@ if ( current_user_can( 'create_users' ) ) {
 $view->setData( $data );
 
 echo $view->render( 'user/new', $view );
-
-include( ABSPATH . 'wp-admin/admin-footer.php' );
