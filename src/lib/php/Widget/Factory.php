@@ -34,7 +34,7 @@ class Factory {
 	 * @access public
 	 */
 	public function __construct() {
-		add_action( 'widgets_init', array( $this, '_register_widgets' ), 100 );
+		add_action( 'widgets_init', [ $this, '_register_widgets' ], 100 );
 	}
 
 	/**

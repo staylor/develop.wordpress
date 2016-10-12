@@ -1,0 +1,58 @@
+<div class="wrap">
+	<h1>{{ title }}</h1>
+	<div class="editwidget"{{{ width }}}>
+		<h2>{{ subheading }}</h2>
+
+		<form action="widgets.php" method="post">
+			<div class="widget-inside">
+				{{{ options }}}
+			</div>
+			<p class="describe">{{ l10n.select_both }}</p>
+			<div class="widget-position">
+				<table class="widefat">
+					<thead>
+						<tr>
+							<th>{{ l10n.sidebar }}</th>
+							<th>{{ l10n.position }}</th>
+						</tr>
+					</thead>
+					<tbody>
+					{{# sidebars }}
+						<tr>
+							<td>
+								<label><input type="radio" name="sidebar" value="{{ name }}"{{{ checked }}} /> {{ label }}</label>
+							</td>
+							<td>
+								{{# space }}{{{ . }}}{{/ space }}
+								{{^ space }}
+								<select name="{{ name }}_position">
+									<option value="">{{{ l10n.select }}}</option>
+									{{# opts }}
+									<option value="{{ value }}"{{{ selected }}}> {{ value }} </option>
+									{{/ opts }}
+								</select>
+								{{/ space }}
+							</td>
+						</tr>
+					{{/ sidebars }}
+					</tbody>
+				</table>
+			</div>
+			<div class="widget-control-actions">
+				{{# addnew }}
+				<a href="widgets.php" class="button alignleft">{{ l10n.cancel }}</a>
+				{{/ addnew }}
+				{{^ addnew }}
+					{{{ delete_button }}}
+				{{/ addnew }}
+
+				{{{ save_widget_button }}}
+				<input type="hidden" name="widget-id" class="widget-id" value="{{ widget_id }}" />
+				<input type="hidden" name="id_base" class="id_base" value="{{ id_base }}" />
+				<input type="hidden" name="multi_number" class="multi_number" value="{{ multi_number }}" />
+				{{{ nonce }}}
+				<br class="clear" />
+			</div>
+		</form>
+	</div>
+</div>

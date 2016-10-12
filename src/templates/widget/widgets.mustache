@@ -1,0 +1,88 @@
+<div class="wrap">
+	<h1>{{ title }}{{{ title_extra }}}</h1>
+
+	{{# message }}
+	<div id="message" class="updated notice is-dismissible">
+		<p>{{ . }}</p>
+	</div>
+	{{/ message }}
+
+	{{# error }}
+	<div id="message" class="error">
+		<p>{{ . }}</p>
+	</div>
+	{{/ error }}
+
+	{{# doAction }}widgets_admin_page{{/ doAction }}
+
+	<div class="widget-liquid-left">
+		<div id="widgets-left">
+			<div id="available-widgets" class="widgets-holder-wrap">
+				<div class="sidebar-name">
+					<div class="sidebar-name-arrow"><br /></div>
+					<h2>{{ l10n.available_widgets }} <span id="removing-widget">{{ l10n.deactivate }} <span></span></span></h2>
+				</div>
+				<div class="widget-holder">
+					<div class="sidebar-description">
+						<p class="description">{{ l10n.activate_widget_message }}</p>
+					</div>
+					<div id="widget-list">
+						{{{ wp_list_widgets }}}
+					</div>
+					<br class="clear" />
+				</div>
+				<br class="clear" />
+			</div>
+			{{# widget_holders }}
+			<div class="{{ wrap_class }}">
+				<div class="widget-holder inactive">
+					{{{ content }}}
+
+					{{# is_inactive_widgets }}
+					<div class="remove-inactive-widgets">
+						<form action="" method="post">
+							<p>
+								{{{ submit_button }}}
+								<span class="spinner"></span>
+							</p>
+							{{{ nonce }}}
+						</form>
+					</div>
+					{{/ is_inactive_widgets }}
+				</div>
+				{{# is_inactive_widgets }}
+				<p class="description">{{ l10n.clear_inactive_message }}</p>
+				{{/ is_inactive_widgets }}
+			</div>
+			{{/ widget_holders }}
+		</div>
+	</div>
+	<div class="widget-liquid-right">
+		<div id="widgets-right" class="wp-clearfix{{ single_sidebar_class }}">
+			<div class="sidebars-column-1">
+
+			{{# sidebars }}
+				{{{ split }}}
+				<div class="{{ wrap_class }}">
+					{{{ widget_forms }}}
+				</div>
+			{{/ sidebars }}
+
+			</div>
+		</div>
+	</div>
+	<form method="post">
+		{{{ nonce }}}
+	</form>
+	<br class="clear" />
+</div>
+
+<div class="widgets-chooser">
+	<ul class="widgets-chooser-sidebars"></ul>
+	<div class="widgets-chooser-actions">
+		<button class="button widgets-chooser-cancel">{{ l10n.cancel }}</button>
+		<button class="button button-primary widgets-chooser-add">{{ l10n.add_widget }}</button>
+	</div>
+</div>
+
+{{# doAction }}sidebar_admin_page{{/ doAction }}
