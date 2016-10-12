@@ -5,6 +5,7 @@
  * @package WordPress
  * @subpackage Administration
  */
+use WP\Media\Admin\Help as MediaHelp;
 
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
@@ -68,21 +69,7 @@ case 'edit' :
 	wp_enqueue_script('image-edit');
 	wp_enqueue_style('imgareaselect');
 
-	get_current_screen()->add_help_tab( array(
-		'id'      => 'overview',
-		'title'   => __('Overview'),
-		'content' =>
-			'<p>' . __('This screen allows you to edit five fields for metadata in a file within the media library.') . '</p>' .
-			'<p>' . __('For images only, you can click on Edit Image under the thumbnail to expand out an inline image editor with icons for cropping, rotating, or flipping the image as well as for undoing and redoing. The boxes on the right give you more options for scaling the image, for cropping it, and for cropping the thumbnail in a different way than you crop the original image. You can click on Help in those boxes to get more information.') . '</p>' .
-			'<p>' . __('Note that you crop the image by clicking on it (the Crop icon is already selected) and dragging the cropping frame to select the desired part. Then click Save to retain the cropping.') . '</p>' .
-			'<p>' . __('Remember to click Update Media to save metadata entered or changed.') . '</p>'
-	) );
-
-	get_current_screen()->set_help_sidebar(
-	'<p><strong>' . __('For more information:') . '</strong></p>' .
-	'<p>' . __('<a href="https://codex.wordpress.org/Media_Add_New_Screen#Edit_Media">Documentation on Edit Media</a>') . '</p>' .
-	'<p>' . __('<a href="https://wordpress.org/support/">Support Forums</a>') . '</p>'
-	);
+	( new MediaHelp( get_current_screen() ) )->addEdit();
 
 	require( ABSPATH . 'wp-admin/admin-header.php' );
 

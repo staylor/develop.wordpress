@@ -35,6 +35,48 @@ class Help extends AdminHelp {
 		);
 	}
 
+	public function addNetwork() {
+		$network_help = '<p>' . __( 'This screen allows you to configure a network as having subdomains (<code>site1.example.com</code>) or subdirectories (<code>example.com/site1</code>). Subdomains require wildcard subdomains to be enabled in Apache and DNS records, if your host allows it.' ) . '</p>' .
+			'<p>' . __( 'Choose subdomains or subdirectories; this can only be switched afterwards by reconfiguring your install. Fill out the network details, and click install. If this does not work, you may have to add a wildcard DNS record (for subdomains) or change to another setting in Permalinks (for subdirectories).' ) . '</p>' .
+			'<p>' . __( 'The next screen for Network Setup will give you individually-generated lines of code to add to your wp-config.php and .htaccess files. Make sure the settings of your FTP client make files starting with a dot visible, so that you can find .htaccess; you may have to create this file if it really is not there. Make backup copies of those two files.' ) . '</p>' .
+			'<p>' . __( 'Add the designated lines of code to wp-config.php (just before <code>/*...stop editing...*/</code>) and <code>.htaccess</code> (replacing the existing WordPress rules).' ) . '</p>' .
+			'<p>' . __( 'Once you add this code and refresh your browser, multisite should be enabled. This screen, now in the Network Admin navigation menu, will keep an archive of the added code. You can toggle between Network Admin and Site Admin by clicking on the Network Admin or an individual site name under the My Sites dropdown in the Toolbar.' ) . '</p>' .
+			'<p>' . __( 'The choice of subdirectory sites is disabled if this setup is more than a month old because of permalink problems with &#8220;/blog/&#8221; from the main site. This disabling will be addressed in a future version.' ) . '</p>' .
+			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Create_A_Network" target="_blank">Documentation on Creating a Network</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Tools_Network_Screen" target="_blank">Documentation on the Network Screen</a>' ) . '</p>';
+
+		$this->screen->add_help_tab( [
+			'id'      => 'network',
+			'title'   => __( 'Network' ),
+			'content' => $network_help,
+		] );
+
+		$this->screen->set_help_sidebar(
+			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Create_A_Network" target="_blank">Documentation on Creating a Network</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Tools_Network_Screen" target="_blank">Documentation on the Network Screen</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/" target="_blank">Support Forums</a>' ) . '</p>'
+		);
+	}
+
+	public function addUpgradeNetwork() {
+		$this->screen->add_help_tab( [
+			'id'      => 'overview',
+			'title'   => __( 'Overview' ),
+			'content' =>
+				'<p>' . __( 'Only use this screen once you have updated to a new version of WordPress through Updates/Available Updates (via the Network Administration navigation menu or the Toolbar). Clicking the Upgrade Network button will step through each site in the network, five at a time, and make sure any database updates are applied.' ) . '</p>' .
+				'<p>' . __( 'If a version update to core has not happened, clicking this button won&#8217;t affect anything.' ) . '</p>' .
+				'<p>' . __( 'If this process fails for any reason, users logging in to their sites will force the same update.' ) . '</p>'
+		] );
+
+		$this->screen->set_help_sidebar(
+			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Network_Admin_Updates_Screen">Documentation on Upgrade Network</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
+		);
+	}
+
 	public function addThemeInstall() {
 		$help_overview =
 			'<p>' . sprintf(
@@ -71,5 +113,37 @@ class Help extends AdminHelp {
 			'<p>' . __( '<a href="https://codex.wordpress.org/Using_Themes#Adding_New_Themes">Documentation on Adding New Themes</a>' ) . '</p>' .
 			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
 		);
+	}
+
+	public function addPluginInstall() {
+		$this->screen->add_help_tab( [
+			'id'		=> 'overview',
+			'title'		=> __( 'Overview' ),
+			'content'	=>
+				'<p>' . sprintf( __( 'Plugins hook into WordPress to extend its functionality with custom features. Plugins are developed independently from the core WordPress application by thousands of developers all over the world. All plugins in the official <a href="%s">WordPress Plugin Directory</a> are compatible with the license WordPress uses.' ), __( 'https://wordpress.org/plugins/' ) ) . '</p>' .
+				'<p>' . __( 'You can find new plugins to install by searching or browsing the directory right here in your own Plugins section.' ) . ' <span id="live-search-desc" class="hide-if-no-js">' . __( 'The search results will be updated as you type.' ) . '</span></p>'
+		] );
+
+		$this->screen->add_help_tab( [
+			'id'		=> 'adding-plugins',
+			'title'		=> __( 'Adding Plugins' ),
+			'content'	=>
+				'<p>' . __( 'If you know what you&#8217;re looking for, Search is your best bet. The Search screen has options to search the WordPress Plugin Directory for a particular Term, Author, or Tag. You can also search the directory by selecting popular tags. Tags in larger type mean more plugins have been labeled with that tag.' ) . '</p>' .
+				'<p>' . __( 'If you just want to get an idea of what&#8217;s available, you can browse Featured and Popular plugins by using the links above the plugins list. These sections rotate regularly.' ) . '</p>' .
+				'<p>' . __( 'You can also browse a user&#8217;s favorite plugins, by using the Favorites link above the plugins list and entering their WordPress.org username.' ) . '</p>' .
+				'<p>' . __( 'If you want to install a plugin that you&#8217;ve downloaded elsewhere, click the Upload Plugin button above the plugins list. You will be prompted to upload the .zip package, and once uploaded, you can activate the new plugin.' ) . '</p>'
+		] );
+
+		$this->screen->set_help_sidebar(
+			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
+			'<p>' . __( '<a href="https://codex.wordpress.org/Plugins_Add_New_Screen">Documentation on Installing Plugins</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
+		);
+
+		$this->screen->set_screen_reader_content( [
+			'heading_views'      => __( 'Filter plugins list' ),
+			'heading_pagination' => __( 'Plugins list navigation' ),
+			'heading_list'       => __( 'Plugins list' ),
+		] );
 	}
 }

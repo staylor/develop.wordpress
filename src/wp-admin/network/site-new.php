@@ -6,7 +6,7 @@
  * @subpackage Multisite
  * @since 3.1.0
  */
-
+use WP\Site\Admin\Help as SiteHelp;
 use function WP\getApp;
 
 /** Load WordPress Administration Bootstrap */
@@ -21,19 +21,7 @@ if ( ! current_user_can( 'manage_sites' ) )
 $app = getApp();
 $wpdb = $app['db'];
 
-get_current_screen()->add_help_tab( array(
-	'id'      => 'overview',
-	'title'   => __('Overview'),
-	'content' =>
-		'<p>' . __('This screen is for Super Admins to add new sites to the network. This is not affected by the registration settings.') . '</p>' .
-		'<p>' . __('If the admin email for the new site does not exist in the database, a new user will also be created.') . '</p>'
-) );
-
-get_current_screen()->set_help_sidebar(
-	'<p><strong>' . __('For more information:') . '</strong></p>' .
-	'<p>' . __('<a href="https://codex.wordpress.org/Network_Admin_Sites_Screen">Documentation on Site Management</a>') . '</p>' .
-	'<p>' . __('<a href="https://wordpress.org/support/forum/multisite/">Support Forums</a>') . '</p>'
-);
+( new SiteHelp( get_current_screen() ) )->addNew();
 
 if ( 'add-site' == $_request->get( 'action' ) ) {
 	check_admin_referer( 'add-blog', '_wpnonce_add-blog' );
