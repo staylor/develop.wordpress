@@ -7,16 +7,11 @@
  */
 
 use WP\Admin\View;
-use function WP\getApp;
 
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-$app = getApp();
-
 $title = __( 'Freedoms' );
-
-include( ABSPATH . 'wp-admin/admin-header.php' );
 
 $view = new View( $app );
 
@@ -33,4 +28,8 @@ $data = [
 	'freedoms_about_text' => sprintf( $view->l10n->freedoms_about, 'https://wordpress.org/about/license/' ),
 ];
 
-echo $view->render( 'admin/freedoms', $data );
+$view->setData( $data );
+
+include( ABSPATH . 'wp-admin/admin-header.php' );
+
+echo $view->render( 'admin/freedoms', $view );

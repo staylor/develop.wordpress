@@ -3,7 +3,7 @@ namespace WP\Admin;
 
 use WP\{App,View as BaseView};
 
-abstract class View extends BaseView {
+class View extends BaseView {
 	public $l10n;
 	public $help;
 	public $handler;
@@ -18,6 +18,10 @@ abstract class View extends BaseView {
 			'admin_print_footer_scripts' => [],
 			"admin_footer-{$app->hook_suffix}" => [],
 		];
+
+		if ( get_called_class() === __CLASS__ ) {
+			$this->setL10n( new L10N() );
+		}
 	}
 
 	public function setL10n( $l10n ) {
