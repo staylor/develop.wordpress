@@ -2024,7 +2024,8 @@ function wp_ajax_save_widget() {
 	// Delete.
 	if ( $_post->get( 'delete_widget' ) ) {
 
-		if ( ! isset( $app->widgets['registered'][ $widget_id ] ) ) {
+		$registered = $app->get( 'registered_widgets' );
+		if ( ! isset( $registered[ $widget_id ] ) ) {
 			wp_die( $error );
 		}
 
@@ -2049,11 +2050,13 @@ function wp_ajax_save_widget() {
 	}
 	$_post->set( 'widget-id', $sidebar );
 
-	foreach ( (array) $app->widgets['updates'] as $name => $control ) {
+	$updates = $app->get( 'widget_updates' );
+	foreach ( $updates as $name => $control ) {
 
 		if ( $name == $id_base ) {
-			if ( !is_callable( $control['callback'] ) )
+			if ( ! is_callable( $control['callback'] ) ) {
 				continue;
+			}
 
 			ob_start();
 				call_user_func_array( $control['callback'], $control['params'] );
@@ -2072,9 +2075,11 @@ function wp_ajax_save_widget() {
 	if ( $_post->get( 'add_new' ) )
 		wp_die();
 
-	if ( $form = $app->widgets['controls'][$widget_id] )
+	$controls = $app->get( 'widget_controls' );
+	$form = $controls[ $widget_id ];
+	if ( $form ) {
 		call_user_func_array( $form['callback'], $form['params'] );
-
+	}
 	wp_die();
 }
 

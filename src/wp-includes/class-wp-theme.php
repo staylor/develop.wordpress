@@ -217,8 +217,9 @@ final class WP_Theme implements ArrayAccess {
 		$this->theme_root = $theme_root;
 		$this->stylesheet = $theme_dir;
 
+		$theme_dirs = $app->get( 'theme_directories' )->getArrayCopy();
 		// Correct a situation where the theme is 'some-directory/some-theme' but 'some-directory' was passed in as part of the theme root instead.
-		if ( ! in_array( $theme_root, (array) $app->theme['directories'] ) && in_array( dirname( $theme_root ), (array) $app->theme['directories'] ) ) {
+		if ( ! in_array( $theme_root, $theme_dirs ) && in_array( dirname( $theme_root ), $theme_dirs ) ) {
 			$this->stylesheet = basename( $this->theme_root ) . '/' . $this->stylesheet;
 			$this->theme_root = dirname( $theme_root );
 		}

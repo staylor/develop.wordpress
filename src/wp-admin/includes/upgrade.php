@@ -1326,23 +1326,25 @@ function upgrade_330() {
 
 	switch ( $sidebars_widgets['array_version'] ) {
 		case 1 :
+			$registered = $app->get( 'registered_widgets' );
+
 			foreach ( (array) $sidebars_widgets as $index => $sidebar )
 			if ( is_array($sidebar) )
 			foreach ( (array) $sidebar as $i => $name ) {
 				$id = strtolower($name);
-				if ( isset( $app->widgets['registered'][ $id ] ) ) {
+				if ( isset( $registered[ $id ] ) ) {
 					$_sidebars_widgets[$index][$i] = $id;
 					continue;
 				}
 				$id = sanitize_title($name);
-				if ( isset( $app->widgets['registered'][ $id ] ) ) {
+				if ( isset( $registered[ $id ] ) ) {
 					$_sidebars_widgets[$index][$i] = $id;
 					continue;
 				}
 
 				$found = false;
 
-				foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
+				foreach ( $registered as $widget_id => $widget ) {
 					if ( strtolower($widget['name']) == strtolower($name) ) {
 						$_sidebars_widgets[$index][$i] = $widget['id'];
 						$found = true;

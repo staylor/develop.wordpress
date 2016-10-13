@@ -86,11 +86,10 @@ function is_nav_menu( $menu ) {
  * @param array $locations Associative array of menu location identifiers (like a slug) and descriptive text.
  */
 function register_nav_menus( $locations = [] ) {
-	$app = getApp();
-
 	add_theme_support( 'menus' );
 
-	$app->nav_menus['registered'] = array_merge( (array) $app->nav_menus['registered'], $locations );
+	$registered = getApp()->get( 'registered_nav_menus' );
+	$registered->exchangeArray( array_merge( $registered->getArrayCopy(), $locations ) );
 }
 
 /**
@@ -100,11 +99,11 @@ function register_nav_menus( $locations = [] ) {
  * @return bool True on success, false on failure.
  */
 function unregister_nav_menu( $location ) {
-	$app = getApp();
+	$registered = getApp()->get( 'registered_nav_menus' );
 
-	if ( isset( $app->nav_menus['registered'][ $location ] ) ) {
-		unset( $app->nav_menus['registered'][ $location ] );
-		if ( empty( $app->nav_menus['registered'] ) ) {
+	if ( isset( $registered[ $location ] ) ) {
+		unset( $registered[ $location ] );
+		if ( ! $registered->count() ) {
 			_remove_theme_support( 'menus' );
 		}
 		return true;
@@ -131,8 +130,7 @@ function register_nav_menu( $location, $description ) {
  * @return array Registered navigation menu locations. If none are registered, an empty array.
  */
 function get_registered_nav_menus() {
-	$app = getApp();
-	return $app->nav_menus['registered'];
+	return getApp()->get( 'registered_nav_menus' )->getArrayCopy();
 }
 
 /**

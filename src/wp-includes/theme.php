@@ -36,14 +36,15 @@ function wp_get_themes( $args = [] ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	$theme_directories = search_theme_directories();
+	$theme_dirs = $app->get( 'theme_directories' );
 
-	if ( count( $app->theme['directories'] ) > 1 ) {
+	if ( $theme_dirs->count() > 1 ) {
 		// Make sure the current theme wins out, in case search_theme_directories() picks the wrong
 		// one in the case of a conflict. (Normally, last registered theme root wins.)
 		$current_theme = get_stylesheet();
 		if ( isset( $theme_directories[ $current_theme ] ) ) {
 			$root_of_current_theme = get_raw_theme_root( $current_theme );
-			if ( ! in_array( $root_of_current_theme, $app->theme['directories'] ) )
+			if ( ! in_array( $root_of_current_theme, $theme_dirs->getArrayCopy() ) )
 				$root_of_current_theme = WP_CONTENT_DIR . $root_of_current_theme;
 			$theme_directories[ $current_theme ]['theme_root'] = $root_of_current_theme;
 		}
@@ -95,17 +96,18 @@ function wp_get_themes( $args = [] ) {
  * @return WP_Theme Theme object. Be sure to check the object's exists() method if you need to confirm the theme's existence.
  */
 function wp_get_theme( $stylesheet = null, $theme_root = null ) {
-	$app = getApp();
-
-	if ( empty( $stylesheet ) )
+	if ( empty( $stylesheet ) ) {
 		$stylesheet = get_stylesheet();
+	}
 
 	if ( empty( $theme_root ) ) {
 		$theme_root = get_raw_theme_root( $stylesheet );
-		if ( false === $theme_root )
+
+		if ( false === $theme_root ) {
 			$theme_root = WP_CONTENT_DIR . '/themes';
-		elseif ( ! in_array( $theme_root, (array) $app->theme['directories'] ) )
+		} elseif ( ! in_array( $theme_root, getApp()->get( 'theme_directories' )->getArrayCopy() ) ) {
 			$theme_root = WP_CONTENT_DIR . $theme_root;
+		}
 	}
 
 	return new WP_Theme( $stylesheet, $theme_root );
@@ -348,10 +350,9 @@ function get_template_directory_uri() {
  * @return array|string An array of theme roots keyed by template/stylesheet or a single theme root if all themes have the same root.
  */
 function get_theme_roots() {
-	$app = getApp();
-
-	if ( count( $app->theme['directories'] ) <= 1 )
+	if ( getApp()->get( 'theme_directories' )->count() <= 1 ) {
 		return '/themes';
+	}
 
 	$theme_roots = get_site_transient( 'theme_roots' );
 	if ( false === $theme_roots ) {
@@ -370,8 +371,6 @@ function get_theme_roots() {
  * @return bool
  */
 function register_theme_directory( $directory ) {
-	$app = getApp();
-
 	if ( ! file_exists( $directory ) ) {
 		// Try prepending as the theme directory could be relative to the content directory
 		$directory = WP_CONTENT_DIR . '/' . $directory;
@@ -381,13 +380,11 @@ function register_theme_directory( $directory ) {
 		}
 	}
 
-	if ( ! is_array( $app->theme['directories'] ) ) {
-		$app->theme['directories'] = [];
-	}
+	$theme_dirs = getApp()->get( 'theme_directories' );
 
 	$untrailed = untrailingslashit( $directory );
-	if ( ! empty( $untrailed ) && ! in_array( $untrailed, $app->theme['directories'] ) ) {
-		$app->theme['directories'][] = $untrailed;
+	if ( ! empty( $untrailed ) && ! in_array( $untrailed, $theme_dirs->getArrayCopy() ) ) {
+		$theme_dirs[] = $untrailed;
 	}
 
 	return true;
@@ -407,7 +404,7 @@ function search_theme_directories( $force = false ) {
 	$app = getApp();
 	static $found_themes = null;
 
-	if ( empty( $app->theme['directories'] ) )
+	if ( ! $app->get( 'theme_directories' )->count() )
 		return false;
 
 	if ( ! $force && isset( $found_themes ) )
@@ -415,7 +412,7 @@ function search_theme_directories( $force = false ) {
 
 	$found_themes = [];
 
-	$wp_theme_directories = (array) $app->theme['directories'];
+	$wp_theme_directories = $app->get( 'theme_directories' );
 	$relative_theme_roots = [];
 
 	// Set up maybe-relative, maybe-absolute array of theme directories.
@@ -537,7 +534,7 @@ function get_theme_root( $stylesheet_or_template = false ) {
 	if ( $stylesheet_or_template && $theme_root = get_raw_theme_root( $stylesheet_or_template ) ) {
 		// Always prepend WP_CONTENT_DIR unless the root currently registered as a theme directory.
 		// This gives relative theme roots the benefit of the doubt when things go haywire.
-		if ( ! in_array( $theme_root, (array) $app->theme['directories'] ) )
+		if ( ! in_array( $theme_root, $app->get( 'theme_directories' )->getArrayCopy() ) )
 			$theme_root = WP_CONTENT_DIR . $theme_root;
 	} else {
 		$theme_root = WP_CONTENT_DIR . '/themes';
@@ -573,7 +570,7 @@ function get_theme_root_uri( $stylesheet_or_template = false, $theme_root = fals
 		$theme_root = get_raw_theme_root( $stylesheet_or_template );
 
 	if ( $stylesheet_or_template && $theme_root ) {
-		if ( in_array( $theme_root, (array) $app->theme['directories'] ) ) {
+		if ( in_array( $theme_root, $app->get( 'theme_directories' )->getArrayCopy() ) ) {
 			// Absolute path. Make an educated guess. YMMV -- but note the filter below.
 			if ( 0 === strpos( $theme_root, WP_CONTENT_DIR ) )
 				$theme_root_uri = content_url( str_replace( WP_CONTENT_DIR, '', $theme_root ) );
@@ -613,10 +610,9 @@ function get_theme_root_uri( $stylesheet_or_template = false, $theme_root = fals
  * @return string Theme root
  */
 function get_raw_theme_root( $stylesheet_or_template, $skip_cache = false ) {
-	$app = getApp();
-
-	if ( count( $app->theme['directories'] ) <= 1 )
+	if ( getApp()->get( 'theme_directories' )->count() <= 1 ) {
 		return '/themes';
+	}
 
 	$theme_root = false;
 
@@ -661,13 +657,13 @@ function locale_stylesheet() {
  */
 function switch_theme( $stylesheet ) {
 	$app = getApp();
-	$sidebars_widgets = $app->sidebars['widgets'];
+	$sidebar_widgets = $app->get( 'sidebar_widgets' );
 
 	$_sidebars_widgets = null;
 	if ( 'wp_ajax_customize_save' === current_action() ) {
 		$_sidebars_widgets = $app['customize']->post_value( $app['customize']->get_setting( 'old_sidebars_widgets_data' ) );
-	} elseif ( is_array( $sidebars_widgets ) ) {
-		$_sidebars_widgets = $sidebars_widgets;
+	} elseif ( is_array( $sidebar_widgets ) ) {
+		$_sidebars_widgets = $sidebar_widgets;
 	}
 
 	if ( is_array( $_sidebars_widgets ) ) {
@@ -687,7 +683,7 @@ function switch_theme( $stylesheet ) {
 	update_option( 'template', $template );
 	update_option( 'stylesheet', $stylesheet );
 
-	if ( count( $app->theme['directories'] ) > 1 ) {
+	if ( $app->get( 'theme_directories' )->count() > 1 ) {
 		update_option( 'template_root', get_raw_theme_root( $template, true ) );
 		update_option( 'stylesheet_root', get_raw_theme_root( $stylesheet, true ) );
 	} else {
@@ -1098,19 +1094,23 @@ function _get_random_header_data() {
 		$header_image_mod = get_theme_mod( 'header_image', '' );
 		$headers = [];
 
-		if ( 'random-uploaded-image' == $header_image_mod )
+		$default_headers = $app->get( 'theme_default_headers' );
+
+		if ( 'random-uploaded-image' == $header_image_mod ) {
 			$headers = get_uploaded_header_images();
-		elseif ( ! empty( $app->theme['default_headers'] ) ) {
+		} elseif ( $default_headers->count() ) {
 			if ( 'random-default-image' == $header_image_mod ) {
-				$headers = $app->theme['default_headers'];
+				$headers = $default_headers->getArrayCopy();
 			} else {
-				if ( current_theme_supports( 'custom-header', 'random-default' ) )
-					$headers = $app->theme['default_headers'];
+				if ( current_theme_supports( 'custom-header', 'random-default' ) ) {
+					$headers = $default_headers->getArrayCopy();
+				}
 			}
 		}
 
-		if ( empty( $headers ) )
+		if ( empty( $headers ) ) {
 			return new stdClass;
+		}
 
 		$_wp_random_header = (object) $headers[ array_rand( $headers ) ];
 
@@ -1228,8 +1228,9 @@ function get_custom_header() {
 			$directory_args = [ get_template_directory_uri(), get_stylesheet_directory_uri() ];
 			$data = [];
 			$data['url'] = $data['thumbnail_url'] = vsprintf( get_theme_support( 'custom-header', 'default-image' ), $directory_args );
-			if ( ! empty( $app->theme['default_headers'] ) ) {
-				foreach ( (array) $app->theme['default_headers'] as $default_header ) {
+			$headers = $app->get( 'theme_default_headers' );
+			if ( $headers->count() ) {
+				foreach ( $headers as $default_header ) {
 					$url = vsprintf( $default_header['url'], $directory_args );
 					if ( $data['url'] == $url ) {
 						$data = $default_header;
@@ -1259,8 +1260,8 @@ function get_custom_header() {
  * @param array $headers Array of headers keyed by a string id. The ids point to arrays containing 'url', 'thumbnail_url', and 'description' keys.
  */
 function register_default_headers( $headers ) {
-	$app = getApp();
-	$app->theme['default_headers'] = array_merge( (array) $app->theme['default_headers'], (array) $headers );
+	$default_headers = getApp()->get( 'theme_default_headers' );
+	$default_headers->exchangeArray( array_merge( $default_headers->getArrayCopy(), (array) $headers ) );
 }
 
 /**
@@ -1277,12 +1278,12 @@ function register_default_headers( $headers ) {
  *                   There is currently no return value for multiple headers.
  */
 function unregister_default_headers( $header ) {
-	$app = getApp();
+	$default_headers = getApp()->get( 'theme_default_headers' );
 
 	if ( is_array( $header ) ) {
 		array_map( 'unregister_default_headers', $header );
-	} elseif ( isset( $app->theme['default_headers'][ $header ] ) ) {
-		unset( $app->theme['default_headers'][ $header ] );
+	} elseif ( isset( $default_headers[ $header ] ) ) {
+		unset( $default_headers[ $header ] );
 		return true;
 	} else {
 		return false;
@@ -1400,13 +1401,12 @@ body.custom-background { <?php echo trim( $style ); ?> }
  * 	                               Defaults to 'editor-style.css'
  */
 function add_editor_style( $stylesheet = 'editor-style.css' ) {
-	$app = getApp();
 	add_theme_support( 'editor-style' );
 
 	if ( ! is_admin() )
 		return;
 
-	$editor_styles = (array) $app->theme['editor_styles'];
+	$editor_styles = getApp()->get( 'theme_editor_styles' )->getArrayCopy();
 	$stylesheet    = (array) $stylesheet;
 	if ( is_rtl() ) {
 		$rtl_stylesheet = str_replace('.css', '-rtl.css', $stylesheet[0]);
@@ -1428,8 +1428,7 @@ function remove_editor_styles() {
 		return false;
 	_remove_theme_support( 'editor-style' );
 	if ( is_admin() ) {
-		$app = getApp();
-		$app->theme['editor_styles'] = [];
+		getApp()->get( 'theme_editor_styles' )->exhangeArray( [] );
 	}
 	return true;
 }
@@ -1442,12 +1441,12 @@ function remove_editor_styles() {
  * @return array If registered, a list of editor stylesheet URLs.
  */
 function get_editor_stylesheets() {
-	$app = getApp();
-
 	$stylesheets = [];
+	$theme_styles = getApp()->get( 'theme_editor_styles' );
+
 	// load editor_style.css if the current theme supports it
-	if ( ! empty( $app->theme['editor_styles'] ) ) {
-		$editor_styles = $app->theme['editor_styles'];
+	if ( $theme_styles->count() ) {
+		$editor_styles = $theme_styles->getArrayCopy();
 
 		$editor_styles = array_unique( array_filter( $editor_styles ) );
 		$style_uri = get_stylesheet_directory_uri();
@@ -1512,10 +1511,13 @@ function get_editor_stylesheets() {
 function add_theme_support( $feature ) {
 	$app = getApp();
 
-	if ( func_num_args() == 1 )
+	if ( func_num_args() == 1 ) {
 		$args = true;
-	else
+	} else {
 		$args = array_slice( func_get_args(), 1 );
+	}
+
+	$features = $app->get( 'theme_features' );
 
 	switch ( $feature ) {
 		case 'post-thumbnails':
@@ -1528,8 +1530,8 @@ function add_theme_support( $feature ) {
 			 * Merge post types with any that already declared their support
 			 * for post thumbnails.
 			 */
-			if ( is_array( $args[0] ) && isset( $app->theme['features']['post-thumbnails'] ) ) {
-				$args[0] = array_unique( array_merge( $app->theme['features']['post-thumbnails'][0], $args[0] ) );
+			if ( is_array( $args[0] ) && isset( $features['post-thumbnails'] ) ) {
+				$args[0] = array_unique( array_merge( $features['post-thumbnails'][0], $args[0] ) );
 			}
 
 			break;
@@ -1554,8 +1556,9 @@ function add_theme_support( $feature ) {
 			}
 
 			// Calling 'html5' again merges, rather than overwrites.
-			if ( isset( $app->theme['features']['html5'] ) )
-				$args[0] = array_merge( $app->theme['features']['html5'][0], $args[0] );
+			if ( isset( $features['html5'] ) ) {
+				$args[0] = array_merge( $features['html5'][0], $args[0] );
+			}
 			break;
 
 		case 'custom-logo':
@@ -1605,8 +1608,8 @@ function add_theme_support( $feature ) {
 
 			// Merge in data from previous add_theme_support() calls.
 			// The first value registered wins. (A child theme is set up first.)
-			if ( isset( $app->theme['features']['custom-header'] ) )
-				$args[0] = wp_parse_args( $app->theme['features']['custom-header'][0], $args[0] );
+			if ( isset( $features['custom-header'] ) )
+				$args[0] = wp_parse_args( $features['custom-header'][0], $args[0] );
 
 			// Load in the defaults at the end, as we need to insure first one wins.
 			// This will cause all constants to be defined, as each arg will then be set to the default.
@@ -1677,22 +1680,25 @@ function add_theme_support( $feature ) {
 			unset( $args[0]['__jit'] );
 
 			// Merge in data from previous add_theme_support() calls. The first value registered wins.
-			if ( isset( $app->theme['features']['custom-background'] ) )
-				$args[0] = wp_parse_args( $app->theme['features']['custom-background'][0], $args[0] );
+			if ( isset( $features['custom-background'] ) ) {
+				$args[0] = wp_parse_args( $features['custom-background'][0], $args[0] );
+			}
 
-			if ( $jit )
+			if ( $jit ) {
 				$args[0] = wp_parse_args( $args[0], $defaults );
+			}
 
-			if ( defined( 'BACKGROUND_COLOR' ) )
+			if ( defined( 'BACKGROUND_COLOR' ) ) {
 				$args[0]['default-color'] = BACKGROUND_COLOR;
-			elseif ( isset( $args[0]['default-color'] ) || $jit )
+			} elseif ( isset( $args[0]['default-color'] ) || $jit ) {
 				define( 'BACKGROUND_COLOR', $args[0]['default-color'] );
+			}
 
-			if ( defined( 'BACKGROUND_IMAGE' ) )
+			if ( defined( 'BACKGROUND_IMAGE' ) ) {
 				$args[0]['default-image'] = BACKGROUND_IMAGE;
-			elseif ( isset( $args[0]['default-image'] ) || $jit )
+			} elseif ( isset( $args[0]['default-image'] ) || $jit ) {
 				define( 'BACKGROUND_IMAGE', $args[0]['default-image'] );
-
+			}
 			break;
 
 		// Ensure that 'title-tag' is accessible in the admin.
@@ -1707,7 +1713,7 @@ function add_theme_support( $feature ) {
 			}
 	}
 
-	$app->theme['features'][ $feature ] = $args;
+	$features[ $feature ] = $args;
 }
 
 /**
@@ -1778,14 +1784,14 @@ function _custom_logo_header_styles() {
  * @return mixed The array of extra arguments or the value for the registered feature.
  */
 function get_theme_support( $feature ) {
-	$app = getApp();
+	$features = getApp()->get( 'theme_features' );
 
-	if ( ! isset( $app->theme['features'][ $feature ] ) ) {
+	if ( ! isset( $features[ $feature ] ) ) {
 		return false;
 	}
 
 	if ( func_num_args() <= 1 ) {
-		return $app->theme['features'][ $feature ];
+		return $features[ $feature ];
 	}
 
 	$args = array_slice( func_get_args(), 1 );
@@ -1793,13 +1799,13 @@ function get_theme_support( $feature ) {
 	case 'custom-logo' :
 	case 'custom-header' :
 	case 'custom-background' :
-		if ( isset( $app->theme['features'][ $feature ][0][ $args[0] ] ) ) {
-			return $app->theme['features'][ $feature ][0][ $args[0] ];
+		if ( isset( $features[ $feature ][0][ $args[0] ] ) ) {
+			return $features[ $feature ][0][ $args[0] ];
 		}
 		return false;
 
 	default :
-		return $app->theme['features'][ $feature ];
+		return $features[ $feature ];
 	}
 }
 
@@ -1832,22 +1838,26 @@ function remove_theme_support( $feature ) {
  */
 function _remove_theme_support( $feature ) {
 	$app = getApp();
+	$features = $app->get( 'theme_features' );
 
 	switch ( $feature ) {
 	case 'custom-header-uploads' :
-		if ( ! isset( $app->theme['features']['custom-header'] ) )
+		if ( ! isset( $features['custom-header'] ) ) {
 			return false;
+		}
 		add_theme_support( 'custom-header', [ 'uploads' => false ] );
 		return; // Do not continue - custom-header-uploads no longer exists.
 	}
 
-	if ( ! isset( $app->theme['features'][ $feature ] ) )
+	if ( ! isset( $features[ $feature ] ) ) {
 		return false;
+	}
 
 	switch ( $feature ) {
 	case 'custom-header' :
-		if ( ! did_action( 'wp_loaded' ) )
+		if ( ! did_action( 'wp_loaded' ) ) {
 			break;
+		}
 		$support = get_theme_support( 'custom-header' );
 		if ( $support[0]['wp-head-callback'] )
 			remove_action( 'wp_head', $support[0]['wp-head-callback'] );
@@ -1856,8 +1866,9 @@ function _remove_theme_support( $feature ) {
 		break;
 
 	case 'custom-background' :
-		if ( ! did_action( 'wp_loaded' ) )
+		if ( ! did_action( 'wp_loaded' ) ) {
 			break;
+		}
 		$support = get_theme_support( 'custom-background' );
 		remove_action( 'wp_head', $support[0]['wp-head-callback'] );
 		remove_action( 'admin_menu', [ $app->theme['custom_background'], 'init' ] );
@@ -1865,7 +1876,7 @@ function _remove_theme_support( $feature ) {
 		break;
 	}
 
-	unset( $app->theme['features'][ $feature ] );
+	unset( $features[ $feature ] );
 	return true;
 }
 
@@ -1878,17 +1889,19 @@ function _remove_theme_support( $feature ) {
  * @return bool
  */
 function current_theme_supports( $feature ) {
-	$app = getApp();
-
-	if ( 'custom-header-uploads' == $feature )
+	if ( 'custom-header-uploads' == $feature ) {
 		return current_theme_supports( 'custom-header', 'uploads' );
+	}
 
-	if ( !isset( $app->theme['features'][ $feature ] ) )
+	$features = getApp()->get( 'theme_features' );
+	if ( ! isset( $features[ $feature ] ) ) {
 		return false;
+	}
 
 	// If no args passed then no extra checks need be performed
-	if ( func_num_args() <= 1 )
+	if ( func_num_args() <= 1 ) {
 		return true;
+	}
 
 	$args = array_slice( func_get_args(), 1 );
 
@@ -1897,10 +1910,10 @@ function current_theme_supports( $feature ) {
 		// post-thumbnails can be registered for only certain content/post types by passing
 		// an array of types to add_theme_support(). If no array was passed, then
 		// any type is accepted
-		if ( true === $app->theme['features'][ $feature ] )  // Registered for all types
+		if ( true === $features[ $feature ] )  // Registered for all types
 			return true;
 		$content_type = $args[0];
-		return in_array( $content_type, $app->theme['features'][ $feature ][0] );
+		return in_array( $content_type, $features[ $feature ][0] );
 
 	case 'html5':
 	case 'post-formats':
@@ -1910,13 +1923,13 @@ function current_theme_supports( $feature ) {
 		// Specific areas of HTML5 support *must* be passed via an array to add_theme_support()
 
 		$type = $args[0];
-		return in_array( $type, $app->theme['features'][ $feature ][0] );
+		return in_array( $type, $features[ $feature ][0] );
 
 	case 'custom-logo':
 	case 'custom-header':
 	case 'custom-background':
 		// Specific capabilities can be registered by passing an array to add_theme_support().
-		return ( isset( $app->theme['features'][ $feature ][0][ $args[0] ] ) && $app->theme['features'][ $feature ][0][ $args[0] ] );
+		return ( isset( $features[ $feature ][0][ $args[0] ] ) && $features[ $feature ][0][ $args[0] ] );
 	}
 
 	/**
@@ -1932,7 +1945,7 @@ function current_theme_supports( $feature ) {
 	 * @param array  $args    Array of arguments for the feature.
 	 * @param string $feature The theme feature.
 	 */
-	return apply_filters( "current_theme_supports-{$feature}", true, $args, $app->theme['features'][ $feature ] );
+	return apply_filters( "current_theme_supports-{$feature}", true, $args, $features[ $feature ] );
 }
 
 /**
@@ -2043,7 +2056,7 @@ function _wp_customize_include() {
 	$app = getApp();
 
 	$wp_customize = $app['request']->attributes->get( 'wp_customize' );
-	if ( ! ( 
+	if ( ! (
 		'on' === $wp_customize
 		|| ( is_admin() && 'customize.php' == basename( $app['request.php_self'] ) )
 	) ) {

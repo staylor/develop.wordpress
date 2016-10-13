@@ -217,7 +217,7 @@ class Custom_Image_Header {
 	public function process_default_headers() {
 		$app = getApp();
 
-		if ( empty( $app->theme['default_headers'] ) ) {
+		if ( ! $app->get( 'theme_default_headers' )->count() ) {
 			return;
 		}
 
@@ -225,10 +225,10 @@ class Custom_Image_Header {
 			return;
 		}
 
-		$this->default_headers = $app->theme['default_headers'];
+		$this->default_headers = $app->get( 'theme_default_headers' );
 		$template_directory_uri = get_template_directory_uri();
 		$stylesheet_directory_uri = get_stylesheet_directory_uri();
-		foreach ( array_keys($this->default_headers) as $header ) {
+		foreach ( array_keys( $this->default_headers->getArrayCopy() ) as $header ) {
 			$this->default_headers[$header]['url'] =  sprintf( $this->default_headers[$header]['url'], $template_directory_uri, $stylesheet_directory_uri );
 			$this->default_headers[$header]['thumbnail_url'] =  sprintf( $this->default_headers[$header]['thumbnail_url'], $template_directory_uri, $stylesheet_directory_uri );
 		}

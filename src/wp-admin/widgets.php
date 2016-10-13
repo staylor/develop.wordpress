@@ -111,13 +111,16 @@ if ( $view->_post->get( 'removeinactivewidgets' ) ) {
 	$view->handler->doRemoveInactive( $sidebars_widgets );
 }
 
+$controls = $app->get( 'widget_controls' );
+$registered_sidebars = $app->get( 'registered_sidebars' );
+
 // Output the widget form without js
 if ( $view->_get->has( 'editwidget' ) ) {
 	$widget_id = $view->_get->get( 'editwidget' );
 
 	if ( $view->_get->get( 'addnew' ) ) {
 		// Default to the first sidebar
-		$keys = array_keys( $app->sidebars['registered'] );
+		$keys = array_keys( $registered_sidebars->getArrayCopy() );
 		$sidebar = reset( $keys );
 
 		$multi_number = $view->_get->getInt( 'num' );
@@ -125,23 +128,25 @@ if ( $view->_get->has( 'editwidget' ) ) {
 
 		if ( $base && $multi_number ) { // multi-widget
 			// Copy minimal info from an existing instance of this widget to a new instance
-			foreach ( $app->widgets['controls'] as $control ) {
+			foreach ( $controls as $control ) {
 				if ( $base === $control['id_base'] ) {
 					$control_callback = $control['callback'];
 					$control['params'][0]['number'] = -1;
 					$widget_id = $control['id'] = $control['id_base'] . '-' . $multi_number;
-					$app->widgets['controls'][ $control['id'] ] = $control;
+					$controls[ $control['id'] ] = $control;
 					break;
 				}
 			}
 		}
 	}
 
-	if ( isset( $app->widgets['controls'][ $widget_id ] ) && ! isset( $control ) ) {
-		$control = $app->widgets['controls'][ $widget_id ];
+	$registered = $app->get( 'registered_widgets' );
+
+	if ( isset( $controls[ $widget_id ] ) && ! isset( $control ) ) {
+		$control = $controls[ $widget_id ];
 		$control_callback = $control['callback'];
-	} elseif ( ! isset( $app->widgets['controls'][ $widget_id ] ) && isset( $app->widgets['registered'][ $widget_id ] ) ) {
-		$name = esc_html( strip_tags( $app->widgets['registered'][ $widget_id ]['name'] ) );
+	} elseif ( ! isset( $controls[ $widget_id ] ) && isset( $registered[ $widget_id ] ) ) {
+		$name = esc_html( strip_tags( $registered[ $widget_id ]['name'] ) );
 	}
 
 	if ( ! isset( $name ) ) {
@@ -183,7 +188,7 @@ if ( $view->_get->has( 'editwidget' ) ) {
 
 	$sidebars = [];
 
-	foreach ( $app->sidebars['registered'] as $sbname => $sbvalue ) {
+	foreach ( $registered_sidebars as $sbname => $sbvalue ) {
 		$sidebar = [
 			'name' => $sbname,
 			'checked' => checked( $sbname, $sidebar, false ),
@@ -271,7 +276,7 @@ if ( $error && isset( $errors[ $error ] ) ) {
 
 $widget_holders = [];
 $theme_sidebars = [];
-foreach ( $app->sidebars['registered'] as $sidebar => $registered_sidebar ) {
+foreach ( $registered_sidebars as $sidebar => $registered_sidebar ) {
 	if ( false !== strpos( $registered_sidebar['class'], 'inactive-sidebar' ) || 'orphaned_widgets' == substr( $sidebar, 0, 16 ) ) {
 		$wrap_class = 'widgets-holder-wrap';
 		if ( ! empty( $registered_sidebar['class'] ) ) {

@@ -16,24 +16,28 @@ use function WP\getApp;
 function wp_list_widgets() {
 	$app = getApp();
 
-	$sort = $app->widgets['registered'];
+	$controls = $app->get( 'widget_controls' );
+	$sort = $app->get( 'registered_widgets' )->getArrayCopy();
 	usort( $sort, '_sort_name_callback' );
 	$done = [];
 
 	foreach ( $sort as $widget ) {
-		if ( in_array( $widget['callback'], $done, true ) ) // We already showed this multi-widget
+		// We already showed this multi-widget
+		if ( in_array( $widget['callback'], $done, true ) ) {
 			continue;
+		}
 
 		$sidebar = is_active_widget( $widget['callback'], $widget['id'], false, false );
 		$done[] = $widget['callback'];
 
-		if ( ! isset( $widget['params'][0] ) )
+		if ( ! isset( $widget['params'][0] ) ) {
 			$widget['params'][0] = [];
+		}
 
 		$args = array( 'widget_id' => $widget['id'], 'widget_name' => $widget['name'], '_display' => 'template' );
 
-		if ( isset( $app->widgets['controls'][$widget['id']]['id_base']) && isset($widget['params'][0]['number']) ) {
-			$id_base = $app->widgets['controls'][$widget['id']]['id_base'];
+		if ( isset( $controls[ $widget['id'] ]['id_base']) && isset($widget['params'][0]['number']) ) {
+			$id_base = $controls[ $widget['id'] ]['id_base'];
 			$args['_temp_id'] = "$id_base-__i__";
 			$args['_multi_num'] = next_widget_id_number($id_base);
 			$args['_add'] = 'multi';
@@ -122,9 +126,11 @@ function wp_list_widget_controls_dynamic_sidebar( $params ) {
 	$params[0]['after_widget'] = "</div>";
 	$params[0]['before_title'] = "%BEG_OF_TITLE%"; // deprecated
 	$params[0]['after_title'] = "%END_OF_TITLE%"; // deprecated
-	if ( is_callable( $app->widgets['registered'][ $widget_id ]['callback'] ) ) {
-		$app->widgets['registered'][ $widget_id ]['_callback'] = $app->widgets['registered'][ $widget_id ]['callback'];
-		$app->widgets['registered'][ $widget_id ]['callback'] = 'wp_widget_control';
+
+	$registered = $app->get( 'registered_widgets' );
+	if ( is_callable( $registered[ $widget_id ]['callback'] ) ) {
+		$registered[ $widget_id ]['_callback'] = $registered[ $widget_id ]['callback'];
+		$registered[ $widget_id ]['callback'] = 'wp_widget_control';
 	}
 
 	return $params;
@@ -139,7 +145,7 @@ function next_widget_id_number( $id_base ) {
 
 	$app = getApp();
 
-	foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
+	foreach ( $app->get( 'registered_widgets' ) as $widget_id => $widget ) {
 		if ( preg_match( '/' . $id_base . '-([0-9]+)$/', $widget_id, $matches ) )
 			$number = max($number, $matches[1]);
 	}
@@ -160,12 +166,15 @@ function next_widget_id_number( $id_base ) {
  */
 function wp_widget_control( $sidebar_args ) {
 	$app = getApp();
+	$controls = $app->get( 'widget_controls' );
+	$sidebar_widgets = $app->get( 'sidebar_widgets' );
 
 	$widget_id = $sidebar_args['widget_id'];
 	$sidebar_id = isset($sidebar_args['id']) ? $sidebar_args['id'] : false;
-	$key = $sidebar_id ? array_search( $widget_id, $app->sidebars['widgets'][$sidebar_id] ) : '-1'; // position of widget in sidebar
-	$control = isset($app->widgets['controls'][$widget_id]) ? $app->widgets['controls'][$widget_id] : [];
-	$widget = $app->widgets['registered'][$widget_id];
+	$key = $sidebar_id ? array_search( $widget_id, $sidebar_widgets[ $sidebar_id ] ) : '-1'; // position of widget in sidebar
+	$control = isset( $controls[ $widget_id ] ) ? $controls[ $widget_id ] : [];
+	$registered = $app->get( 'registered_widgets' );
+	$widget = $registered[ $widget_id ];
 
 	$id_format = $widget['id'];
 	$widget_number = isset($control['params'][0]['number']) ? $control['params'][0]['number'] : '';
@@ -202,8 +211,8 @@ function wp_widget_control( $sidebar_args ) {
 			$id_format = $control['id_base'] . '-__i__';
 	}
 
-	$app->widgets['registered'][$widget_id]['callback'] = $app->widgets['registered'][$widget_id]['_callback'];
-	unset( $app->widgets['registered'][$widget_id]['_callback'] );
+	$registered[ $widget_id ]['callback'] = $registered[ $widget_id ]['_callback'];
+	unset( $registered[ $widget_id ]['_callback'] );
 
 	$widget_title = esc_html( strip_tags( $sidebar_args['widget_name'] ) );
 	$has_form = 'noform';
