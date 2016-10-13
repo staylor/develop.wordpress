@@ -13,9 +13,9 @@ require_once( __DIR__ . '/admin.php' );
 
 $view = new CommentView( $app );
 
-$parent_file = 'edit-comments.php';
-$app->current_screen->set_parentage( $parent_file );
-$submenu_file = 'edit-comments.php';
+$app->parent_file = 'edit-comments.php';
+$app->current_screen->set_parentage( $app->parent_file );
+$app->submenu_file = 'edit-comments.php';
 
 /**
  * @global string $action
@@ -41,7 +41,7 @@ if ( $_get->get( 'dt' ) ) {
 switch( $action ) {
 
 case 'editcomment' :
-	$title = __('Edit Comment');
+	$app->title = __('Edit Comment');
 
 	$view->help->addEditComment();
 
@@ -70,7 +70,7 @@ case 'approve' :
 case 'trash'   :
 case 'spam'    :
 
-	$title = __('Moderate Comment');
+	$app->title = __('Moderate Comment');
 
 	$comment_id = $_get->getInt( 'c' );
 
@@ -99,7 +99,7 @@ case 'spam'    :
 ?>
 <div class="wrap">
 
-<h1><?php echo esc_html( $title ); ?></h1>
+<h1><?php echo esc_html( $app->title ); ?></h1>
 
 <?php
 switch ( $action ) {

@@ -18,10 +18,10 @@
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-$title = __('Settings');
+$app->title = __('Settings');
 $this_file = 'options.php';
-$parent_file = 'options-general.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->parent_file = 'options-general.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 $wpdb = $app['db'];
 

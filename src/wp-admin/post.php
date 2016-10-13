@@ -11,8 +11,8 @@
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-$parent_file = 'edit.php';
-$submenu_file = 'edit.php';
+$app->parent_file = 'edit.php';
+$app->submenu_file = 'edit.php';
 
 wp_reset_vars( array( 'action' ) );
 
@@ -129,22 +129,22 @@ case 'edit':
 
 	$post_type = $post->post_type;
 	if ( 'post' == $post_type ) {
-		$parent_file = "edit.php";
-		$submenu_file = "edit.php";
+		$app->parent_file = "edit.php";
+		$app->submenu_file = "edit.php";
 		$post_new_file = "post-new.php";
 	} elseif ( 'attachment' == $post_type ) {
-		$parent_file = 'upload.php';
-		$submenu_file = 'upload.php';
+		$app->parent_file = 'upload.php';
+		$app->submenu_file = 'upload.php';
 		$post_new_file = 'media-new.php';
 	} else {
 		if ( isset( $post_type_object ) && $post_type_object->show_in_menu && $post_type_object->show_in_menu !== true )
-			$parent_file = $post_type_object->show_in_menu;
+			$app->parent_file = $post_type_object->show_in_menu;
 		else
-			$parent_file = "edit.php?post_type=$post_type";
-		$submenu_file = "edit.php?post_type=$post_type";
+			$app->parent_file = "edit.php?post_type=$post_type";
+		$app->submenu_file = "edit.php?post_type=$post_type";
 		$post_new_file = "post-new.php?post_type=$post_type";
 	}
-	$app->current_screen->set_parentage( $parent_file );
+	$app->current_screen->set_parentage( $app->parent_file );
 
 	if ( ! wp_check_post_lock( $post->ID ) ) {
 		$active_post_lock = wp_set_post_lock( $post->ID );
@@ -164,7 +164,7 @@ case 'edit':
 		unset( $check_users );
 	}
 
-	$title = $post_type_object->labels->edit_item;
+	$app->title = $post_type_object->labels->edit_item;
 	$post = get_post($post_id, OBJECT, 'edit');
 
 	if ( post_type_supports($post_type, 'comments') ) {

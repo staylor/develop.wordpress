@@ -10,9 +10,9 @@ use WP\Media\Admin\Help as MediaHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-$parent_file = 'upload.php';
-$app->current_screen->set_parentage( $parent_file );
-$submenu_file = 'upload.php';
+$app->parent_file = 'upload.php';
+$app->current_screen->set_parentage( $app->parent_file );
+$app->submenu_file = 'upload.php';
 
 wp_reset_vars(array('action'));
 
@@ -44,7 +44,7 @@ case 'editattachment' :
 
 	// No break.
 case 'edit' :
-	$title = __('Edit Media');
+	$app->title = __('Edit Media');
 
 	if ( empty($errors) )
 		$errors = null;
@@ -74,8 +74,8 @@ case 'edit' :
 
 	require( ABSPATH . 'wp-admin/admin-header.php' );
 
-	$parent_file = 'upload.php';
-	$app->current_screen->set_parentage( $parent_file );
+	$app->parent_file = 'upload.php';
+	$app->current_screen->set_parentage( $app->parent_file );
 	$message = '';
 	$class = '';
 	if ( $_get->get( 'message' ) ) {
@@ -94,7 +94,7 @@ case 'edit' :
 <div class="wrap">
 <h1>
 <?php
-echo esc_html( $title );
+echo esc_html( $app->title );
 if ( current_user_can( 'upload_files' ) ) { ?>
 	<a href="media-new.php" class="page-title-action"><?php echo esc_html_x('Add New', 'file'); ?></a>
 <?php } ?>

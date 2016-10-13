@@ -354,6 +354,14 @@ class View extends BaseView {
 		return $admin_body_class;
 	}
 
+	public function menu() {
+		static $menu = null;
+		if ( ! $menu ) {
+			$menu = new Menu( $this->app );
+		}
+		return $menu->compile();
+	}
+
 	public function render( string $template, $data ): string {
 		header( 'Content-Type: ' . $this->html_type . '; charset=' . $this->charset );
 

@@ -17,7 +17,7 @@ if ( ! current_user_can( 'import' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to import content.' ) );
 }
 
-$title = __('Import');
+$app->title = __('Import');
 
 ( new ImportHelp( get_current_screen() ) )->addMain();
 
@@ -43,12 +43,12 @@ wp_enqueue_script( 'plugin-install' );
 wp_enqueue_script( 'updates' );
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
-$parent_file = 'tools.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->parent_file = 'tools.php';
+$app->current_screen->set_parentage( $app->parent_file );
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $title ); ?></h1>
+<h1><?php echo esc_html( $app->title ); ?></h1>
 <?php if ( ! empty( $_get->get( 'invalid' ) ) ) : ?>
 	<div class="error">
 		<p><strong><?php _e( 'ERROR:' ); ?></strong> <?php

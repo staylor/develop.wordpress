@@ -35,9 +35,9 @@ if ( ( 'do-theme-upgrade' == $action || ( 'do-plugin-upgrade' == $action && ! $_
 	$action = 'upgrade-core';
 }
 
-$title = __('WordPress Updates');
-$parent_file = 'index.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __('WordPress Updates');
+$app->parent_file = 'index.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 ( new InstallHelp( $app->current_screen ) )->addUpdateCore();
 
@@ -134,7 +134,7 @@ if ( 'upgrade-core' == $action ) {
 	$url = 'update.php?action=update-selected&plugins=' . urlencode(implode(',', $plugins));
 	$url = wp_nonce_url($url, 'bulk-update-plugins');
 
-	$title = __('Update Plugins');
+	$app->title = __('Update Plugins');
 
 	require_once(ABSPATH . 'wp-admin/admin-header.php');
 	echo '<div class="wrap">';
@@ -162,7 +162,7 @@ if ( 'upgrade-core' == $action ) {
 	$url = 'update.php?action=update-selected-themes&themes=' . urlencode(implode(',', $themes));
 	$url = wp_nonce_url($url, 'bulk-update-themes');
 
-	$title = __('Update Themes');
+	$app->title = __('Update Themes');
 
 	require_once(ABSPATH . 'wp-admin/admin-header.php');
 	?>
@@ -184,7 +184,7 @@ if ( 'upgrade-core' == $action ) {
 
 	$url = 'update-core.php?action=do-translation-upgrade';
 	$nonce = 'upgrade-translations';
-	$title = __( 'Update Translations' );
+	$app->title = __( 'Update Translations' );
 	$context = WP_LANG_DIR;
 
 	$upgrader = new Language_Pack_Upgrader( new Language_Pack_Upgrader_Skin( compact( 'url', 'nonce', 'title', 'context' ) ) );

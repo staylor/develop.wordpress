@@ -48,9 +48,9 @@ if ( 'on' == $widgets_access ) {
  */
 do_action( 'sidebar_admin_setup' );
 
-$title = __( 'Widgets' );
-$parent_file = 'themes.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __( 'Widgets' );
+$app->parent_file = 'themes.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 $view->help->addWidgets();
 
@@ -162,7 +162,7 @@ if ( $view->_get->has( 'editwidget' ) ) {
 	$key = $view->_get->getInt( 'key', 0 );
 
 	$data = [
-		'title' => $title,
+		'title' => $app->title,
 		'width' => $width,
 		'subheading' => sprintf( $view->l10n->widget_name, $name ),
 		'nonce' => wp_nonce_field( "save-delete-widget-{$widget_id}", '_wpnonce', true, false ),
@@ -243,7 +243,7 @@ $errors = [
 	__( 'Error in displaying the widget settings form.' )
 ];
 
-$data['title'] = $title;
+$data['title'] = $app->title;
 if ( current_user_can( 'customize' ) ) {
 	$data['title_extra'] = sprintf(
 		' <a class="page-title-action hide-if-no-customize" href="%1$s">%2$s</a>',

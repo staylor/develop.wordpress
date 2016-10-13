@@ -48,7 +48,7 @@ if ( 'add-site' == $_request->get( 'action' ) ) {
 		}
 	}
 
-	$title = $blog['title'];
+	$app->title = $blog['title'];
 
 	$meta = array(
 		'public' => 1
@@ -119,7 +119,7 @@ if ( 'add-site' == $_request->get( 'action' ) ) {
 	}
 
 	$wpdb->hide_errors();
-	$id = wpmu_create_blog( $newdomain, $path, $title, $user_id, $meta, $current_site->id );
+	$id = wpmu_create_blog( $newdomain, $path, $app->title, $user_id, $meta, $current_site->id );
 	$wpdb->show_errors();
 	if ( ! is_wp_error( $id ) ) {
 		if ( ! is_super_admin( $user_id ) && !get_user_option( 'primary_blog', $user_id ) ) {
@@ -141,7 +141,7 @@ Address: %2$s
 Name: %3$s' ),
 				$current_user->user_login,
 				get_site_url( $id ),
-				wp_unslash( $title )
+				wp_unslash( $app->title )
 			),
 			sprintf(
 				'From: "%1$s" <%2$s>',
@@ -149,7 +149,7 @@ Name: %3$s' ),
 				get_site_option( 'admin_email' )
 			)
 		);
-		wpmu_welcome_notification( $id, $user_id, $password, $title, array( 'public' => 1 ) );
+		wpmu_welcome_notification( $id, $user_id, $password, $app->title, array( 'public' => 1 ) );
 		wp_redirect( add_query_arg( array( 'update' => 'added', 'id' => $id ), 'site-new.php' ) );
 		exit;
 	} else {
@@ -168,9 +168,9 @@ if ( $_get->get( 'update' ) ) {
 		);
 }
 
-$title = __('Add New Site');
-$parent_file = 'sites.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __('Add New Site');
+$app->parent_file = 'sites.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 wp_enqueue_script( 'user-suggest' );
 

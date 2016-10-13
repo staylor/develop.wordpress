@@ -42,9 +42,9 @@ if ( 'en' !== $locale ) {
 	$video_url = add_query_arg( 'defaultLangCode', $locale, $video_url );
 }
 
-$title = __( 'About' );
-
 $app = getApp();
+$app->title = __( 'About' );
+
 list( $display_version ) = explode( '-', $app['wp_version'] );
 
 include( ABSPATH . 'wp-admin/admin-header.php' );

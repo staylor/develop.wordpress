@@ -36,20 +36,20 @@ $view = new TermView( $app );
 $wp_list_table = _get_list_table('WP_Terms_List_Table');
 $pagenum = $wp_list_table->get_pagenum();
 
-$title = $tax->labels->name;
+$app->title = $tax->labels->name;
 
 if ( 'post' !== $typenow ) {
-	$parent_file = ( 'attachment' == $typenow ) ? 'upload.php' : "edit.php?post_type={$typenow}";
-	$submenu_file = "edit-tags.php?taxonomy={$taxnow}&amp;post_type={$typenow}";
+	$app->parent_file = ( 'attachment' == $typenow ) ? 'upload.php' : "edit.php?post_type={$typenow}";
+	$app->submenu_file = "edit-tags.php?taxonomy={$taxnow}&amp;post_type={$typenow}";
 } elseif ( 'link_category' == $tax->name ) {
-	$parent_file = 'link-manager.php';
-	$submenu_file = 'edit-tags.php?taxonomy=link_category';
+	$app->parent_file = 'link-manager.php';
+	$app->submenu_file = 'edit-tags.php?taxonomy=link_category';
 } else {
-	$parent_file = 'edit.php';
-	$submenu_file = "edit-tags.php?taxonomy={$taxnow}";
+	$app->parent_file = 'edit.php';
+	$app->submenu_file = "edit-tags.php?taxonomy={$taxnow}";
 }
 
-$app->current_screen->set_parentage( $parent_file );
+$app->current_screen->set_parentage( $app->parent_file );
 
 add_screen_option( 'per_page', array( 'default' => 20, 'option' => 'edit_' . $tax->name . '_per_page' ) );
 
@@ -245,7 +245,7 @@ if ( is_plugin_active( 'wpcat2tag-importer/wpcat2tag-importer.php' ) ) {
 ?>
 
 <div class="wrap nosubsub">
-<h1><?php echo esc_html( $title );
+<h1><?php echo esc_html( $app->title );
 if ( strlen( $view->_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf(

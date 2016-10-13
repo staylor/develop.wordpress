@@ -22,12 +22,12 @@ if ( is_multisite() && ! is_network_admin() ) {
 	exit();
 }
 
-$title = __( 'Add Themes' );
-$parent_file = 'themes.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __( 'Add Themes' );
+$app->parent_file = 'themes.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 if ( ! is_network_admin() ) {
-	$submenu_file = 'themes.php';
+	$app->submenu_file = 'themes.php';
 }
 
 $installed_themes = search_theme_directories();
@@ -85,7 +85,7 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 ?>
 <div class="wrap">
 	<h1><?php
-	echo esc_html( $title );
+	echo esc_html( $app->title );
 
 	/**
 	 * Filters the tabs shown on the Add Themes screen.

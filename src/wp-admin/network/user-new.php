@@ -71,9 +71,9 @@ if ( $_get->get( 'update' ) ) {
 	}
 }
 
-$title = __('Add New User');
-$parent_file = 'users.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __('Add New User');
+$app->parent_file = 'users.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 require( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 

@@ -53,21 +53,21 @@ if ( ! network_domain_check() && ( ! defined( 'WP_ALLOW_MULTISITE' ) || ! WP_ALL
 }
 
 if ( is_network_admin() ) {
-	$title = __( 'Network Setup' );
-	$parent_file = 'settings.php';
+	$app->title = __( 'Network Setup' );
+	$app->parent_file = 'settings.php';
 } else {
-	$title = __( 'Create a Network of WordPress Sites' );
-	$parent_file = 'tools.php';
+	$app->title = __( 'Create a Network of WordPress Sites' );
+	$app->parent_file = 'tools.php';
 }
 
-$app->current_screen->set_parentage( $parent_file );
+$app->current_screen->set_parentage( $app->parent_file );
 
 ( new InstallHelp( get_current_screen() ) )->addNetwork();
 
 include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 <div class="wrap">
-<h1><?php echo esc_html( $title ); ?></h1>
+<h1><?php echo esc_html( $app->title ); ?></h1>
 
 <?php
 if ( 'POST' === $app['request.method'] ) {

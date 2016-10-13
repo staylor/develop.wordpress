@@ -54,6 +54,17 @@ class App extends Container {
 		'post_default_title' => '',
 	];
 
+	public $title;
+
+	// admin menu
+	public $menu = [];
+	public $submenu = [];
+	public $_wp_menu_nopriv = [];
+	public $_wp_submenu_nopriv = [];
+	public $plugin_page;
+	public $parent_file;
+	public $submenu_file;
+
 	public function mute( callable $callback ) {
 		return function () use ( $callback ) {
 			ob_start();

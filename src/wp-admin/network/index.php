@@ -18,9 +18,9 @@ require_once( ABSPATH . 'wp-admin/includes/dashboard.php' );
 if ( ! current_user_can( 'manage_network' ) )
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
-$title = __( 'Dashboard' );
-$parent_file = 'index.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __( 'Dashboard' );
+$app->parent_file = 'index.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 ( new DashboardHelp( get_current_screen() ) )->addMultisiteIndex();
 
@@ -35,7 +35,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $title ); ?></h1>
+<h1><?php echo esc_html( $app->title ); ?></h1>
 
 <div id="dashboard-widgets-wrap">
 

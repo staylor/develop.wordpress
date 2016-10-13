@@ -14,9 +14,9 @@ require_once( __DIR__ . '/admin.php' );
 if ( ! current_user_can( 'manage_options' ) )
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
 
-$title = __('Media Settings');
-$parent_file = 'options-general.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __('Media Settings');
+$app->parent_file = 'options-general.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 ( new OptionHelp( get_current_screen() ) )->addMedia();
 
@@ -25,7 +25,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $title ); ?></h1>
+<h1><?php echo esc_html( $app->title ); ?></h1>
 
 <form action="options.php" method="post">
 <?php settings_fields('media'); ?>

@@ -14,7 +14,7 @@ require_once( __DIR__ . '/includes/credits.php' );
 
 $app = getApp();
 
-$title = __( 'Credits' );
+$app->title = __( 'Credits' );
 
 list( $display_version ) = explode( '-', $app['wp_version'] );
 

@@ -11,7 +11,7 @@ use WP\Admin\View;
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-$title = __( 'Freedoms' );
+$app->title = __( 'Freedoms' );
 
 $view = new View( $app );
 

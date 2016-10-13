@@ -7,6 +7,8 @@
  * @since 3.1.0
  */
 
+use function WP\getApp;
+
 /**
  * Core class used to implement displaying installed plugins in a list table.
  *

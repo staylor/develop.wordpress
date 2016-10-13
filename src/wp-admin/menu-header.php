@@ -19,16 +19,6 @@ $self = preg_replace('|^.*/plugins/|i', '', $self);
 $self = preg_replace('|^.*/mu-plugins/|i', '', $self);
 
 /**
- * For when admin-header is included from within a function.
- *
- * @global array  $menu
- * @global array  $submenu
- * @global string $parent_file
- * @global string $submenu_file
- */
-global $menu, $submenu, $parent_file, $submenu_file;
-
-/**
  * Filters the parent file of an admin menu sub-menu item.
  *
  * Allows plugins to move sub-menu items around.
@@ -37,7 +27,7 @@ global $menu, $submenu, $parent_file, $submenu_file;
  *
  * @param string $parent_file The parent file.
  */
-$parent_file = apply_filters( 'parent_file', $parent_file );
+$app->parent_file = apply_filters( 'parent_file', $app->parent_file );
 
 /**
  * Filters the file of an admin menu sub-menu item.
@@ -47,7 +37,7 @@ $parent_file = apply_filters( 'parent_file', $parent_file );
  * @param string $submenu_file The submenu file.
  * @param string $parent_file  The submenu item's parent file.
  */
-$submenu_file = apply_filters( 'submenu_file', $submenu_file, $parent_file );
+$app->submenu_file = apply_filters( 'submenu_file', $app->submenu_file, $app->parent_file );
 
 get_admin_page_parent();
 
@@ -58,16 +48,13 @@ get_admin_page_parent();
  * @since 2.7.0
  *
  * @global string $self
- * @global string $parent_file
- * @global string $submenu_file
- * @global string $plugin_page
  *
  * @param array $menu
  * @param array $submenu
  * @param bool  $submenu_as_parent
  */
 function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
-	global $self, $parent_file, $submenu_file, $plugin_page;
+	global $self;
 
 	$app = getApp();
 	$typenow = $app['typenow'];
@@ -92,7 +79,7 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 			$submenu_items = $submenu[$item[2]];
 		}
 
-		if ( ( $parent_file && $item[2] == $parent_file ) || ( empty($typenow) && $self == $item[2] ) ) {
+		if ( ( $app->parent_file && $item[2] == $app->parent_file ) || ( empty($typenow) && $self == $item[2] ) ) {
 			$class[] = ! empty( $submenu_items ) ? 'wp-has-current-submenu wp-menu-open' : 'current';
 		} else {
 			$class[] = 'wp-not-current-submenu';
@@ -195,14 +182,15 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 				// Handle current for post_type=post|page|foo pages, which won't match $self.
 				$self_type = ! empty( $typenow ) ? $self . '?post_type=' . $typenow : 'nothing';
 
-				if ( isset( $submenu_file ) ) {
-					if ( $submenu_file == $sub_item[2] )
+				if ( isset( $app->submenu_file ) ) {
+					if ( $app->submenu_file === $sub_item[2] ) {
 						$class[] = 'current';
+					}
 				// If plugin_page is set the parent must either match the current page or not physically exist.
 				// This allows plugin pages with the same hook to exist under different parents.
 				} elseif (
-					( ! isset( $plugin_page ) && $self == $sub_item[2] ) ||
-					( isset( $plugin_page ) && $plugin_page == $sub_item[2] && ( $item[2] == $self_type || $item[2] == $self || file_exists($menu_file) === false ) )
+					( ! isset( $app->plugin_page ) && $self == $sub_item[2] ) ||
+					( isset( $app->plugin_page ) && $app->plugin_page == $sub_item[2] && ( $item[2] == $self_type || $item[2] == $self || file_exists($menu_file) === false ) )
 				) {
 					$class[] = 'current';
 				}
@@ -254,7 +242,7 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 
 <?php
 
-_wp_menu_output( $menu, $submenu );
+_wp_menu_output( $app->menu, $app->submenu );
 /**
  * Fires after the admin menu has been output.
  *

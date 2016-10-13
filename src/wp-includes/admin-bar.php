@@ -916,13 +916,14 @@ function is_admin_bar_showing() {
 	if ( defined('XMLRPC_REQUEST') || defined('DOING_AJAX') || defined('IFRAME_REQUEST') )
 		return false;
 
+	// Integrated into the admin.
+	if ( is_admin() ) {
+		return true;
+	}
+
 	if ( is_embed() ) {
 		return false;
 	}
-
-	// Integrated into the admin.
-	if ( is_admin() )
-		return true;
 
 	if ( ! isset( $app->show_admin_bar ) ) {
 		if ( ! is_user_logged_in() || 'wp-login.php' == $app['pagenow'] ) {

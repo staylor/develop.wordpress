@@ -3639,17 +3639,15 @@ function wp_maybe_load_widgets() {
  * Append the Widgets menu to the themes main menu.
  *
  * @since 2.2.0
- *
- * @global array $submenu
  */
 function wp_widgets_add_menu() {
-	global $submenu;
+	$app = getApp();
 
-	if ( ! current_theme_supports( 'widgets' ) )
+	if ( ! current_theme_supports( 'widgets' ) ) {
 		return;
-
-	$submenu['themes.php'][7] = array( __( 'Widgets' ), 'edit_theme_options', 'widgets.php' );
-	ksort( $submenu['themes.php'], SORT_NUMERIC );
+	}
+	$app->submenu['themes.php'][7] = [ __( 'Widgets' ), 'edit_theme_options', 'widgets.php' ];
+	ksort( $app->submenu['themes.php'], SORT_NUMERIC );
 }
 
 /**

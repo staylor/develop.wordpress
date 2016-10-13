@@ -77,7 +77,7 @@ default :
 	$post_title     = '<a href="' . $post_edit_link . '">' . _draft_or_post_title() . '</a>';
 	$h1             = sprintf( __( 'Compare Revisions of &#8220;%1$s&#8221;' ), $post_title );
 	$return_to_post = '<a href="' . $post_edit_link . '">' . __( '&larr; Return to editor' ) . '</a>';
-	$title          = __( 'Revisions' );
+	$app->title          = __( 'Revisions' );
 
 	$redirect = false;
 	break;
@@ -93,12 +93,12 @@ if ( ! empty( $redirect ) ) {
 }
 
 // This is so that the correct "Edit" menu item is selected.
-if ( ! empty( $post->post_type ) && 'post' != $post->post_type )
-	$parent_file = $submenu_file = 'edit.php?post_type=' . $post->post_type;
-else
-	$parent_file = $submenu_file = 'edit.php';
-
-$app->current_screen->set_parentage( $parent_file );
+if ( ! empty( $post->post_type ) && 'post' != $post->post_type ){
+	$app->parent_file = $app->submenu_file = 'edit.php?post_type=' . $post->post_type;
+} else {
+	$app->parent_file = $app->submenu_file = 'edit.php';
+}
+$app->current_screen->set_parentage( $app->parent_file );
 
 wp_enqueue_script( 'revisions' );
 wp_localize_script( 'revisions', '_wpRevisionsSettings', wp_prepare_revisions_for_js( $post, $revision_id, $from ) );

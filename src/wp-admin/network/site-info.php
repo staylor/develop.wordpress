@@ -115,18 +115,18 @@ if ( $_get->get( 'update' ) ) {
 }
 
 /* translators: %s: site name */
-$title = sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) );
+$app->title = sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) );
 
-$parent_file = 'sites.php';
-$app->current_screen->set_parentage( $parent_file );
-$submenu_file = 'sites.php';
+$app->parent_file = 'sites.php';
+$app->current_screen->set_parentage( $app->parent_file );
+$app->submenu_file = 'sites.php';
 
 require( ABSPATH . 'wp-admin/admin-header.php' );
 
 ?>
 
 <div class="wrap">
-<h1 id="edit-site"><?php echo $title; ?></h1>
+<h1 id="edit-site"><?php echo $app->title; ?></h1>
 <p class="edit-site-actions"><a href="<?php echo esc_url( get_home_url( $id, '/' ) ); ?>"><?php _e( 'Visit' ); ?></a> | <a href="<?php echo esc_url( get_admin_url( $id ) ); ?>"><?php _e( 'Dashboard' ); ?></a></p>
 <?php
 

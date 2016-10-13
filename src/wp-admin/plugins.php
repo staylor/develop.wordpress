@@ -132,15 +132,15 @@ if ( $action ) {
 			else
 				$plugins = [];
 
-			$title = __( 'Update Plugins' );
-			$parent_file = 'plugins.php';
-			$app->current_screen->set_parentage( $parent_file );
+			$app->title = __( 'Update Plugins' );
+			$app->parent_file = 'plugins.php';
+			$app->current_screen->set_parentage( $app->parent_file );
 
 			wp_enqueue_script( 'updates' );
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 			echo '<div class="wrap">';
-			echo '<h1>' . esc_html( $title ) . '</h1>';
+			echo '<h1>' . esc_html( $app->title ) . '</h1>';
 
 			$url = self_admin_url('update.php?action=update-selected&amp;plugins=' . urlencode( join(',', $plugins) ));
 			$url = wp_nonce_url($url, 'bulk-update-plugins');
@@ -253,8 +253,8 @@ if ( $action ) {
 
 			include(ABSPATH . 'wp-admin/update.php');
 
-			$parent_file = 'plugins.php';
-			$app->current_screen->set_parentage( $parent_file );
+			$app->parent_file = 'plugins.php';
+			$app->current_screen->set_parentage( $app->parent_file );
 
 			if ( ! $_request->get( 'verify-delete' ) ) {
 				wp_enqueue_script('jquery');
@@ -400,9 +400,9 @@ add_screen_option( 'per_page', array( 'default' => 999 ) );
 
 ( new PluginHelp( get_current_screen() ) )->addMain();
 
-$title = __('Plugins');
-$parent_file = 'plugins.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __('Plugins');
+$app->parent_file = 'plugins.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 require_once(ABSPATH . 'wp-admin/admin-header.php');
 
@@ -476,7 +476,7 @@ if ( ! empty( $invalid ) ) {
 <?php endif; ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $title );
+<h1><?php echo esc_html( $app->title );
 if ( ( ! is_multisite() || is_network_admin() ) && current_user_can('install_plugins') ) { ?>
  <a href="<?php echo self_admin_url( 'plugin-install.php' ); ?>" class="page-title-action"><?php echo esc_html_x('Add New', 'plugin'); ?></a>
 <?php

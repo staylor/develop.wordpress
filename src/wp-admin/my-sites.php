@@ -33,9 +33,9 @@ if ( 'updateblogsettings' == $action && $_post->get( 'primary_blog' ) ) {
 	}
 }
 
-$title = __( 'My Sites' );
-$parent_file = 'index.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __( 'My Sites' );
+$app->parent_file = 'index.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 ( new SiteHelp( get_current_screen() ) )->addMySites();
 
@@ -47,7 +47,7 @@ if ( $updated ) { ?>
 
 <div class="wrap">
 <h1><?php
-echo esc_html( $title );
+echo esc_html( $app->title );
 
 if ( in_array( get_site_option( 'registration' ), array( 'all', 'blog' ) ) ) {
 	/** This filter is documented in wp-login.php */

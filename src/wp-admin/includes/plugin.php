@@ -1123,9 +1123,6 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $func
  * The function which is hooked in to handle the output of the page must check
  * that the user has the required capability as well.
  *
- * @global array $submenu
- * @global array $menu
- * @global bool  $_wp_submenu_nopriv
  * @global array $_registered_pages
  * @global array $_parent_pages
  *
@@ -1138,14 +1135,15 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $func
  * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
-	global $submenu, $menu, $_wp_submenu_nopriv,
-		$_registered_pages, $_parent_pages;
+	global $_registered_pages, $_parent_pages;
+
+	$app = getApp();
 
 	$menu_slug = plugin_basename( $menu_slug );
-	$parent_slug = plugin_basename( $parent_slug);
+	$parent_slug = plugin_basename( $parent_slug );
 
 	if ( !current_user_can( $capability ) ) {
-		$_wp_submenu_nopriv[$parent_slug][$menu_slug] = true;
+		$app->_wp_submenu_nopriv[$parent_slug][$menu_slug] = true;
 		return false;
 	}
 
@@ -1155,30 +1153,33 @@ function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, 
 	 * parent file someone is trying to link back to the parent manually. In
 	 * this case, don't automatically add a link back to avoid duplication.
 	 */
-	if (!isset( $submenu[$parent_slug] ) && $menu_slug != $parent_slug ) {
-		foreach ( (array)$menu as $parent_menu ) {
-			if ( $parent_menu[2] == $parent_slug && current_user_can( $parent_menu[1] ) )
-				$submenu[$parent_slug][] = array_slice( $parent_menu, 0, 4 );
+	if ( ! isset( $app->submenu[ $parent_slug ] ) && $menu_slug !== $parent_slug ) {
+		foreach ( (array) $app->menu as $parent_menu ) {
+			if ( $parent_menu[2] === $parent_slug && current_user_can( $parent_menu[1] ) ) {
+				$app->submenu[ $parent_slug ][] = array_slice( $parent_menu, 0, 4 );
+			}
 		}
 	}
 
-	$submenu[$parent_slug][] = array ( $menu_title, $capability, $menu_slug, $page_title );
+	$app->submenu[ $parent_slug ][] = array ( $menu_title, $capability, $menu_slug, $page_title );
 
-	$hookname = get_plugin_page_hookname( $menu_slug, $parent_slug);
-	if (!empty ( $function ) && !empty ( $hookname ))
+	$hookname = get_plugin_page_hookname( $menu_slug, $parent_slug );
+	if ( ! empty( $function ) && ! empty( $hookname ) ) {
 		add_action( $hookname, $function );
+	}
 
-	$_registered_pages[$hookname] = true;
+	$_registered_pages[ $hookname ] = true;
 
 	/*
 	 * Backward-compatibility for plugins using add_management page.
 	 * See wp-admin/admin.php for redirect from edit.php to tools.php
 	 */
-	if ( 'tools.php' == $parent_slug )
+	if ( 'tools.php' == $parent_slug ) {
 		$_registered_pages[get_plugin_page_hookname( $menu_slug, 'edit.php')] = true;
+	}
 
 	// No parent as top level.
-	$_parent_pages[$menu_slug] = $parent_slug;
+	$_parent_pages[ $menu_slug ] = $parent_slug;
 
 	return $hookname;
 }
@@ -1434,21 +1435,20 @@ function remove_menu_page( $menu_slug ) {
  *
  * @since 3.1.0
  *
- * @global array $submenu
- *
  * @param string $menu_slug    The slug for the parent menu.
  * @param string $submenu_slug The slug of the submenu.
  * @return array|bool The removed submenu on success, false if not found.
  */
 function remove_submenu_page( $menu_slug, $submenu_slug ) {
-	global $submenu;
+	$app = getApp();
 
-	if ( !isset( $submenu[$menu_slug] ) )
+	if ( ! isset( $app->submenu[ $menu_slug ] ) ) {
 		return false;
+	}
 
-	foreach ( $submenu[$menu_slug] as $i => $item ) {
-		if ( $submenu_slug == $item[2] ) {
-			unset( $submenu[$menu_slug][$i] );
+	foreach ( $app->submenu[ $menu_slug ] as $i => $item ) {
+		if ( $submenu_slug === $item[2] ) {
+			unset( $app->submenu[ $menu_slug ][ $i ] );
 			return $item;
 		}
 	}
@@ -1494,93 +1494,76 @@ function menu_page_url($menu_slug, $echo = true) {
 //
 // Pluggable Menu Support -- Private
 //
-/**
- *
- * @global string $parent_file
- * @global array $menu
- * @global array $submenu
- * @global string $plugin_page
- * @global array $_wp_menu_nopriv
- * @global array $_wp_submenu_nopriv
- */
 function get_admin_page_parent( $parent = '' ) {
 	$app = getApp();
 
-	global $parent_file, $menu, $submenu,
-		$plugin_page, $_wp_menu_nopriv, $_wp_submenu_nopriv;
-
 	$typenow = $app['typenow'];
+	$pagenow = $app['pagenow'];
 
 	if ( !empty ( $parent ) && 'admin.php' != $parent ) {
 		return $parent;
 	}
 
-	if ( $app['pagenow'] == 'admin.php' && isset( $plugin_page ) ) {
-		foreach ( (array)$menu as $parent_menu ) {
-			if ( $parent_menu[2] == $plugin_page ) {
-				$parent_file = $plugin_page;
-				return $parent_file;
+	if ( $app['pagenow'] == 'admin.php' && isset( $app->plugin_page ) ) {
+		foreach ( (array) $app->menu as $parent_menu ) {
+			if ( $parent_menu[2] === $app->plugin_page ) {
+				$app->parent_file = $app->plugin_page;
+				return $app->parent_file;
 			}
 		}
-		if ( isset( $_wp_menu_nopriv[$plugin_page] ) ) {
-			$parent_file = $plugin_page;
-			return $parent_file;
+		if ( isset( $app->_wp_menu_nopriv[ $app->plugin_page ] ) ) {
+			$app->parent_file = $app->plugin_page;
+			return $app->parent_file;
 		}
 	}
 
-	if ( isset( $plugin_page ) && isset( $_wp_submenu_nopriv[ $app['pagenow'] ][$plugin_page] ) ) {
-		$parent_file = $app['pagenow'];
-		return $parent_file;
+	if ( isset( $app->plugin_page ) && isset( $app->_wp_submenu_nopriv[ $pagenow ][ $app->plugin_page ] ) ) {
+		$app->parent_file = $app['pagenow'];
+		return $app->parent_file;
 	}
 
-	foreach (array_keys( (array)$submenu ) as $parent) {
-		foreach ( $submenu[$parent] as $submenu_array ) {
-			if ( !empty($typenow) && ($submenu_array[2] == "{$app['pagenow']}?post_type=$typenow") ) {
-				$parent_file = $parent;
+	foreach (array_keys( (array) $app->submenu ) as $parent ) {
+		foreach ( $app->submenu[ $parent ] as $submenu_array ) {
+			if ( ! empty( $typenow ) && ( $submenu_array[2] == "{$pagenow}?post_type={$typenow}" ) ) {
+				$app->parent_file = $parent;
 				return $parent;
-			} elseif ( $submenu_array[2] == $app['pagenow'] && empty($typenow) && ( empty($parent_file) || false === strpos($parent_file, '?') ) ) {
-				$parent_file = $parent;
+			} elseif ( $submenu_array[2] === $pagenow && empty( $typenow ) && ( empty( $app->parent_file ) || false === strpos( $app->parent_file, '?' ) ) ) {
+				$app->parent_file = $parent;
 				return $parent;
-			} elseif ( isset( $plugin_page ) && ($plugin_page == $submenu_array[2] ) ) {
-				$parent_file = $parent;
+			} elseif ( isset( $app->plugin_page ) && $app->plugin_page === $submenu_array[2] ) {
+				$app->parent_file = $parent;
 				return $parent;
 			}
 		}
 	}
 
-	if ( empty($parent_file) )
-		$parent_file = '';
+	if ( empty( $app->parent_file ) ) {
+		$app->parent_file = '';
+	}
 	return '';
 }
 
-/**
- *
- * @global string $title
- * @global array $menu
- * @global array $submenu
- * @global string $plugin_page
- */
 function get_admin_page_title() {
-	global $title, $menu, $submenu, $plugin_page;
-
 	$app = getApp();
 
-	if ( ! empty ( $title ) )
-		return $title;
+	if ( ! empty ( $app->title ) ) {
+		return $app->title;
+	}
 
 	$typenow = $app['typenow'];
+	$pagenow = $app['pagenow'];
 
-	$hook = get_plugin_page_hook( $plugin_page, $app['pagenow'] );
+	$hook = get_plugin_page_hook( $app->plugin_page, $pagenow );
 
 	$parent = $parent1 = get_admin_page_parent();
 
 	if ( empty( $parent ) ) {
-		foreach ( (array)$menu as $menu_array ) {
+		foreach ( (array) $app->menu as $menu_array ) {
 			if ( isset( $menu_array[3] ) ) {
-				if ( $menu_array[2] == $app['pagenow'] ) {
+				if ( $menu_array[2] === $pagenow ) {
 					$title = $menu_array[3];
 					return $menu_array[3];
-				} elseif ( isset( $plugin_page ) && ($plugin_page == $menu_array[2] ) && ($hook == $menu_array[3] ) ) {
+				} elseif ( isset( $app->plugin_page ) && ( $app->plugin_page === $menu_array[2] ) && ( $hook === $menu_array[3] ) ) {
 					$title = $menu_array[3];
 					return $menu_array[3];
 				}
@@ -1590,26 +1573,28 @@ function get_admin_page_title() {
 			}
 		}
 	} else {
-		$app = getApp();
 		$_get = $app['request']->query;
-		foreach ( array_keys( $submenu ) as $parent ) {
-			foreach ( $submenu[$parent] as $submenu_array ) {
-				if ( isset( $plugin_page ) &&
-					( $plugin_page == $submenu_array[2] ) &&
+		foreach ( array_keys( $app->submenu ) as $parent ) {
+			foreach ( $app->submenu[ $parent ] as $submenu_array ) {
+				if (
+					isset( $app->plugin_page ) &&
+					( $app->plugin_page === $submenu_array[2] ) &&
 					(
-						( $parent == $app['pagenow'] ) ||
-						( $parent == $plugin_page ) ||
-						( $plugin_page == $hook ) ||
-						( $app['pagenow'] == 'admin.php' && $parent1 != $submenu_array[2] ) ||
-						( !empty($typenow) && $parent == $app['pagenow'] . '?post_type=' . $typenow)
+						( $parent === $pagenow ) ||
+						( $parent === $app->plugin_page ) ||
+						( $app->plugin_page === $hook ) ||
+						( $pagenow === 'admin.php' && $parent1 !== $submenu_array[2] ) ||
+						( ! empty( $typenow ) && $parent === $pagenow . '?post_type=' . $typenow )
 					)
-					) {
-						$title = $submenu_array[3];
-						return $submenu_array[3];
-					}
+				) {
+					$title = $submenu_array[3];
+					return $submenu_array[3];
+				}
 
-				if ( $submenu_array[2] != $app['pagenow'] || $_get->get( 'page' ) ) // not the current page
+				// not the current page
+				if ( $submenu_array[2] !== $pagenow || $_get->get( 'page' ) ) {
 					continue;
+				}
 
 				if ( isset( $submenu_array[3] ) ) {
 					$title = $submenu_array[3];
@@ -1620,16 +1605,18 @@ function get_admin_page_title() {
 				}
 			}
 		}
+
 		if ( empty ( $title ) ) {
-			foreach ( $menu as $menu_array ) {
-				if ( isset( $plugin_page ) &&
-					( $plugin_page == $menu_array[2] ) &&
-					( $app['pagenow'] == 'admin.php' ) &&
-					( $parent1 == $menu_array[2] ) )
-					{
-						$title = $menu_array[3];
-						return $menu_array[3];
-					}
+			foreach ( $app->menu as $menu_array ) {
+				if (
+					isset( $app->plugin_page ) &&
+					( $app->plugin_page == $menu_array[2] ) &&
+					( $pagenow === 'admin.php' ) &&
+					( $parent1 === $menu_array[2] )
+				) {
+					$title = $menu_array[3];
+					return $menu_array[3];
+				}
 			}
 		}
 	}
@@ -1680,76 +1667,70 @@ function get_plugin_page_hookname( $plugin_page, $parent_page ) {
 }
 
 /**
- * @global array $menu
- * @global array $submenu
- * @global array $_wp_menu_nopriv
- * @global array $_wp_submenu_nopriv
- * @global string $plugin_page
  * @global array $_registered_pages
  */
 function user_can_access_admin_page() {
-	global $menu, $submenu, $_wp_menu_nopriv, $_wp_submenu_nopriv,
-		$plugin_page, $_registered_pages;
+	global $_registered_pages;
 
 	$app = getApp();
 	$parent = get_admin_page_parent();
+	$pagenow = $app['pagenow'];
 
-	if ( !isset( $plugin_page ) && isset( $_wp_submenu_nopriv[$parent][ $app['pagenow'] ] ) )
+	if ( ! isset( $app->plugin_page ) && isset( $app->_wp_submenu_nopriv[ $parent ][ $pagenow ] ) ) {
 		return false;
-
-	if ( isset( $plugin_page ) ) {
-		if ( isset( $_wp_submenu_nopriv[$parent][$plugin_page] ) )
-			return false;
-
-		$hookname = get_plugin_page_hookname($plugin_page, $parent);
-
-		if ( !isset($_registered_pages[$hookname]) )
-			return false;
 	}
 
-	if ( empty( $parent) ) {
-		if ( isset( $_wp_menu_nopriv[ $app['pagenow'] ] ) )
-			return false;
-		if ( isset( $_wp_submenu_nopriv[ $app['pagenow'] ][ $app['pagenow'] ] ) )
-			return false;
-		if ( isset( $plugin_page ) && isset( $_wp_submenu_nopriv[ $app['pagenow'] ][$plugin_page] ) )
-			return false;
-		if ( isset( $plugin_page ) && isset( $_wp_menu_nopriv[$plugin_page] ) )
-			return false;
-		foreach (array_keys( $_wp_submenu_nopriv ) as $key ) {
-			if ( isset( $_wp_submenu_nopriv[$key][ $app['pagenow'] ] ) )
-				return false;
-			if ( isset( $plugin_page ) && isset( $_wp_submenu_nopriv[$key][$plugin_page] ) )
+	if ( isset( $app->plugin_page ) ) {
+		if ( isset( $app->_wp_submenu_nopriv[ $parent ][ $app->plugin_page ] ) ) {
 			return false;
 		}
+
+		$hookname = get_plugin_page_hookname( $app->plugin_page, $parent );
+		if ( ! isset( $_registered_pages[ $hookname ] ) ) {
+			return false;
+		}
+	}
+
+	if ( empty( $parent ) ) {
+		if (
+			isset( $app->_wp_menu_nopriv[ $pagenow ] ) ||
+			isset( $app->_wp_submenu_nopriv[ $pagenow ][ $pagenow ] ) ||
+			isset( $app->plugin_page ) && isset( $app->_wp_submenu_nopriv[ $pagenow ][ $app->plugin_page ] ) ||
+			isset( $app->plugin_page ) && isset( $app->_wp_menu_nopriv[ $app->plugin_page ] )
+		) {
+			return false;
+		}
+
+		foreach ( array_keys( $app->_wp_submenu_nopriv ) as $key ) {
+			if ( isset( $app->_wp_submenu_nopriv[$key][ $app['pagenow'] ] ) ) {
+				return false;
+			}
+
+			if ( isset( $app->plugin_page ) && isset( $app->_wp_submenu_nopriv[ $key ][ $app->plugin_page ] ) ) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 
-	if ( isset( $plugin_page ) && ( $plugin_page == $parent ) && isset( $_wp_menu_nopriv[$plugin_page] ) )
+	if ( isset( $app->plugin_page ) && ( $app->plugin_page === $parent ) && isset( $app->_wp_menu_nopriv[ $app->plugin_page ] ) ) {
 		return false;
+	}
 
-	if ( isset( $submenu[$parent] ) ) {
-		foreach ( $submenu[$parent] as $submenu_array ) {
-			if ( isset( $plugin_page ) && ( $submenu_array[2] == $plugin_page ) ) {
-				if ( current_user_can( $submenu_array[1] ))
-					return true;
-				else
-					return false;
-			} elseif ( $submenu_array[2] == $app['pagenow'] ) {
-				if ( current_user_can( $submenu_array[1] ))
-					return true;
-				else
-					return false;
+	if ( isset( $app->submenu[ $parent ] ) ) {
+		foreach ( $app->submenu[ $parent ] as $submenu_array ) {
+			if ( isset( $app->plugin_page ) && ( $submenu_array[2] === $app->plugin_page ) ) {
+				return current_user_can( $submenu_array[1] );
+			} elseif ( $submenu_array[2] === $pagenow ) {
+				return current_user_can( $submenu_array[1] );
 			}
 		}
 	}
 
-	foreach ( $menu as $menu_array ) {
-		if ( $menu_array[2] == $parent) {
-			if ( current_user_can( $menu_array[1] ))
-				return true;
-			else
-				return false;
+	foreach ( $app->menu as $menu_array ) {
+		if ( $menu_array[2] === $parent ) {
+			return current_user_can( $menu_array[1] );
 		}
 	}
 

@@ -99,10 +99,10 @@ switch ($action) {
 		if ( wp_is_mobile() )
 			wp_enqueue_script( 'jquery-touch-punch' );
 
-		$parent_file = 'link-manager.php';
-		$app->current_screen->set_parentage( $parent_file );
-		$submenu_file = 'link-manager.php';
-		$title = __('Edit Link');
+		$app->parent_file = 'link-manager.php';
+		$app->current_screen->set_parentage( $app->parent_file );
+		$app->submenu_file = 'link-manager.php';
+		$app->title = __('Edit Link');
 
 		$link_id = $_get->getInt( 'link_id' );
 

@@ -102,9 +102,8 @@ wp_enqueue_script( 'common' );
  * The remaining variables are imported as globals elsewhere, declared as globals here
  *
  * @global array  $wp_importers
- * @global string $plugin_page
  */
-global $wp_importers, $plugin_page;
+global $wp_importers;
 
 $pagenow = $app['pagenow'];
 $typenow = $app['typenow'];
@@ -115,7 +114,7 @@ $page_hook = null;
 $editing = false;
 
 if ( $_get->get( 'page' ) ) {
-	$plugin_page = plugin_basename( wp_unslash( $_get->get( 'page' ) ) );
+	$app->plugin_page = plugin_basename( wp_unslash( $_get->get( 'page' ) ) );
 }
 
 if ( WP_NETWORK_ADMIN )
@@ -141,21 +140,21 @@ if ( current_user_can( 'manage_options' ) ) {
  */
 do_action( 'admin_init' );
 
-if ( isset($plugin_page) ) {
+if ( isset( $app->plugin_page ) ) {
 	if ( !empty($typenow) )
 		$the_parent = $pagenow . '?post_type=' . $typenow;
 	else
 		$the_parent = $pagenow;
-	if ( ! $page_hook = get_plugin_page_hook($plugin_page, $the_parent) ) {
-		$page_hook = get_plugin_page_hook($plugin_page, $plugin_page);
+	if ( ! $page_hook = get_plugin_page_hook( $app->plugin_page, $the_parent ) ) {
+		$page_hook = get_plugin_page_hook( $app->plugin_page, $app->plugin_page );
 
 		// Back-compat for plugins using add_management_page().
-		if ( empty( $page_hook ) && 'edit.php' == $pagenow && '' != get_plugin_page_hook($plugin_page, 'tools.php') ) {
+		if ( empty( $page_hook ) && 'edit.php' == $pagenow && '' != get_plugin_page_hook( $app->plugin_page, 'tools.php' ) ) {
 			// There could be plugin specific params on the URL, so we need the whole query string
 			if ( !empty($_SERVER[ 'QUERY_STRING' ]) )
 				$query_string = $_SERVER[ 'QUERY_STRING' ];
 			else
-				$query_string = 'page=' . $plugin_page;
+				$query_string = 'page=' . $app->plugin_page;
 			wp_redirect( admin_url('tools.php?' . $query_string) );
 			exit;
 		}
@@ -166,8 +165,8 @@ if ( isset($plugin_page) ) {
 $app->hook_suffix = '';
 if ( isset( $page_hook ) ) {
 	$app->hook_suffix = $page_hook;
-} elseif ( isset( $plugin_page ) ) {
-	$app->hook_suffix = $plugin_page;
+} elseif ( isset( $app->plugin_page ) ) {
+	$app->hook_suffix = $app->plugin_page;
 } elseif ( isset( $pagenow ) ) {
 	$app->hook_suffix = $pagenow;
 }
@@ -178,7 +177,7 @@ $typenow = $app['typenow'];
 $taxnow = $app['taxnow'];
 
 // Handle plugin admin pages.
-if ( isset($plugin_page) ) {
+if ( isset( $app->plugin_page ) ) {
 	if ( $page_hook ) {
 		/**
 		 * Fires before a particular screen is loaded.
@@ -212,11 +211,11 @@ if ( isset($plugin_page) ) {
 		 */
 		do_action( $page_hook );
 	} else {
-		if ( validate_file($plugin_page) )
+		if ( validate_file( $app->plugin_page ) )
 			wp_die(__('Invalid plugin page'));
 
-		if ( !( file_exists(WP_PLUGIN_DIR . "/$plugin_page") && is_file(WP_PLUGIN_DIR . "/$plugin_page") ) && !( file_exists(WPMU_PLUGIN_DIR . "/$plugin_page") && is_file(WPMU_PLUGIN_DIR . "/$plugin_page") ) )
-			wp_die(sprintf(__('Cannot load %s.'), htmlentities($plugin_page)));
+		if ( !( file_exists(WP_PLUGIN_DIR . "/{$app->plugin_page}") && is_file(WP_PLUGIN_DIR . "/{$app->plugin_page}") ) && !( file_exists(WPMU_PLUGIN_DIR . "/{$app->plugin_page}") && is_file(WPMU_PLUGIN_DIR . "/{$app->plugin_page}") ) )
+			wp_die(sprintf(__('Cannot load %s.'), htmlentities( $app->plugin_page ) ) );
 
 		/**
 		 * Fires before a particular screen is loaded.
@@ -230,15 +229,15 @@ if ( isset($plugin_page) ) {
 		 *
 		 * @since 1.5.0
 		 */
-		do_action( "load-{$plugin_page}" );
+		do_action( "load-{$app->plugin_page}" );
 
 		if ( ! $_get->get( 'noheader' ) ) {
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
 		}
-		if ( file_exists(WPMU_PLUGIN_DIR . "/$plugin_page") )
-			include(WPMU_PLUGIN_DIR . "/$plugin_page");
+		if ( file_exists(WPMU_PLUGIN_DIR . "/{$app->plugin_page}") )
+			include(WPMU_PLUGIN_DIR . "/{$app->plugin_page}");
 		else
-			include(WP_PLUGIN_DIR . "/$plugin_page");
+			include(WP_PLUGIN_DIR . "/{$app->plugin_page}");
 	}
 
 	include(ABSPATH . 'wp-admin/admin-footer.php');
@@ -271,10 +270,10 @@ if ( isset($plugin_page) ) {
 	 */
 	do_action( "load-importer-{$importer}" );
 
-	$parent_file = 'tools.php';
-	$app->current_screen->set_parentage( $parent_file );
-	$submenu_file = 'import.php';
-	$title = __('Import');
+	$app->parent_file = 'tools.php';
+	$app->current_screen->set_parentage( $app->parent_file );
+	$app->submenu_file = 'import.php';
+	$$app->title = __('Import');
 
 	if ( ! $_get->get( 'noheader' ) ) {
 		require_once(ABSPATH . 'wp-admin/admin-header.php');

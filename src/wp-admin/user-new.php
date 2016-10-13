@@ -33,16 +33,16 @@ if ( 'adduser' === $action ) {
 
 $view->help->addUserNew();
 
-$parent_file = 'users.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->parent_file = 'users.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 $view->enqueueScripts();
 
-$title = $view->l10n->add_new_user;
+$app->title = $view->l10n->add_new_user;
 if ( current_user_can( 'create_users' ) ) {
-	$title = $view->l10n->add_new_user;
+	$app->title = $view->l10n->add_new_user;
 } elseif ( current_user_can( 'promote_users' ) ) {
-	$title = $view->l10n->add_existing_user;
+	$app->title = $view->l10n->add_existing_user;
 }
 
 $errors = [];
@@ -53,7 +53,7 @@ if ( isset( $form_errors ) && is_wp_error( $form_errors ) ) {
 }
 
 $data = [
-	'title' => $title,
+	'title' => $app->title,
 	'errors' => $errors,
 	'messages' => $view->getAddMessages(),
 	'multisite' => is_multisite(),

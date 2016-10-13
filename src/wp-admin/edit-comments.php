@@ -48,13 +48,13 @@ if ( $post_id ) {
 	$draft_or_post_title = wp_html_excerpt( _draft_or_post_title( $post_id ), 50, '&hellip;' );
 	if ( $comments_count->moderated > 0 ) {
 		/* translators: 1: comments count 2: post title */
-		$title = sprintf( __( 'Comments (%1$s) on &#8220;%2$s&#8221;' ),
+		$app->title = sprintf( __( 'Comments (%1$s) on &#8220;%2$s&#8221;' ),
 			number_format_i18n( $comments_count->moderated ),
 			$draft_or_post_title
 		);
 	} else {
 		/* translators: %s: post title */
-		$title = sprintf( __( 'Comments on &#8220;%s&#8221;' ),
+		$app->title = sprintf( __( 'Comments on &#8220;%s&#8221;' ),
 			$draft_or_post_title
 		);
 	}
@@ -62,11 +62,11 @@ if ( $post_id ) {
 	$comments_count = wp_count_comments();
 	if ( $comments_count->moderated > 0 ) {
 		/* translators: %s: comments count */
-		$title = sprintf( __( 'Comments (%s)' ),
+		$app->title = sprintf( __( 'Comments (%s)' ),
 			number_format_i18n( $comments_count->moderated )
 		);
 	} else {
-		$title = __( 'Comments' );
+		$app->title = __( 'Comments' );
 	}
 }
 

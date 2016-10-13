@@ -66,9 +66,9 @@ if ( current_user_can( 'switch_themes' ) && $_get->get( 'action' ) ) {
 	}
 }
 
-$title = __('Manage Themes');
-$parent_file = 'themes.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __('Manage Themes');
+$app->parent_file = 'themes.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 ( new ThemeHelp( get_current_screen() ) )->addMain();
 
@@ -141,21 +141,23 @@ if ( ! $ct->errors() || ( 1 == count( $ct->errors()->get_error_codes() )
 
 	// Pretend you didn't see this.
 	$current_theme_actions = [];
-	if ( is_array( $submenu ) && isset( $submenu['themes.php'] ) ) {
-		foreach ( (array) $submenu['themes.php'] as $item) {
+	if ( is_array( $app->submenu ) && isset( $app->submenu['themes.php'] ) ) {
+		foreach ( (array) $app->submenu['themes.php'] as $item) {
 			$class = '';
 			if ( 'themes.php' == $item[2] || 'theme-editor.php' == $item[2] || 0 === strpos( $item[2], 'customize.php' ) )
 				continue;
 			// 0 = name, 1 = capability, 2 = file
-			if ( ( strcmp($self, $item[2]) == 0 && empty($parent_file)) || ($parent_file && ($item[2] == $parent_file)) )
+			if ( ( strcmp($self, $item[2]) == 0 && empty($app->parent_file)) || ($app->parent_file && ($item[2] == $app->parent_file)) ) {
 				$class = ' current';
-			if ( !empty($submenu[$item[2]]) ) {
-				$submenu[$item[2]] = array_values($submenu[$item[2]]); // Re-index.
-				$menu_hook = get_plugin_page_hook($submenu[$item[2]][0][2], $item[2]);
-				if ( file_exists(WP_PLUGIN_DIR . "/{$submenu[$item[2]][0][2]}") || !empty($menu_hook))
-					$current_theme_actions[] = "<a class='button$class' href='admin.php?page={$submenu[$item[2]][0][2]}'>{$item[0]}</a>";
-				else
-					$current_theme_actions[] = "<a class='button$class' href='{$submenu[$item[2]][0][2]}'>{$item[0]}</a>";
+			}
+			if ( ! empty( $app->submenu[ $item[2] ] ) ) {
+				$app->submenu[$item[2]] = array_values($app->submenu[$item[2]]); // Re-index.
+				$menu_hook = get_plugin_page_hook($app->submenu[$item[2]][0][2], $item[2]);
+				if ( file_exists(WP_PLUGIN_DIR . "/{$app->submenu[$item[2]][0][2]}") || !empty($menu_hook)) {
+					$current_theme_actions[] = "<a class='button$class' href='admin.php?page={$app->submenu[$item[2]][0][2]}'>{$item[0]}</a>";
+				} else {
+					$current_theme_actions[] = "<a class='button$class' href='{$app->submenu[$item[2]][0][2]}'>{$item[0]}</a>";
+				}
 			} elseif ( ! empty( $item[2] ) && current_user_can( $item[1] ) ) {
 				$menu_file = $item[2];
 

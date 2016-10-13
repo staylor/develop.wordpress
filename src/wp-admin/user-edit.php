@@ -50,19 +50,19 @@ if ( is_multisite()
 
 $view->enqueueEditScripts();
 
-$title = IS_PROFILE_PAGE ? __( 'Profile' ) : __( 'Edit User' );
+$app->title = IS_PROFILE_PAGE ? __( 'Profile' ) : __( 'Edit User' );
 if ( current_user_can( 'edit_users' ) && !IS_PROFILE_PAGE ) {
-	$submenu_file = 'users.php';
+	$app->submenu_file = 'users.php';
 } else {
-	$submenu_file = 'profile.php';
+	$app->submenu_file = 'profile.php';
 }
 
 if ( current_user_can( 'edit_users' ) && ! is_user_admin() ) {
-	$parent_file = 'users.php';
+	$app->parent_file = 'users.php';
 } else {
-	$parent_file = 'profile.php';
+	$app->parent_file = 'profile.php';
 }
-$app->current_screen->set_parentage( $parent_file );
+$app->current_screen->set_parentage( $app->parent_file );
 
 $view->help->addUserEdit();
 
@@ -149,7 +149,7 @@ $show_additional_caps = count( $profileuser->caps ) > count( $profileuser->roles
 	&& apply_filters( 'additional_capabilities_display', true, $profileuser );
 
 $data = [
-	'title' => $title,
+	'title' => $app->title,
 	'messages' => $view->getEditMessages( $profileuser ),
 	'errors' => $errors,
 	'is_profile_page' => IS_PROFILE_PAGE,

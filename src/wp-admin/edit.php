@@ -54,15 +54,15 @@ foreach ( [ 'p', 'attachment_id', 'page_id' ] as $_redirect ) {
 }
 
 if ( 'post' !== $typenow ) {
-	$parent_file = "edit.php?post_type={$typenow}";
-	$submenu_file = "edit.php?post_type={$typenow}";
+	$app->parent_file = "edit.php?post_type={$typenow}";
+	$app->submenu_file = "edit.php?post_type={$typenow}";
 	$post_new_file = "post-new.php?post_type={$typenow}";
 } else {
-	$parent_file = 'edit.php';
-	$submenu_file = 'edit.php';
+	$app->parent_file = 'edit.php';
+	$app->submenu_file = 'edit.php';
 	$post_new_file = 'post-new.php';
 }
-$app->current_screen->set_parentage( $parent_file );
+$app->current_screen->set_parentage( $app->parent_file );
 
 $doaction = $wp_list_table->current_action();
 
@@ -74,7 +74,7 @@ if ( $doaction ) {
 		wp_get_referer()
 	);
 	if ( ! $sendback )
-		$sendback = admin_url( $parent_file );
+		$sendback = admin_url( $app->parent_file );
 	$sendback = add_query_arg( 'paged', $pagenum, $sendback );
 	if ( strpos($sendback, 'post.php') !== false )
 		$sendback = admin_url($post_new_file);
@@ -197,7 +197,7 @@ $wp_list_table->prepare_items();
 wp_enqueue_script('inline-edit-post');
 wp_enqueue_script('heartbeat');
 
-$title = $post_type_object->labels->name;
+$app->title = $post_type_object->labels->name;
 
 if ( 'post' == $typenow ) {
 

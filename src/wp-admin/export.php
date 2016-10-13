@@ -16,7 +16,7 @@ if ( !current_user_can('export') )
 
 /** Load WordPress export API */
 require_once( ABSPATH . 'wp-admin/includes/export.php' );
-$title = __('Export');
+$app->title = __('Export');
 
 /**
  * Display JavaScript on the page.
@@ -146,7 +146,7 @@ function export_date_options( $post_type = 'post' ) {
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $title ); ?></h1>
+<h1><?php echo esc_html( $app->title ); ?></h1>
 
 <p><?php _e('When you click the button below WordPress will create an XML file for you to save to your computer.'); ?></p>
 <p><?php _e('This format, which we call WordPress eXtended RSS or WXR, will contain your posts, pages, comments, custom fields, categories, and tags.'); ?></p>

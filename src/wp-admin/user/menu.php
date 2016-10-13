@@ -7,14 +7,14 @@
  * @since 3.1.0
  */
 
-$menu[2] = [ __('Dashboard'), 'exist', 'index.php', '', 'menu-top menu-top-first menu-icon-dashboard', 'menu-dashboard', 'dashicons-dashboard' ];
+$app->menu[2] = [ __('Dashboard'), 'exist', 'index.php', '', 'menu-top menu-top-first menu-icon-dashboard', 'menu-dashboard', 'dashicons-dashboard' ];
 
-$menu[4] = [ '', 'exist', 'separator1', '', 'wp-menu-separator' ];
+$app->menu[4] = [ '', 'exist', 'separator1', '', 'wp-menu-separator' ];
 
-$menu[70] = [ __('Profile'), 'exist', 'profile.php', '', 'menu-top menu-icon-users', 'menu-users', 'dashicons-admin-users' ];
+$app->menu[70] = [ __('Profile'), 'exist', 'profile.php', '', 'menu-top menu-icon-users', 'menu-users', 'dashicons-admin-users' ];
 
-$menu[99] = [ '', 'exist', 'separator-last', '', 'wp-menu-separator' ];
+$app->menu[99] = [ '', 'exist', 'separator-last', '', 'wp-menu-separator' ];
 
-$submenu = [];
+$app->submenu = [];
 
 require_once(ABSPATH . 'wp-admin/includes/menu.php');

@@ -18,9 +18,9 @@ if ( is_multisite() && ! is_network_admin() ) {
 if ( !current_user_can('edit_plugins') )
 	wp_die( __('Sorry, you are not allowed to edit plugins for this site.') );
 
-$title = __("Edit Plugins");
-$parent_file = 'plugins.php';
-$app->current_screen->set_parentage( $parent_file );
+$app->title = __("Edit Plugins");
+$app->parent_file = 'plugins.php';
+$app->current_screen->set_parentage( $app->parent_file );
 
 $plugins = get_plugins();
 
@@ -28,7 +28,7 @@ if ( empty( $plugins ) ) {
 	include( ABSPATH . 'wp-admin/admin-header.php' );
 	?>
 	<div class="wrap">
-		<h1><?php echo esc_html( $title ); ?></h1>
+		<h1><?php echo esc_html( $app->title ); ?></h1>
 		<div id="message" class="error"><p><?php _e( 'You do not appear to have any plugins available at this time.' ); ?></p></div>
 	</div>
 	<?php
@@ -180,7 +180,7 @@ if ( 'update' === $_request->get( 'action' ) ) {
 </div>
 <?php endif; ?>
 <div class="wrap">
-<h1><?php echo esc_html( $title ); ?></h1>
+<h1><?php echo esc_html( $app->title ); ?></h1>
 
 <div class="fileedit-sub">
 <div class="alignleft">

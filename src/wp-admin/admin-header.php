@@ -13,19 +13,17 @@ if ( ! defined( 'WP_ADMIN' ) )
 /**
  * In case admin-header.php is included in a function.
  *
- * @global string    $title
  * @global string    $update_title
  * @global int       $total_update_count
- * @global string    $parent_file
  */
-global $title, $update_title, $total_update_count, $parent_file;
+global $update_title, $total_update_count;
 
 // Catch plugins that include admin-header.php before admin.php completes.
 if ( empty( $app->current_screen ) )
 	set_current_screen();
 
 get_admin_page_title();
-$title = esc_html( strip_tags( $title ) );
+$title = esc_html( strip_tags( $app->title ) );
 
 if ( is_network_admin() )
 	$admin_title = sprintf( __( 'Network Admin: %s' ), esc_html( get_current_site()->site_name ) );
@@ -212,7 +210,7 @@ do_action( 'in_admin_header' );
 <?php
 unset($title_class, $blog_name, $total_update_count, $update_title);
 
-$app->current_screen->set_parentage( $parent_file );
+$app->current_screen->set_parentage( $app->parent_file );
 
 ?>
 
@@ -251,7 +249,7 @@ if ( is_network_admin() ) {
  */
 do_action( 'all_admin_notices' );
 
-if ( $parent_file == 'options-general.php' ) {
+if ( $app->parent_file == 'options-general.php' ) {
 	wp_reset_vars( [ 'action' ] );
 
 	if ( $_get->get( 'updated' ) && $_get->get( 'page' ) ) {

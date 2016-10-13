@@ -49,10 +49,10 @@ if ( $_get->get( 'action' ) ) {
 
 		check_admin_referer('upgrade-plugin_' . $plugin);
 
-		$title = __('Update Plugin');
-		$parent_file = 'plugins.php';
-		$app->current_screen->set_parentage( $parent_file );
-		$submenu_file = 'plugins.php';
+		$app->title = __('Update Plugin');
+		$app->parent_file = 'plugins.php';
+		$app->current_screen->set_parentage( $app->parent_file );
+		$app->submenu_file = 'plugins.php';
 
 		wp_enqueue_script( 'updates' );
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
@@ -119,13 +119,13 @@ if ( $_get->get( 'action' ) ) {
 	 		wp_die( $api );
 		}
 
-		$title = __('Plugin Install');
-		$parent_file = 'plugins.php';
-		$app->current_screen->set_parentage( $parent_file );
-		$submenu_file = 'plugin-install.php';
+		$app->title = __('Plugin Install');
+		$app->parent_file = 'plugins.php';
+		$app->current_screen->set_parentage( $app->parent_file );
+		$app->submenu_file = 'plugin-install.php';
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
-		$title = sprintf( __('Installing Plugin: %s'), $api->name . ' ' . $api->version );
+		$app->title = sprintf( __('Installing Plugin: %s'), $api->name . ' ' . $api->version );
 		$nonce = 'install-plugin_' . $plugin;
 		$url = 'update.php?action=install-plugin&plugin=' . urlencode( $plugin );
 		if ( $_get->get( 'from' ) )
@@ -148,13 +148,13 @@ if ( $_get->get( 'action' ) ) {
 
 		$file_upload = new File_Upload_Upgrader('pluginzip', 'package');
 
-		$title = __('Upload Plugin');
-		$parent_file = 'plugins.php';
-		$app->current_screen->set_parentage( $parent_file );
-		$submenu_file = 'plugin-install.php';
+		$app->title = __('Upload Plugin');
+		$app->parent_file = 'plugins.php';
+		$app->current_screen->set_parentage( $app->parent_file );
+		$app->submenu_file = 'plugin-install.php';
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
-		$title = sprintf( __('Installing Plugin from uploaded file: %s'), esc_html( basename( $file_upload->filename ) ) );
+		$app->title = sprintf( __('Installing Plugin from uploaded file: %s'), esc_html( basename( $file_upload->filename ) ) );
 		$nonce = 'plugin-upload';
 		$url = add_query_arg(array('package' => $file_upload->id), 'update.php?action=upload-plugin');
 		$type = 'upload'; //Install plugin type, From Web or an Upload.
@@ -177,10 +177,10 @@ if ( $_get->get( 'action' ) ) {
 		wp_enqueue_script( 'customize-loader' );
 		wp_enqueue_script( 'updates' );
 
-		$title = __('Update Theme');
-		$parent_file = 'themes.php';
-		$app->current_screen->set_parentage( $parent_file );
-		$submenu_file = 'themes.php';
+		$app->title = __('Update Theme');
+		$app->parent_file = 'themes.php';
+		$app->current_screen->set_parentage( $app->parent_file );
+		$app->submenu_file = 'themes.php';
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 		$nonce = 'upgrade-theme_' . $theme;
@@ -228,13 +228,13 @@ if ( $_get->get( 'action' ) ) {
 
 		wp_enqueue_script( 'customize-loader' );
 
-		$title = __('Install Themes');
-		$parent_file = 'themes.php';
-		$app->current_screen->set_parentage( $parent_file );
-		$submenu_file = 'themes.php';
+		$app->title = __('Install Themes');
+		$app->parent_file = 'themes.php';
+		$app->current_screen->set_parentage( $app->parent_file );
+		$app->submenu_file = 'themes.php';
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
-		$title = sprintf( __('Installing Theme: %s'), $api->name . ' ' . $api->version );
+		$app->title = sprintf( __('Installing Theme: %s'), $api->name . ' ' . $api->version );
 		$nonce = 'install-theme_' . $theme;
 		$url = 'update.php?action=install-theme&theme=' . urlencode( $theme );
 		$type = 'web'; //Install theme type, From Web or an Upload.
@@ -256,14 +256,14 @@ if ( $_get->get( 'action' ) ) {
 
 		wp_enqueue_script( 'customize-loader' );
 
-		$title = __('Upload Theme');
-		$parent_file = 'themes.php';
-		$app->current_screen->set_parentage( $parent_file );
-		$submenu_file = 'theme-install.php';
+		$app->title = __('Upload Theme');
+		$app->parent_file = 'themes.php';
+		$app->current_screen->set_parentage( $app->parent_file );
+		$app->submenu_file = 'theme-install.php';
 
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
-		$title = sprintf( __('Installing Theme from uploaded file: %s'), esc_html( basename( $file_upload->filename ) ) );
+		$app->title = sprintf( __('Installing Theme from uploaded file: %s'), esc_html( basename( $file_upload->filename ) ) );
 		$nonce = 'theme-upload';
 		$url = add_query_arg(array('package' => $file_upload->id), 'update.php?action=upload-theme');
 		$type = 'upload'; //Install plugin type, From Web or an Upload.
