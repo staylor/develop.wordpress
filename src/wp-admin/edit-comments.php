@@ -119,8 +119,9 @@ if ( $error ) {
 }
 
 $messages = $view->getEditMessages();
-
-echo '<div id="moderated" class="updated notice is-dismissible"><p>' . implode( "<br/>\n", $messages ) . '</p></div>';
+if ( $messages ) {
+	echo '<div id="moderated" class="updated notice is-dismissible"><p>' . implode( "<br/>\n", $messages ) . '</p></div>';
+}
 ?>
 
 <?php $wp_list_table->views(); ?>

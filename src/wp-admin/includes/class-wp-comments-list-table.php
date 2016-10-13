@@ -85,7 +85,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 		$comment_type = $this->_request->get( 'comment_type', '' );
 		$search = $this->_request->get( 's', '' );
 		$post_type = $this->_request->get( 'post_type' ) ? sanitize_key( $this->_request->get( 'post_type' ) ) : '';
-		$user_id = $this->_request->getInt( 'user_id', 0 );
+		$user_id = $this->_request->get( 'user_id', '' );
 		$orderby = $this->_request->get( 'orderby', '' );
 		$order = $this->_request->get( 'order', '' );
 
