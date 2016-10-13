@@ -1125,7 +1125,6 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $func
  *
  * @global array $submenu
  * @global array $menu
- * @global array $_wp_real_parent_file
  * @global bool  $_wp_submenu_nopriv
  * @global array $_registered_pages
  * @global array $_parent_pages
@@ -1139,14 +1138,11 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $func
  * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
-	global $submenu, $menu, $_wp_real_parent_file, $_wp_submenu_nopriv,
+	global $submenu, $menu, $_wp_submenu_nopriv,
 		$_registered_pages, $_parent_pages;
 
 	$menu_slug = plugin_basename( $menu_slug );
 	$parent_slug = plugin_basename( $parent_slug);
-
-	if ( isset( $_wp_real_parent_file[$parent_slug] ) )
-		$parent_slug = $_wp_real_parent_file[$parent_slug];
 
 	if ( !current_user_can( $capability ) ) {
 		$_wp_submenu_nopriv[$parent_slug][$menu_slug] = true;
@@ -1504,7 +1500,6 @@ function menu_page_url($menu_slug, $echo = true) {
  * @global array $menu
  * @global array $submenu
  * @global string $plugin_page
- * @global array $_wp_real_parent_file
  * @global array $_wp_menu_nopriv
  * @global array $_wp_submenu_nopriv
  */
@@ -1512,13 +1507,11 @@ function get_admin_page_parent( $parent = '' ) {
 	$app = getApp();
 
 	global $parent_file, $menu, $submenu,
-		$plugin_page, $_wp_real_parent_file, $_wp_menu_nopriv, $_wp_submenu_nopriv;
+		$plugin_page, $_wp_menu_nopriv, $_wp_submenu_nopriv;
 
 	$typenow = $app['typenow'];
 
 	if ( !empty ( $parent ) && 'admin.php' != $parent ) {
-		if ( isset( $_wp_real_parent_file[$parent] ) )
-			$parent = $_wp_real_parent_file[$parent];
 		return $parent;
 	}
 
@@ -1526,30 +1519,22 @@ function get_admin_page_parent( $parent = '' ) {
 		foreach ( (array)$menu as $parent_menu ) {
 			if ( $parent_menu[2] == $plugin_page ) {
 				$parent_file = $plugin_page;
-				if ( isset( $_wp_real_parent_file[$parent_file] ) )
-					$parent_file = $_wp_real_parent_file[$parent_file];
 				return $parent_file;
 			}
 		}
 		if ( isset( $_wp_menu_nopriv[$plugin_page] ) ) {
 			$parent_file = $plugin_page;
-			if ( isset( $_wp_real_parent_file[$parent_file] ) )
-					$parent_file = $_wp_real_parent_file[$parent_file];
 			return $parent_file;
 		}
 	}
 
 	if ( isset( $plugin_page ) && isset( $_wp_submenu_nopriv[ $app['pagenow'] ][$plugin_page] ) ) {
 		$parent_file = $app['pagenow'];
-		if ( isset( $_wp_real_parent_file[$parent_file] ) )
-			$parent_file = $_wp_real_parent_file[$parent_file];
 		return $parent_file;
 	}
 
 	foreach (array_keys( (array)$submenu ) as $parent) {
 		foreach ( $submenu[$parent] as $submenu_array ) {
-			if ( isset( $_wp_real_parent_file[$parent] ) )
-				$parent = $_wp_real_parent_file[$parent];
 			if ( !empty($typenow) && ($submenu_array[2] == "{$app['pagenow']}?post_type=$typenow") ) {
 				$parent_file = $parent;
 				return $parent;

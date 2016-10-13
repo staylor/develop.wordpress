@@ -59,14 +59,12 @@ foreach ($menu as $menu_page) {
 	}
 	$hook_name = sanitize_title($hook_name);
 
-	if ( isset($compat[$hook_name]) )
-		$hook_name = $compat[$hook_name];
-	elseif ( !$hook_name )
+	if ( !$hook_name )
 		continue;
 
 	$admin_page_hooks[$menu_page[2]] = $hook_name;
 }
-unset($menu_page, $compat);
+unset($menu_page);
 
 $_wp_submenu_nopriv = [];
 $_wp_menu_nopriv = [];
@@ -102,7 +100,6 @@ foreach ( $menu as $id => $data ) {
 	 * make the first submenu the new parent.
 	 */
 	if ( $new_parent != $old_parent ) {
-		$_wp_real_parent_file[$old_parent] = $new_parent;
 		$menu[$id][2] = $new_parent;
 
 		foreach ($submenu[$old_parent] as $index => $data) {

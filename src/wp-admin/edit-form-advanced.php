@@ -361,7 +361,7 @@ do_action( 'do_meta_boxes', $post_type, 'side', $post );
 
 add_screen_option('layout_columns', array('max' => 2, 'default' => 2) );
 
-$view->help->addEditFormAdvanced( $post_type );
+( new \WP\Post\Admin\Help( $app->current_screen ) )->addEditFormAdvanced( $post_type );
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>

@@ -15,8 +15,6 @@ $menu[70] = [ __('Profile'), 'exist', 'profile.php', '', 'menu-top menu-icon-use
 
 $menu[99] = [ '', 'exist', 'separator-last', '', 'wp-menu-separator' ];
 
-$_wp_real_parent_file['users.php'] = 'profile.php';
-$compat = [];
 $submenu = [];
 
 require_once(ABSPATH . 'wp-admin/includes/menu.php');

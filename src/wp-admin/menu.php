@@ -217,7 +217,6 @@ else
 	$menu[70] = array( __('Profile'), 'read', 'profile.php', '', 'menu-top menu-icon-users', 'menu-users', 'dashicons-admin-users' );
 
 if ( current_user_can('list_users') ) {
-	$_wp_real_parent_file['profile.php'] = 'users.php'; // Back-compat for plugins adding submenus to profile.php.
 	$submenu['users.php'][5] = array(__('All Users'), 'list_users', 'users.php');
 	if ( current_user_can( 'create_users' ) ) {
 		$submenu['users.php'][10] = array(_x('Add New', 'user'), 'create_users', 'user-new.php');
@@ -227,7 +226,6 @@ if ( current_user_can('list_users') ) {
 
 	$submenu['users.php'][15] = array(__('Your Profile'), 'read', 'profile.php');
 } else {
-	$_wp_real_parent_file['users.php'] = 'profile.php';
 	$submenu['profile.php'][5] = array(__('Your Profile'), 'read', 'profile.php');
 	if ( current_user_can( 'create_users' ) ) {
 		$submenu['profile.php'][10] = array(__('Add New User'), 'create_users', 'user-new.php');
@@ -256,27 +254,5 @@ $menu[80] = array( __('Settings'), 'manage_options', 'options-general.php', '', 
 $_wp_last_utility_menu = 80; // The index of the last top-level menu in the utility menu group
 
 $menu[99] = array( '', 'read', 'separator-last', '', 'wp-menu-separator' );
-
-// Back-compat for old top-levels
-$_wp_real_parent_file['post.php'] = 'edit.php';
-$_wp_real_parent_file['post-new.php'] = 'edit.php';
-$_wp_real_parent_file['edit-pages.php'] = 'edit.php?post_type=page';
-$_wp_real_parent_file['page-new.php'] = 'edit.php?post_type=page';
-$_wp_real_parent_file['wpmu-admin.php'] = 'tools.php';
-$_wp_real_parent_file['ms-admin.php'] = 'tools.php';
-
-// Ensure backward compatibility.
-$compat = array(
-	'index' => 'dashboard',
-	'edit' => 'posts',
-	'post' => 'posts',
-	'upload' => 'media',
-	'link-manager' => 'links',
-	'edit-pages' => 'pages',
-	'page' => 'pages',
-	'edit-comments' => 'comments',
-	'options-general' => 'settings',
-	'themes' => 'appearance',
-	);
 
 require_once(ABSPATH . 'wp-admin/includes/menu.php');
