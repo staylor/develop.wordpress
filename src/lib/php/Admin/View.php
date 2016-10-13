@@ -7,6 +7,8 @@ class View extends BaseView {
 	public $l10n;
 	public $help;
 	public $handler;
+	public $html_type;
+	public $charset;
 
 	public function __construct( App $app ) {
 		$this->app = $app;
@@ -15,70 +17,112 @@ class View extends BaseView {
 			set_current_screen();
 		}
 
-		$this->setAdminActions();
-
 		if ( get_called_class() === __CLASS__ ) {
 			$this->setL10n( new L10N() );
 		}
+
+		$this->setAdminActions( $this->app->hook_suffix );
+
+		$this->setAdminData();
+
+		$this->enqueueAdminScripts();
+
+		// Cookies
+		wp_user_settings();
+
+		$this->html_type = get_option( 'html_type' );
+		$this->charset = get_option( 'blog_charset' );
 	}
 
-	public function setL10n( $l10n ) {
-		$this->l10n = $l10n;
+	public function enqueueAdminScripts() {
+		wp_enqueue_style( 'colors' );
+		wp_enqueue_style( 'ie' );
+		wp_enqueue_script( 'utils' );
+		wp_enqueue_script( 'svg-painter' );
+	}
+
+	public function setAdminData() {
+		$title = esc_html( strip_tags( get_admin_page_title() ) );
+
+		$admin_page = preg_replace('/[^a-z0-9_-]+/i', '-', $this->app->hook_suffix );
 
 		$admin_footer_text = sprintf(
 			__( 'Thank you for creating with <a href="%s">WordPress</a>.' ), __( 'https://wordpress.org/' )
 		);
 
+		$this->setData( [
+			'title' => $title,
+
+			'screen' => $this->app->current_screen,
+
+			'ajaxurl' => admin_url( 'admin-ajax.php', 'relative' ),
+
+			'hook_suffix' => $this->app->hook_suffix,
+
+			'thousands_sep' => addslashes( $this->app['locale']->number_format['thousands_sep'] ),
+
+			'decimal_point' => addslashes( $this->app['locale']->number_format['decimal_point'] ),
+
+			'is_rtl' => (int) is_rtl(),
+
+			'language_attributes' => get_language_attributes(),
+
+			'admin_page' => $admin_page,
+
+			'admin_title' => $this->getAdminTitle(),
+
+			/**
+			 * Filters the CSS classes for the body tag in the admin.
+			 *
+			 * This filter differs from the {@see 'post_class'} and {@see 'body_class'} filters
+			 * in two important ways:
+			 *
+			 * 1. `$classes` is a space-separated string of class names instead of an array.
+			 * 2. Not all core admin classes are filterable, notably: wp-admin, wp-core-ui,
+			 *    and no-js cannot be removed.
+			 *
+			 * @since 2.3.0
+			 *
+			 * @param string $classes Space-separated list of CSS classes.
+			 */
+			'admin_body_classes' => apply_filters( 'admin_body_class', '' ),
+
+			'admin_body_class' => $this->getAdminBodyClass( $admin_page ),
+
+			'admin_html_class' => ( is_admin_bar_showing() ) ? 'wp-toolbar' : '',
+
+			/**
+			 * Filters the "Thank you" text displayed in the admin footer.
+			 *
+			 * @since 2.8.0
+			 *
+			 * @param string $text The content that will be printed.
+			 */
+			'admin_footer_text' => apply_filters( 'admin_footer_text', '<span id="footer-thankyou">' . $admin_footer_text . '</span>' ),
+			/**
+			 * Filters the version/update text displayed in the admin footer.
+			 *
+			 * WordPress prints the current version and update information,
+			 * using core_update_footer() at priority 10.
+			 *
+			 * @since 2.3.0
+			 *
+			 * @see core_update_footer()
+			 *
+			 * @param string $content The content that will be printed.
+			 */
+			'update_footer' => apply_filters( 'update_footer', '' ),
+
+			'customize_support' => current_user_can( 'customize' ) ? $this->app->mute( 'wp_customize_support_script' ) : '',
+		] );
+	}
+
+	public function setL10n( $l10n ) {
+		$this->l10n = $l10n;
+
 		$this->setConfig( [
 			'helpers' => [
 				'l10n' => $l10n,
-
-				'hook_suffix' => $this->app->hook_suffix,
-
-				'admin_title' => $this->getAdminTitle(),
-
-				/**
-				 * Filters the CSS classes for the body tag in the admin.
-				 *
-				 * This filter differs from the {@see 'post_class'} and {@see 'body_class'} filters
-				 * in two important ways:
-				 *
-				 * 1. `$classes` is a space-separated string of class names instead of an array.
-				 * 2. Not all core admin classes are filterable, notably: wp-admin, wp-core-ui,
-				 *    and no-js cannot be removed.
-				 *
-				 * @since 2.3.0
-				 *
-				 * @param string $classes Space-separated list of CSS classes.
-				 */
-				'admin_body_classes' => apply_filters( 'admin_body_class', '' ),
-
-				'admin_body_class' => $this->getAdminBodyClass(),
-
-				'screen_meta' => $this->app->mute( function () {
-					$this->app->current_screen->render_screen_meta();
-				} ),
-				/**
-				 * Filters the "Thank you" text displayed in the admin footer.
-				 *
-				 * @since 2.8.0
-				 *
-				 * @param string $text The content that will be printed.
-				 */
-				'admin_footer_text' => apply_filters( 'admin_footer_text', '<span id="footer-thankyou">' . $admin_footer_text . '</span>' ),
-				/**
-				 * Filters the version/update text displayed in the admin footer.
-				 *
-				 * WordPress prints the current version and update information,
-				 * using core_update_footer() at priority 10.
-				 *
-				 * @since 2.3.0
-				 *
-				 * @see core_update_footer()
-				 *
-				 * @param string $content The content that will be printed.
-				 */
-				'update_footer' => apply_filters( 'update_footer', '' )
 			]
 		] );
 	}
@@ -98,8 +142,14 @@ class View extends BaseView {
 		return is_user_admin();
 	}
 
-	public function setAdminActions() {
+	public function setAdminActions( $hook_suffix ) {
 		$this->actions = [
+			/**
+			 * Fires inside the HTML tag in the admin header.
+			 *
+			 * @since 2.2.0
+			 */
+			'admin_xml_ns' => [],
 			/**
 			 * Enqueue scripts for all admin pages.
 			 *
@@ -107,13 +157,13 @@ class View extends BaseView {
 			 *
 			 * @param string $hook_suffix The current admin page.
 			 */
-			'admin_enqueue_scripts'  => [ $this->app->hook_suffix ],
+			'admin_enqueue_scripts'  => [ $hook_suffix ],
 			/**
 			 * Fires when styles are printed for a specific admin page based on $hook_suffix.
 			 *
 			 * @since 2.6.0
 			 */
-			"admin_print_styles-{$this->app->hook_suffix}" => [],
+			"admin_print_styles-{$hook_suffix}" => [],
 			/**
 			 * Fires when styles are printed for all admin pages.
 			 *
@@ -140,7 +190,7 @@ class View extends BaseView {
 			 *
 			 * @since 2.1.0
 			 */
-			"admin_head-{$this->app->hook_suffix}" => [],
+			"admin_head-{$hook_suffix}" => [],
 			/**
 			 * Fires in head section for all admin pages.
 			 *
@@ -201,7 +251,7 @@ class View extends BaseView {
 			 *
 			 * @param string $hook_suffix The current admin page.
 			 */
-			"admin_print_footer_scripts-{$this->app->hook_suffix}" => [],
+			"admin_print_footer_scripts-{$hook_suffix}" => [],
 			/**
 			 * Prints any scripts and data queued for the footer.
 			 *
@@ -218,13 +268,11 @@ class View extends BaseView {
 			 *
 			 * @param string $hook_suffix The current admin page.
 			 */
-			"admin_footer-{$this->app->hook_suffix}" => [],
+			"admin_footer-{$hook_suffix}" => [],
 		];
 	}
 
-	protected function getAdminTitle() {
-		$title = esc_html( strip_tags( get_admin_page_title() ) );
-
+	protected function getAdminTitle( $title ) {
 		if ( is_network_admin() ) {
 			$admin_title = sprintf( __( 'Network Admin: %s' ), esc_html( get_current_site()->site_name ) );
 		} elseif ( is_user_admin() ) {
@@ -249,8 +297,8 @@ class View extends BaseView {
 		return apply_filters( 'admin_title', $admin_title, $title );
 	}
 
-	protected function getAdminBodyClass() {
-		$admin_body_class = preg_replace('/[^a-z0-9_-]+/i', '-', $this->app->hook_suffix );
+	protected function getAdminBodyClass( $admin_page ) {
+		$admin_body_class = $admin_page;
 
 		if ( get_user_setting('mfold') == 'f' ) {
 			$admin_body_class .= ' folded';
@@ -299,7 +347,11 @@ class View extends BaseView {
 	}
 
 	public function render( string $template, $data ): string {
-		header( 'Content-Type: ' . get_option('html_type') . '; charset=' . get_option( 'blog_charset' ) );
+		header( 'Content-Type: ' . $this->html_type . '; charset=' . $this->charset );
+
+		if ( $this->app['is_IE'] ) {
+			header( 'X-UA-Compatible: IE=edge' );
+		}
 
 		return parent::render( $template, $data );
 	}

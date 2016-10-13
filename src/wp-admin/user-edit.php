@@ -272,8 +272,6 @@ if ( IS_PROFILE_PAGE ) {
 
 }
 
-include( ABSPATH . 'wp-admin/admin-header.php' );
-
 $opts = [
 	[
 		'id' => 'display_nickname',

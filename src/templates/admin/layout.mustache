@@ -1,7 +1,25 @@
+{{!
+Documentation for all actions can be found here:
+lib/php/Admin/View.php
+
+Happy Template-ing!
+}}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="{{ admin_html_class }}"{{!
+
+}}{{ doAction }}admin_xml_ns{{/doAction }} {{{ language_attributes }}}>
+<head>
+<meta http-equiv="Content-Type" content="{{ html_type }}; charset={{ charset }}" />
 <script type="text/javascript">
 addLoadEvent = function(func){
-	if(typeof jQuery!=="undefined"){jQuery(document).ready(func);}else if(typeof wpOnload!=='function'){wpOnload=func;}else {var oldonload=wpOnload;wpOnload=function(){oldonload();func();};}};
-////
+if(typeof jQuery!=="undefined"){jQuery(document).ready(func);}else if(typeof wpOnload!=='function'){wpOnload=func;}else {var oldonload=wpOnload;wpOnload=function(){oldonload();func();};}};
+var ajaxurl = '{{ ajaxurl }}',
+	pagenow = '{{ screen.id }}',
+	typenow = '{{ screen.post_type }}',
+	adminpage = '{{ admin_page }}',
+	thousandsSeparator = '{{ thousands_sep }}',
+	decimalPoint = '{{ decimal_point }}',
+	isRtl = {{ is_rtl }};
 </script>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 {{# doAction }}admin_enqueue_scripts{{/ doAction }}
@@ -16,14 +34,14 @@ addLoadEvent = function(func){
 <script type="text/javascript">
 document.body.className = document.body.className.replace('no-js','js');
 </script>
-//// CUSTOMIZE SUPPORT SCRIPT
+{{{ customize_support }}}
 <div id="wpwrap">
 	//// MENU HEADER
 	<div id="wpcontent">
 		{{# doAction }}in_admin_header{{/ doAction }}
 		<div id="wpbody" role="main">
 			<div id="wpbody-content" aria-label="{{ l10n.main_content }}" tabindex="0">
-				{{{ screen_meta }}}
+				{{{ screen.render_screen_meta }}}
 
 				{{# is_network_admin }}
 					{{# doAction }}network_admin_notices{{/ doAction }}

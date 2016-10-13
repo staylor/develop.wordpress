@@ -229,8 +229,6 @@ if ( $view->_get->has( 'editwidget' ) ) {
 
 	$view->setData( $data );
 
-	require_once( __DIR__ . '/admin-header.php' );
-
 	echo $view->render( 'widget/edit', $view );
 
 	exit();
@@ -364,7 +362,5 @@ $view->setActions( [
 	 */
 	'sidebar_admin_page' => [],
 ] );
-
-require_once( __DIR__ . '/admin-header.php' );
 
 echo $view->render( 'widget/widgets', $view );

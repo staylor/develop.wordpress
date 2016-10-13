@@ -47,8 +47,6 @@ if ( $show_welcome_panel ) {
 	$data['welcome_close_url'] = admin_url( '?welcome=0' );
 }
 
-require_once( __DIR__ . '/admin-header.php' );
-
 $view->setData( $data );
 
 $view->setActions( [

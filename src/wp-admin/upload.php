@@ -65,8 +65,6 @@ if ( 'grid' === $mode ) {
 		)
 	];
 
-	require_once( ABSPATH . 'wp-admin/admin-header.php' );
-
 	$view->setData( $data );
 
 	echo $view->render( 'media/upload-grid', $view );
@@ -187,7 +185,5 @@ $data['find_posts_div'] = $app->mute( function () {
 } );
 
 $view->setData( $data );
-
-require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 echo $view->render( 'media/upload-list', $view );

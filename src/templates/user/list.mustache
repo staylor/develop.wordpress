@@ -1,3 +1,6 @@
+{{< admin/layout }}
+
+{{$ content }}
 {{# errors? }}
 <div class="{{ class }}">
 	<p>{{# label }}<strong>{{ . }}</strong> {{/ label }}{{{ message }}}</p>
@@ -28,3 +31,6 @@
 
 	<br class="clear" />
 </div>
+{{/ content }}
+
+{{/ admin/layout }}

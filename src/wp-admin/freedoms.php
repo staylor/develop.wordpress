@@ -30,6 +30,4 @@ $data = [
 
 $view->setData( $data );
 
-include( ABSPATH . 'wp-admin/admin-header.php' );
-
 echo $view->render( 'admin/freedoms', $view );

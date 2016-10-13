@@ -38,8 +38,6 @@ $app->current_screen->set_parentage( $parent_file );
 
 $view->enqueueScripts();
 
-require_once( ABSPATH . 'wp-admin/admin-header.php' );
-
 $title = $view->l10n->add_new_user;
 if ( current_user_can( 'create_users' ) ) {
 	$title = $view->l10n->add_new_user;

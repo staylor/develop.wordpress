@@ -165,11 +165,7 @@ case 'delete':
 		'delete_user_form' => [ $current_user, $userids ]
 	] );
 
-	include( ABSPATH . 'wp-admin/admin-header.php' );
-
 	echo $view->render( 'user/delete-form', $view );
-
-	include( ABSPATH . 'wp-admin/admin-footer.php' );
 
 	break;
 
@@ -243,11 +239,7 @@ case 'remove':
 
 	$view->setData( $data );
 
-	include( ABSPATH . 'wp-admin/admin-header.php' );
-
 	echo $view->render( 'user/remove-form', $view );
-
-	include( ABSPATH . 'wp-admin/admin-footer.php' );
 
 	break;
 }
@@ -328,8 +320,4 @@ $data['list_table_display'] = $app->mute( function () use ( $wp_list_table )  {
 
 $view->setData( $data );
 
-include( ABSPATH . 'wp-admin/admin-header.php' );
-
 echo $view->render( 'user/list', $view );
-
-include( ABSPATH . 'wp-admin/admin-footer.php' );
