@@ -17,9 +17,7 @@ class View extends BaseView {
 			set_current_screen();
 		}
 
-		if ( get_called_class() === __CLASS__ ) {
-			$this->setL10n( new L10N() );
-		}
+		$this->l10n = new L10N();
 
 		$this->setAdminActions( $this->app->hook_suffix );
 
@@ -69,7 +67,7 @@ class View extends BaseView {
 
 			'admin_page' => $admin_page,
 
-			'admin_title' => $this->getAdminTitle(),
+			'admin_title' => $this->getAdminTitle( $title ),
 
 			/**
 			 * Filters the CSS classes for the body tag in the admin.
@@ -114,15 +112,19 @@ class View extends BaseView {
 			'update_footer' => apply_filters( 'update_footer', '' ),
 
 			'customize_support' => current_user_can( 'customize' ) ? $this->app->mute( 'wp_customize_support_script' ) : '',
+
+			'screen_meta' => $this->app->mute( function () {
+				$this->app->current_screen->render_screen_meta();
+			} ),
 		] );
 	}
 
 	public function setL10n( $l10n ) {
-		$this->l10n = $l10n;
+		$this->l10n->setData( $l10n->getData() );
 
 		$this->setConfig( [
 			'helpers' => [
-				'l10n' => $l10n,
+				'l10n' => $this->l10n,
 			]
 		] );
 	}
@@ -197,6 +199,12 @@ class View extends BaseView {
 			 * @since 2.1.0
 			 */
 			'admin_head' => [],
+			/**
+			 * Fires after the admin menu has been output.
+			 *
+			 * @since 2.5.0
+			 */
+			'adminmenu' => [],
 			/**
 			 * Fires at the beginning of the content section in an admin page.
 			 *

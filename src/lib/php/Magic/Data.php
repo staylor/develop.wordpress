@@ -22,4 +22,12 @@ trait Data {
 			return $this->data[ $name ];
 		}
 	}
+
+	public function getData() {
+		return $this->data;
+	}
+
+	public function setData( $data = [] ) {
+		$this->data = array_merge( $this->data, $data );
+	}
 }

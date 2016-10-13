@@ -5,9 +5,7 @@ lib/php/Admin/View.php
 Happy Template-ing!
 }}
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" class="{{ admin_html_class }}"{{!
-
-}}{{ doAction }}admin_xml_ns{{/doAction }} {{{ language_attributes }}}>
+<html xmlns="http://www.w3.org/1999/xhtml" class="{{ admin_html_class }}"{{# doAction }}admin_xml_ns{{/ doAction }} {{{ language_attributes }}}>
 <head>
 <meta http-equiv="Content-Type" content="{{ html_type }}; charset={{ charset }}" />
 <script type="text/javascript">
@@ -30,18 +28,28 @@ var ajaxurl = '{{ ajaxurl }}',
 {{# doAction }}admin_head-{{ hook_suffix }}{{/ doAction }}
 {{# doAction }}admin_head{{/ doAction }}
 </head>
-<body class="wp-admin wp-core-ui no-js {{ admin_body_classes }} {{ admin_body_class }}">
+<body class="wp-admin wp-core-ui no-js{{ admin_body_classes }} {{ admin_body_class }}">
 <script type="text/javascript">
 document.body.className = document.body.className.replace('no-js','js');
 </script>
 {{{ customize_support }}}
 <div id="wpwrap">
-	//// MENU HEADER
+	<div id="adminmenumain" role="navigation" aria-label="{{ l10n.main_menu }}">
+		<a href="#wpbody-content" class="screen-reader-shortcut">{{ l10n.skip_to_main_content }}</a>
+		<a href="#wp-toolbar" class="screen-reader-shortcut">{{ l10n.skip_to_toolbar }}</a>
+		<div id="adminmenuback"></div>
+		<div id="adminmenuwrap">
+			<ul id="adminmenu">
+
+				{{# doAction }}adminmenu{{/ doAction }}
+			</ul>
+		</div>
+	</div>
 	<div id="wpcontent">
 		{{# doAction }}in_admin_header{{/ doAction }}
 		<div id="wpbody" role="main">
 			<div id="wpbody-content" aria-label="{{ l10n.main_content }}" tabindex="0">
-				{{{ screen.render_screen_meta }}}
+				{{{ screen_meta }}}
 
 				{{# is_network_admin }}
 					{{# doAction }}network_admin_notices{{/ doAction }}

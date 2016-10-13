@@ -10,6 +10,9 @@ class L10N {
 		$this->data = [
 			// Layout
 			'main_content' => __( 'Main content' ),
+			'main_menu' => __( 'Main menu' ),
+			'skip_to_main_content' => __( 'Skip to main content' ),
+			'skip_to_toolbar' => __( 'Skip to toolbar' ),
 
 			// Screen
 			'pagination' => __( 'Pagination' ),
