@@ -59,7 +59,7 @@ class App extends Container {
 	public $submenu = [];
 	public $_wp_menu_nopriv = [];
 	public $_wp_submenu_nopriv = [];
-	public $plugin_page;
+
 	public $parent_file;
 	public $submenu_file;
 

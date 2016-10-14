@@ -189,8 +189,8 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 				// If plugin_page is set the parent must either match the current page or not physically exist.
 				// This allows plugin pages with the same hook to exist under different parents.
 				} elseif (
-					( ! isset( $app->plugin_page ) && $self == $sub_item[2] ) ||
-					( isset( $app->plugin_page ) && $app->plugin_page == $sub_item[2] && ( $item[2] == $self_type || $item[2] == $self || file_exists($menu_file) === false ) )
+					( ! $app->get( 'plugin_page' ) && $self == $sub_item[2] ) ||
+					( $app->get( 'plugin_page' ) === $sub_item[2] && ( $item[2] == $self_type || $item[2] == $self || file_exists($menu_file) === false ) )
 				) {
 					$class[] = 'current';
 				}
