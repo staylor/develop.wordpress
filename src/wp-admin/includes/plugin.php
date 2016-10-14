@@ -1504,20 +1504,21 @@ function get_admin_page_parent( $parent = '' ) {
 		return $parent;
 	}
 
-	if ( $app['pagenow'] == 'admin.php' && isset( $app->plugin_page ) ) {
+	$plugin_page = $app->get( 'plugin_page' );
+	if ( $app['pagenow'] == 'admin.php' && $plugin_page ) {
 		foreach ( (array) $app->menu as $parent_menu ) {
-			if ( $parent_menu[2] === $app->plugin_page ) {
-				$app->parent_file = $app->plugin_page;
+			if ( $parent_menu[2] === $plugin_page ) {
+				$app->parent_file = $plugin_page;
 				return $app->parent_file;
 			}
 		}
-		if ( isset( $app->_wp_menu_nopriv[ $app->plugin_page ] ) ) {
-			$app->parent_file = $app->plugin_page;
+		if ( isset( $app->_wp_menu_nopriv[ $plugin_page ] ) ) {
+			$app->parent_file = $plugin_page;
 			return $app->parent_file;
 		}
 	}
 
-	if ( isset( $app->plugin_page ) && isset( $app->_wp_submenu_nopriv[ $pagenow ][ $app->plugin_page ] ) ) {
+	if ( $plugin_page && isset( $app->_wp_submenu_nopriv[ $pagenow ][ $plugin_page ] ) ) {
 		$app->parent_file = $app['pagenow'];
 		return $app->parent_file;
 	}
@@ -1530,7 +1531,7 @@ function get_admin_page_parent( $parent = '' ) {
 			} elseif ( $submenu_array[2] === $pagenow && empty( $typenow ) && ( empty( $app->parent_file ) || false === strpos( $app->parent_file, '?' ) ) ) {
 				$app->parent_file = $parent;
 				return $parent;
-			} elseif ( isset( $app->plugin_page ) && $app->plugin_page === $submenu_array[2] ) {
+			} elseif ( $plugin_page && $plugin_page === $submenu_array[2] ) {
 				$app->parent_file = $parent;
 				return $parent;
 			}
@@ -1552,8 +1553,9 @@ function get_admin_page_title() {
 
 	$typenow = $app['typenow'];
 	$pagenow = $app['pagenow'];
+	$plugin_page = $app->get( 'plugin_page' );
 
-	$hook = get_plugin_page_hook( $app->plugin_page, $pagenow );
+	$hook = get_plugin_page_hook( $plugin_page, $pagenow );
 
 	$parent = $parent1 = get_admin_page_parent();
 
@@ -1563,7 +1565,7 @@ function get_admin_page_title() {
 				if ( $menu_array[2] === $pagenow ) {
 					$title = $menu_array[3];
 					return $menu_array[3];
-				} elseif ( isset( $app->plugin_page ) && ( $app->plugin_page === $menu_array[2] ) && ( $hook === $menu_array[3] ) ) {
+				} elseif ( $plugin_page && ( $plugin_page === $menu_array[2] ) && ( $hook === $menu_array[3] ) ) {
 					$title = $menu_array[3];
 					return $menu_array[3];
 				}
@@ -1577,12 +1579,12 @@ function get_admin_page_title() {
 		foreach ( array_keys( $app->submenu ) as $parent ) {
 			foreach ( $app->submenu[ $parent ] as $submenu_array ) {
 				if (
-					isset( $app->plugin_page ) &&
-					( $app->plugin_page === $submenu_array[2] ) &&
+					$plugin_page &&
+					( $plugin_page === $submenu_array[2] ) &&
 					(
 						( $parent === $pagenow ) ||
-						( $parent === $app->plugin_page ) ||
-						( $app->plugin_page === $hook ) ||
+						( $parent === $plugin_page ) ||
+						( $plugin_page === $hook ) ||
 						( $pagenow === 'admin.php' && $parent1 !== $submenu_array[2] ) ||
 						( ! empty( $typenow ) && $parent === $pagenow . '?post_type=' . $typenow )
 					)
@@ -1609,8 +1611,8 @@ function get_admin_page_title() {
 		if ( empty ( $title ) ) {
 			foreach ( $app->menu as $menu_array ) {
 				if (
-					isset( $app->plugin_page ) &&
-					( $app->plugin_page == $menu_array[2] ) &&
+					$plugin_page &&
+					( $plugin_page == $menu_array[2] ) &&
 					( $pagenow === 'admin.php' ) &&
 					( $parent1 === $menu_array[2] )
 				) {
@@ -1675,17 +1677,18 @@ function user_can_access_admin_page() {
 	$app = getApp();
 	$parent = get_admin_page_parent();
 	$pagenow = $app['pagenow'];
+	$plugin_page = $app->get( 'plugin_page' );
 
-	if ( ! isset( $app->plugin_page ) && isset( $app->_wp_submenu_nopriv[ $parent ][ $pagenow ] ) ) {
+	if ( ! $plugin_page && isset( $app->_wp_submenu_nopriv[ $parent ][ $pagenow ] ) ) {
 		return false;
 	}
 
-	if ( isset( $app->plugin_page ) ) {
-		if ( isset( $app->_wp_submenu_nopriv[ $parent ][ $app->plugin_page ] ) ) {
+	if ( $plugin_page ) {
+		if ( isset( $app->_wp_submenu_nopriv[ $parent ][ $plugin_page ] ) ) {
 			return false;
 		}
 
-		$hookname = get_plugin_page_hookname( $app->plugin_page, $parent );
+		$hookname = get_plugin_page_hookname( $plugin_page, $parent );
 		if ( ! isset( $_registered_pages[ $hookname ] ) ) {
 			return false;
 		}
@@ -1695,8 +1698,8 @@ function user_can_access_admin_page() {
 		if (
 			isset( $app->_wp_menu_nopriv[ $pagenow ] ) ||
 			isset( $app->_wp_submenu_nopriv[ $pagenow ][ $pagenow ] ) ||
-			isset( $app->plugin_page ) && isset( $app->_wp_submenu_nopriv[ $pagenow ][ $app->plugin_page ] ) ||
-			isset( $app->plugin_page ) && isset( $app->_wp_menu_nopriv[ $app->plugin_page ] )
+			$plugin_page && isset( $app->_wp_submenu_nopriv[ $pagenow ][ $plugin_page ] ) ||
+			$plugin_page && isset( $app->_wp_menu_nopriv[ $plugin_page ] )
 		) {
 			return false;
 		}
@@ -1706,7 +1709,7 @@ function user_can_access_admin_page() {
 				return false;
 			}
 
-			if ( isset( $app->plugin_page ) && isset( $app->_wp_submenu_nopriv[ $key ][ $app->plugin_page ] ) ) {
+			if ( $plugin_page && isset( $app->_wp_submenu_nopriv[ $key ][ $plugin_page ] ) ) {
 				return false;
 			}
 		}
@@ -1714,13 +1717,13 @@ function user_can_access_admin_page() {
 		return true;
 	}
 
-	if ( isset( $app->plugin_page ) && ( $app->plugin_page === $parent ) && isset( $app->_wp_menu_nopriv[ $app->plugin_page ] ) ) {
+	if ( $plugin_page && ( $plugin_page === $parent ) && isset( $app->_wp_menu_nopriv[ $plugin_page ] ) ) {
 		return false;
 	}
 
 	if ( isset( $app->submenu[ $parent ] ) ) {
 		foreach ( $app->submenu[ $parent ] as $submenu_array ) {
-			if ( isset( $app->plugin_page ) && ( $submenu_array[2] === $app->plugin_page ) ) {
+			if ( $plugin_page && ( $submenu_array[2] === $plugin_page ) ) {
 				return current_user_can( $submenu_array[1] );
 			} elseif ( $submenu_array[2] === $pagenow ) {
 				return current_user_can( $submenu_array[1] );

@@ -31,20 +31,22 @@ class Menu {
 			return $parent;
 		}
 
-		if ( $pagenow === 'admin.php' && isset( $this->app->plugin_page ) ) {
+		$plugin_page = $this->app->get( 'plugin_page' );
+		if ( $pagenow === 'admin.php' && $plugin_page ) {
+
 			foreach ( (array) $this->app->menu as $parent_menu ) {
-				if ( $parent_menu[2] == $this->app->plugin_page ) {
-					$this->app->parent_file = $this->app->plugin_page;
+				if ( $parent_menu[2] == $plugin_page ) {
+					$this->app->parent_file = $plugin_page;
 					return;
 				}
 			}
-			if ( isset( $this->app->_wp_menu_nopriv[ $this->app->plugin_page ] ) ) {
-				$this->app->parent_file = $this->app->plugin_page;
+			if ( isset( $this->app->_wp_menu_nopriv[ $plugin_page ] ) ) {
+				$this->app->parent_file = $plugin_page;
 				return;
 			}
 		}
 
-		if ( isset( $this->app->plugin_page ) && isset( $this->app->_wp_submenu_nopriv[ $pagenow ][ $this->app->plugin_page ] ) ) {
+		if ( $plugin_page && isset( $this->app->_wp_submenu_nopriv[ $pagenow ][ $plugin_page ] ) ) {
 			$this->app->parent_file = $pagenow;
 			return;
 		}
@@ -57,7 +59,7 @@ class Menu {
 				} elseif ( $sub[2] === $pagenow && empty( $typenow ) && ( empty( $this->app->parent_file ) || false === strpos( $this->app->parent_file, '?' ) ) ) {
 					$this->app->parent_file = $parent;
 					return;
-				} elseif ( isset( $this->app->plugin_page ) && ( $this->app->plugin_page === $sub[2] ) ) {
+				} elseif ( $plugin_page && ( $plugin_page === $sub[2] ) ) {
 					$this->app->parent_file = $parent;
 					return;
 				}
