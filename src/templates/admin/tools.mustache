@@ -1,0 +1,74 @@
+{{< admin/layout }}
+
+{{$ content }}
+<div class="wrap">
+	<h1>{{ title }}</h1>
+
+	{{# caps.edit_posts }}
+	<div class="card pressthis">
+		<h2>{{ l10n.press_this }}</h2>
+		<p>{{{ l10n.press_this_is }}}</p>
+		<p>{{{ l10n.use_press_this_to }}}</p>
+
+		<form>
+			<h3>{{ l10n.install_press_this }}</h3>
+			<h4>{{ l10n.bookmarklet }}</h4>
+			<p>{{{ l10n.drag_the_bookmarklet }}}</p>
+
+			<p class="pressthis-bookmarklet-wrapper">
+				<a class="pressthis-bookmarklet" onclick="return false;" href="{{{ shortcut_link }}}"><span>{{ l10n.press_this }}</span></a>
+				<button type="button" class="button pressthis-js-toggle js-show-pressthis-code-wrap" aria-expanded="false" aria-controls="pressthis-code-wrap">
+					<span class="dashicons dashicons-clipboard"></span>
+					<span class="screen-reader-text">{{{ l10n.copy_press_this }}}</span>
+				</button>
+			</p>
+
+			<div class="hidden js-pressthis-code-wrap clear" id="pressthis-code-wrap">
+				<p id="pressthis-code-desc">{{{ l10n.if_you_cant_drag }}}</p>
+				<p>
+					<textarea class="js-pressthis-code" rows="5" cols="120" readonly="readonly" aria-labelledby="pressthis-code-desc">{{{ shortcut_link }}}</textarea>
+				</p>
+			</div>
+
+			<h4>{{ l10n.direct_link }}</h4>
+			<p>{{{ l10n.follow_the_link }}}</p>
+
+			<p>
+				<a class="button" href="{{{ press_this_url }}}">{{{ l10n.open_press_this }}}</a>
+			</p>
+			<script>
+				jQuery( document ).ready( function( $ ) {
+					var $showPressThisWrap = $( '.js-show-pressthis-code-wrap' );
+					var $pressthisCode = $( '.js-pressthis-code' );
+
+					$showPressThisWrap.on( 'click', function( event ) {
+						var $this = $( this );
+
+						$this.parent().next( '.js-pressthis-code-wrap' ).slideToggle( 200 );
+						$this.attr( 'aria-expanded', $this.attr( 'aria-expanded' ) === 'false' ? 'true' : 'false' );
+					});
+
+					// Select Press This code when focusing (tabbing) or clicking the textarea.
+					$pressthisCode.on( 'click focus', function() {
+						var self = this;
+						setTimeout( function() { self.select(); }, 50 );
+					});
+
+				});
+			</script>
+		</form>
+	</div>
+	{{/ caps.edit_posts }}
+
+	{{# caps.import }}
+	<div class="card">
+		<h2 class="title">{{ l10n.cats_and_tags_converter }}</h2>
+		<p>{{{ import_text }}}</p>
+	</div>
+	{{/ caps.import }}
+
+	{{# doAction }}tool_box{{/ doAction }}
+</div>
+{{/ content }}
+
+{{/ admin/layout }}

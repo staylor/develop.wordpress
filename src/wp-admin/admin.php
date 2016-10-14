@@ -216,6 +216,9 @@ if ( $plugin_page ) {
 		 * @since 1.5.0
 		 */
 		do_action( $page_hook );
+
+		include( ABSPATH . 'wp-admin/admin-footer.php' );
+
 	} else {
 		if ( validate_file( $plugin_page ) )
 			wp_die(__('Invalid plugin page'));
@@ -253,9 +256,9 @@ if ( $plugin_page ) {
 		} else {
 			include( WP_PLUGIN_DIR . "/{$plugin_page}" );
 		}
-	}
 
-	include( ABSPATH . 'wp-admin/admin-footer.php' );
+		include( ABSPATH . 'wp-admin/admin-footer.php' );
+	}
 
 	exit();
 } elseif ( $_get->get( 'import' ) ) {

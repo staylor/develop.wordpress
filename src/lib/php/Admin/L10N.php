@@ -45,6 +45,21 @@ class L10N {
 			'dotorg_themes_url' => __( 'https://wordpress.org/themes/' ),
 			'license' => __( 'Every plugin and theme in WordPress.org&#8217;s directory is 100%% GPL or a similarly free and compatible license, so you can feel safe finding <a href="%1$s">plugins</a> and <a href="%2$s">themes</a> there. If you get a plugin or theme from another source, make sure to <a href="%3$s">ask them if it&#8217;s GPL</a> first. If they don&#8217;t respect the WordPress license, we don&#8217;t recommend them.' ),
 			'free_softare_foundation' => __( 'Don&#8217;t you wish all software came with these freedoms? So do we! For more information, check out the <a href="https://www.fsf.org/">Free Software Foundation</a>.' ),
+
+			// Tools
+			'press_this' => __( 'Press This' ),
+			'press_this_is' => __( 'Press This is a little tool that lets you grab bits of the web and create new posts with ease.' ),
+			'use_press_this_to' => __( 'Use Press This to clip text, images and videos from any web page. Then edit and add more straight from Press This before you save or publish it in a post on your site.' ),
+			'install_press_this' => __( 'Install Press This' ),
+			'bookmarklet' => __( 'Bookmarklet' ),
+			'drag_the_bookmarklet' => __( 'Drag the bookmarklet below to your bookmarks bar. Then, when you&#8217;re on a page you want to share, simply &#8220;press&#8221; it.' ),
+			'if_you_cant_drag' => __( 'If you can&#8217;t drag the bookmarklet to your bookmarks, copy the following code and create a new bookmark. Paste the code into the new bookmark&#8217;s URL field.' ),
+			'direct_link' => __( 'Direct link (best for mobile)' ),
+			'follow_the_link' => __( 'Follow the link to open Press This. Then add it to your device&#8217;s bookmarks or home screen.' ),
+			'copy_press_this' => __( 'Copy &#8220;Press This&#8221; bookmarklet code' ),
+			'open_press_this' => __( 'Open Press This' ),
+			'if_you_want_to_convert' => __( 'If you want to convert your categories to tags (or vice versa), use the <a href="%s">Categories and Tags Converter</a> available from the Import screen.' ),
+			'cats_and_tags_converter' => __( 'Categories and Tags Converter' ),
 		];
 	}
 }
