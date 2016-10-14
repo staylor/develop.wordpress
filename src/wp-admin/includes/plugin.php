@@ -1555,6 +1555,8 @@ function get_admin_page_title() {
 
 	$typenow = $app['typenow'];
 	$pagenow = $app['pagenow'];
+
+	$title = $app->get( 'title' );
 	$plugin_page = $app->get( 'plugin_page' );
 
 	$hook = get_plugin_page_hook( $plugin_page, $pagenow );
@@ -1565,15 +1567,15 @@ function get_admin_page_title() {
 		foreach ( (array) $app->menu as $menu_array ) {
 			if ( isset( $menu_array[3] ) ) {
 				if ( $menu_array[2] === $pagenow ) {
-					$title = $menu_array[3];
+					$app->set( 'title', $menu_array[3] );
 					return $menu_array[3];
 				} elseif ( $plugin_page && ( $plugin_page === $menu_array[2] ) && ( $hook === $menu_array[3] ) ) {
-					$title = $menu_array[3];
+					$app->set( 'title', $menu_array[3] );
 					return $menu_array[3];
 				}
 			} else {
-				$title = $menu_array[0];
-				return $title;
+				$app->set( 'title', $menu_array[0] );
+				return $menu_array[0];
 			}
 		}
 	} else {
@@ -1591,7 +1593,7 @@ function get_admin_page_title() {
 						( ! empty( $typenow ) && $parent === $pagenow . '?post_type=' . $typenow )
 					)
 				) {
-					$title = $submenu_array[3];
+					$app->set( 'title', $submenu_array[3] );
 					return $submenu_array[3];
 				}
 
@@ -1601,11 +1603,11 @@ function get_admin_page_title() {
 				}
 
 				if ( isset( $submenu_array[3] ) ) {
-					$title = $submenu_array[3];
+					$app->set( 'title', $submenu_array[3] );
 					return $submenu_array[3];
 				} else {
-					$title = $submenu_array[0];
-					return $title;
+					$app->set( 'title', $submenu_array[0] );
+					return $submenu_array[0];
 				}
 			}
 		}
@@ -1618,7 +1620,7 @@ function get_admin_page_title() {
 					( $pagenow === 'admin.php' ) &&
 					( $parent1 === $menu_array[2] )
 				) {
-					$title = $menu_array[3];
+					$app->set( 'title', $menu_array[3] );
 					return $menu_array[3];
 				}
 			}
