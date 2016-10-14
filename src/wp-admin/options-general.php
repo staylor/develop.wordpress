@@ -17,7 +17,7 @@ require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 if ( ! current_user_can( 'manage_options' ) )
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
 
-$app->title = __('General Settings');
+$app->set( 'title', __( 'General Settings' ) );
 $app->parent_file = 'options-general.php';
 $app->current_screen->set_parentage( $app->parent_file );
 /* translators: date and time format for exact current time, mainly about timezones, see https://secure.php.net/date */
@@ -31,7 +31,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $app->title ); ?></h1>
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 
 <form method="post" action="options.php" novalidate="novalidate">
 <?php settings_fields('general'); ?>

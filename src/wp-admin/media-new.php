@@ -38,7 +38,7 @@ if ( $_post->all() ) {
 	exit;
 }
 
-$app->title = __('Upload New Media');
+$app->set( 'title', __( 'Upload New Media' ) );
 $app->parent_file = 'upload.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -52,7 +52,7 @@ if ( get_user_setting('uploader') || $_get->get( 'browser-uploader' ) )
 	$form_class .= ' html-uploader';
 ?>
 <div class="wrap">
-	<h1><?php echo esc_html( $app->title ); ?></h1>
+	<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 
 	<form enctype="multipart/form-data" method="post" action="<?php echo admin_url('media-new.php'); ?>" class="<?php echo esc_attr( $form_class ); ?>" id="file-form">
 

@@ -6,15 +6,11 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 require_once( __DIR__ . '/includes/credits.php' );
 
-$app = getApp();
-
-$app->title = __( 'Credits' );
+$app->set( 'title', __( 'Credits' ) );
 
 list( $display_version ) = explode( '-', $app['wp_version'] );
 

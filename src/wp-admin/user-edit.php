@@ -50,7 +50,7 @@ if ( is_multisite()
 
 $view->enqueueEditScripts();
 
-$app->title = IS_PROFILE_PAGE ? __( 'Profile' ) : __( 'Edit User' );
+$app->set( 'title', IS_PROFILE_PAGE ? __( 'Profile' ) : __( 'Edit User' ) );
 if ( current_user_can( 'edit_users' ) && !IS_PROFILE_PAGE ) {
 	$app->submenu_file = 'users.php';
 } else {
@@ -149,7 +149,7 @@ $show_additional_caps = count( $profileuser->caps ) > count( $profileuser->roles
 	&& apply_filters( 'additional_capabilities_display', true, $profileuser );
 
 $data = [
-	'title' => $app->title,
+	'title' => $app->get( 'title' ),
 	'messages' => $view->getEditMessages( $profileuser ),
 	'errors' => $errors,
 	'is_profile_page' => IS_PROFILE_PAGE,

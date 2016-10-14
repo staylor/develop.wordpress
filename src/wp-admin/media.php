@@ -44,7 +44,7 @@ case 'editattachment' :
 
 	// No break.
 case 'edit' :
-	$app->title = __('Edit Media');
+	$app->set( 'title', __( 'Edit Media' ) );
 
 	if ( empty($errors) )
 		$errors = null;
@@ -94,7 +94,7 @@ case 'edit' :
 <div class="wrap">
 <h1>
 <?php
-echo esc_html( $app->title );
+echo esc_html( $app->get( 'title' ) );
 if ( current_user_can( 'upload_files' ) ) { ?>
 	<a href="media-new.php" class="page-title-action"><?php echo esc_html_x('Add New', 'file'); ?></a>
 <?php } ?>

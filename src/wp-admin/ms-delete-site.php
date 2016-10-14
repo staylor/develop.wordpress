@@ -29,13 +29,13 @@ if ( $_get->get( 'h' ) && $_get->get( 'h' ) != '' && get_option( 'delete_blog_ha
 $blog = get_blog_details();
 $user = wp_get_current_user();
 
-$app->title = __( 'Delete Site' );
+$app->set( 'title', __( 'Delete Site' ) );
 $app->parent_file = 'tools.php';
 $app->current_screen->set_parentage( $app->parent_file );
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 echo '<div class="wrap">';
-echo '<h1>' . esc_html( $app->title ) . '</h1>';
+echo '<h1>' . esc_html( $app->get( 'title' ) ) . '</h1>';
 
 if (
 	$_post->get( 'action' ) == 'deleteblog' &&

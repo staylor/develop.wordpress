@@ -57,7 +57,7 @@ if ( $doaction && $_request->get( 'linkcheck' ) ) {
 
 $wp_list_table->prepare_items();
 
-$app->title = __('Links');
+$app->set( 'title', __( 'Links' ) );
 $this_file = $app->parent_file = 'link-manager.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -71,7 +71,7 @@ if ( ! current_user_can('manage_links') )
 ?>
 
 <div class="wrap nosubsub">
-<h1><?php echo esc_html( $app->title ); ?> <a href="link-add.php" class="page-title-action"><?php echo esc_html_x('Add New', 'link'); ?></a> <?php
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?> <a href="link-add.php" class="page-title-action"><?php echo esc_html_x('Add New', 'link'); ?></a> <?php
 if ( strlen( $_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( wp_unslash( $_request->get( 's' ) ) ) );

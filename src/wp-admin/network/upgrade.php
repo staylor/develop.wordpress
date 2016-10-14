@@ -14,7 +14,7 @@ require_once( __DIR__ . '/admin.php' );
 
 require_once( ABSPATH . WPINC . '/http.php' );
 
-$app->title = __( 'Upgrade Network' );
+$app->set( 'title', __( 'Upgrade Network' ) );
 $app->parent_file = 'upgrade.php';
 $app->current_screen->set_parentage( $app->parent_file );
 

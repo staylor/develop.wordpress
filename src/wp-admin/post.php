@@ -164,7 +164,7 @@ case 'edit':
 		unset( $check_users );
 	}
 
-	$app->title = $post_type_object->labels->edit_item;
+	$app->set( 'title', $post_type_object->labels->edit_item );
 	$post = get_post($post_id, OBJECT, 'edit');
 
 	if ( post_type_supports($post_type, 'comments') ) {

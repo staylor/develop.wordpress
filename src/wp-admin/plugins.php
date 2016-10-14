@@ -132,7 +132,7 @@ if ( $action ) {
 			else
 				$plugins = [];
 
-			$app->title = __( 'Update Plugins' );
+			$app->set( 'title', __( 'Update Plugins' ) );
 			$app->parent_file = 'plugins.php';
 			$app->current_screen->set_parentage( $app->parent_file );
 
@@ -140,7 +140,7 @@ if ( $action ) {
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 			echo '<div class="wrap">';
-			echo '<h1>' . esc_html( $app->title ) . '</h1>';
+			echo '<h1>' . esc_html( $app->get( 'title' ) ) . '</h1>';
 
 			$url = self_admin_url('update.php?action=update-selected&amp;plugins=' . urlencode( join(',', $plugins) ));
 			$url = wp_nonce_url($url, 'bulk-update-plugins');
@@ -400,7 +400,7 @@ add_screen_option( 'per_page', array( 'default' => 999 ) );
 
 ( new PluginHelp( get_current_screen() ) )->addMain();
 
-$app->title = __('Plugins');
+$app->set( 'title', __( 'Plugins' ) );
 $app->parent_file = 'plugins.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -476,7 +476,7 @@ if ( ! empty( $invalid ) ) {
 <?php endif; ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $app->title );
+<h1><?php echo esc_html( $app->get( 'title' ) );
 if ( ( ! is_multisite() || is_network_admin() ) && current_user_can('install_plugins') ) { ?>
  <a href="<?php echo self_admin_url( 'plugin-install.php' ); ?>" class="page-title-action"><?php echo esc_html_x('Add New', 'plugin'); ?></a>
 <?php

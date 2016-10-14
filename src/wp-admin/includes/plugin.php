@@ -1546,8 +1546,8 @@ function get_admin_page_parent( $parent = '' ) {
 function get_admin_page_title() {
 	$app = getApp();
 
-	if ( ! empty ( $app->title ) ) {
-		return $app->title;
+	if ( ! empty ( $app->get( 'title' ) ) ) {
+		return $app->get( 'title' );
 	}
 
 	$typenow = $app['typenow'];

@@ -19,7 +19,7 @@ if ( is_multisite() && ! is_network_admin() ) {
 if ( !current_user_can('edit_themes') )
 	wp_die('<p>'.__('Sorry, you are not allowed to edit templates for this site.').'</p>');
 
-$app->title = __("Edit Themes");
+$app->set( 'title', __( 'Edit Themes' ) );
 $app->parent_file = 'themes.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -144,7 +144,7 @@ if ( $description != $file_show )
 	$description .= ' <span>(' . $file_show . ')</span>';
 ?>
 <div class="wrap">
-<h1><?php echo esc_html( $app->title ); ?></h1>
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 
 <div class="fileedit-sub">
 <div class="alignleft">

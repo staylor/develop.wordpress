@@ -22,7 +22,7 @@ if ( is_multisite() && ! is_network_admin() ) {
 	exit();
 }
 
-$app->title = __( 'Add Themes' );
+$app->set( 'title', __( 'Add Themes' ) );
 $app->parent_file = 'themes.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -85,7 +85,7 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 ?>
 <div class="wrap">
 	<h1><?php
-	echo esc_html( $app->title );
+	echo esc_html( $app->get( 'title' ) );
 
 	/**
 	 * Filters the tabs shown on the Add Themes screen.

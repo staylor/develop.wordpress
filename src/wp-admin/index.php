@@ -20,7 +20,7 @@ wp_dashboard_setup();
 
 $view->enqueueIndexScripts();
 
-$app->title = $view->l10n->dashboard;
+$app->set( 'title', $view->l10n->dashboard );
 $app->parent_file = 'index.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -29,7 +29,7 @@ $view->help->addIndex();
 $show_welcome_panel = has_action( 'welcome_panel' ) && current_user_can( 'edit_theme_options' );
 
 $data = [
-	'title' => $app->title,
+	'title' => $app->get( 'title' ),
 	'show_welcome_panel' => $show_welcome_panel,
 	'wp_dashboard' => $app->mute( 'wp_dashboard' ),
 ];

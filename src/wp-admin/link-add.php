@@ -12,7 +12,7 @@ require_once( __DIR__ . '/admin.php' );
 if ( ! current_user_can('manage_links') )
 	wp_die(__('Sorry, you are not allowed to add links to this site.'));
 
-$app->title = __('Add New Link');
+$app->set( 'title', __( 'Add New Link' ) );
 $app->parent_file = 'link-manager.php';
 $app->current_screen->set_parentage( $app->parent_file );
 

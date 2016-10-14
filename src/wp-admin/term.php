@@ -28,7 +28,7 @@ if ( ! $tag instanceof WP_Term ) {
 
 $tax      = get_taxonomy( $tag->taxonomy );
 $taxonomy = $tax->name;
-$app->title    = $tax->labels->edit_item;
+$app->set( 'title', $tax->labels->edit_item );
 
 if ( ! in_array( $taxonomy, get_taxonomies( array( 'show_ui' => true ) ) ) ||
      ! current_user_can( 'edit_term', $tag->term_id )

@@ -71,14 +71,14 @@ if ( $action ) {
 			else
 				$themes = [];
 
-			$app->title = __( 'Update Themes' );
+			$app->set( 'title', __( 'Update Themes' ) );
 			$app->parent_file = 'themes.php';
 			$app->current_screen->set_parentage( $app->parent_file );
 
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 			echo '<div class="wrap">';
-			echo '<h1>' . esc_html( $app->title ) . '</h1>';
+			echo '<h1>' . esc_html( $app->get( 'title' ) ) . '</h1>';
 
 			$url = self_admin_url('update.php?action=update-selected-themes&amp;themes=' . urlencode( join(',', $themes) ));
 			$url = wp_nonce_url($url, 'bulk-update-themes');
@@ -231,7 +231,7 @@ add_screen_option( 'per_page' );
 
 ( new ThemeHelp( get_current_screen() ) )->addMultisiteThemes();
 
-$app->title = __('Themes');
+$app->set( 'title', __( 'Themes' ) );
 $app->parent_file = 'themes.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -243,7 +243,7 @@ require_once(ABSPATH . 'wp-admin/admin-header.php');
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $app->title ); if ( current_user_can('install_themes') ) { ?> <a href="theme-install.php" class="page-title-action"><?php echo esc_html_x('Add New', 'theme'); ?></a><?php }
+<h1><?php echo esc_html( $app->get( 'title' ) ); if ( current_user_can('install_themes') ) { ?> <a href="theme-install.php" class="page-title-action"><?php echo esc_html_x('Add New', 'theme'); ?></a><?php }
 if ( strlen( $_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( $s ) );

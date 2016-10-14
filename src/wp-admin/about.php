@@ -43,7 +43,7 @@ if ( 'en' !== $locale ) {
 }
 
 $app = getApp();
-$app->title = __( 'About' );
+$app->set( 'title', __( 'About' ) );
 
 list( $display_version ) = explode( '-', $app['wp_version'] );
 

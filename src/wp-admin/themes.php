@@ -66,7 +66,7 @@ if ( current_user_can( 'switch_themes' ) && $_get->get( 'action' ) ) {
 	}
 }
 
-$app->title = __('Manage Themes');
+$app->set( 'title', __( 'Manage Themes' ) );
 $app->parent_file = 'themes.php';
 $app->current_screen->set_parentage( $app->parent_file );
 

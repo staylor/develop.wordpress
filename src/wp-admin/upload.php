@@ -52,7 +52,7 @@ if ( 'grid' === $mode ) {
 
 	$view->help->addUploadGrid();
 
-	$app->title = __('Media Library');
+	$app->set( 'title', __( 'Media Library' ) );
 	$app->parent_file = 'upload.php';
 	$app->current_screen->set_parentage( $app->parent_file );
 
@@ -148,7 +148,7 @@ if ( $doaction ) {
 
 $wp_list_table->prepare_items();
 
-$app->title = __( 'Media Library' );
+$app->set( 'title', __( 'Media Library' ) );
 $app->parent_file = 'upload.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -159,7 +159,7 @@ add_screen_option( 'per_page' );
 $view->help->addUploadList();
 
 $data = [
-	'title' => $app->title,
+	'title' => $app->get( 'title' ),
 	'message' => $view->getListMessage(),
 ];
 

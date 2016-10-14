@@ -48,7 +48,7 @@ if ( $pagenum > $total_pages && $total_pages > 0 ) {
 	exit;
 }
 
-$app->title = __( 'Add Plugins' );
+$app->set( 'title', __( 'Add Plugins' ) );
 $app->parent_file = 'plugins.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -89,7 +89,7 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 <div class="wrap <?php echo esc_attr( "plugin-install-tab-$tab" ); ?>">
 <h1>
 	<?php
-	echo esc_html( $app->title );
+	echo esc_html( $app->get( 'title' ) );
 	if ( ! empty( $tabs['upload'] ) && current_user_can( 'upload_plugins' ) ) {
 		printf( ' <a href="%s" class="upload-view-toggle page-title-action"><span class="upload">%s</span><span class="browse">%s</span></a>',
 			( 'upload' === $tab ) ? self_admin_url( 'plugin-install.php' ) : self_admin_url( 'plugin-install.php?tab=upload' ),

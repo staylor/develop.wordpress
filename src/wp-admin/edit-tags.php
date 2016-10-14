@@ -36,7 +36,7 @@ $view = new TermView( $app );
 $wp_list_table = _get_list_table('WP_Terms_List_Table');
 $pagenum = $wp_list_table->get_pagenum();
 
-$app->title = $tax->labels->name;
+$app->set( 'title', $tax->labels->name );
 
 if ( 'post' !== $typenow ) {
 	$app->parent_file = ( 'attachment' == $typenow ) ? 'upload.php' : "edit.php?post_type={$typenow}";
@@ -245,7 +245,7 @@ if ( is_plugin_active( 'wpcat2tag-importer/wpcat2tag-importer.php' ) ) {
 ?>
 
 <div class="wrap nosubsub">
-<h1><?php echo esc_html( $app->title );
+<h1><?php echo esc_html( $app->get( 'title' ) );
 if ( strlen( $view->_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf(

@@ -23,7 +23,7 @@ if ( empty( $app->current_screen ) )
 	set_current_screen();
 
 get_admin_page_title();
-$title = esc_html( strip_tags( $app->title ) );
+$title = esc_html( strip_tags( $app->get( 'title' ) ) );
 
 if ( is_network_admin() )
 	$admin_title = sprintf( __( 'Network Admin: %s' ), esc_html( get_current_site()->site_name ) );

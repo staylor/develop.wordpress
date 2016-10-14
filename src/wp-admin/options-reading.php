@@ -14,7 +14,7 @@ require_once( __DIR__ . '/admin.php' );
 if ( ! current_user_can( 'manage_options' ) )
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
 
-$app->title = __( 'Reading Settings' );
+$app->set( 'title', __( 'Reading Settings' ) );
 $app->parent_file = 'options-general.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -26,7 +26,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $app->title ); ?></h1>
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 
 <form method="post" action="options.php">
 <?php

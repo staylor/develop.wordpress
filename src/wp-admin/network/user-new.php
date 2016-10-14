@@ -71,7 +71,7 @@ if ( $_get->get( 'update' ) ) {
 	}
 }
 
-$app->title = __('Add New User');
+$app->set( 'title', __( 'Add New User' ) );
 $app->parent_file = 'users.php';
 $app->current_screen->set_parentage( $app->parent_file );
 

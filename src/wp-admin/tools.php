@@ -10,7 +10,7 @@ use WP\Tools\Admin\Help as ToolsHelp;
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-$app->title = __( 'Tools' );
+$app->set( 'title', __( 'Tools' ) );
 
 ( new ToolsHelp( get_current_screen() ) )->addMain();
 
@@ -18,7 +18,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 ?>
 <div class="wrap">
-<h1><?php echo esc_html( $app->title ); ?></h1>
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 
 <?php if ( current_user_can( 'edit_posts' ) ) : ?>
 <div class="card pressthis">

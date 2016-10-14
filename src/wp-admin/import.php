@@ -17,7 +17,7 @@ if ( ! current_user_can( 'import' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to import content.' ) );
 }
 
-$app->title = __('Import');
+$app->set( 'title', __( 'Import' ) );
 
 ( new ImportHelp( get_current_screen() ) )->addMain();
 
@@ -48,7 +48,7 @@ $app->current_screen->set_parentage( $app->parent_file );
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $app->title ); ?></h1>
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 <?php if ( ! empty( $_get->get( 'invalid' ) ) ) : ?>
 	<div class="error">
 		<p><strong><?php _e( 'ERROR:' ); ?></strong> <?php

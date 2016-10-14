@@ -17,7 +17,7 @@ require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 if ( ! current_user_can( 'manage_network_options' ) )
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
-$app->title = __( 'Network Settings' );
+$app->set( 'title', __( 'Network Settings' ) );
 $app->parent_file = 'settings.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -80,7 +80,7 @@ if ( $_get->get( 'updated' ) ) {
 ?>
 
 <div class="wrap">
-	<h1><?php echo esc_html( $app->title ); ?></h1>
+	<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 	<form method="post" action="settings.php" novalidate="novalidate">
 		<?php wp_nonce_field( 'siteoptions' ); ?>
 		<h2><?php _e( 'Operational Settings' ); ?></h2>

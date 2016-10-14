@@ -23,7 +23,7 @@ if ( ! current_user_can( 'list_users' ) ) {
 $view = new UserView( $app );
 
 $wp_list_table = _get_list_table( 'WP_Users_List_Table' );
-$app->title = __( 'Users' );
+$app->set( 'title', __( 'Users' ) );
 $app->parent_file = 'users.php';
 $app->current_screen->set_parentage( $app->parent_file );
 
@@ -290,7 +290,7 @@ if ( $wp_list_table->get_pagenum() > $total_pages && $total_pages > 0 ) {
 $data = [
 	'messages' => $view->getMessages(),
 	'errors' => $errors,
-	'title' => $app->title,
+	'title' => $app->get( 'title' ),
 ];
 
 if ( current_user_can( 'create_users' ) ) {

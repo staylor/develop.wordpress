@@ -273,7 +273,7 @@ if ( isset( $app->plugin_page ) ) {
 	$app->parent_file = 'tools.php';
 	$app->current_screen->set_parentage( $app->parent_file );
 	$app->submenu_file = 'import.php';
-	$$app->title = __('Import');
+	$app->set( 'title', __( 'Import' ) );
 
 	if ( ! $_get->get( 'noheader' ) ) {
 		require_once(ABSPATH . 'wp-admin/admin-header.php');

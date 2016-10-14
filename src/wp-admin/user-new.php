@@ -38,11 +38,11 @@ $app->current_screen->set_parentage( $app->parent_file );
 
 $view->enqueueScripts();
 
-$app->title = $view->l10n->add_new_user;
+$app->set( 'title', $view->l10n->add_new_user );
 if ( current_user_can( 'create_users' ) ) {
-	$app->title = $view->l10n->add_new_user;
+	$app->set( 'title', $view->l10n->add_new_user );
 } elseif ( current_user_can( 'promote_users' ) ) {
-	$app->title = $view->l10n->add_existing_user;
+	$app->set( 'title', $view->l10n->add_existing_user );
 }
 
 $errors = [];
@@ -53,7 +53,7 @@ if ( isset( $form_errors ) && is_wp_error( $form_errors ) ) {
 }
 
 $data = [
-	'title' => $app->title,
+	'title' => $app->get( 'title' ),
 	'errors' => $errors,
 	'messages' => $view->getAddMessages(),
 	'multisite' => is_multisite(),

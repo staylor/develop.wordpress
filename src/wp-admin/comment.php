@@ -41,7 +41,7 @@ if ( $_get->get( 'dt' ) ) {
 switch( $action ) {
 
 case 'editcomment' :
-	$app->title = __('Edit Comment');
+	$app->set( 'title', __( 'Edit Comment' ) );
 
 	$view->help->addEditComment();
 
@@ -70,7 +70,7 @@ case 'approve' :
 case 'trash'   :
 case 'spam'    :
 
-	$app->title = __('Moderate Comment');
+	$app->set( 'title', __( 'Moderate Comment' ) );
 
 	$comment_id = $_get->getInt( 'c' );
 
@@ -99,7 +99,7 @@ case 'spam'    :
 ?>
 <div class="wrap">
 
-<h1><?php echo esc_html( $app->title ); ?></h1>
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 
 <?php
 switch ( $action ) {

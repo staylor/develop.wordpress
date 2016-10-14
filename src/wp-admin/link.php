@@ -102,7 +102,7 @@ switch ($action) {
 		$app->parent_file = 'link-manager.php';
 		$app->current_screen->set_parentage( $app->parent_file );
 		$app->submenu_file = 'link-manager.php';
-		$app->title = __('Edit Link');
+		$app->set( 'title', __( 'Edit Link' ) );
 
 		$link_id = $_get->getInt( 'link_id' );
 
