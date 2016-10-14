@@ -472,39 +472,39 @@ class WP_Users_List_Table extends WP_List_Table {
 			} else {
 				$r .= "<td $attributes>";
 				switch ( $column_name ) {
-					case 'username':
-						$r .= "$avatar $edit";
-						break;
-					case 'name':
-						$r .= "$user_object->first_name $user_object->last_name";
-						break;
-					case 'email':
-						$r .= "<a href='" . esc_url( "mailto:$email" ) . "'>$email</a>";
-						break;
-					case 'role':
-						$r .= esc_html( $roles_list );
-						break;
-					case 'posts':
-						if ( $numposts > 0 ) {
-							$r .= "<a href='edit.php?author=$user_object->ID' class='edit'>";
-							$r .= '<span aria-hidden="true">' . $numposts . '</span>';
-							$r .= '<span class="screen-reader-text">' . sprintf( _n( '%s post by this author', '%s posts by this author', $numposts ), number_format_i18n( $numposts ) ) . '</span>';
-							$r .= '</a>';
-						} else {
-							$r .= 0;
-						}
-						break;
-					default:
-						/**
-						 * Filters the display output of custom columns in the Users list table.
-						 *
-						 * @since 2.8.0
-						 *
-						 * @param string $output      Custom column output. Default empty.
-						 * @param string $column_name Column name.
-						 * @param int    $user_id     ID of the currently-listed user.
-						 */
-						$r .= apply_filters( 'manage_users_custom_column', '', $column_name, $user_object->ID );
+				case 'username':
+					$r .= "$avatar $edit";
+					break;
+				case 'name':
+					$r .= "$user_object->first_name $user_object->last_name";
+					break;
+				case 'email':
+					$r .= "<a href='" . esc_url( "mailto:$email" ) . "'>$email</a>";
+					break;
+				case 'role':
+					$r .= esc_html( $roles_list );
+					break;
+				case 'posts':
+					if ( $numposts > 0 ) {
+						$r .= "<a href='edit.php?author=$user_object->ID' class='edit'>";
+						$r .= '<span aria-hidden="true">' . $numposts . '</span>';
+						$r .= '<span class="screen-reader-text">' . sprintf( _n( '%s post by this author', '%s posts by this author', $numposts ), number_format_i18n( $numposts ) ) . '</span>';
+						$r .= '</a>';
+					} else {
+						$r .= 0;
+					}
+					break;
+				default:
+					/**
+					 * Filters the display output of custom columns in the Users list table.
+					 *
+					 * @since 2.8.0
+					 *
+					 * @param string $output      Custom column output. Default empty.
+					 * @param string $column_name Column name.
+					 * @param int    $user_id     ID of the currently-listed user.
+					 */
+					$r .= apply_filters( 'manage_users_custom_column', '', $column_name, $user_object->ID );
 				}
 
 				if ( $primary === $column_name ) {

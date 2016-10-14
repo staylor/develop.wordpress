@@ -103,36 +103,36 @@ case 'spam'    :
 
 <?php
 switch ( $action ) {
-	case 'spam' :
-		$caution_msg = __('You are about to mark the following comment as spam:');
-		$button      = _x( 'Mark as Spam', 'comment' );
-		break;
-	case 'trash' :
-		$caution_msg = __('You are about to move the following comment to the Trash:');
-		$button      = __('Move to Trash');
-		break;
-	case 'delete' :
-		$caution_msg = __('You are about to delete the following comment:');
-		$button      = __('Permanently Delete Comment');
-		break;
-	default :
-		$caution_msg = __('You are about to approve the following comment:');
-		$button      = __('Approve Comment');
-		break;
+case 'spam' :
+	$caution_msg = __('You are about to mark the following comment as spam:');
+	$button      = _x( 'Mark as Spam', 'comment' );
+	break;
+case 'trash' :
+	$caution_msg = __('You are about to move the following comment to the Trash:');
+	$button      = __('Move to Trash');
+	break;
+case 'delete' :
+	$caution_msg = __('You are about to delete the following comment:');
+	$button      = __('Permanently Delete Comment');
+	break;
+default :
+	$caution_msg = __('You are about to approve the following comment:');
+	$button      = __('Approve Comment');
+	break;
 }
 
 if ( $comment->comment_approved != '0' ) { // if not unapproved
 	$message = '';
 	switch ( $comment->comment_approved ) {
-		case '1' :
-			$message = __('This comment is currently approved.');
-			break;
-		case 'spam' :
-			$message  = __('This comment is currently marked as spam.');
-			break;
-		case 'trash' :
-			$message  = __('This comment is currently in the Trash.');
-			break;
+	case '1' :
+		$message = __('This comment is currently approved.');
+		break;
+	case 'spam' :
+		$message  = __('This comment is currently marked as spam.');
+		break;
+	case 'trash' :
+		$message  = __('This comment is currently in the Trash.');
+		break;
 	}
 	if ( $message ) {
 		echo '<div id="message" class="notice notice-info"><p>' . $message . '</p></div>';
@@ -261,34 +261,34 @@ case 'unapprovecomment' :
 	$redir = remove_query_arg( array('spammed', 'unspammed', 'trashed', 'untrashed', 'deleted', 'ids', 'approved', 'unapproved'), $redir );
 
 	switch ( $action ) {
-		case 'deletecomment' :
-			wp_delete_comment( $comment );
-			$redir = add_query_arg( array('deleted' => '1'), $redir );
-			break;
-		case 'trashcomment' :
-			wp_trash_comment( $comment );
-			$redir = add_query_arg( array('trashed' => '1', 'ids' => $comment_id), $redir );
-			break;
-		case 'untrashcomment' :
-			wp_untrash_comment( $comment );
-			$redir = add_query_arg( array('untrashed' => '1'), $redir );
-			break;
-		case 'spamcomment' :
-			wp_spam_comment( $comment );
-			$redir = add_query_arg( array('spammed' => '1', 'ids' => $comment_id), $redir );
-			break;
-		case 'unspamcomment' :
-			wp_unspam_comment( $comment );
-			$redir = add_query_arg( array('unspammed' => '1'), $redir );
-			break;
-		case 'approvecomment' :
-			wp_set_comment_status( $comment, 'approve' );
-			$redir = add_query_arg( array( 'approved' => 1 ), $redir );
-			break;
-		case 'unapprovecomment' :
-			wp_set_comment_status( $comment, 'hold' );
-			$redir = add_query_arg( array( 'unapproved' => 1 ), $redir );
-			break;
+	case 'deletecomment' :
+		wp_delete_comment( $comment );
+		$redir = add_query_arg( array('deleted' => '1'), $redir );
+		break;
+	case 'trashcomment' :
+		wp_trash_comment( $comment );
+		$redir = add_query_arg( array('trashed' => '1', 'ids' => $comment_id), $redir );
+		break;
+	case 'untrashcomment' :
+		wp_untrash_comment( $comment );
+		$redir = add_query_arg( array('untrashed' => '1'), $redir );
+		break;
+	case 'spamcomment' :
+		wp_spam_comment( $comment );
+		$redir = add_query_arg( array('spammed' => '1', 'ids' => $comment_id), $redir );
+		break;
+	case 'unspamcomment' :
+		wp_unspam_comment( $comment );
+		$redir = add_query_arg( array('unspammed' => '1'), $redir );
+		break;
+	case 'approvecomment' :
+		wp_set_comment_status( $comment, 'approve' );
+		$redir = add_query_arg( array( 'approved' => 1 ), $redir );
+		break;
+	case 'unapprovecomment' :
+		wp_set_comment_status( $comment, 'hold' );
+		$redir = add_query_arg( array( 'unapproved' => 1 ), $redir );
+		break;
 	}
 
 	wp_redirect( $redir );

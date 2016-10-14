@@ -187,26 +187,26 @@ class WP_Upgrader {
 
 		foreach ( (array)$directories as $dir ) {
 			switch ( $dir ) {
-				case ABSPATH:
-					if ( ! $wp_filesystem->abspath() )
-						return new WP_Error('fs_no_root_dir', $this->strings['fs_no_root_dir']);
-					break;
-				case WP_CONTENT_DIR:
-					if ( ! $wp_filesystem->wp_content_dir() )
-						return new WP_Error('fs_no_content_dir', $this->strings['fs_no_content_dir']);
-					break;
-				case WP_PLUGIN_DIR:
-					if ( ! $wp_filesystem->wp_plugins_dir() )
-						return new WP_Error('fs_no_plugins_dir', $this->strings['fs_no_plugins_dir']);
-					break;
-				case get_theme_root():
-					if ( ! $wp_filesystem->wp_themes_dir() )
-						return new WP_Error('fs_no_themes_dir', $this->strings['fs_no_themes_dir']);
-					break;
-				default:
-					if ( ! $wp_filesystem->find_folder($dir) )
-						return new WP_Error( 'fs_no_folder', sprintf( $this->strings['fs_no_folder'], esc_html( basename( $dir ) ) ) );
-					break;
+			case ABSPATH:
+				if ( ! $wp_filesystem->abspath() )
+					return new WP_Error('fs_no_root_dir', $this->strings['fs_no_root_dir']);
+				break;
+			case WP_CONTENT_DIR:
+				if ( ! $wp_filesystem->wp_content_dir() )
+					return new WP_Error('fs_no_content_dir', $this->strings['fs_no_content_dir']);
+				break;
+			case WP_PLUGIN_DIR:
+				if ( ! $wp_filesystem->wp_plugins_dir() )
+					return new WP_Error('fs_no_plugins_dir', $this->strings['fs_no_plugins_dir']);
+				break;
+			case get_theme_root():
+				if ( ! $wp_filesystem->wp_themes_dir() )
+					return new WP_Error('fs_no_themes_dir', $this->strings['fs_no_themes_dir']);
+				break;
+			default:
+				if ( ! $wp_filesystem->find_folder($dir) )
+					return new WP_Error( 'fs_no_folder', sprintf( $this->strings['fs_no_folder'], esc_html( basename( $dir ) ) ) );
+				break;
 			}
 		}
 		return true;

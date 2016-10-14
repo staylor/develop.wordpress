@@ -54,75 +54,75 @@ if ( $action ) {
 	$allowed_themes = get_option( 'allowedthemes' );
 
 	switch ( $action ) {
-		case 'enable':
-			check_admin_referer( 'enable-theme_' . $_get->get( 'theme' ) );
-			$theme = $_get->get( 'theme' );
+	case 'enable':
+		check_admin_referer( 'enable-theme_' . $_get->get( 'theme' ) );
+		$theme = $_get->get( 'theme' );
+		$action = 'enabled';
+		$n = 1;
+		if ( !$allowed_themes )
+			$allowed_themes = array( $theme => true );
+		else
+			$allowed_themes[$theme] = true;
+		break;
+	case 'disable':
+		check_admin_referer( 'disable-theme_' . $_get->get( 'theme' ) );
+		$theme = $_get->get( 'theme' );
+		$action = 'disabled';
+		$n = 1;
+		if ( !$allowed_themes )
+			$allowed_themes = [];
+		else
+			unset( $allowed_themes[$theme] );
+		break;
+	case 'enable-selected':
+		check_admin_referer( 'bulk-themes' );
+		if ( $_post->get( 'checked' ) ) {
+			$themes = (array) $_post->get( 'checked' );
 			$action = 'enabled';
-			$n = 1;
-			if ( !$allowed_themes )
-				$allowed_themes = array( $theme => true );
-			else
-				$allowed_themes[$theme] = true;
-			break;
-		case 'disable':
-			check_admin_referer( 'disable-theme_' . $_get->get( 'theme' ) );
-			$theme = $_get->get( 'theme' );
+			$n = count( $themes );
+			foreach ( (array) $themes as $theme )
+				$allowed_themes[ $theme ] = true;
+		} else {
+			$action = 'error';
+			$n = 'none';
+		}
+		break;
+	case 'disable-selected':
+		check_admin_referer( 'bulk-themes' );
+		if ( $_post->get( 'checked' ) ) {
+			$themes = (array) $_post->get( 'checked' );
 			$action = 'disabled';
-			$n = 1;
-			if ( !$allowed_themes )
-				$allowed_themes = [];
-			else
-				unset( $allowed_themes[$theme] );
-			break;
-		case 'enable-selected':
+			$n = count( $themes );
+			foreach ( (array) $themes as $theme )
+				unset( $allowed_themes[ $theme ] );
+		} else {
+			$action = 'error';
+			$n = 'none';
+		}
+		break;
+	default:
+		if ( $_post->get( 'checked' ) ) {
 			check_admin_referer( 'bulk-themes' );
-			if ( $_post->get( 'checked' ) ) {
-				$themes = (array) $_post->get( 'checked' );
-				$action = 'enabled';
-				$n = count( $themes );
-				foreach ( (array) $themes as $theme )
-					$allowed_themes[ $theme ] = true;
-			} else {
-				$action = 'error';
-				$n = 'none';
-			}
-			break;
-		case 'disable-selected':
-			check_admin_referer( 'bulk-themes' );
-			if ( $_post->get( 'checked' ) ) {
-				$themes = (array) $_post->get( 'checked' );
-				$action = 'disabled';
-				$n = count( $themes );
-				foreach ( (array) $themes as $theme )
-					unset( $allowed_themes[ $theme ] );
-			} else {
-				$action = 'error';
-				$n = 'none';
-			}
-			break;
-		default:
-			if ( $_post->get( 'checked' ) ) {
-				check_admin_referer( 'bulk-themes' );
-				$themes = (array) $_post->get( 'checked' );
-				$n = count( $themes );
-				/**
-				 * Fires when a custom bulk action should be handled.
-				 *
-				 * The redirect link should be modified with success or failure feedback
-				 * from the action to be used to display feedback to the user.
-				 *
-				 * @since 4.7.0
-				 *
-				 * @param string $referer The redirect URL.
-				 * @param string $action  The action being taken.
-				 * @param array  $themes  The themes to take the action on.
-				 * @param int    $site_id The current site id
-				 */
-				$referer = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $referer, $action, $themes, $id );
-			} else {
-				$action = 'error';
-				$n = 'none';
-			}
+			$themes = (array) $_post->get( 'checked' );
+			$n = count( $themes );
+			/**
+			 * Fires when a custom bulk action should be handled.
+			 *
+			 * The redirect link should be modified with success or failure feedback
+			 * from the action to be used to display feedback to the user.
+			 *
+			 * @since 4.7.0
+			 *
+			 * @param string $referer The redirect URL.
+			 * @param string $action  The action being taken.
+			 * @param array  $themes  The themes to take the action on.
+			 * @param int    $site_id The current site id
+			 */
+			$referer = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $referer, $action, $themes, $id );
+		} else {
+			$action = 'error';
+			$n = 'none';
+		}
 	}
 
 	update_option( 'allowedthemes', $allowed_themes );

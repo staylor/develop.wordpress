@@ -76,30 +76,30 @@ else
 		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires MySQL version %2$s or higher. You are running version %3$s.'), $app['wp_version'], $app['required_mysql_version'], $mysql_version );
 ?>
 <?php else :
-switch ( $step ) :
-	case 0:
-		$goback = wp_get_referer();
-		if ( $goback ) {
-			$goback = esc_url_raw( $goback );
-			$goback = urlencode( $goback );
-		}
+switch ( $step ) {
+case 0:
+	$goback = wp_get_referer();
+	if ( $goback ) {
+		$goback = esc_url_raw( $goback );
+		$goback = urlencode( $goback );
+	}
 ?>
 <h1><?php _e( 'Database Update Required' ); ?></h1>
 <p><?php _e( 'WordPress has been updated! Before we send you on your way, we have to update your database to the newest version.' ); ?></p>
 <p><?php _e( 'The database update process may take a little while, so please be patient.' ); ?></p>
 <p class="step"><a class="button button-large button-primary" href="upgrade.php?step=1&amp;backto=<?php echo $goback; ?>"><?php _e( 'Update WordPress Database' ); ?></a></p>
 <?php
-		break;
-	case 1:
-		wp_upgrade();
+	break;
+case 1:
+	wp_upgrade();
 
-			$backto = $_get->get( 'backto' ) ? wp_unslash( urldecode( $_get->get( 'backto' ) ) ) : __get_option( 'home' ) . '/';
-			$backto = esc_url( $backto );
-			$backto = wp_validate_redirect($backto, __get_option( 'home' ) . '/');
+		$backto = $_get->get( 'backto' ) ? wp_unslash( urldecode( $_get->get( 'backto' ) ) ) : __get_option( 'home' ) . '/';
+		$backto = esc_url( $backto );
+		$backto = wp_validate_redirect($backto, __get_option( 'home' ) . '/');
 ?>
 <h1><?php _e( 'Update Complete' ); ?></h1>
-	<p><?php _e( 'Your WordPress database has been successfully updated!' ); ?></p>
-	<p class="step"><a class="button button-large" href="<?php echo $backto; ?>"><?php _e( 'Continue' ); ?></a></p>
+<p><?php _e( 'Your WordPress database has been successfully updated!' ); ?></p>
+<p class="step"><a class="button button-large" href="<?php echo $backto; ?>"><?php _e( 'Continue' ); ?></a></p>
 
 <!--
 <pre>
@@ -110,8 +110,8 @@ switch ( $step ) :
 -->
 
 <?php
-		break;
-endswitch;
+	break;
+}
 endif;
 ?>
 </body>

@@ -241,17 +241,17 @@ function edit_post( $post_data = null ) {
 
 	if ( isset($post_data['visibility']) ) {
 		switch ( $post_data['visibility'] ) {
-			case 'public' :
-				$post_data['post_password'] = '';
-				break;
-			case 'password' :
-				unset( $post_data['sticky'] );
-				break;
-			case 'private' :
-				$post_data['post_status'] = 'private';
-				$post_data['post_password'] = '';
-				unset( $post_data['sticky'] );
-				break;
+		case 'public' :
+			$post_data['post_password'] = '';
+			break;
+		case 'password' :
+			unset( $post_data['sticky'] );
+			break;
+		case 'private' :
+			$post_data['post_status'] = 'private';
+			$post_data['post_password'] = '';
+			unset( $post_data['sticky'] );
+			break;
 		}
 	}
 
@@ -1888,14 +1888,14 @@ function redirect_post($post_id = '') {
 
 		if ( $_post->get( 'publish' ) ) {
 			switch ( $status ) {
-				case 'pending':
-					$message = 8;
-					break;
-				case 'future':
-					$message = 9;
-					break;
-				default:
-					$message = 6;
+			case 'pending':
+				$message = 8;
+				break;
+			case 'future':
+				$message = 9;
+				break;
+			default:
+				$message = 6;
 			}
 		} else {
 			$message = 'draft' == $status ? 10 : 1;

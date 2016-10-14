@@ -31,96 +31,96 @@ echo '<h1>' . __( 'Upgrade Network' ) . '</h1>';
 $action = $_get->get( 'action', 'show' );
 
 switch ( $action ) {
-	case "upgrade":
-		$n = $_get->getInt( 'n', 0 );
+case "upgrade":
+	$n = $_get->getInt( 'n', 0 );
 
-		if ( $n < 5 ) {
-			update_site_option( 'wpmu_upgrade_site', $app['wp_db_version'] );
-		}
+	if ( $n < 5 ) {
+		update_site_option( 'wpmu_upgrade_site', $app['wp_db_version'] );
+	}
 
-		$site_ids = get_sites( array(
-			'spam'       => '0',
-			'deleted'    => '0',
-			'archived'   => '0',
-			'network_id' => get_current_network_id(),
-			'number'     => 5,
-			'offset'     => $n,
-			'fields'     => 'ids',
-			'order'      => 'DESC',
-			'orderby'    => 'id',
+	$site_ids = get_sites( array(
+		'spam'       => '0',
+		'deleted'    => '0',
+		'archived'   => '0',
+		'network_id' => get_current_network_id(),
+		'number'     => 5,
+		'offset'     => $n,
+		'fields'     => 'ids',
+		'order'      => 'DESC',
+		'orderby'    => 'id',
+	) );
+	if ( empty( $site_ids ) ) {
+		echo '<p>' . __( 'All done!' ) . '</p>';
+		break;
+	}
+	echo "<ul>";
+	foreach ( (array) $site_ids as $site_id ) {
+		switch_to_blog( $site_id );
+		$siteurl = site_url();
+		$upgrade_url = admin_url( 'upgrade.php?step=upgrade_db' );
+		restore_current_blog();
+
+		echo "<li>$siteurl</li>";
+
+		$response = wp_remote_get( $upgrade_url, array(
+			'timeout'     => 120,
+			'httpversion' => '1.1',
+			'sslverify'   => false,
 		) );
-		if ( empty( $site_ids ) ) {
-			echo '<p>' . __( 'All done!' ) . '</p>';
-			break;
-		}
-		echo "<ul>";
-		foreach ( (array) $site_ids as $site_id ) {
-			switch_to_blog( $site_id );
-			$siteurl = site_url();
-			$upgrade_url = admin_url( 'upgrade.php?step=upgrade_db' );
-			restore_current_blog();
-
-			echo "<li>$siteurl</li>";
-
-			$response = wp_remote_get( $upgrade_url, array(
-				'timeout'     => 120,
-				'httpversion' => '1.1',
-				'sslverify'   => false,
+		if ( is_wp_error( $response ) ) {
+			wp_die( sprintf(
+				/* translators: 1: site url, 2: server error message */
+				__( 'Warning! Problem updating %1$s. Your server may not be able to connect to sites running on it. Error message: %2$s' ),
+				$siteurl,
+				'<em>' . $response->get_error_message() . '</em>'
 			) );
-			if ( is_wp_error( $response ) ) {
-				wp_die( sprintf(
-					/* translators: 1: site url, 2: server error message */
-					__( 'Warning! Problem updating %1$s. Your server may not be able to connect to sites running on it. Error message: %2$s' ),
-					$siteurl,
-					'<em>' . $response->get_error_message() . '</em>'
-				) );
-			}
-
-			/**
-			 * Fires after the Multisite DB upgrade for each site is complete.
-			 *
-			 * @since MU
-			 *
-			 * @param array|WP_Error $response The upgrade response array or WP_Error on failure.
-			 */
-			do_action( 'after_mu_upgrade', $response );
-			/**
-			 * Fires after each site has been upgraded.
-			 *
-			 * @since MU
-			 *
-			 * @param int $site_id The Site ID.
-			 */
-			do_action( 'wpmu_upgrade_site', $site_id );
 		}
-		echo "</ul>";
-		?><p><?php _e( 'If your browser doesn&#8217;t start loading the next page automatically, click this link:' ); ?> <a class="button" href="upgrade.php?action=upgrade&amp;n=<?php echo ($n + 5) ?>"><?php _e("Next Sites"); ?></a></p>
-		<script type="text/javascript">
-		<!--
-		function nextpage() {
-			location.href = "upgrade.php?action=upgrade&n=<?php echo ($n + 5) ?>";
-		}
-		setTimeout( "nextpage()", 250 );
-		//-->
-		</script><?php
-	break;
-	case 'show':
-	default:
-		if ( get_site_option( 'wpmu_upgrade_site' ) != $app['wp_db_version'] ) :
-		?>
-		<h2><?php _e( 'Database Update Required' ); ?></h2>
-		<p><?php _e( 'WordPress has been updated! Before we send you on your way, we need to individually upgrade the sites in your network.' ); ?></p>
-		<?php endif; ?>
 
-		<p><?php _e( 'The database update process may take a little while, so please be patient.' ); ?></p>
-		<p><a class="button button-primary" href="upgrade.php?action=upgrade"><?php _e( 'Upgrade Network' ); ?></a></p>
-		<?php
 		/**
-		 * Fires before the footer on the network upgrade screen.
+		 * Fires after the Multisite DB upgrade for each site is complete.
 		 *
 		 * @since MU
+		 *
+		 * @param array|WP_Error $response The upgrade response array or WP_Error on failure.
 		 */
-		do_action( 'wpmu_upgrade_page' );
+		do_action( 'after_mu_upgrade', $response );
+		/**
+		 * Fires after each site has been upgraded.
+		 *
+		 * @since MU
+		 *
+		 * @param int $site_id The Site ID.
+		 */
+		do_action( 'wpmu_upgrade_site', $site_id );
+	}
+	echo "</ul>";
+	?><p><?php _e( 'If your browser doesn&#8217;t start loading the next page automatically, click this link:' ); ?> <a class="button" href="upgrade.php?action=upgrade&amp;n=<?php echo ($n + 5) ?>"><?php _e("Next Sites"); ?></a></p>
+	<script type="text/javascript">
+	<!--
+	function nextpage() {
+		location.href = "upgrade.php?action=upgrade&n=<?php echo ($n + 5) ?>";
+	}
+	setTimeout( "nextpage()", 250 );
+	//-->
+	</script><?php
+	break;
+case 'show':
+default:
+	if ( get_site_option( 'wpmu_upgrade_site' ) != $app['wp_db_version'] ) :
+	?>
+	<h2><?php _e( 'Database Update Required' ); ?></h2>
+	<p><?php _e( 'WordPress has been updated! Before we send you on your way, we need to individually upgrade the sites in your network.' ); ?></p>
+	<?php endif; ?>
+
+	<p><?php _e( 'The database update process may take a little while, so please be patient.' ); ?></p>
+	<p><a class="button button-primary" href="upgrade.php?action=upgrade"><?php _e( 'Upgrade Network' ); ?></a></p>
+	<?php
+	/**
+	 * Fires before the footer on the network upgrade screen.
+	 *
+	 * @since MU
+	 */
+	do_action( 'wpmu_upgrade_page' );
 	break;
 }
 ?>

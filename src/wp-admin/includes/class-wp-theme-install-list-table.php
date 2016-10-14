@@ -89,39 +89,39 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		$args = array( 'page' => $paged, 'per_page' => $per_page, 'fields' => $theme_field_defaults );
 
 		switch ( $tab ) {
-			case 'search':
-				$type = $this->_request->get( 'type', 'term' );
-				switch ( $type ) {
-				case 'tag':
-					$args['tag'] = array_map( 'sanitize_key', $search_terms );
-					break;
-				case 'term':
-					$args['search'] = $search_string;
-					break;
-				case 'author':
-					$args['author'] = $search_string;
-					break;
-				}
-
-				if ( ! empty( $this->features ) ) {
-					$args['tag'] = $this->features;
-					$this->_request->set( 's', implode( ',', $this->features ) );
-					$this->_request->set( 'type', 'tag' );
-				}
-
-				add_action( 'install_themes_table_header', 'install_theme_search_form', 10, 0 );
+		case 'search':
+			$type = $this->_request->get( 'type', 'term' );
+			switch ( $type ) {
+			case 'tag':
+				$args['tag'] = array_map( 'sanitize_key', $search_terms );
 				break;
-
-			case 'featured':
-			// case 'popular':
-			case 'new':
-			case 'updated':
-				$args['browse'] = $tab;
+			case 'term':
+				$args['search'] = $search_string;
 				break;
-
-			default:
-				$args = false;
+			case 'author':
+				$args['author'] = $search_string;
 				break;
+			}
+
+			if ( ! empty( $this->features ) ) {
+				$args['tag'] = $this->features;
+				$this->_request->set( 's', implode( ',', $this->features ) );
+				$this->_request->set( 'type', 'tag' );
+			}
+
+			add_action( 'install_themes_table_header', 'install_theme_search_form', 10, 0 );
+			break;
+
+		case 'featured':
+		// case 'popular':
+		case 'new':
+		case 'updated':
+			$args['browse'] = $tab;
+			break;
+
+		default:
+			$args = false;
+			break;
 		}
 
 		/**
@@ -275,17 +275,17 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		$status = $this->_get_theme_status( $theme );
 
 		switch ( $status ) {
-			case 'update_available':
-				$actions[] = '<a class="install-now" href="' . esc_url( wp_nonce_url( $update_url, 'upgrade-theme_' . $theme->slug ) ) . '" title="' . esc_attr( sprintf( __( 'Update to version %s' ), $theme->version ) ) . '">' . __( 'Update' ) . '</a>';
-				break;
-			case 'newer_installed':
-			case 'latest_installed':
-				$actions[] = '<span class="install-now" title="' . esc_attr__( 'This theme is already installed and is up to date' ) . '">' . _x( 'Installed', 'theme' ) . '</span>';
-				break;
-			case 'install':
-			default:
-				$actions[] = '<a class="install-now" href="' . esc_url( wp_nonce_url( $install_url, 'install-theme_' . $theme->slug ) ) . '" title="' . esc_attr( sprintf( __( 'Install %s' ), $name ) ) . '">' . __( 'Install Now' ) . '</a>';
-				break;
+		case 'update_available':
+			$actions[] = '<a class="install-now" href="' . esc_url( wp_nonce_url( $update_url, 'upgrade-theme_' . $theme->slug ) ) . '" title="' . esc_attr( sprintf( __( 'Update to version %s' ), $theme->version ) ) . '">' . __( 'Update' ) . '</a>';
+			break;
+		case 'newer_installed':
+		case 'latest_installed':
+			$actions[] = '<span class="install-now" title="' . esc_attr__( 'This theme is already installed and is up to date' ) . '">' . _x( 'Installed', 'theme' ) . '</span>';
+			break;
+		case 'install':
+		default:
+			$actions[] = '<a class="install-now" href="' . esc_url( wp_nonce_url( $install_url, 'install-theme_' . $theme->slug ) ) . '" title="' . esc_attr( sprintf( __( 'Install %s' ), $name ) ) . '">' . __( 'Install Now' ) . '</a>';
+			break;
 		}
 
 		$actions[] = '<a class="install-theme-preview" href="' . esc_url( $preview_url ) . '" title="' . esc_attr( sprintf( __( 'Preview %s' ), $name ) ) . '">' . __( 'Preview' ) . '</a>';
@@ -398,17 +398,17 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		?>
 		<div class="install-theme-info"><?php
 			switch ( $status ) {
-				case 'update_available':
-					echo '<a class="theme-install button button-primary" href="' . esc_url( wp_nonce_url( $update_url, 'upgrade-theme_' . $theme->slug ) ) . '" title="' . esc_attr( sprintf( __( 'Update to version %s' ), $theme->version ) ) . '">' . __( 'Update' ) . '</a>';
-					break;
-				case 'newer_installed':
-				case 'latest_installed':
-					echo '<span class="theme-install" title="' . esc_attr__( 'This theme is already installed and is up to date' ) . '">' . _x( 'Installed', 'theme' ) . '</span>';
-					break;
-				case 'install':
-				default:
-					echo '<a class="theme-install button button-primary" href="' . esc_url( wp_nonce_url( $install_url, 'install-theme_' . $theme->slug ) ) . '">' . __( 'Install' ) . '</a>';
-					break;
+			case 'update_available':
+				echo '<a class="theme-install button button-primary" href="' . esc_url( wp_nonce_url( $update_url, 'upgrade-theme_' . $theme->slug ) ) . '" title="' . esc_attr( sprintf( __( 'Update to version %s' ), $theme->version ) ) . '">' . __( 'Update' ) . '</a>';
+				break;
+			case 'newer_installed':
+			case 'latest_installed':
+				echo '<span class="theme-install" title="' . esc_attr__( 'This theme is already installed and is up to date' ) . '">' . _x( 'Installed', 'theme' ) . '</span>';
+				break;
+			case 'install':
+			default:
+				echo '<a class="theme-install button button-primary" href="' . esc_url( wp_nonce_url( $install_url, 'install-theme_' . $theme->slug ) ) . '">' . __( 'Install' ) . '</a>';
+				break;
 			} ?>
 			<h3 class="theme-name"><?php echo $name; ?></h3>
 			<span class="theme-by"><?php printf( __( 'By %s' ), $author ); ?></span>

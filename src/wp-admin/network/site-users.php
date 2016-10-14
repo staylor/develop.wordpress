@@ -49,124 +49,124 @@ $action = $wp_list_table->current_action();
 if ( $action ) {
 
 	switch ( $action ) {
-		case 'newuser':
-			check_admin_referer( 'add-user', '_wpnonce_add-new-user' );
-			$user = $_post->get( 'user' );
-			if ( ! is_array( $_post->get( 'user' ) ) || empty( $user['username'] ) || empty( $user['email'] ) ) {
-				$update = 'err_new';
+	case 'newuser':
+		check_admin_referer( 'add-user', '_wpnonce_add-new-user' );
+		$user = $_post->get( 'user' );
+		if ( ! is_array( $_post->get( 'user' ) ) || empty( $user['username'] ) || empty( $user['email'] ) ) {
+			$update = 'err_new';
+		} else {
+			$password = wp_generate_password( 12, false);
+			$user_id = wpmu_create_user( esc_html( strtolower( $user['username'] ) ), $password, esc_html( $user['email'] ) );
+
+			if ( false === $user_id ) {
+				$update = 'err_new_dup';
 			} else {
-				$password = wp_generate_password( 12, false);
-				$user_id = wpmu_create_user( esc_html( strtolower( $user['username'] ) ), $password, esc_html( $user['email'] ) );
-
-				if ( false === $user_id ) {
-		 			$update = 'err_new_dup';
-				} else {
-					add_user_to_blog( $id, $user_id, $_post->get( 'new_role' ) );
-					$update = 'newuser';
-					/**
-					  * Fires after a user has been created via the network site-users.php page.
-					  *
-					  * @since 4.4.0
-					  *
-					  * @param int $user_id ID of the newly created user.
-					  */
-					do_action( 'network_site_users_created_user', $user_id );
-				}
+				add_user_to_blog( $id, $user_id, $_post->get( 'new_role' ) );
+				$update = 'newuser';
+				/**
+				  * Fires after a user has been created via the network site-users.php page.
+				  *
+				  * @since 4.4.0
+				  *
+				  * @param int $user_id ID of the newly created user.
+				  */
+				do_action( 'network_site_users_created_user', $user_id );
 			}
-			break;
+		}
+		break;
 
-		case 'adduser':
-			check_admin_referer( 'add-user', '_wpnonce_add-user' );
-			if ( !empty( $_post->get( 'newuser' ) ) ) {
-				$update = 'adduser';
-				$newuser = $_post->get( 'newuser' );
-				$user = get_user_by( 'login', $newuser );
-				if ( $user && $user->exists() ) {
-					if ( ! is_user_member_of_blog( $user->ID, $id ) )
-						add_user_to_blog( $id, $user->ID, $_post->get( 'new_role' ) );
-					else
-						$update = 'err_add_member';
-				} else {
-					$update = 'err_add_notfound';
-				}
+	case 'adduser':
+		check_admin_referer( 'add-user', '_wpnonce_add-user' );
+		if ( !empty( $_post->get( 'newuser' ) ) ) {
+			$update = 'adduser';
+			$newuser = $_post->get( 'newuser' );
+			$user = get_user_by( 'login', $newuser );
+			if ( $user && $user->exists() ) {
+				if ( ! is_user_member_of_blog( $user->ID, $id ) )
+					add_user_to_blog( $id, $user->ID, $_post->get( 'new_role' ) );
+				else
+					$update = 'err_add_member';
 			} else {
 				$update = 'err_add_notfound';
 			}
-			break;
+		} else {
+			$update = 'err_add_notfound';
+		}
+		break;
 
-		case 'remove':
-			if ( ! current_user_can( 'remove_users' ) ) {
-				wp_die( __( 'Sorry, you are not allowed to remove users.' ) );
-			}
+	case 'remove':
+		if ( ! current_user_can( 'remove_users' ) ) {
+			wp_die( __( 'Sorry, you are not allowed to remove users.' ) );
+		}
 
-			check_admin_referer( 'bulk-users' );
+		check_admin_referer( 'bulk-users' );
 
-			$update = 'remove';
-			if ( $_request->get( 'users' ) ) {
-				$userids = $_request->get( 'users' );
-
-				foreach ( $userids as $user_id ) {
-					$user_id = (int) $user_id;
-					remove_user_from_blog( $user_id, $id );
-				}
-			} elseif ( $_get->get( 'user' ) ) {
-				remove_user_from_blog( $_get->get( 'user' ) );
-			} else {
-				$update = 'err_remove';
-			}
-			break;
-
-		case 'promote':
-			check_admin_referer( 'bulk-users' );
-			$editable_roles = get_editable_roles();
-			if ( empty( $editable_roles[ $_request->get( 'new_role' ) ] ) ) {
-				wp_die( __( 'Sorry, you are not allowed to give users that role.' ) );
-			}
-
-			if ( $_request->get( 'users' ) ) {
-				$userids = $_request->get( 'users' );
-				$update = 'promote';
-				foreach ( $userids as $user_id ) {
-					$user_id = (int) $user_id;
-
-					// If the user doesn't already belong to the blog, bail.
-					if ( ! is_user_member_of_blog( $user_id ) ) {
-						wp_die(
-							'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
-							'<p>' . __( 'One of the selected users is not a member of this site.' ) . '</p>',
-							403
-						);
-					}
-
-					$user = get_userdata( $user_id );
-					$user->set_role( $_request->get( 'new_role' ) );
-				}
-			} else {
-				$update = 'err_promote';
-			}
-			break;
-		default:
-			if ( ! $_request->get( 'users' ) ) {
-				break;
-			}
-			check_admin_referer( 'bulk-users' );
+		$update = 'remove';
+		if ( $_request->get( 'users' ) ) {
 			$userids = $_request->get( 'users' );
-			/**
-			 * Fires when a custom bulk action should be handled.
-			 *
-			 * The redirect link should be modified with success or failure feedback
-			 * from the action to be used to display feedback to the user.
-			 *
-			 * @since 4.7.0
-			 *
-			 * @param string $referer The redirect URL.
-			 * @param string $action  The action being taken.
-			 * @param array  $userids The users to take the action on.
-			 * @param int    $id      The id of the current site
-			 */
-			$referer = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $referer, $action, $userids, $id );
-			$update = $action;
+
+			foreach ( $userids as $user_id ) {
+				$user_id = (int) $user_id;
+				remove_user_from_blog( $user_id, $id );
+			}
+		} elseif ( $_get->get( 'user' ) ) {
+			remove_user_from_blog( $_get->get( 'user' ) );
+		} else {
+			$update = 'err_remove';
+		}
+		break;
+
+	case 'promote':
+		check_admin_referer( 'bulk-users' );
+		$editable_roles = get_editable_roles();
+		if ( empty( $editable_roles[ $_request->get( 'new_role' ) ] ) ) {
+			wp_die( __( 'Sorry, you are not allowed to give users that role.' ) );
+		}
+
+		if ( $_request->get( 'users' ) ) {
+			$userids = $_request->get( 'users' );
+			$update = 'promote';
+			foreach ( $userids as $user_id ) {
+				$user_id = (int) $user_id;
+
+				// If the user doesn't already belong to the blog, bail.
+				if ( ! is_user_member_of_blog( $user_id ) ) {
+					wp_die(
+						'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+						'<p>' . __( 'One of the selected users is not a member of this site.' ) . '</p>',
+						403
+					);
+				}
+
+				$user = get_userdata( $user_id );
+				$user->set_role( $_request->get( 'new_role' ) );
+			}
+		} else {
+			$update = 'err_promote';
+		}
+		break;
+	default:
+		if ( ! $_request->get( 'users' ) ) {
 			break;
+		}
+		check_admin_referer( 'bulk-users' );
+		$userids = $_request->get( 'users' );
+		/**
+		 * Fires when a custom bulk action should be handled.
+		 *
+		 * The redirect link should be modified with success or failure feedback
+		 * from the action to be used to display feedback to the user.
+		 *
+		 * @since 4.7.0
+		 *
+		 * @param string $referer The redirect URL.
+		 * @param string $action  The action being taken.
+		 * @param array  $userids The users to take the action on.
+		 * @param int    $id      The id of the current site
+		 */
+		$referer = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $referer, $action, $userids, $id );
+		$update = $action;
+		break;
 	}
 
 	wp_safe_redirect( add_query_arg( 'update', $update, $referer ) );

@@ -62,18 +62,18 @@ $file_types = array_unique( array_merge( $file_types, $default_types ) );
 
 foreach ( $file_types as $type ) {
 	switch ( $type ) {
-		case 'php':
-			$allowed_files += $theme->get_files( 'php', 1 );
-			$has_templates = ! empty( $allowed_files );
-			break;
-		case 'css':
-			$style_files = $theme->get_files( 'css' );
-			$allowed_files['style.css'] = $style_files['style.css'];
-			$allowed_files += $style_files;
-			break;
-		default:
-			$allowed_files += $theme->get_files( $type );
-			break;
+	case 'php':
+		$allowed_files += $theme->get_files( 'php', 1 );
+		$has_templates = ! empty( $allowed_files );
+		break;
+	case 'css':
+		$style_files = $theme->get_files( 'css' );
+		$allowed_files['style.css'] = $style_files['style.css'];
+		$allowed_files += $style_files;
+		break;
+	default:
+		$allowed_files += $theme->get_files( $type );
+		break;
 	}
 }
 
@@ -187,26 +187,26 @@ if ( $allowed_files ) :
 			}
 
 			switch ( $file_type ) {
-				case '.php':
-					if ( $has_templates || $theme->parent() ) :
-						echo "\t<h2>" . __( 'Templates' ) . "</h2>\n";
-						if ( $theme->parent() ) {
-							echo '<p class="howto">' . sprintf( __( 'This child theme inherits templates from a parent theme, %s.' ),
-								sprintf( '<a href="%s">%s</a>',
-									self_admin_url( 'theme-editor.php?theme=' . urlencode( $theme->get_template() ) ),
-									$theme->parent()->display( 'Name' )
-								)
-							) . "</p>\n";
-						}
-					endif;
-					break;
-				case '.css':
-					echo "\t<h2>" . _x( 'Styles', 'Theme stylesheets in theme editor' ) . "</h2>\n";
-					break;
-				default:
-					/* translators: %s: file extension */
-					echo "\t<h2>" . sprintf( __( '%s files' ), $file_type ) . "</h2>\n";
-					break;
+			case '.php':
+				if ( $has_templates || $theme->parent() ) :
+					echo "\t<h2>" . __( 'Templates' ) . "</h2>\n";
+					if ( $theme->parent() ) {
+						echo '<p class="howto">' . sprintf( __( 'This child theme inherits templates from a parent theme, %s.' ),
+							sprintf( '<a href="%s">%s</a>',
+								self_admin_url( 'theme-editor.php?theme=' . urlencode( $theme->get_template() ) ),
+								$theme->parent()->display( 'Name' )
+							)
+						) . "</p>\n";
+					}
+				endif;
+				break;
+			case '.css':
+				echo "\t<h2>" . _x( 'Styles', 'Theme stylesheets in theme editor' ) . "</h2>\n";
+				break;
+			default:
+				/* translators: %s: file extension */
+				echo "\t<h2>" . sprintf( __( '%s files' ), $file_type ) . "</h2>\n";
+				break;
 			}
 
 			echo "\t<ul>\n";

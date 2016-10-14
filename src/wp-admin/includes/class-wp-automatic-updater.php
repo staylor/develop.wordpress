@@ -261,24 +261,24 @@ class WP_Automatic_Updater {
 		$skin = new Automatic_Upgrader_Skin;
 
 		switch ( $type ) {
-			case 'core':
-				// The Core upgrader doesn't use the Upgrader's skin during the actual main part of the upgrade, instead, firing a filter.
-				add_filter( 'update_feedback', array( $skin, 'feedback' ) );
-				$upgrader = new Core_Upgrader( $skin );
-				$context  = ABSPATH;
-				break;
-			case 'plugin':
-				$upgrader = new Plugin_Upgrader( $skin );
-				$context  = WP_PLUGIN_DIR; // We don't support custom Plugin directories, or updates for WPMU_PLUGIN_DIR
-				break;
-			case 'theme':
-				$upgrader = new Theme_Upgrader( $skin );
-				$context  = get_theme_root( $item->theme );
-				break;
-			case 'translation':
-				$upgrader = new Language_Pack_Upgrader( $skin );
-				$context  = WP_CONTENT_DIR; // WP_LANG_DIR;
-				break;
+		case 'core':
+			// The Core upgrader doesn't use the Upgrader's skin during the actual main part of the upgrade, instead, firing a filter.
+			add_filter( 'update_feedback', array( $skin, 'feedback' ) );
+			$upgrader = new Core_Upgrader( $skin );
+			$context  = ABSPATH;
+			break;
+		case 'plugin':
+			$upgrader = new Plugin_Upgrader( $skin );
+			$context  = WP_PLUGIN_DIR; // We don't support custom Plugin directories, or updates for WPMU_PLUGIN_DIR
+			break;
+		case 'theme':
+			$upgrader = new Theme_Upgrader( $skin );
+			$context  = get_theme_root( $item->theme );
+			break;
+		case 'translation':
+			$upgrader = new Language_Pack_Upgrader( $skin );
+			$context  = WP_CONTENT_DIR; // WP_LANG_DIR;
+			break;
 		}
 
 		// Determine whether we can and should perform this update.
@@ -299,27 +299,27 @@ class WP_Automatic_Updater {
 
 		$upgrader_item = $item;
 		switch ( $type ) {
-			case 'core':
-				$skin->feedback( __( 'Updating to WordPress %s' ), $item->version );
-				$item_name = sprintf( __( 'WordPress %s' ), $item->version );
-				break;
-			case 'theme':
-				$upgrader_item = $item->theme;
-				$theme = wp_get_theme( $upgrader_item );
-				$item_name = $theme->Get( 'Name' );
-				$skin->feedback( __( 'Updating theme: %s' ), $item_name );
-				break;
-			case 'plugin':
-				$upgrader_item = $item->plugin;
-				$plugin_data = get_plugin_data( $context . '/' . $upgrader_item );
-				$item_name = $plugin_data['Name'];
-				$skin->feedback( __( 'Updating plugin: %s' ), $item_name );
-				break;
-			case 'translation':
-				$language_item_name = $upgrader->get_name_for_update( $item );
-				$item_name = sprintf( __( 'Translations for %s' ), $language_item_name );
-				$skin->feedback( sprintf( __( 'Updating translations for %1$s (%2$s)&#8230;' ), $language_item_name, $item->language ) );
-				break;
+		case 'core':
+			$skin->feedback( __( 'Updating to WordPress %s' ), $item->version );
+			$item_name = sprintf( __( 'WordPress %s' ), $item->version );
+			break;
+		case 'theme':
+			$upgrader_item = $item->theme;
+			$theme = wp_get_theme( $upgrader_item );
+			$item_name = $theme->Get( 'Name' );
+			$skin->feedback( __( 'Updating theme: %s' ), $item_name );
+			break;
+		case 'plugin':
+			$upgrader_item = $item->plugin;
+			$plugin_data = get_plugin_data( $context . '/' . $upgrader_item );
+			$item_name = $plugin_data['Name'];
+			$skin->feedback( __( 'Updating plugin: %s' ), $item_name );
+			break;
+		case 'translation':
+			$language_item_name = $upgrader->get_name_for_update( $item );
+			$item_name = sprintf( __( 'Translations for %s' ), $language_item_name );
+			$skin->feedback( sprintf( __( 'Updating translations for %1$s (%2$s)&#8230;' ), $language_item_name, $item->language ) );
+			break;
 		}
 
 		$allow_relaxed_file_ownership = false;
@@ -610,24 +610,24 @@ class WP_Automatic_Updater {
 			return;
 
 		switch ( $type ) {
-			case 'success' : // We updated.
-				/* translators: 1: Site name, 2: WordPress version number. */
-				$subject = __( '[%1$s] Your site has updated to WordPress %2$s' );
-				break;
+		case 'success' : // We updated.
+			/* translators: 1: Site name, 2: WordPress version number. */
+			$subject = __( '[%1$s] Your site has updated to WordPress %2$s' );
+			break;
 
-			case 'fail' :   // We tried to update but couldn't.
-			case 'manual' : // We can't update (and made no attempt).
-				/* translators: 1: Site name, 2: WordPress version number. */
-				$subject = __( '[%1$s] WordPress %2$s is available. Please update!' );
-				break;
+		case 'fail' :   // We tried to update but couldn't.
+		case 'manual' : // We can't update (and made no attempt).
+			/* translators: 1: Site name, 2: WordPress version number. */
+			$subject = __( '[%1$s] WordPress %2$s is available. Please update!' );
+			break;
 
-			case 'critical' : // We tried to update, started to copy files, then things went wrong.
-				/* translators: 1: Site name. */
-				$subject = __( '[%1$s] URGENT: Your site may be down due to a failed update' );
-				break;
+		case 'critical' : // We tried to update, started to copy files, then things went wrong.
+			/* translators: 1: Site name. */
+			$subject = __( '[%1$s] URGENT: Your site may be down due to a failed update' );
+			break;
 
-			default :
-				return;
+		default :
+			return;
 		}
 
 		// If the auto update is not to the latest version, say that the current version of WP is available instead.
@@ -637,51 +637,51 @@ class WP_Automatic_Updater {
 		$body = '';
 
 		switch ( $type ) {
-			case 'success' :
-				$body .= sprintf( __( 'Howdy! Your site at %1$s has been updated automatically to WordPress %2$s.' ), home_url(), $core_update->current );
-				$body .= "\n\n";
-				if ( ! $newer_version_available )
-					$body .= __( 'No further action is needed on your part.' ) . ' ';
+		case 'success' :
+			$body .= sprintf( __( 'Howdy! Your site at %1$s has been updated automatically to WordPress %2$s.' ), home_url(), $core_update->current );
+			$body .= "\n\n";
+			if ( ! $newer_version_available )
+				$body .= __( 'No further action is needed on your part.' ) . ' ';
 
-				// Can only reference the About screen if their update was successful.
-				list( $about_version ) = explode( '-', $core_update->current, 2 );
-				$body .= sprintf( __( "For more on version %s, see the About WordPress screen:" ), $about_version );
-				$body .= "\n" . admin_url( 'about.php' );
+			// Can only reference the About screen if their update was successful.
+			list( $about_version ) = explode( '-', $core_update->current, 2 );
+			$body .= sprintf( __( "For more on version %s, see the About WordPress screen:" ), $about_version );
+			$body .= "\n" . admin_url( 'about.php' );
 
-				if ( $newer_version_available ) {
-					$body .= "\n\n" . sprintf( __( 'WordPress %s is also now available.' ), $next_user_core_update->current ) . ' ';
-					$body .= __( 'Updating is easy and only takes a few moments:' );
-					$body .= "\n" . network_admin_url( 'update-core.php' );
-				}
-
-				break;
-
-			case 'fail' :
-			case 'manual' :
-				$body .= sprintf( __( 'Please update your site at %1$s to WordPress %2$s.' ), home_url(), $next_user_core_update->current );
-
-				$body .= "\n\n";
-
-				// Don't show this message if there is a newer version available.
-				// Potential for confusion, and also not useful for them to know at this point.
-				if ( 'fail' == $type && ! $newer_version_available )
-					$body .= __( 'We tried but were unable to update your site automatically.' ) . ' ';
-
+			if ( $newer_version_available ) {
+				$body .= "\n\n" . sprintf( __( 'WordPress %s is also now available.' ), $next_user_core_update->current ) . ' ';
 				$body .= __( 'Updating is easy and only takes a few moments:' );
 				$body .= "\n" . network_admin_url( 'update-core.php' );
-				break;
+			}
 
-			case 'critical' :
-				if ( $newer_version_available )
-					$body .= sprintf( __( 'Your site at %1$s experienced a critical failure while trying to update WordPress to version %2$s.' ), home_url(), $core_update->current );
-				else
-					$body .= sprintf( __( 'Your site at %1$s experienced a critical failure while trying to update to the latest version of WordPress, %2$s.' ), home_url(), $core_update->current );
+			break;
 
-				$body .= "\n\n" . __( "This means your site may be offline or broken. Don't panic; this can be fixed." );
+		case 'fail' :
+		case 'manual' :
+			$body .= sprintf( __( 'Please update your site at %1$s to WordPress %2$s.' ), home_url(), $next_user_core_update->current );
 
-				$body .= "\n\n" . __( "Please check out your site now. It's possible that everything is working. If it says you need to update, you should do so:" );
-				$body .= "\n" . network_admin_url( 'update-core.php' );
-				break;
+			$body .= "\n\n";
+
+			// Don't show this message if there is a newer version available.
+			// Potential for confusion, and also not useful for them to know at this point.
+			if ( 'fail' == $type && ! $newer_version_available )
+				$body .= __( 'We tried but were unable to update your site automatically.' ) . ' ';
+
+			$body .= __( 'Updating is easy and only takes a few moments:' );
+			$body .= "\n" . network_admin_url( 'update-core.php' );
+			break;
+
+		case 'critical' :
+			if ( $newer_version_available )
+				$body .= sprintf( __( 'Your site at %1$s experienced a critical failure while trying to update WordPress to version %2$s.' ), home_url(), $core_update->current );
+			else
+				$body .= sprintf( __( 'Your site at %1$s experienced a critical failure while trying to update to the latest version of WordPress, %2$s.' ), home_url(), $core_update->current );
+
+			$body .= "\n\n" . __( "This means your site may be offline or broken. Don't panic; this can be fixed." );
+
+			$body .= "\n\n" . __( "Please check out your site now. It's possible that everything is working. If it says you need to update, you should do so:" );
+			$body .= "\n" . network_admin_url( 'update-core.php' );
+			break;
 		}
 
 		$critical_support = 'critical' === $type && ! empty( $core_update->support_email );

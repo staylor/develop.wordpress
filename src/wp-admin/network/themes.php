@@ -28,197 +28,197 @@ $referer = remove_query_arg( $temp_args, wp_get_referer() );
 
 if ( $action ) {
 	switch ( $action ) {
-		case 'enable':
-			check_admin_referer('enable-theme_' . $_get->get( 'theme' ) );
-			WP_Theme::network_enable_theme( $_get->get( 'theme' ) );
-			if ( false === strpos( $referer, '/network/themes.php' ) )
-				wp_redirect( network_admin_url( 'themes.php?enabled=1' ) );
-			else
-				wp_safe_redirect( add_query_arg( 'enabled', 1, $referer ) );
+	case 'enable':
+		check_admin_referer('enable-theme_' . $_get->get( 'theme' ) );
+		WP_Theme::network_enable_theme( $_get->get( 'theme' ) );
+		if ( false === strpos( $referer, '/network/themes.php' ) )
+			wp_redirect( network_admin_url( 'themes.php?enabled=1' ) );
+		else
+			wp_safe_redirect( add_query_arg( 'enabled', 1, $referer ) );
+		exit;
+	case 'disable':
+		check_admin_referer('disable-theme_' . $_get->get( 'theme' ) );
+		WP_Theme::network_disable_theme( $_get->get( 'theme' ) );
+		wp_safe_redirect( add_query_arg( 'disabled', '1', $referer ) );
+		exit;
+	case 'enable-selected':
+		check_admin_referer('bulk-themes');
+		$themes = (array) $_post->get( 'checked', [] );
+		if ( empty($themes) ) {
+			wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 			exit;
-		case 'disable':
-			check_admin_referer('disable-theme_' . $_get->get( 'theme' ) );
-			WP_Theme::network_disable_theme( $_get->get( 'theme' ) );
-			wp_safe_redirect( add_query_arg( 'disabled', '1', $referer ) );
+		}
+		WP_Theme::network_enable_theme( (array) $themes );
+		wp_safe_redirect( add_query_arg( 'enabled', count( $themes ), $referer ) );
+		exit;
+	case 'disable-selected':
+		check_admin_referer('bulk-themes');
+		$themes = (array) $_post->get( 'checked', [] );
+		if ( empty($themes) ) {
+			wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 			exit;
-		case 'enable-selected':
-			check_admin_referer('bulk-themes');
-			$themes = (array) $_post->get( 'checked', [] );
-			if ( empty($themes) ) {
-				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
-				exit;
-			}
-			WP_Theme::network_enable_theme( (array) $themes );
-			wp_safe_redirect( add_query_arg( 'enabled', count( $themes ), $referer ) );
+		}
+		WP_Theme::network_disable_theme( (array) $themes );
+		wp_safe_redirect( add_query_arg( 'disabled', count( $themes ), $referer ) );
+		exit;
+	case 'update-selected' :
+		check_admin_referer( 'bulk-themes' );
+
+		if ( $_get->get( 'themes' ) )
+			$themes = explode( ',', $_get->get( 'themes' ) );
+		elseif ( $_post->get( 'checked' ) )
+			$themes = (array) $_post->get( 'checked' );
+		else
+			$themes = [];
+
+		$app->set( 'title', __( 'Update Themes' ) );
+		$app->set( 'parent_file', 'themes.php' );
+		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+
+		require_once(ABSPATH . 'wp-admin/admin-header.php');
+
+		echo '<div class="wrap">';
+		echo '<h1>' . esc_html( $app->get( 'title' ) ) . '</h1>';
+
+		$url = self_admin_url('update.php?action=update-selected-themes&amp;themes=' . urlencode( join(',', $themes) ));
+		$url = wp_nonce_url($url, 'bulk-update-themes');
+
+		echo "<iframe src='$url' style='width: 100%; height:100%; min-height:850px;'></iframe>";
+		echo '</div>';
+		require_once(ABSPATH . 'wp-admin/admin-footer.php');
+		exit;
+	case 'delete-selected':
+		if ( ! current_user_can( 'delete_themes' ) ) {
+			wp_die( __('Sorry, you are not allowed to delete themes for this site.') );
+		}
+
+		check_admin_referer( 'bulk-themes' );
+
+		$themes = (array) $_request->get( 'checked', [] );
+
+		if ( empty( $themes ) ) {
+			wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 			exit;
-		case 'disable-selected':
-			check_admin_referer('bulk-themes');
-			$themes = (array) $_post->get( 'checked', [] );
-			if ( empty($themes) ) {
-				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
-				exit;
-			}
-			WP_Theme::network_disable_theme( (array) $themes );
-			wp_safe_redirect( add_query_arg( 'disabled', count( $themes ), $referer ) );
+		}
+
+		$themes = array_diff( $themes, array( get_option( 'stylesheet' ), get_option( 'template' ) ) );
+
+		if ( empty( $themes ) ) {
+			wp_safe_redirect( add_query_arg( 'error', 'main', $referer ) );
 			exit;
-		case 'update-selected' :
-			check_admin_referer( 'bulk-themes' );
+		}
 
-			if ( $_get->get( 'themes' ) )
-				$themes = explode( ',', $_get->get( 'themes' ) );
-			elseif ( $_post->get( 'checked' ) )
-				$themes = (array) $_post->get( 'checked' );
-			else
-				$themes = [];
+		$theme_info = [];
+		foreach ( $themes as $key => $theme ) {
+			$theme_info[ $theme ] = wp_get_theme( $theme );
+		}
 
-			$app->set( 'title', __( 'Update Themes' ) );
-			$app->set( 'parent_file', 'themes.php' );
-			$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+		include(ABSPATH . 'wp-admin/update.php');
 
-			require_once(ABSPATH . 'wp-admin/admin-header.php');
+		$app->set( 'parent_file', 'themes.php' );
+		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
-			echo '<div class="wrap">';
-			echo '<h1>' . esc_html( $app->get( 'title' ) ) . '</h1>';
+		if ( ! $_request->get( 'verify-delete' ) ) {
+			wp_enqueue_script( 'jquery' );
+			require_once( ABSPATH . 'wp-admin/admin-header.php' );
+			$themes_to_delete = count( $themes );
+			?>
+		<div class="wrap">
+			<?php if ( 1 == $themes_to_delete ) : ?>
+				<h1><?php _e( 'Delete Theme' ); ?></h1>
+				<div class="error"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php _e( 'This theme may be active on other sites in the network.' ); ?></p></div>
+				<p><?php _e( 'You are about to remove the following theme:' ); ?></p>
+			<?php else : ?>
+				<h1><?php _e( 'Delete Themes' ); ?></h1>
+				<div class="error"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php _e( 'These themes may be active on other sites in the network.' ); ?></p></div>
+				<p><?php _e( 'You are about to remove the following themes:' ); ?></p>
+			<?php endif; ?>
+				<ul class="ul-disc">
+				<?php
+					foreach ( $theme_info as $theme ) {
+						echo '<li>' . sprintf(
+							/* translators: 1: theme name, 2: theme author */
+							_x( '%1$s by %2$s', 'theme' ),
+							'<strong>' . $theme->display( 'Name' ) . '</strong>',
+							'<em>' . $theme->display( 'Author' ) . '</em>'
+						) . '</li>';
+					}
+				?>
+				</ul>
+			<?php if ( 1 == $themes_to_delete ) : ?>
+				<p><?php _e( 'Are you sure you wish to delete this theme?' ); ?></p>
+			<?php else : ?>
+				<p><?php _e( 'Are you sure you wish to delete these themes?' ); ?></p>
+			<?php endif; ?>
+			<form method="post" action="<?php echo esc_url( $app['request.uri'] ); ?>" style="display:inline;">
+				<input type="hidden" name="verify-delete" value="1" />
+				<input type="hidden" name="action" value="delete-selected" />
+				<?php
+					foreach ( (array) $themes as $theme ) {
+						echo '<input type="hidden" name="checked[]" value="' . esc_attr($theme) . '" />';
+					}
 
-			$url = self_admin_url('update.php?action=update-selected-themes&amp;themes=' . urlencode( join(',', $themes) ));
-			$url = wp_nonce_url($url, 'bulk-update-themes');
+					wp_nonce_field( 'bulk-themes' );
 
-			echo "<iframe src='$url' style='width: 100%; height:100%; min-height:850px;'></iframe>";
-			echo '</div>';
+					if ( 1 == $themes_to_delete ) {
+						submit_button( __( 'Yes, delete this theme' ), '', 'submit', false );
+					} else {
+						submit_button( __( 'Yes, delete these themes' ), '', 'submit', false );
+					}
+				?>
+			</form>
+			<?php
+			$referer = wp_get_referer();
+			?>
+			<form method="post" action="<?php echo $referer ? esc_url( $referer ) : ''; ?>" style="display:inline;">
+				<?php submit_button( __( 'No, return me to the theme list' ), '', 'submit', false ); ?>
+			</form>
+		</div>
+			<?php
 			require_once(ABSPATH . 'wp-admin/admin-footer.php');
 			exit;
-		case 'delete-selected':
-			if ( ! current_user_can( 'delete_themes' ) ) {
-				wp_die( __('Sorry, you are not allowed to delete themes for this site.') );
-			}
+		} // Endif verify-delete
 
-			check_admin_referer( 'bulk-themes' );
+		foreach ( $themes as $theme ) {
+			$delete_result = delete_theme( $theme, esc_url( add_query_arg( array(
+				'verify-delete' => 1,
+				'action' => 'delete-selected',
+				'checked' => $_request->get( 'checked' ),
+				'_wpnonce' => $_request->get( '_wpnonce' )
+			), network_admin_url( 'themes.php' ) ) ) );
+		}
 
-			$themes = (array) $_request->get( 'checked', [] );
-
-			if ( empty( $themes ) ) {
-				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
-				exit;
-			}
-
-			$themes = array_diff( $themes, array( get_option( 'stylesheet' ), get_option( 'template' ) ) );
-
-			if ( empty( $themes ) ) {
-				wp_safe_redirect( add_query_arg( 'error', 'main', $referer ) );
-				exit;
-			}
-
-			$theme_info = [];
-			foreach ( $themes as $key => $theme ) {
-				$theme_info[ $theme ] = wp_get_theme( $theme );
-			}
-
-			include(ABSPATH . 'wp-admin/update.php');
-
-			$app->set( 'parent_file', 'themes.php' );
-			$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
-
-			if ( ! $_request->get( 'verify-delete' ) ) {
-				wp_enqueue_script( 'jquery' );
-				require_once( ABSPATH . 'wp-admin/admin-header.php' );
-				$themes_to_delete = count( $themes );
-				?>
-			<div class="wrap">
-				<?php if ( 1 == $themes_to_delete ) : ?>
-					<h1><?php _e( 'Delete Theme' ); ?></h1>
-					<div class="error"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php _e( 'This theme may be active on other sites in the network.' ); ?></p></div>
-					<p><?php _e( 'You are about to remove the following theme:' ); ?></p>
-				<?php else : ?>
-					<h1><?php _e( 'Delete Themes' ); ?></h1>
-					<div class="error"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php _e( 'These themes may be active on other sites in the network.' ); ?></p></div>
-					<p><?php _e( 'You are about to remove the following themes:' ); ?></p>
-				<?php endif; ?>
-					<ul class="ul-disc">
-					<?php
-						foreach ( $theme_info as $theme ) {
-							echo '<li>' . sprintf(
-								/* translators: 1: theme name, 2: theme author */
-								_x( '%1$s by %2$s', 'theme' ),
-								'<strong>' . $theme->display( 'Name' ) . '</strong>',
-								'<em>' . $theme->display( 'Author' ) . '</em>'
-							) . '</li>';
-						}
-					?>
-					</ul>
-				<?php if ( 1 == $themes_to_delete ) : ?>
-					<p><?php _e( 'Are you sure you wish to delete this theme?' ); ?></p>
-				<?php else : ?>
-					<p><?php _e( 'Are you sure you wish to delete these themes?' ); ?></p>
-				<?php endif; ?>
-				<form method="post" action="<?php echo esc_url( $app['request.uri'] ); ?>" style="display:inline;">
-					<input type="hidden" name="verify-delete" value="1" />
-					<input type="hidden" name="action" value="delete-selected" />
-					<?php
-						foreach ( (array) $themes as $theme ) {
-							echo '<input type="hidden" name="checked[]" value="' . esc_attr($theme) . '" />';
-						}
-
-						wp_nonce_field( 'bulk-themes' );
-
-						if ( 1 == $themes_to_delete ) {
-							submit_button( __( 'Yes, delete this theme' ), '', 'submit', false );
-						} else {
-							submit_button( __( 'Yes, delete these themes' ), '', 'submit', false );
-						}
-					?>
-				</form>
-				<?php
-				$referer = wp_get_referer();
-				?>
-				<form method="post" action="<?php echo $referer ? esc_url( $referer ) : ''; ?>" style="display:inline;">
-					<?php submit_button( __( 'No, return me to the theme list' ), '', 'submit', false ); ?>
-				</form>
-			</div>
-				<?php
-				require_once(ABSPATH . 'wp-admin/admin-footer.php');
-				exit;
-			} // Endif verify-delete
-
-			foreach ( $themes as $theme ) {
-				$delete_result = delete_theme( $theme, esc_url( add_query_arg( array(
-					'verify-delete' => 1,
-					'action' => 'delete-selected',
-					'checked' => $_request->get( 'checked' ),
-					'_wpnonce' => $_request->get( '_wpnonce' )
-				), network_admin_url( 'themes.php' ) ) ) );
-			}
-
-			$paged = $_request->getInt( 'paged', 1 );
-			wp_redirect( add_query_arg( array(
-				'deleted' => count( $themes ),
-				'paged' => $paged,
-				's' => $s
-			), network_admin_url( 'themes.php' ) ) );
+		$paged = $_request->getInt( 'paged', 1 );
+		wp_redirect( add_query_arg( array(
+			'deleted' => count( $themes ),
+			'paged' => $paged,
+			's' => $s
+		), network_admin_url( 'themes.php' ) ) );
+		exit;
+	default:
+		$themes = (array) $_post->get( 'checked', [] );
+		if ( empty( $themes ) ) {
+			wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
 			exit;
-		default:
-			$themes = (array) $_post->get( 'checked', [] );
-			if ( empty( $themes ) ) {
-				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
-				exit;
-			}
-			check_admin_referer( 'bulk-themes' );
+		}
+		check_admin_referer( 'bulk-themes' );
 
-			/**
-			 * Fires when a custom bulk action should be handled.
-			 *
-			 * The redirect link should be modified with success or failure feedback
-			 * from the action to be used to display feedback to the user.
-			 *
-			 * @since 4.7.0
-			 *
-			 * @param string $referer   The redirect URL.
-			 * @param string $action    The action being taken.
-			 * @param array  $themes    The themes to take the action on.
-			 */
-			$referer = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $referer, $action, $themes );
+		/**
+		 * Fires when a custom bulk action should be handled.
+		 *
+		 * The redirect link should be modified with success or failure feedback
+		 * from the action to be used to display feedback to the user.
+		 *
+		 * @since 4.7.0
+		 *
+		 * @param string $referer   The redirect URL.
+		 * @param string $action    The action being taken.
+		 * @param array  $themes    The themes to take the action on.
+		 */
+		$referer = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $referer, $action, $themes );
 
-			wp_safe_redirect( $referer );
-			exit;
+		wp_safe_redirect( $referer );
+		exit;
 	}
 
 }

@@ -670,23 +670,23 @@ function install_plugin_information() {
 	if ( ! empty( $api->download_link ) && ( current_user_can( 'install_plugins' ) || current_user_can( 'update_plugins' ) ) ) {
 		$status = install_plugin_install_status( $api );
 		switch ( $status['status'] ) {
-			case 'install':
-				if ( $status['url'] ) {
-					echo '<a data-slug="' . esc_attr( $api->slug ) . '" id="plugin_install_from_iframe" class="button button-primary right" href="' . $status['url'] . '" target="_parent">' . __( 'Install Now' ) . '</a>';
-				}
-				break;
-			case 'update_available':
-				if ( $status['url'] ) {
-					echo '<a data-slug="' . esc_attr( $api->slug ) . '" data-plugin="' . esc_attr( $status['file'] ) . '" id="plugin_update_from_iframe" class="button button-primary right" href="' . $status['url'] . '" target="_parent">' . __( 'Install Update Now' ) .'</a>';
-				}
-				break;
-			case 'newer_installed':
-				/* translators: %s: Plugin version */
-				echo '<a class="button button-primary right disabled">' . sprintf( __( 'Newer Version (%s) Installed'), $status['version'] ) . '</a>';
-				break;
-			case 'latest_installed':
-				echo '<a class="button button-primary right disabled">' . __( 'Latest Version Installed' ) . '</a>';
-				break;
+		case 'install':
+			if ( $status['url'] ) {
+				echo '<a data-slug="' . esc_attr( $api->slug ) . '" id="plugin_install_from_iframe" class="button button-primary right" href="' . $status['url'] . '" target="_parent">' . __( 'Install Now' ) . '</a>';
+			}
+			break;
+		case 'update_available':
+			if ( $status['url'] ) {
+				echo '<a data-slug="' . esc_attr( $api->slug ) . '" data-plugin="' . esc_attr( $status['file'] ) . '" id="plugin_update_from_iframe" class="button button-primary right" href="' . $status['url'] . '" target="_parent">' . __( 'Install Update Now' ) .'</a>';
+			}
+			break;
+		case 'newer_installed':
+			/* translators: %s: Plugin version */
+			echo '<a class="button button-primary right disabled">' . sprintf( __( 'Newer Version (%s) Installed'), $status['version'] ) . '</a>';
+			break;
+		case 'latest_installed':
+			echo '<a class="button button-primary right disabled">' . __( 'Latest Version Installed' ) . '</a>';
+			break;
 		}
 	}
 	echo "</div>\n";

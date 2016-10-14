@@ -356,20 +356,20 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 */
 	public function get_name_for_update( $update ) {
 		switch ( $update->type ) {
-			case 'core':
-				return 'WordPress'; // Not translated
+		case 'core':
+			return 'WordPress'; // Not translated
 
-			case 'theme':
-				$theme = wp_get_theme( $update->slug );
-				if ( $theme->exists() )
-					return $theme->Get( 'Name' );
-				break;
-			case 'plugin':
-				$plugin_data = get_plugins( '/' . $update->slug );
-				$plugin_data = reset( $plugin_data );
-				if ( $plugin_data )
-					return $plugin_data['Name'];
-				break;
+		case 'theme':
+			$theme = wp_get_theme( $update->slug );
+			if ( $theme->exists() )
+				return $theme->Get( 'Name' );
+			break;
+		case 'plugin':
+			$plugin_data = get_plugins( '/' . $update->slug );
+			$plugin_data = reset( $plugin_data );
+			if ( $plugin_data )
+				return $plugin_data['Name'];
+			break;
 		}
 		return '';
 	}

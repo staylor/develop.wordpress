@@ -78,22 +78,22 @@ do_action( 'post_submitbox_minor_actions', $post );
 <?php _e( 'Status:' ) ?> <span id="post-status-display"><?php
 
 switch ( $post->post_status ) {
-	case 'private':
-		_e('Privately Published');
-		break;
-	case 'publish':
-		_e('Published');
-		break;
-	case 'future':
-		_e('Scheduled');
-		break;
-	case 'pending':
-		_e('Pending Review');
-		break;
-	case 'draft':
-	case 'auto-draft':
-		_e('Draft');
-		break;
+case 'private':
+	_e('Privately Published');
+	break;
+case 'publish':
+	_e('Published');
+	break;
+case 'future':
+	_e('Scheduled');
+	break;
+case 'pending':
+	_e('Pending Review');
+	break;
+case 'draft':
+case 'auto-draft':
+	_e('Draft');
+	break;
 }
 ?>
 </span>

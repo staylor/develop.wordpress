@@ -313,23 +313,23 @@ CREATE TABLE $wpdb->signups (
 ) $charset_collate;";
 
 	switch ( $scope ) {
-		case 'blog' :
-			$queries = $blog_tables;
-			break;
-		case 'global' :
-			$queries = $global_tables;
-			if ( $is_multisite )
-				$queries .= $ms_global_tables;
-			break;
-		case 'ms_global' :
-			$queries = $ms_global_tables;
-			break;
-		case 'all' :
-		default:
-			$queries = $global_tables . $blog_tables;
-			if ( $is_multisite )
-				$queries .= $ms_global_tables;
-			break;
+	case 'blog' :
+		$queries = $blog_tables;
+		break;
+	case 'global' :
+		$queries = $global_tables;
+		if ( $is_multisite )
+			$queries .= $ms_global_tables;
+		break;
+	case 'ms_global' :
+		$queries = $ms_global_tables;
+		break;
+	case 'all' :
+	default:
+		$queries = $global_tables . $blog_tables;
+		if ( $is_multisite )
+			$queries .= $ms_global_tables;
+		break;
 	}
 
 	if ( isset( $old_blog_id ) )

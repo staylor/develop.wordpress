@@ -515,37 +515,37 @@ class WP_Press_This {
 			$data['_meta'][ $meta_name ] = $meta_value;
 		} else {
 			switch ( $meta_name ) {
-				case 'og:url':
-				case 'og:video':
-				case 'og:video:secure_url':
-					$meta_value = $this->_limit_embed( $meta_value );
+			case 'og:url':
+			case 'og:video':
+			case 'og:video:secure_url':
+				$meta_value = $this->_limit_embed( $meta_value );
 
-					if ( ! isset( $data['_embeds'] ) ) {
-						$data['_embeds'] = [];
-					}
+				if ( ! isset( $data['_embeds'] ) ) {
+					$data['_embeds'] = [];
+				}
 
-					if ( ! empty( $meta_value ) && ! in_array( $meta_value, $data['_embeds'] ) ) {
-						$data['_embeds'][] = $meta_value;
-					}
+				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $data['_embeds'] ) ) {
+					$data['_embeds'][] = $meta_value;
+				}
 
-					break;
-				case 'og:image':
-				case 'og:image:secure_url':
-				case 'twitter:image0:src':
-				case 'twitter:image0':
-				case 'twitter:image:src':
-				case 'twitter:image':
-					$meta_value = $this->_limit_img( $meta_value );
+				break;
+			case 'og:image':
+			case 'og:image:secure_url':
+			case 'twitter:image0:src':
+			case 'twitter:image0':
+			case 'twitter:image:src':
+			case 'twitter:image':
+				$meta_value = $this->_limit_img( $meta_value );
 
-					if ( ! isset( $data['_images'] ) ) {
-						$data['_images'] = [];
-					}
+				if ( ! isset( $data['_images'] ) ) {
+					$data['_images'] = [];
+				}
 
-					if ( ! empty( $meta_value ) && ! in_array( $meta_value, $data['_images'] ) ) {
-						$data['_images'][] = $meta_value;
-					}
+				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $data['_images'] ) ) {
+					$data['_images'][] = $meta_value;
+				}
 
-					break;
+				break;
 			}
 		}
 

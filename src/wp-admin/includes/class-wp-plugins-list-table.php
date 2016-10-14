@@ -412,27 +412,27 @@ class WP_Plugins_List_Table extends WP_List_Table {
 				continue;
 
 			switch ( $type ) {
-				case 'all':
-					$text = _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $count, 'plugins' );
-					break;
-				case 'active':
-					$text = _n( 'Active <span class="count">(%s)</span>', 'Active <span class="count">(%s)</span>', $count );
-					break;
-				case 'recently_activated':
-					$text = _n( 'Recently Active <span class="count">(%s)</span>', 'Recently Active <span class="count">(%s)</span>', $count );
-					break;
-				case 'inactive':
-					$text = _n( 'Inactive <span class="count">(%s)</span>', 'Inactive <span class="count">(%s)</span>', $count );
-					break;
-				case 'mustuse':
-					$text = _n( 'Must-Use <span class="count">(%s)</span>', 'Must-Use <span class="count">(%s)</span>', $count );
-					break;
-				case 'dropins':
-					$text = _n( 'Drop-ins <span class="count">(%s)</span>', 'Drop-ins <span class="count">(%s)</span>', $count );
-					break;
-				case 'upgrade':
-					$text = _n( 'Update Available <span class="count">(%s)</span>', 'Update Available <span class="count">(%s)</span>', $count );
-					break;
+			case 'all':
+				$text = _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $count, 'plugins' );
+				break;
+			case 'active':
+				$text = _n( 'Active <span class="count">(%s)</span>', 'Active <span class="count">(%s)</span>', $count );
+				break;
+			case 'recently_activated':
+				$text = _n( 'Recently Active <span class="count">(%s)</span>', 'Recently Active <span class="count">(%s)</span>', $count );
+				break;
+			case 'inactive':
+				$text = _n( 'Inactive <span class="count">(%s)</span>', 'Inactive <span class="count">(%s)</span>', $count );
+				break;
+			case 'mustuse':
+				$text = _n( 'Must-Use <span class="count">(%s)</span>', 'Must-Use <span class="count">(%s)</span>', $count );
+				break;
+			case 'dropins':
+				$text = _n( 'Drop-ins <span class="count">(%s)</span>', 'Drop-ins <span class="count">(%s)</span>', $count );
+				break;
+			case 'upgrade':
+				$text = _n( 'Update Available <span class="count">(%s)</span>', 'Update Available <span class="count">(%s)</span>', $count );
+				break;
 			}
 
 			if ( 'search' !== $type ) {
@@ -761,83 +761,83 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			}
 
 			switch ( $column_name ) {
-				case 'cb':
-					echo "<th scope='row' class='check-column'>$checkbox</th>";
-					break;
-				case 'name':
-					echo "<td class='plugin-title column-primary'><strong>$plugin_name</strong>";
-					echo $this->row_actions( $actions, true );
-					echo "</td>";
-					break;
-				case 'description':
-					$classes = 'column-description desc';
+			case 'cb':
+				echo "<th scope='row' class='check-column'>$checkbox</th>";
+				break;
+			case 'name':
+				echo "<td class='plugin-title column-primary'><strong>$plugin_name</strong>";
+				echo $this->row_actions( $actions, true );
+				echo "</td>";
+				break;
+			case 'description':
+				$classes = 'column-description desc';
 
-					echo "<td class='$classes{$extra_classes}'>
-						<div class='plugin-description'>$description</div>
-						<div class='$class second plugin-version-author-uri'>";
+				echo "<td class='$classes{$extra_classes}'>
+					<div class='plugin-description'>$description</div>
+					<div class='$class second plugin-version-author-uri'>";
 
-					$plugin_meta = [];
-					if ( !empty( $plugin_data['Version'] ) )
-						$plugin_meta[] = sprintf( __( 'Version %s' ), $plugin_data['Version'] );
-					if ( !empty( $plugin_data['Author'] ) ) {
-						$author = $plugin_data['Author'];
-						if ( !empty( $plugin_data['AuthorURI'] ) )
-							$author = '<a href="' . $plugin_data['AuthorURI'] . '">' . $plugin_data['Author'] . '</a>';
-						$plugin_meta[] = sprintf( __( 'By %s' ), $author );
-					}
+				$plugin_meta = [];
+				if ( !empty( $plugin_data['Version'] ) )
+					$plugin_meta[] = sprintf( __( 'Version %s' ), $plugin_data['Version'] );
+				if ( !empty( $plugin_data['Author'] ) ) {
+					$author = $plugin_data['Author'];
+					if ( !empty( $plugin_data['AuthorURI'] ) )
+						$author = '<a href="' . $plugin_data['AuthorURI'] . '">' . $plugin_data['Author'] . '</a>';
+					$plugin_meta[] = sprintf( __( 'By %s' ), $author );
+				}
 
-					// Details link using API info, if available
-					if ( isset( $plugin_data['slug'] ) && current_user_can( 'install_plugins' ) ) {
-						$plugin_meta[] = sprintf( '<a href="%s" class="thickbox open-plugin-details-modal" aria-label="%s" data-title="%s">%s</a>',
-							esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $plugin_data['slug'] .
-								'&TB_iframe=true&width=600&height=550' ) ),
-							esc_attr( sprintf( __( 'More information about %s' ), $plugin_name ) ),
-							esc_attr( $plugin_name ),
-							__( 'View details' )
-						);
-					} elseif ( ! empty( $plugin_data['PluginURI'] ) ) {
-						$plugin_meta[] = sprintf( '<a href="%s">%s</a>',
-							esc_url( $plugin_data['PluginURI'] ),
-							__( 'Visit plugin site' )
-						);
-					}
+				// Details link using API info, if available
+				if ( isset( $plugin_data['slug'] ) && current_user_can( 'install_plugins' ) ) {
+					$plugin_meta[] = sprintf( '<a href="%s" class="thickbox open-plugin-details-modal" aria-label="%s" data-title="%s">%s</a>',
+						esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $plugin_data['slug'] .
+							'&TB_iframe=true&width=600&height=550' ) ),
+						esc_attr( sprintf( __( 'More information about %s' ), $plugin_name ) ),
+						esc_attr( $plugin_name ),
+						__( 'View details' )
+					);
+				} elseif ( ! empty( $plugin_data['PluginURI'] ) ) {
+					$plugin_meta[] = sprintf( '<a href="%s">%s</a>',
+						esc_url( $plugin_data['PluginURI'] ),
+						__( 'Visit plugin site' )
+					);
+				}
 
-					/**
-					 * Filters the array of row meta for each plugin in the Plugins list table.
-					 *
-					 * @since 2.8.0
-					 *
-					 * @param array  $plugin_meta An array of the plugin's metadata,
-					 *                            including the version, author,
-					 *                            author URI, and plugin URI.
-					 * @param string $plugin_file Path to the plugin file, relative to the plugins directory.
-					 * @param array  $plugin_data An array of plugin data.
-					 * @param string $status      Status of the plugin. Defaults are 'All', 'Active',
-					 *                            'Inactive', 'Recently Activated', 'Upgrade', 'Must-Use',
-					 *                            'Drop-ins', 'Search'.
-					 */
-					$plugin_meta = apply_filters( 'plugin_row_meta', $plugin_meta, $plugin_file, $plugin_data, $status );
-					echo implode( ' | ', $plugin_meta );
+				/**
+				 * Filters the array of row meta for each plugin in the Plugins list table.
+				 *
+				 * @since 2.8.0
+				 *
+				 * @param array  $plugin_meta An array of the plugin's metadata,
+				 *                            including the version, author,
+				 *                            author URI, and plugin URI.
+				 * @param string $plugin_file Path to the plugin file, relative to the plugins directory.
+				 * @param array  $plugin_data An array of plugin data.
+				 * @param string $status      Status of the plugin. Defaults are 'All', 'Active',
+				 *                            'Inactive', 'Recently Activated', 'Upgrade', 'Must-Use',
+				 *                            'Drop-ins', 'Search'.
+				 */
+				$plugin_meta = apply_filters( 'plugin_row_meta', $plugin_meta, $plugin_file, $plugin_data, $status );
+				echo implode( ' | ', $plugin_meta );
 
-					echo "</div></td>";
-					break;
-				default:
-					$classes = "$column_name column-$column_name $class";
+				echo "</div></td>";
+				break;
+			default:
+				$classes = "$column_name column-$column_name $class";
 
-					echo "<td class='$classes{$extra_classes}'>";
+				echo "<td class='$classes{$extra_classes}'>";
 
-					/**
-					 * Fires inside each custom column of the Plugins list table.
-					 *
-					 * @since 3.1.0
-					 *
-					 * @param string $column_name Name of the column.
-					 * @param string $plugin_file Path to the plugin file.
-					 * @param array  $plugin_data An array of plugin data.
-					 */
-					do_action( 'manage_plugins_custom_column', $column_name, $plugin_file, $plugin_data );
+				/**
+				 * Fires inside each custom column of the Plugins list table.
+				 *
+				 * @since 3.1.0
+				 *
+				 * @param string $column_name Name of the column.
+				 * @param string $plugin_file Path to the plugin file.
+				 * @param array  $plugin_data An array of plugin data.
+				 */
+				do_action( 'manage_plugins_custom_column', $column_name, $plugin_file, $plugin_data );
 
-					echo "</td>";
+				echo "</td>";
 			}
 		}
 

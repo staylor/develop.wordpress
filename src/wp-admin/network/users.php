@@ -19,150 +19,150 @@ if ( $_get->get( 'action' ) ) {
 	do_action( 'wpmuadminedit' );
 
 	switch ( $_get->get( 'action' ) ) {
-		case 'deleteuser':
-			if ( ! current_user_can( 'manage_network_users' ) )
-				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+	case 'deleteuser':
+		if ( ! current_user_can( 'manage_network_users' ) )
+			wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
-			check_admin_referer( 'deleteuser' );
+		check_admin_referer( 'deleteuser' );
 
-			$id = $_get->getInt( 'id' );
-			if ( $id != '0' && $id != '1' ) {
-				$_post->set( 'allusers', array( $id ) ); // confirm_delete_users() can only handle with arrays
-				$app->set( 'title', __( 'Users' ) );
-				$app->set( 'parent_file', 'users.php' );
-				$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+		$id = $_get->getInt( 'id' );
+		if ( $id != '0' && $id != '1' ) {
+			$_post->set( 'allusers', array( $id ) ); // confirm_delete_users() can only handle with arrays
+			$app->set( 'title', __( 'Users' ) );
+			$app->set( 'parent_file', 'users.php' );
+			$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
-				require_once( ABSPATH . 'wp-admin/admin-header.php' );
-				echo '<div class="wrap">';
-				confirm_delete_users( $_post->get( 'allusers' ) );
-				echo '</div>';
-				require_once( ABSPATH . 'wp-admin/admin-footer.php' );
-			} else {
-				wp_redirect( network_admin_url( 'users.php' ) );
-			}
-			exit();
+			require_once( ABSPATH . 'wp-admin/admin-header.php' );
+			echo '<div class="wrap">';
+			confirm_delete_users( $_post->get( 'allusers' ) );
+			echo '</div>';
+			require_once( ABSPATH . 'wp-admin/admin-footer.php' );
+		} else {
+			wp_redirect( network_admin_url( 'users.php' ) );
+		}
+		exit();
 
-		case 'allusers':
-			if ( !current_user_can( 'manage_network_users' ) )
-				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+	case 'allusers':
+		if ( !current_user_can( 'manage_network_users' ) )
+			wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
-			if ( ( $_post->get( 'action' ) || $_post->get( 'action2' ) ) && $_post->get( 'allusers' ) ) {
-				check_admin_referer( 'bulk-users-network' );
+		if ( ( $_post->get( 'action' ) || $_post->get( 'action2' ) ) && $_post->get( 'allusers' ) ) {
+			check_admin_referer( 'bulk-users-network' );
 
-				$doaction = $_post->get( 'action' ) != -1 ? $_post->get( 'action' ) : $_post->get( 'action2' );
-				$userfunction = '';
+			$doaction = $_post->get( 'action' ) != -1 ? $_post->get( 'action' ) : $_post->get( 'action2' );
+			$userfunction = '';
 
-				foreach ( (array) $_post->get( 'allusers' ) as $user_id ) {
-					if ( !empty( $user_id ) ) {
-						switch ( $doaction ) {
-							case 'delete':
-								if ( ! current_user_can( 'delete_users' ) )
-									wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
-								$app->set( 'title', __( 'Users' ) );
-								$app->set( 'parent_file', 'users.php' );
-								$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+			foreach ( (array) $_post->get( 'allusers' ) as $user_id ) {
+				if ( !empty( $user_id ) ) {
+					switch ( $doaction ) {
+					case 'delete':
+						if ( ! current_user_can( 'delete_users' ) )
+							wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+						$app->set( 'title', __( 'Users' ) );
+						$app->set( 'parent_file', 'users.php' );
+						$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
-								require_once( ABSPATH . 'wp-admin/admin-header.php' );
-								echo '<div class="wrap">';
-								confirm_delete_users( $_post->get( 'allusers' ) );
-								echo '</div>';
-								require_once( ABSPATH . 'wp-admin/admin-footer.php' );
-								exit();
+						require_once( ABSPATH . 'wp-admin/admin-header.php' );
+						echo '<div class="wrap">';
+						confirm_delete_users( $_post->get( 'allusers' ) );
+						echo '</div>';
+						require_once( ABSPATH . 'wp-admin/admin-footer.php' );
+						exit();
 
-							case 'spam':
-								$user = get_userdata( $user_id );
-								if ( is_super_admin( $user->ID ) )
-									wp_die( sprintf( __( 'Warning! User cannot be modified. The user %s is a network administrator.' ), esc_html( $user->user_login ) ) );
+					case 'spam':
+						$user = get_userdata( $user_id );
+						if ( is_super_admin( $user->ID ) )
+							wp_die( sprintf( __( 'Warning! User cannot be modified. The user %s is a network administrator.' ), esc_html( $user->user_login ) ) );
 
-								$userfunction = 'all_spam';
-								$blogs = get_blogs_of_user( $user_id, true );
-								foreach ( (array) $blogs as $details ) {
-									if ( $details->userblog_id != $current_site->blog_id ) // main blog not a spam !
-										update_blog_status( $details->userblog_id, 'spam', '1' );
-								}
-								update_user_status( $user_id, 'spam', '1' );
-							break;
-
-							case 'notspam':
-								$userfunction = 'all_notspam';
-								$blogs = get_blogs_of_user( $user_id, true );
-								foreach ( (array) $blogs as $details )
-									update_blog_status( $details->userblog_id, 'spam', '0' );
-
-								update_user_status( $user_id, 'spam', '0' );
-							break;
+						$userfunction = 'all_spam';
+						$blogs = get_blogs_of_user( $user_id, true );
+						foreach ( (array) $blogs as $details ) {
+							if ( $details->userblog_id != $current_site->blog_id ) // main blog not a spam !
+								update_blog_status( $details->userblog_id, 'spam', '1' );
 						}
-					}
-				}
+						update_user_status( $user_id, 'spam', '1' );
+						break;
 
-				if ( ! in_array( $doaction, array( 'delete', 'spam', 'notspam' ), true ) ) {
-					$sendback = wp_get_referer();
+					case 'notspam':
+						$userfunction = 'all_notspam';
+						$blogs = get_blogs_of_user( $user_id, true );
+						foreach ( (array) $blogs as $details )
+							update_blog_status( $details->userblog_id, 'spam', '0' );
 
-					$user_ids = (array) $_post->get( 'allusers' );
-					/**
-					 * Fires when a custom bulk action should be handled.
-					 *
-					 * The sendback link should be modified with success or failure feedback
-					 * from the action to be used to display feedback to the user.
-					 *
-					 * @since 4.7.0
-					 *
-					 * @param string $sendback The redirect URL.
-					 * @param string $doaction The action being taken.
-					 * @param array  $user_ids The users to take the action on.
-					 */
-					$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $doaction, $user_ids );
-
-					wp_safe_redirect( $sendback );
-					exit();
-				}
-
-				wp_safe_redirect( add_query_arg( array( 'updated' => 'true', 'action' => $userfunction ), wp_get_referer() ) );
-			} else {
-				$location = network_admin_url( 'users.php' );
-
-				$paged = $_request->getInt( 'paged', 0 );
-				if ( $paged )
-					$location = add_query_arg( 'paged', $paged, $location );
-				wp_redirect( $location );
-			}
-			exit();
-
-		case 'dodelete':
-			check_admin_referer( 'ms-users-delete' );
-			if ( ! ( current_user_can( 'manage_network_users' ) && current_user_can( 'delete_users' ) ) )
-				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
-
-			if ( $_post->get( 'blog' ) && is_array( $_post->get( 'blog' ) ) ) {
-				foreach ( $_post->get( 'blog' ) as $id => $users ) {
-					foreach ( $users as $blogid => $user_id ) {
-						if ( ! current_user_can( 'delete_user', $id ) )
-							continue;
-
-						$d = $_post->get( 'delete' );
-						if ( $d && 'reassign' == $d[ $blogid ][ $id ] )
-							remove_user_from_blog( $id, $blogid, $user_id );
-						else
-							remove_user_from_blog( $id, $blogid );
+						update_user_status( $user_id, 'spam', '0' );
+						break;
 					}
 				}
 			}
-			$i = 0;
-			if ( is_array( $_post->get( 'user' ) ) && ! empty( $_post->get( 'user' ) ) )
-				foreach ( $_post->get( 'user' ) as $id ) {
+
+			if ( ! in_array( $doaction, array( 'delete', 'spam', 'notspam' ), true ) ) {
+				$sendback = wp_get_referer();
+
+				$user_ids = (array) $_post->get( 'allusers' );
+				/**
+				 * Fires when a custom bulk action should be handled.
+				 *
+				 * The sendback link should be modified with success or failure feedback
+				 * from the action to be used to display feedback to the user.
+				 *
+				 * @since 4.7.0
+				 *
+				 * @param string $sendback The redirect URL.
+				 * @param string $doaction The action being taken.
+				 * @param array  $user_ids The users to take the action on.
+				 */
+				$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $doaction, $user_ids );
+
+				wp_safe_redirect( $sendback );
+				exit();
+			}
+
+			wp_safe_redirect( add_query_arg( array( 'updated' => 'true', 'action' => $userfunction ), wp_get_referer() ) );
+		} else {
+			$location = network_admin_url( 'users.php' );
+
+			$paged = $_request->getInt( 'paged', 0 );
+			if ( $paged )
+				$location = add_query_arg( 'paged', $paged, $location );
+			wp_redirect( $location );
+		}
+		exit();
+
+	case 'dodelete':
+		check_admin_referer( 'ms-users-delete' );
+		if ( ! ( current_user_can( 'manage_network_users' ) && current_user_can( 'delete_users' ) ) )
+			wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+
+		if ( $_post->get( 'blog' ) && is_array( $_post->get( 'blog' ) ) ) {
+			foreach ( $_post->get( 'blog' ) as $id => $users ) {
+				foreach ( $users as $blogid => $user_id ) {
 					if ( ! current_user_can( 'delete_user', $id ) )
 						continue;
-					wpmu_delete_user( $id );
-					$i++;
+
+					$d = $_post->get( 'delete' );
+					if ( $d && 'reassign' == $d[ $blogid ][ $id ] )
+						remove_user_from_blog( $id, $blogid, $user_id );
+					else
+						remove_user_from_blog( $id, $blogid );
 				}
+			}
+		}
+		$i = 0;
+		if ( is_array( $_post->get( 'user' ) ) && ! empty( $_post->get( 'user' ) ) )
+			foreach ( $_post->get( 'user' ) as $id ) {
+				if ( ! current_user_can( 'delete_user', $id ) )
+					continue;
+				wpmu_delete_user( $id );
+				$i++;
+			}
 
-			if ( $i == 1 )
-				$deletefunction = 'delete';
-			else
-				$deletefunction = 'all_delete';
+		if ( $i == 1 )
+			$deletefunction = 'delete';
+		else
+			$deletefunction = 'all_delete';
 
-			wp_redirect( add_query_arg( array( 'updated' => 'true', 'action' => $deletefunction ), network_admin_url( 'users.php' ) ) );
-			exit();
+		wp_redirect( add_query_arg( array( 'updated' => 'true', 'action' => $deletefunction ), network_admin_url( 'users.php' ) ) );
+		exit();
 	}
 }
 

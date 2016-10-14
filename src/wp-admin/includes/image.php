@@ -500,18 +500,18 @@ function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 		return false;
 
 	switch ( $mime_type ) {
-		case 'image/jpeg':
-			$image = imagecreatefromjpeg($filepath);
-			break;
-		case 'image/png':
-			$image = imagecreatefrompng($filepath);
-			break;
-		case 'image/gif':
-			$image = imagecreatefromgif($filepath);
-			break;
-		default:
-			$image = false;
-			break;
+	case 'image/jpeg':
+		$image = imagecreatefromjpeg($filepath);
+		break;
+	case 'image/png':
+		$image = imagecreatefrompng($filepath);
+		break;
+	case 'image/gif':
+		$image = imagecreatefromgif($filepath);
+		break;
+	default:
+		$image = false;
+		break;
 	}
 	if ( is_resource($image) ) {
 		/**

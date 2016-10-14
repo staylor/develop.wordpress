@@ -145,54 +145,54 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		);
 
 		switch ( $tab ) {
-			case 'search':
-				$type = wp_unslash( $this->_request->get( 'type', 'term' ) );
-				$term = wp_unslash( $this->_request->get( 's', '' ) );
+		case 'search':
+			$type = wp_unslash( $this->_request->get( 'type', 'term' ) );
+			$term = wp_unslash( $this->_request->get( 's', '' ) );
 
-				switch ( $type ) {
-					case 'tag':
-						$args['tag'] = sanitize_title_with_dashes( $term );
-						break;
-					case 'term':
-						$args['search'] = $term;
-						break;
-					case 'author':
-						$args['author'] = $term;
-						break;
-				}
-
+			switch ( $type ) {
+			case 'tag':
+				$args['tag'] = sanitize_title_with_dashes( $term );
 				break;
-
-			case 'featured':
-				$args['fields']['group'] = true;
-				$this->orderby = 'group';
-				// No break!
-			case 'popular':
-			case 'new':
-			case 'beta':
-			case 'recommended':
-				$args['browse'] = $tab;
+			case 'term':
+				$args['search'] = $term;
 				break;
-
-			case 'favorites':
-				$action = 'save_wporg_username_' . get_current_user_id();
-				if ( $_get->get( '_wpnonce' ) && wp_verify_nonce( wp_unslash( $_get->get( '_wpnonce' ) ), $action ) ) {
-					$user = $_get->get( 'user' ) ? wp_unslash( $_get->get( 'user' ) ) : get_user_option( 'wporg_favorites' );
-					update_user_meta( get_current_user_id(), 'wporg_favorites', $user );
-				} else {
-					$user = get_user_option( 'wporg_favorites' );
-				}
-				if ( $user )
-					$args['user'] = $user;
-				else
-					$args = false;
-
-				add_action( 'install_plugins_favorites', 'install_plugins_favorites_form', 9, 0 );
+			case 'author':
+				$args['author'] = $term;
 				break;
+			}
 
-			default:
+			break;
+
+		case 'featured':
+			$args['fields']['group'] = true;
+			$this->orderby = 'group';
+			// No break!
+		case 'popular':
+		case 'new':
+		case 'beta':
+		case 'recommended':
+			$args['browse'] = $tab;
+			break;
+
+		case 'favorites':
+			$action = 'save_wporg_username_' . get_current_user_id();
+			if ( $_get->get( '_wpnonce' ) && wp_verify_nonce( wp_unslash( $_get->get( '_wpnonce' ) ), $action ) ) {
+				$user = $_get->get( 'user' ) ? wp_unslash( $_get->get( 'user' ) ) : get_user_option( 'wporg_favorites' );
+				update_user_meta( get_current_user_id(), 'wporg_favorites', $user );
+			} else {
+				$user = get_user_option( 'wporg_favorites' );
+			}
+			if ( $user )
+				$args['user'] = $user;
+			else
 				$args = false;
-				break;
+
+			add_action( 'install_plugins_favorites', 'install_plugins_favorites_form', 9, 0 );
+			break;
+
+		default:
+			$args = false;
+			break;
 		}
 
 		/**
@@ -458,51 +458,51 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 				$status = install_plugin_install_status( $plugin );
 
 				switch ( $status['status'] ) {
-					case 'install':
-						if ( $status['url'] ) {
-							/* translators: 1: Plugin name and version. */
-							$action_links[] = '<a class="install-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install Now' ) . '</a>';
-						}
-						break;
+				case 'install':
+					if ( $status['url'] ) {
+						/* translators: 1: Plugin name and version. */
+						$action_links[] = '<a class="install-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install Now' ) . '</a>';
+					}
+					break;
 
-					case 'update_available':
-						if ( $status['url'] ) {
-							/* translators: 1: Plugin name and version */
-							$action_links[] = '<a class="update-now button aria-button-if-js" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Update %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Update Now' ) . '</a>';
-						}
-						break;
+				case 'update_available':
+					if ( $status['url'] ) {
+						/* translators: 1: Plugin name and version */
+						$action_links[] = '<a class="update-now button aria-button-if-js" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Update %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Update Now' ) . '</a>';
+					}
+					break;
 
-					case 'latest_installed':
-					case 'newer_installed':
-						if ( is_plugin_active( $status['file'] ) ) {
-							$action_links[] = '<button type="button" class="button button-disabled" disabled="disabled">' . _x( 'Active', 'plugin' ) . '</button>';
-						} elseif ( current_user_can( 'activate_plugins' ) ) {
-							$button_text  = __( 'Activate' );
+				case 'latest_installed':
+				case 'newer_installed':
+					if ( is_plugin_active( $status['file'] ) ) {
+						$action_links[] = '<button type="button" class="button button-disabled" disabled="disabled">' . _x( 'Active', 'plugin' ) . '</button>';
+					} elseif ( current_user_can( 'activate_plugins' ) ) {
+						$button_text  = __( 'Activate' );
+						/* translators: %s: Plugin name */
+						$button_label = _x( 'Activate %s', 'plugin' );
+						$activate_url = add_query_arg( array(
+							'_wpnonce'    => wp_create_nonce( 'activate-plugin_' . $status['file'] ),
+							'action'      => 'activate',
+							'plugin'      => $status['file'],
+						), network_admin_url( 'plugins.php' ) );
+
+						if ( is_network_admin() ) {
+							$button_text  = __( 'Network Activate' );
 							/* translators: %s: Plugin name */
-							$button_label = _x( 'Activate %s', 'plugin' );
-							$activate_url = add_query_arg( array(
-								'_wpnonce'    => wp_create_nonce( 'activate-plugin_' . $status['file'] ),
-								'action'      => 'activate',
-								'plugin'      => $status['file'],
-							), network_admin_url( 'plugins.php' ) );
-
-							if ( is_network_admin() ) {
-								$button_text  = __( 'Network Activate' );
-								/* translators: %s: Plugin name */
-								$button_label = _x( 'Network Activate %s', 'plugin' );
-								$activate_url = add_query_arg( array( 'networkwide' => 1 ), $activate_url );
-							}
-
-							$action_links[] = sprintf(
-								'<a href="%1$s" class="button activate-now" aria-label="%2$s">%3$s</a>',
-								esc_url( $activate_url ),
-								esc_attr( sprintf( $button_label, $plugin['name'] ) ),
-								$button_text
-							);
-						} else {
-							$action_links[] = '<button type="button" class="button button-disabled" disabled="disabled">' . _x( 'Installed', 'plugin' ) . '</button>';
+							$button_label = _x( 'Network Activate %s', 'plugin' );
+							$activate_url = add_query_arg( array( 'networkwide' => 1 ), $activate_url );
 						}
-						break;
+
+						$action_links[] = sprintf(
+							'<a href="%1$s" class="button activate-now" aria-label="%2$s">%3$s</a>',
+							esc_url( $activate_url ),
+							esc_attr( sprintf( $button_label, $plugin['name'] ) ),
+							$button_text
+						);
+					} else {
+						$action_links[] = '<button type="button" class="button button-disabled" disabled="disabled">' . _x( 'Installed', 'plugin' ) . '</button>';
+					}
+					break;
 				}
 			}
 

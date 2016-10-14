@@ -272,17 +272,17 @@ function wp_stream_image( $image, $mime_type, $post_id ) {
 		$image = apply_filters( 'image_save_pre', $image, $post_id );
 
 		switch ( $mime_type ) {
-			case 'image/jpeg':
-				header( 'Content-Type: image/jpeg' );
-				return imagejpeg( $image, null, 90 );
-			case 'image/png':
-				header( 'Content-Type: image/png' );
-				return imagepng( $image );
-			case 'image/gif':
-				header( 'Content-Type: image/gif' );
-				return imagegif( $image );
-			default:
-				return false;
+		case 'image/jpeg':
+			header( 'Content-Type: image/jpeg' );
+			return imagejpeg( $image, null, 90 );
+		case 'image/png':
+			header( 'Content-Type: image/png' );
+			return imagepng( $image );
+		case 'image/gif':
+			header( 'Content-Type: image/gif' );
+			return imagegif( $image );
+		default:
+			return false;
 		}
 	}
 }
@@ -349,16 +349,16 @@ function wp_save_image_file( $filename, $image, $mime_type, $post_id ) {
 			return $saved;
 
 		switch ( $mime_type ) {
-			case 'image/jpeg':
+		case 'image/jpeg':
 
-				/** This filter is documented in wp-includes/class-wp-image-editor.php */
-				return imagejpeg( $image, $filename, apply_filters( 'jpeg_quality', 90, 'edit_image' ) );
-			case 'image/png':
-				return imagepng( $image, $filename );
-			case 'image/gif':
-				return imagegif( $image, $filename );
-			default:
-				return false;
+			/** This filter is documented in wp-includes/class-wp-image-editor.php */
+			return imagejpeg( $image, $filename, apply_filters( 'jpeg_quality', 90, 'edit_image' ) );
+		case 'image/png':
+			return imagepng( $image, $filename );
+		case 'image/gif':
+			return imagegif( $image, $filename );
+		default:
+			return false;
 		}
 	}
 }
@@ -495,14 +495,14 @@ function image_edit_apply_changes( $image, $changes ) {
 			$combined = false;
 			if ( $filtered[$i]->type == $changes[$j]->type ) {
 				switch ( $filtered[$i]->type ) {
-					case 'rotate':
-						$filtered[$i]->angle += $changes[$j]->angle;
-						$combined = true;
-						break;
-					case 'flip':
-						$filtered[$i]->axis ^= $changes[$j]->axis;
-						$combined = true;
-						break;
+				case 'rotate':
+					$filtered[$i]->angle += $changes[$j]->angle;
+					$combined = true;
+					break;
+				case 'flip':
+					$filtered[$i]->axis ^= $changes[$j]->axis;
+					$combined = true;
+					break;
 				}
 			}
 			if ( !$combined )
@@ -540,36 +540,36 @@ function image_edit_apply_changes( $image, $changes ) {
 
 	foreach ( $changes as $operation ) {
 		switch ( $operation->type ) {
-			case 'rotate':
-				if ( $operation->angle != 0 ) {
-					if ( $image instanceof WP_Image_Editor )
-						$image->rotate( $operation->angle );
-					else
-						$image = _rotate_image_resource( $image, $operation->angle );
-				}
-				break;
-			case 'flip':
-				if ( $operation->axis != 0 )
-					if ( $image instanceof WP_Image_Editor )
-						$image->flip( ($operation->axis & 1) != 0, ($operation->axis & 2) != 0 );
-					else
-						$image = _flip_image_resource( $image, ( $operation->axis & 1 ) != 0, ( $operation->axis & 2 ) != 0 );
-				break;
-			case 'crop':
-				$sel = $operation->sel;
+		case 'rotate':
+			if ( $operation->angle != 0 ) {
+				if ( $image instanceof WP_Image_Editor )
+					$image->rotate( $operation->angle );
+				else
+					$image = _rotate_image_resource( $image, $operation->angle );
+			}
+			break;
+		case 'flip':
+			if ( $operation->axis != 0 )
+				if ( $image instanceof WP_Image_Editor )
+					$image->flip( ($operation->axis & 1) != 0, ($operation->axis & 2) != 0 );
+				else
+					$image = _flip_image_resource( $image, ( $operation->axis & 1 ) != 0, ( $operation->axis & 2 ) != 0 );
+			break;
+		case 'crop':
+			$sel = $operation->sel;
 
-				if ( $image instanceof WP_Image_Editor ) {
-					$size = $image->get_size();
-					$w = $size['width'];
-					$h = $size['height'];
+			if ( $image instanceof WP_Image_Editor ) {
+				$size = $image->get_size();
+				$w = $size['width'];
+				$h = $size['height'];
 
-					$scale = 1 / _image_get_preview_ratio( $w, $h ); // discard preview scaling
-					$image->crop( $sel->x * $scale, $sel->y * $scale, $sel->w * $scale, $sel->h * $scale );
-				} else {
-					$scale = 1 / _image_get_preview_ratio( imagesx( $image ), imagesy( $image ) ); // discard preview scaling
-					$image = _crop_image_resource( $image, $sel->x * $scale, $sel->y * $scale, $sel->w * $scale, $sel->h * $scale );
-				}
-				break;
+				$scale = 1 / _image_get_preview_ratio( $w, $h ); // discard preview scaling
+				$image->crop( $sel->x * $scale, $sel->y * $scale, $sel->w * $scale, $sel->h * $scale );
+			} else {
+				$scale = 1 / _image_get_preview_ratio( imagesx( $image ), imagesy( $image ) ); // discard preview scaling
+				$image = _crop_image_resource( $image, $sel->x * $scale, $sel->y * $scale, $sel->w * $scale, $sel->h * $scale );
+			}
+			break;
 		}
 	}
 

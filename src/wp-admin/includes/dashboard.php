@@ -713,14 +713,14 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			<?php
 			else :
 				switch ( $comment->comment_type ) {
-					case 'pingback' :
-						$type = __( 'Pingback' );
-						break;
-					case 'trackback' :
-						$type = __( 'Trackback' );
-						break;
-					default :
-						$type = ucwords( $comment->comment_type );
+				case 'pingback' :
+					$type = __( 'Pingback' );
+					break;
+				case 'trackback' :
+					$type = __( 'Trackback' );
+					break;
+				default :
+					$type = ucwords( $comment->comment_type );
 				}
 				$type = esc_html( $type );
 			?>

@@ -98,111 +98,111 @@ if ( $_get->get( 'action' ) ) {
 
 	switch ( $_get->get( 'action' ) ) {
 
-		case 'deleteblog':
-			if ( ! current_user_can( 'delete_sites' ) )
-				wp_die( __( 'Sorry, you are not allowed to access this page.' ), '', array( 'response' => 403 ) );
+	case 'deleteblog':
+		if ( ! current_user_can( 'delete_sites' ) )
+			wp_die( __( 'Sorry, you are not allowed to access this page.' ), '', array( 'response' => 403 ) );
 
-			$updated_action = 'not_deleted';
-			if ( $id != '0' && $id != $current_site->blog_id && current_user_can( 'delete_site', $id ) ) {
-				wpmu_delete_blog( $id, true );
-				$updated_action = 'delete';
-			}
+		$updated_action = 'not_deleted';
+		if ( $id != '0' && $id != $current_site->blog_id && current_user_can( 'delete_site', $id ) ) {
+			wpmu_delete_blog( $id, true );
+			$updated_action = 'delete';
+		}
 		break;
 
-		case 'allblogs':
-			if ( $_post->get( 'action' ) || $_post->get( 'action2' ) && $_post->get( 'allblogs' ) ) {
-				$doaction = $_post->get( 'action' ) != -1 ? $_post->get( 'action' ) : $_post->get( 'action2' );
+	case 'allblogs':
+		if ( $_post->get( 'action' ) || $_post->get( 'action2' ) && $_post->get( 'allblogs' ) ) {
+			$doaction = $_post->get( 'action' ) != -1 ? $_post->get( 'action' ) : $_post->get( 'action2' );
 
-				foreach ( (array) $_post->get( 'allblogs' ) as $key => $val ) {
-					if ( $val != '0' && $val != $current_site->blog_id ) {
-						switch ( $doaction ) {
-							case 'delete':
-								if ( ! current_user_can( 'delete_site', $val ) )
-									wp_die( __( 'Sorry, you are not allowed to delete the site.' ) );
+			foreach ( (array) $_post->get( 'allblogs' ) as $key => $val ) {
+				if ( $val != '0' && $val != $current_site->blog_id ) {
+					switch ( $doaction ) {
+					case 'delete':
+						if ( ! current_user_can( 'delete_site', $val ) )
+							wp_die( __( 'Sorry, you are not allowed to delete the site.' ) );
 
-								$updated_action = 'all_delete';
-								wpmu_delete_blog( $val, true );
-							break;
+						$updated_action = 'all_delete';
+						wpmu_delete_blog( $val, true );
+						break;
 
-							case 'spam':
-							case 'notspam':
-								$updated_action = ( 'spam' === $doaction ) ? 'all_spam' : 'all_notspam';
-								update_blog_status( $val, 'spam', ( 'spam' === $doaction ) ? '1' : '0' );
-							break;
-						}
-					} else {
-						wp_die( __( 'Sorry, you are not allowed to change the current site.' ) );
+					case 'spam':
+					case 'notspam':
+						$updated_action = ( 'spam' === $doaction ) ? 'all_spam' : 'all_notspam';
+						update_blog_status( $val, 'spam', ( 'spam' === $doaction ) ? '1' : '0' );
+						break;
 					}
+				} else {
+					wp_die( __( 'Sorry, you are not allowed to change the current site.' ) );
 				}
-				if ( ! in_array( $doaction, array( 'delete', 'spam', 'notspam' ), true ) ) {
-					$redirect_to = wp_get_referer();
-					$blogs = (array) $_post->get( 'allblogs' );
-					/**
-					 * Fires when a custom bulk action should be handled.
-					 *
-					 * The redirect link should be modified with success or failure feedback
-					 * from the action to be used to display feedback to the user.
-					 *
-					 * @since 4.7.0
-					 *
-					 * @param string $redirect_to The redirect URL.
-					 * @param string $doaction      The action being taken.
-					 * @param array  $blogs       The blogs to take the action on.
-					 * @param int    $site_id     The current site id.
-					 */
-					$redirect_to = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $redirect_to, $doaction, $blogs, $id );
-					wp_safe_redirect( $redirect_to );
-					exit();
-				}
-			} else {
-				$location = network_admin_url( 'sites.php' );
-				$paged = $_request->get( 'paged', 0 );
-				if ( $paged ) {
-					$location = add_query_arg( 'paged', $paged, $location );
-				}
-				wp_redirect( $location );
+			}
+			if ( ! in_array( $doaction, array( 'delete', 'spam', 'notspam' ), true ) ) {
+				$redirect_to = wp_get_referer();
+				$blogs = (array) $_post->get( 'allblogs' );
+				/**
+				 * Fires when a custom bulk action should be handled.
+				 *
+				 * The redirect link should be modified with success or failure feedback
+				 * from the action to be used to display feedback to the user.
+				 *
+				 * @since 4.7.0
+				 *
+				 * @param string $redirect_to The redirect URL.
+				 * @param string $doaction      The action being taken.
+				 * @param array  $blogs       The blogs to take the action on.
+				 * @param int    $site_id     The current site id.
+				 */
+				$redirect_to = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $redirect_to, $doaction, $blogs, $id );
+				wp_safe_redirect( $redirect_to );
 				exit();
 			}
+		} else {
+			$location = network_admin_url( 'sites.php' );
+			$paged = $_request->get( 'paged', 0 );
+			if ( $paged ) {
+				$location = add_query_arg( 'paged', $paged, $location );
+			}
+			wp_redirect( $location );
+			exit();
+		}
 		break;
 
-		case 'archiveblog':
-		case 'unarchiveblog':
-			update_blog_status( $id, 'archived', ( 'archiveblog' === $_get->get( 'action' ) ) ? '1' : '0' );
+	case 'archiveblog':
+	case 'unarchiveblog':
+		update_blog_status( $id, 'archived', ( 'archiveblog' === $_get->get( 'action' ) ) ? '1' : '0' );
 		break;
 
-		case 'activateblog':
-			update_blog_status( $id, 'deleted', '0' );
+	case 'activateblog':
+		update_blog_status( $id, 'deleted', '0' );
 
-			/**
-			 * Fires after a network site is activated.
-			 *
-			 * @since MU
-			 *
-			 * @param string $id The ID of the activated site.
-			 */
-			do_action( 'activate_blog', $id );
+		/**
+		 * Fires after a network site is activated.
+		 *
+		 * @since MU
+		 *
+		 * @param string $id The ID of the activated site.
+		 */
+		do_action( 'activate_blog', $id );
 		break;
 
-		case 'deactivateblog':
-			/**
-			 * Fires before a network site is deactivated.
-			 *
-			 * @since MU
-			 *
-			 * @param string $id The ID of the site being deactivated.
-			 */
-			do_action( 'deactivate_blog', $id );
-			update_blog_status( $id, 'deleted', '1' );
+	case 'deactivateblog':
+		/**
+		 * Fires before a network site is deactivated.
+		 *
+		 * @since MU
+		 *
+		 * @param string $id The ID of the site being deactivated.
+		 */
+		do_action( 'deactivate_blog', $id );
+		update_blog_status( $id, 'deleted', '1' );
 		break;
 
-		case 'unspamblog':
-		case 'spamblog':
-			update_blog_status( $id, 'spam', ( 'spamblog' === $_get->get( 'action' ) ) ? '1' : '0' );
+	case 'unspamblog':
+	case 'spamblog':
+		update_blog_status( $id, 'spam', ( 'spamblog' === $_get->get( 'action' ) ) ? '1' : '0' );
 		break;
 
-		case 'unmatureblog':
-		case 'matureblog':
-			update_blog_status( $id, 'mature', ( 'matureblog' === $_get->get( 'action' ) ) ? '1' : '0' );
+	case 'unmatureblog':
+	case 'matureblog':
+		update_blog_status( $id, 'mature', ( 'matureblog' === $_get->get( 'action' ) ) ? '1' : '0' );
 		break;
 	}
 

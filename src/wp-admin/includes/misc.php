@@ -421,46 +421,46 @@ function set_screen_options() {
 			$option = str_replace('-', '_', $option);
 
 		switch ( $map_option ) {
-			case 'edit_per_page':
-			case 'users_per_page':
-			case 'edit_comments_per_page':
-			case 'upload_per_page':
-			case 'edit_tags_per_page':
-			case 'plugins_per_page':
-			// Network admin
-			case 'sites_network_per_page':
-			case 'users_network_per_page':
-			case 'site_users_network_per_page':
-			case 'plugins_network_per_page':
-			case 'themes_network_per_page':
-			case 'site_themes_network_per_page':
-				$value = (int) $value;
-				if ( $value < 1 || $value > 999 )
-					return;
-				break;
-			default:
+		case 'edit_per_page':
+		case 'users_per_page':
+		case 'edit_comments_per_page':
+		case 'upload_per_page':
+		case 'edit_tags_per_page':
+		case 'plugins_per_page':
+		// Network admin
+		case 'sites_network_per_page':
+		case 'users_network_per_page':
+		case 'site_users_network_per_page':
+		case 'plugins_network_per_page':
+		case 'themes_network_per_page':
+		case 'site_themes_network_per_page':
+			$value = (int) $value;
+			if ( $value < 1 || $value > 999 )
+				return;
+			break;
+		default:
 
-				/**
-				 * Filters a screen option value before it is set.
-				 *
-				 * The filter can also be used to modify non-standard [items]_per_page
-				 * settings. See the parent function for a full list of standard options.
-				 *
-				 * Returning false to the filter will skip saving the current option.
-				 *
-				 * @since 2.8.0
-				 *
-				 * @see set_screen_options()
-				 *
-				 * @param bool|int $value  Screen option value. Default false to skip.
-				 * @param string   $option The option name.
-				 * @param int      $value  The number of rows to use.
-				 */
-				$value = apply_filters( 'set-screen-option', false, $option, $value );
+			/**
+			 * Filters a screen option value before it is set.
+			 *
+			 * The filter can also be used to modify non-standard [items]_per_page
+			 * settings. See the parent function for a full list of standard options.
+			 *
+			 * Returning false to the filter will skip saving the current option.
+			 *
+			 * @since 2.8.0
+			 *
+			 * @see set_screen_options()
+			 *
+			 * @param bool|int $value  Screen option value. Default false to skip.
+			 * @param string   $option The option name.
+			 * @param int      $value  The number of rows to use.
+			 */
+			$value = apply_filters( 'set-screen-option', false, $option, $value );
 
-				if ( false === $value )
-					return;
-				break;
+			if ( false === $value )
+				return;
+			break;
 		}
 
 		update_user_meta($user->ID, $option, $value);

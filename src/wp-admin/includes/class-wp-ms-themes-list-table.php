@@ -285,21 +285,21 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 				continue;
 
 			switch ( $type ) {
-				case 'all':
-					$text = _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $count, 'themes' );
-					break;
-				case 'enabled':
-					$text = _n( 'Enabled <span class="count">(%s)</span>', 'Enabled <span class="count">(%s)</span>', $count );
-					break;
-				case 'disabled':
-					$text = _n( 'Disabled <span class="count">(%s)</span>', 'Disabled <span class="count">(%s)</span>', $count );
-					break;
-				case 'upgrade':
-					$text = _n( 'Update Available <span class="count">(%s)</span>', 'Update Available <span class="count">(%s)</span>', $count );
-					break;
-				case 'broken' :
-					$text = _n( 'Broken <span class="count">(%s)</span>', 'Broken <span class="count">(%s)</span>', $count );
-					break;
+			case 'all':
+				$text = _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $count, 'themes' );
+				break;
+			case 'enabled':
+				$text = _n( 'Enabled <span class="count">(%s)</span>', 'Enabled <span class="count">(%s)</span>', $count );
+				break;
+			case 'disabled':
+				$text = _n( 'Disabled <span class="count">(%s)</span>', 'Disabled <span class="count">(%s)</span>', $count );
+				break;
+			case 'upgrade':
+				$text = _n( 'Update Available <span class="count">(%s)</span>', 'Update Available <span class="count">(%s)</span>', $count );
+				break;
+			case 'broken' :
+				$text = _n( 'Broken <span class="count">(%s)</span>', 'Broken <span class="count">(%s)</span>', $count );
+				break;
 			}
 
 			if ( $this->is_site_themes )
@@ -633,37 +633,37 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 			}
 
 			switch ( $column_name ) {
-				case 'cb':
-					echo '<th scope="row" class="check-column">';
+			case 'cb':
+				echo '<th scope="row" class="check-column">';
 
-					$this->column_cb( $item );
+				$this->column_cb( $item );
 
-					echo '</th>';
-					break;
+				echo '</th>';
+				break;
 
-				case 'name':
-					echo "<td class='theme-title column-primary{$extra_classes}'><strong>" . $item->display('Name') . "</strong>";
+			case 'name':
+				echo "<td class='theme-title column-primary{$extra_classes}'><strong>" . $item->display('Name') . "</strong>";
 
-					$this->column_name( $item );
+				$this->column_name( $item );
 
-					echo "</td>";
-					break;
+				echo "</td>";
+				break;
 
-				case 'description':
-					echo "<td class='column-description desc{$extra_classes}'>";
+			case 'description':
+				echo "<td class='column-description desc{$extra_classes}'>";
 
-					$this->column_description( $item );
+				$this->column_description( $item );
 
-					echo '</td>';
-					break;
+				echo '</td>';
+				break;
 
-				default:
-					echo "<td class='$column_name column-$column_name{$extra_classes}'>";
+			default:
+				echo "<td class='$column_name column-$column_name{$extra_classes}'>";
 
-					$this->column_default( $item, $column_name );
+				$this->column_default( $item, $column_name );
 
-					echo "</td>";
-					break;
+				echo "</td>";
+				break;
 			}
 		}
 	}

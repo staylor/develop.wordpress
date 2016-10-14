@@ -1325,48 +1325,48 @@ function upgrade_330() {
 		$sidebars_widgets['array_version'] = 1;
 
 	switch ( $sidebars_widgets['array_version'] ) {
-		case 1 :
-			foreach ( (array) $sidebars_widgets as $index => $sidebar )
-			if ( is_array($sidebar) )
-			foreach ( (array) $sidebar as $i => $name ) {
-				$id = strtolower($name);
-				if ( isset( $app->widgets['registered'][ $id ] ) ) {
-					$_sidebars_widgets[$index][$i] = $id;
-					continue;
-				}
-				$id = sanitize_title($name);
-				if ( isset( $app->widgets['registered'][ $id ] ) ) {
-					$_sidebars_widgets[$index][$i] = $id;
-					continue;
-				}
-
-				$found = false;
-
-				foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
-					if ( strtolower($widget['name']) == strtolower($name) ) {
-						$_sidebars_widgets[$index][$i] = $widget['id'];
-						$found = true;
-						break;
-					} elseif ( sanitize_title($widget['name']) == sanitize_title($name) ) {
-						$_sidebars_widgets[$index][$i] = $widget['id'];
-						$found = true;
-						break;
-					}
-				}
-
-				if ( $found )
-					continue;
-
-				unset($_sidebars_widgets[$index][$i]);
+	case 1 :
+		foreach ( (array) $sidebars_widgets as $index => $sidebar )
+		if ( is_array($sidebar) )
+		foreach ( (array) $sidebar as $i => $name ) {
+			$id = strtolower($name);
+			if ( isset( $app->widgets['registered'][ $id ] ) ) {
+				$_sidebars_widgets[$index][$i] = $id;
+				continue;
 			}
-			$_sidebars_widgets['array_version'] = 2;
-			$sidebars_widgets = $_sidebars_widgets;
-			unset($_sidebars_widgets);
+			$id = sanitize_title($name);
+			if ( isset( $app->widgets['registered'][ $id ] ) ) {
+				$_sidebars_widgets[$index][$i] = $id;
+				continue;
+			}
 
-		case 2 :
-			$sidebars_widgets = retrieve_widgets();
-			$sidebars_widgets['array_version'] = 3;
-			update_option( 'sidebars_widgets', $sidebars_widgets );
+			$found = false;
+
+			foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
+				if ( strtolower($widget['name']) == strtolower($name) ) {
+					$_sidebars_widgets[$index][$i] = $widget['id'];
+					$found = true;
+					break;
+				} elseif ( sanitize_title($widget['name']) == sanitize_title($name) ) {
+					$_sidebars_widgets[$index][$i] = $widget['id'];
+					$found = true;
+					break;
+				}
+			}
+
+			if ( $found )
+				continue;
+
+			unset($_sidebars_widgets[$index][$i]);
+		}
+		$_sidebars_widgets['array_version'] = 2;
+		$sidebars_widgets = $_sidebars_widgets;
+		unset($_sidebars_widgets);
+
+	case 2 :
+		$sidebars_widgets = retrieve_widgets();
+		$sidebars_widgets['array_version'] = 3;
+		update_option( 'sidebars_widgets', $sidebars_widgets );
 	}
 }
 

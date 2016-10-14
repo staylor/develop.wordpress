@@ -27,92 +27,92 @@ if ( $_post->get( 'linkcheck' ) )
 $this_file = admin_url('link-manager.php');
 
 switch ($action) {
-	case 'deletebookmarks' :
-		check_admin_referer('bulk-bookmarks');
+case 'deletebookmarks' :
+	check_admin_referer('bulk-bookmarks');
 
-		// For each link id (in $linkcheck[]) change category to selected value.
-		if (count($linkcheck) == 0) {
-			wp_redirect($this_file);
-			exit;
-		}
-
-		$deleted = 0;
-		foreach ($linkcheck as $link_id) {
-			$link_id = (int) $link_id;
-
-			if ( wp_delete_link($link_id) )
-				$deleted++;
-		}
-
-		wp_redirect("$this_file?deleted=$deleted");
-		exit;
-
-	case 'move' :
-		check_admin_referer('bulk-bookmarks');
-
-		// For each link id (in $linkcheck[]) change category to selected value.
-		if (count($linkcheck) == 0) {
-			wp_redirect($this_file);
-			exit;
-		}
-		$all_links = join(',', $linkcheck);
-		/*
-		 * Should now have an array of links we can change:
-		 *     $q = $wpdb->query("update $wpdb->links SET link_category='$category' WHERE link_id IN ($all_links)");
-		 */
-
+	// For each link id (in $linkcheck[]) change category to selected value.
+	if (count($linkcheck) == 0) {
 		wp_redirect($this_file);
 		exit;
+	}
 
-	case 'add' :
-		check_admin_referer('add-bookmark');
+	$deleted = 0;
+	foreach ($linkcheck as $link_id) {
+		$link_id = (int) $link_id;
 
-		$redir = wp_get_referer();
-		if ( add_link() )
-			$redir = add_query_arg( 'added', 'true', $redir );
+		if ( wp_delete_link($link_id) )
+			$deleted++;
+	}
 
-		wp_redirect( $redir );
-		exit;
+	wp_redirect("$this_file?deleted=$deleted");
+	exit;
 
-	case 'save' :
-		$link_id = $_post->getInt( 'link_id' );
-		check_admin_referer('update-bookmark_' . $link_id);
+case 'move' :
+	check_admin_referer('bulk-bookmarks');
 
-		edit_link($link_id);
-
+	// For each link id (in $linkcheck[]) change category to selected value.
+	if (count($linkcheck) == 0) {
 		wp_redirect($this_file);
 		exit;
+	}
+	$all_links = join(',', $linkcheck);
+	/*
+	 * Should now have an array of links we can change:
+	 *     $q = $wpdb->query("update $wpdb->links SET link_category='$category' WHERE link_id IN ($all_links)");
+	 */
 
-	case 'delete' :
-		$link_id = $_get->getInt( 'link_id' );
-		check_admin_referer('delete-bookmark_' . $link_id);
+	wp_redirect($this_file);
+	exit;
 
-		wp_delete_link($link_id);
+case 'add' :
+	check_admin_referer('add-bookmark');
 
-		wp_redirect($this_file);
-		exit;
+	$redir = wp_get_referer();
+	if ( add_link() )
+		$redir = add_query_arg( 'added', 'true', $redir );
 
-	case 'edit' :
-		wp_enqueue_script('link');
-		wp_enqueue_script('xfn');
+	wp_redirect( $redir );
+	exit;
 
-		if ( wp_is_mobile() )
-			wp_enqueue_script( 'jquery-touch-punch' );
+case 'save' :
+	$link_id = $_post->getInt( 'link_id' );
+	check_admin_referer('update-bookmark_' . $link_id);
 
-		$app->set( 'parent_file', 'link-manager.php' );
-		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
-		$app->set( 'submenu_file', 'link-manager.php' );
-		$app->set( 'title', __( 'Edit Link' ) );
+	edit_link($link_id);
 
-		$link_id = $_get->getInt( 'link_id' );
+	wp_redirect($this_file);
+	exit;
 
-		if (!$link = get_link_to_edit($link_id))
-			wp_die(__('Link not found.'));
+case 'delete' :
+	$link_id = $_get->getInt( 'link_id' );
+	check_admin_referer('delete-bookmark_' . $link_id);
 
-		include( ABSPATH . 'wp-admin/edit-link-form.php' );
-		include( ABSPATH . 'wp-admin/admin-footer.php' );
-		break;
+	wp_delete_link($link_id);
 
-	default :
-		break;
+	wp_redirect($this_file);
+	exit;
+
+case 'edit' :
+	wp_enqueue_script('link');
+	wp_enqueue_script('xfn');
+
+	if ( wp_is_mobile() )
+		wp_enqueue_script( 'jquery-touch-punch' );
+
+	$app->set( 'parent_file', 'link-manager.php' );
+	$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+	$app->set( 'submenu_file', 'link-manager.php' );
+	$app->set( 'title', __( 'Edit Link' ) );
+
+	$link_id = $_get->getInt( 'link_id' );
+
+	if (!$link = get_link_to_edit($link_id))
+		wp_die(__('Link not found.'));
+
+	include( ABSPATH . 'wp-admin/edit-link-form.php' );
+	include( ABSPATH . 'wp-admin/admin-footer.php' );
+	break;
+
+default :
+	break;
 }

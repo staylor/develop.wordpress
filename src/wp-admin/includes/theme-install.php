@@ -74,15 +74,15 @@ function install_theme_search_form( $type_selector = true ) {
 	</select>
 	<label class="screen-reader-text" for="s"><?php
 	switch ( $type ) {
-		case 'term':
-			_e( 'Search by keyword' );
-			break;
-		case 'author':
-			_e( 'Search by author' );
-			break;
-		case 'tag':
-			_e( 'Search by tag' );
-			break;
+	case 'term':
+		_e( 'Search by keyword' );
+		break;
+	case 'author':
+		_e( 'Search by author' );
+		break;
+	case 'tag':
+		_e( 'Search by tag' );
+		break;
 	}
 	?></label>
 	<?php else : ?>

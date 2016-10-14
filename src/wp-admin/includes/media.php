@@ -2944,15 +2944,15 @@ function attachment_submitbox_metadata() {
 		<div class="misc-pub-section misc-pub-mime-meta misc-pub-<?php echo sanitize_html_class( $key ); ?>">
 			<?php echo $label ?> <strong><?php
 				switch ( $key ) {
-					case 'bitrate' :
-						echo round( $meta['bitrate'] / 1000 ) . 'kb/s';
-						if ( ! empty( $meta['bitrate_mode'] ) ) {
-							echo ' ' . strtoupper( esc_html( $meta['bitrate_mode'] ) );
-						}
-						break;
-					default:
-						echo esc_html( $meta[ $key ] );
-						break;
+				case 'bitrate' :
+					echo round( $meta['bitrate'] / 1000 ) . 'kb/s';
+					if ( ! empty( $meta['bitrate_mode'] ) ) {
+						echo ' ' . strtoupper( esc_html( $meta['bitrate_mode'] ) );
+					}
+					break;
+				default:
+					echo esc_html( $meta[ $key ] );
+					break;
 				}
 			?></strong>
 		</div>
