@@ -54,13 +54,13 @@ if ( ! network_domain_check() && ( ! defined( 'WP_ALLOW_MULTISITE' ) || ! WP_ALL
 
 if ( is_network_admin() ) {
 	$app->set( 'title', __( 'Network Setup' ) );
-	$app->parent_file = 'settings.php';
+	$app->set( 'parent_file', 'settings.php' );
 } else {
 	$app->set( 'title', __( 'Create a Network of WordPress Sites' ) );
-	$app->parent_file = 'tools.php';
+	$app->set( 'parent_file', 'tools.php' );
 }
 
-$app->current_screen->set_parentage( $app->parent_file );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ( new InstallHelp( get_current_screen() ) )->addNetwork();
 

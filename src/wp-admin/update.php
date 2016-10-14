@@ -50,9 +50,9 @@ if ( $_get->get( 'action' ) ) {
 		check_admin_referer('upgrade-plugin_' . $plugin);
 
 		$app->set( 'title', __( 'Update Plugin' ) );
-		$app->parent_file = 'plugins.php';
-		$app->current_screen->set_parentage( $app->parent_file );
-		$app->submenu_file = 'plugins.php';
+		$app->set( 'parent_file', 'plugins.php' );
+		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+		$app->set( 'submenu_file', 'plugins.php' );
 
 		wp_enqueue_script( 'updates' );
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
@@ -120,9 +120,9 @@ if ( $_get->get( 'action' ) ) {
 		}
 
 		$app->set( 'title', __( 'Plugin Install' ) );
-		$app->parent_file = 'plugins.php';
-		$app->current_screen->set_parentage( $app->parent_file );
-		$app->submenu_file = 'plugin-install.php';
+		$app->set( 'parent_file', 'plugins.php' );
+		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+		$app->set( 'submenu_file', 'plugin-install.php' );
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 		$app->set( 'title', sprintf( __('Installing Plugin: %s'), $api->name . ' ' . $api->version ) );
@@ -149,9 +149,9 @@ if ( $_get->get( 'action' ) ) {
 		$file_upload = new File_Upload_Upgrader('pluginzip', 'package');
 
 		$app->set( 'title', __( 'Upload Plugin' ) );
-		$app->parent_file = 'plugins.php';
-		$app->current_screen->set_parentage( $app->parent_file );
-		$app->submenu_file = 'plugin-install.php';
+		$app->set( 'parent_file', 'plugins.php' );
+		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+		$app->set( 'submenu_file', 'plugin-install.php' );
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 		$app->set( 'title', sprintf(
@@ -181,9 +181,9 @@ if ( $_get->get( 'action' ) ) {
 		wp_enqueue_script( 'updates' );
 
 		$app->set( 'title', __( 'Update Theme' ) );
-		$app->parent_file = 'themes.php';
-		$app->current_screen->set_parentage( $app->parent_file );
-		$app->submenu_file = 'themes.php';
+		$app->set( 'parent_file', 'themes.php' );
+		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+		$app->set( 'submenu_file', 'themes.php' );
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 		$nonce = 'upgrade-theme_' . $theme;
@@ -232,9 +232,9 @@ if ( $_get->get( 'action' ) ) {
 		wp_enqueue_script( 'customize-loader' );
 
 		$app->set( 'title', __( 'Install Themes' ) );
-		$app->parent_file = 'themes.php';
-		$app->current_screen->set_parentage( $app->parent_file );
-		$app->submenu_file = 'themes.php';
+		$app->set( 'parent_file', 'themes.php' );
+		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+		$app->set( 'submenu_file', 'themes.php' );
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 
 		$app->set( 'title', sprintf( __( 'Installing Theme: %s' ), $api->name . ' ' . $api->version ) );
@@ -260,9 +260,9 @@ if ( $_get->get( 'action' ) ) {
 		wp_enqueue_script( 'customize-loader' );
 
 		$app->set( 'title', __( 'Upload Theme' ) );
-		$app->parent_file = 'themes.php';
-		$app->current_screen->set_parentage( $app->parent_file );
-		$app->submenu_file = 'theme-install.php';
+		$app->set( 'parent_file', 'themes.php' );
+		$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+		$app->set( 'submenu_file', 'theme-install.php' );
 
 		require_once(ABSPATH . 'wp-admin/admin-header.php');
 

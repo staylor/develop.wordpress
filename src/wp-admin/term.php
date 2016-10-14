@@ -48,16 +48,16 @@ if ( empty( $post_type ) ) {
 }
 
 if ( 'post' != $post_type ) {
-	$app->parent_file  = ( 'attachment' == $post_type ) ? 'upload.php' : "edit.php?post_type=$post_type";
-	$app->submenu_file = "edit-tags.php?taxonomy=$taxonomy&amp;post_type=$post_type";
+	$app->set( 'parent_file', ( 'attachment' == $post_type ) ? 'upload.php' : "edit.php?post_type=$post_type" );
+	$app->set( 'submenu_file', "edit-tags.php?taxonomy=$taxonomy&amp;post_type=$post_type" );
 } elseif ( 'link_category' == $taxonomy ) {
-	$app->parent_file  = 'link-manager.php';
-	$app->submenu_file = 'edit-tags.php?taxonomy=link_category';
+	$app->set( 'parent_file', 'link-manager.php' );
+	$app->set( 'submenu_file', 'edit-tags.php?taxonomy=link_category' );
 } else {
-	$app->parent_file  = 'edit.php';
-	$app->submenu_file = "edit-tags.php?taxonomy=$taxonomy";
+	$app->set( 'parent_file', 'edit.php' );
+	$app->set( 'submenu_file', "edit-tags.php?taxonomy=$taxonomy" );
 }
-$app->current_screen->set_parentage( $app->parent_file );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 get_current_screen()->set_screen_reader_content( array(
 	'heading_pagination' => $tax->labels->items_list_navigation,

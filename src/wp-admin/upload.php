@@ -53,8 +53,8 @@ if ( 'grid' === $mode ) {
 	$view->help->addUploadGrid();
 
 	$app->set( 'title', __( 'Media Library' ) );
-	$app->parent_file = 'upload.php';
-	$app->current_screen->set_parentage( $app->parent_file );
+	$app->set( 'parent_file', 'upload.php' );
+	$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 	$data = [
 		'_admin_search_query' => $app->mute( '_admin_search_query'),
@@ -149,8 +149,8 @@ if ( $doaction ) {
 $wp_list_table->prepare_items();
 
 $app->set( 'title', __( 'Media Library' ) );
-$app->parent_file = 'upload.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'upload.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 wp_enqueue_script( 'media' );
 

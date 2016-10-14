@@ -210,7 +210,7 @@ do_action( 'in_admin_header' );
 <?php
 unset($title_class, $blog_name, $total_update_count, $update_title);
 
-$app->current_screen->set_parentage( $app->parent_file );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ?>
 
@@ -249,7 +249,7 @@ if ( is_network_admin() ) {
  */
 do_action( 'all_admin_notices' );
 
-if ( $app->parent_file == 'options-general.php' ) {
+if ( $app->get( 'parent_file' ) === 'options-general.php' ) {
 	wp_reset_vars( [ 'action' ] );
 
 	if ( $_get->get( 'updated' ) && $_get->get( 'page' ) ) {

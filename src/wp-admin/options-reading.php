@@ -15,8 +15,8 @@ if ( ! current_user_can( 'manage_options' ) )
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
 
 $app->set( 'title', __( 'Reading Settings' ) );
-$app->parent_file = 'options-general.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'options-general.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 add_action('admin_head', 'options_reading_add_js');
 

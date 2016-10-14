@@ -30,8 +30,8 @@ $blog = get_blog_details();
 $user = wp_get_current_user();
 
 $app->set( 'title', __( 'Delete Site' ) );
-$app->parent_file = 'tools.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'tools.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 echo '<div class="wrap">';

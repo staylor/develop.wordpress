@@ -33,8 +33,8 @@ if ( 'adduser' === $action ) {
 
 $view->help->addUserNew();
 
-$app->parent_file = 'users.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'users.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 $view->enqueueScripts();
 

@@ -20,8 +20,8 @@ require_once( __DIR__ . '/admin.php' );
 
 $app->set( 'title', __( 'Settings' ) );
 $this_file = 'options.php';
-$app->parent_file = 'options-general.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'options-general.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 $wpdb = $app['db'];
 

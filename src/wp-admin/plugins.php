@@ -133,8 +133,8 @@ if ( $action ) {
 				$plugins = [];
 
 			$app->set( 'title', __( 'Update Plugins' ) );
-			$app->parent_file = 'plugins.php';
-			$app->current_screen->set_parentage( $app->parent_file );
+			$app->set( 'parent_file', 'plugins.php' );
+			$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 			wp_enqueue_script( 'updates' );
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
@@ -253,8 +253,8 @@ if ( $action ) {
 
 			include(ABSPATH . 'wp-admin/update.php');
 
-			$app->parent_file = 'plugins.php';
-			$app->current_screen->set_parentage( $app->parent_file );
+			$app->set( 'parent_file', 'plugins.php' );
+			$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 			if ( ! $_request->get( 'verify-delete' ) ) {
 				wp_enqueue_script('jquery');
@@ -401,8 +401,8 @@ add_screen_option( 'per_page', array( 'default' => 999 ) );
 ( new PluginHelp( get_current_screen() ) )->addMain();
 
 $app->set( 'title', __( 'Plugins' ) );
-$app->parent_file = 'plugins.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'plugins.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 require_once(ABSPATH . 'wp-admin/admin-header.php');
 

@@ -60,9 +60,6 @@ class App extends Container {
 	public $_wp_menu_nopriv = [];
 	public $_wp_submenu_nopriv = [];
 
-	public $parent_file;
-	public $submenu_file;
-
 	// this is the mechanism we will use to store entries
 	// that were previously global variables
 	// pray 4 me.

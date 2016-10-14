@@ -58,8 +58,9 @@ if ( $doaction && $_request->get( 'linkcheck' ) ) {
 $wp_list_table->prepare_items();
 
 $app->set( 'title', __( 'Links' ) );
-$this_file = $app->parent_file = 'link-manager.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$this_file = 'link-manager.php';
+$app->set( 'parent_file', 'link-manager.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ( new LinkHelp( get_current_screen() ) )->addManager();
 

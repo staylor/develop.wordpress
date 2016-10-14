@@ -34,8 +34,8 @@ if ( 'updateblogsettings' == $action && $_post->get( 'primary_blog' ) ) {
 }
 
 $app->set( 'title', __( 'My Sites' ) );
-$app->parent_file = 'index.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'index.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ( new SiteHelp( get_current_screen() ) )->addMySites();
 

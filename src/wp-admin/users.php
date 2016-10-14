@@ -24,8 +24,8 @@ $view = new UserView( $app );
 
 $wp_list_table = _get_list_table( 'WP_Users_List_Table' );
 $app->set( 'title', __( 'Users' ) );
-$app->parent_file = 'users.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'users.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 add_screen_option( 'per_page' );
 

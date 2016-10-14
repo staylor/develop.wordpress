@@ -36,38 +36,39 @@ class Menu {
 
 			foreach ( (array) $this->app->menu as $parent_menu ) {
 				if ( $parent_menu[2] == $plugin_page ) {
-					$this->app->parent_file = $plugin_page;
+					$this->app->set( 'parent_file', $plugin_page );
 					return;
 				}
 			}
 			if ( isset( $this->app->_wp_menu_nopriv[ $plugin_page ] ) ) {
-				$this->app->parent_file = $plugin_page;
+				$this->app->set( 'parent_file', $plugin_page );
 				return;
 			}
 		}
 
 		if ( $plugin_page && isset( $this->app->_wp_submenu_nopriv[ $pagenow ][ $plugin_page ] ) ) {
-			$this->app->parent_file = $pagenow;
+			$this->app->set( 'parent_file', $pagenow );
 			return;
 		}
 
+		$parent_file = $this->app->get( 'parent_file' );
 		foreach ( (array) $this->app->submenu as $submenu ) {
 			foreach ( $submenu[ $parent ] as $sub ) {
 				if ( ! empty( $typenow ) && ( $sub[2] == "{$pagenow}?post_type={$typenow}" ) ) {
-					$this->app->parent_file = $parent;
+					$this->app->set( 'parent_file', $parent );
 					return;
-				} elseif ( $sub[2] === $pagenow && empty( $typenow ) && ( empty( $this->app->parent_file ) || false === strpos( $this->app->parent_file, '?' ) ) ) {
-					$this->app->parent_file = $parent;
+				} elseif ( $sub[2] === $pagenow && empty( $typenow ) && ( empty( $parent_file ) || false === strpos( $parent_file, '?' ) ) ) {
+					$this->app->set( 'parent_file', $parent );
 					return;
 				} elseif ( $plugin_page && ( $plugin_page === $sub[2] ) ) {
-					$this->app->parent_file = $parent;
+					$this->app->set( 'parent_file', $parent );
 					return;
 				}
 			}
 		}
 
-		if ( empty( $this->app->parent_file ) ) {
-			$this->app->parent_file = '';
+		if ( ! $this->app->get( 'parent_file' ) ) {
+			$this->app->set( 'parent_file', '' );
 		}
 	}
 
@@ -81,6 +82,9 @@ class Menu {
 		$output = '';
 
 		$typenow = $this->app['typenow'];
+		$parent_file = $this->app->get( 'parent_file' );
+		$submenu_file = $this->app->get( 'submenu_file' );
+
 		$first = true;
 		// 0 = menu_title,
 		// 1 = capability,
@@ -108,7 +112,7 @@ class Menu {
 			}
 
 			if (
-				( $this->app->parent_file && $item[2] === $this->app->parent_file ) ||
+				( $parent_file && $item[2] === $parent_file ) ||
 				( empty( $typenow ) && $this->self === $item[2] )
 			) {
 				$classes[] = ! empty( $submenu_items ) ? 'wp-has-current-submenu wp-menu-open' : 'current';
@@ -241,8 +245,8 @@ class Menu {
 					// Handle current for post_type=post|page|foo pages, which won't match $self.
 					$self_type = ! empty( $typenow ) ? $this->self . '?post_type=' . $typenow : 'nothing';
 
-					if ( isset( $this->app->submenu_file ) ) {
-						if ( $this->app->submenu_file == $sub_item[2] ) {
+					if ( $submenu_file ) {
+						if ( $submenu_file == $sub_item[2] ) {
 							$class[] = 'current';
 						}
 					// If plugin_page is set the parent must either match the current page or not physically exist.
@@ -255,7 +259,7 @@ class Menu {
 							(
 								$item[2] == $self_type ||
 								$item[2] == $this->self ||
-								file_exists( $menu_file) === false
+								file_exists( $menu_file ) === false
 							)
 						)
 					) {

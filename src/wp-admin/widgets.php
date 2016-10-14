@@ -49,8 +49,8 @@ if ( 'on' == $widgets_access ) {
 do_action( 'sidebar_admin_setup' );
 
 $app->set( 'title', __( 'Widgets' ) );
-$app->parent_file = 'themes.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'themes.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 $view->help->addWidgets();
 

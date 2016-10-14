@@ -23,11 +23,11 @@ if ( is_multisite() && ! is_network_admin() ) {
 }
 
 $app->set( 'title', __( 'Add Themes' ) );
-$app->parent_file = 'themes.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'themes.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 if ( ! is_network_admin() ) {
-	$app->submenu_file = 'themes.php';
+	$app->set( 'submenu_file', 'themes.php' );
 }
 
 $installed_themes = search_theme_directories();

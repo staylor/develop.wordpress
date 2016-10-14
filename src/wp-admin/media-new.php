@@ -39,8 +39,8 @@ if ( $_post->all() ) {
 }
 
 $app->set( 'title', __( 'Upload New Media' ) );
-$app->parent_file = 'upload.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'upload.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ( new MediaHelp( get_current_screen() ) )->addNew();
 

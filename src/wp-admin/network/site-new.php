@@ -169,8 +169,8 @@ if ( $_get->get( 'update' ) ) {
 }
 
 $app->set( 'title', __( 'Add New Site' ) );
-$app->parent_file = 'sites.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'sites.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 wp_enqueue_script( 'user-suggest' );
 

@@ -20,8 +20,8 @@ if ( !current_user_can('edit_themes') )
 	wp_die('<p>'.__('Sorry, you are not allowed to edit templates for this site.').'</p>');
 
 $app->set( 'title', __( 'Edit Themes' ) );
-$app->parent_file = 'themes.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'themes.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ( new ThemeHelp( get_current_screen() ) )->addEditor();
 

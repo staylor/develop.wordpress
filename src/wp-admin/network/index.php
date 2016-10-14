@@ -19,8 +19,8 @@ if ( ! current_user_can( 'manage_network' ) )
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
 $app->set( 'title', __( 'Dashboard' ) );
-$app->parent_file = 'index.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'index.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ( new DashboardHelp( get_current_screen() ) )->addMultisiteIndex();
 

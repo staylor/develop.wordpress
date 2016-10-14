@@ -13,9 +13,9 @@ require_once( __DIR__ . '/admin.php' );
 
 $view = new CommentView( $app );
 
-$app->parent_file = 'edit-comments.php';
-$app->current_screen->set_parentage( $app->parent_file );
-$app->submenu_file = 'edit-comments.php';
+$app->set( 'parent_file', 'edit-comments.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+$app->set( 'submenu_file', 'edit-comments.php' );
 
 /**
  * @global string $action

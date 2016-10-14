@@ -21,30 +21,30 @@ if ( ! $post_type ) {
 $post_type_object = get_post_type_object( $post_type );
 
 if ( 'post' == $post_type ) {
-	$app->parent_file = 'edit.php';
-	$app->submenu_file = 'post-new.php';
+	$app->set( 'parent_file', 'edit.php' );
+	$app->set( 'submenu_file', 'post-new.php' );
 } elseif ( 'attachment' == $post_type ) {
 	if ( wp_redirect( admin_url( 'media-new.php' ) ) )
 		exit;
 } else {
-	$app->submenu_file = "post-new.php?post_type=$post_type";
+	$app->set( 'submenu_file', "post-new.php?post_type=$post_type" );
 	if ( isset( $post_type_object ) && $post_type_object->show_in_menu && $post_type_object->show_in_menu !== true ) {
-		$app->parent_file = $post_type_object->show_in_menu;
+		$app->set( 'parent_file', $post_type_object->show_in_menu );
 		// What if there isn't a post-new.php item for this post type?
 		if ( ! isset( $_registered_pages[ get_plugin_page_hookname( "post-new.php?post_type=$post_type", $post_type_object->show_in_menu ) ] ) ) {
 			if (	isset( $_registered_pages[ get_plugin_page_hookname( "edit.php?post_type=$post_type", $post_type_object->show_in_menu ) ] ) ) {
 				// Fall back to edit.php for that post type, if it exists
-				$app->submenu_file = "edit.php?post_type=$post_type";
+				$app->set( 'submenu_file', "edit.php?post_type=$post_type" );
 			} else {
 				// Otherwise, give up and highlight the parent
-				$app->submenu_file = $app->parent_file;
+				$app->set( 'submenu_file', $app->get( 'parent_file' ) );
 			}
 		}
 	} else {
-		$app->parent_file = "edit.php?post_type=$post_type";
+		$app->set( 'parent_file', "edit.php?post_type=$post_type" );
 	}
 }
-$app->current_screen->set_parentage( $app->parent_file );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 $app->set( 'title', $post_type_object->labels->add_new_item );
 

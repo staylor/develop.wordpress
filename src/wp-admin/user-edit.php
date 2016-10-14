@@ -52,17 +52,17 @@ $view->enqueueEditScripts();
 
 $app->set( 'title', IS_PROFILE_PAGE ? __( 'Profile' ) : __( 'Edit User' ) );
 if ( current_user_can( 'edit_users' ) && !IS_PROFILE_PAGE ) {
-	$app->submenu_file = 'users.php';
+	$app->set( 'submenu_file', 'users.php' );
 } else {
-	$app->submenu_file = 'profile.php';
+	$app->set( 'submenu_file', 'profile.php' );
 }
 
 if ( current_user_can( 'edit_users' ) && ! is_user_admin() ) {
-	$app->parent_file = 'users.php';
+	$app->set( 'parent_file', 'users.php' );
 } else {
-	$app->parent_file = 'profile.php';
+	$app->set( 'parent_file', 'profile.php' );
 }
-$app->current_screen->set_parentage( $app->parent_file );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 $view->help->addUserEdit();
 

@@ -94,11 +94,13 @@ if ( ! empty( $redirect ) ) {
 
 // This is so that the correct "Edit" menu item is selected.
 if ( ! empty( $post->post_type ) && 'post' != $post->post_type ){
-	$app->parent_file = $app->submenu_file = 'edit.php?post_type=' . $post->post_type;
+	$app->set( 'parent_file', 'edit.php?post_type=' . $post->post_type );
+	$app->set( 'submenu_file', 'edit.php?post_type=' . $post->post_type );
 } else {
-	$app->parent_file = $app->submenu_file = 'edit.php';
+	$app->set( 'parent_file', 'edit.php' );
+	$app->set( 'submenu_file', 'edit.php' );
 }
-$app->current_screen->set_parentage( $app->parent_file );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 wp_enqueue_script( 'revisions' );
 wp_localize_script( 'revisions', '_wpRevisionsSettings', wp_prepare_revisions_for_js( $post, $revision_id, $from ) );

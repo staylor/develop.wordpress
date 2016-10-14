@@ -67,8 +67,8 @@ if ( current_user_can( 'switch_themes' ) && $_get->get( 'action' ) ) {
 }
 
 $app->set( 'title', __( 'Manage Themes' ) );
-$app->parent_file = 'themes.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'themes.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ( new ThemeHelp( get_current_screen() ) )->addMain();
 
@@ -139,6 +139,7 @@ if ( ! $ct->errors() || ( 1 == count( $ct->errors()->get_error_codes() )
 	&& in_array( $ct->errors()->get_error_code(), array( 'theme_no_parent', 'theme_parent_invalid', 'theme_no_index' ) ) ) ) : ?>
 */
 
+	$parent_file = $app->get( 'parent_file' );
 	// Pretend you didn't see this.
 	$current_theme_actions = [];
 	if ( is_array( $app->submenu ) && isset( $app->submenu['themes.php'] ) ) {
@@ -147,7 +148,7 @@ if ( ! $ct->errors() || ( 1 == count( $ct->errors()->get_error_codes() )
 			if ( 'themes.php' == $item[2] || 'theme-editor.php' == $item[2] || 0 === strpos( $item[2], 'customize.php' ) )
 				continue;
 			// 0 = name, 1 = capability, 2 = file
-			if ( ( strcmp($self, $item[2]) == 0 && empty($app->parent_file)) || ($app->parent_file && ($item[2] == $app->parent_file)) ) {
+			if ( ( strcmp($self, $item[2]) == 0 && ! $parent_file ) || ( $parent_file && ( $item[2] === $parent_file ) ) ) {
 				$class = ' current';
 			}
 			if ( ! empty( $app->submenu[ $item[2] ] ) ) {

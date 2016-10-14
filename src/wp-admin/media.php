@@ -10,9 +10,9 @@ use WP\Media\Admin\Help as MediaHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-$app->parent_file = 'upload.php';
-$app->current_screen->set_parentage( $app->parent_file );
-$app->submenu_file = 'upload.php';
+$app->set( 'parent_file', 'upload.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+$app->set( 'submenu_file', 'upload.php' );
 
 wp_reset_vars(array('action'));
 
@@ -74,8 +74,8 @@ case 'edit' :
 
 	require( ABSPATH . 'wp-admin/admin-header.php' );
 
-	$app->parent_file = 'upload.php';
-	$app->current_screen->set_parentage( $app->parent_file );
+	$app->set( 'parent_file', 'upload.php' );
+	$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 	$message = '';
 	$class = '';
 	if ( $_get->get( 'message' ) ) {

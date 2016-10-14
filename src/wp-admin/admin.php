@@ -285,9 +285,9 @@ if ( $plugin_page ) {
 	 */
 	do_action( "load-importer-{$importer}" );
 
-	$app->parent_file = 'tools.php';
-	$app->current_screen->set_parentage( $app->parent_file );
-	$app->submenu_file = 'import.php';
+	$app->set( 'parent_file', 'tools.php' );
+	$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+	$app->set( 'submenu_file', 'import.php' );
 	$app->set( 'title', __( 'Import' ) );
 
 	if ( ! $_get->get( 'noheader' ) ) {

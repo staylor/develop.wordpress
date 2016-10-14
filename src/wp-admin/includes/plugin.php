@@ -1505,41 +1505,43 @@ function get_admin_page_parent( $parent = '' ) {
 	}
 
 	$plugin_page = $app->get( 'plugin_page' );
+	$parent_file = $app->get( 'parent_file' );
+
 	if ( $app['pagenow'] == 'admin.php' && $plugin_page ) {
 		foreach ( (array) $app->menu as $parent_menu ) {
 			if ( $parent_menu[2] === $plugin_page ) {
-				$app->parent_file = $plugin_page;
-				return $app->parent_file;
+				$app->set( 'parent_file', $plugin_page );
+				return $plugin_page;
 			}
 		}
 		if ( isset( $app->_wp_menu_nopriv[ $plugin_page ] ) ) {
-			$app->parent_file = $plugin_page;
-			return $app->parent_file;
+			$app->set( 'parent_file', $plugin_page );
+			return $plugin_page;
 		}
 	}
 
 	if ( $plugin_page && isset( $app->_wp_submenu_nopriv[ $pagenow ][ $plugin_page ] ) ) {
-		$app->parent_file = $app['pagenow'];
-		return $app->parent_file;
+		$app->set( 'parent_file', $app['pagenow'] );
+		return $app['pagenow'];
 	}
 
 	foreach (array_keys( (array) $app->submenu ) as $parent ) {
 		foreach ( $app->submenu[ $parent ] as $submenu_array ) {
 			if ( ! empty( $typenow ) && ( $submenu_array[2] == "{$pagenow}?post_type={$typenow}" ) ) {
-				$app->parent_file = $parent;
+				$app->set( 'parent_file', $parent );
 				return $parent;
-			} elseif ( $submenu_array[2] === $pagenow && empty( $typenow ) && ( empty( $app->parent_file ) || false === strpos( $app->parent_file, '?' ) ) ) {
-				$app->parent_file = $parent;
+			} elseif ( $submenu_array[2] === $pagenow && empty( $typenow ) && ( empty( $parent_file ) || false === strpos( $parent_file, '?' ) ) ) {
+				$app->set( 'parent_file', $parent );
 				return $parent;
 			} elseif ( $plugin_page && $plugin_page === $submenu_array[2] ) {
-				$app->parent_file = $parent;
+				$app->set( 'parent_file', $parent );
 				return $parent;
 			}
 		}
 	}
 
-	if ( empty( $app->parent_file ) ) {
-		$app->parent_file = '';
+	if ( ! $app->get( 'parent_file' ) ) {
+		$app->set( 'parent_file', '' );
 	}
 	return '';
 }

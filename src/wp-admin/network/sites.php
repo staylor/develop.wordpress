@@ -18,8 +18,8 @@ $wp_list_table = _get_list_table( 'WP_MS_Sites_List_Table' );
 $pagenum = $wp_list_table->get_pagenum();
 
 $app->set( 'title', __( 'Sites' ) );
-$app->parent_file = 'sites.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'sites.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 add_screen_option( 'per_page' );
 

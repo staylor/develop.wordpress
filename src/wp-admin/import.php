@@ -43,8 +43,8 @@ wp_enqueue_script( 'plugin-install' );
 wp_enqueue_script( 'updates' );
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
-$app->parent_file = 'tools.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'tools.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 ?>
 
 <div class="wrap">

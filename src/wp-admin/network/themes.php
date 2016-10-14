@@ -72,8 +72,8 @@ if ( $action ) {
 				$themes = [];
 
 			$app->set( 'title', __( 'Update Themes' ) );
-			$app->parent_file = 'themes.php';
-			$app->current_screen->set_parentage( $app->parent_file );
+			$app->set( 'parent_file', 'themes.php' );
+			$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 			require_once(ABSPATH . 'wp-admin/admin-header.php');
 
@@ -115,8 +115,8 @@ if ( $action ) {
 
 			include(ABSPATH . 'wp-admin/update.php');
 
-			$app->parent_file = 'themes.php';
-			$app->current_screen->set_parentage( $app->parent_file );
+			$app->set( 'parent_file', 'themes.php' );
+			$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 			if ( ! $_request->get( 'verify-delete' ) ) {
 				wp_enqueue_script( 'jquery' );
@@ -232,8 +232,8 @@ add_screen_option( 'per_page' );
 ( new ThemeHelp( get_current_screen() ) )->addMultisiteThemes();
 
 $app->set( 'title', __( 'Themes' ) );
-$app->parent_file = 'themes.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'themes.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 wp_enqueue_script( 'updates' );
 wp_enqueue_script( 'theme-preview' );

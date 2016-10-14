@@ -21,8 +21,8 @@ wp_dashboard_setup();
 $view->enqueueIndexScripts();
 
 $app->set( 'title', $view->l10n->dashboard );
-$app->parent_file = 'index.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'index.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 $view->help->addIndex();
 

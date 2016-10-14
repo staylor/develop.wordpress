@@ -18,8 +18,8 @@ if ( ! current_user_can( 'manage_network_options' ) )
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 
 $app->set( 'title', __( 'Network Settings' ) );
-$app->parent_file = 'settings.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'settings.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 add_action( 'admin_head', 'network_settings_add_js' );
 

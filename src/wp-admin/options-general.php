@@ -18,8 +18,8 @@ if ( ! current_user_can( 'manage_options' ) )
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
 
 $app->set( 'title', __( 'General Settings' ) );
-$app->parent_file = 'options-general.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'options-general.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 /* translators: date and time format for exact current time, mainly about timezones, see https://secure.php.net/date */
 $timezone_format = _x('Y-m-d H:i:s', 'timezone date format');
 

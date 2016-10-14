@@ -27,7 +27,7 @@ $self = preg_replace('|^.*/mu-plugins/|i', '', $self);
  *
  * @param string $parent_file The parent file.
  */
-$app->parent_file = apply_filters( 'parent_file', $app->parent_file );
+$app->set( 'parent_file', apply_filters( 'parent_file', $app->get( 'parent_file' ) ) );
 
 /**
  * Filters the file of an admin menu sub-menu item.
@@ -37,7 +37,7 @@ $app->parent_file = apply_filters( 'parent_file', $app->parent_file );
  * @param string $submenu_file The submenu file.
  * @param string $parent_file  The submenu item's parent file.
  */
-$app->submenu_file = apply_filters( 'submenu_file', $app->submenu_file, $app->parent_file );
+$app->set( 'submenu_file', apply_filters( 'submenu_file', $app->get( 'submenu_file' ), $app->get( 'parent_file' ) ) );
 
 get_admin_page_parent();
 
@@ -58,6 +58,7 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 
 	$app = getApp();
 	$typenow = $app['typenow'];
+	$parent_file = $app->get( 'parent_file' );
 
 	$first = true;
 	// 0 = menu_title, 1 = capability, 2 = menu_slug, 3 = page_title, 4 = classes, 5 = hookname, 6 = icon_url
@@ -79,7 +80,7 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 			$submenu_items = $submenu[$item[2]];
 		}
 
-		if ( ( $app->parent_file && $item[2] == $app->parent_file ) || ( empty($typenow) && $self == $item[2] ) ) {
+		if ( ( $parent_file && $item[2] === $parent_file ) || ( empty($typenow) && $self == $item[2] ) ) {
 			$class[] = ! empty( $submenu_items ) ? 'wp-has-current-submenu wp-menu-open' : 'current';
 		} else {
 			$class[] = 'wp-not-current-submenu';
@@ -182,8 +183,8 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 				// Handle current for post_type=post|page|foo pages, which won't match $self.
 				$self_type = ! empty( $typenow ) ? $self . '?post_type=' . $typenow : 'nothing';
 
-				if ( isset( $app->submenu_file ) ) {
-					if ( $app->submenu_file === $sub_item[2] ) {
+				if ( $app->get( 'submenu_file' ) ) {
+					if ( $app->get( 'submenu_file' ) === $sub_item[2] ) {
 						$class[] = 'current';
 					}
 				// If plugin_page is set the parent must either match the current page or not physically exist.

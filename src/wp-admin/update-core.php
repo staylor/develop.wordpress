@@ -36,8 +36,8 @@ if ( ( 'do-theme-upgrade' == $action || ( 'do-plugin-upgrade' == $action && ! $_
 }
 
 $app->set( 'title', __( 'WordPress Updates' ) );
-$app->parent_file = 'index.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'index.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ( new InstallHelp( $app->current_screen ) )->addUpdateCore();
 

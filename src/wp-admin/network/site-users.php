@@ -185,9 +185,9 @@ add_screen_option( 'per_page' );
 /* translators: %s: site name */
 $app->set( 'title', sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) ) );
 
-$app->parent_file = 'sites.php';
-$app->current_screen->set_parentage( $app->parent_file );
-$app->submenu_file = 'sites.php';
+$app->set( 'parent_file', 'sites.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
+$app->set( 'submenu_file', 'sites.php' );
 
 /**
  * Filters whether to show the Add Existing User form on the Multisite Users screen.

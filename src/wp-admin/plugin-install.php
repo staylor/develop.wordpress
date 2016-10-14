@@ -49,8 +49,8 @@ if ( $pagenum > $total_pages && $total_pages > 0 ) {
 }
 
 $app->set( 'title', __( 'Add Plugins' ) );
-$app->parent_file = 'plugins.php';
-$app->current_screen->set_parentage( $app->parent_file );
+$app->set( 'parent_file', 'plugins.php' );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 wp_enqueue_script( 'plugin-install' );
 if ( 'plugin-information' != $tab )

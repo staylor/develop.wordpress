@@ -29,8 +29,8 @@ if ( $_get->get( 'action' ) ) {
 			if ( $id != '0' && $id != '1' ) {
 				$_post->set( 'allusers', array( $id ) ); // confirm_delete_users() can only handle with arrays
 				$app->set( 'title', __( 'Users' ) );
-				$app->parent_file = 'users.php';
-				$app->current_screen->set_parentage( $app->parent_file );
+				$app->set( 'parent_file', 'users.php' );
+				$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 				require_once( ABSPATH . 'wp-admin/admin-header.php' );
 				echo '<div class="wrap">';
@@ -59,8 +59,8 @@ if ( $_get->get( 'action' ) ) {
 								if ( ! current_user_can( 'delete_users' ) )
 									wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 								$app->set( 'title', __( 'Users' ) );
-								$app->parent_file = 'users.php';
-								$app->current_screen->set_parentage( $app->parent_file );
+								$app->set( 'parent_file', 'users.php' );
+								$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 								require_once( ABSPATH . 'wp-admin/admin-header.php' );
 								echo '<div class="wrap">';
@@ -176,9 +176,9 @@ if ( $pagenum > $total_pages && $total_pages > 0 ) {
 	exit;
 }
 $app->set( 'title', __( 'Users' ) );
-$app->parent_file = 'users.php';
+$app->set( 'parent_file', 'users.php' );
 
-$app->current_screen->set_parentage( $app->parent_file );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 add_screen_option( 'per_page' );
 

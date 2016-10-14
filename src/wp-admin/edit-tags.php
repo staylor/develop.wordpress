@@ -39,17 +39,17 @@ $pagenum = $wp_list_table->get_pagenum();
 $app->set( 'title', $tax->labels->name );
 
 if ( 'post' !== $typenow ) {
-	$app->parent_file = ( 'attachment' == $typenow ) ? 'upload.php' : "edit.php?post_type={$typenow}";
-	$app->submenu_file = "edit-tags.php?taxonomy={$taxnow}&amp;post_type={$typenow}";
+	$app->set( 'parent_file', ( 'attachment' == $typenow ) ? 'upload.php' : "edit.php?post_type={$typenow}" );
+	$app->set( 'submenu_file', "edit-tags.php?taxonomy={$taxnow}&amp;post_type={$typenow}" );
 } elseif ( 'link_category' == $tax->name ) {
-	$app->parent_file = 'link-manager.php';
-	$app->submenu_file = 'edit-tags.php?taxonomy=link_category';
+	$app->set( 'parent_file', 'link-manager.php' );
+	$app->set( 'submenu_file', 'edit-tags.php?taxonomy=link_category' );
 } else {
-	$app->parent_file = 'edit.php';
-	$app->submenu_file = "edit-tags.php?taxonomy={$taxnow}";
+	$app->set( 'parent_file', 'edit.php' );
+	$app->set( 'submenu_file', "edit-tags.php?taxonomy={$taxnow}" );
 }
 
-$app->current_screen->set_parentage( $app->parent_file );
+$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 add_screen_option( 'per_page', array( 'default' => 20, 'option' => 'edit_' . $tax->name . '_per_page' ) );
 
