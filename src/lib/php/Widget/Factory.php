@@ -124,9 +124,10 @@ class Factory {
 	 * @access public
 	 */
 	public function _register_widgets() {
-		$keys = array_keys( $this->widgets );
-		$registered = array_keys( getApp()->get( 'registered_widgets' )->getArrayCopy() );
-		$registered = array_map( '_get_widget_id_base', $registered );
+		$app = getApp();
+		$keys = array_keys($this->widgets);
+		$registered = array_keys( $app->widgets['registered'] );
+		$registered = array_map('_get_widget_id_base', $registered);
 
 		foreach ( $keys as $key ) {
 			// don't register new widget if old widget with the same id is already registered

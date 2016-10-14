@@ -1250,7 +1250,7 @@ function _upgrade_422_remove_genericons() {
 	$affected_files = [];
 
 	// Themes
-	foreach ( $app->get( 'theme_directories' ) as $directory ) {
+	foreach ( $app->theme['directories'] as $directory ) {
 		$affected_theme_files = _upgrade_422_find_genericons_files_in_folder( $directory );
 		$affected_files       = array_merge( $affected_files, $affected_theme_files );
 	}

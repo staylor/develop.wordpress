@@ -58,7 +58,7 @@ class FormHandler extends AdminHandler {
 
 		$this->_post->replace( $post_data );
 
-		foreach ( $this->app->get( 'widget_updates' ) as $name => $control ) {
+		foreach ( (array) $this->app->widgets['updates'] as $name => $control ) {
 			if ( $name !== $id_base || ! is_callable( $control['callback'] ) ) {
 				continue;
 			}

@@ -490,8 +490,8 @@ class WP_Upgrader {
 		 */
 		$protected_directories = array( ABSPATH, WP_CONTENT_DIR, WP_PLUGIN_DIR, WP_CONTENT_DIR . '/themes' );
 
-		if ( $app->get( 'theme_directories' )->count() ) {
-			$protected_directories = array_merge( $protected_directories, $app->get( 'theme_directories' )->getArrayCopy() );
+		if ( is_array( $app->theme['directories'] ) ) {
+			$protected_directories = array_merge( $protected_directories, $app->theme['directories'] );
 		}
 
 		if ( in_array( $destination, $protected_directories ) ) {

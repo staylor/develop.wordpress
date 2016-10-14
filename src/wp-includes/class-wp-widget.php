@@ -432,9 +432,8 @@ class WP_Widget {
 				return;
 			}
 
-			$registered = $app->get( 'registered_widgets' );
-			if ( isset( $registered[ $del_id ]['params'][0]['number'] ) ) {
-				$number = $registered[ $del_id ]['params'][0]['number'];
+			if ( isset( $app->widgets['registered'][$del_id]['params'][0]['number'] ) ) {
+				$number = $app->widgets['registered'][$del_id]['params'][0]['number'];
 
 				if ( $this->id_base . '-' . $number == $del_id ) {
 					unset($all_instances[$number]);

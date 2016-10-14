@@ -111,21 +111,13 @@ function wp_dashboard_setup() {
 		$dashboard_widgets = apply_filters( 'wp_dashboard_widgets', [] );
 	}
 
-	$registered = $app->get( 'registered_widgets' );
-	$controls = $app->get( 'widget_controls' );
-
+	$registered = $app->widgets['registered'];
 	foreach ( $dashboard_widgets as $widget_id ) {
 		$name = empty( $registered[ $widget_id ]['all_link'] ) ?
 			$registered[ $widget_id ]['name'] :
 			$registered[ $widget_id ]['name'] .
 			" <a href='{$registered[ $widget_id ]['all_link']}' class='edit-box open-box'>" . __('View all') . '</a>';
-
-		wp_add_dashboard_widget(
-			$widget_id,
-			$name,
-			$registered[ $widget_id ]['callback'],
-			$controls[ $widget_id ]['callback']
-		);
+		wp_add_dashboard_widget( $widget_id, $name, $registered[ $widget_id ]['callback'], $app->widgets['controls'][$widget_id]['callback'] );
 	}
 
 	if ( 'POST' == $app['request.method'] && $_post->get( 'widget_id' ) ) {
