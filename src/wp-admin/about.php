@@ -6,8 +6,6 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
@@ -42,7 +40,6 @@ if ( 'en' !== $locale ) {
 	$video_url = add_query_arg( 'defaultLangCode', $locale, $video_url );
 }
 
-$app = getApp();
 $app->set( 'title', __( 'About' ) );
 
 list( $display_version ) = explode( '-', $app['wp_version'] );
