@@ -3588,7 +3588,7 @@ Attachments = View.extend({
 	initSortable: function() {
 		var collection = this.collection;
 
-		if ( wp.media.isTouchDevice || ! this.options.sortable || ! $.fn.sortable ) {
+		if ( ! this.options.sortable || ! $.fn.sortable ) {
 			return;
 		}
 
@@ -3647,7 +3647,7 @@ Attachments = View.extend({
 	},
 
 	refreshSortable: function() {
-		if ( wp.media.isTouchDevice || ! this.options.sortable || ! $.fn.sortable ) {
+		if ( ! this.options.sortable || ! $.fn.sortable ) {
 			return;
 		}
 
@@ -7069,7 +7069,7 @@ Search = wp.media.View.extend({
 
 	attributes: {
 		type:        'search',
-		placeholder: l10n.search
+		placeholder: l10n.searchMediaPlaceholder
 	},
 
 	events: {

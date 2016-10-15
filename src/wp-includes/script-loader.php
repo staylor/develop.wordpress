@@ -225,20 +225,23 @@ function wp_default_scripts( &$scripts ) {
 		'oneResult' => __( '1 result found. Use up and down arrow keys to navigate.' ),
 		/* translators: %d: Number of results found when using jQuery UI Autocomplete */
 		'manyResults' => __( '%d results found. Use up and down arrow keys to navigate.' ),
-	] );
+		'itemSelected' => __( 'Item selected.' ),
+	) );
 
 	// deprecated, not used in core, most functionality is included in jQuery 1.3
 	$scripts->add( 'jquery-form', "/wp-includes/js/jquery/jquery.form$suffix.js", [ 'jquery' ], '3.37.0', 1 );
 
 	// jQuery plugins
-	$scripts->add( 'jquery-color', "/wp-includes/js/jquery/jquery.color.min.js", [ 'jquery' ], '2.1.1', 1 );
-	$scripts->add( 'suggest', "/wp-includes/js/jquery/suggest$suffix.js", [ 'jquery' ], '1.1-20110113', 1 );
-	$scripts->add( 'schedule', '/wp-includes/js/jquery/jquery.schedule.js', [ 'jquery' ], '20m', 1 );
-	$scripts->add( 'jquery-query', "/wp-includes/js/jquery/jquery.query.js", [ 'jquery' ], '2.1.7', 1 );
-	$scripts->add( 'jquery-serialize-object', "/wp-includes/js/jquery/jquery.serialize-object.js", [ 'jquery' ], '0.2', 1 );
-	$scripts->add( 'jquery-hotkeys', "/wp-includes/js/jquery/jquery.hotkeys$suffix.js", [ 'jquery' ], '0.0.2m', 1 );
-	$scripts->add( 'jquery-table-hotkeys', "/wp-includes/js/jquery/jquery.table-hotkeys$suffix.js", [ 'jquery', 'jquery-hotkeys' ], false, 1 );
-	$scripts->add( 'jquery-touch-punch', "/wp-includes/js/jquery/jquery.ui.touch-punch.js", [ 'jquery-ui-widget', 'jquery-ui-mouse' ], '0.2.2', 1 );
+	$scripts->add( 'jquery-color', "/wp-includes/js/jquery/jquery.color.min.js", array('jquery'), '2.1.1', 1 );
+	$scripts->add( 'schedule', '/wp-includes/js/jquery/jquery.schedule.js', array('jquery'), '20m', 1 );
+	$scripts->add( 'jquery-query', "/wp-includes/js/jquery/jquery.query.js", array('jquery'), '2.1.7', 1 );
+	$scripts->add( 'jquery-serialize-object', "/wp-includes/js/jquery/jquery.serialize-object.js", array('jquery'), '0.2', 1 );
+	$scripts->add( 'jquery-hotkeys', "/wp-includes/js/jquery/jquery.hotkeys$suffix.js", array('jquery'), '0.0.2m', 1 );
+	$scripts->add( 'jquery-table-hotkeys', "/wp-includes/js/jquery/jquery.table-hotkeys$suffix.js", array('jquery', 'jquery-hotkeys'), false, 1 );
+	$scripts->add( 'jquery-touch-punch', "/wp-includes/js/jquery/jquery.ui.touch-punch.js", array('jquery-ui-widget', 'jquery-ui-mouse'), '0.2.2', 1 );
+
+	// Not used any more, registered for backwards compatibility.
+	$scripts->add( 'suggest', "/wp-includes/js/jquery/suggest$suffix.js", array('jquery'), '1.1-20110113', 1 );
 
 	// Masonry v2 depended on jQuery. v3 does not. The older jquery-masonry handle is a shiv.
 	// It sets jQuery as a dependency, as the theme may have been implicitly loading it this way.
@@ -514,8 +517,10 @@ function wp_default_scripts( &$scripts ) {
 			'postBoxEmptyString' => __( 'Drag boxes here' ),
 		] );
 
-		$scripts->add( 'tags-box', "/wp-admin/js/tags-box$suffix.js", [ 'jquery', 'suggest' ], false, 1 );
-		did_action( 'init' ) && $scripts->localize( 'tags-box', 'tagsBoxL10n', [
+		$scripts->add( 'tags-box', "/wp-admin/js/tags-box$suffix.js", array( 'jquery', 'tags-suggest' ), false, 1 );
+
+		$scripts->add( 'tags-suggest', "/wp-admin/js/tags-suggest$suffix.js", array( 'jquery-ui-autocomplete', 'wp-a11y' ), false, 1 );
+		did_action( 'init' ) && $scripts->localize( 'tags-suggest', 'tagsSuggestL10n', array(
 			'tagDelimiter' => _x( ',', 'tag delimiter' ),
 		] );
 
@@ -575,8 +580,8 @@ function wp_default_scripts( &$scripts ) {
 
 		$scripts->add( 'theme', "/wp-admin/js/theme$suffix.js", [ 'wp-backbone', 'wp-a11y' ], false, 1 );
 
-		$scripts->add( 'inline-edit-post', "/wp-admin/js/inline-edit-post$suffix.js", [ 'jquery', 'suggest', 'wp-a11y' ], false, 1 );
-		did_action( 'init' ) && $scripts->localize( 'inline-edit-post', 'inlineEditL10n', [
+		$scripts->add( 'inline-edit-post', "/wp-admin/js/inline-edit-post$suffix.js", array( 'jquery', 'tags-suggest', 'wp-a11y' ), false, 1 );
+		did_action( 'init' ) && $scripts->localize( 'inline-edit-post', 'inlineEditL10n', array(
 			'error'      => __( 'Error while saving the changes.' ),
 			'ntdeltitle' => __( 'Remove From Bulk Edit' ),
 			'notitle'    => __( '(no title)' ),

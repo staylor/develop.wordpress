@@ -3423,6 +3423,7 @@ function wp_enqueue_media( $args = [] ) {
 		'filterByDate'           => __( 'Filter by date' ),
 		'filterByType'           => __( 'Filter by type' ),
 		'searchMediaLabel'       => __( 'Search Media' ),
+		'searchMediaPlaceholder' => __( 'Search media items...' ), // placeholder (no ellipsis)
 		'noMedia'                => __( 'No media files found.' ),
 
 		// Library Details
