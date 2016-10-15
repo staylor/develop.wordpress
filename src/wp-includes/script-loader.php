@@ -226,7 +226,7 @@ function wp_default_scripts( &$scripts ) {
 		/* translators: %d: Number of results found when using jQuery UI Autocomplete */
 		'manyResults' => __( '%d results found. Use up and down arrow keys to navigate.' ),
 		'itemSelected' => __( 'Item selected.' ),
-	) );
+	] );
 
 	// deprecated, not used in core, most functionality is included in jQuery 1.3
 	$scripts->add( 'jquery-form', "/wp-includes/js/jquery/jquery.form$suffix.js", [ 'jquery' ], '3.37.0', 1 );
@@ -520,7 +520,7 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add( 'tags-box', "/wp-admin/js/tags-box$suffix.js", array( 'jquery', 'tags-suggest' ), false, 1 );
 
 		$scripts->add( 'tags-suggest', "/wp-admin/js/tags-suggest$suffix.js", array( 'jquery-ui-autocomplete', 'wp-a11y' ), false, 1 );
-		did_action( 'init' ) && $scripts->localize( 'tags-suggest', 'tagsSuggestL10n', array(
+		did_action( 'init' ) && $scripts->localize( 'tags-suggest', 'tagsSuggestL10n', [
 			'tagDelimiter' => _x( ',', 'tag delimiter' ),
 		] );
 
@@ -580,8 +580,8 @@ function wp_default_scripts( &$scripts ) {
 
 		$scripts->add( 'theme', "/wp-admin/js/theme$suffix.js", [ 'wp-backbone', 'wp-a11y' ], false, 1 );
 
-		$scripts->add( 'inline-edit-post', "/wp-admin/js/inline-edit-post$suffix.js", array( 'jquery', 'tags-suggest', 'wp-a11y' ), false, 1 );
-		did_action( 'init' ) && $scripts->localize( 'inline-edit-post', 'inlineEditL10n', array(
+		$scripts->add( 'inline-edit-post', "/wp-admin/js/inline-edit-post$suffix.js", [ 'jquery', 'tags-suggest', 'wp-a11y' ], false, 1 );
+		did_action( 'init' ) && $scripts->localize( 'inline-edit-post', 'inlineEditL10n', [
 			'error'      => __( 'Error while saving the changes.' ),
 			'ntdeltitle' => __( 'Remove From Bulk Edit' ),
 			'notitle'    => __( '(no title)' ),
