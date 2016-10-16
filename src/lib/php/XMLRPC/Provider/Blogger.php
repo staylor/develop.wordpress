@@ -297,32 +297,6 @@ class Blogger implements ProviderInterface {
 	}
 
 	/**
-	 * Deprecated.
-	 *
-	 * @since 1.5.0
-	 * @deprecated 3.5.0
-	 *
-	 * @param array $args Unused.
-	 * @return Error Error object.
-	 */
-	public function blogger_getTemplate( $args ) {
-		return new Error( 403, __( 'Sorry, that file cannot be edited.' ) );
-	}
-
-	/**
-	 * Deprecated.
-	 *
-	 * @since 1.5.0
-	 * @deprecated 3.5.0
-	 *
-	 * @param array $args Unused.
-	 * @return Error Error object.
-	 */
-	public function blogger_setTemplate( $args ) {
-		return new Error( 403, __( 'Sorry, that file cannot be edited.' ) );
-	}
-
-	/**
 	 * Creates new post.
 	 *
 	 * @since 1.5.0

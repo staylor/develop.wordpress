@@ -234,7 +234,7 @@ class FormHandler extends AdminHandler {
 		$errors = edit_user( $user_id );
 
 		// Grant or revoke super admin status if requested.
-		if ( is_multisite() && is_network_admin() && !IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && ! isset( $GLOBALS['super_admins'] ) && empty( $this->_post->get( 'super_admin' ) ) == is_super_admin( $user_id ) ) {
+		if ( is_multisite() && is_network_admin() && !IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && ! $this->app['super_admins'] && empty( $this->_post->get( 'super_admin' ) ) == is_super_admin( $user_id ) ) {
 			if ( empty( $this->_post->get( 'super_admin' ) ) ) {
 				revoke_super_admin( $user_id );
 			} else {

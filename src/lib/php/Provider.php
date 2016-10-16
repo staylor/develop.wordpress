@@ -27,6 +27,10 @@ class Provider implements ServiceProviderInterface {
 
 		$app['required_mysql_version'] = '5.0';
 
+		$app['super_admins'] = $app->factory( function () {
+			return $GLOBALS['super_admins'] ?? null;
+		} );
+
 		// for non-US English locales
 		$app['wp_local_package'] = null;
 

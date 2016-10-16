@@ -2,7 +2,7 @@
 namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\Error;
-use WP\User\User;
+use WP\User\User as WP_User;
 use function WP\getApp;
 
 trait Option {
@@ -11,7 +11,7 @@ trait Option {
 	 */
 	abstract public function escape( &$data );
 	/**
-	 * @return User|bool
+	 * @return WP_User|bool
 	 */
 	abstract public function login( $username, $password );
 	/**

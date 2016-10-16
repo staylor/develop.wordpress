@@ -486,7 +486,7 @@ class PostType extends Observable {
 			$args['show_in_nav_menus'] = $args['public'];
 		}
 
-		// If not set, default to true if not public, false if public.
+		// If not set, defaults to the opposite of the value for 'public'
 		if ( null === $args['exclude_from_search'] ) {
 			$args['exclude_from_search'] = ! $args['public'];
 		}

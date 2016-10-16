@@ -485,7 +485,7 @@ class WP extends Observer {
 
 		foreach ( (array) $headers as $name => $field_value ) {
 			$header = sprintf( '%s: %s', $name, $field_value );
-			@header( $header );
+			header( $header );
 		}
 
 		if ( $exit_required ) {

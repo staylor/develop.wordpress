@@ -440,7 +440,7 @@ function validate_another_blog_signup() {
 		return false;
 	}
 
-	confirm_another_blog_signup( $domain, $path, $blog_title, $current_user->user_login, $current_user->user_email, $meta, $blog_id );
+	confirm_another_blog_signup( $domain, $path, $blog_title, $current_user->user_login, $blog_id );
 	return true;
 }
 
@@ -458,7 +458,7 @@ function validate_another_blog_signup() {
  * @param array  $meta       Any additional meta from the {@see 'add_signup_meta'} filter in validate_blog_signup().
  * @param int    $blog_id    The site ID.
  */
-function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $user_email = '', $meta = array(), $blog_id = 0 ) {
+function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $blog_id = 0 ) {
 
 	if ( $blog_id ) {
 		switch_to_blog( $blog_id );

@@ -2,7 +2,7 @@
 namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\Error;
-use WP\User\User;
+use WP\User\User as WP_User;
 
 trait Revision {
 	/**
@@ -10,7 +10,7 @@ trait Revision {
 	 */
 	abstract public function escape( &$data );
 	/**
-	 * @return User|bool
+	 * @return WP_User|bool
 	 */
 	abstract public function login( $username, $password );
 	abstract public function minimum_args( $args, $count );

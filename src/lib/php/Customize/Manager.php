@@ -935,10 +935,9 @@ class Manager {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param $current_theme {@internal Parameter is not used}
 	 * @return string Theme name.
 	 */
-	public function current_theme( $current_theme ) {
+	public function current_theme() {
 		return $this->theme()->display('Name');
 	}
 
@@ -2136,7 +2135,6 @@ class Manager {
 		) ) );
 
 		$this->add_setting( new \WP_Customize_Header_Image_Setting( $this, 'header_image_data', array(
-			// 'default'        => get_theme_support( 'custom-header', 'default-image' ),
 			'theme_supports' => 'custom-header',
 		) ) );
 

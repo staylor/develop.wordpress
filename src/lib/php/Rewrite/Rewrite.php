@@ -1117,40 +1117,40 @@ class Rewrite extends Observable {
 					// Add a rule for at attachments, which take the form of <permalink>/some-text.
 					$sub1 = $submatchbase . '/([^/]+)/';
 
-					// Add trackback regex <permalink>/trackback/...
+					// Add trackback regex {permalink}/trackback/...
 					$sub1tb = $sub1 . $trackbackregex;
 
-					// And <permalink>/feed/(atom|...)
+					// And {permalink}/feed/(atom|...)
 					$sub1feed = $sub1 . $feedregex;
 
-					// And <permalink>/(feed|atom...)
+					// And {permalink}/(feed|atom...)
 					$sub1feed2 = $sub1 . $feedregex2;
 
-					// And <permalink>/comment-page-xx
+					// And {permalink}/comment-page-xx
 					$sub1comment = $sub1 . $commentregex;
 
-					// And <permalink>/embed/...
+					// And {permalink}/embed/...
 					$sub1embed = $sub1 . $embedregex;
 
 					/*
 					 * Add another rule to match attachments in the explicit form:
-					 * <permalink>/attachment/some-text
+					 * {permalink}/attachment/some-text
 					 */
 					$sub2 = $submatchbase . '/attachment/([^/]+)/';
 
-					// And add trackbacks <permalink>/attachment/trackback.
+					// And add trackbacks {permalink}/attachment/trackback.
 					$sub2tb = $sub2 . $trackbackregex;
 
-					// Feeds, <permalink>/attachment/feed/(atom|...)
+					// Feeds, {permalink}/attachment/feed/(atom|...)
 					$sub2feed = $sub2 . $feedregex;
 
-					// And feeds again on to this <permalink>/attachment/(feed|atom...)
+					// And feeds again on to this {permalink}/attachment/(feed|atom...)
 					$sub2feed2 = $sub2 . $feedregex2;
 
-					// And <permalink>/comment-page-xx
+					// And {permalink}/comment-page-xx
 					$sub2comment = $sub2 . $commentregex;
 
-					// And <permalink>/embed/...
+					// And {permalink}/embed/...
 					$sub2embed = $sub2 . $embedregex;
 
 					// Create queries for these extra tag-ons we've just dealt with.
