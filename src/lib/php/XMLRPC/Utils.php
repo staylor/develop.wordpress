@@ -8,7 +8,6 @@ use function WP\getApp;
 trait Utils {
 	public $error;
 
-	abstract public function escape( &$data );
 	/**
 	 * Flags that the user authentication has failed in this instance of wp_xmlrpc_server.
 	 *

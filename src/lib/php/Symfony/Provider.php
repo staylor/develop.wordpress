@@ -2,16 +2,12 @@
 namespace WP\Symfony;
 
 use Pimple\{Container,ServiceProviderInterface};
-use Symfony\Component\HttpFoundation\{Request,Response,RedirectResponse};
+use Symfony\Component\HttpFoundation\{Request,Response};
 
 class Provider implements ServiceProviderInterface {
 	public function register( Container $app ) {
 		$app['response'] = function () {
 			return new Response();
-		};
-
-		$app['response.redirect'] = function () {
-			return new RedirectResponse();
 		};
 
 		$app['request'] = function () {

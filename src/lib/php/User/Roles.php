@@ -1,7 +1,7 @@
 <?php
 namespace WP\User;
 
-use WP\Observer;
+use WP\{Observer,Observable};
 use function WP\getApp;
 
 /**
@@ -293,7 +293,7 @@ class Roles extends Observer {
 		return isset( $this->role_names[ $role ] );
 	}
 
-	public function update( \SplSubject $subject ) {
+	public function update( Observable $subject ) {
 		$message = $subject->message;
 
 		switch ( $message['event'] ) {

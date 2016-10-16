@@ -246,7 +246,8 @@ class Pingback implements ProviderInterface {
 		$comment_author = $title;
 		$comment_author_email = '';
 		$this->escape( $comment_author );
-		$comment_author_url = $this->escape( str_replace( '&', '&amp;', $pagelinkedfrom ) );
+		$replaced = str_replace( '&', '&amp;', $pagelinkedfrom );
+		$comment_author_url = $this->escape( $replaced );
 
 		$comment_type = 'pingback';
 

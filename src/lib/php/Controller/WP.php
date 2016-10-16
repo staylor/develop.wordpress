@@ -1,7 +1,7 @@
 <?php
 namespace WP\Controller;
 
-use WP\Observer;
+use WP\{Observer,Observable};
 use function WP\getApp;
 /**
  * WordPress environment setup class.
@@ -717,7 +717,7 @@ class WP extends Observer {
 		do_action_ref_array( 'wp', [ &$this ] );
 	}
 
-	public function update( \SplSubject $subject ) {
+	public function update( Observable $subject ) {
 		$message = $subject->message;
 
 		switch ( $message['event'] ) {

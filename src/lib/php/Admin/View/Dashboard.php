@@ -9,7 +9,7 @@ class Dashboard extends View {
 	public function __construct( App $app ) {
 		parent::__construct( $app );
 
-		$this->help = new Help( get_current_screen() );
+		$this->help = new Help();
 
 		$this->setL10n( new L10N() );
 	}

@@ -10,7 +10,7 @@ class Widget extends View {
 		parent::__construct( $app );
 
 		$this->handler = new FormHandler( $app );
-		$this->help = new Help( get_current_screen() );
+		$this->help = new Help();
 		$this->setL10n( new L10N() );
 	}
 }
