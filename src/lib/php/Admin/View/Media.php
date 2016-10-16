@@ -18,6 +18,9 @@ class Media extends View {
 		$this->_server->set( 'REQUEST_URI', $uri );
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getListMessage() {
 		$messages = [];
 
@@ -95,7 +98,7 @@ class Media extends View {
 			}
 			$message = sprintf( $message, number_format_i18n( $trashed ) );
 			$url = 'upload.php?doaction=undo&action=untrash&ids=' . $ids;
-			$message .= ' <a href="' . esc_url( wp_nonce_url( $url, "bulk-media" ) ) . '">' . __( 'Undo' ) . '</a>';
+			$message .= ' <a href="' . esc_url( wp_nonce_url( $url, 'bulk-media' ) ) . '">' . __( 'Undo' ) . '</a>';
 			$this->setRequestUri( remove_query_arg(
 				[ 'trashed' ],
 				$this->app['request.uri']

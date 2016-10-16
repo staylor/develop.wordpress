@@ -7,7 +7,8 @@ class FormHandler extends AdminHandler {
 
 	public function doSaveOrDelete( $sidebars_widgets ) {
 		$widget_id = $this->_get->get( 'widget-id' );
-		check_admin_referer( "save-delete-widget-{$widget_id}" );
+		$referer = sprintf( 'save-delete-widget-%s', $widget_id );
+		check_admin_referer( $referer );
 
 		$post_data = [];
 		$number = $this->_get->getInt( 'multi_number', 0 );

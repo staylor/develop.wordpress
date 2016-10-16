@@ -2,11 +2,18 @@
 namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\Error;
+use WP\User\User;
 use WP\XMLRPC\Provider\MetaWeblog;
 use function WP\getApp;
 
 trait Page {
+	/**
+	 * @return string|void
+	 */
 	abstract public function escape( &$data );
+	/**
+	 * @return User|bool
+	 */
 	abstract public function login( $username, $password );
 	/**
 	 * Prepares page data for return in an XML-RPC object.

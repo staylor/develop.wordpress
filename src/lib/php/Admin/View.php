@@ -138,15 +138,27 @@ class View extends BaseView {
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function is_network_admin() {
 		return is_network_admin();
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function is_user_admin() {
 		return is_user_admin();
 	}
 
 	public function setAdminActions( $hook_suffix ) {
+		$admin_head_hook = sprintf( 'admin_head-%s', $hook_suffix );
+		$admin_print_styles_hook = sprintf( 'admin_print_styles-%s', $hook_suffix );
+		$admin_print_scripts_hook = sprintf( 'admin_print_scripts-%s', $hook_suffix );
+		$admin_print_footer_scripts_hook = sprintf( 'admin_print_footer_scripts-%s', $hook_suffix );
+		$admin_footer_hook = sprintf( 'admin_footer-%s', $hook_suffix );
+
 		$this->actions = [
 			/**
 			 * Fires inside the HTML tag in the admin header.
@@ -167,7 +179,7 @@ class View extends BaseView {
 			 *
 			 * @since 2.6.0
 			 */
-			"admin_print_styles-{$hook_suffix}" => [],
+			$admin_print_styles_hook => [],
 			/**
 			 * Fires when styles are printed for all admin pages.
 			 *
@@ -179,7 +191,7 @@ class View extends BaseView {
 			 *
 			 * @since 2.1.0
 			 */
-			"admin_print_scripts-{$hook_suffix}" => [],
+			$admin_print_scripts_hook => [],
 			/**
 			 * Fires when scripts are printed for all admin pages.
 			 *
@@ -194,7 +206,7 @@ class View extends BaseView {
 			 *
 			 * @since 2.1.0
 			 */
-			"admin_head-{$hook_suffix}" => [],
+			$admin_head_hook => [],
 			/**
 			 * Fires in head section for all admin pages.
 			 *
@@ -261,7 +273,7 @@ class View extends BaseView {
 			 *
 			 * @param string $hook_suffix The current admin page.
 			 */
-			"admin_print_footer_scripts-{$hook_suffix}" => [],
+			$admin_print_footer_scripts_hook => [],
 			/**
 			 * Prints any scripts and data queued for the footer.
 			 *
@@ -278,10 +290,14 @@ class View extends BaseView {
 			 *
 			 * @param string $hook_suffix The current admin page.
 			 */
-			"admin_footer-{$hook_suffix}" => [],
+			$admin_footer_hook => [],
 		];
 	}
 
+	/**
+	 * @param string $title
+	 * @return string
+	 */
 	protected function getAdminTitle( $title ) {
 		if ( is_network_admin() ) {
 			$admin_title = sprintf( __( 'Network Admin: %s' ), esc_html( get_current_site()->site_name ) );
@@ -307,6 +323,10 @@ class View extends BaseView {
 		return apply_filters( 'admin_title', $admin_title, $title );
 	}
 
+	/**
+	 * @param string $admin_page
+	 * @return string
+	 */
 	protected function getAdminBodyClass( $admin_page ) {
 		$admin_body_class = $admin_page;
 

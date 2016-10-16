@@ -367,24 +367,25 @@ class Dependencies {
 	 */
 	public function query( $handle, $list = 'registered' ) {
 		switch ( $list ) {
-		case 'registered' :
+		case 'registered':
 		case 'scripts': // back compat
-			if ( isset( $this->registered[ $handle ] ) )
+			if ( isset( $this->registered[ $handle ] ) ) {
 				return $this->registered[ $handle ];
+			}
 			return false;
 
-		case 'enqueued' :
-		case 'queue' :
+		case 'enqueued':
+		case 'queue':
 			if ( in_array( $handle, $this->queue ) ) {
 				return true;
 			}
 			return $this->recurse_deps( $this->queue, $handle );
 
-		case 'to_do' :
+		case 'to_do':
 		case 'to_print': // back compat
 			return in_array( $handle, $this->to_do );
 
-		case 'done' :
+		case 'done':
 		case 'printed': // back compat
 			return in_array( $handle, $this->done );
 		}

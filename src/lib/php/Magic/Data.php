@@ -17,13 +17,20 @@ trait Data {
 		return array_key_exists( $name, $this->data );
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function __get( string $name ) {
 		if ( array_key_exists( $name, $this->data ) ) {
 			return $this->data[ $name ];
 		}
 	}
 
-	public function getData() {
+	/**
+	 * @return array
+	 */
+	public function getData(): array
+	{
 		return $this->data;
 	}
 

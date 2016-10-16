@@ -20,6 +20,10 @@ abstract class FormHandler {
 		exit();
 	}
 
+	/**
+	 * @param string $name
+	 * @return \Symfony\Component\HttpFoundation\ParameterBag|void
+	 */
 	public function __get( string $name ) {
 		switch ( $name ) {
 		case '_get':

@@ -114,7 +114,7 @@ final class Screen {
 	 */
 	private $_help_sidebar = '';
 
- 	/**
+	/**
 	 * The accessible hidden headings and text associated with the screen, if any.
 	 *
 	 * @since 4.4.0
@@ -190,7 +190,7 @@ final class Screen {
 		if ( $hook_name ) {
 			$id = $hook_name;
 		} else {
-			$id = $app->hook_suffix;
+			$id = $app->get( 'hook_suffix' );
 		}
 		// For those pesky meta boxes.
 		if ( $hook_name && post_type_exists( $hook_name ) ) {
@@ -228,7 +228,7 @@ final class Screen {
 				}
 			}
 
-			if ( ! $in_admin ) {
+			if ( false === $in_admin ) {
 				$in_admin = 'site';
 			}
 		} else {
@@ -289,20 +289,20 @@ final class Screen {
 		}
 
 		switch ( $base ) {
-		case 'post' :
+		case 'post':
 			if ( null === $post_type ) {
 				$post_type = 'post';
 			}
 			$id = $post_type;
 			break;
-		case 'edit' :
+		case 'edit':
 			if ( null === $post_type ) {
 				$post_type = 'post';
 			}
 			$id .= '-' . $post_type;
 			break;
-		case 'edit-tags' :
-		case 'term' :
+		case 'edit-tags':
+		case 'term':
 			if ( null === $taxonomy ) {
 				$taxonomy = 'post_tag';
 			}
@@ -638,7 +638,7 @@ final class Screen {
 		return $this->columns;
 	}
 
- 	/**
+	/**
 	 * Get the accessible hidden headings and text used in the screen.
 	 *
 	 * @since 4.4.0
@@ -816,7 +816,8 @@ final class Screen {
 		}
 
 		if ( $this->get_option( 'layout_columns' ) ) {
-			$this->columns = (int) get_user_option( "screen_layout_{$this->id}" );
+			$option = sprintf( 'screen_layout_%s', $this->id );
+			$this->columns = (int) get_user_option( $option );
 
 			if ( ! $this->columns && $this->get_option( 'layout_columns', 'default' ) ) {
 				$this->columns = $this->get_option( 'layout_columns', 'default' );
@@ -861,7 +862,7 @@ final class Screen {
 		case 'widgets':
 			$this->_screen_settings = '<p><a id="access-on" href="widgets.php?widgets-access=on">' . __('Enable accessibility mode') . '</a><a id="access-off" href="widgets.php?widgets-access=off">' . __('Disable accessibility mode') . "</a></p>\n";
 			break;
-		case 'post' :
+		case 'post':
 			$expand = '<fieldset class="editor-expand hidden"><legend>' . __( 'Additional settings' ) . '</legend><label for="editor-expand-toggle">';
 			$expand .= '<input type="checkbox" id="editor-expand-toggle"' . checked( get_user_setting( 'editor_expand', 'on' ), 'on', false ) . ' />';
 			$expand .= __( 'Enable full-height editor and distraction-free functionality.' ) . '</label></fieldset>';
@@ -1128,7 +1129,8 @@ final class Screen {
 
 		$option = $this->get_option( 'per_page', 'option' );
 		if ( ! $option ) {
-			$option = str_replace( '-', '_', "{$this->id}_per_page" );
+			$id_per_page = sprintf( '%s_per_page', $this->id );
+			$option = str_replace( '-', '_', $id_per_page );
 		}
 
 		$per_page = (int) get_user_option( $option );

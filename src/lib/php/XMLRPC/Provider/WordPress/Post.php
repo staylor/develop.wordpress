@@ -2,10 +2,20 @@
 namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\{Date,Error};
+use WP\User\User;
 
 trait Post {
+	/**
+	 * @return string|void
+	 */
 	abstract public function escape( &$data );
+	/**
+	 * @return User|bool
+	 */
 	abstract public function login( $username, $password );
+	/**
+	 * @return bool
+	 */
 	abstract public function minimum_args( $args, $count );
 	/**
 	 * Prepares post data for return in an XML-RPC object.

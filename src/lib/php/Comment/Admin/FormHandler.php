@@ -7,18 +7,21 @@ class FormHandler extends AdminHandler {
 	public function doBulkComments( $doaction, $pagenum ) {
 		check_admin_referer( 'bulk-comments' );
 
+		$action = $doaction;
 		$comment_ids = [];
 
-		if ( 'delete_all' == $doaction && $this->_request->get( 'pagegen_timestamp' ) ) {
+		if ( 'delete_all' === $action && $this->_request->get( 'pagegen_timestamp' ) ) {
 			$comment_status = wp_unslash( $this->_request->get( 'comment_status' ) );
 			$delete_time = wp_unslash( $this->_request->get( 'pagegen_timestamp' ) );
 
 			$wpdb = $this->app['db'];
-			$comment_ids = $wpdb->get_col( $wpdb->prepare( "SELECT comment_ID FROM $wpdb->comments WHERE comment_approved = %s AND %s > comment_date_gmt", $comment_status, $delete_time ) );
-			$doaction = 'delete';
+			$sql = sprint( 'SELECT comment_ID FROM %s WHERE comment_approved = %s AND %s > comment_date_gmt', $wpdb->comments );
+			$query = $wpdb->prepare( $sql, $comment_status, $delete_time );
+			$comment_ids = $wpdb->get_col( $query );
+			$action = 'delete';
 		} elseif ( $this->_request->get( 'delete_comments' ) ) {
 			$comment_ids = $this->_request->get( 'delete_comments' );
-			$doaction = ( $this->_request->get( 'action' ) != -1 ) ?
+			$action = ( $this->_request->get( 'action' ) != -1 ) ?
 				$this->_request->get( 'action' ) :
 				$this->_request->get( 'action2' );
 		} elseif ( $this->_request->get( 'ids' ) ) {
@@ -42,45 +45,45 @@ class FormHandler extends AdminHandler {
 				continue;
 			}
 
-			switch ( $doaction ) {
-			case 'approve' :
+			switch ( $action ) {
+			case 'approve':
 				wp_set_comment_status( $comment_id, 'approve' );
 				$approved++;
 				break;
 
-			case 'unapprove' :
+			case 'unapprove':
 				wp_set_comment_status( $comment_id, 'hold' );
 				$unapproved++;
 				break;
 
-			case 'spam' :
+			case 'spam':
 				wp_spam_comment( $comment_id );
 				$spammed++;
 				break;
 
-			case 'unspam' :
+			case 'unspam':
 				wp_unspam_comment( $comment_id );
 				$unspammed++;
 				break;
 
-			case 'trash' :
+			case 'trash':
 				wp_trash_comment( $comment_id );
 				$trashed++;
 				break;
 
-			case 'untrash' :
+			case 'untrash':
 				wp_untrash_comment( $comment_id );
 				$untrashed++;
 				break;
 
-			case 'delete' :
+			case 'delete':
 				wp_delete_comment( $comment_id );
 				$deleted++;
 				break;
 			}
 		}
 
-		if ( ! in_array( $doaction, [ 'approve', 'unapprove', 'spam', 'unspam', 'trash', 'delete' ], true ) ) {
+		if ( ! in_array( $action, [ 'approve', 'unapprove', 'spam', 'unspam', 'trash', 'delete' ], true ) ) {
 			/**
 			 * Fires when a custom bulk action should be handled.
 			 *
@@ -90,10 +93,10 @@ class FormHandler extends AdminHandler {
 			 * @since 4.7.0
 			 *
 			 * @param string $redirect_to The redirect URL.
-			 * @param string $doaction    The action being taken.
+			 * @param string $action      The action being taken.
 			 * @param array  $comment_ids The comments to take the action on.
 			 */
-			$redirect_to = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $redirect_to, $doaction, $comment_ids );
+			$redirect_to = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $redirect_to, $action, $comment_ids );
 		}
 
 		wp_defer_comment_counting( false );

@@ -52,9 +52,10 @@ class Menu {
 		}
 
 		$parent_file = $this->app->get( 'parent_file' );
+		$post_type_url = sprintf( '%s?post_type=%s', $pagenow, $typenow );
 		foreach ( (array) $this->app->submenu as $submenu ) {
 			foreach ( $submenu[ $parent ] as $sub ) {
-				if ( ! empty( $typenow ) && ( $sub[2] == "{$pagenow}?post_type={$typenow}" ) ) {
+				if ( ! empty( $typenow ) && $sub[2] === $post_type_url ) {
 					$this->app->set( 'parent_file', $parent );
 					return;
 				} elseif ( $sub[2] === $pagenow && empty( $typenow ) && ( empty( $parent_file ) || false === strpos( $parent_file, '?' ) ) ) {
@@ -165,7 +166,7 @@ class Menu {
 				$aria_hidden = ' aria-hidden="true"';
 			}
 
-			$output .= "<li{$class}{$id}{$aria_hidden}>";
+			$output .= sprintf( '<li%s%s%s>', $class, $id, $aria_hidden );
 
 			if ( $is_separator ) {
 				$output .= '<div class="separator"></div>';
@@ -178,18 +179,41 @@ class Menu {
 					$menu_file = substr( $menu_file, 0, $pos );
 				}
 
+				$plugin_file = path_join( WP_PLUGIN_DIR, $menu_file );
+				$admin_file = sprintf( '%s/wp-admin/%s', ABSPATH, $menu_file );
+
 				if (
 					! empty( $menu_hook ) ||
 					(
-						( 'index.php' != $submenu_items[0][2] ) &&
-						file_exists( WP_PLUGIN_DIR . "/{$menu_file}" ) &&
-						! file_exists( ABSPATH . "/wp-admin/{$menu_file}" )
+						'index.php' !== $submenu_items[0][2] &&
+						file_exists( $plugin_file ) &&
+						! file_exists( $admin_file )
 					)
 				) {
 					$admin_is_parent = true;
-					$output .= "<a href='admin.php?page={$submenu_items[0][2]}'{$class} {$aria_attributes}>{$arrow}<div class='wp-menu-image{$img_class}'{$img_style}>{$img}</div><div class='wp-menu-name'>{$title}</div></a>";
+					$output .= sprintf(
+						'<a href="admin.php?page=%s"%s %s>%s<div class="wp-menu-image%s"%s>%s</div><div class="wp-menu-name">%s</div></a>',
+						$submenu_items[0][2],
+						$class,
+						$aria_attributes,
+						$arrow,
+						$img_class,
+						$img_style,
+						$img,
+						$title
+					);
 				} else {
-					$output .= "<a href='{$submenu_items[0][2]}'{$class} {$aria_attributes}>{$arrow}<div class='wp-menu-image{$img_class}'{$img_style}>{$img}</div><div class='wp-menu-name'>{$title}</div></a>";
+					$output .= sprintf(
+						'<a href="%s"%s %s>%s<div class="wp-menu-image%s"%s>%s</div><div class="wp-menu-name">%s</div></a>',
+						$submenu_items[0][2],
+						$class,
+						$aria_attributes,
+						$arrow,
+						$img_class,
+						$img_style,
+						$img,
+						$title
+					);
 				}
 			} elseif ( ! empty( $item[2] ) && current_user_can( $item[1] ) ) {
 				$menu_hook = get_plugin_page_hook( $item[2], 'admin.php' );
@@ -209,9 +233,29 @@ class Menu {
 					)
 				) {
 					$admin_is_parent = true;
-					$output .= "<a href='admin.php?page={$item[2]}'$class $aria_attributes>$arrow<div class='wp-menu-image{$img_class}'{$img_style}>{$img}</div><div class='wp-menu-name'>{$item[0]}</div></a>";
+					$output .= sprintf(
+						'<a href="admin.php?page=%s"%s %s>%s<div class="wp-menu-image%s"%s>%s</div><div class="wp-menu-name">%s</div></a>',
+						$item[2],
+						$class,
+						$aria_attributes,
+						$arrow,
+						$img_class,
+						$img_style,
+						$img,
+						$item[0]
+					);
 				} else {
-					$output .= "<a href='{$item[2]}'{$class} {$aria_attributes}>{$arrow}<div class='wp-menu-image{$img_class}'{$img_style}>{$img}</div><div class='wp-menu-name'>{$item[0]}</div></a>";
+					$output .= sprintf(
+						'<a href="%s"%s %s>%s<div class="wp-menu-image%s"%s>%s</div><div class="wp-menu-name">%s</div></a>',
+						$item[2],
+						$class,
+						$aria_attributes,
+						$arrow,
+						$img_class,
+						$img_style,
+						$img,
+						$item[0]
+					);
 				}
 			}
 
@@ -301,14 +345,25 @@ class Menu {
 							$sub_item_url = add_query_arg( [ 'page' => $sub_item[2] ], 'admin.php' );
 						}
 						$sub_item_url = esc_url( $sub_item_url );
+						$output .= sprintf(
+							'<li%1$s><a href="%2$s"%1$s>%3$s</a></li>',
+							$class,
+							$sub_item_url,
+							$title
+						);
 						$output .= "<li{$class}><a href='{$sub_item_url}'{$class}>{$title}</a></li>";
 					} else {
-						$output .= "<li{$class}><a href='{$sub_item[2]}'{$class}>{$title}</a></li>";
+						$output .= sprintf(
+							'<li%1$s><a href="%2$s"%1$s>%3$s</a></li>',
+							$class,
+							$sub_item[2],
+							$title
+						);
 					}
 				}
-				$output .= "</ul>";
+				$output .= '</ul>';
 			}
-			$output .= "</li>";
+			$output .= '</li>';
 		}
 
 		$output .= '<li id="collapse-menu" class="hide-if-no-js"><div id="collapse-button"><div></div></div>';

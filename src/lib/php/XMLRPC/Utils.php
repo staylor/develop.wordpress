@@ -464,7 +464,7 @@ trait Utils {
 	 * @param string $thumbnail_size The image size to use for the thumbnail URL.
 	 * @return array The prepared media item data.
 	 */
-	protected function _prepare_media_item( $media_item, $thumbnail_size = 'thumbnail' ) {
+	public function _prepare_media_item( $media_item, $thumbnail_size = 'thumbnail' ) {
 		$_media_item = [
 			'attachment_id'    => strval( $media_item->ID ),
 			'date_created_gmt' => $this->_convert_date_gmt( $media_item->post_date_gmt, $media_item->post_date ),

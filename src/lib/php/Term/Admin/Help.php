@@ -6,7 +6,6 @@ use WP\Admin\Help as AdminHelp;
 class Help extends AdminHelp {
 
 	public function addEditTags( $taxnow ) {
-		$help ='';
 		if ( 'category' == $taxnow ) {
 			$help = '<p>' . sprintf(__( 'You can use categories to define sections of your site and group related posts. The default category is &#8220;Uncategorized&#8221; until you change it in your <a href="%s">writing settings</a>.' ) , 'options-writing.php' ) . '</p>';
 		} elseif ( 'link_category' == $taxnow ) {

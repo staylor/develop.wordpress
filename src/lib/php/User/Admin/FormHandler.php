@@ -55,7 +55,6 @@ class FormHandler extends AdminHandler {
 
 		// Adding an existing user to this blog
 		$new_user_email = $user_details->user_email;
-		$location = 'user-new.php';
 		$username = $user_details->user_login;
 		$user_id = $user_details->ID;
 
@@ -111,6 +110,9 @@ class FormHandler extends AdminHandler {
 		}
 	}
 
+	/**
+	 * @return array|void
+	 */
 	public function doCreateUser() {
 		check_admin_referer( 'create-user', '_wpnonce_create-user' );
 
@@ -169,7 +171,7 @@ class FormHandler extends AdminHandler {
 			] );
 
 			if ( $this->_post->has( 'noconfirmation' ) && current_user_can( 'manage_network_users' ) ) {
-				$sql = "SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s AND user_email = %s";
+				$sql = 'SELECT activation_key FROM ' . $wpdb->signups . ' WHERE user_login = %s AND user_email = %s';
 				$key = $wpdb->get_var( $wpdb->prepare( $sql, $new_user_login, $new_user_email ) );
 				$new_user = wpmu_activate_signup( $key );
 
@@ -221,8 +223,9 @@ class FormHandler extends AdminHandler {
 
 			$wpdb = $this->app['db'];
 			$email = $this->_post->get( 'email' );
-			if ( $user->user_login && $email && is_email( $email ) && $wpdb->get_var( $wpdb->prepare( "SELECT user_login FROM {$wpdb->signups} WHERE user_login = %s", $user->user_login ) ) ) {
-				$sql = "UPDATE {$wpdb->signups} SET user_email = %s WHERE user_login = %s";
+			$sql = 'SELECT user_login FROM ' . $wpdb->signups . ' WHERE user_login = %s';
+			if ( $user->user_login && $email && is_email( $email ) && $wpdb->get_var( $wpdb->prepare( $sql, $user->user_login ) ) ) {
+				$sql = 'UPDATE ' . $wpdb->signups . ' SET user_email = %s WHERE user_login = %s';
 				$wpdb->query( $wpdb->prepare( $sql, $email, $user->user_login ) );
 			}
 		}
@@ -231,7 +234,7 @@ class FormHandler extends AdminHandler {
 		$errors = edit_user( $user_id );
 
 		// Grant or revoke super admin status if requested.
-		if ( is_multisite() && is_network_admin() && !IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && !isset($super_admins) && empty( $_POST['super_admin'] ) == is_super_admin( $user_id ) ) {
+		if ( is_multisite() && is_network_admin() && !IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && ! isset( $GLOBALS['super_admins'] ) && empty( $this->_post->get( 'super_admin' ) ) == is_super_admin( $user_id ) ) {
 			if ( empty( $this->_post->get( 'super_admin' ) ) ) {
 				revoke_super_admin( $user_id );
 			} else {
@@ -263,8 +266,10 @@ class FormHandler extends AdminHandler {
 			$user->user_email = esc_html( trim( $new_email[ 'newemail' ] ) );
 
 			$wpdb = $this->app['db'];
-			if ( $wpdb->get_var( $wpdb->prepare( "SELECT user_login FROM {$wpdb->signups} WHERE user_login = %s", $current_user->user_login ) ) ) {
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->signups} SET user_email = %s WHERE user_login = %s", $user->user_email, $current_user->user_login ) );
+			$sql = 'SELECT user_login FROM ' . $wpdb->signups . ' WHERE user_login = %s';
+			if ( $wpdb->get_var( $wpdb->prepare( $sql, $current_user->user_login ) ) ) {
+				$sql = 'UPDATE '. $wpdb->signups . ' SET user_email = %s WHERE user_login = %s';
+				$wpdb->query( $wpdb->prepare( $sql, $user->user_email, $current_user->user_login ) );
 			}
 			wp_update_user( $user );
 			delete_user_meta( $current_user->ID, '_new_email' );

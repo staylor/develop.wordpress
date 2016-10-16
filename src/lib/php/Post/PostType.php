@@ -316,11 +316,17 @@ class PostType extends Observable {
 
 	private static $meta_caps = [];
 
-	public static function get_meta_cap( $name ) {
+	/**
+	 * @param string $name
+	 * @return string
+	 */
+	public static function get_meta_cap( string $name ): string
+	{
 		return self::$meta_caps[ $name ];
 	}
 
-	public static function has_meta_cap( $name ) {
+	public static function has_meta_cap( string $name ): bool
+	{
 		return isset( self::$meta_caps[ $name ] );
 	}
 

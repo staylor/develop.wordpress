@@ -61,6 +61,10 @@ class App extends Container {
 	// pray 4 me.
 	private $globals = [];
 
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
 	public function get( string $name ) {
 		if ( array_key_exists( $name, $this->globals ) ) {
 			return $this->globals[ $name ];

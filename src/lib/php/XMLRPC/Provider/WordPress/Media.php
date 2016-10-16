@@ -2,10 +2,21 @@
 namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\Error;
+use WP\User\User;
 
 trait Media {
+	/**
+	 * @return string|void
+	 */
 	abstract public function escape( &$data );
+	/**
+	 * @return User|bool
+	 */
 	abstract public function login( $username, $password );
+	/**
+	 * @return array
+	 */
+	abstract public function _prepare_media_item( $media_item, $thumbnail_size = 'thumbnail' );
 	/**
 	 * Retrieve a media item by ID
 	 *

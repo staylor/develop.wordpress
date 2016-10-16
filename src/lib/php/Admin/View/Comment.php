@@ -30,8 +30,10 @@ class Comment extends View {
 
 		if ( $spammed ) {
 			$ids = $this->_request->get( 'ids', 0 );
+			$url = sprintf( 'edit-comments.php?doaction=undo&action=unspam&ids=%s', $ids );
 			/* translators: %s: number of comments marked as spam */
-			$messages[] = sprintf( _n( '%s comment marked as spam.', '%s comments marked as spam.', $spammed ), $spammed ) . ' <a href="' . esc_url( wp_nonce_url( "edit-comments.php?doaction=undo&action=unspam&ids=$ids", "bulk-comments" ) ) . '">' . __( 'Undo' ) . '</a><br />';
+			$messages[] = sprintf( _n( '%s comment marked as spam.', '%s comments marked as spam.', $spammed ), $spammed ) .
+				' <a href="' . esc_url( wp_nonce_url( $url, 'bulk-comments' ) ) . '">' . __( 'Undo' ) . '</a><br />';
 		}
 
 		if ( $unspammed ) {
@@ -41,8 +43,10 @@ class Comment extends View {
 
 		if ( $trashed ) {
 			$ids = $this->_request->get( 'ids', 0 );
+			$url = sprintf( 'edit-comments.php?doaction=undo&action=untrash&ids=%s', $ids );
 			/* translators: %s: number of comments moved to the Trash */
-			$messages[] = sprintf( _n( '%s comment moved to the Trash.', '%s comments moved to the Trash.', $trashed ), $trashed ) . ' <a href="' . esc_url( wp_nonce_url( "edit-comments.php?doaction=undo&action=untrash&ids=$ids", "bulk-comments" ) ) . '">' . __( 'Undo' ) . '</a><br />';
+			$messages[] = sprintf( _n( '%s comment moved to the Trash.', '%s comments moved to the Trash.', $trashed ), $trashed ) .
+				' <a href="' . esc_url( wp_nonce_url( $url, 'bulk-comments' ) ) . '">' . __( 'Undo' ) . '</a><br />';
 		}
 
 		if ( $untrashed ) {
@@ -57,14 +61,16 @@ class Comment extends View {
 
 		if ( $same && $comment = get_comment( $same ) ) {
 			switch ( $comment->comment_approved ) {
-			case '1' :
-				$messages[] = __( 'This comment is already approved.' ) . ' <a href="' . esc_url( admin_url( "comment.php?action=editcomment&c=$same" ) ) . '">' . __( 'Edit comment' ) . '</a>';
+			case '1':
+				$url = sprintf( 'comment.php?action=editcomment&c=%s', $same );
+				$messages[] = __( 'This comment is already approved.' ) . ' <a href="' . esc_url( admin_url( $url ) ) . '">' . __( 'Edit comment' ) . '</a>';
 				break;
-			case 'trash' :
+			case 'trash':
 				$messages[] = __( 'This comment is already in the Trash.' ) . ' <a href="' . esc_url( admin_url( 'edit-comments.php?comment_status=trash' ) ) . '"> ' . __( 'View Trash' ) . '</a>';
 				break;
-			case 'spam' :
-				$messages[] = __( 'This comment is already marked as spam.' ) . ' <a href="' . esc_url( admin_url( "comment.php?action=editcomment&c=$same" ) ) . '">' . __( 'Edit comment' ) . '</a>';
+			case 'spam':
+				$url = sprintf( 'comment.php?action=editcomment&c=%s', $same );
+				$messages[] = __( 'This comment is already marked as spam.' ) . ' <a href="' . esc_url( admin_url( $url ) ) . '">' . __( 'Edit comment' ) . '</a>';
 				break;
 			}
 		}

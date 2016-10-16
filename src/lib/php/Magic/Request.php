@@ -9,6 +9,9 @@ use function WP\getApp;
  * @property-read Symfony\Component\HttpFoundation\ServerBag    $_server
  */
 trait Request {
+	/**
+	 * @return Symfony\Component\HttpFoundation\ServerBag|void
+	 */
 	public function __get( string $name ) {
 		$app = getApp();
 

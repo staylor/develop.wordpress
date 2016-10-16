@@ -177,7 +177,7 @@ class WP extends Observer {
 			$app = getApp();
 			$pathinfo = $app['request.path_info'] ?? '';
 			list( $pathinfo ) = explode( '?', $pathinfo );
-			$pathinfo = str_replace( "%", "%25", $pathinfo );
+			$pathinfo = str_replace( '%', '%25', $pathinfo );
 
 			list( $req_uri ) = explode( '?', $app['request.uri'] );
 			$self = $app['request.php_self'];
@@ -228,14 +228,15 @@ class WP extends Observer {
 					if ( ! empty($requested_file) && strpos($match, $requested_file) === 0 && $requested_file != $requested_path )
 						$request_match = $requested_file . '/' . $requested_path;
 
-					if ( preg_match("#^$match#", $request_match, $matches) ||
-						preg_match("#^$match#", urldecode($request_match), $matches) ) {
+					$pattern = sprintf( '#^%s#', $match );
+					if ( preg_match( $pattern, $request_match, $matches ) ||
+						preg_match( $pattern, urldecode( $request_match ), $matches ) ) {
 
 						if ( $app['rewrite']->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
 							// This is a verbose page match, let's check to be sure about it.
 							$page = get_page_by_path( $matches[ $varmatch[1] ] );
 							if ( ! $page ) {
-						 		continue;
+								continue;
 							}
 
 							$post_status_obj = get_post_status_object( $page->post_status );
@@ -479,25 +480,17 @@ class WP extends Observer {
 			unset( $headers['Last-Modified'] );
 
 			// In PHP 5.3+, make sure we are not sending a Last-Modified header.
-			if ( function_exists( 'header_remove' ) ) {
-				@header_remove( 'Last-Modified' );
-			} else {
-				// In PHP 5.2, send an empty Last-Modified header, but only as a
-				// last resort to override a header already sent. #WP23021
-				foreach ( headers_list() as $header ) {
-					if ( 0 === stripos( $header, 'Last-Modified' ) ) {
-						$headers['Last-Modified'] = '';
-						break;
-					}
-				}
-			}
+			@header_remove( 'Last-Modified' );
 		}
 
-		foreach ( (array) $headers as $name => $field_value )
-			@header("{$name}: {$field_value}");
+		foreach ( (array) $headers as $name => $field_value ) {
+			$header = sprintf( '%s: %s', $name, $field_value );
+			@header( $header );
+		}
 
-		if ( $exit_required )
+		if ( $exit_required ) {
 			exit();
+		}
 
 		/**
 		 * Fires once the requested HTTP headers for caching, content type, etc. have been sent.
@@ -592,9 +585,9 @@ class WP extends Observer {
 		$this->query->query( $this->query_vars );
 
 		$this->current_query = $this->query;
- 	}
+	}
 
- 	/**
+	/**
 	 * Set the Headers for 404, if nothing is found for requested URL.
 	 *
 	 * Issue a 404 if a request doesn't match any posts and doesn't match
@@ -608,7 +601,7 @@ class WP extends Observer {
 	 * a 404 so that canonical redirection logic can kick in.
 	 *
 	 * @since 2.0.0
- 	 */
+	 */
 	public function handle_404() {
 		/**
 		 * Filters whether to short-circuit default header status handling.

@@ -2,11 +2,21 @@
 namespace WP\XMLRPC\Provider\WordPress;
 
 use WP\IXR\Error;
+use WP\User\User;
 use WP\XMLRPC\Provider\Blogger;
 
 trait Multisite {
+	/**
+	 * @return string|void
+	 */
 	abstract public function escape( &$data );
+	/**
+	 * @return User|bool
+	 */
 	abstract public function login( $username, $password );
+	/**
+	 * @return bool
+	 */
 	abstract public function minimum_args( $args, $count );
 
 	/**
