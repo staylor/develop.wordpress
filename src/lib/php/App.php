@@ -12,6 +12,7 @@ class App extends Container {
 	public $current_screen;
 
 	public $taxonomies = [];
+	public $meta_boxes = [];
 
 	public $post_statuses = [];
 
@@ -46,7 +47,6 @@ class App extends Container {
 
 	public $show_admin_bar;
 
-	public $suspend_cache_invalidation;
 	public $switched_stack = [];
 	public $switched = false;
 

@@ -5505,12 +5505,14 @@ function update_post_cache( &$posts ) {
 function clean_post_cache( $post ) {
 	$app = getApp();
 
-	if ( ! empty( $app->suspend_cache_invalidation ) )
+	if ( $app->get( 'suspend_cache_invalidation' ) ) {
 		return;
+	}
 
 	$post = get_post( $post );
-	if ( empty( $post ) )
+	if ( empty( $post ) ) {
 		return;
+	}
 
 	wp_cache_delete( $post->ID, 'posts' );
 	wp_cache_delete( $post->ID, 'post_meta' );
@@ -5624,8 +5626,9 @@ function update_postmeta_cache( $post_ids ) {
 function clean_attachment_cache( $id, $clean_terms = false ) {
 	$app = getApp();
 
-	if ( ! empty( $app->suspend_cache_invalidation ) )
+	if ( $app->get( 'suspend_cache_invalidation' ) ) {
 		return;
+	}
 
 	$id = (int) $id;
 

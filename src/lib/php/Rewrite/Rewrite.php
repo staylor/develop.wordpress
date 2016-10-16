@@ -502,8 +502,11 @@ class Rewrite extends Observable {
 	public function page_rewrite_rules() {
 		// The extra .? at the beginning prevents clashes with other regular expressions in the rules array.
 		$this->add_rewrite_tag( '%pagename%', '(.?.+?)', 'pagename=' );
-
-		return $this->generate_rewrite_rules( $this->get_page_permastruct(), EP_PAGES, true, true, false, false );
+		$struct = $this->get_page_permastruct();
+		if ( ! $struct ) {
+			return [];
+		}
+		return $this->generate_rewrite_rules( $struct, EP_PAGES, true, true, false, false );
 	}
 
 	/**
@@ -1308,8 +1311,9 @@ class Rewrite extends Observable {
 		 */
 		$post_rewrite = apply_filters( 'post_rewrite_rules', $post_rewrite );
 
+		$data_struct = $this->get_date_permastruct();
 		// Date rewrite rules.
-		$date_rewrite = $this->generate_rewrite_rules($this->get_date_permastruct(), EP_DATE);
+		$date_rewrite = $data_struct ? $this->generate_rewrite_rules( $data_struct, EP_DATE ) : [];
 
 		/**
 		 * Filters rewrite rules used for date archives.
@@ -1353,7 +1357,7 @@ class Rewrite extends Observable {
 
 		// Search rewrite rules.
 		$search_structure = $this->get_search_permastruct();
-		$search_rewrite = $this->generate_rewrite_rules($search_structure, EP_SEARCH);
+		$search_rewrite = $search_structure ? $this->generate_rewrite_rules( $search_structure, EP_SEARCH ) : [];
 
 		/**
 		 * Filters rewrite rules used for search archives.
@@ -1368,7 +1372,8 @@ class Rewrite extends Observable {
 		$search_rewrite = apply_filters( 'search_rewrite_rules', $search_rewrite );
 
 		// Author rewrite rules.
-		$author_rewrite = $this->generate_rewrite_rules($this->get_author_permastruct(), EP_AUTHORS);
+		$author_struct = $this->get_author_permastruct();
+		$author_rewrite = $author_struct ? $this->generate_rewrite_rules( $author_struct, EP_AUTHORS ) : [];
 
 		/**
 		 * Filters rewrite rules used for author archives.
@@ -1867,10 +1872,11 @@ class Rewrite extends Observable {
 		$this->use_trailing_slashes = ( '/' == substr($this->permalink_structure, -1, 1) );
 
 		// Enable generic rules for pages if permalink structure doesn't begin with a wildcard.
-		if ( preg_match("/^[^%]*%(?:postname|category|tag|author)%/", $this->permalink_structure) )
+		if ( preg_match( '/^[^%]*%(?:postname|category|tag|author)%/', $this->permalink_structure ) ) {
 			 $this->use_verbose_page_rules = true;
-		else
+		} else {
 			$this->use_verbose_page_rules = false;
+		}
 	}
 
 	/**

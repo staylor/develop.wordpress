@@ -873,8 +873,6 @@ function wp_import_upload_form( $action ) {
  * @since 2.5.0
  * @since 4.4.0 The `$screen` parameter now accepts an array of screen IDs.
  *
- * @global array $wp_meta_boxes
- *
  * @param string                 $id            Meta box ID (used in the 'id' attribute for the meta box).
  * @param string                 $title         Title of the meta box.
  * @param callable               $callback      Function that fills the box with the desired content.
@@ -896,7 +894,7 @@ function wp_import_upload_form( $action ) {
  *                                              to your callback). Default null.
  */
 function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advanced', $priority = 'default', $callback_args = null ) {
-	global $wp_meta_boxes;
+	$app = getApp();
 
 	if ( empty( $screen ) ) {
 		$screen = get_current_screen();
@@ -914,31 +912,37 @@ function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advan
 
 	$page = $screen->id;
 
-	if ( !isset($wp_meta_boxes) )
-		$wp_meta_boxes = [];
-	if ( !isset($wp_meta_boxes[$page]) )
-		$wp_meta_boxes[$page] = [];
-	if ( !isset($wp_meta_boxes[$page][$context]) )
-		$wp_meta_boxes[$page][$context] = [];
+	if ( ! $app->meta_boxes ) {
+		$app->meta_boxes = [];
+	}
+	if ( ! isset( $app->meta_boxes[ $page] ) ) {
+		$app->meta_boxes[ $page ] = [];
+	}
 
-	foreach ( array_keys($wp_meta_boxes[$page]) as $a_context ) {
+	if ( ! isset( $app->meta_boxes[ $page ][ $context ] ) ) {
+		$app->meta_boxes[ $page ][ $context ] = [];
+	}
+
+	foreach ( array_keys( $app->meta_boxes[ $page ] ) as $a_context ) {
 		foreach ( array('high', 'core', 'default', 'low') as $a_priority ) {
-			if ( !isset($wp_meta_boxes[$page][$a_context][$a_priority][$id]) )
+			if ( ! isset( $app->meta_boxes[ $page ][ $a_context ][ $a_priority ][ $id ] ) ) {
 				continue;
+			}
 
 			// If a core box was previously added or removed by a plugin, don't add.
 			if ( 'core' == $priority ) {
 				// If core box previously deleted, don't add
-				if ( false === $wp_meta_boxes[$page][$a_context][$a_priority][$id] )
+				if ( false === $app->meta_boxes[ $page ][ $a_context ][ $a_priority ][ $id ] ) {
 					return;
+				}
 
 				/*
 				 * If box was added with default priority, give it core priority to
 				 * maintain sort order.
 				 */
 				if ( 'default' == $a_priority ) {
-					$wp_meta_boxes[$page][$a_context]['core'][$id] = $wp_meta_boxes[$page][$a_context]['default'][$id];
-					unset($wp_meta_boxes[$page][$a_context]['default'][$id]);
+					$app->meta_boxes[ $page ][ $a_context ]['core'][ $id ] = $app->meta_boxes[ $page ][ $a_context ]['default'][ $id ];
+					unset( $app->meta_boxes[ $page ][ $a_context ]['default'][ $id ] );
 				}
 				return;
 			}
@@ -950,31 +954,31 @@ function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advan
 			 * or callback. Grab them from the previously added context/priority.
 			 */
 			} elseif ( 'sorted' == $priority ) {
-				$title = $wp_meta_boxes[$page][$a_context][$a_priority][$id]['title'];
-				$callback = $wp_meta_boxes[$page][$a_context][$a_priority][$id]['callback'];
-				$callback_args = $wp_meta_boxes[$page][$a_context][$a_priority][$id]['args'];
+				$title = $app->meta_boxes[ $page ][ $a_context ][ $a_priority ][ $id ][ 'title' ];
+				$callback = $app->meta_boxes[ $page ][ $a_context ][ $a_priority ][ $id ][ 'callback' ];
+				$callback_args = $app->meta_boxes[ $page ][ $a_context ][ $a_priority ][ $id ][ 'args' ];
 			}
 			// An id can be in only one priority and one context.
-			if ( $priority != $a_priority || $context != $a_context )
-				unset($wp_meta_boxes[$page][$a_context][$a_priority][$id]);
+			if ( $priority != $a_priority || $context != $a_context ) {
+				unset( $app->meta_boxes[ $page ][ $a_context ][ $a_priority ][ $id ] );
+			}
 		}
 	}
 
 	if ( empty($priority) )
 		$priority = 'low';
 
-	if ( !isset($wp_meta_boxes[$page][$context][$priority]) )
-		$wp_meta_boxes[$page][$context][$priority] = [];
+	if ( ! isset( $app->meta_boxes[ $page ][ $context ][ $priority ] ) ) {
+		$app->meta_boxes[ $page ][ $context ][ $priority ] = [];
+	}
 
-	$wp_meta_boxes[$page][$context][$priority][$id] = array('id' => $id, 'title' => $title, 'callback' => $callback, 'args' => $callback_args);
+	$app->meta_boxes[ $page ][ $context ][ $priority ][ $id ] = array( 'id' => $id, 'title' => $title, 'callback' => $callback, 'args' => $callback_args);
 }
 
 /**
  * Meta-Box template function
  *
  * @since 2.5.0
- *
- * @global array $wp_meta_boxes
  *
  * @staticvar bool $already_sorted
  * @param string|Screen $screen  Screen identifier
@@ -983,7 +987,7 @@ function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advan
  * @return int number of meta_boxes
  */
 function do_meta_boxes( $screen, $context, $object ) {
-	global $wp_meta_boxes;
+	$app = getApp();
 	static $already_sorted = false;
 
 	if ( empty( $screen ) )
@@ -1012,12 +1016,13 @@ function do_meta_boxes( $screen, $context, $object ) {
 
 	$i = 0;
 
-	if ( isset( $wp_meta_boxes[ $page ][ $context ] ) ) {
+	if ( isset( $app->meta_boxes[ $page ][ $context ] ) ) {
 		foreach ( array( 'high', 'sorted', 'core', 'default', 'low' ) as $priority ) {
-			if ( isset( $wp_meta_boxes[ $page ][ $context ][ $priority ]) ) {
-				foreach ( (array) $wp_meta_boxes[ $page ][ $context ][ $priority ] as $box ) {
-					if ( false == $box || ! $box['title'] )
+			if ( isset( $app->meta_boxes[ $page ][ $context ][ $priority ]) ) {
+				foreach ( (array) $app->meta_boxes[ $page ][ $context ][ $priority ] as $box ) {
+					if ( false == $box || ! $box['title'] ) {
 						continue;
+					}
 					$i++;
 					$hidden_class = in_array($box['id'], $hidden) ? ' hide-if-js' : '';
 					echo '<div id="' . $box['id'] . '" class="postbox ' . postbox_classes($box['id'], $page) . $hidden_class . '" ' . '>' . "\n";
@@ -1057,8 +1062,6 @@ function do_meta_boxes( $screen, $context, $object ) {
  * @since 2.6.0
  * @since 4.4.0 The `$screen` parameter now accepts an array of screen IDs.
  *
- * @global array $wp_meta_boxes
- *
  * @param string                 $id      Meta box ID (used in the 'id' attribute for the meta box).
  * @param string|array|Screen $screen  The screen or screens on which the meta box is shown (such as a
  *                                        post type, 'link', or 'comment'). Accepts a single screen ID,
@@ -1070,7 +1073,7 @@ function do_meta_boxes( $screen, $context, $object ) {
  *                                        all use the 'side' context.
  */
 function remove_meta_box( $id, $screen, $context ) {
-	global $wp_meta_boxes;
+	$app = getApp();
 
 	if ( empty( $screen ) ) {
 		$screen = get_current_screen();
@@ -1088,15 +1091,19 @@ function remove_meta_box( $id, $screen, $context ) {
 
 	$page = $screen->id;
 
-	if ( !isset($wp_meta_boxes) )
-		$wp_meta_boxes = [];
-	if ( !isset($wp_meta_boxes[$page]) )
-		$wp_meta_boxes[$page] = [];
-	if ( !isset($wp_meta_boxes[$page][$context]) )
-		$wp_meta_boxes[$page][$context] = [];
+	if ( ! $app->meta_boxes ) {
+		$app->meta_boxes = [];
+	}
+	if ( ! isset( $app->meta_boxes[ $page ] ) ) {
+		$app->meta_boxes[ $page ] = [];
+	}
+	if ( ! isset( $app->meta_boxes[ $page ][ $context ] ) ) {
+		$app->meta_boxes[ $page ][ $context ] = [];
+	}
 
-	foreach ( array('high', 'core', 'default', 'low') as $priority )
-		$wp_meta_boxes[$page][$context][$priority][$id] = false;
+	foreach ( array('high', 'core', 'default', 'low') as $priority ) {
+		$app->meta_boxes[ $page ][ $context ][ $priority ][ $id ] = false;
+	}
 }
 
 /**
@@ -1108,15 +1115,13 @@ function remove_meta_box( $id, $screen, $context ) {
  *
  * @since 3.6.0
  *
- * @uses global $wp_meta_boxes Used to retrieve registered meta boxes.
- *
  * @param string|object $screen  The screen identifier.
  * @param string        $context The meta box context.
  * @param mixed         $object  gets passed to the section callback function as first parameter.
  * @return int number of meta boxes as accordion sections.
  */
 function do_accordion_sections( $screen, $context, $object ) {
-	global $wp_meta_boxes;
+	$app = getApp();
 
 	wp_enqueue_script( 'accordion' );
 
@@ -1135,10 +1140,10 @@ function do_accordion_sections( $screen, $context, $object ) {
 	$i = 0;
 	$first_open = false;
 
-	if ( isset( $wp_meta_boxes[ $page ][ $context ] ) ) {
+	if ( isset( $app->meta_boxes[ $page ][ $context ] ) ) {
 		foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
-			if ( isset( $wp_meta_boxes[ $page ][ $context ][ $priority ] ) ) {
-				foreach ( $wp_meta_boxes[ $page ][ $context ][ $priority ] as $box ) {
+			if ( isset( $app->meta_boxes[ $page ][ $context ][ $priority ] ) ) {
+				foreach ( $app->meta_boxes[ $page ][ $context ][ $priority ] as $box ) {
 					if ( false == $box || ! $box['title'] )
 						continue;
 					$i++;
@@ -1208,7 +1213,7 @@ function add_settings_section($id, $title, $callback, $page) {
 		$page = 'reading';
 	}
 
-	$wp_settings_sections[$page][$id] = array('id' => $id, 'title' => $title, 'callback' => $callback);
+	$wp_settings_sections[ $page ][ $id ] = array('id' => $id, 'title' => $title, 'callback' => $callback);
 }
 
 /**
@@ -1259,7 +1264,7 @@ function add_settings_field($id, $title, $callback, $page, $section = 'default',
 		$page = 'reading';
 	}
 
-	$wp_settings_fields[$page][$section][$id] = array('id' => $id, 'title' => $title, 'callback' => $callback, 'args' => $args);
+	$wp_settings_fields[ $page ][$section][ $id ] = array('id' => $id, 'title' => $title, 'callback' => $callback, 'args' => $args);
 }
 
 /**
@@ -1278,17 +1283,17 @@ function add_settings_field($id, $title, $callback, $page, $section = 'default',
 function do_settings_sections( $page ) {
 	global $wp_settings_sections, $wp_settings_fields;
 
-	if ( ! isset( $wp_settings_sections[$page] ) )
+	if ( ! isset( $wp_settings_sections[ $page ] ) )
 		return;
 
-	foreach ( (array) $wp_settings_sections[$page] as $section ) {
+	foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
 		if ( $section['title'] )
 			echo "<h2>{$section['title']}</h2>\n";
 
 		if ( $section['callback'] )
 			call_user_func( $section['callback'], $section );
 
-		if ( ! isset( $wp_settings_fields ) || !isset( $wp_settings_fields[$page] ) || !isset( $wp_settings_fields[$page][$section['id']] ) )
+		if ( ! isset( $wp_settings_fields ) || !isset( $wp_settings_fields[ $page ] ) || !isset( $wp_settings_fields[ $page ][$section['id']] ) )
 			continue;
 		echo '<table class="form-table">';
 		do_settings_fields( $page, $section['id'] );
@@ -1313,10 +1318,10 @@ function do_settings_sections( $page ) {
 function do_settings_fields($page, $section) {
 	global $wp_settings_fields;
 
-	if ( ! isset( $wp_settings_fields[$page][$section] ) )
+	if ( ! isset( $wp_settings_fields[ $page ][$section] ) )
 		return;
 
-	foreach ( (array) $wp_settings_fields[$page][$section] as $field ) {
+	foreach ( (array) $wp_settings_fields[ $page ][$section] as $field ) {
 		$class = '';
 
 		if ( ! empty( $field['args']['class'] ) ) {

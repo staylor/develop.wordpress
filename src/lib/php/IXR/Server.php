@@ -8,17 +8,14 @@ use function WP\getApp;
  * @since 1.5.0
  */
 class Server {
-	public $callbacks = [];
+	public $methods = [];
 
 	protected $data;
 	protected $message;
 	protected $capabilities;
 
-	public function __construct( $callbacks = [], $data = false, $wait = false ) {
+	public function serve_request( $data = false, $wait = false ) {
 		$this->setCapabilities();
-		if ( ! empty( $callbacks ) ) {
-			$this->callbacks = $callbacks;
-		}
 		$this->setCallbacks();
 
 		if ( ! $wait ) {
@@ -169,16 +166,16 @@ class Server {
 	}
 
 	protected function setCallbacks() {
-		$this->callbacks['system.getCapabilities'] = 'this:getCapabilities';
-		$this->callbacks['system.listMethods'] = 'this:listMethods';
-		$this->callbacks['system.multicall'] = 'this:multiCall';
+		$this->methods['system.getCapabilities'] = 'this:getCapabilities';
+		$this->methods['system.listMethods'] = 'this:listMethods';
+		$this->methods['system.multicall'] = 'this:multiCall';
 	}
 
 	public function listMethods(): array
 	{
 		// Returns a list of methods - uses array_reverse to ensure user defined
 		// methods are listed before server defined methods
-		return array_reverse( array_keys( $this->callbacks ) );
+		return array_reverse( array_keys( $this->methods ) );
 	}
 
 	public function multiCall( $methodcalls ): array

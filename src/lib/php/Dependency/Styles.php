@@ -65,16 +65,6 @@ class Styles extends Dependencies {
 	public $concat = '';
 
 	/**
-	 * Holds a string which contains style handles and their version.
-	 *
-	 * @since 2.8.0
-	 * @deprecated 3.4.0
-	 * @access public
-	 * @var string
-	 */
-	public $concat_version = '';
-
-	/**
 	 * Whether to perform concatenation.
 	 *
 	 * @since 2.8.0
@@ -139,7 +129,7 @@ class Styles extends Dependencies {
 	 * @param string $handle The style's registered handle.
 	 * @return bool True on success, false on failure.
 	 */
-	public function do_item( $handle ) {
+	public function do_item( $handle, $group = false ) {
 		if ( !parent::do_item($handle) )
 			return false;
 
@@ -155,7 +145,6 @@ class Styles extends Dependencies {
 		if ( $this->do_concat ) {
 			if ( $this->in_default_dir($obj->src) && !isset($obj->extra['conditional']) && !isset($obj->extra['alt']) ) {
 				$this->concat .= "$handle,";
-				$this->concat_version .= "$handle$ver";
 
 				$this->print_code .= $this->print_inline_style( $handle, false );
 
@@ -402,7 +391,6 @@ class Styles extends Dependencies {
 	public function reset() {
 		$this->do_concat = false;
 		$this->concat = '';
-		$this->concat_version = '';
 		$this->print_html = '';
 	}
 }

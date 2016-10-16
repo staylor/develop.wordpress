@@ -293,7 +293,10 @@ class Roles extends Observer {
 		return isset( $this->role_names[ $role ] );
 	}
 
-	public function update( Observable $subject ) {
+	public function update( \SplSubject $subject ) {
+		if ( ! ( $subject instanceof Observable ) ) {
+			return;
+		}
 		$message = $subject->message;
 
 		switch ( $message['event'] ) {

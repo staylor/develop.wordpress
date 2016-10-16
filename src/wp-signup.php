@@ -747,7 +747,7 @@ function validate_blog_signup() {
 	$meta = apply_filters( 'add_signup_meta', $signup_meta );
 
 	wpmu_signup_blog($domain, $path, $blog_title, $user_name, $user_email, $meta);
-	confirm_blog_signup($domain, $path, $blog_title, $user_name, $user_email, $meta);
+	confirm_blog_signup( $domain, $path, $blog_title, $user_email );
 	return true;
 }
 
@@ -763,7 +763,7 @@ function validate_blog_signup() {
  * @param string $user_email The user's email address
  * @param array $meta Any additional meta from the {@see 'add_signup_meta'} filter in validate_blog_signup()
  */
-function confirm_blog_signup( $domain, $path, $blog_title, $user_name = '', $user_email = '', $meta = array() ) {
+function confirm_blog_signup( $domain, $path, $blog_title, $user_email = '' ) {
 	?>
 	<h2><?php /* translators: %s: site address */
 	printf( __( 'Congratulations! Your new site, %s, is almost ready.' ), "<a href='http://{$domain}{$path}'>{$blog_title}</a>" ) ?></h2>

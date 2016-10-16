@@ -2874,9 +2874,7 @@ function wp_update_term_count_now( $terms, $taxonomy ) {
  * @param array|string $object_type The taxonomy object type.
  */
 function clean_object_term_cache($object_ids, $object_type) {
-	$app = getApp();
-
-	if ( ! empty( $app->suspend_cache_invalidation ) ) {
+	if ( getApp()->get( 'suspend_cache_invalidation' ) ) {
 		return;
 	}
 
@@ -2917,7 +2915,7 @@ function clean_term_cache($ids, $taxonomy = '', $clean_taxonomy = true) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( ! empty( $app->suspend_cache_invalidation ) ) {
+	if ( $app->get( 'suspend_cache_invalidation' ) ) {
 		return;
 	}
 

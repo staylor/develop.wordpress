@@ -94,27 +94,26 @@ function get_hidden_columns( $screen ) {
  *
  * @since 2.7.0
  *
- * @global array $wp_meta_boxes
- *
  * @param Screen $screen
  */
 function meta_box_prefs( $screen ) {
-	global $wp_meta_boxes;
-
-	if ( is_string( $screen ) )
+	$app = getApp();
+	if ( is_string( $screen ) ) {
 		$screen = convert_to_screen( $screen );
-
-	if ( empty($wp_meta_boxes[$screen->id]) )
+	}
+	
+	if ( empty( $app->meta_boxes[ $screen->id ] ) ) {
 		return;
+	}
 
 	$hidden = get_hidden_meta_boxes($screen);
 
-	foreach ( array_keys( $wp_meta_boxes[ $screen->id ] ) as $context ) {
+	foreach ( array_keys( $app->meta_boxes[ $screen->id ] ) as $context ) {
 		foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
-			if ( ! isset( $wp_meta_boxes[ $screen->id ][ $context ][ $priority ] ) ) {
+			if ( ! isset( $app->meta_boxes[ $screen->id ][ $context ][ $priority ] ) ) {
 				continue;
 			}
-			foreach ( $wp_meta_boxes[ $screen->id ][ $context ][ $priority ] as $box ) {
+			foreach ( $app->meta_boxes[ $screen->id ][ $context ][ $priority ] as $box ) {
 				if ( false == $box || ! $box['title'] )
 					continue;
 				// Submit box cannot be hidden

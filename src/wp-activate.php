@@ -38,7 +38,7 @@ do_action( 'activate_header' );
  *
  * @since MU
  */
-function do_activate_header() {
+add_action( 'wp_head', function () {
 	/**
 	 * Fires before the Site Activation page is loaded.
 	 *
@@ -47,15 +47,14 @@ function do_activate_header() {
      * @since 3.0.0
      */
     do_action( 'activate_wp_head' );
-}
-add_action( 'wp_head', 'do_activate_header' );
+} );
 
 /**
  * Loads styles specific to this page.
  *
  * @since MU
  */
-function wpmu_activate_stylesheet() {
+add_action( 'wp_head', function () {
 	?>
 	<style type="text/css">
 		form { margin-top: 2em; }
@@ -65,8 +64,7 @@ function wpmu_activate_stylesheet() {
 		span.h3 { padding: 0 8px; font-size: 1.3em; font-weight: bold; }
 	</style>
 	<?php
-}
-add_action( 'wp_head', 'wpmu_activate_stylesheet' );
+} );
 
 get_header( 'wp-activate' );
 ?>

@@ -9,6 +9,7 @@
  */
 
 use WP\User\User;
+use function WP\getApp;
 
 /** Make sure that the WordPress bootstrap has run before continuing. */
 require( __DIR__ . '/wp-load.php' );
@@ -33,7 +34,9 @@ if ( force_ssl_admin() && ! is_ssl() ) {
  * @param WP_Error $wp_error Optional. The error to pass. Default empty.
  */
 function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
-	global $error, $interim_login, $action;
+	global $error, $action;
+
+	$app = getApp();
 
 	// Don't index any of these forms
 	add_action( 'login_head', 'wp_no_robots' );
@@ -125,8 +128,10 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	$login_header_title = apply_filters( 'login_headertitle', $login_header_title );
 
 	$classes = array( 'login-action-' . $action, 'wp-core-ui' );
-	if ( is_rtl() )
+	if ( is_rtl() ) {
 		$classes[] = 'rtl';
+	}
+	$interim_login = $app->get( 'interim_login' );
 	if ( $interim_login ) {
 		$classes[] = 'interim-login';
 		?>
@@ -223,7 +228,8 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
  * @param string $input_id Which input to auto-focus
  */
 function login_footer($input_id = '') {
-	global $interim_login;
+	$app = getApp();
+	$interim_login = $app->get( 'interim_login' );
 
 	// Don't allow interim logins to navigate away from the page.
 	if ( ! $interim_login ): ?>
@@ -431,7 +437,7 @@ do_action( 'login_init' );
 do_action( "login_form_{$action}" );
 
 $http_post = ( 'POST' === $app['request.method'] );
-$interim_login = $_request->has( 'interim-login' );
+$app->set( 'interim_login', $_request->has( 'interim-login' ) );
 
 switch ($action) {
 
@@ -815,9 +821,9 @@ default:
 	$redirect_to = apply_filters( 'login_redirect', $redirect_to, $requested_redirect_to, $user );
 
 	if ( !is_wp_error($user) && !$reauth ) {
-		if ( $interim_login ) {
+		if ( $app->get( 'interim_login' ) ) {
 			$message = '<p class="message">' . __('You have logged in successfully.') . '</p>';
-			$interim_login = 'success';
+			$app->set( 'interim_login', 'success' );
 			login_header( '', $message ); ?>
 			</div>
 			<?php
@@ -851,7 +857,7 @@ default:
 	if ( $_get->get( 'loggedout' ) || $reauth )
 		$errors = new WP_Error();
 
-	if ( $interim_login ) {
+	if ( $app->get( 'interim_login' ) ) {
 		if ( ! $errors->get_error_code() )
 			$errors->add( 'expired', __( 'Your session has expired. Please log in to continue where you left off.' ), 'message' );
 	} else {
@@ -918,7 +924,7 @@ default:
 	<p class="forgetmenot"><label for="rememberme"><input name="rememberme" type="checkbox" id="rememberme" value="forever" <?php checked( $rememberme ); ?> /> <?php esc_html_e( 'Remember Me' ); ?></label></p>
 	<p class="submit">
 		<input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e('Log In'); ?>" />
-<?php	if ( $interim_login ) { ?>
+<?php	if ( $app->get( 'interim_login' ) ) { ?>
 		<input type="hidden" name="interim-login" value="1" />
 <?php	} else { ?>
 		<input type="hidden" name="redirect_to" value="<?php echo esc_attr($redirect_to); ?>" />
@@ -930,7 +936,7 @@ default:
 	</p>
 </form>
 
-<?php if ( ! $interim_login ) { ?>
+<?php if ( ! $app->get( 'interim_login' ) ) { ?>
 <p id="nav">
 <?php if ( ! $_get->get( 'checkemail' ) || ! in_array( $_get->get( 'checkemail' ), array( 'confirm', 'newpass' ) ) ) :
 	if ( get_option( 'users_can_register' ) ) :
@@ -969,7 +975,7 @@ d.select();
 wp_attempt_focus();
 <?php } ?>
 if(typeof wpOnload=='function')wpOnload();
-<?php if ( $interim_login ) { ?>
+<?php if ( $app->get( 'interim_login' ) ) { ?>
 (function(){
 try {
 	var i, links = document.getElementsByTagName('a');

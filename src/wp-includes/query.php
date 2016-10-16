@@ -140,12 +140,6 @@ function wp_reset_postdata() {
 
 function _current_query_flag( $func, $args = [] ) {
 	$app = getApp();
-
-	if ( ! isset( $app['wp']->current_query ) ) {
-		_doing_it_wrong( $func, __( 'Conditional query tags do not work before the query is run. Before then, they always return false.' ), '3.1.0' );
-		return false;
-	}
-
 	if ( ! $app['wp']->current_query ) {
 		$app['wp']->current_query = new \WP_Query();
 	}

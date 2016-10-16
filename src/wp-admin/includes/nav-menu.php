@@ -154,21 +154,20 @@ function wp_nav_menu_setup() {
  * Limit the amount of meta boxes to pages, posts, links, and categories for first time users.
  *
  * @since 3.0.0
- *
- * @global array $wp_meta_boxes
  **/
 function wp_initial_nav_menu_meta_boxes() {
-	global $wp_meta_boxes;
+	$app = getApp();
 
-	if ( get_user_option( 'metaboxhidden_nav-menus' ) !== false || ! is_array($wp_meta_boxes) )
+	if ( get_user_option( 'metaboxhidden_nav-menus' ) !== false || ! is_array( $app->meta_boxes ) ) {
 		return;
+	}
 
 	$initial_meta_boxes = array( 'add-post-type-page', 'add-post-type-post', 'add-custom-links', 'add-category' );
 	$hidden_meta_boxes = [];
 
-	foreach ( array_keys($wp_meta_boxes['nav-menus']) as $context ) {
-		foreach ( array_keys($wp_meta_boxes['nav-menus'][$context]) as $priority ) {
-			foreach ( $wp_meta_boxes['nav-menus'][$context][$priority] as $box ) {
+	foreach ( array_keys( $app->meta_boxes['nav-menus']) as $context ) {
+		foreach ( array_keys( $app->meta_boxes['nav-menus'][$context] ) as $priority ) {
+			foreach ( $app->meta_boxes['nav-menus'][$context][$priority] as $box ) {
 				if ( in_array( $box['id'], $initial_meta_boxes ) ) {
 					unset( $box['id'] );
 				} else {

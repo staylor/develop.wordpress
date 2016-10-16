@@ -28,36 +28,6 @@ if ( !defined('ABSPATH') ) {
 	require_once( __DIR__ . '/wp-load.php' );
 }
 
-/**
- * Retrieves the cron lock.
- *
- * Returns the uncached `doing_cron` transient.
- *
- * @ignore
- * @since 3.3.0
- *
- * @return string|false Value of the `doing_cron` transient, 0|false otherwise.
- */
-function _get_cron_lock() {
-	$app = getApp();
-	$wpdb = $app['db'];
-
-	$value = 0;
-	if ( wp_using_ext_object_cache() ) {
-		/*
-		 * Skip local cache and force re-fetch of doing_cron transient
-		 * in case another process updated the cache.
-		 */
-		$value = wp_cache_get( 'doing_cron', 'transient', true );
-	} else {
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1", '_transient_doing_cron' ) );
-		if ( is_object( $row ) )
-			$value = $row->option_value;
-	}
-
-	return $value;
-}
-
 if ( false === $crons = _get_cron_array() )
 	die();
 

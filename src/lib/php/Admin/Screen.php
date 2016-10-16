@@ -842,21 +842,16 @@ final class Screen {
 	}
 
 	/**
-	 *
-	 * @global array $wp_meta_boxes
-	 *
 	 * @return bool
 	 */
 	public function show_screen_options() {
-		global $wp_meta_boxes;
-
 		if ( is_bool( $this->_show_screen_options ) ) {
 			return $this->_show_screen_options;
 		}
 
 		$columns = get_column_headers( $this );
 
-		$show_screen = ! empty( $wp_meta_boxes[ $this->id ] ) || $columns || $this->get_option( 'per_page' );
+		$show_screen = ! empty( $this->app->meta_boxes[ $this->id ] ) || $columns || $this->get_option( 'per_page' );
 
 		switch ( $this->base ) {
 		case 'widgets':
@@ -959,14 +954,12 @@ final class Screen {
 	}
 
 	public function meta_box_prefs() {
-		global $wp_meta_boxes;
-
-		if ( empty($wp_meta_boxes[ $this->id ] ) ) {
+		if ( empty( $this->app->meta_boxes[ $this->id ] ) ) {
 			return;
 		}
 
 		$hidden = get_hidden_meta_boxes( $this );
-		$boxes = $wp_meta_boxes[ $this->id ];
+		$boxes = $this->app->meta_boxes[ $this->id ];
 		$priorities = [ 'high', 'core', 'default', 'low' ];
 
 		$prefs = [];
@@ -1005,18 +998,15 @@ final class Screen {
 	 * Render the meta boxes preferences.
 	 *
 	 * @since 4.4.0
-	 *
-	 * @global array $wp_meta_boxes
 	 */
 	public function render_meta_boxes_preferences() {
-		global $wp_meta_boxes;
-
-		if ( ! isset( $wp_meta_boxes[ $this->id ] ) ) {
+		if ( ! isset( $this->app->meta_boxes[ $this->id ] ) ) {
 			return;
 		}
 
 		$show_welcome = 'dashboard' === $this->id && has_action( 'welcome_panel' ) && current_user_can( 'edit_theme_options' );
 
+		$welcome_checked = false;
 		if ( $show_welcome ) {
 			if ( isset( $_GET['welcome'] ) ) {
 				$welcome_checked = empty( $_GET['welcome'] ) ? 0 : 1;

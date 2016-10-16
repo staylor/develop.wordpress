@@ -66,16 +66,6 @@ class Scripts extends Dependencies {
 	public $concat = '';
 
 	/**
-	 * Holds a string which contains script handles and their version.
-	 *
-	 * @since 2.8.0
-	 * @deprecated 3.4.0
-	 * @access public
-	 * @var string
-	 */
-	public $concat_version = '';
-
-	/**
 	 * Whether to perform concatenation.
 	 *
 	 * @since 2.8.0
@@ -306,7 +296,6 @@ class Scripts extends Dependencies {
 			} elseif ( $this->in_default_dir( $srce ) && ! $conditional ) {
 				$this->print_code .= $this->print_extra_script( $handle, false );
 				$this->concat .= "$handle,";
-				$this->concat_version .= "$handle$ver";
 				return true;
 			} else {
 				$this->ext_handles .= "$handle,";
@@ -581,7 +570,6 @@ class Scripts extends Dependencies {
 		$this->do_concat = false;
 		$this->print_code = '';
 		$this->concat = '';
-		$this->concat_version = '';
 		$this->print_html = '';
 		$this->ext_version = '';
 		$this->ext_handles = '';

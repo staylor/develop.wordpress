@@ -27,8 +27,8 @@ echo '<?xml version="1.0"?'.">\n";
 ?>
 <opml version="1.0">
 	<head>
-		<title><?php printf( __('Links for %s'), esc_attr(get_bloginfo('name', 'display')) ); ?></title>
-		<dateCreated><?php echo gmdate("D, d M Y H:i:s"); ?> GMT</dateCreated>
+		<title><?php printf( __( 'Links for %s' ), esc_attr( get_bloginfo( 'name', 'display' ) ) ); ?></title>
+		<dateCreated><?php echo gmdate( 'D, d M Y H:i:s' ); ?> GMT</dateCreated>
 		<?php
 		/**
 		 * Fires in the OPML header.
@@ -58,7 +58,7 @@ foreach ( (array)$cats as $cat ) :
 ?>
 <outline type="category" title="<?php echo esc_attr($catname); ?>">
 <?php
-	$bookmarks = get_bookmarks(array("category" => $cat->term_id));
+	$bookmarks = get_bookmarks(array('category' => $cat->term_id));
 	foreach ( (array)$bookmarks as $bookmark ) :
 		/**
 		 * Filters the OPML outline link title text.

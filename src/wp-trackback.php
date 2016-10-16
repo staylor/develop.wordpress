@@ -25,22 +25,22 @@ $wpdb = $app['db'];
  *                              Default '0'. Accepts '0' or '1', true or false.
  * @param string $error_message Error message if an error occurred.
  */
-function trackback_response($error = 0, $error_message = '') {
+$trackback_response = function ($error = 0, $error_message = '') {
 	header('Content-Type: text/xml; charset=' . get_option('blog_charset') );
 	if ($error) {
 		echo '<?xml version="1.0" encoding="utf-8"?'.">\n";
 		echo "<response>\n";
 		echo "<error>1</error>\n";
 		echo "<message>$error_message</message>\n";
-		echo "</response>";
+		echo '</response>';
 		die();
 	} else {
 		echo '<?xml version="1.0" encoding="utf-8"?'.">\n";
 		echo "<response>\n";
 		echo "<error>0</error>\n";
-		echo "</response>";
+		echo '</response>';
 	}
-}
+};
 
 // Trackback is done by a POST.
 $request_array = 'HTTP_POST_VARS';

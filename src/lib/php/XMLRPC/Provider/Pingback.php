@@ -176,7 +176,7 @@ class Pingback implements ProviderInterface {
 		$alter_doc = str_replace( '<!DOC', '<DOC', $pre_remote_source );
 		// normalize spaces
 		$no_extra_space = preg_replace( '/[\r\n\t ]+/', ' ', $alter_doc );
-		$no_tags = preg_replace( "/<\/*(h1|h2|h3|h4|h5|h6|p|th|td|li|dt|dd|pre|caption|input|textarea|button|body)[^>]*>/", "\n\n", $no_extra_space );
+		$no_tags = preg_replace( '/<\/*(h1|h2|h3|h4|h5|h6|p|th|td|li|dt|dd|pre|caption|input|textarea|button|body)[^>]*>/', "\n\n", $no_extra_space );
 
 		$matchtitle = null;
 		preg_match( '|<title>([^<]*?)</title>|is', $no_tags, $matchtitle );
@@ -198,7 +198,7 @@ class Pingback implements ProviderInterface {
 			$context = null;
 
 			// it exists, but is it a link?
-			preg_match( "|<a[^>]+?".$preg_target."[^>]*>([^>]+?)</a>|", $para, $context );
+			preg_match( '|<a[^>]+?' . $preg_target . '[^>]*>([^>]+?)</a>|', $para, $context );
 
 			// If the URL isn't in a link context, keep looking
 			if ( empty( $context ) ) {
@@ -223,7 +223,7 @@ class Pingback implements ProviderInterface {
 			$stripped = strip_tags( $swapped, '<wpcontext>' );
 
 			$replaced = preg_replace(
-				"|.*?\s(.{0,100}" . preg_quote( $marker, '|' ) . ".{0,100})\s.*|s",
+				'|.*?\s(.{0,100}' . preg_quote( $marker, '|' ) . '.{0,100})\s.*|s',
 				'$1',
 				trim( $stripped )
 			);

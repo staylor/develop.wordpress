@@ -28,14 +28,6 @@ class Server extends IXRServer implements ServerInterface {
 	use Utils;
 
 	/**
-	 * Methods.
-	 *
-	 * @access public
-	 * @var array
-	 */
-	public $methods = [];
-
-	/**
 	 * @access public
 	 * @var WP\IXR\Error
 	 */
@@ -88,15 +80,5 @@ class Server extends IXRServer implements ServerInterface {
 		 * @param array $methods An array of XML-RPC methods.
 		 */
 		$this->methods = apply_filters( 'xmlrpc_methods', $this->methods );
-	}
-
-	/**
-	 * Serves the XML-RPC request.
-	 *
-	 * @since 2.9.0
-	 * @access public
-	 */
-	public function serve_request( $null, $data = false, $wait = false ) {
-		parent::__construct( $this->methods, $data, $wait );
 	}
 }

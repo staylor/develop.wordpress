@@ -255,7 +255,7 @@ class WP extends Observer {
 
 			if ( isset( $this->matched_rule ) ) {
 				// Trim the query of everything up to the '?'.
-				$query = preg_replace("!^.+\?!", '', $query);
+				$query = preg_replace( '!^.+\?!', '', $query );
 
 				// Substitute the substring matches into the query.
 				$query = addslashes( \WP_MatchesMapRegex::apply( $query, $matches ) );
@@ -480,7 +480,7 @@ class WP extends Observer {
 			unset( $headers['Last-Modified'] );
 
 			// In PHP 5.3+, make sure we are not sending a Last-Modified header.
-			@header_remove( 'Last-Modified' );
+			header_remove( 'Last-Modified' );
 		}
 
 		foreach ( (array) $headers as $name => $field_value ) {
@@ -635,7 +635,7 @@ class WP extends Observer {
 
 				// Only set X-Pingback for single posts that allow pings.
 				if ( $p && pings_open( $p ) ) {
-					@header( 'X-Pingback: ' . get_bloginfo( 'pingback_url', 'display' ) );
+					header( 'X-Pingback: ' . get_bloginfo( 'pingback_url', 'display' ) );
 				}
 
 				// check for paged content that exceeds the max number of pages
@@ -710,7 +710,10 @@ class WP extends Observer {
 		do_action_ref_array( 'wp', [ &$this ] );
 	}
 
-	public function update( Observable $subject ) {
+	public function update( \SplSubject $subject ) {
+		if ( ! ( $subject instanceof Observable ) ) {
+			return;
+		}
 		$message = $subject->message;
 
 		switch ( $message['event'] ) {

@@ -4294,8 +4294,8 @@ function wp_suspend_cache_addition( $suspend = null ) {
  */
 function wp_suspend_cache_invalidation( $suspend = true ) {
 	$app = getApp();
-	$current_suspend = $app->suspend_cache_invalidation;
-	$app->suspend_cache_invalidation = $suspend;
+	$current_suspend = $app->get( 'suspend_cache_invalidation' );
+	$app->set( 'suspend_cache_invalidation', $suspend );
 	return $current_suspend;
 }
 
