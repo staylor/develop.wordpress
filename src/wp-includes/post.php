@@ -4333,7 +4333,7 @@ function get_page_uri( $page = 0 ) {
  *     @type int          $offset       The number of pages to skip before returning. Requires `$number`.
  *                                      Default 0.
  *     @type string       $post_type    The post type to query. Default 'page'.
- *     @type string       $post_status  A comma-separated list of post status types to include.
+ *     @type string|array $post_status  A comma-separated list or array of post statuses to include.
  *                                      Default 'publish'.
  * }
  * @return array|false List of pages matching defaults or `$args`.
