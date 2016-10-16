@@ -76,7 +76,7 @@ class Server {
 		if ( ! $this->hasMethod( $methodname ) ) {
 			return new Error( -32601, "server error. requested method {$methodname} does not exist." );
 		}
-		$method = $this->callbacks[ $methodname ];
+		$method = $this->methods[ $methodname ];
 
 		// Perform the callback and send the response
 		if ( 1 === count( $args ) ) {
@@ -138,7 +138,7 @@ class Server {
 
 	protected function hasMethod( string $method ): bool
 	{
-		return in_array( $method, array_keys( $this->callbacks ) );
+		return in_array( $method, array_keys( $this->methods ) );
 	}
 
 	protected function setCapabilities()

@@ -48,7 +48,7 @@ class IntrospectionServer extends Server {
     }
 
     public function addCallback( string $method, $callback, array $args, string $help ) {
-        $this->callbacks[ $method ] = $callback;
+        $this->methods[ $method ] = $callback;
         $this->signatures[ $method ] = $args;
         $this->help[ $method ] = $help;
     }

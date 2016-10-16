@@ -65,6 +65,10 @@ if ( 'grid' === $mode ) {
 		)
 	];
 
+	if ( current_user_can( 'upload_files' ) ) {
+		$data['title_link_url'] = admin_url( 'media-new.php' );
+	}
+
 	$view->setData( $data );
 
 	echo $view->render( 'media/upload-grid', $view );
