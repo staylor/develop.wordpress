@@ -461,18 +461,14 @@ function maybe_serialize( $data ) {
  *
  * @since 0.71
  *
- * @global string $post_default_title Default XML-RPC post title.
- *
  * @param string $content XMLRPC XML Request content
  * @return string Post title
  */
 function xmlrpc_getposttitle( $content ) {
-	global $post_default_title;
 	if ( preg_match( '/<title>(.+?)<\/title>/is', $content, $matchtitle ) ) {
 		$post_title = $matchtitle[1];
 	} else {
-		$app = getApp();
-		$post_title = $app->xmlrpc['post_default_title'];
+		$post_title = getApp()->get( 'post_default_title' );
 	}
 	return $post_title;
 }

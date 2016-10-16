@@ -19,6 +19,8 @@ class Media extends View {
 	}
 
 	public function getListMessage() {
+		$messages = [];
+
 		$ids = $this->_get->get( 'ids', '' );
 
 		$message = '';

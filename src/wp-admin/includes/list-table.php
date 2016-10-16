@@ -45,7 +45,7 @@ function _get_list_table( $class, $args = [] ) {
 	if ( isset( $core_classes[ $class ] ) ) {
 		if ( isset( $args['screen'] ) ) {
 			$args['screen'] = convert_to_screen( $args['screen'] );
-		} elseif ( isset( $app->hook_suffix ) ) {
+		} elseif ( $app->get( 'hook_suffix' ) ) {
 			$args['screen'] = get_current_screen();
 		} else {
 			$args['screen'] = null;

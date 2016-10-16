@@ -5,6 +5,8 @@ use WP\IXR\Error;
 use function WP\getApp;
 
 trait Option {
+	abstract public function escape( &$data );
+	abstract public function login( $username, $password );
 	/**
 	 * Blog options.
 	 *

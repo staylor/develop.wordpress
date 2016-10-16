@@ -47,13 +47,13 @@ class IntrospectionServer extends Server {
         );
     }
 
-    function addCallback( string $method, $callback, array $args, string $help ) {
+    public function addCallback( string $method, $callback, array $args, string $help ) {
         $this->callbacks[ $method ] = $callback;
         $this->signatures[ $method ] = $args;
         $this->help[ $method ] = $help;
     }
 
-    function call( string $methodname, $args ) {
+    public function call( string $methodname, $args ) {
         // Make sure it's in an array
         if ( $args && ! is_array( $args ) ) {
             $args = [ $args ];
@@ -119,7 +119,7 @@ class IntrospectionServer extends Server {
         return parent::call( $methodname, $argsbackup );
     }
 
-    function methodSignature( string $method ): array
+    public function methodSignature( string $method ): array
     {
         if ( ! $this->hasMethod( $method ) ) {
 			return new Error( -32601, "server error. requested method \"{$method}\" not specified." );
@@ -168,7 +168,7 @@ class IntrospectionServer extends Server {
         return $return;
     }
 
-    function methodHelp( string $method ): string
+    public function methodHelp( string $method ): string
     {
         return $this->help[ $method ];
     }

@@ -29,7 +29,7 @@ class Manager {
 	 *
 	 * @since 3.4.0
 	 * @access protected
-	 * @var WP_Theme
+	 * @var \WP_Theme
 	 */
 	protected $theme;
 
@@ -56,7 +56,7 @@ class Manager {
 	 *
 	 * @since 3.9.0
 	 * @access public
-	 * @var WP_Customize_Widgets
+	 * @var \WP_Customize_Widgets
 	 */
 	public $widgets;
 
@@ -65,7 +65,7 @@ class Manager {
 	 *
 	 * @since 4.3.0
 	 * @access public
-	 * @var WP_Customize_Nav_Menus
+	 * @var \WP_Customize_Nav_Menus
 	 */
 	public $nav_menus;
 
@@ -74,7 +74,7 @@ class Manager {
 	 *
 	 * @since 4.5.0
 	 * @access public
-	 * @var WP_Customize_Selective_Refresh
+	 * @var \WP_Customize_Selective_Refresh
 	 */
 	public $selective_refresh;
 

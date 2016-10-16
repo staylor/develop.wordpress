@@ -5,6 +5,10 @@ use WP\IXR\Error;
 use WP\XMLRPC\Provider\Blogger;
 
 trait Multisite {
+	abstract public function escape( &$data );
+	abstract public function login( $username, $password );
+	abstract public function minimum_args( $args, $count );
+
 	/**
 	 * Retrieve the blogs of the user.
 	 *

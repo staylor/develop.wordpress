@@ -7,6 +7,8 @@ class FormHandler extends AdminHandler {
 	public function doBulkComments( $doaction, $pagenum ) {
 		check_admin_referer( 'bulk-comments' );
 
+		$comment_ids = [];
+
 		if ( 'delete_all' == $doaction && $this->_request->get( 'pagegen_timestamp' ) ) {
 			$comment_status = wp_unslash( $this->_request->get( 'comment_status' ) );
 			$delete_time = wp_unslash( $this->_request->get( 'pagegen_timestamp' ) );

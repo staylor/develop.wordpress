@@ -4,6 +4,8 @@ namespace WP\XMLRPC\Provider\WordPress;
 use WP\IXR\Error;
 
 trait Comment {
+	abstract public function escape( &$data );
+	abstract public function login( $username, $password );
 	/**
 	 * Prepares comment data for return in an XML-RPC object.
 	 *

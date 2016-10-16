@@ -5,6 +5,9 @@ use WP\IXR\Error;
 use WP\User\User as WP_User;
 
 trait User {
+	abstract public function escape( &$data );
+	abstract public function login( $username, $password );
+	abstract public function minimum_args( $args, $count );
 	/**
 	 * Prepares user data for return in an XML-RPC object.
 	 *

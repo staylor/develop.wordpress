@@ -4,6 +4,8 @@ namespace WP\XMLRPC\Provider\WordPress;
 use WP\IXR\Error;
 
 trait Media {
+	abstract public function escape( &$data );
+	abstract public function login( $username, $password );
 	/**
 	 * Retrieve a media item by ID
 	 *

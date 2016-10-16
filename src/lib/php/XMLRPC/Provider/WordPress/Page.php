@@ -6,6 +6,8 @@ use WP\XMLRPC\Provider\MetaWeblog;
 use function WP\getApp;
 
 trait Page {
+	abstract public function escape( &$data );
+	abstract public function login( $username, $password );
 	/**
 	 * Prepares page data for return in an XML-RPC object.
 	 *

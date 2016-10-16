@@ -21,6 +21,10 @@ const WPINC = 'wp-includes';
 require_once( ABSPATH . 'vendor/autoload.php' );
 
 $app = WP\getApp();
+// Response singleton
+$response = $app['response'];
+
+// use instead of superglobals
 $_request = $app['request']->attributes;
 $_post = $app['request']->request;
 $_get = $app['request']->query;

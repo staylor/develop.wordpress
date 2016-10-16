@@ -4,6 +4,9 @@ namespace WP\XMLRPC\Provider\WordPress;
 use WP\IXR\Error;
 
 trait Revision {
+	abstract public function escape( &$data );
+	abstract public function login( $username, $password );
+	abstract public function minimum_args( $args, $count );
 	/**
 	 * Retrieve revisions for a specific post.
 	 *

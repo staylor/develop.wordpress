@@ -25,7 +25,9 @@ $_cookie->replace( [] );
 if ( $_get->has( 'rsd' ) ) {
 
 	$charset =	get_option( 'blog_charset' );
-	header( 'Content-Type: text/xml; charset=' . $charset, true );
+
+	$response->setCharset( $charset );
+	$response->headers->set( 'Content-Type', 'text/xml', true );
 
 	$view = new View( $app );
 
@@ -35,9 +37,10 @@ if ( $_get->has( 'rsd' ) ) {
 		'charset' => $charset,
 	] );
 
-	echo $view->render( 'xmlrpc/rsd', $view );
-
-	exit();
+	$xml = $view->render( 'xmlrpc/rsd', $view );
+	$response->setContent( $xml );
+	$response->send();
+	return;
 }
 
 require_once( ABSPATH . 'wp-admin/includes/admin.php' );
@@ -46,7 +49,7 @@ require_once( ABSPATH . 'wp-admin/includes/admin.php' );
  * Posts submitted via the XML-RPC interface get that title
  * @var string
  */
-$app->xmlrpc['post_default_title'] = '';
+$app->set( 'post_default_title', '' );
 
 /**
  * Filters the class used for handling XML-RPC requests.
@@ -63,5 +66,3 @@ if ( ! ( $wp_xmlrpc_server instanceof ServerInterface ) ) {
 
 // Fire off the request
 $wp_xmlrpc_server->serve_request();
-
-exit();

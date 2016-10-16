@@ -2,14 +2,22 @@
 namespace WP\Symfony;
 
 use Pimple\{Container,ServiceProviderInterface};
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\{Request,Response,RedirectResponse};
 
 class Provider implements ServiceProviderInterface {
 	public function register( Container $app ) {
+		$app['response'] = function () {
+			return new Response();
+		};
+
+		$app['response.redirect'] = function () {
+			return new RedirectResponse();
+		};
+
 		$app['request'] = function () {
 			$request = Request::createFromGlobals();
 
-			// use $attributes for $_REQUEST
+			// use attributes prop for "_REQUEST" superglobal
 			$request->attributes->replace( array_merge(
 				$request->query->all(),
 				$request->request->all()

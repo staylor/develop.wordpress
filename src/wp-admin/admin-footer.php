@@ -57,6 +57,7 @@ if ( !defined('ABSPATH') )
 	<div class="clear"></div>
 </div>
 <?php
+$hook_suffix = $app->get( 'hook_suffix' );
 /**
  * Prints scripts or data before the default footer scripts.
  *
@@ -76,7 +77,7 @@ do_action( 'admin_footer', '' );
  *
  * @param string $hook_suffix The current admin page.
  */
-do_action( "admin_print_footer_scripts-{$app->hook_suffix}" );
+do_action( "admin_print_footer_scripts-{$hook_suffix}" );
 
 /**
  * Prints any scripts and data queued for the footer.
@@ -95,7 +96,7 @@ do_action( 'admin_print_footer_scripts' );
  *
  * @param string $hook_suffix The current admin page.
  */
-do_action( "admin_footer-{$app->hook_suffix}" );
+do_action( "admin_footer-{$hook_suffix}" );
 
 // get_site_option() won't exist when auto upgrading from <= 2.7
 if ( function_exists('get_site_option') ) {

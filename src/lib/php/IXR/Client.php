@@ -51,7 +51,7 @@ class Client {
         $this->timeout = $timeout;
     }
 
-    function query(): bool
+    public function query(): bool
 	{
         $args = func_get_args();
         $method = array_shift( $args );
@@ -144,22 +144,22 @@ class Client {
         return true;
     }
 
-    function getResponse() {
+    public function getResponse() {
         // methodResponses can only have one param - return that
         return $this->message->params[0];
     }
 
-    function isError()
+    public function isError()
     {
         return is_object( $this->error );
     }
 
-    function getErrorCode(): int
+    public function getErrorCode(): int
     {
         return $this->error->code;
     }
 
-    function getErrorMessage(): string
+    public function getErrorMessage(): string
     {
         return $this->error->message;
     }

@@ -689,7 +689,7 @@ class PostType extends Observable {
 
 		// Remove registered custom meta capabilities.
 		foreach ( $this->cap as $cap ) {
-			unset( static::$meta_caps[ $cap ] );
+			unset( self::$meta_caps[ $cap ] );
 		}
 	}
 

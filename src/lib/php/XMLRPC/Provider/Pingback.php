@@ -2,13 +2,14 @@
 namespace WP\XMLRPC\Provider;
 
 use WP\IXR\Error;
-use WP\XMLRPC\Server;
+use WP\XMLRPC\{Server,Utils as ServerUtils};
 use function WP\getApp;
 /**
  * PingBack functions
  * specs on www.hixie.ch/specs/pingback/pingback
  */
 class Pingback implements ProviderInterface {
+	use ServerUtils;
 
 	public function register( Server $server ): ProviderInterface
 	{

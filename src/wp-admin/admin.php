@@ -168,13 +168,13 @@ if ( $plugin_page ) {
 	unset($the_parent);
 }
 
-$app->hook_suffix = '';
+$app->set( 'hook_suffix',  '' );
 if ( isset( $page_hook ) ) {
-	$app->hook_suffix = $page_hook;
+	$app->set( 'hook_suffix', $page_hook );
 } elseif ( $plugin_page ) {
-	$app->hook_suffix = $plugin_page;
+	$app->set( 'hook_suffix', $plugin_page );
 } elseif ( isset( $pagenow ) ) {
-	$app->hook_suffix = $pagenow;
+	$app->set( 'hook_suffix', $pagenow );
 }
 
 set_current_screen();

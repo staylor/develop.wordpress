@@ -4,6 +4,9 @@ namespace WP\XMLRPC\Provider\WordPress;
 use WP\IXR\{Date,Error};
 
 trait Post {
+	abstract public function escape( &$data );
+	abstract public function login( $username, $password );
+	abstract public function minimum_args( $args, $count );
 	/**
 	 * Prepares post data for return in an XML-RPC object.
 	 *

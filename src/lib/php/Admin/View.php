@@ -19,10 +19,11 @@ class View extends BaseView {
 		}
 
 		$this->l10n = new L10N();
+		$hook_suffix = $this->app->get( 'hook_suffix' );
 
-		$this->setAdminActions( $this->app->hook_suffix );
+		$this->setAdminActions( $hook_suffix );
 
-		$this->setAdminData();
+		$this->setAdminData( $hook_suffix );
 
 		$this->enqueueAdminScripts();
 
@@ -40,10 +41,10 @@ class View extends BaseView {
 		wp_enqueue_script( 'svg-painter' );
 	}
 
-	public function setAdminData() {
+	public function setAdminData( $hook_suffix ) {
 		$title = esc_html( strip_tags( get_admin_page_title() ) );
 
-		$admin_page = preg_replace('/[^a-z0-9_-]+/i', '-', $this->app->hook_suffix );
+		$admin_page = preg_replace('/[^a-z0-9_-]+/i', '-', $hook_suffix );
 
 		$admin_footer_text = sprintf(
 			__( 'Thank you for creating with <a href="%s">WordPress</a>.' ), __( 'https://wordpress.org/' )
@@ -56,7 +57,7 @@ class View extends BaseView {
 
 			'ajaxurl' => admin_url( 'admin-ajax.php', 'relative' ),
 
-			'hook_suffix' => $this->app->hook_suffix,
+			'hook_suffix' => $hook_suffix,
 
 			'thousands_sep' => addslashes( $this->app['locale']->number_format['thousands_sep'] ),
 
@@ -178,7 +179,7 @@ class View extends BaseView {
 			 *
 			 * @since 2.1.0
 			 */
-			"admin_print_scripts-{$this->app->hook_suffix}" => [],
+			"admin_print_scripts-{$hook_suffix}" => [],
 			/**
 			 * Fires when scripts are printed for all admin pages.
 			 *

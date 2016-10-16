@@ -8,8 +8,6 @@
  * @subpackage Trackbacks
  */
 
-use function WP\getApp;
-
 if (empty($wp)) {
 	require_once( __DIR__ . '/wp-load.php' );
 	wp( array( 'tb' => '1' ) );

@@ -50,10 +50,6 @@ class App extends Container {
 	public $switched_stack = [];
 	public $switched = false;
 
-	public $xmlrpc = [
-		'post_default_title' => '',
-	];
-
 	// admin menu
 	public $menu = [];
 	public $submenu = [];

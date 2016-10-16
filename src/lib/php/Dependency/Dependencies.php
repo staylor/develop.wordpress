@@ -133,7 +133,7 @@ class Dependencies {
 	 * @param string $handle Name of the item. Should be unique.
 	 * @return bool True on success, false if not set.
 	 */
-	public function do_item( $handle ) {
+	public function do_item( $handle, $group = false ) {
 		return isset( $this->registered[ $handle ] );
 	}
 

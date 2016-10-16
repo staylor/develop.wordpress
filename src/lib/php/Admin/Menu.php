@@ -84,6 +84,7 @@ class Menu {
 		$typenow = $this->app['typenow'];
 		$parent_file = $this->app->get( 'parent_file' );
 		$submenu_file = $this->app->get( 'submenu_file' );
+		$plugin_page = $this->app->get( 'plugin_page' );
 
 		$first = true;
 		// 0 = menu_title,
@@ -252,13 +253,12 @@ class Menu {
 					// If plugin_page is set the parent must either match the current page or not physically exist.
 					// This allows plugin pages with the same hook to exist under different parents.
 					} elseif (
-						( ! isset( $this->plugin_page ) && $this->self == $sub_item[2] ) ||
+						( ! $plugin_page && $this->self == $sub_item[2] ) ||
 						(
-							isset( $this->plugin_page ) &&
-							$this->plugin_page == $sub_item[2] &&
+							$plugin_page === $sub_item[2] &&
 							(
-								$item[2] == $self_type ||
-								$item[2] == $this->self ||
+								$item[2] === $self_type ||
+								$item[2] === $this->self ||
 								file_exists( $menu_file ) === false
 							)
 						)
