@@ -7,6 +7,8 @@ use WP\XMLRPC\{Server,Utils};
 /**
  * MetaWeblog API functions
  * specs on wherever Dave Winer wants them to be
+ *
+ * @property \WP\IXR\Error $error
  */
 class MetaWeblog implements ProviderInterface {
 	use Utils;

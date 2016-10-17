@@ -1110,7 +1110,7 @@ class Rewrite extends Observable {
 					}
 				}
 
-				$trackbackmatch = $trackbackquery = null;
+				$trackbackmatch = $trackbackquery = $subquery = null;
 				$sub1 = $sub1tb = $subtbquery = $sub1feed = $subfeedquery = $sub1feed2 = null;
 				$sub1comment = $subcommentquery = $sub1embed = $subembedquery = null;
 				$sub2 = $sub2tb = $sub2feed = $sub2feed2 = $sub2comment = $sub2embed = null;

@@ -189,6 +189,8 @@ class Pingback implements ProviderInterface {
 
 		$p = explode( "\n\n", $remote_source );
 
+		$excerpt = '';
+
 		$preg_target = preg_quote( $pagelinkedto, '|' );
 
 		foreach ( $p as $para ) {

@@ -8,6 +8,10 @@ namespace WP\Customize;
  * @since 3.4.0
  */
 
+use \WP_Customize_Setting;
+use \WP_Customize_Panel;
+use \WP_Customize_Section;
+use \WP_Customize_Control;
 use function WP\getApp;
 
 /**
@@ -281,7 +285,7 @@ class Manager {
 			return false;
 		}
 
-		if ( ! $action ) {
+		if ( null === $action ) {
 			return true;
 		} else {
 			/*
@@ -598,7 +602,8 @@ class Manager {
 	public function unsanitized_post_values() {
 		if ( ! isset( $this->_post_values ) ) {
 			if ( isset( $_POST['customized'] ) ) {
-				$this->_post_values = json_decode( wp_unslash( $_POST['customized'] ), true );
+				$value = wp_unslash( $_POST['customized'] );
+				$this->_post_values = json_decode( $value, true );
 			}
 			if ( empty( $this->_post_values ) ) { // if not isset or if JSON error
 				$this->_post_values = [];

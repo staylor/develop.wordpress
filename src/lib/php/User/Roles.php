@@ -301,11 +301,11 @@ class Roles extends Observer {
 
 		switch ( $message['event'] ) {
 		case 'add_cap':
-			$this->add_cap( $subject->name, $message['cap'], $message['grant'] );
+			$this->add_cap( $message['name'], $message['cap'], $message['grant'] );
 			break;
 
 		case 'remove_cap':
-			$this->remove_cap( $subject->name, $message['cap'] );
+			$this->remove_cap( $message['name'], $message['cap'] );
 			break;
 		}
 	}

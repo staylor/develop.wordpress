@@ -268,11 +268,11 @@ class Scripts extends Dependencies {
 		$before_handle = $this->print_inline_script( $handle, 'before', false );
 		$after_handle = $this->print_inline_script( $handle, 'after', false );
 
-		if ( $before_handle ) {
+		if ( false !== $before_handle ) {
 			$before_handle = sprintf( "<script type='text/javascript'>\n%s\n</script>\n", $before_handle );
 		}
 
-		if ( $after_handle ) {
+		if ( false !== $after_handle ) {
 			$after_handle = sprintf( "<script type='text/javascript'>\n%s\n</script>\n", $after_handle );
 		}
 
@@ -287,7 +287,7 @@ class Scripts extends Dependencies {
 			 */
 			$srce = apply_filters( 'script_loader_src', $src, $handle );
 
-			if ( $this->in_default_dir( $srce ) && ( $before_handle || $after_handle ) ) {
+			if ( $this->in_default_dir( $srce ) && ( false !== $before_handle || false !== $after_handle ) ) {
 				$this->do_concat = false;
 
 				// Have to print the so-far concatenated scripts right away to maintain the right order.

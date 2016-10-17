@@ -118,7 +118,6 @@ class Message {
 
     public function tag_open( $parser, $tag, $attr ) {
         $this->_currentTagContents = '';
-        $this->currentTag = $tag;
 
         switch( $tag ) {
 		case 'methodCall':

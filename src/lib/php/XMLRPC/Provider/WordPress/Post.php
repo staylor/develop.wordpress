@@ -4,6 +4,9 @@ namespace WP\XMLRPC\Provider\WordPress;
 use WP\IXR\{Date,Error};
 use WP\User\User as WP_User;
 
+/**
+ * @property \WP\IXR\Error $error
+ */
 trait Post {
 	/**
 	 * @return string|void

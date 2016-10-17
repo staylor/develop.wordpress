@@ -2,7 +2,9 @@
 namespace WP\Controller;
 
 use WP\{Observer,Observable};
+use \WP_Post;
 use function WP\getApp;
+
 /**
  * WordPress environment setup class.
  *
@@ -158,6 +160,7 @@ class WP extends Observer {
 		$app = getApp();
 		$this->query_vars = [];
 		$post_type_query_vars = [];
+		$query = $matches = null;
 
 		if ( is_array( $extra_query_vars ) ) {
 			$this->extra_query_vars = & $extra_query_vars;

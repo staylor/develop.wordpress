@@ -8,6 +8,8 @@ use function WP\getApp;
 /**
  * Blogger API functions.
  * specs on http://plant.blogger.com/api and https://groups.yahoo.com/group/bloggerDev/
+ *
+ * @property \WP\IXR\Error $error
  */
 class Blogger implements ProviderInterface {
 	use Utils;
@@ -42,7 +44,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string  $username
 	 *     @type string  $password
 	 * }
-	 * @return array|Error
+	 * @return array|WP\IXR\Error
 	 */
 	public function blogger_getUsersBlogs( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) ) {
@@ -91,7 +93,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $username Username.
 	 *     @type string $password Password.
 	 * }
-	 * @return array|Error
+	 * @return array|WP\IXR\Error
 	 */
 	protected function _multisite_getUsersBlogs( $args ) {
 		$current_blog = get_blog_details();
@@ -135,7 +137,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|Error
+	 * @return array|WP\IXR\Error
 	 */
 	public function blogger_getUserInfo( $args ) {
 		$this->escape( $args );
@@ -179,7 +181,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string  $username
 	 *     @type string  $password
 	 * }
-	 * @return array|Error
+	 * @return array|WP\IXR\Error
 	 */
 	public function blogger_getPost( $args ) {
 		$this->escape( $args );
@@ -235,7 +237,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $password
 	 *     @type int    $numberposts (optional)
 	 * }
-	 * @return array|Error
+	 * @return array|WP\IXR\Error
 	 */
 	public function blogger_getRecentPosts( $args ) {
 
@@ -311,7 +313,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $content
 	 *     @type string $publish
 	 * }
-	 * @return int|Error
+	 * @return int|WP\IXR\Error
 	 */
 	public function blogger_newPost( $args ) {
 		$this->escape( $args );
@@ -394,7 +396,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $content
 	 *     @type bool   $publish
 	 * }
-	 * @return true|Error true when done.
+	 * @return true|WP\IXR\Error true when done.
 	 */
 	public function blogger_editPost( $args ) {
 
@@ -474,7 +476,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return true|Error True when post is deleted.
+	 * @return true|WP\IXR\Error True when post is deleted.
 	 */
 	public function blogger_deletePost( $args ) {
 		$this->escape( $args );

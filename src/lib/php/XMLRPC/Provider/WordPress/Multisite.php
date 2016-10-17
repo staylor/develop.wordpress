@@ -5,6 +5,9 @@ use WP\IXR\Error;
 use WP\User\User as WP_User;
 use WP\XMLRPC\Provider\Blogger;
 
+/**
+ * @property \WP\IXR\Error $error
+ */
 trait Multisite {
 	/**
 	 * @return string|void

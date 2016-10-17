@@ -12,13 +12,13 @@ class Client {
 
     protected $useragent;
     protected $response;
-    protected $message = false;
+    protected $message;
     protected $debug = false;
     protected $timeout;
     protected $headers = [];
 
     // Storage place for an error message
-    protected $error = false;
+    protected $error;
 
     public function __construct(
 		$server,

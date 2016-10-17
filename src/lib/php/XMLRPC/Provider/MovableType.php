@@ -8,6 +8,8 @@ use function WP\getApp;
 /**
  * MovableType API functions
  * specs on http://www.movabletype.org/docs/mtmanual_programmatic.html
+ *
+ * @property \WP\IXR\Error $error
  */
 class MovableType implements ProviderInterface {
 	use Utils;

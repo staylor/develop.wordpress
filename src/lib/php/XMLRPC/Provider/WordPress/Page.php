@@ -6,6 +6,9 @@ use WP\User\User as WP_User;
 use WP\XMLRPC\Provider\MetaWeblog;
 use function WP\getApp;
 
+/**
+ * @property \WP\IXR\Error $error
+ */
 trait Page {
 	/**
 	 * @return string|void

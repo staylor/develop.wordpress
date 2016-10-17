@@ -573,7 +573,7 @@ class User {
 			$this->caps[$role] = true;
 			$this->roles = [ $role => true ];
 		} else {
-			$this->roles = false;
+			$this->roles = [];
 		}
 		update_user_meta( $this->ID, $this->cap_key, $this->caps );
 		$this->get_role_caps();

@@ -81,7 +81,7 @@ class HttpClient extends Client {
 			$errno    = $response->get_error_code();
 			$errorstr = $response->get_error_message();
 			$this->error = new Error( -32300, sprintf(
-				"transport error: %d %s",
+				'transport error: %d %s',
 				$errno,
 				$errorstr
 			) );

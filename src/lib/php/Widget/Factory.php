@@ -8,6 +8,7 @@ namespace WP\Widget;
  * @since 4.4.0
  */
 
+use \WP_Widget;
 use function WP\getApp;
 
 /**

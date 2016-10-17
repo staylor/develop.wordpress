@@ -5,6 +5,9 @@ use WP\IXR\Error;
 use WP\User\User as WP_User;
 use function WP\getApp;
 
+/**
+ * @property \WP\IXR\Error $error
+ */
 trait Option {
 	/**
 	 * @return string|void

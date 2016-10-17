@@ -5,8 +5,13 @@ namespace WP\IXR;
  * @since 1.5.0
  */
 class Value {
-
+	/**
+	 * @var mixed
+	 */
     private $data;
+	/**
+	 * @var string
+	 */
     private $type;
 
 	public function __construct( $data, string $type = '' ) {

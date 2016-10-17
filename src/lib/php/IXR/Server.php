@@ -108,7 +108,7 @@ class Server {
 		return $result;
 	}
 
-	private function error( int $error, string $message = '' ) {
+	private function error( $error, string $message = '' ) {
 		// Accepts either an error object or an error code and message
 		if ( $message && ! is_object( $error ) ) {
 			$error = new Error( $error, $message );
@@ -128,7 +128,7 @@ class Server {
 
 		$type = [ 'Content-Type: text/xml' ];
 		if ( $charset ) {
-			$type[] = "charset=" . $charset;
+			$type[] = 'charset=' . $charset;
 		}
 		header( join( '; ', $type ) );
 		header( 'Date: ' . date( 'r' ) );

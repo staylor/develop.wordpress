@@ -66,7 +66,8 @@ class Role extends Observable {
 		$this->message = [
 			'event' => 'add_cap',
 			'cap' => $cap,
-			'grant' => $grant
+			'grant' => $grant,
+			'name' => $this->name,
 		];
 
 		$this->notify();
@@ -90,7 +91,8 @@ class Role extends Observable {
 
 		$this->message = [
 			'event' => 'remove_cap',
-			'cap' => $cap
+			'cap' => $cap,
+			'name' => $this->name,
 		];
 
 		$this->notify();
