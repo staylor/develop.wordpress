@@ -1,7 +1,7 @@
 <?php
 namespace WP\Controller;
 
-use WP\{Observer,Observable};
+use WP\{Observer, Observable};
 use \WP_Post;
 use function WP\getApp;
 
@@ -20,7 +20,7 @@ class WP extends Observer {
 	 * @since 2.0.0
 	 * @var array
 	 */
-	public $public_query_vars = [ 'm', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots', 'taxonomy', 'term', 'cpage', 'post_type', 'embed' ];
+	public $public_query_vars = ['m', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots', 'taxonomy', 'term', 'cpage', 'post_type', 'embed'];
 
 	/**
 	 * Private query variables.
@@ -30,7 +30,7 @@ class WP extends Observer {
 	 * @since 2.0.0
 	 * @var array
 	 */
-	public $private_query_vars = [ 'offset', 'posts_per_page', 'posts_per_archive_page', 'showposts', 'nopaging', 'post_type', 'post_status', 'category__in', 'category__not_in', 'category__and', 'tag__in', 'tag__not_in', 'tag__and', 'tag_slug__in', 'tag_slug__and', 'tag_id', 'post_mime_type', 'perm', 'comments_per_page', 'post__in', 'post__not_in', 'post_parent', 'post_parent__in', 'post_parent__not_in', 'title', 'fields' ];
+	public $private_query_vars = ['offset', 'posts_per_page', 'posts_per_archive_page', 'showposts', 'nopaging', 'post_type', 'post_status', 'category__in', 'category__not_in', 'category__and', 'tag__in', 'tag__not_in', 'tag__and', 'tag_slug__in', 'tag_slug__and', 'tag_id', 'post_mime_type', 'perm', 'comments_per_page', 'post__in', 'post__not_in', 'post_parent', 'post_parent__in', 'post_parent__not_in', 'title', 'fields'];
 
 	/**
 	 * Extra query variables set by the user.
@@ -105,8 +105,8 @@ class WP extends Observer {
 	 *
 	 * @param string $qv Query variable name.
 	 */
-	public function add_query_var($qv) {
-		if ( !in_array($qv, $this->public_query_vars) )
+	public function add_query_var( $qv ) {
+		if ( ! in_array( $qv, $this->public_query_vars ) )
 			$this->public_query_vars[] = $qv;
 	}
 
@@ -118,7 +118,7 @@ class WP extends Observer {
 	 * @param string $name Query variable name.
 	 */
 	public function remove_query_var( $name ) {
-		$this->public_query_vars = array_diff( $this->public_query_vars, [ $name ] );
+		$this->public_query_vars = array_diff( $this->public_query_vars, [$name] );
 	}
 
 	/**
@@ -129,7 +129,7 @@ class WP extends Observer {
 	 * @param string $key Query variable name.
 	 * @param mixed $value Query variable value.
 	 */
-	public function set_query_var($key, $value) {
+	public function set_query_var( $key, $value ) {
 		$this->query_vars[$key] = $value;
 	}
 
@@ -143,7 +143,7 @@ class WP extends Observer {
 	 *
 	 * @param array|string $extra_query_vars Set the extra query variables.
 	 */
-	public function parse_request($extra_query_vars = '') {
+	public function parse_request( $extra_query_vars = '' ) {
 		/**
 		 * Filters whether to parse the request.
 		 *
@@ -172,7 +172,7 @@ class WP extends Observer {
 		// Fetch the rewrite rules.
 		$rewrite = $app['rewrite']->wp_rewrite_rules();
 
-		if ( ! empty($rewrite) ) {
+		if ( ! empty( $rewrite ) ) {
 			// If we match a rewrite rule, this will be cleared.
 			$error = '404';
 			$this->did_permalink = true;
@@ -191,20 +191,20 @@ class WP extends Observer {
 			// front. For path info requests, this leaves us with the requesting
 			// filename, if any. For 404 requests, this leaves us with the
 			// requested permalink.
-			$req_uri = str_replace($pathinfo, '', $req_uri);
-			$req_uri = trim($req_uri, '/');
+			$req_uri = str_replace( $pathinfo, '', $req_uri );
+			$req_uri = trim( $req_uri, '/' );
 			$req_uri = preg_replace( $home_path_regex, '', $req_uri );
-			$req_uri = trim($req_uri, '/');
-			$pathinfo = trim($pathinfo, '/');
+			$req_uri = trim( $req_uri, '/' );
+			$pathinfo = trim( $pathinfo, '/' );
 			$pathinfo = preg_replace( $home_path_regex, '', $pathinfo );
-			$pathinfo = trim($pathinfo, '/');
-			$self = trim($self, '/');
+			$pathinfo = trim( $pathinfo, '/' );
+			$self = trim( $self, '/' );
 			$self = preg_replace( $home_path_regex, '', $self );
-			$self = trim($self, '/');
+			$self = trim( $self, '/' );
 
 			// The requested permalink is in $pathinfo for path info requests and
 			//  $req_uri for other requests.
-			if ( ! empty($pathinfo) && !preg_match('|^.*' . $app['rewrite']->index . '$|', $pathinfo) ) {
+			if ( ! empty( $pathinfo ) && ! preg_match( '|^.*' . $app['rewrite']->index . '$|', $pathinfo ) ) {
 				$requested_path = $pathinfo;
 			} else {
 				// If the request uri is the index, blank it out so that we don't try to match it against a rule.
@@ -223,12 +223,12 @@ class WP extends Observer {
 				if ( isset( $rewrite['$'] ) ) {
 					$this->matched_rule = '$';
 					$query = $rewrite['$'];
-					$matches = [ '' ];
+					$matches = [''];
 				}
 			} else {
-				foreach ( (array) $rewrite as $match => $query ) {
+				foreach ( ( array ) $rewrite as $match => $query ) {
 					// If the requested file is the anchor of the match, prepend it to the path info.
-					if ( ! empty($requested_file) && strpos($match, $requested_file) === 0 && $requested_file != $requested_path )
+					if ( ! empty( $requested_file ) && strpos( $match, $requested_file ) === 0 && $requested_file != $requested_path )
 						$request_match = $requested_file . '/' . $requested_path;
 
 					$pattern = sprintf( '#^%s#', $match );
@@ -237,7 +237,7 @@ class WP extends Observer {
 
 						if ( $app['rewrite']->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
 							// This is a verbose page match, let's check to be sure about it.
-							$page = get_page_by_path( $matches[ $varmatch[1] ] );
+							$page = get_page_by_path( $matches[$varmatch[1]] );
 							if ( ! $page ) {
 								continue;
 							}
@@ -266,7 +266,7 @@ class WP extends Observer {
 				$this->matched_query = $query;
 
 				// Parse the query.
-				parse_str($query, $perma_query_vars);
+				parse_str( $query, $perma_query_vars );
 
 				// If we're processing a 404 request, clear the error var since we found something.
 				if ( '404' == $error )
@@ -274,10 +274,10 @@ class WP extends Observer {
 			}
 
 			// If req_uri is empty or if it is a request for ourself, unset error.
-			if ( empty($requested_path) || $requested_file == $self || strpos($app['request.php_self'], 'wp-admin/') !== false ) {
+			if ( empty( $requested_path ) || $requested_file == $self || strpos( $app['request.php_self'], 'wp-admin/' ) !== false ) {
 				unset( $error, $_GET['error'] );
 
-				if ( isset($perma_query_vars) && strpos($app['request.php_self'], 'wp-admin/') !== false )
+				if ( isset( $perma_query_vars ) && strpos( $app['request.php_self'], 'wp-admin/' ) !== false )
 					unset( $perma_query_vars );
 
 				$this->did_permalink = false;
@@ -313,18 +313,18 @@ class WP extends Observer {
 			elseif ( isset( $perma_query_vars[$wpvar] ) )
 				$this->query_vars[$wpvar] = $perma_query_vars[$wpvar];
 
-			if ( !empty( $this->query_vars[$wpvar] ) ) {
+			if ( ! empty( $this->query_vars[$wpvar] ) ) {
 				if ( ! is_array( $this->query_vars[$wpvar] ) ) {
-					$this->query_vars[$wpvar] = (string) $this->query_vars[$wpvar];
+					$this->query_vars[$wpvar] = ( string ) $this->query_vars[$wpvar];
 				} else {
 					foreach ( $this->query_vars[$wpvar] as $vkey => $v ) {
-						if ( !is_object( $v ) ) {
-							$this->query_vars[$wpvar][$vkey] = (string) $v;
+						if ( ! is_object( $v ) ) {
+							$this->query_vars[$wpvar][$vkey] = ( string ) $v;
 						}
 					}
 				}
 
-				if ( isset($post_type_query_vars[$wpvar] ) ) {
+				if ( isset( $post_type_query_vars[$wpvar] ) ) {
 					$this->query_vars['post_type'] = $post_type_query_vars[$wpvar];
 					$this->query_vars['name'] = $this->query_vars[$wpvar];
 				}
@@ -332,13 +332,13 @@ class WP extends Observer {
 		}
 
 		// Convert urldecoded spaces back into +
-		foreach ( get_taxonomies( [] , 'objects' ) as $taxonomy => $t )
+		foreach ( get_taxonomies( [], 'objects' ) as $taxonomy => $t )
 			if ( $t->query_var && isset( $this->query_vars[$t->query_var] ) )
 				$this->query_vars[$t->query_var] = str_replace( ' ', '+', $this->query_vars[$t->query_var] );
 
 		// Don't allow non-publicly queryable taxonomies to be queried from the front end.
 		if ( ! is_admin() ) {
-			foreach ( get_taxonomies( [ 'publicly_queryable' => false ], 'objects' ) as $taxonomy => $t ) {
+			foreach ( get_taxonomies( ['publicly_queryable' => false], 'objects' ) as $taxonomy => $t ) {
 				/*
 				 * Disallow when set to the 'taxonomy' query var.
 				 * Non-publicly queryable taxonomies cannot register custom query vars. See register_taxonomy().
@@ -350,8 +350,8 @@ class WP extends Observer {
 		}
 
 		// Limit publicly queried post_types to those that are publicly_queryable
-		if ( isset( $this->query_vars['post_type']) ) {
-			$queryable_post_types = get_post_types( [ 'publicly_queryable' => true ] );
+		if ( isset( $this->query_vars['post_type'] ) ) {
+			$queryable_post_types = get_post_types( ['publicly_queryable' => true] );
 			if ( ! is_array( $this->query_vars['post_type'] ) ) {
 				if ( ! in_array( $this->query_vars['post_type'], $queryable_post_types ) )
 					unset( $this->query_vars['post_type'] );
@@ -363,12 +363,12 @@ class WP extends Observer {
 		// Resolve conflicts between posts with numeric slugs and date archive queries.
 		$this->query_vars = wp_resolve_numeric_slug_conflicts( $this->query_vars );
 
-		foreach ( (array) $this->private_query_vars as $var) {
-			if ( isset($this->extra_query_vars[$var]) )
+		foreach ( ( array ) $this->private_query_vars as $var ) {
+			if ( isset( $this->extra_query_vars[$var] ) )
 				$this->query_vars[$var] = $this->extra_query_vars[$var];
 		}
 
-		if ( isset($error) )
+		if ( isset( $error ) )
 			$this->query_vars['error'] = $error;
 
 		/**
@@ -387,7 +387,7 @@ class WP extends Observer {
 		 *
 		 * @param WP &$this Current WordPress environment instance (passed by reference).
 		 */
-		do_action_ref_array( 'parse_request', [ &$this ] );
+		do_action_ref_array( 'parse_request', [&$this] );
 	}
 
 	/**
@@ -405,18 +405,18 @@ class WP extends Observer {
 		$exit_required = false;
 
 		if ( is_user_logged_in() )
-			$headers = array_merge($headers, wp_get_nocache_headers());
+			$headers = array_merge( $headers, wp_get_nocache_headers() );
 		if ( ! empty( $this->query_vars['error'] ) ) {
-			$status = (int) $this->query_vars['error'];
+			$status = ( int ) $this->query_vars['error'];
 			if ( 404 === $status ) {
 				if ( ! is_user_logged_in() )
-					$headers = array_merge($headers, wp_get_nocache_headers());
-				$headers['Content-Type'] = get_option('html_type') . '; charset=' . get_option('blog_charset');
-			} elseif ( in_array( $status, [ 403, 500, 502, 503 ] ) ) {
+					$headers = array_merge( $headers, wp_get_nocache_headers() );
+				$headers['Content-Type'] = get_option( 'html_type' ) . '; charset=' . get_option( 'blog_charset' );
+			} elseif ( in_array( $status, [403, 500, 502, 503] ) ) {
 				$exit_required = true;
 			}
 		} elseif ( empty( $this->query_vars['feed'] ) ) {
-			$headers['Content-Type'] = get_option('html_type') . '; charset=' . get_option('blog_charset');
+			$headers['Content-Type'] = get_option( 'html_type' ) . '; charset=' . get_option( 'blog_charset' );
 		} else {
 			// Set the correct content type for feeds
 			$type = $this->query_vars['feed'];
@@ -426,40 +426,39 @@ class WP extends Observer {
 			$headers['Content-Type'] = feed_content_type( $type ) . '; charset=' . get_option( 'blog_charset' );
 
 			// We're showing a feed, so WP is indeed the only thing that last changed
-			if ( !empty($this->query_vars['withcomments'])
+			if ( ! empty( $this->query_vars['withcomments'] )
 				|| false !== strpos( $this->query_vars['feed'], 'comments-' )
-				|| ( empty($this->query_vars['withoutcomments'])
-					&& ( !empty($this->query_vars['p'])
-						|| !empty($this->query_vars['name'])
-						|| !empty($this->query_vars['page_id'])
-						|| !empty($this->query_vars['pagename'])
-						|| !empty($this->query_vars['attachment'])
-						|| !empty($this->query_vars['attachment_id'])
+				|| ( empty( $this->query_vars['withoutcomments'] )
+					&& ( ! empty( $this->query_vars['p'] )
+						|| ! empty( $this->query_vars['name'] )
+						|| ! empty( $this->query_vars['page_id'] )
+						|| ! empty( $this->query_vars['pagename'] )
+						|| ! empty( $this->query_vars['attachment'] )
+						|| ! empty( $this->query_vars['attachment_id'] )
 					)
 				)
 			)
-				$wp_last_modified = mysql2date('D, d M Y H:i:s', get_lastcommentmodified('GMT'), 0).' GMT';
+				$wp_last_modified = mysql2date( 'D, d M Y H:i:s', get_lastcommentmodified( 'GMT' ), 0 ) . ' GMT';
 			else
-				$wp_last_modified = mysql2date('D, d M Y H:i:s', get_lastpostmodified('GMT'), 0).' GMT';
-			$wp_etag = '"' . md5($wp_last_modified) . '"';
+				$wp_last_modified = mysql2date( 'D, d M Y H:i:s', get_lastpostmodified( 'GMT' ), 0 ) . ' GMT';
+			$wp_etag = '"' . md5( $wp_last_modified ) . '"';
 			$headers['Last-Modified'] = $wp_last_modified;
 			$headers['ETag'] = $wp_etag;
 
 			// Support for Conditional GET
-			if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+			if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) )
 				$client_etag = wp_unslash( $_SERVER['HTTP_IF_NONE_MATCH'] );
 			else $client_etag = false;
 
-			$client_last_modified = empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? '' : trim($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+			$client_last_modified = empty( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ? '' : trim( $_SERVER['HTTP_IF_MODIFIED_SINCE'] );
 			// If string is empty, return 0. If not, attempt to parse into a timestamp
-			$client_modified_timestamp = $client_last_modified ? strtotime($client_last_modified) : 0;
+			$client_modified_timestamp = $client_last_modified ? strtotime( $client_last_modified ) : 0;
 
 			// Make a timestamp for our most recent modification...
-			$wp_modified_timestamp = strtotime($wp_last_modified);
+			$wp_modified_timestamp = strtotime( $wp_last_modified );
 
-			if ( ($client_last_modified && $client_etag) ?
-					 (($client_modified_timestamp >= $wp_modified_timestamp) && ($client_etag == $wp_etag)) :
-					 (($client_modified_timestamp >= $wp_modified_timestamp) || ($client_etag == $wp_etag)) ) {
+			if ( ( $client_last_modified && $client_etag ) ?
+					 ( ( $client_modified_timestamp >= $wp_modified_timestamp ) && ( $client_etag == $wp_etag ) ) : ( ( $client_modified_timestamp >= $wp_modified_timestamp ) || ( $client_etag == $wp_etag ) ) ) {
 				$status = 304;
 				$exit_required = true;
 			}
@@ -486,7 +485,7 @@ class WP extends Observer {
 			header_remove( 'Last-Modified' );
 		}
 
-		foreach ( (array) $headers as $name => $field_value ) {
+		foreach ( ( array ) $headers as $name => $field_value ) {
 			$header = sprintf( '%s: %s', $name, $field_value );
 			header( $header );
 		}
@@ -502,7 +501,7 @@ class WP extends Observer {
 		 *
 		 * @param WP &$this Current WordPress environment instance (passed by reference).
 		 */
-		do_action_ref_array( 'send_headers', [ &$this ] );
+		do_action_ref_array( 'send_headers', [&$this] );
 	}
 
 	/**
@@ -515,12 +514,12 @@ class WP extends Observer {
 	 */
 	public function build_query_string() {
 		$this->query_string = '';
-		foreach ( (array) array_keys($this->query_vars) as $wpvar) {
+		foreach ( ( array ) array_keys( $this->query_vars ) as $wpvar ) {
 			if ( '' != $this->query_vars[$wpvar] ) {
-				$this->query_string .= (strlen($this->query_string) < 1) ? '' : '&';
-				if ( !is_scalar($this->query_vars[$wpvar]) ) // Discard non-scalars.
+				$this->query_string .= ( strlen( $this->query_string ) < 1 ) ? '' : '&';
+				if ( ! is_scalar( $this->query_vars[$wpvar] ) ) // Discard non-scalars.
 					continue;
-				$this->query_string .= $wpvar . '=' . rawurlencode($this->query_vars[$wpvar]);
+				$this->query_string .= $wpvar . '=' . rawurlencode( $this->query_vars[$wpvar] );
 			}
 		}
 
@@ -534,7 +533,7 @@ class WP extends Observer {
 			 * @param string $query_string The query string to modify.
 			 */
 			$this->query_string = apply_filters( 'query_string', $this->query_string );
-			parse_str($this->query_string, $this->query_vars);
+			parse_str( $this->query_string, $this->query_vars );
 		}
 	}
 
@@ -552,8 +551,8 @@ class WP extends Observer {
 	 */
 	public function register_globals() {
 		// Extract updated query vars back into global namespace.
-		foreach ( (array) $this->current_query->query_vars as $key => $value ) {
-			$GLOBALS[ $key ] = $value;
+		foreach ( ( array ) $this->current_query->query_vars as $key => $value ) {
+			$GLOBALS[$key] = $value;
 		}
 
 		$GLOBALS['post'] = $this->current_query->post ?? null;
@@ -645,7 +644,7 @@ class WP extends Observer {
 				$next = '<!--nextpage-->';
 				if ( $p && false !== strpos( $p->post_content, $next ) && ! empty( $this->query_vars['page'] ) ) {
 					$page = trim( $this->query_vars['page'], '/' );
-					$success = (int) $page <= ( substr_count( $p->post_content, $next ) + 1 );
+					$success = ( int ) $page <= ( substr_count( $p->post_content, $next ) + 1 );
 				}
 			}
 
@@ -710,7 +709,7 @@ class WP extends Observer {
 		 *
 		 * @param WP &$this Current WordPress environment instance (passed by reference).
 		 */
-		do_action_ref_array( 'wp', [ &$this ] );
+		do_action_ref_array( 'wp', [&$this] );
 	}
 
 	public function update( \SplSubject $subject ) {
@@ -720,14 +719,14 @@ class WP extends Observer {
 		$message = $subject->message;
 
 		switch ( $message['event'] ) {
-			case 'add_endpoint':
-			case 'add_rewrite_rules':
-				$this->add_query_var( $message['query_var'] );
-				break;
+		case 'add_endpoint':
+		case 'add_rewrite_rules':
+			$this->add_query_var( $message['query_var'] );
+			break;
 
-			case 'remove_rewrite_rules':
-				$this->remove_query_var( $message['query_var'] );
-				break;
+		case 'remove_rewrite_rules':
+			$this->remove_query_var( $message['query_var'] );
+			break;
 		}
 	}
 }

@@ -1,8 +1,8 @@
 <?php
 namespace WP\XMLRPC\Provider;
 
-use WP\IXR\{Client,Error};
-use WP\XMLRPC\{Server,Utils};
+use WP\IXR\{Client, Error};
+use WP\XMLRPC\{Server, Utils};
 use function WP\getApp;
 
 /**
@@ -18,13 +18,13 @@ class Blogger implements ProviderInterface {
 	{
 		$server->addMethods( [
 			// Blogger API
-			'blogger.getUsersBlogs' => [ $this, 'blogger_getUsersBlogs' ],
-			'blogger.getUserInfo' => [ $this, 'blogger_getUserInfo' ],
-			'blogger.getPost' => [ $this, 'blogger_getPost' ],
-			'blogger.getRecentPosts' => [ $this, 'blogger_getRecentPosts' ],
-			'blogger.newPost' => [ $this, 'blogger_newPost' ],
-			'blogger.editPost' => [ $this, 'blogger_editPost' ],
-			'blogger.deletePost' => [ $this, 'blogger_deletePost' ],
+			'blogger.getUsersBlogs' => [$this, 'blogger_getUsersBlogs'],
+			'blogger.getUserInfo' => [$this, 'blogger_getUserInfo'],
+			'blogger.getPost' => [$this, 'blogger_getPost'],
+			'blogger.getRecentPosts' => [$this, 'blogger_getRecentPosts'],
+			'blogger.newPost' => [$this, 'blogger_newPost'],
+			'blogger.editPost' => [$this, 'blogger_editPost'],
+			'blogger.deletePost' => [$this, 'blogger_deletePost'],
 		] );
 
 		return $this;
@@ -78,7 +78,7 @@ class Blogger implements ProviderInterface {
 			'xmlrpc'   => site_url( 'xmlrpc.php', 'rpc' ),
 		];
 
-		return [ $struct ];
+		return [$struct];
 	}
 
 	/**
@@ -115,9 +115,9 @@ class Blogger implements ProviderInterface {
 			return $blogs;
 		}
 
-		foreach ( (array) $blogs as $blog ) {
+		foreach ( ( array ) $blogs as $blog ) {
 			if ( strpos( $blog['url'], $app['request.host'] ) ) {
-				return [ $blog ];
+				return [$blog];
 			}
 		}
 		return [];
@@ -219,7 +219,7 @@ class Blogger implements ProviderInterface {
 			'userid' => $post_data['post_author'],
 			'dateCreated' => $this->_convert_date( $post_data['post_date'] ),
 			'content' => $content,
-			'postid' => (string) $post_data['ID']
+			'postid' => ( string ) $post_data['ID']
 		];
 	}
 
@@ -251,7 +251,7 @@ class Blogger implements ProviderInterface {
 		) = $args;
 
 		if ( isset( $args[4] ) ) {
-			$query = [ 'numberposts' => absint( $args[4] ) ];
+			$query = ['numberposts' => absint( $args[4] )];
 		} else {
 			$query = [];
 		}
@@ -291,7 +291,7 @@ class Blogger implements ProviderInterface {
 				'userid' => $entry['post_author'],
 				'dateCreated' => $post_date,
 				'content' => $content,
-				'postid' => (string) $entry['ID'],
+				'postid' => ( string ) $entry['ID'],
 			];
 		}
 

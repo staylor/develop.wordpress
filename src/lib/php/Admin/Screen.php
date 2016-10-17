@@ -326,8 +326,8 @@ final class Screen {
 			$base .= '-user';
 		}
 
-		if ( isset( self::$_registry[ $id ] ) ) {
-			$screen = self::$_registry[ $id ];
+		if ( isset( self::$_registry[$id] ) ) {
+			$screen = self::$_registry[$id];
 			if ( $screen === get_current_screen() ) {
 				return $screen;
 			}
@@ -338,11 +338,11 @@ final class Screen {
 
 		$screen->base       = $base;
 		$screen->action     = $action;
-		$screen->post_type  = (string) $post_type;
-		$screen->taxonomy   = (string) $taxonomy;
+		$screen->post_type  = ( string ) $post_type;
+		$screen->taxonomy   = ( string ) $taxonomy;
 		$screen->in_admin   = $in_admin;
 
-		self::$_registry[ $id ] = $screen;
+		self::$_registry[$id] = $screen;
 
 		return $screen;
 	}
@@ -392,7 +392,7 @@ final class Screen {
 	 */
 	public function in_admin( $admin = null ) {
 		if ( empty( $admin ) ) {
-			return (bool) $this->in_admin;
+			return ( bool ) $this->in_admin;
 		}
 		return ( $admin == $this->in_admin );
 	}
@@ -408,7 +408,7 @@ final class Screen {
 	 * @param string $help Help text.
 	 */
 	public static function add_old_compat_help( $screen, $help ) {
-		self::$_old_compat_help[ $screen->id ] = $help;
+		self::$_old_compat_help[$screen->id] = $help;
 	}
 
 	/**
@@ -435,7 +435,7 @@ final class Screen {
 	 * @param mixed $args Option-dependent arguments.
 	 */
 	public function add_option( $option, $args = [] ) {
-		$this->_options[ $option ] = $args;
+		$this->_options[$option] = $args;
 	}
 
 	/**
@@ -446,7 +446,7 @@ final class Screen {
 	 * @param string $option Option ID.
 	 */
 	public function remove_option( $option ) {
-		unset( $this->_options[ $option ] );
+		unset( $this->_options[$option] );
 	}
 
 	/**
@@ -479,17 +479,17 @@ final class Screen {
 	 * @return string The option value if set, null otherwise.
 	 */
 	public function get_option( $option, $key = '' ) {
-		if ( ! isset( $this->_options[ $option ] ) ) {
+		if ( ! isset( $this->_options[$option] ) ) {
 			return null;
 		}
 
 		if ( '' !== $key ) {
-			if ( isset( $this->_options[ $option ][ $key ] ) ) {
-				return $this->_options[ $option ][ $key ];
+			if ( isset( $this->_options[$option][$key] ) ) {
+				return $this->_options[$option][$key];
 			}
 			return null;
 		}
-		return $this->_options[ $option ];
+		return $this->_options[$option];
 	}
 
 	/**
@@ -505,10 +505,10 @@ final class Screen {
 
 		$priorities = [];
 		foreach ( $help_tabs as $help_tab ) {
-			if ( isset( $priorities[ $help_tab['priority'] ] ) ) {
-				$priorities[ $help_tab['priority'] ][] = $help_tab;
+			if ( isset( $priorities[$help_tab['priority']] ) ) {
+				$priorities[$help_tab['priority']][] = $help_tab;
 			} else {
-				$priorities[ $help_tab['priority'] ] = [ $help_tab ];
+				$priorities[$help_tab['priority']] = [$help_tab];
 			}
 		}
 
@@ -517,7 +517,7 @@ final class Screen {
 		$sorted = [];
 		foreach ( $priorities as $list ) {
 			foreach ( $list as $tab ) {
-				$sorted[ $tab['id'] ] = $tab;
+				$sorted[$tab['id']] = $tab;
 			}
 		}
 
@@ -533,10 +533,10 @@ final class Screen {
 	 * @return array Help tab arguments.
 	 */
 	public function get_help_tab( $id ) {
-		if ( ! isset( $this->_help_tabs[ $id ] ) ) {
+		if ( ! isset( $this->_help_tabs[$id] ) ) {
 			return null;
 		}
-		return $this->_help_tabs[ $id ];
+		return $this->_help_tabs[$id];
 	}
 
 	/**
@@ -574,7 +574,7 @@ final class Screen {
 		}
 
 		// Allows for overriding an existing tab with that ID.
-		$this->_help_tabs[ $params['id'] ] = $params;
+		$this->_help_tabs[$params['id']] = $params;
 	}
 
 	/**
@@ -585,7 +585,7 @@ final class Screen {
 	 * @param string $id The help tab ID.
 	 */
 	public function remove_help_tab( $id ) {
-		unset( $this->_help_tabs[ $id ] );
+		unset( $this->_help_tabs[$id] );
 	}
 
 	/**
@@ -659,10 +659,10 @@ final class Screen {
 	 * @return string Screen reader text string.
 	 */
 	public function get_screen_reader_text( $key ) {
-		if ( ! isset( $this->_screen_reader_content[ $key ] ) ) {
+		if ( ! isset( $this->_screen_reader_content[$key] ) ) {
 			return null;
 		}
-		return $this->_screen_reader_content[ $key ];
+		return $this->_screen_reader_content[$key];
 	}
 
 	/**
@@ -723,7 +723,7 @@ final class Screen {
 		 */
 		self::$_old_compat_help = apply_filters( 'contextual_help_list', self::$_old_compat_help, $this );
 
-		$old_help = isset( self::$_old_compat_help[ $this->id ] ) ? self::$_old_compat_help[ $this->id ] : '';
+		$old_help = isset( self::$_old_compat_help[$this->id] ) ? self::$_old_compat_help[$this->id] : '';
 
 		/**
 		 * Filters the legacy contextual help text.
@@ -760,7 +760,7 @@ final class Screen {
 		if ( $old_help ) {
 			$this->add_help_tab( [
 				'id'      => 'old-contextual-help',
-				'title'   => __('Overview'),
+				'title'   => __( 'Overview' ),
 				'content' => $old_help,
 			] );
 		}
@@ -789,7 +789,7 @@ final class Screen {
 			// If it exists, fire tab callback.
 			if ( ! empty( $c['callback'] ) ) {
 				ob_start();
-				call_user_func_array( $c['callback'], [ $this, $c ] );
+				call_user_func_array( $c['callback'], [$this, $c] );
 				$c['callback_output'] = ob_get_clean();
 			}
 		}
@@ -810,13 +810,13 @@ final class Screen {
 		 */
 		$columns = apply_filters( 'screen_layout_columns', [], $this->id, $this );
 
-		if ( ! empty( $columns ) && isset( $columns[ $this->id ] ) ) {
-			$this->add_option( 'layout_columns', [ 'max' => $columns[ $this->id ] ] );
+		if ( ! empty( $columns ) && isset( $columns[$this->id] ) ) {
+			$this->add_option( 'layout_columns', ['max' => $columns[$this->id]] );
 		}
 
 		if ( $this->get_option( 'layout_columns' ) ) {
 			$option = sprintf( 'screen_layout_%s', $this->id );
-			$this->columns = (int) get_user_option( $option );
+			$this->columns = ( int ) get_user_option( $option );
 
 			if ( ! $this->columns && $this->get_option( 'layout_columns', 'default' ) ) {
 				$this->columns = $this->get_option( 'layout_columns', 'default' );
@@ -850,11 +850,11 @@ final class Screen {
 
 		$columns = get_column_headers( $this );
 
-		$show_screen = ! empty( $this->app->meta_boxes[ $this->id ] ) || $columns || $this->get_option( 'per_page' );
+		$show_screen = ! empty( $this->app->meta_boxes[$this->id] ) || $columns || $this->get_option( 'per_page' );
 
 		switch ( $this->base ) {
 		case 'widgets':
-			$this->_screen_settings = '<p><a id="access-on" href="widgets.php?widgets-access=on">' . __('Enable accessibility mode') . '</a><a id="access-off" href="widgets.php?widgets-access=off">' . __('Disable accessibility mode') . "</a></p>\n";
+			$this->_screen_settings = '<p><a id="access-on" href="widgets.php?widgets-access=on">' . __( 'Enable accessibility mode' ) . '</a><a id="access-off" href="widgets.php?widgets-access=off">' . __( 'Disable accessibility mode' ) . "</a></p>\n";
 			break;
 		case 'post':
 			$expand = '<fieldset class="editor-expand hidden"><legend>' . __( 'Additional settings' ) . '</legend><label for="editor-expand-toggle">';
@@ -953,21 +953,21 @@ final class Screen {
 	}
 
 	public function meta_box_prefs() {
-		if ( empty( $this->app->meta_boxes[ $this->id ] ) ) {
+		if ( empty( $this->app->meta_boxes[$this->id] ) ) {
 			return;
 		}
 
 		$hidden = get_hidden_meta_boxes( $this );
-		$boxes = $this->app->meta_boxes[ $this->id ];
-		$priorities = [ 'high', 'core', 'default', 'low' ];
+		$boxes = $this->app->meta_boxes[$this->id];
+		$priorities = ['high', 'core', 'default', 'low'];
 
 		$prefs = [];
 		foreach ( array_keys( $boxes ) as $context ) {
 			foreach ( $priorities as $priority ) {
-				if ( ! isset( $boxes[ $context ][ $priority ] ) ) {
+				if ( ! isset( $boxes[$context][$priority] ) ) {
 					continue;
 				}
-				foreach ( $boxes[ $context ][ $priority ] as $box ) {
+				foreach ( $boxes[$context][$priority] as $box ) {
 					if ( false == $box || ! $box['title'] ) {
 						continue;
 					}
@@ -999,7 +999,7 @@ final class Screen {
 	 * @since 4.4.0
 	 */
 	public function render_meta_boxes_preferences() {
-		if ( ! isset( $this->app->meta_boxes[ $this->id ] ) ) {
+		if ( ! isset( $this->app->meta_boxes[$this->id] ) ) {
 			return;
 		}
 
@@ -1021,7 +1021,7 @@ final class Screen {
 		echo $this->render( 'admin/screen/meta-boxes-preferences', [
 			'prefs' => $this->meta_box_prefs(),
 			'show_welcome' => $show_welcome,
-			'welcome_checked' => checked( (bool) $welcome_checked, true, false ),
+			'welcome_checked' => checked( ( bool ) $welcome_checked, true, false ),
 		] );
 	}
 
@@ -1041,7 +1041,7 @@ final class Screen {
 
 		$legend = ! empty( $columns['_title'] ) ? $columns['_title'] : __( 'Columns' );
 
-		$special = [ '_title', 'cb', 'comment', 'media', 'name', 'title', 'username', 'blogname' ];
+		$special = ['_title', 'cb', 'comment', 'media', 'name', 'title', 'username', 'blogname'];
 
 		$prefs = [];
 		foreach ( $columns as $column => $title ) {
@@ -1122,7 +1122,7 @@ final class Screen {
 			$option = str_replace( '-', '_', $id_per_page );
 		}
 
-		$per_page = (int) get_user_option( $option );
+		$per_page = ( int ) get_user_option( $option );
 		if ( empty( $per_page ) || $per_page < 1 ) {
 			$per_page = $this->get_option( 'per_page', 'default' );
 			if ( ! $per_page ) {
@@ -1214,13 +1214,13 @@ final class Screen {
 	 */
 	public function render_screen_reader_content( $key = '', $tag = 'h2' ) {
 
-		if ( ! isset( $this->_screen_reader_content[ $key ] ) ) {
+		if ( ! isset( $this->_screen_reader_content[$key] ) ) {
 			return;
 		}
 
 		echo $this->render( 'admin/screen/screen-reader-content', [
 			'tag' => $tag,
-			'content' => $this->_screen_reader_content[ $key ]
+			'content' => $this->_screen_reader_content[$key]
 		] );
 	}
 }
