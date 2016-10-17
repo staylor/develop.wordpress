@@ -44,7 +44,7 @@ class HttpClient extends Client {
 		$request = new Request( $method, $args );
 		$xml = $request->getXml();
 
-		$port = $this->port ? ":$this->port" : '';
+		$port = $this->port ? ':' . $this->port : '';
 		$url = $this->scheme . '://' . $this->server . $port . $this->path;
 		$params = [
 			'headers'    => [ 'Content-Type' => 'text/xml' ],
@@ -80,7 +80,11 @@ class HttpClient extends Client {
 		if ( is_wp_error( $response ) ) {
 			$errno    = $response->get_error_code();
 			$errorstr = $response->get_error_message();
-			$this->error = new Error( -32300, "transport error: {$errno} {$errorstr}" );
+			$this->error = new Error( -32300, sprintf(
+				"transport error: %d %s",
+				$errno,
+				$errorstr
+			) );
 			return false;
 		}
 

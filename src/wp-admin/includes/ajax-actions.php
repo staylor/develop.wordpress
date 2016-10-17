@@ -1713,8 +1713,6 @@ function wp_ajax_sample_permalink() {
  * @since 3.1.0
  */
 function wp_ajax_inline_save() {
-	global $mode;
-
 	check_ajax_referer( 'inlineeditnonce', '_inline_edit' );
 
 	$app = getApp();
@@ -1794,7 +1792,7 @@ function wp_ajax_inline_save() {
 
 	$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => $_post->get( 'screen' ) ) );
 
-	$mode = $_post->get( 'post_view' ) === 'excerpt' ? 'excerpt' : 'list';
+	$app->set( 'mode', $_post->get( 'post_view' ) === 'excerpt' ? 'excerpt' : 'list' );
 
 	$level = 0;
 	if ( is_post_type_hierarchical( $wp_list_table->screen->post_type ) ) {

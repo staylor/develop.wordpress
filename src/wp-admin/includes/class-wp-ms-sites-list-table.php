@@ -66,19 +66,19 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * @since 3.1.0
 	 *
 	 * @global string $s
-	 * @global string $mode
 	 */
 	public function prepare_items() {
-		global $s, $mode;
+		global $s;
 
 		$app = getApp();
 		$wpdb = $app['db'];
 
 		if ( $this->_request->get( 'mode' ) ) {
 			$mode = $this->_request->get( 'mode' ) === 'excerpt' ? 'excerpt' : 'list';
+			$app->set( 'mode', $mode );
 			set_user_setting( 'sites_list_mode', $mode );
 		} else {
-			$mode = get_user_setting( 'sites_list_mode', 'list' );
+			$app->set( 'mode', get_user_setting( 'sites_list_mode', 'list' ) );
 		}
 
 		$per_page = $this->get_items_per_page( 'sites_network_per_page' );
@@ -216,17 +216,16 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global string $mode
-	 *
 	 * @param string $which
 	 */
 	protected function pagination( $which ) {
-		global $mode;
+		$app = getApp();
 
 		parent::pagination( $which );
 
-		if ( 'top' === $which )
-			$this->view_switcher( $mode );
+		if ( 'top' === $which ) {
+			$this->view_switcher( $app->get( 'mode' ) );
+		}
 	}
 
 	/**
@@ -304,12 +303,10 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @global string $mode
-	 *
 	 * @param array $blog Current site.
 	 */
 	public function column_blogname( $blog ) {
-		global $mode;
+		$app = getApp();
 
 		$blogname = untrailingslashit( $blog['domain'] . $blog['path'] );
 		$blog_states = [];
@@ -335,7 +332,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		?>
 		<a href="<?php echo esc_url( network_admin_url( 'site-info.php?id=' . $blog['blog_id'] ) ); ?>" class="edit"><?php echo $blogname . $blog_state; ?></a>
 		<?php
-		if ( 'list' !== $mode ) {
+		if ( 'list' !== $app->get( 'mode' ) ) {
 			switch_to_blog( $blog['blog_id'] );
 			echo '<p>';
 			printf(
@@ -358,9 +355,9 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * @param array $blog Current site.
 	 */
 	public function column_lastupdated( $blog ) {
-		global $mode;
+		$app = getApp();
 
-		if ( 'list' === $mode ) {
+		if ( 'list' === $app->get( 'mode' ) ) {
 			$date = __( 'Y/m/d' );
 		} else {
 			$date = __( 'Y/m/d g:i:s a' );
@@ -378,9 +375,9 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * @param array $blog Current site.
 	 */
 	public function column_registered( $blog ) {
-		global $mode;
+		$app = getApp();
 
-		if ( 'list' === $mode ) {
+		if ( 'list' === $app->get( 'mode' ) ) {
 			$date = __( 'Y/m/d' );
 		} else {
 			$date = __( 'Y/m/d g:i:s a' );
@@ -461,10 +458,6 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		do_action( 'manage_sites_custom_column', $column_name, $blog['blog_id'] );
 	}
 
-	/**
-	 *
-	 * @global string $mode
-	 */
 	public function display_rows() {
 		foreach ( $this->items as $blog ) {
 			$blog = $blog->to_array();

@@ -56,17 +56,17 @@ class Server {
 		$resultxml = $r->getXml();
 
 		// Create the XML
-		$xml = "
+		$xml = '
 			<methodResponse>
 			<params>
 			<param>
 			  <value>
-				{$resultxml}
+				' . $resultxml . '
 			  </value>
 			</param>
 			</params>
 			</methodResponse>
-		";
+		';
 		// Send it
 		$this->output( $xml );
 	}
@@ -74,7 +74,7 @@ class Server {
 	public function call( string $methodname, array $args )
 	{
 		if ( ! $this->hasMethod( $methodname ) ) {
-			return new Error( -32601, "server error. requested method {$methodname} does not exist." );
+			return new Error( -32601, 'server error. requested method ' . $methodname . ' does not exist.' );
 		}
 		$method = $this->methods[ $methodname ];
 
@@ -89,7 +89,7 @@ class Server {
 			// It's a class method - check it exists
 			$method = substr( $method, 5 );
 			if ( ! method_exists( $this, $method ) ) {
-				return new Error( -32601, "server error. requested class method \"{$method}\" does not exist." );
+				return new Error( -32601, 'server error. requested class method "' . $method . '" does not exist.' );
 			}
 
 			// Call the method
@@ -97,9 +97,9 @@ class Server {
 		} else {
 			// It's a function - does it exist?
 			if ( is_array( $method ) && ! is_callable( $method ) ) {
-				return new Error( -32601, "server error. requested object method \"{$method[1]}\" does not exist." );
+				return new Error( -32601, 'server error. requested object method "' . $method[1] . '" does not exist.' );
 			} elseif ( ! is_array( $method ) && ! function_exists( $method ) ) {
-				return new Error( -32601, "server error. requested function \"{$method}\" does not exist." );
+				return new Error( -32601, 'server error. requested function "' . $method . '" does not exist.' );
 			}
 
 			// Call the function
@@ -128,7 +128,7 @@ class Server {
 
 		$type = [ 'Content-Type: text/xml' ];
 		if ( $charset ) {
-			$type[] = "charset={$charset}";
+			$type[] = "charset=" . $charset;
 		}
 		header( join( '; ', $type ) );
 		header( 'Date: ' . date( 'r' ) );

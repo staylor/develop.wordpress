@@ -392,11 +392,11 @@ class Rewrite extends Observable {
 	 * @since 1.5.0
 	 * @access public
 	 *
-	 * @return bool Whether permalink links are enabled and index.php is in the URL.
+	 * @return int Whether permalink links are enabled and index.php is in the URL.
 	 */
 	public function using_index_permalinks() {
 		if ( empty( $this->permalink_structure ) ) {
-			return false;
+			return 0;
 		}
 
 		// If the index is not in the permalink, we're using mod_rewrite.
@@ -414,7 +414,7 @@ class Rewrite extends Observable {
 	 * @return bool Whether permalink links are enabled and index.php is NOT in the URL.
 	 */
 	public function using_mod_rewrite_permalinks() {
-		return $this->using_permalinks() && ! $this->using_index_permalinks();
+		return $this->using_permalinks() && 0 === $this->using_index_permalinks();
 	}
 
 	/**
@@ -442,7 +442,12 @@ class Rewrite extends Observable {
 			$match_suffix = ']';
 		}
 
-		return "$match_prefix$number$match_suffix";
+		return sprintf(
+			'%s%s%s',
+			$match_prefix,
+			$number,
+			$match_suffix
+		);
 	}
 
 	/**
@@ -454,14 +459,15 @@ class Rewrite extends Observable {
 	 * @since 2.5.0
 	 * @access public
 	 *
-	 * @return array Array of page URIs as first element and attachment URIs as second element.
+	 * @return array[] Array of page URIs as first element and attachment URIs as second element.
 	 */
 	public function page_uri_index() {
 		$app = getApp();
 		$wpdb = $app['db'];
 
 		// Get pages in order of hierarchy, i.e. children after parents.
-		$pages = $wpdb->get_results("SELECT ID, post_name, post_parent FROM $wpdb->posts WHERE post_type = 'page' AND post_status != 'auto-draft'");
+		$sql = 'SELECT ID, post_name, post_parent FROM ' . $wpdb->posts . ' WHERE post_type = "page" AND post_status != "auto-draft"';
+		$pages = $wpdb->get_results( $sql );
 		$posts = get_page_hierarchy( $pages );
 
 		// If we have no pages get out quick.
@@ -477,7 +483,8 @@ class Rewrite extends Observable {
 		foreach ( $posts as $id => $post ) {
 			// URL => page name
 			$uri = get_page_uri($id);
-			$attachments = $wpdb->get_results( $wpdb->prepare( "SELECT ID, post_name, post_parent FROM $wpdb->posts WHERE post_type = 'attachment' AND post_parent = %d", $id ));
+			$sql = 'SELECT ID, post_name, post_parent FROM ' . $wpdb->posts . ' WHERE post_type = "attachment" AND post_parent = %d';
+			$attachments = $wpdb->get_results( $wpdb->prepare( $sql, $id ) );
 			if ( !empty($attachments) ) {
 				foreach ( $attachments as $attachment ) {
 					$attach_uri = get_page_uri($attachment->ID);
@@ -503,7 +510,7 @@ class Rewrite extends Observable {
 		// The extra .? at the beginning prevents clashes with other regular expressions in the rules array.
 		$this->add_rewrite_tag( '%pagename%', '(.?.+?)', 'pagename=' );
 		$struct = $this->get_page_permastruct();
-		if ( ! $struct ) {
+		if ( false === $struct ) {
 			return [];
 		}
 		return $this->generate_rewrite_rules( $struct, EP_PAGES, true, true, false, false );
@@ -916,6 +923,7 @@ class Rewrite extends Observable {
 		$commentregex = $this->comments_pagination_base . '-([0-9]{1,})/?$';
 		$embedregex = 'embed/?$';
 
+		$ep_query_append = null;
 		// Build up an array of endpoint regexes to append => queries to append.
 		if ( $endpoints ) {
 			$ep_query_append = array ();
@@ -1014,6 +1022,7 @@ class Rewrite extends Observable {
 			$commentmatch = $match . $commentregex;
 			$commentquery = $index . '?' . $query . '&cpage=' . $this->preg_index($num_toks + 1);
 
+			$rootcommentmatch = $rootcommentquery = null;
 			if ( get_option('page_on_front') ) {
 				// Create query for Root /comment-page-xx.
 				$rootcommentmatch = $match . $commentregex;
@@ -1091,7 +1100,7 @@ class Rewrite extends Observable {
 				if ( ! $post ) {
 					// For custom post types, we need to add on endpoints as well.
 					foreach ( get_post_types( ['_builtin' => false ] ) as $ptype ) {
-						if ( strpos($struct, "%$ptype%") !== false ) {
+						if ( strpos( $struct, '%' . $ptype .'%' ) !== false ) {
 							$post = true;
 
 							// This is for page style attachment URLs.
@@ -1100,6 +1109,11 @@ class Rewrite extends Observable {
 						}
 					}
 				}
+
+				$trackbackmatch = $trackbackquery = null;
+				$sub1 = $sub1tb = $subtbquery = $sub1feed = $subfeedquery = $sub1feed2 = null;
+				$sub1comment = $subcommentquery = $sub1embed = $subembedquery = null;
+				$sub2 = $sub2tb = $sub2feed = $sub2feed2 = $sub2comment = $sub2embed = null;
 
 				// If creating rules for a permalink, do all the endpoints like attachments etc.
 				if ( $post ) {
@@ -1421,7 +1435,7 @@ class Rewrite extends Observable {
 			 *
 			 * @param array $rules The rewrite rules generated for the current permastruct.
 			 */
-			$rules = apply_filters( "{$permastructname}_rewrite_rules", $rules );
+			$rules = apply_filters( $permastructname . '_rewrite_rules', $rules );
 			if ( 'post_tag' == $permastructname ) {
 
 				/**
@@ -1523,7 +1537,7 @@ class Rewrite extends Observable {
 
 		$rules = "<IfModule mod_rewrite.c>\n";
 		$rules .= "RewriteEngine On\n";
-		$rules .= "RewriteBase $home_root\n";
+		$rules .= 'RewriteBase ' . $home_root . "\n";
 
 		// Prevent -f checks on index.php.
 		$rules .= "RewriteRule ^index\.php$ - [L]\n";
@@ -1542,7 +1556,7 @@ class Rewrite extends Observable {
 			$num_rules = count($rewrite);
 			$rules .= "RewriteCond %{REQUEST_FILENAME} -f [OR]\n" .
 				"RewriteCond %{REQUEST_FILENAME} -d\n" .
-				"RewriteRule ^.*$ - [S=$num_rules]\n";
+				'RewriteRule ^.*$ - [S=' . $num_rules . "]\n";
 
 			foreach ( (array) $rewrite as $match => $query) {
 				// Apache 1.3 does not support the reluctant (non-greedy) modifier.
@@ -1556,7 +1570,7 @@ class Rewrite extends Observable {
 		} else {
 			$rules .= "RewriteCond %{REQUEST_FILENAME} !-f\n" .
 				"RewriteCond %{REQUEST_FILENAME} !-d\n" .
-				"RewriteRule . {$home_root}{$this->index} [L]\n";
+				'RewriteRule . ' . $home_root . $this->index . " [L]\n";
 		}
 
 		$rules .= "</IfModule>\n";
@@ -1755,13 +1769,17 @@ class Rewrite extends Observable {
 	 *     @type bool $endpoints   Whether endpoints should be applied to the generated rules. Default true.
 	 * }
 	 */
-	public function add_permastruct( $name, $struct, $args = [] ) {
+	public function add_permastruct( $name, $struct, $arguments = [] ) {
+		if ( is_array( $arguments ) ) {
+			$args = $arguments;
 		// Back-compat for the old parameters: $with_front and $ep_mask.
-		if ( ! is_array( $args ) )
-			$args = [ 'with_front' => $args ];
-		if ( func_num_args() == 4 )
-			$args['ep_mask'] = func_get_arg( 3 );
+		} else {
+			$args = [ 'with_front' => $arguments ];
+		}
 
+		if ( func_num_args() == 4 ) {
+			$args['ep_mask'] = func_get_arg( 3 );
+		}
 		$defaults = [
 			'with_front' => true,
 			'ep_mask' => EP_NONE,
@@ -1771,16 +1789,17 @@ class Rewrite extends Observable {
 			'walk_dirs' => true,
 			'endpoints' => true,
 		];
-		$args = array_intersect_key( $args, $defaults );
-		$args = wp_parse_args( $args, $defaults );
+		$common = array_intersect_key( $args, $defaults );
+		$params = wp_parse_args( $common, $defaults );
 
-		if ( $args['with_front'] )
+		if ( $params['with_front'] ) {
 			$struct = $this->front . $struct;
-		else
+		} else {
 			$struct = $this->root . $struct;
-		$args['struct'] = $struct;
+		}
+		$params['struct'] = $struct;
 
-		$this->extra_permastructs[ $name ] = $args;
+		$this->extra_permastructs[ $name ] = $params;
 	}
 
 	/**

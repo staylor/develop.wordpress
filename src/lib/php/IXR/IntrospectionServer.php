@@ -61,7 +61,7 @@ class IntrospectionServer extends Server {
 
         // Over-rides default call method, adds signature check
         if ( ! $this->hasMethod( $methodname ) ) {
-            return new Error( -32601, "server error. requested method \"{$this->message->methodName}\" not specified." );
+            return new Error( -32601, 'server error. requested method "' . $this->message->methodName . '" not specified.' );
         }
 
         $signature = $this->signatures[ $methodname ];
@@ -122,7 +122,7 @@ class IntrospectionServer extends Server {
     public function methodSignature( string $method ): array
     {
         if ( ! $this->hasMethod( $method ) ) {
-			return new Error( -32601, "server error. requested method \"{$method}\" not specified." );
+			return new Error( -32601, 'server error. requested method "' . $method . '" not specified.' );
         }
         // We should be returning an array of types
         $types = $this->signatures[ $method ];

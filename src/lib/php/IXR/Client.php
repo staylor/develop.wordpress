@@ -61,7 +61,7 @@ class Client {
         $xml = $r->getXml();
 
         $nl = "\r\n";
-        $request  = "POST {$this->path} HTTP/1.0$nl";
+        $request  = 'POST ' . $this->path . ' HTTP/1.0' . $nl;
 
         // Merged from WP #8145 - allow custom headers
         $this->headers['Host']          = $this->server;
@@ -70,7 +70,7 @@ class Client {
         $this->headers['Content-Length']= $length;
 
         foreach ( $this->headers as $header => $value ) {
-            $request .= "{$header}: {$value}{$nl}";
+            $request .= sprintf( '%s: %s%s', $header, $value, $nl );
         }
         $request .= $nl;
         $request .= $xml;

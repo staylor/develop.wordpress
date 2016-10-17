@@ -261,7 +261,7 @@ class Scripts extends Dependencies {
 		$conditional = isset( $obj->extra['conditional'] ) ? $obj->extra['conditional'] : '';
 
 		if ( $conditional ) {
-			$cond_before = "<!--[if {$conditional}]>\n";
+			$cond_before = '<!--[if ' . $conditional . "]>\n";
 			$cond_after = "<![endif]-->\n";
 		}
 
@@ -333,7 +333,14 @@ class Scripts extends Dependencies {
 		if ( ! $src )
 			return true;
 
-		$tag = "{$cond_before}{$before_handle}<script type='text/javascript' src='$src'></script>\n{$after_handle}{$cond_after}";
+		$tag = sprintf(
+			'%s%s<script type="text/javascript" src="%s"></script>%s%s',
+			$cond_before,
+			$before_handle,
+			$src,
+			"\n" . 	$after_handle,
+			$cond_after
+		);
 
 		/**
 		 * Filters the HTML script tag of an enqueued script.

@@ -66,18 +66,18 @@ class WP_Media_List_Table extends WP_List_Table {
 	/**
 	 * @global array    $post_mime_types
 	 * @global array    $avail_post_mime_types
-	 * @global string   $mode
 	 */
 	public function prepare_items() {
-		global $post_mime_types, $avail_post_mime_types, $mode;
+		global $post_mime_types, $avail_post_mime_types;
+
+		$app = getApp();
 
 		list( $post_mime_types, $avail_post_mime_types ) = wp_edit_attachments_query( $this->_request->all() );
 
  		$this->is_trash = 'trash' === $this->_request->get( 'attachment-filter' );
 
- 		$mode = $this->_request->get( 'mode', 'list' );
+ 		$app->set( 'mode', $this->_request->get( 'mode', 'list' ) );
 
-		$app = getApp();
 		$wp_query = $app['wp']->current_query;
 
 		$this->set_pagination_args( array(
@@ -226,19 +226,16 @@ class WP_Media_List_Table extends WP_List_Table {
 
 	/**
 	 * Override parent views so we can use the filter bar display.
-	 *
-	 * @global string $mode
 	 */
 	public function views() {
-		global $mode;
-
+		$app = getApp();
 		$views = $this->get_views();
 
 		$this->screen->render_screen_reader_content( 'heading_views' );
 ?>
 <div class="wp-filter">
 	<div class="filter-items">
-		<?php $this->view_switcher( $mode ); ?>
+		<?php $this->view_switcher( $app->get( 'mode' ) ); ?>
 
 		<label for="attachment-filter" class="screen-reader-text"><?php _e( 'Filter by type' ); ?></label>
 		<select class="attachment-filters" name="attachment-filter" id="attachment-filter">

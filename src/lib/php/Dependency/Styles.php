@@ -178,6 +178,14 @@ class Styles extends Dependencies {
 		$rel = isset($obj->extra['alt']) && $obj->extra['alt'] ? 'alternate stylesheet' : 'stylesheet';
 		$title = isset($obj->extra['title']) ? "title='" . esc_attr( $obj->extra['title'] ) . "'" : '';
 
+		$style_loader_tag = sprintf(
+			"<link rel='%s' id='%s-css' %s href='%s' type='text/css' media='%s' />\n",
+			$rel,
+			$handle,
+			$title,
+			$href,
+			$media
+		);
 		/**
 		 * Filters the HTML link tag of an enqueued style.
 		 *
@@ -190,17 +198,25 @@ class Styles extends Dependencies {
 		 * @param string $href   The stylesheet's source URL.
 		 * @param string $media  The stylesheet's media attribute.
 		 */
-		$tag = apply_filters( 'style_loader_tag', "<link rel='$rel' id='$handle-css' $title href='$href' type='text/css' media='$media' />\n", $handle, $href, $media);
+		$tag = apply_filters( 'style_loader_tag', $style_loader_tag, $handle, $href, $media);
 		if ( 'rtl' === $this->text_direction && isset($obj->extra['rtl']) && $obj->extra['rtl'] ) {
 			if ( is_bool( $obj->extra['rtl'] ) || 'replace' === $obj->extra['rtl'] ) {
 				$suffix = isset( $obj->extra['suffix'] ) ? $obj->extra['suffix'] : '';
-				$rtl_href = str_replace( "{$suffix}.css", "-rtl{$suffix}.css", $this->_css_href( $obj->src , $ver, "$handle-rtl" ));
+				$rtl_href = str_replace( $suffix . '.css', '-rtl' . $suffix . '.css', $this->_css_href( $obj->src , $ver, "$handle-rtl" ));
 			} else {
-				$rtl_href = $this->_css_href( $obj->extra['rtl'], $ver, "$handle-rtl" );
+				$rtl_href = $this->_css_href( $obj->extra['rtl'], $ver, $handle . '-rtl' );
 			}
 
 			/** This filter is documented in wp-includes/class.wp-styles.php */
-			$rtl_tag = apply_filters( 'style_loader_tag', "<link rel='$rel' id='$handle-rtl-css' $title href='$rtl_href' type='text/css' media='$media' />\n", $handle, $rtl_href, $media );
+			$style_loader_tag = sprintf(
+				"<link rel='%s' id='%s-rtl-css' %s href='%s' type='text/css' media='%s' />\n",
+				$rel,
+				$handle,
+				$title,
+				$rtl_href,
+				$media
+			);
+			$rtl_tag = apply_filters( 'style_loader_tag', $style_loader_tag, $handle, $rtl_href, $media );
 
 			if ( $obj->extra['rtl'] === 'replace' ) {
 				$tag = $rtl_tag;
@@ -211,7 +227,7 @@ class Styles extends Dependencies {
 
 		$conditional_pre = $conditional_post = '';
 		if ( isset( $obj->extra['conditional'] ) && $obj->extra['conditional'] ) {
-			$conditional_pre  = "<!--[if {$obj->extra['conditional']}]>\n";
+			$conditional_pre  = '<!--[if ' . $obj->extra['conditional'] . "]>\n";
 			$conditional_post = "<![endif]-->\n";
 		}
 

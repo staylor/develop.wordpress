@@ -134,13 +134,11 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 *
 	 * @global array    $avail_post_stati
 	 * @global int      $per_page
-	 * @global string   $mode
 	 */
 	public function prepare_items() {
-		global $avail_post_stati, $per_page, $mode;
+		global $avail_post_stati, $per_page;
 
 		// is going to call wp()
 		$avail_post_stati = wp_edit_posts_query();
@@ -181,9 +179,10 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 		if ( $this->_request->get( 'mode' ) ) {
 			$mode = $this->_request->get( 'mode' ) === 'excerpt' ? 'excerpt' : 'list';
+			$app->set( 'mode', $mode );
 			set_user_setting( 'posts_list_mode', $mode );
 		} else {
-			$mode = get_user_setting( 'posts_list_mode', 'list' );
+			$app->set( 'mode', get_user_setting( 'posts_list_mode', 'list' ) );
 		}
 
 		$this->is_trash = $this->_request->get( 'post_status' ) === 'trash';
@@ -870,13 +869,9 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @global string $mode
-	 *
 	 * @param WP_Post $post The current WP_Post object.
 	 */
 	public function column_title( $post ) {
-		global $mode;
-
 		if ( $this->hierarchical_display ) {
 			if ( 0 === $this->current_level && (int) $post->post_parent > 0 ) {
 				// Sent level 0 by accident, by default, or because we don't know the actual level.
@@ -953,7 +948,10 @@ class WP_Posts_List_Table extends WP_List_Table {
 			echo '<div class="locked-info"><span class="locked-avatar">' . $locked_avatar . '</span> <span class="locked-text">' . $locked_text . "</span></div>\n";
 		}
 
-		if ( ! is_post_type_hierarchical( $this->screen->post_type ) && 'excerpt' === $mode && current_user_can( 'read_post', $post->ID ) ) {
+		$app = getApp();
+		if ( ! is_post_type_hierarchical( $this->screen->post_type ) &&
+			'excerpt' === $app->get( 'mode' ) &&
+			current_user_can( 'read_post', $post->ID ) ) {
 			the_excerpt();
 		}
 
@@ -966,13 +964,9 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @global string $mode
-	 *
 	 * @param WP_Post $post The current WP_Post object.
 	 */
 	public function column_date( $post ) {
-		global $mode;
-
 		if ( '0000-00-00 00:00:00' === $post->post_date ) {
 			$t_time = $h_time = __( 'Unpublished' );
 			$time_diff = 0;
@@ -1002,6 +996,9 @@ class WP_Posts_List_Table extends WP_List_Table {
 			_e( 'Last Modified' );
 		}
 		echo '<br />';
+
+		$app = getApp();
+		$mode = $app->get( 'mode' );
 		if ( 'excerpt' === $mode ) {
 			/**
 			 * Filters the published time of the post.
@@ -1327,12 +1324,8 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * Outputs the hidden row displayed when inline editing
 	 *
 	 * @since 3.1.0
-	 *
-	 * @global string $mode
 	 */
 	public function inline_edit() {
-		global $mode;
-
 		$screen = $this->screen;
 
 		$post = get_default_post_to_edit( $screen->post_type );
@@ -1366,7 +1359,8 @@ class WP_Posts_List_Table extends WP_List_Table {
 				$flat_taxonomies[] = $taxonomy;
 		}
 
-		$m = ( isset( $mode ) && 'excerpt' === $mode ) ? 'excerpt' : 'list';
+		$app = getApp();
+		$m = 'excerpt' === $app->get( 'mode' ) ? 'excerpt' : 'list';
 		$can_publish = current_user_can( $post_type_object->cap->publish_posts );
 		$core_columns = array( 'cb' => true, 'date' => true, 'title' => true, 'categories' => true, 'tags' => true, 'comments' => true, 'author' => true );
 
@@ -1567,7 +1561,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	<?php foreach ( $flat_taxonomies as $taxonomy ) : ?>
 		<?php if ( current_user_can( $taxonomy->cap->assign_terms ) ) :
 			$taxonomy_name = esc_attr( $taxonomy->name );
-	
+
 			?>
 			<label class="inline-edit-tags">
 				<span class="title"><?php echo esc_html( $taxonomy->labels->name ) ?></span>

@@ -1193,7 +1193,8 @@ final class Screen {
 			return;
 		}
 
-		global $mode;
+		$app = getApp();
+		$mode = $app->get( 'mode' );
 
 		// This needs a submit button
 		add_filter( 'screen_options_show_submit', '__return_true' );

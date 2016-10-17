@@ -28,13 +28,11 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 *
 	 * @global string $usersearch
 	 * @global string $role
-	 * @global string $mode
 	 */
 	public function prepare_items() {
-		global $usersearch, $role, $mode;
+		global $usersearch, $role;
 
 		$app = getApp();
 		$wpdb = $app['db'];
@@ -93,9 +91,10 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 		}
 		if ( $this->_request->get( 'mode' ) ) {
 			$mode = $this->_request->get( 'mode' ) === 'excerpt' ? 'excerpt' : 'list';
+			$app->set( 'mode', $mode );
 			set_user_setting( 'network_users_list_mode', $mode );
 		} else {
-			$mode = get_user_setting( 'network_users_list_mode', 'list' );
+			$app->set( 'mode', get_user_setting( 'network_users_list_mode', 'list' ) );
 		}
 
 		/** This filter is documented in wp-admin/includes/class-wp-users-list-table.php */
@@ -155,16 +154,15 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global string $mode
 	 * @param string $which
 	 */
 	protected function pagination( $which ) {
-		global $mode;
+		$app = getApp();
 
 		parent::pagination ( $which );
 
 		if ( 'top' === $which ) {
-			$this->view_switcher( $mode );
+			$this->view_switcher( $app->get( 'mode' ) );
 		}
 	}
 
@@ -290,13 +288,11 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @global string $mode
-	 *
 	 * @param User $user The current User object.
 	 */
 	public function column_registered( $user ) {
-		global $mode;
-		if ( 'list' === $mode ) {
+		$app = getApp();
+		if ( 'list' === $app->get( 'mode' ) ) {
 			$date = __( 'Y/m/d' );
 		} else {
 			$date = __( 'Y/m/d g:i:s a' );

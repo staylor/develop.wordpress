@@ -224,12 +224,15 @@ class Menu {
 					$menu_file = substr( $menu_file, 0, $pos );
 				}
 
+				$plugin_file = path_join( WP_PLUGIN_DIR, $menu_file );
+				$admin_file = sprintf( '%s/wp-admin/%s', ABSPATH, $menu_file );
+
 				if (
 					! empty( $menu_hook ) ||
 					(
-						( 'index.php' != $item[2] ) &&
-						file_exists( WP_PLUGIN_DIR . "/{$menu_file}" ) &&
-						! file_exists( ABSPATH . "/wp-admin/{$menu_file}" )
+						'index.php' !== $item[2] &&
+						file_exists( $plugin_file ) &&
+						! file_exists( $admin_file )
 					)
 				) {
 					$admin_is_parent = true;
@@ -261,7 +264,10 @@ class Menu {
 
 			if ( ! empty( $submenu_items ) ) {
 				$output .= "<ul class='wp-submenu wp-submenu-wrap'>";
-				$output .= "<li class='wp-submenu-head' aria-hidden='true'>{$item[0]}</li>";
+				$output .= sprintf(
+					'<li class="wp-submenu-head" aria-hidden="true">%s</li>',
+					$item[0]
+				);
 
 				$first = true;
 
@@ -325,18 +331,23 @@ class Menu {
 
 					$title = wptexturize( $sub_item[0] );
 
+					$plugin_file = path_join( WP_PLUGIN_DIR, $sub_file );
+					$admin_file = sprintf( '%s/wp-admin/%s', ABSPATH, $sub_file );
+
 					if (
 						! empty( $menu_hook ) ||
 						( ( 'index.php' != $sub_item[2] ) &&
-						file_exists( WP_PLUGIN_DIR . "/$sub_file" ) &&
-						! file_exists( ABSPATH . "/wp-admin/$sub_file" ) )
+						file_exists( $plugin_file ) &&
+						! file_exists( $admin_file ) )
 					) {
+						$plugin_file = path_join( WP_PLUGIN_DIR, $menu_file );
+						$plugin_dir = path_join( WP_PLUGIN_DIR, $item[2] );
 						// If admin.php is the current page or if the parent exists as a file in the plugins or admin dir
 						if (
 							(
 								! $admin_is_parent &&
-								file_exists( WP_PLUGIN_DIR . "/$menu_file" ) &&
-								! is_dir( WP_PLUGIN_DIR . "/{$item[2]}" )
+								file_exists( $plugin_file ) &&
+								! is_dir( $plugin_dir )
 							) ||
 							file_exists( $menu_file )
 						) {
@@ -351,7 +362,6 @@ class Menu {
 							$sub_item_url,
 							$title
 						);
-						$output .= "<li{$class}><a href='{$sub_item_url}'{$class}>{$title}</a></li>";
 					} else {
 						$output .= sprintf(
 							'<li%1$s><a href="%2$s"%1$s>%3$s</a></li>',

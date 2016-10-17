@@ -87,7 +87,7 @@ class Value {
 		case 'array':
 			$return = "<array><data>\n";
 			foreach ( $this->data as $item ) {
-				$return .= '  <value>' . $item->getXml() . "</value>\n";
+				$return .= '<value>' . $item->getXml() . "</value>\n";
 			}
 			$return .= '</data></array>';
 			return $return;
@@ -96,7 +96,7 @@ class Value {
 			$return = "<struct>\n";
 			foreach ( $this->data as $name => $value ) {
 				$name = htmlspecialchars( $name );
-				$return .= "  <member><name>$name</name><value>";
+				$return .= '<member><name>' . $name . '</name><value>';
 				$return .= $value->getXml() . "</value></member>\n";
 			}
 			$return .= '</struct>';

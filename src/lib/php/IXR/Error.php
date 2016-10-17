@@ -16,24 +16,24 @@ class Error {
 
     public function getXml(): string
     {
-        $xml = "
+        $xml = '
 <methodResponse>
   <fault>
     <value>
       <struct>
         <member>
           <name>faultCode</name>
-          <value><int>{$this->code}</int></value>
+          <value><int>' . $this->code . '</int></value>
         </member>
         <member>
           <name>faultString</name>
-          <value><string>{$this->message}</string></value>
+          <value><string>' . $this->message . '</string></value>
         </member>
       </struct>
     </value>
   </fault>
 </methodResponse>
-";
+';
         return $xml;
     }
 }

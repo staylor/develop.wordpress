@@ -11,12 +11,12 @@ class Request {
 
     public function __construct( string $method, array $args ) {
         $this->args = $args;
-        $this->xml = "
-<?xml version=\"1.0\"?>
+        $this->xml = '
+<?xml version="1.0"?>
 <methodCall>
-<methodName>{$method}</methodName>
+<methodName>' . $method . '</methodName>
 <params>
-";
+';
         foreach ( $this->args as $arg ) {
             $this->xml .= '<param><value>';
             $v = new Value( $arg );
