@@ -275,10 +275,11 @@ function get_search_form( $echo = true ) {
  * @return string|void String when retrieving.
  */
 function wp_loginout( $redirect = '', $echo = true ) {
-	if ( ! is_user_logged_in() )
+	if ( ! is_user_logged_in() ) {
 		$link = '<a href="' . esc_url( wp_login_url( $redirect ) ) . '">' . __( 'Log in' ) . '</a>';
-	else
+	} else {
 		$link = '<a href="' . esc_url( wp_logout_url( $redirect ) ) . '">' . __( 'Log out' ) . '</a>';
+	}
 
 	if ( $echo ) {
 		/**
@@ -338,11 +339,13 @@ function wp_logout_url( $redirect = '' ) {
 function wp_login_url( $redirect = '', $force_reauth = false ) {
 	$login_url = site_url( 'wp-login.php', 'login' );
 
-	if ( ! empty( $redirect ) )
+	if ( ! empty( $redirect ) ) {
 		$login_url = add_query_arg( 'redirect_to', urlencode( $redirect ), $login_url );
+	}
 
-	if ( $force_reauth )
+	if ( $force_reauth ) {
 		$login_url = add_query_arg( 'reauth', '1', $login_url );
+	}
 
 	/**
 	 * Filters the login URL.
@@ -495,10 +498,11 @@ function wp_login_form( $args = [] ) {
 			' . $login_form_bottom . '
 		</form>';
 
-	if ( $args['echo'] )
+	if ( $args['echo'] ) {
 		echo $form;
-	else
+	} else {
 		return $form;
+	}
 }
 
 /**
@@ -543,10 +547,11 @@ function wp_lostpassword_url( $redirect = '' ) {
  */
 function wp_register( $before = '<li>', $after = '</li>', $echo = true ) {
 	if ( ! is_user_logged_in() ) {
-		if ( get_option( 'users_can_register' ) )
+		if ( get_option( 'users_can_register' ) ) {
 			$link = $before . '<a href="' . esc_url( wp_registration_url() ) . '">' . __( 'Register' ) . '</a>' . $after;
-		else
+		} else {
 			$link = '';
+		}
 	} elseif ( current_user_can( 'read' ) ) {
 		$link = $before . '<a href="' . admin_url() . '">' . __( 'Site Admin' ) . '</a>' . $after;
 	} else {
@@ -707,7 +712,9 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 		break;
 	case 'charset':
 		$output = get_option( 'blog_charset' );
-		if ( '' == $output ) $output = 'UTF-8';
+		if ( empty( $output ) ) {
+			$output = 'UTF-8';
+		}
 		break;
 	case 'html_type' :
 		$output = get_option( 'html_type' );
@@ -749,8 +756,9 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 	$url = true;
 	if ( strpos( $show, 'url' ) === false &&
 		strpos( $show, 'directory' ) === false &&
-		strpos( $show, 'home' ) === false )
+		strpos( $show, 'home' ) === false ) {
 		$url = false;
+	}
 
 	if ( 'display' == $filter ) {
 		if ( $url ) {
@@ -1361,8 +1369,9 @@ function single_tag_title( $prefix = '', $display = true ) {
 function single_term_title( $prefix = '', $display = true ) {
 	$term = get_queried_object();
 
-	if ( ! $term )
+	if ( ! $term ) {
 		return;
+	}
 
 	if ( is_category() ) {
 		/**
@@ -1436,13 +1445,15 @@ function single_month_title( $prefix = '', $display = true ) {
 		$my_month = $wp_locale->get_month( substr( $m, 4, 2 ) );
 	}
 
-	if ( empty( $my_month ) )
+	if ( empty( $my_month ) ) {
 		return false;
+	}
 
 	$result = $prefix . $my_month . $prefix . $my_year;
 
-	if ( ! $display )
+	if ( ! $display ) {
 		return $result;
+	}
 	echo $result;
 }
 
@@ -1605,14 +1616,16 @@ function get_archives_link( $url, $text, $format = 'html', $before = '', $after 
 	$text = wptexturize( $text );
 	$url = esc_url( $url );
 
-	if ( 'link' == $format )
+	if ( 'link' === $format ) {
 		$link_html = "\t<link rel='archives' title='" . esc_attr( $text ) . "' href='$url' />\n";
-	elseif ( 'option' == $format )
+	} elseif ( 'option' === $format ) {
 		$link_html = "\t<option value='$url'>$before $text $after</option>\n";
-	elseif ( 'html' == $format )
+	} elseif ( 'html' === $format ) {
 		$link_html = "\t<li>$before<a href='$url'>$text</a>$after</li>\n";
-	else // custom
+	} else {
+		// custom
 		$link_html = "\t$before<a href='$url'>$text</a>$after\n";
+	}
 
 	/**
 	 * Filters the archive link content.
@@ -1667,13 +1680,13 @@ function wp_get_archives( $args = '' ) {
 	$wpdb = $app['db'];
 	$wp_locale = $app['locale'];
 
-	$defaults = array(
+	$defaults = [
 		'type' => 'monthly', 'limit' => '',
 		'format' => 'html', 'before' => '',
 		'after' => '', 'show_post_count' => false,
 		'echo' => 1, 'order' => 'DESC',
 		'post_type' => 'post'
-	);
+	];
 
 	$r = wp_parse_args( $args, $defaults );
 
@@ -1732,7 +1745,7 @@ function wp_get_archives( $args = '' ) {
 
 	$limit = $r['limit'];
 
-	if ( 'monthly' == $r['type'] ) {
+	if ( 'monthly' === $r['type'] ) {
 		$query = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date $order $limit";
 		$key = md5( $query );
 		$key = "wp_get_archives:$key:$last_changed";
@@ -2038,7 +2051,7 @@ function get_calendar( $initial = true, $echo = true ) {
 		AND post_date <= '{$thisyear}-{$thismonth}-{$last_day} 23:59:59'", ARRAY_N );
 	if ( $dayswithposts ) {
 		foreach ( (array) $dayswithposts as $daywith ) {
-			$daywithpost[] = $daywith[ 0 ];
+			$daywithpost[] = $daywith[0];
 		}
 	}
 
@@ -2352,10 +2365,11 @@ function get_the_time( $d = '', $post = null ) {
 		return false;
 	}
 
-	if ( '' == $d )
+	if ( '' == $d ) {
 		$the_time = get_post_time( get_option( 'time_format' ), false, $post, true );
-	else
+	} else {
 		$the_time = get_post_time( $d, false, $post, true );
+	}
 
 	/**
 	 * Filters the time a post was written.
@@ -2490,10 +2504,11 @@ function get_post_modified_time( $d = 'U', $gmt = false, $post = null, $translat
 		return false;
 	}
 
-	if ( $gmt )
+	if ( $gmt ) {
 		$time = $post->post_modified_gmt;
-	else
+	} else {
 		$time = $post->post_modified;
+	}
 	$time = mysql2date( $d, $time, $translate );
 
 	/**
@@ -2603,8 +2618,9 @@ function wp_footer() {
  * @param array $args Optional arguments.
  */
 function feed_links( $args = [] ) {
-	if ( ! current_theme_supports( 'automatic-feed-links' ) )
+	if ( ! current_theme_supports( 'automatic-feed-links' ) ) {
 		return;
+	}
 
 	$defaults = array(
 		/* translators: Separator between blog name and feed type in feed links */
@@ -2674,13 +2690,13 @@ function feed_links_extra( $args = [] ) {
 		$post = get_post( $id );
 
 		if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
-			$title = sprintf( $args['singletitle'], get_bloginfo( 'name' ), $args['separator'], the_title_attribute( array('echo' => false) ) );
+			$title = sprintf( $args['singletitle'], get_bloginfo( 'name' ), $args['separator'], the_title_attribute( [ 'echo' => false ] ) );
 			$href = get_post_comments_feed_link( $post->ID );
 		}
 	} elseif ( is_post_type_archive() ) {
 		$post_type = get_query_var( 'post_type' );
 		if ( is_array( $post_type ) ) {
-					$post_type = reset( $post_type );
+			$post_type = reset( $post_type );
 		}
 
 		$post_type_obj = get_post_type_object( $post_type );
@@ -2716,12 +2732,14 @@ function feed_links_extra( $args = [] ) {
 	} elseif ( is_post_type_archive() ) {
 		$title = sprintf( $args['posttypetitle'], get_bloginfo( 'name' ), $args['separator'], post_type_archive_title( '', false ) );
 		$post_type_obj = get_queried_object();
-		if ( $post_type_obj )
+		if ( $post_type_obj ) {
 			$href = get_post_type_archive_feed_link( $post_type_obj->name );
+		}
 	}
 
-	if ( isset( $title ) && isset( $href ) )
+	if ( isset( $title ) && isset( $href ) ) {
 		echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . esc_attr( $title ) . '" href="' . esc_url( $href ) . '" />' . "\n";
+	}
 }
 
 /**
@@ -2762,8 +2780,9 @@ function wlwmanifest_link() {
  */
 function noindex() {
 	// If the blog is not public, tell robots to go away.
-	if ( '0' == get_option( 'blog_public' ) )
+	if ( '0' == get_option( 'blog_public' ) ) {
 		wp_no_robots();
+	}
 }
 
 /**
@@ -2825,12 +2844,12 @@ function wp_site_icon() {
  * @since 4.6.0
  */
 function wp_resource_hints() {
-	$hints = array(
+	$hints = [
 		'dns-prefetch' => wp_dependencies_unique_hosts(),
 		'preconnect'   => [],
 		'prefetch'     => [],
 		'prerender'    => [],
-	);
+	];
 
 	/*
 	 * Add DNS prefetch for the Emoji CDN.
@@ -2895,10 +2914,10 @@ function wp_dependencies_unique_hosts() {
 
 	$unique_hosts = [];
 
-	foreach ( array(
+	foreach ( [
 		$app['scripts.global'],
 		$app['styles.global']
-	) as $dependencies ) {
+	] as $dependencies ) {
 		if ( ! ( $dependencies instanceof Dependencies ) || empty( $dependencies->queue ) ) {
 			continue;
 		}
@@ -2947,7 +2966,7 @@ function user_can_richedit() {
 		if ( get_user_option( 'rich_editing' ) == 'true' || ! is_user_logged_in() ) { // default to 'true' for logged out users
 			if ( $is_safari ) {
 				$app = getApp();
-				$wp_rich_edit = ! wp_is_mobile() || ( preg_match( '!AppleWebKit/(\d+)!', $app['request.useragent'], $match ) && intval( $match[ 1 ] ) >= 534 );
+				$wp_rich_edit = ! wp_is_mobile() || ( preg_match( '!AppleWebKit/(\d+)!', $app['request.useragent'], $match ) && intval( $match[1] ) >= 534 );
 			} elseif ( $is_gecko || $is_chrome || $app['is_IE'] || $is_edge || ( $is_opera && ! wp_is_mobile() ) ) {
 				$wp_rich_edit = true;
 			}
@@ -3074,15 +3093,18 @@ function the_search_query() {
 function get_language_attributes( $doctype = 'html' ) {
 	$attributes = [];
 
-	if ( function_exists( 'is_rtl' ) && is_rtl() )
+	if ( function_exists( 'is_rtl' ) && is_rtl() ) {
 		$attributes[] = 'dir="rtl"';
+	}
 
 	if ( $lang = get_bloginfo( 'language' ) ) {
-		if ( get_option( 'html_type' ) == 'text/html' || $doctype == 'html' )
+		if ( get_option( 'html_type' ) == 'text/html' || $doctype == 'html' ) {
 			$attributes[] = "lang=\"$lang\"";
+		}
 
-		if ( get_option( 'html_type' ) != 'text/html' || $doctype == 'xhtml' )
+		if ( get_option( 'html_type' ) != 'text/html' || $doctype == 'xhtml' ) {
 			$attributes[] = "xml:lang=\"$lang\"";
+		}
 	}
 
 	$output = implode( ' ', $attributes );
@@ -3199,7 +3221,7 @@ function paginate_links( $args = '' ) {
 	$current = get_query_var( 'paged' ) ? intval( get_query_var( 'paged' ) ) : 1;
 
 	// Append the format placeholder to the base URL.
-	$pagenum_link = trailingslashit( $url_parts[ 0 ] ) . '%_%';
+	$pagenum_link = trailingslashit( $url_parts[0] ) . '%_%';
 
 	// URL base depends on permalink settings.
 	$format  = $app['rewrite']->using_index_permalinks() && ! strpos( $pagenum_link, 'index.php' ) ? 'index.php/' : '';
@@ -3230,14 +3252,14 @@ function paginate_links( $args = '' ) {
 	}
 
 	// Merge additional query vars found in the original URL into 'add_args' array.
-	if ( isset( $url_parts[ 1 ] ) ) {
+	if ( isset( $url_parts[1] ) ) {
 		// Find the format argument.
 		$format = explode( '?', str_replace( '%_%', $args['format'], $args['base'] ) );
-		$format_query = isset( $format[ 1 ] ) ? $format[ 1 ] : '';
+		$format_query = isset( $format[1] ) ? $format[1] : '';
 		wp_parse_str( $format_query, $format_args );
 
 		// Find the query args of the requested URL.
-		wp_parse_str( $url_parts[ 1 ], $url_query_args );
+		wp_parse_str( $url_parts[1], $url_query_args );
 
 		// Remove the format argument from the array of query arguments, to avoid overwriting custom format.
 		foreach ( $format_args as $format_arg => $format_arg_value ) {
@@ -3283,49 +3305,51 @@ function paginate_links( $args = '' ) {
 		$page_links[] = '<a class="prev page-numbers" href="' . esc_url( apply_filters( 'paginate_links', $link ) ) . '">' . $args['prev_text'] . '</a>';
 	endif;
 	for ( $n = 1; $n <= $total; $n++ ) :
-		if ( $n == $current ) :
+		if ( $n === $current ) {
 			$page_links[] = "<span class='page-numbers current'>" . $args['before_page_number'] . number_format_i18n( $n ) . $args['after_page_number'] . "</span>";
 			$dots = true;
-		else :
-			if ( $args['show_all'] || ( $n <= $end_size || ( $current && $n >= $current - $mid_size && $n <= $current + $mid_size ) || $n > $total - $end_size ) ) :
+		} else {
+			if ( $args['show_all'] || ( $n <= $end_size || ( $current && $n >= $current - $mid_size && $n <= $current + $mid_size ) || $n > $total - $end_size ) ) {
 				$link = str_replace( '%_%', 1 == $n ? '' : $args['format'], $args['base'] );
 				$link = str_replace( '%#%', $n, $link );
-				if ( $add_args )
-					$link = add_query_arg( $add_args, $link );
+				if ( $add_args ) {
+									$link = add_query_arg( $add_args, $link );
+				}
 				$link .= $args['add_fragment'];
 
 				/** This filter is documented in wp-includes/general-template.php */
 				$page_links[] = "<a class='page-numbers' href='" . esc_url( apply_filters( 'paginate_links', $link ) ) . "'>" . $args['before_page_number'] . number_format_i18n( $n ) . $args['after_page_number'] . "</a>";
 				$dots = true;
-			elseif ( $dots && ! $args['show_all'] ) :
+			} elseif ( $dots && ! $args['show_all'] ) {
 				$page_links[] = '<span class="page-numbers dots">' . __( '&hellip;' ) . '</span>';
 				$dots = false;
-			endif;
-		endif;
+			}
+		}
 	endfor;
 	if ( $args['prev_next'] && $current && ( $current < $total || -1 == $total ) ) :
 		$link = str_replace( '%_%', $args['format'], $args['base'] );
 		$link = str_replace( '%#%', $current + 1, $link );
-		if ( $add_args )
+		if ( $add_args ) {
 			$link = add_query_arg( $add_args, $link );
+		}
 		$link .= $args['add_fragment'];
 
 		/** This filter is documented in wp-includes/general-template.php */
 		$page_links[] = '<a class="next page-numbers" href="' . esc_url( apply_filters( 'paginate_links', $link ) ) . '">' . $args['next_text'] . '</a>';
 	endif;
 	switch ( $args['type'] ) {
-		case 'array' :
-			return $page_links;
+	case 'array' :
+		return $page_links;
 
-		case 'list' :
-			$r .= "<ul class='page-numbers'>\n\t<li>";
-			$r .= join( "</li>\n\t<li>", $page_links );
-			$r .= "</li>\n</ul>\n";
-			break;
+	case 'list' :
+		$r .= "<ul class='page-numbers'>\n\t<li>";
+		$r .= join( "</li>\n\t<li>", $page_links );
+		$r .= "</li>\n</ul>\n";
+		break;
 
-		default :
-			$r = join( "\n", $page_links );
-			break;
+	default :
+		$r = join( "\n", $page_links );
+		break;
 	}
 	return $r;
 }
@@ -3359,8 +3383,9 @@ function paginate_links( $args = '' ) {
 function wp_admin_css_color( $key, $name, $url, $colors = [], $icons = [] ) {
 	global $_wp_admin_css_colors;
 
-	if ( ! isset( $_wp_admin_css_colors ) )
+	if ( ! isset( $_wp_admin_css_colors ) ) {
 		$_wp_admin_css_colors = [];
+	}
 
 	$_wp_admin_css_colors[ $key ] = (object) array(
 		'name' => $name,

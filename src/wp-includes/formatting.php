@@ -126,51 +126,51 @@ function wptexturize( $text, $reset = false ) {
 
 		// Pattern-based replacements of characters.
 		// Sort the remaining patterns into several arrays for performance tuning.
-		$dynamic_characters = ['apos' => [], 'quote' => [], 'dash' => [] ];
-		$dynamic_replacements = ['apos' => [], 'quote' => [], 'dash' => [] ];
+		$dynamic_characters = [ 'apos' => [], 'quote' => [], 'dash' => [] ];
+		$dynamic_replacements = [ 'apos' => [], 'quote' => [], 'dash' => [] ];
 		$dynamic = [];
 		$spaces = wp_spaces_regexp();
 
 		// '99' and '99" are ambiguous among other patterns; assume it's an abbreviated year at the end of a quotation.
 		if ( "'" !== $apos || "'" !== $closing_single_quote ) {
-			$dynamic['/\'(\d\d)\'(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $spaces . ')/'] = $apos_flag . '$1' . $closing_single_quote;
+			$dynamic[ '/\'(\d\d)\'(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $spaces . ')/' ] = $apos_flag . '$1' . $closing_single_quote;
 		}
 		if ( "'" !== $apos || '"' !== $closing_quote ) {
-			$dynamic['/\'(\d\d)"(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $spaces . ')/'] = $apos_flag . '$1' . $closing_quote;
+			$dynamic[ '/\'(\d\d)"(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $spaces . ')/' ] = $apos_flag . '$1' . $closing_quote;
 		}
 
 		// '99 '99s '99's (apostrophe)  But never '9 or '99% or '999 or '99.0.
 		if ( "'" !== $apos ) {
-			$dynamic['/\'(?=\d\d(?:\Z|(?![%\d]|[.,]\d)))/'] = $apos_flag;
+			$dynamic[ '/\'(?=\d\d(?:\Z|(?![%\d]|[.,]\d)))/' ] = $apos_flag;
 		}
 
 		// Quoted Numbers like '0.42'
 		if ( "'" !== $opening_single_quote && "'" !== $closing_single_quote ) {
-			$dynamic['/(?<=\A|' . $spaces . ')\'(\d[.,\d]*)\'/'] = $open_sq_flag . '$1' . $closing_single_quote;
+			$dynamic[ '/(?<=\A|' . $spaces . ')\'(\d[.,\d]*)\'/' ] = $open_sq_flag . '$1' . $closing_single_quote;
 		}
 
 		// Single quote at start, or preceded by (, {, <, [, ", -, or spaces.
 		if ( "'" !== $opening_single_quote ) {
-			$dynamic['/(?<=\A|[([{"\-]|&lt;|' . $spaces . ')\'/'] = $open_sq_flag;
+			$dynamic[ '/(?<=\A|[([{"\-]|&lt;|' . $spaces . ')\'/' ] = $open_sq_flag;
 		}
 
 		// Apostrophe in a word.  No spaces, double apostrophes, or other punctuation.
 		if ( "'" !== $apos ) {
-			$dynamic['/(?<!' . $spaces . ')\'(?!\Z|[.,:;!?"\'(){}[\]\-]|&[lg]t;|' . $spaces . ')/'] = $apos_flag;
+			$dynamic[ '/(?<!' . $spaces . ')\'(?!\Z|[.,:;!?"\'(){}[\]\-]|&[lg]t;|' . $spaces . ')/' ] = $apos_flag;
 		}
 
-		$dynamic_characters['apos'] = array_keys( $dynamic );
-		$dynamic_replacements['apos'] = array_values( $dynamic );
+		$dynamic_characters[ 'apos' ] = array_keys( $dynamic );
+		$dynamic_replacements[ 'apos' ] = array_values( $dynamic );
 		$dynamic = [];
 
 		// Quoted Numbers like "42"
 		if ( '"' !== $opening_quote && '"' !== $closing_quote ) {
-			$dynamic['/(?<=\A|' . $spaces . ')"(\d[.,\d]*)"/'] = $open_q_flag . '$1' . $closing_quote;
+			$dynamic[ '/(?<=\A|' . $spaces . ')"(\d[.,\d]*)"/' ] = $open_q_flag . '$1' . $closing_quote;
 		}
 
 		// Double quote at start, or preceded by (, {, <, [, -, or spaces, and not followed by spaces.
 		if ( '"' !== $opening_quote ) {
-			$dynamic['/(?<=\A|[([{\-]|&lt;|' . $spaces . ')"(?!' . $spaces . ')/'] = $open_q_flag;
+			$dynamic[ '/(?<=\A|[([{\-]|&lt;|' . $spaces . ')"(?!' . $spaces . ')/' ] = $open_q_flag;
 		}
 
 		$dynamic_characters['quote'] = array_keys( $dynamic );
@@ -178,10 +178,10 @@ function wptexturize( $text, $reset = false ) {
 		$dynamic = [];
 
 		// Dashes and spaces
-		$dynamic['/---/'] = $em_dash;
-		$dynamic['/(?<=^|' . $spaces . ')--(?=$|' . $spaces . ')/'] = $em_dash;
-		$dynamic['/(?<!xn)--/'] = $en_dash;
-		$dynamic['/(?<=^|' . $spaces . ')-(?=$|' . $spaces . ')/'] = $en_dash;
+		$dynamic[ '/---/' ] = $em_dash;
+		$dynamic[ '/(?<=^|' . $spaces . ')--(?=$|' . $spaces . ')/' ] = $em_dash;
+		$dynamic[ '/(?<!xn)--/' ] = $en_dash;
+		$dynamic[ '/(?<=^|' . $spaces . ')-(?=$|' . $spaces . ')/' ] = $en_dash;
 
 		$dynamic_characters['dash'] = array_keys( $dynamic );
 		$dynamic_replacements['dash'] = array_values( $dynamic );
@@ -255,7 +255,7 @@ function wptexturize( $text, $reset = false ) {
 			$curl = str_replace( $static_characters, $static_replacements, $curl );
 
 			if ( false !== strpos( $curl, "'" ) ) {
-				$curl = preg_replace( $dynamic_characters['apos'], $dynamic_replacements['apos'], $curl );
+				$curl = preg_replace( $dynamic_characters[ 'apos' ], $dynamic_replacements[ 'apos' ], $curl );
 				$curl = wptexturize_primes( $curl, "'", $prime, $open_sq_flag, $closing_single_quote );
 				$curl = str_replace( $apos_flag, $apos, $curl );
 				$curl = str_replace( $open_sq_flag, $opening_single_quote, $curl );
@@ -423,8 +423,9 @@ function _wptexturize_pushpop_element( $text, &$stack, $disabled_elements ) {
 function wpautop( $pee, $br = true ) {
 	$pre_tags = [];
 
-	if ( trim( $pee ) === '' )
+	if ( trim( $pee ) === '' ) {
 		return '';
+	}
 
 	// Just to make things a little easier, pad the end.
 	$pee = $pee . "\n";
@@ -559,8 +560,9 @@ function wpautop( $pee, $br = true ) {
 	$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
 
 	// Replace placeholder <pre> tags with their original content.
-	if ( ! empty( $pre_tags ) )
+	if ( ! empty( $pre_tags ) ) {
 		$pee = str_replace( array_keys( $pre_tags ), array_values( $pre_tags ), $pee );
+	}
 
 	// Restore newlines in all elements.
 	if ( false !== strpos( $pee, '<!-- wpnl -->' ) ) {
@@ -842,16 +844,38 @@ function seems_utf8( $str ) {
 	reset_mbstring_encoding();
 	for ( $i = 0; $i < $length; $i++ ) {
 		$c = ord( $str[ $i ] );
-		if ( $c < 0x80 ) $n = 0; // 0bbbbbbb
-		elseif ( ( $c & 0xE0 ) == 0xC0 ) $n = 1; // 110bbbbb
-		elseif ( ( $c & 0xF0 ) == 0xE0 ) $n = 2; // 1110bbbb
-		elseif ( ( $c & 0xF8 ) == 0xF0 ) $n = 3; // 11110bbb
-		elseif ( ( $c & 0xFC ) == 0xF8 ) $n = 4; // 111110bb
-		elseif ( ( $c & 0xFE ) == 0xFC ) $n = 5; // 1111110b
-		else return false; // Does not match any model
+		if ( $c < 0x80 ) {
+			$n = 0;
+		}
+		// 0bbbbbbb
+		elseif ( ( $c & 0xE0 ) == 0xC0 ) {
+			$n = 1;
+		}
+		// 110bbbbb
+		elseif ( ( $c & 0xF0 ) == 0xE0 ) {
+			$n = 2;
+		}
+		// 1110bbbb
+		elseif ( ( $c & 0xF8 ) == 0xF0 ) {
+			$n = 3;
+		}
+		// 11110bbb
+		elseif ( ( $c & 0xFC ) == 0xF8 ) {
+			$n = 4;
+		}
+		// 111110bb
+		elseif ( ( $c & 0xFE ) == 0xFC ) {
+			$n = 5;
+		}
+		// 1111110b
+		else {
+			return false;
+		}
+		// Does not match any model
 		for ( $j = 0; $j < $n; $j++ ) { // n bytes matching 10bbbbbb follow ?
-			if ( (++$i == $length) || ( ( ord( $str[ $i ] ) & 0xC0 ) != 0x80 ) )
+			if ( (++$i == $length) || ( ( ord( $str[ $i ] ) & 0xC0 ) != 0x80 ) ) {
 				return false;
+			}
 		}
 	}
 	return true;
@@ -883,18 +907,21 @@ function seems_utf8( $str ) {
 function _wp_specialchars( $string, $quote_style = ENT_NOQUOTES, $charset = false, $double_encode = false ) {
 	$string = (string) $string;
 
-	if ( 0 === strlen( $string ) )
+	if ( 0 === strlen( $string ) ) {
 		return '';
+	}
 
 	// Don't bother if there are no specialchars - saves some processing
-	if ( ! preg_match( '/[&<>"\']/', $string ) )
+	if ( ! preg_match( '/[&<>"\']/', $string ) ) {
 		return $string;
+	}
 
 	// Account for the previous behaviour of the function when the $quote_style is not an accepted value
-	if ( empty( $quote_style ) )
+	if ( empty( $quote_style ) ) {
 		$quote_style = ENT_NOQUOTES;
-	elseif ( ! in_array( $quote_style, array(0, 2, 3, 'single', 'double'), true ) )
+	} elseif ( ! in_array( $quote_style, [ 0, 2, 3, 'single', 'double' ], true ) ) {
 		$quote_style = ENT_QUOTES;
+	}
 
 	// Store the site charset as a static to avoid multiple calls to wp_load_alloptions()
 	if ( ! $charset ) {
@@ -906,8 +933,9 @@ function _wp_specialchars( $string, $quote_style = ENT_NOQUOTES, $charset = fals
 		$charset = $_charset;
 	}
 
-	if ( in_array( $charset, [ 'utf8', 'utf-8', 'UTF8' ] ) )
+	if ( in_array( $charset, [ 'utf8', 'utf-8', 'UTF8' ] ) ) {
 		$charset = 'UTF-8';
+	}
 
 	$_quote_style = $quote_style;
 
@@ -927,8 +955,9 @@ function _wp_specialchars( $string, $quote_style = ENT_NOQUOTES, $charset = fals
 	$string = @htmlspecialchars( $string, $quote_style, $charset, $double_encode );
 
 	// Back-compat.
-	if ( 'single' === $_quote_style )
+	if ( 'single' === $_quote_style ) {
 		$string = str_replace( "'", '&#039;', $string );
+	}
 
 	return $string;
 }
@@ -1076,8 +1105,9 @@ function utf8_uri_encode( $utf8_string, $length = 0 ) {
 		$value = ord( $utf8_string[ $i ] );
 
 		if ( $value < 128 ) {
-			if ( $length && ( $unicode_length >= $length ) )
+			if ( $length && ( $unicode_length >= $length ) ) {
 				break;
+			}
 			$unicode .= chr( $value );
 			$unicode_length++;
 		} else {
@@ -1093,8 +1123,9 @@ function utf8_uri_encode( $utf8_string, $length = 0 ) {
 
 			$values[] = $value;
 
-			if ( $length && ( $unicode_length + ( $num_octets * 3 ) ) > $length )
-				break;
+			if ( $length && ( $unicode_length + ( $num_octets * 3 ) ) > $length ) {
+							break;
+			}
 			if ( count( $values ) == $num_octets ) {
 				for ( $j = 0; $j < $num_octets; $j++ ) {
 					$unicode .= '%' . dechex( $values[ $j ] );
@@ -1497,8 +1528,9 @@ function utf8_uri_encode( $utf8_string, $length = 0 ) {
  * @return string Filtered string with replaced "nice" characters.
  */
 function remove_accents( $string ) {
-	if ( ! preg_match( '/[\x80-\xff]/', $string ) )
-		return $string;
+	if ( ! preg_match( '/[\x80-\xff]/', $string ) ) {
+			return $string;
+	}
 
 	if ( seems_utf8( $string ) ) {
 		$chars = array(
@@ -1681,32 +1713,32 @@ function remove_accents( $string ) {
 		$locale = get_locale();
 
 		if ( 'de_DE' == $locale || 'de_DE_formal' == $locale || 'de_CH' == $locale || 'de_CH_informal' == $locale ) {
-			$chars['Ä'] = 'Ae';
-			$chars['ä'] = 'ae';
-			$chars['Ö'] = 'Oe';
-			$chars['ö'] = 'oe';
-			$chars['Ü'] = 'Ue';
-			$chars['ü'] = 'ue';
-			$chars['ß'] = 'ss';
+			$chars[ 'Ä' ] = 'Ae';
+			$chars[ 'ä' ] = 'ae';
+			$chars[ 'Ö' ] = 'Oe';
+			$chars[ 'ö' ] = 'oe';
+			$chars[ 'Ü' ] = 'Ue';
+			$chars[ 'ü' ] = 'ue';
+			$chars[ 'ß' ] = 'ss';
 		} elseif ( 'da_DK' === $locale ) {
-			$chars['Æ'] = 'Ae';
- 			$chars['æ'] = 'ae';
-			$chars['Ø'] = 'Oe';
-			$chars['ø'] = 'oe';
-			$chars['Å'] = 'Aa';
-			$chars['å'] = 'aa';
+			$chars[ 'Æ' ] = 'Ae';
+ 			$chars[ 'æ' ] = 'ae';
+			$chars[ 'Ø' ] = 'Oe';
+			$chars[ 'ø' ] = 'oe';
+			$chars[ 'Å' ] = 'Aa';
+			$chars[ 'å' ] = 'aa';
 		} elseif ( 'ca' === $locale ) {
-			$chars['l·l'] = 'll';
+			$chars[ 'l·l' ] = 'll';
 		} elseif ( 'sr_RS' === $locale ) {
-			$chars['Đ'] = 'DJ';
-			$chars['đ'] = 'dj';
+			$chars[ 'Đ' ] = 'DJ';
+			$chars[ 'đ' ] = 'dj';
 		}
 
 		$string = strtr( $string, $chars );
 	} else {
 		$chars = [];
 		// Assume ISO-8859-1 if not UTF-8
-		$chars['in'] = "\x80\x83\x8a\x8e\x9a\x9e"
+		$chars[ 'in' ] = "\x80\x83\x8a\x8e\x9a\x9e"
 			."\x9f\xa2\xa5\xb5\xc0\xc1\xc2"
 			."\xc3\xc4\xc5\xc7\xc8\xc9\xca"
 			."\xcb\xcc\xcd\xce\xcf\xd1\xd2"
@@ -1723,7 +1755,7 @@ function remove_accents( $string ) {
 		$double_chars = [];
 		$double_chars['in'] = [ "\x8c", "\x9c", "\xc6", "\xd0", "\xde", "\xdf", "\xe6", "\xf0", "\xfe" ];
 		$double_chars['out'] = [ 'OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th' ];
-		$string = str_replace( $double_chars['in'], $double_chars['out'], $string );
+		$string = str_replace( $double_chars[ 'in' ], $double_chars[ 'out' ], $string );
 	}
 
 	return $string;
@@ -1766,7 +1798,7 @@ function sanitize_file_name( $filename ) {
 		$mime_types = wp_get_mime_types();
 		$filetype = wp_check_filetype( 'test.' . $filename, $mime_types );
 		if ( $filetype['ext'] === $filename ) {
-			$filename = 'unnamed-file.' . $filetype['ext'];
+			$filename = 'unnamed-file.' . $filetype[ 'ext' ];
 		}
 	}
 
@@ -1807,8 +1839,9 @@ function sanitize_file_name( $filename ) {
 					break;
 				}
 			}
-			if ( ! $allowed )
+			if ( ! $allowed ) {
 				$filename .= '_';
+			}
 		}
 	}
 	$filename .= '.' . $extension;
@@ -1839,8 +1872,9 @@ function sanitize_user( $username, $strict = false ) {
 	$username = preg_replace( '/&.+?;/', '', $username ); // Kill entities
 
 	// If strict, reduce to ASCII for max portability.
-	if ( $strict )
+	if ( $strict ) {
 		$username = preg_replace( '|[^a-z0-9 _.\-@]|i', '', $username );
+	}
 
 	$username = trim( $username );
 	// Consolidate contiguous whitespace
@@ -1901,8 +1935,9 @@ function sanitize_key( $key ) {
 function sanitize_title( $title, $fallback_title = '', $context = 'save' ) {
 	$raw_title = $title;
 
-	if ( 'save' == $context )
+	if ( 'save' == $context ) {
 		$title = remove_accents( $title );
+	}
 
 	/**
 	 * Filters a sanitized title string.
@@ -1915,8 +1950,9 @@ function sanitize_title( $title, $fallback_title = '', $context = 'save' ) {
 	 */
 	$title = apply_filters( 'sanitize_title', $title, $raw_title, $context );
 
-	if ( '' === $title || false === $title )
+	if ( '' === $title || false === $title ) {
 		$title = $fallback_title;
+	}
 
 	return $title;
 }
@@ -2271,8 +2307,10 @@ function force_balance_tags( $text ) {
 	$newtext .= $text;
 
 	// Empty Stack
-	while ( $x = array_pop( $tagstack ) )
-		$newtext .= '</' . $x . '>'; // Add remaining tags to close
+	while ( $x = array_pop( $tagstack ) ) {
+		$newtext .= '</' . $x . '>';
+	}
+	// Add remaining tags to close
 
 	// WP fix for the bug with HTML comments
 	$newtext = str_replace( '< !--', '<!--', $newtext );
@@ -2306,8 +2344,9 @@ function format_to_edit( $content, $rich_text = false ) {
 	 * @param string $content The text, prior to formatting for editing.
 	 */
 	$content = apply_filters( 'format_to_edit', $content );
-	if ( ! $rich_text )
+	if ( ! $rich_text ) {
 		$content = esc_textarea( $content );
+	}
 	return $content;
 }
 
@@ -2391,8 +2430,9 @@ function untrailingslashit( $string ) {
  * @return string Returns a string escaped with slashes.
  */
 function addslashes_gpc( $gpc ) {
-	if ( get_magic_quotes_gpc() )
+	if ( get_magic_quotes_gpc() ) {
 		$gpc = stripslashes( $gpc );
+	}
 
 	return wp_slash( $gpc );
 }
@@ -2580,10 +2620,11 @@ function make_clickable( $text ) {
 	$nested_code_pre = 0; // Keep track of how many levels link is nested inside <pre> or <code>
 	foreach ( $textarr as $piece ) {
 
-		if ( preg_match( '|^<code[\s>]|i', $piece ) || preg_match( '|^<pre[\s>]|i', $piece ) || preg_match( '|^<script[\s>]|i', $piece ) || preg_match( '|^<style[\s>]|i', $piece ) )
+		if ( preg_match( '|^<code[\s>]|i', $piece ) || preg_match( '|^<pre[\s>]|i', $piece ) || preg_match( '|^<script[\s>]|i', $piece ) || preg_match( '|^<style[\s>]|i', $piece ) ) {
 			$nested_code_pre++;
-		elseif ( $nested_code_pre && ( '</code>' === strtolower( $piece ) || '</pre>' === strtolower( $piece ) || '</script>' === strtolower( $piece ) || '</style>' === strtolower( $piece ) ) )
+		} elseif ( $nested_code_pre && ( '</code>' === strtolower( $piece ) || '</pre>' === strtolower( $piece ) || '</script>' === strtolower( $piece ) || '</style>' === strtolower( $piece ) ) ) {
 			$nested_code_pre--;
+		}
 
 		if ( $nested_code_pre || empty( $piece ) || ( $piece[0] === '<' && ! preg_match( '|^<\s*[\w]{1,20}+://|', $piece ) ) ) {
 			$r .= $piece;
@@ -2758,8 +2799,9 @@ function wp_rel_nofollow_callback( $matches ) {
 function translate_smiley( $matches ) {
 	$app = getApp();
 
-	if ( count( $matches ) == 0 )
+	if ( count( $matches ) == 0 ) {
 		return '';
+	}
 
 	$smiley = trim( reset( $matches ) );
 	$img = $app->wpsmiliestrans[ $smiley ];
@@ -2852,8 +2894,9 @@ function convert_smilies( $text ) {
  * @return string|bool Either false or the valid email address.
  */
 function is_email( $email, $deprecated = false ) {
-	if ( ! empty( $deprecated ) )
+	if ( ! empty( $deprecated ) ) {
 		_deprecated_argument( __FUNCTION__, '3.0.0' );
+	}
 
 	// Test for the minimum length the email can be
 	if ( strlen( $email ) < 3 ) {
@@ -2982,7 +3025,7 @@ function get_gmt_from_date( $string, $format = 'Y-m-d H:i:s' ) {
 			}
 			return gmdate( $format, $datetime );
 		}
-		$string_time = gmmktime( $matches[ 4 ], $matches[ 5 ], $matches[ 6 ], $matches[2], $matches[3], $matches[1] );
+		$string_time = gmmktime( $matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1] );
 		$string_gmt = gmdate( $format, $string_time - get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
 	}
 	return $string_gmt;
@@ -3013,7 +3056,7 @@ function get_date_from_gmt( $string, $format = 'Y-m-d H:i:s' ) {
 	} else {
 		if ( ! preg_match( '#([0-9]{1,4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})#', $string, $matches ) )
 			return date( $format, 0 );
-		$string_time = gmmktime( $matches[ 4 ], $matches[ 5 ], $matches[ 6 ], $matches[2], $matches[3], $matches[1] );
+		$string_time = gmmktime( $matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1] );
 		$string_localtime = gmdate( $format, $string_time + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
 	}
 	return $string_localtime;
@@ -3056,13 +3099,13 @@ function iso8601_to_datetime( $date_string, $timezone = 'user' ) {
 
 		preg_match( '#([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(Z|[\+|\-][0-9]{2,4}){0,1}#', $date_string, $date_bits );
 
-		if ( ! empty( $date_bits[ 7 ] ) ) { // we have a timezone, so let's compute an offset
-			$offset = iso8601_timezone_to_offset( $date_bits[ 7 ] );
+		if ( ! empty( $date_bits[7] ) ) { // we have a timezone, so let's compute an offset
+			$offset = iso8601_timezone_to_offset( $date_bits[7] );
 		} else { // we don't have a timezone, so we assume user local timezone (not server's!)
 			$offset = HOUR_IN_SECONDS * get_option( 'gmt_offset' );
 		}
 
-		$timestamp = gmmktime( $date_bits[ 4 ], $date_bits[ 5 ], $date_bits[ 6 ], $date_bits[2], $date_bits[3], $date_bits[1] );
+		$timestamp = gmmktime( $date_bits[4], $date_bits[5], $date_bits[6], $date_bits[2], $date_bits[3], $date_bits[1] );
 		$timestamp -= $offset;
 
 		return gmdate( 'Y-m-d H:i:s', $timestamp );
@@ -3195,34 +3238,40 @@ function human_time_diff( $from, $to = '' ) {
 
 	if ( $diff < HOUR_IN_SECONDS ) {
 		$mins = round( $diff / MINUTE_IN_SECONDS );
-		if ( $mins <= 1 )
+		if ( $mins <= 1 ) {
 			$mins = 1;
+		}
 		/* translators: min=minute */
 		$since = sprintf( _n( '%s min', '%s mins', $mins ), $mins );
 	} elseif ( $diff < DAY_IN_SECONDS && $diff >= HOUR_IN_SECONDS ) {
 		$hours = round( $diff / HOUR_IN_SECONDS );
-		if ( $hours <= 1 )
+		if ( $hours <= 1 ) {
 			$hours = 1;
+		}
 		$since = sprintf( _n( '%s hour', '%s hours', $hours ), $hours );
 	} elseif ( $diff < WEEK_IN_SECONDS && $diff >= DAY_IN_SECONDS ) {
 		$days = round( $diff / DAY_IN_SECONDS );
-		if ( $days <= 1 )
+		if ( $days <= 1 ) {
 			$days = 1;
+		}
 		$since = sprintf( _n( '%s day', '%s days', $days ), $days );
 	} elseif ( $diff < MONTH_IN_SECONDS && $diff >= WEEK_IN_SECONDS ) {
 		$weeks = round( $diff / WEEK_IN_SECONDS );
-		if ( $weeks <= 1 )
+		if ( $weeks <= 1 ) {
 			$weeks = 1;
+		}
 		$since = sprintf( _n( '%s week', '%s weeks', $weeks ), $weeks );
 	} elseif ( $diff < YEAR_IN_SECONDS && $diff >= MONTH_IN_SECONDS ) {
 		$months = round( $diff / MONTH_IN_SECONDS );
-		if ( $months <= 1 )
+		if ( $months <= 1 ) {
 			$months = 1;
+		}
 		$since = sprintf( _n( '%s month', '%s months', $months ), $months );
 	} elseif ( $diff >= YEAR_IN_SECONDS ) {
 		$years = round( $diff / YEAR_IN_SECONDS );
-		if ( $years <= 1 )
+		if ( $years <= 1 ) {
 			$years = 1;
+		}
 		$since = sprintf( _n( '%s year', '%s years', $years ), $years );
 	}
 
@@ -3373,8 +3422,9 @@ function ent2ncr( $text ) {
 	 * @param string $text           The text prior to entity conversion.
 	 */
 	$filtered = apply_filters( 'pre_ent2ncr', null, $text );
-	if ( null !== $filtered )
+	if ( null !== $filtered ) {
 		return $filtered;
+	}
 
 	$to_ncr = array(
 		'&quot;' => '&#34;',
@@ -3713,7 +3763,7 @@ function _deep_replace( $search, $subject ) {
  */
 function esc_sql( $data ) {
 	$app = getApp();
-	$wpdb = $app['db'];
+	$wpdb = $app[ 'db' ];
 	return $wpdb->_escape( $data );
 }
 
@@ -3735,8 +3785,9 @@ function esc_sql( $data ) {
 function esc_url( $url, $protocols = null, $_context = 'display' ) {
 	$original_url = $url;
 
-	if ( '' == $url )
+	if ( '' == $url ) {
 		return $url;
+	}
 
 	$url = str_replace( ' ', '%20', $url );
 	$url = preg_replace( '|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\[\]\\x80-\\xff]|i', '', $url );
@@ -3771,8 +3822,8 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 		$parsed = wp_parse_url( $url );
 		$front  = '';
 
-		if ( isset( $parsed['scheme'] ) ) {
-			$front .= $parsed['scheme'] . '://';
+		if ( isset( $parsed[ 'scheme' ] ) ) {
+			$front .= $parsed[ 'scheme' ] . '://';
 		} elseif ( '/' === $url[0] ) {
 			$front .= '//';
 		}
@@ -3806,11 +3857,13 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 	if ( '/' === $url[0] ) {
 		$good_protocol_url = $url;
 	} else {
-		if ( ! is_array( $protocols ) )
+		if ( ! is_array( $protocols ) ) {
 			$protocols = wp_allowed_protocols();
+		}
 		$good_protocol_url = wp_kses_bad_protocol( $url, $protocols );
-		if ( strtolower( $good_protocol_url ) != strtolower( $url ) )
+		if ( strtolower( $good_protocol_url ) != strtolower( $url ) ) {
 			return '';
+		}
 	}
 
 	/**
@@ -4008,235 +4061,235 @@ function wp_make_link_relative( $link ) {
  */
 function sanitize_option( $option, $value ) {
 	$app = getApp();
-	$wpdb = $app['db'];
+	$wpdb = $app[ 'db' ];
 
 	$original_value = $value;
 	$error = '';
 
 	switch ( $option ) {
-		case 'admin_email' :
-		case 'new_admin_email' :
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
+	case 'admin_email' :
+	case 'new_admin_email' :
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
+			$value = sanitize_email( $value );
+			if ( ! is_email( $value ) ) {
+				$error = __( 'The email address entered did not appear to be a valid email address. Please enter a valid email address.' );
+			}
+		}
+		break;
+
+	case 'thumbnail_size_w':
+	case 'thumbnail_size_h':
+	case 'medium_size_w':
+	case 'medium_size_h':
+	case 'medium_large_size_w':
+	case 'medium_large_size_h':
+	case 'large_size_w':
+	case 'large_size_h':
+	case 'mailserver_port':
+	case 'comment_max_links':
+	case 'page_on_front':
+	case 'page_for_posts':
+	case 'rss_excerpt_length':
+	case 'default_category':
+	case 'default_email_category':
+	case 'default_link_category':
+	case 'close_comments_days_old':
+	case 'comments_per_page':
+	case 'thread_comments_depth':
+	case 'users_can_register':
+	case 'start_of_week':
+	case 'site_icon':
+		$value = absint( $value );
+		break;
+
+	case 'posts_per_page':
+	case 'posts_per_rss':
+		$value = (int) $value;
+		if ( empty( $value ) )
+			$value = 1;
+		if ( $value < -1 )
+			$value = abs( $value );
+		break;
+
+	case 'default_ping_status':
+	case 'default_comment_status':
+		// Options that if not there have 0 value but need to be something like "closed"
+		if ( $value == '0' || $value == '' )
+			$value = 'closed';
+		break;
+
+	case 'blogdescription':
+	case 'blogname':
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( $value !== $original_value ) {
+			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', wp_encode_emoji( $original_value ) );
+		}
+
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
+			$value = esc_html( $value );
+		}
+		break;
+
+	case 'blog_charset':
+		$value = preg_replace( '/[^a-zA-Z0-9_-]/', '', $value ); // strips slashes
+		break;
+
+	case 'blog_public':
+		// This is the value if the settings checkbox is not checked on POST. Don't rely on this.
+		if ( null === $value )
+			$value = 1;
+		else
+			$value = intval( $value );
+		break;
+
+	case 'date_format':
+	case 'time_format':
+	case 'mailserver_url':
+	case 'mailserver_login':
+	case 'mailserver_pass':
+	case 'upload_path':
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
+			$value = strip_tags( $value );
+			$value = wp_kses_data( $value );
+		}
+		break;
+
+	case 'ping_sites':
+		$value = explode( "\n", $value );
+		$value = array_filter( array_map( 'trim', $value ) );
+		$value = array_filter( array_map( 'esc_url_raw', $value ) );
+		$value = implode( "\n", $value );
+		break;
+
+	case 'gmt_offset':
+		$value = preg_replace( '/[^0-9:.-]/', '', $value ); // strips slashes
+		break;
+
+	case 'siteurl':
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
+			if ( preg_match( '#http(s?)://(.+)#i', $value ) ) {
+				$value = esc_url_raw( $value );
 			} else {
-				$value = sanitize_email( $value );
-				if ( ! is_email( $value ) ) {
-					$error = __( 'The email address entered did not appear to be a valid email address. Please enter a valid email address.' );
+				$error = __( 'The WordPress address you entered did not appear to be a valid URL. Please enter a valid URL.' );
+			}
+		}
+		break;
+
+	case 'home':
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
+			if ( preg_match( '#http(s?)://(.+)#i', $value ) ) {
+				$value = esc_url_raw( $value );
+			} else {
+				$error = __( 'The Site address you entered did not appear to be a valid URL. Please enter a valid URL.' );
+			}
+		}
+		break;
+
+	case 'WPLANG':
+		$allowed = get_available_languages();
+		if ( ! is_multisite() && defined( 'WPLANG' ) && '' !== WPLANG && 'en_US' !== WPLANG ) {
+			$allowed[] = WPLANG;
+		}
+		if ( ! in_array( $value, $allowed ) && ! empty( $value ) ) {
+			$value = get_option( $option );
+		}
+		break;
+
+	case 'illegal_names':
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
+			if ( ! is_array( $value ) )
+				$value = explode( ' ', $value );
+
+			$value = array_values( array_filter( array_map( 'trim', $value ) ) );
+
+			if ( ! $value )
+				$value = '';
+		}
+		break;
+
+	case 'limited_email_domains':
+	case 'banned_email_domains':
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
+			if ( ! is_array( $value ) )
+				$value = explode( "\n", $value );
+
+			$domains = array_values( array_filter( array_map( 'trim', $value ) ) );
+			$value = [];
+
+			foreach ( $domains as $domain ) {
+				if ( ! preg_match( '/(--|\.\.)/', $domain ) && preg_match( '|^([a-zA-Z0-9-\.])+$|', $domain ) ) {
+					$value[] = $domain;
 				}
 			}
-			break;
+			if ( ! $value )
+				$value = '';
+		}
+		break;
 
-		case 'thumbnail_size_w':
-		case 'thumbnail_size_h':
-		case 'medium_size_w':
-		case 'medium_size_h':
-		case 'medium_large_size_w':
-		case 'medium_large_size_h':
-		case 'large_size_w':
-		case 'large_size_h':
-		case 'mailserver_port':
-		case 'comment_max_links':
-		case 'page_on_front':
-		case 'page_for_posts':
-		case 'rss_excerpt_length':
-		case 'default_category':
-		case 'default_email_category':
-		case 'default_link_category':
-		case 'close_comments_days_old':
-		case 'comments_per_page':
-		case 'thread_comments_depth':
-		case 'users_can_register':
-		case 'start_of_week':
-		case 'site_icon':
-			$value = absint( $value );
-			break;
+	case 'timezone_string':
+		$allowed_zones = timezone_identifiers_list();
+		if ( ! in_array( $value, $allowed_zones ) && ! empty( $value ) ) {
+			$error = __( 'The timezone you have entered is not valid. Please select a valid timezone.' );
+		}
+		break;
 
-		case 'posts_per_page':
-		case 'posts_per_rss':
-			$value = (int) $value;
-			if ( empty( $value ) )
-				$value = 1;
-			if ( $value < -1 )
-				$value = abs( $value );
-			break;
+	case 'permalink_structure':
+	case 'category_base':
+	case 'tag_base':
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
+			$value = esc_url_raw( $value );
+			$value = str_replace( 'http://', '', $value );
+		}
 
-		case 'default_ping_status':
-		case 'default_comment_status':
-			// Options that if not there have 0 value but need to be something like "closed"
-			if ( $value == '0' || $value == '' )
-				$value = 'closed';
-			break;
+		if ( 'permalink_structure' === $option && '' !== $value && ! preg_match( '/%[^\/%]+%/', $value ) ) {
+			$error = sprintf(
+				/* translators: %s: Codex URL */
+				__( 'A structure tag is required when using custom permalinks. <a href="%s">Learn more</a>' ),
+				__( 'https://codex.wordpress.org/Using_Permalinks#Choosing_your_permalink_structure' )
+			);
+		}
+		break;
 
-		case 'blogdescription':
-		case 'blogname':
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( $value !== $original_value ) {
-				$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', wp_encode_emoji( $original_value ) );
-			}
+	case 'default_role' :
+		if ( ! get_role( $value ) && get_role( 'subscriber' ) )
+			$value = 'subscriber';
+		break;
 
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
-			} else {
-				$value = esc_html( $value );
-			}
-			break;
-
-		case 'blog_charset':
-			$value = preg_replace( '/[^a-zA-Z0-9_-]/', '', $value ); // strips slashes
-			break;
-
-		case 'blog_public':
-			// This is the value if the settings checkbox is not checked on POST. Don't rely on this.
-			if ( null === $value )
-				$value = 1;
-			else
-				$value = intval( $value );
-			break;
-
-		case 'date_format':
-		case 'time_format':
-		case 'mailserver_url':
-		case 'mailserver_login':
-		case 'mailserver_pass':
-		case 'upload_path':
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
-			} else {
-				$value = strip_tags( $value );
-				$value = wp_kses_data( $value );
-			}
-			break;
-
-		case 'ping_sites':
+	case 'moderation_keys':
+	case 'blacklist_keys':
+		$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
+		if ( is_wp_error( $value ) ) {
+			$error = $value->get_error_message();
+		} else {
 			$value = explode( "\n", $value );
 			$value = array_filter( array_map( 'trim', $value ) );
-			$value = array_filter( array_map( 'esc_url_raw', $value ) );
+			$value = array_unique( $value );
 			$value = implode( "\n", $value );
-			break;
-
-		case 'gmt_offset':
-			$value = preg_replace( '/[^0-9:.-]/', '', $value ); // strips slashes
-			break;
-
-		case 'siteurl':
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
-			} else {
-				if ( preg_match( '#http(s?)://(.+)#i', $value ) ) {
-					$value = esc_url_raw( $value );
-				} else {
-					$error = __( 'The WordPress address you entered did not appear to be a valid URL. Please enter a valid URL.' );
-				}
-			}
-			break;
-
-		case 'home':
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
-			} else {
-				if ( preg_match( '#http(s?)://(.+)#i', $value ) ) {
-					$value = esc_url_raw( $value );
-				} else {
-					$error = __( 'The Site address you entered did not appear to be a valid URL. Please enter a valid URL.' );
-				}
-			}
-			break;
-
-		case 'WPLANG':
-			$allowed = get_available_languages();
-			if ( ! is_multisite() && defined( 'WPLANG' ) && '' !== WPLANG && 'en_US' !== WPLANG ) {
-				$allowed[] = WPLANG;
-			}
-			if ( ! in_array( $value, $allowed ) && ! empty( $value ) ) {
-				$value = get_option( $option );
-			}
-			break;
-
-		case 'illegal_names':
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
-			} else {
-				if ( ! is_array( $value ) )
-					$value = explode( ' ', $value );
-
-				$value = array_values( array_filter( array_map( 'trim', $value ) ) );
-
-				if ( ! $value )
-					$value = '';
-			}
-			break;
-
-		case 'limited_email_domains':
-		case 'banned_email_domains':
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
-			} else {
-				if ( ! is_array( $value ) )
-					$value = explode( "\n", $value );
-
-				$domains = array_values( array_filter( array_map( 'trim', $value ) ) );
-				$value = [];
-
-				foreach ( $domains as $domain ) {
-					if ( ! preg_match( '/(--|\.\.)/', $domain ) && preg_match( '|^([a-zA-Z0-9-\.])+$|', $domain ) ) {
-						$value[] = $domain;
-					}
-				}
-				if ( ! $value )
-					$value = '';
-			}
-			break;
-
-		case 'timezone_string':
-			$allowed_zones = timezone_identifiers_list();
-			if ( ! in_array( $value, $allowed_zones ) && ! empty( $value ) ) {
-				$error = __( 'The timezone you have entered is not valid. Please select a valid timezone.' );
-			}
-			break;
-
-		case 'permalink_structure':
-		case 'category_base':
-		case 'tag_base':
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
-			} else {
-				$value = esc_url_raw( $value );
-				$value = str_replace( 'http://', '', $value );
-			}
-
-			if ( 'permalink_structure' === $option && '' !== $value && ! preg_match( '/%[^\/%]+%/', $value ) ) {
-				$error = sprintf(
-					/* translators: %s: Codex URL */
-					__( 'A structure tag is required when using custom permalinks. <a href="%s">Learn more</a>' ),
-					__( 'https://codex.wordpress.org/Using_Permalinks#Choosing_your_permalink_structure' )
-				);
-			}
-			break;
-
-		case 'default_role' :
-			if ( ! get_role( $value ) && get_role( 'subscriber' ) )
-				$value = 'subscriber';
-			break;
-
-		case 'moderation_keys':
-		case 'blacklist_keys':
-			$value = $wpdb->strip_invalid_text_for_column( $wpdb->options, 'option_value', $value );
-			if ( is_wp_error( $value ) ) {
-				$error = $value->get_error_message();
-			} else {
-				$value = explode( "\n", $value );
-				$value = array_filter( array_map( 'trim', $value ) );
-				$value = array_unique( $value );
-				$value = implode( "\n", $value );
-			}
-			break;
+		}
+		break;
 	}
 
 	if ( ! empty( $error ) ) {
@@ -4300,8 +4353,9 @@ function map_deep( $value, $callback ) {
  */
 function wp_parse_str( $string, &$array ) {
 	parse_str( $string, $array );
-	if ( get_magic_quotes_gpc() )
+	if ( get_magic_quotes_gpc() ) {
 		$array = stripslashes_deep( $array );
+	}
 	/**
 	 * Filters the array of variables derived from a parsed string.
 	 *
@@ -4363,8 +4417,9 @@ function wp_sprintf( $pattern ) {
 
 		// Get fragment before next %
 		$end = strpos( $pattern, '%', $start + 1 );
-		if ( false === $end )
+		if ( false === $end ) {
 			$end = $len;
+		}
 		$fragment = substr( $pattern, $start, $end - $start );
 
 		// Fragment has a specifier
@@ -4389,10 +4444,11 @@ function wp_sprintf( $pattern ) {
 			 * @param string $arg      The argument.
 			 */
 			$_fragment = apply_filters( 'wp_sprintf', $fragment, $arg );
-			if ( $_fragment != $fragment )
+			if ( $_fragment != $fragment ) {
 				$fragment = $_fragment;
-			else
+			} else {
 				$fragment = sprintf( $fragment, strval( $arg ) );
+			}
 		}
 
 		// Append to result and move to next fragment
@@ -4417,12 +4473,14 @@ function wp_sprintf( $pattern ) {
  */
 function wp_sprintf_l( $pattern, $args ) {
 	// Not a match
-	if ( substr( $pattern, 0, 2 ) != '%l' )
+	if ( substr( $pattern, 0, 2 ) != '%l' ) {
 		return $pattern;
+	}
 
 	// Nothing to work with
-	if ( empty( $args ) )
+	if ( empty( $args ) ) {
 		return '';
+	}
 
 	/**
 	 * Filters the translated delimiters used by wp_sprintf_l().
@@ -4476,14 +4534,16 @@ function wp_sprintf_l( $pattern, $args ) {
  * @return string The excerpt.
  */
 function wp_html_excerpt( $str, $count, $more = null ) {
-	if ( null === $more )
+	if ( null === $more ) {
 		$more = '';
+	}
 	$str = wp_strip_all_tags( $str, true );
 	$excerpt = mb_substr( $str, 0, $count );
 	// remove part of an entity at the end
 	$excerpt = preg_replace( '/&[^;\s]{0,6}$/', '', $excerpt );
-	if ( $str != $excerpt )
+	if ( $str != $excerpt ) {
 		$excerpt = trim( $excerpt ) . $more;
+	}
 	return $excerpt;
 }
 
@@ -4568,8 +4628,9 @@ function wp_strip_all_tags( $string, $remove_breaks = false ) {
 	$string = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $string );
 	$string = strip_tags( $string );
 
-	if ( $remove_breaks )
+	if ( $remove_breaks ) {
 		$string = preg_replace( '/[\r\n\t ]+/', ' ', $string );
+	}
 
 	return trim( $string );
 }
@@ -4652,8 +4713,9 @@ function wp_basename( $path, $suffix = '' ) {
 function capital_P_dangit( $text ) {
 	// Simple replacement for titles
 	$current_filter = current_filter();
-	if ( 'the_title' === $current_filter || 'wp_title' === $current_filter )
+	if ( 'the_title' === $current_filter || 'wp_title' === $current_filter ) {
 		return str_replace( 'Wordpress', 'WordPress', $text );
+	}
 	// Still here? Use the more judicious replacement
 	static $dblq = false;
 	if ( false === $dblq ) {
@@ -4697,8 +4759,9 @@ function sanitize_mime_type( $mime_type ) {
 function sanitize_trackback_urls( $to_ping ) {
 	$urls_to_ping = preg_split( '/[\r\n\t ]/', trim( $to_ping ), -1, PREG_SPLIT_NO_EMPTY );
 	foreach ( $urls_to_ping as $k => $url ) {
-		if ( ! preg_match( '#^https?://.#i', $url ) )
+		if ( ! preg_match( '#^https?://.#i', $url ) ) {
 			unset( $urls_to_ping[ $k ] );
+		}
 	}
 	$urls_to_ping = array_map( 'esc_url_raw', $urls_to_ping );
 	$urls_to_ping = implode( "\n", $urls_to_ping );
