@@ -7,12 +7,10 @@ class Help extends AdminHelp {
 
 	public function addUsers() {
 		// contextual help - choose Help on the top right of admin panel to preview this.
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => '<p>' . __( 'This screen lists all the existing users for your site. Each user has one of five defined roles as set by the site admin: Site Administrator, Editor, Author, Contributor, or Subscriber. Users with roles other than Administrator will see fewer options in the dashboard navigation when they are logged in, based on their role.' ) . '</p>' .
-						 '<p>' . __( 'To add a new user for your site, click the Add New button at the top of the screen or Add New in the Users menu section.' ) . '</p>'
-		] );
+		$this->addOverview(
+			'<p>' . __( 'This screen lists all the existing users for your site. Each user has one of five defined roles as set by the site admin: Site Administrator, Editor, Author, Contributor, or Subscriber. Users with roles other than Administrator will see fewer options in the dashboard navigation when they are logged in, based on their role.' ) . '</p>' .
+			'<p>' . __( 'To add a new user for your site, click the Add New button at the top of the screen or Add New in the Users menu section.' ) . '</p>'
+		);
 
 		$this->screen->add_help_tab( [
 			'id'      => 'screen-display',
@@ -57,17 +55,14 @@ class Help extends AdminHelp {
 	}
 
 	public function addMultisiteUsers() {
-		$this->screen->add_help_tab( array(
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' =>
-				'<p>' . __( 'This table shows all users across the network and the sites to which they are assigned.' ) . '</p>' .
-				'<p>' . __( 'Hover over any user on the list to make the edit links appear. The Edit link on the left will take you to their Edit User profile page; the Edit link on the right by any site name goes to an Edit Site screen for that site.' ) . '</p>' .
-				'<p>' . __( 'You can also go to the user&#8217;s profile page by clicking on the individual username.' ) . '</p>' .
-				'<p>' . __( 'You can sort the table by clicking on any of the table headings and switch between list and excerpt views by using the icons above the users list.' ) . '</p>' .
-				'<p>' . __( 'The bulk action will permanently delete selected users, or mark/unmark those selected as spam. Spam users will have posts removed and will be unable to sign up again with the same email addresses.' ) . '</p>' .
-				'<p>' . __( 'You can make an existing user an additional super admin by going to the Edit User profile page and checking the box to grant that privilege.' ) . '</p>'
-		) );
+		$this->addOverview(
+			'<p>' . __( 'This table shows all users across the network and the sites to which they are assigned.' ) . '</p>' .
+			'<p>' . __( 'Hover over any user on the list to make the edit links appear. The Edit link on the left will take you to their Edit User profile page; the Edit link on the right by any site name goes to an Edit Site screen for that site.' ) . '</p>' .
+			'<p>' . __( 'You can also go to the user&#8217;s profile page by clicking on the individual username.' ) . '</p>' .
+			'<p>' . __( 'You can sort the table by clicking on any of the table headings and switch between list and excerpt views by using the icons above the users list.' ) . '</p>' .
+			'<p>' . __( 'The bulk action will permanently delete selected users, or mark/unmark those selected as spam. Spam users will have posts removed and will be unable to sign up again with the same email addresses.' ) . '</p>' .
+			'<p>' . __( 'You can make an existing user an additional super admin by going to the Edit User profile page and checking the box to grant that privilege.' ) . '</p>'
+		);
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
@@ -96,11 +91,7 @@ class Help extends AdminHelp {
 
 		$help .= '<p>' . __( 'Remember to click the Add New User button at the bottom of this screen when you are finished.' ) . '</p>';
 
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $help,
-		] );
+		$this->addOverview( $help );
 
 		$this->screen->add_help_tab( [
 			'id'      => 'user-roles',
@@ -123,13 +114,10 @@ class Help extends AdminHelp {
 	}
 
 	public function addMultisiteUserNew() {
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' =>
-				'<p>' . __( 'Add User will set up a new user account on the network and send that person an email with username and password.' ) . '</p>' .
-				'<p>' . __( 'Users who are signed up to the network without a site are added as subscribers to the main or primary dashboard site, giving them profile pages to manage their accounts. These users will only see Dashboard and My Sites in the main navigation until a site is created for them.' ) . '</p>'
-		] );
+		$this->addOverview(
+			'<p>' . __( 'Add User will set up a new user account on the network and send that person an email with username and password.' ) . '</p>' .
+			'<p>' . __( 'Users who are signed up to the network without a site are added as subscribers to the main or primary dashboard site, giving them profile pages to manage their accounts. These users will only see Dashboard and My Sites in the main navigation until a site is created for them.' ) . '</p>'
+		);
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
@@ -146,11 +134,7 @@ class Help extends AdminHelp {
 			'<p>' . __( 'Required fields are indicated; the rest are optional. Profile information will only be displayed if your theme is set up to do so.' ) . '</p>' .
 			'<p>' . __( 'Remember to click the Update Profile button when you are finished.' ) . '</p>';
 
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $profile_help,
-		] );
+		$this->addOverview( $profile_help );
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .

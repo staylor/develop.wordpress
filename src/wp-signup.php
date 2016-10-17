@@ -764,7 +764,15 @@ function validate_blog_signup() {
 function confirm_blog_signup( $domain, $path, $blog_title, $user_email = '' ) {
 	?>
 	<h2><?php /* translators: %s: site address */
-	printf( __( 'Congratulations! Your new site, %s, is almost ready.' ), "<a href='http://{$domain}{$path}'>{$blog_title}</a>" ) ?></h2>
+	printf(
+		__( 'Congratulations! Your new site, %s, is almost ready.' ),
+		sprintf(
+			'<a href="http://%s%s">%s</a>',
+			$domain,
+			$path,
+			$blog_title		
+		)
+	) ?></h2>
 
 	<p><?php _e( 'But, before you can start using your site, <strong>you must activate it</strong>.' ) ?></p>
 	<p><?php /* translators: %s: email address */

@@ -6,12 +6,9 @@ use WP\Admin\Help as AdminHelp;
 class Help extends AdminHelp {
 
 	public function addPost() {
-		$this->screen->add_help_tab( [
-			'id'		=> 'overview',
-			'title'		=> __( 'Overview' ),
-			'content'	=>
-				'<p>' . __( 'This screen provides access to all of your posts. You can customize the display of this screen to suit your workflow.' ) . '</p>'
-		] );
+		$this->addOverview(
+			'<p>' . __( 'This screen provides access to all of your posts. You can customize the display of this screen to suit your workflow.' ) . '</p>'
+		);
 
 		$this->screen->add_help_tab( [
 			'id'		=> 'screen-content',
@@ -55,12 +52,9 @@ class Help extends AdminHelp {
 	}
 
 	public function addPage() {
-		$this->screen->add_help_tab( [
-			'id'		=> 'overview',
-			'title'		=> __( 'Overview' ),
-			'content'	=>
-				'<p>' . __( 'Pages are similar to posts in that they have a title, body text, and associated metadata, but they are different in that they are not part of the chronological blog stream, kind of like permanent posts. Pages are not categorized or tagged, but can have a hierarchy. You can nest pages under other pages by making one the &#8220;Parent&#8221; of the other, creating a group of pages.' ) . '</p>'
-		] );
+		$this->addOverview(
+			'<p>' . __( 'Pages are similar to posts in that they have a title, body text, and associated metadata, but they are different in that they are not part of the chronological blog stream, kind of like permanent posts. Pages are not categorized or tagged, but can have a hierarchy. You can nest pages under other pages by making one the &#8220;Parent&#8221; of the other, creating a group of pages.' ) . '</p>'
+		);
 
 		$this->screen->add_help_tab( [
 			'id'		=> 'managing-pages',
@@ -127,15 +121,12 @@ class Help extends AdminHelp {
 					'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
 			);
 		} elseif ( 'attachment' == $post_type ) {
-			$this->screen->add_help_tab( [
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
-				'content' =>
-					'<p>' . __( 'This screen allows you to edit four fields for metadata in a file within the media library.' ) . '</p>' .
-					'<p>' . __( 'For images only, you can click on Edit Image under the thumbnail to expand out an inline image editor with icons for cropping, rotating, or flipping the image as well as for undoing and redoing. The boxes on the right give you more options for scaling the image, for cropping it, and for cropping the thumbnail in a different way than you crop the original image. You can click on Help in those boxes to get more information.' ) . '</p>' .
-					'<p>' . __( 'Note that you crop the image by clicking on it (the Crop icon is already selected) and dragging the cropping frame to select the desired part. Then click Save to retain the cropping.' ) . '</p>' .
-					'<p>' . __( 'Remember to click Update Media to save metadata entered or changed.' ) . '</p>'
-			] );
+			$this->addOverview(
+				'<p>' . __( 'This screen allows you to edit four fields for metadata in a file within the media library.' ) . '</p>' .
+				'<p>' . __( 'For images only, you can click on Edit Image under the thumbnail to expand out an inline image editor with icons for cropping, rotating, or flipping the image as well as for undoing and redoing. The boxes on the right give you more options for scaling the image, for cropping it, and for cropping the thumbnail in a different way than you crop the original image. You can click on Help in those boxes to get more information.' ) . '</p>' .
+				'<p>' . __( 'Note that you crop the image by clicking on it (the Crop icon is already selected) and dragging the cropping frame to select the desired part. Then click Save to retain the cropping.' ) . '</p>' .
+				'<p>' . __( 'Remember to click Update Media to save metadata entered or changed.' ) . '</p>'
+			);
 
 			$this->screen->set_help_sidebar(
 				'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .

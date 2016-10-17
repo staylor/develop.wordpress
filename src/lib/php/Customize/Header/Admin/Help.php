@@ -6,13 +6,10 @@ use WP\Admin\Help as AdminHelp;
 class Help extends AdminHelp {
 
 	public function addMain() {
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' =>
-				'<p>' . __( 'This screen is used to customize the header section of your theme.' ) . '</p>' .
-				'<p>' . __( 'You can choose from the theme&#8217;s default header images, or use one of your own. You can also customize how your Site Title and Tagline are displayed.' ) . '<p>'
-		] );
+		$this->addOverview(
+			'<p>' . __( 'This screen is used to customize the header section of your theme.' ) . '</p>' .
+			'<p>' . __( 'You can choose from the theme&#8217;s default header images, or use one of your own. You can also customize how your Site Title and Tagline are displayed.' ) . '<p>'
+		);
 
 		$this->screen->add_help_tab( [
 			'id'      => 'set-header-image',

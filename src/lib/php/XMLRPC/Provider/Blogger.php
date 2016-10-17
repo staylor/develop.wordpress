@@ -313,7 +313,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $content
 	 *     @type string $publish
 	 * }
-	 * @return int|WP\IXR\Error
+	 * @return int|\WP\IXR\Error
 	 */
 	public function blogger_newPost( $args ) {
 		$this->escape( $args );
@@ -396,7 +396,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $content
 	 *     @type bool   $publish
 	 * }
-	 * @return true|WP\IXR\Error true when done.
+	 * @return true|\WP\IXR\Error true when done.
 	 */
 	public function blogger_editPost( $args ) {
 
@@ -476,7 +476,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return true|WP\IXR\Error True when post is deleted.
+	 * @return true|\WP\IXR\Error True when post is deleted.
 	 */
 	public function blogger_deletePost( $args ) {
 		$this->escape( $args );

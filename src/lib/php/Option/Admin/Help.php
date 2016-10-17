@@ -6,12 +6,10 @@ use WP\Admin\Help as AdminHelp;
 class Help extends AdminHelp {
 
 	public function addWriting() {
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => '<p>' . __( 'You can submit content in several different ways; this screen holds the settings for all of them. The top section controls the editor within the dashboard, while the rest control external publishing methods. For more information on any of these methods, use the documentation links.' ) . '</p>' .
-				'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>',
-		] );
+		$this->addOverview(
+			'<p>' . __( 'You can submit content in several different ways; this screen holds the settings for all of them. The top section controls the editor within the dashboard, while the rest control external publishing methods. For more information on any of these methods, use the documentation links.' ) . '</p>' .
+			'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>'
+		);
 
 		/** This filter is documented in wp-admin/options.php */
 		if ( apply_filters( 'enable_post_by_email_configuration', true ) ) {
@@ -39,14 +37,12 @@ class Help extends AdminHelp {
 	}
 
 	public function addReading() {
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => '<p>' . __( 'This screen contains the settings that affect the display of your content.' ) . '</p>' .
-				'<p>' . sprintf(__( 'You can choose what&#8217;s displayed on the front page of your site. It can be posts in reverse chronological order (classic blog), or a fixed/static page. To set a static home page, you first need to create two <a href="%s">Pages</a>. One will become the front page, and the other will be where your posts are displayed.' ), 'post-new.php?post_type=page' ) . '</p>' .
-				'<p>' . __( 'You can also control the display of your content in RSS feeds, including the maximum numbers of posts to display and whether to show full text or a summary.' ) . '</p>' .
-				'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>',
-		] );
+		$this->addOverview(
+			'<p>' . __( 'This screen contains the settings that affect the display of your content.' ) . '</p>' .
+			'<p>' . sprintf(__( 'You can choose what&#8217;s displayed on the front page of your site. It can be posts in reverse chronological order (classic blog), or a fixed/static page. To set a static home page, you first need to create two <a href="%s">Pages</a>. One will become the front page, and the other will be where your posts are displayed.' ), 'post-new.php?post_type=page' ) . '</p>' .
+			'<p>' . __( 'You can also control the display of your content in RSS feeds, including the maximum numbers of posts to display and whether to show full text or a summary.' ) . '</p>' .
+			'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>'
+		);
 
 		$this->screen->add_help_tab( [
 			'id'      => 'site-visibility',
@@ -63,13 +59,11 @@ class Help extends AdminHelp {
 	}
 
 	public function addPermalink() {
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => '<p>' . __( 'Permalinks are the permanent URLs to your individual pages and blog posts, as well as your category and tag archives. A permalink is the web address used to link to your content. The URL to each post should be permanent, and never change &#8212; hence the name permalink.' ) . '</p>' .
-				'<p>' . __( 'This screen allows you to choose your permalink structure. You can choose from common settings or create custom URL structures.' ) . '</p>' .
-				'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>',
-		] );
+		$this->addOverview(
+			'<p>' . __( 'Permalinks are the permanent URLs to your individual pages and blog posts, as well as your category and tag archives. A permalink is the web address used to link to your content. The URL to each post should be permanent, and never change &#8212; hence the name permalink.' ) . '</p>' .
+			'<p>' . __( 'This screen allows you to choose your permalink structure. You can choose from common settings or create custom URL structures.' ) . '</p>' .
+			'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>'
+		);
 
 		$this->screen->add_help_tab( [
 			'id'      => 'permalink-settings',
@@ -104,11 +98,7 @@ class Help extends AdminHelp {
 
 		$media_options_help .= '<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>';
 
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $media_options_help,
-		] );
+		$this->addOverview( $media_options_help );
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
@@ -130,11 +120,7 @@ class Help extends AdminHelp {
 			'<p>' . __( 'UTC means Coordinated Universal Time.' ) . '</p>' .
 			'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>';
 
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $options_help,
-		] );
+		$this->addOverview( $options_help );
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
@@ -144,12 +130,10 @@ class Help extends AdminHelp {
 	}
 
 	public function addDiscussion() {
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => '<p>' . __( 'This screen provides many options for controlling the management and display of comments and links to your posts/pages. So many, in fact, they won&#8217;t all fit here! :) Use the documentation links to get information on what each discussion setting does.' ) . '</p>' .
-				'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>',
-		] );
+		$this->addOverview(
+			'<p>' . __( 'This screen provides many options for controlling the management and display of comments and links to your posts/pages. So many, in fact, they won&#8217;t all fit here! :) Use the documentation links to get information on what each discussion setting does.' ) . '</p>' .
+			'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.' ) . '</p>'
+		);
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .

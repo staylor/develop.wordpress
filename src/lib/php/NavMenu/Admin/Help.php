@@ -20,11 +20,7 @@ class Help extends AdminHelp {
 		$overview .= '<ul><li>' . __( 'Create, edit, and delete menus' ) . '</li>';
 		$overview .= '<li>' . __( 'Add, organize, and modify individual menu items' ) . '</li></ul>';
 
-		$this->screen->add_help_tab( array(
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $overview
-		) );
+		$this->addOverview( $overview );
 
 		$menu_management  = '<p>' . __( 'The menu management box at the top of the screen is used to control which menu is opened in the editor below.' ) . '</p>';
 		$menu_management .= '<ul><li>' . __( 'To edit an existing menu, <strong>choose a menu from the drop down and click Select</strong>' ) . '</li>';

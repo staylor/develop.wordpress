@@ -9,11 +9,7 @@ class Help extends AdminHelp {
 		$updates_overview  = '<p>' . __( 'On this screen, you can update to the latest version of WordPress, as well as update your themes, plugins, and translations from the WordPress.org repositories.' ) . '</p>';
 		$updates_overview .= '<p>' . __( 'If an update is available, you&#8127;ll see a notification appear in the Toolbar and navigation menu.' ) . ' ' . __( 'Keeping your site updated is important for security. It also makes the internet a safer place for you and your readers.' ) . '</p>';
 
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $updates_overview
-		] );
+		$this->addOverview( $updates_overview );
 
 		$updates_howto  = '<p>' . __( '<strong>WordPress</strong> &mdash; Updating your WordPress installation is a simple one-click procedure: just <strong>click on the &#8220;Update Now&#8221; button</strong> when you are notified that a new version is available.' ) . ' ' . __( 'In most cases, WordPress will automatically apply maintenance and security updates in the background for you.' ) . '</p>';
 		$updates_howto .= '<p>' . __( '<strong>Themes and Plugins</strong> &mdash; To update individual themes or plugins from this screen, use the checkboxes to make your selection, then <strong>click on the appropriate &#8220;Update&#8221; button</strong>. To update all of your themes or plugins at once, you can check the box at the top of the section to select all before clicking the update button.' ) . '</p>';
@@ -61,14 +57,11 @@ class Help extends AdminHelp {
 	}
 
 	public function addUpgradeNetwork() {
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' =>
-				'<p>' . __( 'Only use this screen once you have updated to a new version of WordPress through Updates/Available Updates (via the Network Administration navigation menu or the Toolbar). Clicking the Upgrade Network button will step through each site in the network, five at a time, and make sure any database updates are applied.' ) . '</p>' .
-				'<p>' . __( 'If a version update to core has not happened, clicking this button won&#8217;t affect anything.' ) . '</p>' .
-				'<p>' . __( 'If this process fails for any reason, users logging in to their sites will force the same update.' ) . '</p>'
-		] );
+		$this->addOverview(
+			'<p>' . __( 'Only use this screen once you have updated to a new version of WordPress through Updates/Available Updates (via the Network Administration navigation menu or the Toolbar). Clicking the Upgrade Network button will step through each site in the network, five at a time, and make sure any database updates are applied.' ) . '</p>' .
+			'<p>' . __( 'If a version update to core has not happened, clicking this button won&#8217;t affect anything.' ) . '</p>' .
+			'<p>' . __( 'If this process fails for any reason, users logging in to their sites will force the same update.' ) . '</p>'
+		);
 
 		$this->screen->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
@@ -92,11 +85,7 @@ class Help extends AdminHelp {
 					'<code>/wp-content/themes</code>'
 				) . '</p>';
 
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $help_overview
-		] );
+		$this->addOverview( $help_overview );
 
 		$help_installing =
 			'<p>' . __( 'Once you have generated a list of themes, you can preview and install any of them. Click on the thumbnail of the theme you&#8217;re interested in previewing. It will open up in a full-screen Preview page to give you a better idea of how that theme will look.' ) . '</p>' .
@@ -116,13 +105,10 @@ class Help extends AdminHelp {
 	}
 
 	public function addPluginInstall() {
-		$this->screen->add_help_tab( [
-			'id'		=> 'overview',
-			'title'		=> __( 'Overview' ),
-			'content'	=>
-				'<p>' . sprintf( __( 'Plugins hook into WordPress to extend its functionality with custom features. Plugins are developed independently from the core WordPress application by thousands of developers all over the world. All plugins in the official <a href="%s">WordPress Plugin Directory</a> are compatible with the license WordPress uses.' ), __( 'https://wordpress.org/plugins/' ) ) . '</p>' .
-				'<p>' . __( 'You can find new plugins to install by searching or browsing the directory right here in your own Plugins section.' ) . ' <span id="live-search-desc" class="hide-if-no-js">' . __( 'The search results will be updated as you type.' ) . '</span></p>'
-		] );
+		$this->addOverview(
+			'<p>' . sprintf( __( 'Plugins hook into WordPress to extend its functionality with custom features. Plugins are developed independently from the core WordPress application by thousands of developers all over the world. All plugins in the official <a href="%s">WordPress Plugin Directory</a> are compatible with the license WordPress uses.' ), __( 'https://wordpress.org/plugins/' ) ) . '</p>' .
+			'<p>' . __( 'You can find new plugins to install by searching or browsing the directory right here in your own Plugins section.' ) . ' <span id="live-search-desc" class="hide-if-no-js">' . __( 'The search results will be updated as you type.' ) . '</span></p>'
+		);
 
 		$this->screen->add_help_tab( [
 			'id'		=> 'adding-plugins',

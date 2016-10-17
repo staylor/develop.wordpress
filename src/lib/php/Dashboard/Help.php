@@ -8,11 +8,7 @@ class Help extends AdminHelp {
 	public function addIndex() {
 		$help = '<p>' . __( 'Welcome to your WordPress Dashboard! This is the screen you will see when you log in to your site, and gives you access to all the site management features of WordPress. You can get help for any screen by clicking the Help tab above the screen title.' ) . '</p>';
 
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $help,
-		] );
+		$this->addOverview( $help );
 
 		// Help tabs
 
@@ -85,11 +81,7 @@ class Help extends AdminHelp {
 		$overview .= '<li>' . __( 'Update your network' ) . '</li>';
 		$overview .= '<li>' . __( 'Modify global network settings' ) . '</li></ul>';
 
-		$this->screen->add_help_tab( [
-			'id'      => 'overview',
-			'title'   => __( 'Overview' ),
-			'content' => $overview
-		] );
+		$this->addOverview( $overview );
 
 		$quick_tasks = '<p>' . __( 'The Right Now widget on this screen provides current user and site counts on your network.' ) . '</p>';
 		$quick_tasks .= '<ul><li>' . __( 'To add a new user, <strong>click Create a New User</strong>.' ) . '</li>';

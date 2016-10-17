@@ -339,7 +339,8 @@ function retrieve_password() {
 	$message .= sprintf(__('Username: %s'), $user_login) . "\r\n\r\n";
 	$message .= __('If this was a mistake, just ignore this email and nothing will happen.') . "\r\n\r\n";
 	$message .= __('To reset your password, visit the following address:') . "\r\n\r\n";
-	$message .= '<' . network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login') . ">\r\n";
+	$url = 'wp-login.php?action=rp&key=' . $key . '&login=' . rawurlencode( $user_login );
+	$message .= '<' . network_site_url( $url, 'login' ) . ">\r\n";
 
 	if ( is_multisite() ) {
 		$blogname = get_current_site()->site_name;
@@ -434,7 +435,7 @@ do_action( 'login_init' );
  *
  * @since 2.8.0
  */
-do_action( "login_form_{$action}" );
+do_action( 'login_form_' . $action );
 
 $http_post = ( 'POST' === $app['request.method'] );
 $app->set( 'interim_login', $_request->has( 'interim-login' ) );

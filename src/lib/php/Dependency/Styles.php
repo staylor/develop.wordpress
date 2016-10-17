@@ -377,8 +377,9 @@ class Styles extends Dependencies {
 	 * @return bool True if found, false if not.
 	 */
 	public function in_default_dir( $src ) {
-		if ( ! $this->default_dirs )
+		if ( empty( $this->default_dirs ) ) {
 			return true;
+		}
 
 		foreach ( (array) $this->default_dirs as $test ) {
 			if ( 0 === strpos($src, $test) )

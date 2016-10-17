@@ -720,14 +720,14 @@ class WP extends Observer {
 		$message = $subject->message;
 
 		switch ( $message['event'] ) {
-		case 'add_endpoint':
-		case 'add_rewrite_rules':
-			$this->add_query_var( $message['query_var'] );
-			break;
+			case 'add_endpoint':
+			case 'add_rewrite_rules':
+				$this->add_query_var( $message['query_var'] );
+				break;
 
-		case 'remove_rewrite_rules':
-			$this->remove_query_var( $message['query_var'] );
-			break;
+			case 'remove_rewrite_rules':
+				$this->remove_query_var( $message['query_var'] );
+				break;
 		}
 	}
 }

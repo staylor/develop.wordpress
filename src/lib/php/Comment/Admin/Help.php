@@ -6,12 +6,9 @@ use WP\Admin\Help as AdminHelp;
 class Help extends AdminHelp {
 
 	public function addEditComments() {
-		$this->screen->add_help_tab( [
-			'id'		=> 'overview',
-			'title'		=> __( 'Overview' ),
-			'content'	=>
-				'<p>' . __( 'You can manage comments made on your site similar to the way you manage posts and other content. This screen is customizable in the same ways as other management screens, and you can act on comments using the on-hover action links or the Bulk Actions.' ) . '</p>'
-		] );
+		$this->addOverview(
+			'<p>' . __( 'You can manage comments made on your site similar to the way you manage posts and other content. This screen is customizable in the same ways as other management screens, and you can act on comments using the on-hover action links or the Bulk Actions.' ) . '</p>'
+		);
 
 		$this->screen->add_help_tab( [
 			'id'		=> 'moderating-comments',

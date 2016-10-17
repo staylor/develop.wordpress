@@ -386,7 +386,7 @@ final class Screen {
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $admin The admin to check against (network | user | site).
+	 * @param string|null $admin The admin to check against (network | user | site).
 	 *                      If empty any of the three admins will result in true.
 	 * @return bool True if the screen is in the indicated admin, false otherwise.
 	 */
