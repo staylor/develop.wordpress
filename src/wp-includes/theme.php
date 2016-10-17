@@ -762,18 +762,21 @@ function validate_current_theme() {
 	 *
 	 * @param bool $validate Whether to validate the current theme. Default true.
 	 */
-	if ( wp_installing() || ! apply_filters( 'validate_current_theme', true ) )
+	if ( wp_installing() || ! apply_filters( 'validate_current_theme', true ) ) {
 		return true;
+	}
 
+	$valid = true;
 	if ( ! file_exists( get_template_directory() . '/index.php' ) ) {
-		// Invalid.
+		$valid = false;
 	} elseif ( ! file_exists( get_template_directory() . '/style.css' ) ) {
-		// Invalid.
+		$valid = false;
 	} elseif ( is_child_theme() && ! file_exists( get_stylesheet_directory() . '/style.css' ) ) {
-		// Invalid.
-	} else {
-		// Valid.
-		return true;
+		$valid = false;
+	}
+
+	if ( $valid ) {
+		return $valid;
 	}
 
 	$default = wp_get_theme( WP_DEFAULT_THEME );
@@ -1403,17 +1406,18 @@ function add_editor_style( $stylesheet = 'editor-style.css' ) {
 	$app = getApp();
 	add_theme_support( 'editor-style' );
 
-	if ( ! is_admin() )
+	if ( ! is_admin() ) {
 		return;
-
-	$editor_styles = (array) $app->theme['editor_styles'];
-	$stylesheet    = (array) $stylesheet;
-	if ( is_rtl() ) {
-		$rtl_stylesheet = str_replace('.css', '-rtl.css', $stylesheet[0]);
-		$stylesheet[] = $rtl_stylesheet;
 	}
 
-	$editor_styles = array_merge( $editor_styles, $stylesheet );
+	$editor_styles = $app->theme['editor_styles'];
+	$sheets = (array) $stylesheet;
+	if ( is_rtl() ) {
+		$rtl_stylesheet = str_replace( '.css', '-rtl.css', $stylesheet );
+		$sheets[] = $rtl_stylesheet;
+	}
+
+	$app->theme['editor_styles'] = array_merge( $editor_styles, $sheets );
 }
 
 /**
@@ -2043,7 +2047,7 @@ function _wp_customize_include() {
 	$app = getApp();
 
 	$wp_customize = $app['request']->attributes->get( 'wp_customize' );
-	if ( ! ( 
+	if ( ! (
 		'on' === $wp_customize
 		|| ( is_admin() && 'customize.php' == basename( $app['request.php_self'] ) )
 	) ) {

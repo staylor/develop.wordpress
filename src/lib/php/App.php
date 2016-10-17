@@ -13,6 +13,7 @@ class App extends Container {
 
 	public $taxonomies = [];
 	public $meta_boxes = [];
+	public $meta_keys = [];
 
 	public $post_statuses = [];
 

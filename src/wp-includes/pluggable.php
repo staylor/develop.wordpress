@@ -1214,29 +1214,15 @@ function wp_sanitize_redirect($location) {
 			|   \xF4[\x80-\x8F][\x80-\xBF]{2}
 		){1,40}                              # ...one or more times
 		)/x';
-	$location = preg_replace_callback( $regex, '_wp_sanitize_utf8_in_redirect', $location );
+	$location = preg_replace_callback( $regex, function ( $matches ) {
+		return urlencode( $matches[0] );
+	}, $location );
 	$location = preg_replace('|[^a-z0-9-~+_.?#=&;,/:%!*\[\]()@]|i', '', $location);
 	$location = wp_kses_no_null($location);
 
 	// remove %0d and %0a from location
 	$strip = array('%0d', '%0a', '%0D', '%0A');
 	return _deep_replace( $strip, $location );
-}
-
-/**
- * URL encode UTF-8 characters in a URL.
- *
- * @ignore
- * @since 4.2.0
- * @access private
- *
- * @see wp_sanitize_redirect()
- *
- * @param array $matches RegEx matches against the redirect location.
- * @return string URL-encoded version of the first RegEx match.
- */
-function _wp_sanitize_utf8_in_redirect( $matches ) {
-	return urlencode( $matches[0] );
 }
 endif;
 

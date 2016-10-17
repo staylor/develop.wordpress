@@ -1056,7 +1056,6 @@ function get_term_to_edit( $id, $taxonomy ) {
  */
 function get_terms( $args = [], $deprecated = '' ) {
 	$app = getApp();
-	$wpdb = $app['db'];
 
 	$term_query = new WP_Term_Query();
 
@@ -1825,7 +1824,6 @@ function wp_delete_category( $cat_ID ) {
  */
 function wp_get_object_terms($object_ids, $taxonomies, $args = []) {
 	$app = getApp();
-	$wpdb = $app['db'];
 
 	if ( empty( $object_ids ) || empty( $taxonomies ) )
 		return [];

@@ -405,10 +405,8 @@ class WP_Widget {
 	 *
 	 * @since 2.8.0
 	 * @access public
-	 *
-	 * @param int $deprecated Not used.
 	 */
-	public function update_callback( $deprecated = 1 ) {
+	public function update_callback() {
 		$app = getApp();
 
 		$all_instances = $this->get_settings();
@@ -417,12 +415,14 @@ class WP_Widget {
 		if ( $this->updated )
 			return;
 
-		$delete_widget = $app['request']->request->get( 'delete_widget' );
-		$the_widget_id = $app['request']->request->get( 'the-widget-id' );
-		$widget_id_base = $app['request']->request->get( 'widget-' . $this->id_base );
-		$id_base = $app['request']->request->get( 'id_base' );
-		$multi_number = $app['request']->request->get( 'multi_number' );
-		$widget_number = $app['request']->request->get( 'widget_number' );
+		$_request = $app['request']->request;
+
+		$delete_widget = $_request->get( 'delete_widget' );
+		$the_widget_id = $_request->get( 'the-widget-id' );
+		$widget_id_base = $_request->get( 'widget-' . $this->id_base );
+		$id_base = $_request->get( 'id_base' );
+		$multi_number = $_request->get( 'multi_number' );
+		$widget_number = $_request->get( 'widget_number' );
 
 		if ( $delete_widget ) {
 			// Delete the settings for this instance of the widget

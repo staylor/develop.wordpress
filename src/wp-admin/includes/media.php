@@ -212,7 +212,10 @@ function image_add_caption( $html, $id, $caption, $title, $align, $url, $size, $
 	$width = $matches[1];
 
 	$caption = str_replace( array("\r\n", "\r"), "\n", $caption);
-	$caption = preg_replace_callback( '/<[a-zA-Z0-9]+(?: [^<>]+>)*/', '_cleanup_image_add_caption', $caption );
+	$caption = preg_replace_callback( '/<[a-zA-Z0-9]+(?: [^<>]+>)*/', function ( $matches ) {
+		// Remove any line breaks from inside the tags.
+		return preg_replace( '/[\r\n\t]+/', ' ', $matches[0] );
+	}, $caption );
 
 	// Convert any remaining line breaks to <br>.
 	$caption = preg_replace( '/[ \n\t]*\n[ \t]*/', '<br />', $caption );
@@ -232,17 +235,6 @@ function image_add_caption( $html, $id, $caption, $title, $align, $url, $size, $
 	 * @param string $html   The image HTML markup.
 	 */
 	return apply_filters( 'image_add_caption_shortcode', $shcode, $html );
-}
-
-/**
- * Private preg_replace callback used in image_add_caption()
- *
- * @access private
- * @since 3.4.0
- */
-function _cleanup_image_add_caption( $matches ) {
-	// Remove any line breaks from inside the tags.
-	return preg_replace( '/[\r\n\t]+/', ' ', $matches[0] );
 }
 
 /**

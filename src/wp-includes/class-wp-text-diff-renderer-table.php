@@ -249,7 +249,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 		// *_rows are column vectors for the orig column and the final column.
 		//	row >= 0: an indix of the $orig or $final array
 		//	row  < 0: a blank row for that column
-		list($orig_matches, $final_matches, $orig_rows, $final_rows) = $this->interleave_changed_lines( $orig, $final );
+		list($orig_matches, /*$final_matches*/, $orig_rows, $final_rows) = $this->interleave_changed_lines( $orig, $final );
 
 		// These will hold the word changes as determined by an inline diff
 		$orig_diffs  = [];

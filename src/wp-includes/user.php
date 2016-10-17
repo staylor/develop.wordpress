@@ -747,11 +747,7 @@ function is_user_member_of_blog( $user_id = 0, $blog_id = 0 ) {
 		return true;
 	}
 
-	if ( isset( $keys[ $site_capabilities_key ] ) ) {
-		return true;
-	}
-
-	return false;
+	return isset( $keys[ $site_capabilities_key ] );
 }
 
 /**

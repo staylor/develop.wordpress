@@ -585,27 +585,17 @@ function strip_shortcodes( $content ) {
 	$content = do_shortcodes_in_html_tags( $content, true, $tagnames );
 
 	$pattern = get_shortcode_regex( $tagnames );
-	$content = preg_replace_callback( "/$pattern/", 'strip_shortcode_tag', $content );
+	$content = preg_replace_callback( "/$pattern/", function ( $m ) {
+		// allow [[foo]] syntax for escaping a tag
+		if ( $m[1] === '[' && $m[6] === ']' ) {
+			return substr( $m[0], 1, -1 );
+		}
+
+		return $m[1] . $m[6];
+	}, $content );
 
 	// Always restore square braces so we don't break things like <!--[if IE ]>
 	$content = unescape_invalid_shortcodes( $content );
 
 	return $content;
-}
-
-/**
- * Strips a shortcode tag based on RegEx matches against post content.
- *
- * @since 3.3.0
- *
- * @param array $m RegEx matches against post content.
- * @return string|false The content stripped of the tag, otherwise false.
- */
-function strip_shortcode_tag( $m ) {
-	// allow [[foo]] syntax for escaping a tag
-	if ( $m[1] == '[' && $m[6] == ']' ) {
-		return substr($m[0], 1, -1);
-	}
-
-	return $m[1] . $m[6];
 }

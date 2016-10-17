@@ -446,18 +446,20 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @return bool
 	 */
 	public function stream( $mime_type = null ) {
-		list( $filename, $extension, $mime_type ) = $this->get_output_format( null, $mime_type );
+		list( /*$filename*/, /*$extension*/, $mime ) = $this->get_output_format( null, $mime_type );
 
-		switch ( $mime_type ) {
-			case 'image/png':
-				header( 'Content-Type: image/png' );
-				return imagepng( $this->image );
-			case 'image/gif':
-				header( 'Content-Type: image/gif' );
-				return imagegif( $this->image );
-			default:
-				header( 'Content-Type: image/jpeg' );
-				return imagejpeg( $this->image, null, $this->get_quality() );
+		switch ( $mime ) {
+		case 'image/png':
+			header( 'Content-Type: image/png' );
+			return imagepng( $this->image );
+
+		case 'image/gif':
+			header( 'Content-Type: image/gif' );
+			return imagegif( $this->image );
+
+		default:
+			header( 'Content-Type: image/jpeg' );
+			return imagejpeg( $this->image, null, $this->get_quality() );
 		}
 	}
 

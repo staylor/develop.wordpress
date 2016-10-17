@@ -546,10 +546,7 @@ function metadata_exists( $meta_type, $object_id, $meta_key ) {
 		$meta_cache = $meta_cache[$object_id];
 	}
 
-	if ( isset( $meta_cache[ $meta_key ] ) )
-		return true;
-
-	return false;
+	return isset( $meta_cache[ $meta_key ] );
 }
 
 /**
@@ -981,11 +978,7 @@ function sanitize_meta( $meta_key, $meta_value, $object_type ) {
  *                       callbacks, but will not add to the global registry.
  */
 function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
-	global $wp_meta_keys;
-
-	if ( ! is_array( $wp_meta_keys ) ) {
-		$wp_meta_keys = [];
-	}
+	$app = getApp();
 
 	$defaults = array(
 		'type'              => 'string',
@@ -1048,7 +1041,7 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 
 	// Global registry only contains meta keys registered with the array of arguments added in 4.6.0.
 	if ( ! $has_old_auth_cb && ! $has_old_sanitize_cb ) {
-		$wp_meta_keys[ $object_type ][ $meta_key ] = $args;
+		$app->meta_keys[ $object_type ][ $meta_key ] = $args;
 
 		return true;
 	}
@@ -1067,21 +1060,13 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
  * @return bool True if the meta key is registered to the object type. False if not.
  */
 function registered_meta_key_exists( $object_type, $meta_key ) {
-	global $wp_meta_keys;
+	$app = getApp();
 
-	if ( ! is_array( $wp_meta_keys ) ) {
+	if ( ! isset( $app->meta_keys[ $object_type ] ) ) {
 		return false;
 	}
 
-	if ( ! isset( $wp_meta_keys[ $object_type ] ) ) {
-		return false;
-	}
-
-	if ( isset( $wp_meta_keys[ $object_type ][ $meta_key ] ) ) {
-		return true;
-	}
-
-	return false;
+	return isset( $app->meta_keys[ $object_type ][ $meta_key ] );
 }
 
 /**
@@ -1094,13 +1079,13 @@ function registered_meta_key_exists( $object_type, $meta_key ) {
  * @return bool True if successful. False if the meta key was not registered.
  */
 function unregister_meta_key( $object_type, $meta_key ) {
-	global $wp_meta_keys;
+	$app = getApp();
 
 	if ( ! registered_meta_key_exists( $object_type, $meta_key ) ) {
 		return false;
 	}
 
-	$args = $wp_meta_keys[ $object_type ][ $meta_key ];
+	$args = $app->meta_keys[ $object_type ][ $meta_key ];
 
 	if ( isset( $args['sanitize_callback'] ) && is_callable( $args['sanitize_callback'] ) ) {
 		remove_filter( "sanitize_{$object_type}_meta_{$meta_key}", $args['sanitize_callback'] );
@@ -1110,11 +1095,11 @@ function unregister_meta_key( $object_type, $meta_key ) {
 		remove_filter( "auth_{$object_type}_meta_{$meta_key}", $args['auth_callback'] );
 	}
 
-	unset( $wp_meta_keys[ $object_type ][ $meta_key ] );
+	unset( $app->meta_keys[ $object_type ][ $meta_key ] );
 
 	// Do some clean up
-	if ( empty( $wp_meta_keys[ $object_type ] ) ) {
-		unset( $wp_meta_keys[ $object_type ] );
+	if ( empty( $app->meta_keys[ $object_type ] ) ) {
+		unset( $app->meta_keys[ $object_type ] );
 	}
 
 	return true;
@@ -1129,13 +1114,13 @@ function unregister_meta_key( $object_type, $meta_key ) {
  * @return array List of registered meta keys.
  */
 function get_registered_meta_keys( $object_type ) {
-	global $wp_meta_keys;
+	$app = getApp();
 
-	if ( ! is_array( $wp_meta_keys ) || ! isset( $wp_meta_keys[ $object_type ] ) ) {
+	if ( ! isset( $app->meta_keys[ $object_type ] ) ) {
 		return [];
 	}
 
-	return $wp_meta_keys[ $object_type ];
+	return $app->meta_keys[ $object_type ];
 }
 
 /**

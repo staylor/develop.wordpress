@@ -415,7 +415,7 @@ function require_wp_db() {
 		return $app['db']->get_blog_prefix();
 	} );
 
-	$app['globals.table_prefix'] = $app->factory( function ( $app ) {
+	$app['globals.table_prefix'] = $app->factory( function () {
 		return $GLOBALS['table_prefix'];
 	} );
 }
@@ -800,13 +800,10 @@ function is_user_admin() {
  * @return bool True if Multisite is enabled, false otherwise.
  */
 function is_multisite() {
-	if ( defined( 'MULTISITE' ) )
+	if ( defined( 'MULTISITE' ) ) {
 		return MULTISITE;
-
-	if ( defined( 'SUBDOMAIN_INSTALL' ) || defined( 'VHOST' ) || defined( 'SUNRISE' ) )
-		return true;
-
-	return false;
+	}
+	return ( defined( 'SUBDOMAIN_INSTALL' ) || defined( 'VHOST' ) || defined( 'SUNRISE' ) );
 }
 
 /**

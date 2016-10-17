@@ -90,15 +90,14 @@ function rest_api_init() {
  * @since 4.4.0
  *
  * @see add_rewrite_rule()
- * @global WP_Rewrite $wp_rewrite
  */
 function rest_api_register_rewrites() {
-	global $wp_rewrite;
+	$app = getApp();
 
 	add_rewrite_rule( '^' . rest_get_url_prefix() . '/?$','index.php?rest_route=/','top' );
 	add_rewrite_rule( '^' . rest_get_url_prefix() . '/(.*)?','index.php?rest_route=/$matches[1]','top' );
-	add_rewrite_rule( '^' . $wp_rewrite->index . '/' . rest_get_url_prefix() . '/?$','index.php?rest_route=/','top' );
-	add_rewrite_rule( '^' . $wp_rewrite->index . '/' . rest_get_url_prefix() . '/(.*)?','index.php?rest_route=/$matches[1]','top' );
+	add_rewrite_rule( '^' . $app['rewrite']->index . '/' . rest_get_url_prefix() . '/?$','index.php?rest_route=/','top' );
+	add_rewrite_rule( '^' . $app['rewrite']->index . '/' . rest_get_url_prefix() . '/(.*)?','index.php?rest_route=/$matches[1]','top' );
 }
 
 /**
@@ -179,23 +178,21 @@ function rest_get_url_prefix() {
  * @since 4.4.0
  *
  * @todo Check if this is even necessary
- * @global WP_Rewrite $wp_rewrite
  *
- * @param int    $blog_id Optional. Blog ID. Default of null returns URL for current blog.
- * @param string $path    Optional. REST route. Default '/'.
- * @param string $scheme  Optional. Sanitization scheme. Default 'rest'.
+ * @param int|null $blog_id Optional. Blog ID. Default of null returns URL for current blog.
+ * @param string   $path    Optional. REST route. Default '/'.
+ * @param string   $scheme  Optional. Sanitization scheme. Default 'rest'.
  * @return string Full URL to the endpoint.
  */
 function get_rest_url( $blog_id = null, $path = '/', $scheme = 'rest' ) {
+	$app = getApp();
 	if ( empty( $path ) ) {
 		$path = '/';
 	}
 
 	if ( is_multisite() && get_blog_option( $blog_id, 'permalink_structure' ) || get_option( 'permalink_structure' ) ) {
-		global $wp_rewrite;
-
-		if ( $wp_rewrite->using_index_permalinks() ) {
-			$url = get_home_url( $blog_id, $wp_rewrite->index . '/' . rest_get_url_prefix(), $scheme );
+		if ( $app['rewrite']->using_index_permalinks() ) {
+			$url = get_home_url( $blog_id, $app['rewrite']->index . '/' . rest_get_url_prefix(), $scheme );
 		} else {
 			$url = get_home_url( $blog_id, rest_get_url_prefix(), $scheme );
 		}
@@ -254,7 +251,7 @@ function rest_url( $path = '', $scheme = 'json' ) {
  *
  * @since 4.4.0
  *
- * @param WP_REST_Request|string $request Request.
+ * @param WP_REST_Request|array $request Request.
  * @return WP_REST_Response REST response.
  */
 function rest_do_request( $request ) {
@@ -455,7 +452,7 @@ function rest_send_allow_header( $response, $server, $request ) {
 	// Strip out all the methods that are not allowed (false values).
 	$allowed_methods = array_filter( $allowed_methods );
 
-	if ( $allowed_methods ) {
+	if ( ! empty( $allowed_methods ) ) {
 		$response->header( 'Allow', implode( ', ', array_map( 'strtoupper', array_keys( $allowed_methods ) ) ) );
 	}
 
@@ -525,8 +522,6 @@ function rest_output_link_header() {
  *
  * @since 4.4.0
  *
- * @global mixed          $wp_rest_auth_cookie
- *
  * @param WP_Error|mixed $result Error from another authentication handler,
  *                               null if we should handle it, or another value
  *                               if not.
@@ -537,21 +532,20 @@ function rest_cookie_check_errors( $result ) {
 		return $result;
 	}
 
-	global $wp_rest_auth_cookie;
+	$app = getApp();
 
 	/*
 	 * Is cookie authentication being used? (If we get an auth
 	 * error, but we're still logged in, another authentication
 	 * must have been used).
 	 */
-	if ( true !== $wp_rest_auth_cookie && is_user_logged_in() ) {
+	if ( true !== $app->get( 'wp_rest_auth_cookie' ) && is_user_logged_in() ) {
 		return $result;
 	}
 
 	// Determine if there is a nonce.
 	$nonce = null;
 
-	$app = getApp();
 	$_request = $app['request']->attributes;
 	if ( $_request->has( '_wpnonce' ) ) {
 		$nonce = $_request->get( '_wpnonce' );
@@ -586,19 +580,18 @@ function rest_cookie_check_errors( $result ) {
  * @since 4.4.0
  *
  * @see current_action()
- * @global mixed $wp_rest_auth_cookie
  */
 function rest_cookie_collect_status() {
-	global $wp_rest_auth_cookie;
+	$app = getApp();
 
 	$status_type = current_action();
 
 	if ( 'auth_cookie_valid' !== $status_type ) {
-		$wp_rest_auth_cookie = substr( $status_type, 12 );
+		$app->set( 'wp_rest_auth_cookie', substr( $status_type, 12 ) );
 		return;
 	}
 
-	$wp_rest_auth_cookie = true;
+	$app->set( 'wp_rest_auth_cookie', true );
 }
 
 /**

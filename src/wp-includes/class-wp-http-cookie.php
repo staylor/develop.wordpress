@@ -176,10 +176,7 @@ class WP_Http_Cookie {
 			return false;
 
 		// Path - request path must start with path restriction.
-		if ( substr( $url['path'], 0, strlen( $path ) ) != $path )
-			return false;
-
-		return true;
+		return substr( $url['path'], 0, strlen( $path ) ) === $path;
 	}
 
 	/**

@@ -1721,20 +1721,17 @@ function get_post_custom_values( $key = '', $post_id = 0 ) {
  * @return bool Whether post is sticky.
  */
 function is_sticky( $post_id = 0 ) {
-	$post_id = absint( $post_id );
+	$id = absint( $post_id );
 
-	if ( ! $post_id )
-		$post_id = get_the_ID();
-
+	if ( ! $id ) {
+		$id = get_the_ID();
+	}
 	$stickies = get_option( 'sticky_posts' );
 
-	if ( ! is_array( $stickies ) )
+	if ( ! is_array( $stickies ) ) {
 		return false;
-
-	if ( in_array( $post_id, $stickies ) )
-		return true;
-
-	return false;
+	}
+	return in_array( $id, $stickies );
 }
 
 /**

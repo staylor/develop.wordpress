@@ -804,10 +804,10 @@ function register_uninstall_hook( $file, $callback ) {
 	 * cases. Emphasis should be put on using the 'uninstall.php' way of
 	 * uninstalling the plugin.
 	 */
-	$uninstallable_plugins = (array) get_option('uninstall_plugins');
-	$uninstallable_plugins[plugin_basename($file)] = $callback;
+	$uninstallable = (array) get_option( 'uninstall_plugins' );
+	$uninstallable[ plugin_basename( $file ) ] = $callback;
 
-	update_option('uninstall_plugins', $uninstallable_plugins);
+	update_option( 'uninstall_plugins', $uninstallable );
 }
 
 /**

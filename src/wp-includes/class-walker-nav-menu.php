@@ -101,10 +101,8 @@ class Walker_Nav_Menu extends Walker {
 	public function start_el( &$output, $item, $depth = 0, $args = [], $id = 0 ) {
 		if ( isset( $args->item_spacing ) && 'discard' === $args->item_spacing ) {
 			$t = '';
-			$n = '';
 		} else {
 			$t = "\t";
-			$n = "\n";
 		}
 		$indent = ( $depth ) ? str_repeat( $t, $depth ) : '';
 
@@ -238,10 +236,8 @@ class Walker_Nav_Menu extends Walker {
 	 */
 	public function end_el( &$output, $item, $depth = 0, $args = [] ) {
 		if ( isset( $args->item_spacing ) && 'discard' === $args->item_spacing ) {
-			$t = '';
 			$n = '';
 		} else {
-			$t = "\t";
 			$n = "\n";
 		}
 		$output .= "</li>{$n}";

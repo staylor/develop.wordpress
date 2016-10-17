@@ -251,9 +251,10 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 			return true;
 
 		$dims = image_resize_dimensions( $this->size['width'], $this->size['height'], $max_w, $max_h, $crop );
-		if ( ! $dims )
+		if ( ! $dims ) {
 			return new WP_Error( 'error_getting_dimensions', __('Could not calculate resized image dimensions') );
-		list( $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ) = $dims;
+		}
+		list( /*$dst_x*/, /*$dst_y*/, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ) = $dims;
 
 		if ( $crop ) {
 			return $this->crop( $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h );
@@ -655,15 +656,15 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @return true|WP_Error
 	 */
 	public function stream( $mime_type = null ) {
-		list( $filename, $extension, $mime_type ) = $this->get_output_format( null, $mime_type );
+		list( /*$filename*/, $extension, $mime ) = $this->get_output_format( null, $mime_type );
 
 		try {
 			// Temporarily change format for stream
 			$this->image->setImageFormat( strtoupper( $extension ) );
 
 			// Output stream of image content
-			header( "Content-Type: $mime_type" );
-			print $this->image->getImageBlob();
+			header( 'Content-Type: ' . $mime );
+			echo $this->image->getImageBlob();
 
 			// Reset Image to original Format
 			$this->image->setImageFormat( $this->get_extension( $this->mime_type ) );

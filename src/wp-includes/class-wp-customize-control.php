@@ -336,11 +336,7 @@ class WP_Customize_Control {
 		}
 
 		$section = $this->manager->get_section( $this->section );
-		if ( isset( $section ) && ! $section->check_capabilities() ) {
-			return false;
-		}
-
-		return true;
+		return ! isset( $section ) || $section->check_capabilities();
 	}
 
 	/**

@@ -2949,25 +2949,14 @@ function is_email( $email, $deprecated = false ) {
  */
 function wp_iso_descrambler( $string ) {
 	/* this may only work with iso-8859-1, I'm afraid */
-	if (!preg_match('#\=\?(.+)\?Q\?(.+)\?\=#i', $string, $matches)) {
+	if ( ! preg_match( '#\=\?(.+)\?Q\?(.+)\?\=#i', $string, $matches ) ) {
 		return $string;
-	} else {
-		$subject = str_replace('_', ' ', $matches[2]);
-		return preg_replace_callback( '#\=([0-9a-f]{2})#i', '_wp_iso_convert', $subject );
 	}
-}
 
-/**
- * Helper function to convert hex encoded chars to ASCII
- *
- * @since 3.1.0
- * @access private
- *
- * @param array $match The preg_replace_callback matches array
- * @return string Converted chars
- */
-function _wp_iso_convert( $match ) {
-	return chr( hexdec( strtolower( $match[1] ) ) );
+	$subject = str_replace( '_', ' ', $matches[2] );
+	return preg_replace_callback( '#\=([0-9a-f]{2})#i', function ( $match ) {
+		return chr( hexdec( strtolower( $match[1] ) ) );
+	}, $subject );
 }
 
 /**
@@ -4342,21 +4331,12 @@ function wp_parse_str( $string, &$array ) {
  * @return string Converted text.
  */
 function wp_pre_kses_less_than( $text ) {
-	return preg_replace_callback('%<[^>]*?((?=<)|>|$)%', 'wp_pre_kses_less_than_callback', $text);
-}
-
-/**
- * Callback function used by preg_replace.
- *
- * @since 2.3.0
- *
- * @param array $matches Populated by matches to preg_replace.
- * @return string The text returned after esc_html if needed.
- */
-function wp_pre_kses_less_than_callback( $matches ) {
-	if ( false === strpos($matches[0], '>') )
-		return esc_html($matches[0]);
-	return $matches[0];
+	return preg_replace_callback( '%<[^>]*?((?=<)|>|$)%', function ( $matches ) {
+		if ( false === strpos( $matches[0], '>' ) ) {
+			return esc_html( $matches[0] );
+		}
+		return $matches[0];
+	}, $text );
 }
 
 /**
@@ -4523,40 +4503,22 @@ function wp_html_excerpt( $str, $count, $more = null ) {
  *
  * @since 2.7.0
  *
- * @global string $_links_add_base
- *
  * @param string $content String to search for links in.
  * @param string $base    The base URL to prefix to links.
  * @param array  $attrs   The attributes which should be processed.
  * @return string The processed content.
  */
 function links_add_base_url( $content, $base, $attrs = array('src', 'href') ) {
-	global $_links_add_base;
-	$_links_add_base = $base;
-	$attrs = implode('|', (array)$attrs);
-	return preg_replace_callback( "!($attrs)=(['\"])(.+?)\\2!i", '_links_add_base', $content );
-}
-
-/**
- * Callback to add a base url to relative links in passed content.
- *
- * @since 2.7.0
- * @access private
- *
- * @global string $_links_add_base
- *
- * @param string $m The matched link.
- * @return string The processed link.
- */
-function _links_add_base( $m ) {
-	global $_links_add_base;
-	//1 = attribute name  2 = quotation mark  3 = URL
-	return $m[1] . '=' . $m[2] .
-		( preg_match( '#^(\w{1,20}):#', $m[3], $protocol ) && in_array( $protocol[1], wp_allowed_protocols() ) ?
-			$m[3] :
-			WP_Http::make_absolute_url( $m[3], $_links_add_base )
-		)
-		. $m[2];
+	$joined = implode( '|', (array) $attrs );
+	return preg_replace_callback( "!($joined)=(['\"])(.+?)\\2!i", function ( $m ) use ( $base ) {
+		//1 = attribute name  2 = quotation mark  3 = URL
+		return $m[1] . '=' . $m[2] .
+			( preg_match( '#^(\w{1,20}):#', $m[3], $protocol ) && in_array( $protocol[1], wp_allowed_protocols() ) ?
+				$m[3] :
+				WP_Http::make_absolute_url( $m[3], $base )
+			)
+			. $m[2];
+	}, $content );
 }
 
 /**
@@ -4569,36 +4531,18 @@ function _links_add_base( $m ) {
  *
  * @since 2.7.0
  *
- * @global string $_links_add_target
- *
  * @param string $content String to search for links in.
  * @param string $target  The Target to add to the links.
  * @param array  $tags    An array of tags to apply to.
  * @return string The processed content.
  */
 function links_add_target( $content, $target = '_blank', $tags = array('a') ) {
-	global $_links_add_target;
-	$_links_add_target = $target;
-	$tags = implode('|', (array)$tags);
-	return preg_replace_callback( "!<($tags)([^>]*)>!i", '_links_add_target', $content );
-}
-
-/**
- * Callback to add a target attribute to all links in passed content.
- *
- * @since 2.7.0
- * @access private
- *
- * @global string $_links_add_target
- *
- * @param string $m The matched link.
- * @return string The processed link.
- */
-function _links_add_target( $m ) {
-	global $_links_add_target;
-	$tag = $m[1];
-	$link = preg_replace('|( target=([\'"])(.*?)\2)|i', '', $m[2]);
-	return '<' . $tag . $link . ' target="' . esc_attr( $_links_add_target ) . '">';
+	$joined = implode( '|', (array) $tags );
+	return preg_replace_callback( "!<($joined)([^>]*)>!i", function ( $m ) use ( $target ) {
+		$tag = $m[1];
+		$link = preg_replace( '|( target=([\'"])(.*?)\2)|i', '', $m[2] );
+		return '<' . $tag . $link . ' target="' . esc_attr( $target ) . '">';
+	}, $content );
 }
 
 /**

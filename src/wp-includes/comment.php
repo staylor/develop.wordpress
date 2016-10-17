@@ -1773,12 +1773,12 @@ function wp_filter_comment($commentdata) {
  * @param int $time_newcomment Timestamp for new comment.
  * @return bool Whether comment should be blocked.
  */
-function wp_throttle_comment_flood($block, $time_lastcomment, $time_newcomment) {
-	if ( $block ) // a plugin has already blocked... we'll let that decision stand
+function wp_throttle_comment_flood( $block, $time_lastcomment, $time_newcomment ) {
+	// a plugin has already blocked... we'll let that decision stand
+	if ( $block ) {
 		return $block;
-	if ( ($time_newcomment - $time_lastcomment) < 15 )
-		return true;
-	return false;
+	}
+	return ( ( $time_newcomment - $time_lastcomment ) < 15 );
 }
 
 /**

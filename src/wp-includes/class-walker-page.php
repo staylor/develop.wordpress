@@ -105,10 +105,8 @@ class Walker_Page extends Walker {
 	public function start_el( &$output, $page, $depth = 0, $args = [], $current_page = 0 ) {
 		if ( 'preserve' === $args['item_spacing'] ) {
 			$t = "\t";
-			$n = "\n";
 		} else {
 			$t = '';
-			$n = '';
 		}
 		if ( $depth ) {
 			$indent = str_repeat( $t, $depth );
@@ -197,10 +195,8 @@ class Walker_Page extends Walker {
 	 */
 	public function end_el( &$output, $page, $depth = 0, $args = [] ) {
 		if ( 'preserve' === $args['item_spacing'] ) {
-			$t = "\t";
 			$n = "\n";
 		} else {
-			$t = '';
 			$n = '';
 		}
 		$output .= "</li>{$n}";

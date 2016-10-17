@@ -268,14 +268,12 @@ final class WP_Site {
 			case 'id':
 			case 'network_id':
 				return true;
+
 			case 'blogname':
 			case 'siteurl':
 			case 'post_count':
 			case 'home':
-				if ( ! did_action( 'ms_loaded' ) ) {
-					return false;
-				}
-				return true;
+				return did_action( 'ms_loaded' );
 		}
 
 		return false;
