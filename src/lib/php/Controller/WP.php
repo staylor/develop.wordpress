@@ -626,7 +626,7 @@ class WP extends Observer {
 		}
 
 		// Never 404 for the admin, robots, or if we found posts.
-		if ( is_admin() || is_robots() || $this->current_query->posts ) {
+		if ( is_admin() || is_robots() || ! empty( $this->current_query->posts ) ) {
 
 			$success = true;
 			if ( is_singular() ) {

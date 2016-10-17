@@ -774,7 +774,7 @@ class MetaWeblog implements ProviderInterface {
 		}
 
 		$format = get_post_format( $post_ID );
-		if ( ! $format ) {
+		if ( false === $format ) {
 			$format = null;
 		}
 
@@ -966,7 +966,7 @@ class MetaWeblog implements ProviderInterface {
 		$categories = [];
 
 		$cats = get_categories( [ 'get' => 'all' ] );
-		if ( $cats ) {
+		if ( ! empty( $cats ) ) {
 			foreach ( $cats as $cat ) {
 				$categories[] = [
 					'categoryId' => $cat->term_id,

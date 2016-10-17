@@ -142,7 +142,7 @@ class MovableType implements ProviderInterface {
 			'hierarchical' => 0
 		] );
 
-		if ( $cats ) {
+		if ( ! empty( $cats ) ) {
 			foreach ( $cats as $cat ) {
 				$categories[] = [
 					'categoryId' => $cat->term_id,

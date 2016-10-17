@@ -1055,8 +1055,6 @@ function get_term_to_edit( $id, $taxonomy ) {
  *                            do not exist.
  */
 function get_terms( $args = [], $deprecated = '' ) {
-	$app = getApp();
-
 	$term_query = new WP_Term_Query();
 
 	/*
@@ -1823,8 +1821,6 @@ function wp_delete_category( $cat_ID ) {
  *                        WP_Error if any of the $taxonomies don't exist.
  */
 function wp_get_object_terms($object_ids, $taxonomies, $args = []) {
-	$app = getApp();
-
 	if ( empty( $object_ids ) || empty( $taxonomies ) )
 		return [];
 

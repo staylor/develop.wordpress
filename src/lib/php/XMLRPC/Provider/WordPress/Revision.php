@@ -91,7 +91,7 @@ trait Revision {
 		}
 		$revisions = wp_get_post_revisions( $post_id );
 
-		if ( ! $revisions ) {
+		if ( empty( $revisions ) ) {
 			return [];
 		}
 

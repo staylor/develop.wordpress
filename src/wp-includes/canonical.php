@@ -63,14 +63,14 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		return;
 	}
 
-	if ( ! $requested_url && $app['request.host'] ) {
+	if ( null === $requested_url && $app['request.host'] ) {
 		// build the URL in the address bar
 		$requested_url  = is_ssl() ? 'https://' : 'http://';
 		$requested_url .= $app['request.host'];
 		$requested_url .= $app['request.uri'];
 	}
 
-	$original = @parse_url( $requested_url);
+	$original = parse_url( $requested_url );
 	if ( false === $original ) {
 		return;
 	}
@@ -121,7 +121,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 			}
 
 			$redirect_url = get_permalink( $id );
-			if ( $redirect_url ) {
+			if ( false !== $redirect_url ) {
 				$redirect['query'] = _remove_qs_args_if_not_in_url(
 					$redirect['query'],
 					array( 'p', 'page_id', 'attachment_id', 'pagename', 'name', 'post_type' ),
@@ -170,9 +170,9 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 			);
 		}
 
-		if ( ! $redirect_url ) {
+		if ( false === $redirect_url ) {
 			$redirect_url = redirect_guess_404_permalink();
-			if ( $redirect_url ) {
+			if ( false === $redirect_url ) {
 				$redirect['query'] = _remove_qs_args_if_not_in_url(
 					$redirect['query'],
 					array( 'page', 'feed', 'p', 'page_id', 'attachment_id', 'pagename', 'name', 'post_type' ),
@@ -194,41 +194,41 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		if (
 			is_attachment() &&
 			! array_diff( array_keys( $wp->query_vars ), array( 'attachment', 'attachment_id' ) ) &&
-			! $redirect_url
+			false === $redirect_url
 		) {
 			$attachment_id = $_get->get( 'attachment_id' );
 			if ( ! empty( $attachment_id ) ) {
 				$redirect_url = get_attachment_link( get_query_var( 'attachment_id' ) );
-				if ( $redirect_url ) {
+				if ( ! empty( $redirect_url ) ) {
 					$redirect['query'] = remove_query_arg( 'attachment_id', $redirect['query'] );
 				}
 			} else {
 				$redirect_url = get_attachment_link();
 			}
 
-		} elseif ( is_single() && $_get->get( 'p' ) && ! $redirect_url ) {
+		} elseif ( is_single() && $_get->get( 'p' ) && false === $redirect_url ) {
 			$redirect_url = get_permalink( get_query_var( 'p' ) );
-			if ( $redirect_url ) {
+			if ( false !== $redirect_url ) {
 				$redirect['query'] = remove_query_arg( array( 'p', 'post_type' ), $redirect['query'] );
 			}
 
-		} elseif ( is_single() && $_get->get( 'name' )  && ! $redirect_url ) {
+		} elseif ( is_single() && $_get->get( 'name' )  && false === $redirect_url ) {
 			$redirect_url = get_permalink( $wp_query->get_queried_object_id() );
-			if ( $redirect_url ) {
+			if ( false !== $redirect_url ) {
 				$redirect['query'] = remove_query_arg( 'name', $redirect['query'] );
 			}
 
-		} elseif ( is_page() && $_get->get( 'page_id' ) && ! $redirect_url ) {
+		} elseif ( is_page() && $_get->get( 'page_id' ) && false === $redirect_url ) {
 			$redirect_url = get_permalink( get_query_var( 'page_id' ) );
-			if ( $redirect_url ) {
+			if ( false !== $redirect_url ) {
 				$redirect['query'] = remove_query_arg( 'page_id', $redirect['query'] );
 			}
 
-		} elseif ( is_page() && !is_feed() && 'page' == get_option( 'show_on_front' ) && get_queried_object_id() == get_option( 'page_on_front' )  && ! $redirect_url ) {
+		} elseif ( is_page() && !is_feed() && 'page' == get_option( 'show_on_front' ) && get_queried_object_id() == get_option( 'page_on_front' ) && false === $redirect_url ) {
 			$redirect_url = home_url( '/' );
-		} elseif ( is_home() && $_get->get( 'page_id' ) && 'page' == get_option( 'show_on_front' ) && get_query_var( 'page_id' ) == get_option( 'page_for_posts' )  && ! $redirect_url ) {
+		} elseif ( is_home() && $_get->get( 'page_id' ) && 'page' == get_option( 'show_on_front' ) && get_query_var( 'page_id' ) == get_option( 'page_for_posts' ) && false === $redirect_url ) {
 			$redirect_url = get_permalink( get_option( 'page_for_posts' ) );
-			if ( $redirect_url ) {
+			if ( false !== $redirect_url ) {
 				$redirect['query'] = remove_query_arg( 'page_id', $redirect['query'] );
 			}
 
@@ -247,23 +247,23 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 				$redirect_url = get_day_link(substr( $m, 0, 4), substr( $m, 4, 2), substr( $m, 6, 2) );
 				break;
 			}
-			if ( $redirect_url ) {
+			if ( ! empty( $redirect_url ) ) {
 				$redirect['query'] = remove_query_arg( 'm', $redirect['query'] );
 			}
 		// now moving on to non ?m=X year/month/day links
 		} elseif ( is_day() && get_query_var( 'year' ) && get_query_var( 'monthnum' ) && $_get->get( 'day' ) ) {
 			$redirect_url = get_day_link(get_query_var( 'year' ), get_query_var( 'monthnum' ), get_query_var( 'day' ) );
-			if ( $redirect_url ) {
+			if ( ! empty( $redirect_url ) ) {
 				$redirect['query'] = remove_query_arg( array( 'year', 'monthnum', 'day' ), $redirect['query'] );
 			}
 		} elseif ( is_month() && get_query_var( 'year' ) && $_get->get( 'monthnum' ) ) {
 			$redirect_url = get_month_link(get_query_var( 'year' ), get_query_var( 'monthnum' ) );
-			if ( $redirect_url ) {
+			if ( ! empty( $redirect_url ) ) {
 				$redirect['query'] = remove_query_arg( array( 'year', 'monthnum' ), $redirect['query'] );
 			}
 		} elseif ( is_year() && $_get->get( 'year' ) ) {
 			$redirect_url = get_year_link( get_query_var( 'year' ) );
-			if ( $redirect_url ) {
+			if ( ! empty( $redirect_url ) ) {
 				$redirect['query'] = remove_query_arg( 'year', $redirect['query'] );
 			}
 		} elseif ( is_author() && $_get->get( 'author' ) && preg_match( '|^[0-9]+$|', $_get->get( 'author' ) ) ) {
@@ -271,7 +271,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 			$sql = "SELECT ID FROM $wpdb->posts WHERE $wpdb->posts.post_author = %d AND $wpdb->posts.post_status = 'publish' LIMIT 1";
 			if ( ( false !== $author ) && $wpdb->get_var( $wpdb->prepare( $sql, $author->ID ) ) ) {
 				$redirect_url = get_author_posts_url( $author->ID, $author->user_nicename );
-				if ( $redirect_url ) {
+				if ( ! empty( $redirect_url ) ) {
 					$redirect['query'] = remove_query_arg( 'author', $redirect['query'] );
 				}
 			}
@@ -332,7 +332,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 
 		// Post Paging
 		if ( is_singular() && get_query_var( 'page' ) ) {
-			if ( ! $redirect_url ) {
+			if ( ! empty( $redirect_url ) ) {
 				$redirect_url = get_permalink( get_queried_object_id() );
 			}
 			$page = get_query_var( 'page' );
@@ -428,9 +428,9 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 
 	// tack on any additional query vars
 	$redirect['query'] = preg_replace( '#^\??&*?#', '', $redirect['query'] );
-	if ( $redirect_url && ! empty( $redirect['query'] ) ) {
+	if ( ! empty( $redirect_url ) && ! empty( $redirect['query'] ) ) {
 		parse_str( $redirect['query'], $_parsed_query );
-		$redirect = @parse_url( $redirect_url );
+		$redirect = parse_url( $redirect_url );
 
 		if ( ! empty( $_parsed_query['name'] ) && ! empty( $redirect['query'] ) ) {
 			parse_str( $redirect['query'], $_parsed_redirect_query );
@@ -444,11 +444,11 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		$redirect_url = add_query_arg( $_parsed_query, $redirect_url );
 	}
 
-	if ( $redirect_url ) {
-		$redirect = @parse_url( $redirect_url );
+	if ( ! empty( $redirect_url ) ) {
+		$redirect = parse_url( $redirect_url );
 	}
 	// www.example.com vs example.com
-	$user_home = @parse_url( home_url() );
+	$user_home = parse_url( home_url() );
 	if ( ! empty( $user_home['host'] ) ) {
 		$redirect['host'] = $user_home['host'];
 	}
@@ -551,7 +551,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		}
 	}
 
-	if ( ! $redirect_url || $redirect_url == $requested_url ) {
+	if ( empty( $redirect_url ) || $redirect_url === $requested_url ) {
 		return;
 	}
 
@@ -587,7 +587,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 	$redirect_url = apply_filters( 'redirect_canonical', $redirect_url, $requested_url );
 
 	// yes, again -- in case the filter aborted the request
-	if ( ! $redirect_url || strip_fragment_from_url( $redirect_url ) == strip_fragment_from_url( $requested_url ) ) {
+	if ( empty( $redirect_url ) || strip_fragment_from_url( $redirect_url ) == strip_fragment_from_url( $requested_url ) ) {
 		return;
 	}
 

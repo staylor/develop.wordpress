@@ -273,7 +273,7 @@ final class WP_Site {
 			case 'siteurl':
 			case 'post_count':
 			case 'home':
-				return did_action( 'ms_loaded' );
+				return (bool) did_action( 'ms_loaded' );
 		}
 
 		return false;

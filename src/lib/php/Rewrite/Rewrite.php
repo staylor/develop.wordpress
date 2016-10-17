@@ -471,7 +471,7 @@ class Rewrite extends Observable {
 		$posts = get_page_hierarchy( $pages );
 
 		// If we have no pages get out quick.
-		if ( ! $posts ) {
+		if ( empty( $posts ) ) {
 			return [ [], [] ];
 		}
 		// Now reverse it, because we need parents after children for rewrite rules to work properly.

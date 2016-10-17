@@ -482,7 +482,7 @@ trait Term {
 
 		$tags = [];
 		$all_tags = get_tags();
-		if ( $all_tags ) {
+		if ( ! empty( $all_tags ) ) {
 			foreach ( (array) $all_tags as $tag ) {
 				$struct = [];
 				$struct['tag_id']			= $tag->term_id;
