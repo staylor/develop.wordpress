@@ -363,37 +363,37 @@ final class WP_Theme implements ArrayAccess {
 	 */
 	public function __get( $offset ) {
 		switch ( $offset ) {
-			case 'name':
-			case 'title':
-				return $this->get('Name');
-			case 'version':
-				return $this->get('Version');
-			case 'parent_theme':
-				return $this->parent() ? $this->parent()->get('Name') : '';
-			case 'template_dir':
-				return $this->get_template_directory();
-			case 'stylesheet_dir':
-				return $this->get_stylesheet_directory();
-			case 'template':
-				return $this->get_template();
-			case 'stylesheet':
-				return $this->get_stylesheet();
-			case 'screenshot':
-				return $this->get_screenshot( 'relative' );
-			// 'author' and 'description' did not previously return translated data.
-			case 'description':
-				return $this->display('Description');
-			case 'author':
-				return $this->display('Author');
-			case 'tags':
-				return $this->get( 'Tags' );
-			case 'theme_root':
-				return $this->get_theme_root();
-			case 'theme_root_uri':
-				return $this->get_theme_root_uri();
-			// For cases where the array was converted to an object.
-			default :
-				return $this->offsetGet( $offset );
+		case 'name':
+		case 'title':
+			return $this->get('Name');
+		case 'version':
+			return $this->get('Version');
+		case 'parent_theme':
+			return $this->parent() ? $this->parent()->get('Name') : '';
+		case 'template_dir':
+			return $this->get_template_directory();
+		case 'stylesheet_dir':
+			return $this->get_stylesheet_directory();
+		case 'template':
+			return $this->get_template();
+		case 'stylesheet':
+			return $this->get_stylesheet();
+		case 'screenshot':
+			return $this->get_screenshot( 'relative' );
+		// 'author' and 'description' did not previously return translated data.
+		case 'description':
+			return $this->display('Description');
+		case 'author':
+			return $this->display('Author');
+		case 'tags':
+			return $this->get( 'Tags' );
+		case 'theme_root':
+			return $this->get_theme_root();
+		case 'theme_root_uri':
+			return $this->get_theme_root_uri();
+		// For cases where the array was converted to an object.
+		default :
+			return $this->offsetGet( $offset );
 		}
 	}
 
@@ -445,48 +445,48 @@ final class WP_Theme implements ArrayAccess {
 	 */
 	public function offsetGet( $offset ) {
 		switch ( $offset ) {
-			case 'Name':
-			case 'Title':
-				/*
+		case 'Name':
+		case 'Title':
+			/*
 				 * See note above about using translated data. get() is not ideal.
 				 * It is only for backward compatibility. Use display().
 				 */
-				return $this->get('Name');
-			case 'Author':
-				return $this->display( 'Author');
-			case 'Author Name':
-				return $this->display( 'Author', false);
-			case 'Author URI':
-				return $this->display('AuthorURI');
-			case 'Description':
-				return $this->display( 'Description');
-			case 'Version':
-			case 'Status':
-				return $this->get( $offset );
-			case 'Template':
-				return $this->get_template();
-			case 'Stylesheet':
-				return $this->get_stylesheet();
-			case 'Template Files':
-				return $this->get_files( 'php', 1, true );
-			case 'Stylesheet Files':
-				return $this->get_files( 'css', 0, false );
-			case 'Template Dir':
-				return $this->get_template_directory();
-			case 'Stylesheet Dir':
-				return $this->get_stylesheet_directory();
-			case 'Screenshot':
-				return $this->get_screenshot( 'relative' );
-			case 'Tags':
-				return $this->get('Tags');
-			case 'Theme Root':
-				return $this->get_theme_root();
-			case 'Theme Root URI':
-				return $this->get_theme_root_uri();
-			case 'Parent Theme':
-				return $this->parent() ? $this->parent()->get('Name') : '';
-			default :
-				return null;
+			return $this->get('Name');
+		case 'Author':
+			return $this->display( 'Author');
+		case 'Author Name':
+			return $this->display( 'Author', false);
+		case 'Author URI':
+			return $this->display('AuthorURI');
+		case 'Description':
+			return $this->display( 'Description');
+		case 'Version':
+		case 'Status':
+			return $this->get( $offset );
+		case 'Template':
+			return $this->get_template();
+		case 'Stylesheet':
+			return $this->get_stylesheet();
+		case 'Template Files':
+			return $this->get_files( 'php', 1, true );
+		case 'Stylesheet Files':
+			return $this->get_files( 'css', 0, false );
+		case 'Template Dir':
+			return $this->get_template_directory();
+		case 'Stylesheet Dir':
+			return $this->get_stylesheet_directory();
+		case 'Screenshot':
+			return $this->get_screenshot( 'relative' );
+		case 'Tags':
+			return $this->get('Tags');
+		case 'Theme Root':
+			return $this->get_theme_root();
+		case 'Theme Root URI':
+			return $this->get_theme_root_uri();
+		case 'Parent Theme':
+			return $this->parent() ? $this->parent()->get('Name') : '';
+		default :
+			return null;
 		}
 	}
 
@@ -660,45 +660,45 @@ final class WP_Theme implements ArrayAccess {
 	 */
 	private function sanitize_header( $header, $value ) {
 		switch ( $header ) {
-			case 'Status':
-				if ( ! $value ) {
-					$value = 'publish';
-					break;
-				}
-				// Fall through otherwise.
-			case 'Name':
-				static $header_tags = array(
-					'abbr'    => array( 'title' => true ),
-					'acronym' => array( 'title' => true ),
-					'code'    => true,
-					'em'      => true,
-					'strong'  => true,
-				);
-				$value = wp_kses( $value, $header_tags );
+		case 'Status':
+			if ( ! $value ) {
+				$value = 'publish';
 				break;
-			case 'Author':
-				// There shouldn't be anchor tags in Author, but some themes like to be challenging.
-			case 'Description':
-				static $header_tags_with_a = array(
-					'a'       => array( 'href' => true, 'title' => true ),
-					'abbr'    => array( 'title' => true ),
-					'acronym' => array( 'title' => true ),
-					'code'    => true,
-					'em'      => true,
-					'strong'  => true,
-				);
-				$value = wp_kses( $value, $header_tags_with_a );
-				break;
-			case 'ThemeURI':
-			case 'AuthorURI':
-				$value = esc_url_raw( $value );
-				break;
-			case 'Tags':
-				$value = array_filter( array_map( 'trim', explode( ',', strip_tags( $value ) ) ) );
-				break;
-			case 'Version':
-				$value = strip_tags( $value );
-				break;
+			}
+			// Fall through otherwise.
+		case 'Name':
+			static $header_tags = array(
+				'abbr'    => array( 'title' => true ),
+				'acronym' => array( 'title' => true ),
+				'code'    => true,
+				'em'      => true,
+				'strong'  => true,
+			);
+			$value = wp_kses( $value, $header_tags );
+			break;
+		case 'Author':
+			// There shouldn't be anchor tags in Author, but some themes like to be challenging.
+		case 'Description':
+			static $header_tags_with_a = array(
+				'a'       => array( 'href' => true, 'title' => true ),
+				'abbr'    => array( 'title' => true ),
+				'acronym' => array( 'title' => true ),
+				'code'    => true,
+				'em'      => true,
+				'strong'  => true,
+			);
+			$value = wp_kses( $value, $header_tags_with_a );
+			break;
+		case 'ThemeURI':
+		case 'AuthorURI':
+			$value = esc_url_raw( $value );
+			break;
+		case 'Tags':
+			$value = array_filter( array_map( 'trim', explode( ',', strip_tags( $value ) ) ) );
+			break;
+		case 'Version':
+			$value = strip_tags( $value );
+			break;
 		}
 
 		return $value;
@@ -719,32 +719,32 @@ final class WP_Theme implements ArrayAccess {
 	 */
 	private function markup_header( $header, $value, $translate ) {
 		switch ( $header ) {
-			case 'Name':
-				if ( empty( $value ) )
-					$value = $this->get_stylesheet();
-				break;
-			case 'Description':
-				$value = wptexturize( $value );
-				break;
-			case 'Author':
-				if ( $this->get('AuthorURI') ) {
-					$value = sprintf( '<a href="%1$s">%2$s</a>', $this->display( 'AuthorURI', true, $translate ), $value );
-				} elseif ( ! $value ) {
-					$value = __( 'Anonymous' );
-				}
-				break;
-			case 'Tags':
-				static $comma = null;
-				if ( ! isset( $comma ) ) {
-					/* translators: used between list items, there is a space after the comma */
-					$comma = __( ', ' );
-				}
-				$value = implode( $comma, $value );
-				break;
-			case 'ThemeURI':
-			case 'AuthorURI':
-				$value = esc_url( $value );
-				break;
+		case 'Name':
+			if ( empty( $value ) )
+				$value = $this->get_stylesheet();
+			break;
+		case 'Description':
+			$value = wptexturize( $value );
+			break;
+		case 'Author':
+			if ( $this->get('AuthorURI') ) {
+				$value = sprintf( '<a href="%1$s">%2$s</a>', $this->display( 'AuthorURI', true, $translate ), $value );
+			} elseif ( ! $value ) {
+				$value = __( 'Anonymous' );
+			}
+			break;
+		case 'Tags':
+			static $comma = null;
+			if ( ! isset( $comma ) ) {
+				/* translators: used between list items, there is a space after the comma */
+				$comma = __( ', ' );
+			}
+			$value = implode( $comma, $value );
+			break;
+		case 'ThemeURI':
+		case 'AuthorURI':
+			$value = esc_url( $value );
+			break;
 		}
 
 		return $value;
@@ -764,49 +764,49 @@ final class WP_Theme implements ArrayAccess {
 	 */
 	private function translate_header( $header, $value ) {
 		switch ( $header ) {
-			case 'Name':
-				// Cached for sorting reasons.
-				if ( isset( $this->name_translated ) )
-					return $this->name_translated;
-				$this->name_translated = translate( $value, $this->get('TextDomain' ) );
+		case 'Name':
+			// Cached for sorting reasons.
+			if ( isset( $this->name_translated ) )
 				return $this->name_translated;
-			case 'Tags':
-				if ( empty( $value ) || ! function_exists( 'get_theme_feature_list' ) ) {
-					return $value;
-				}
-
-				static $tags_list;
-				if ( ! isset( $tags_list ) ) {
-					$tags_list = array(
-						// As of 4.6, deprecated tags which are only used to provide translation for older themes.
-						'black' => __( 'Black' ), 'blue' => __( 'Blue' ), 'brown'  => __( 'Brown' ),
-						'gray' => __( 'Gray' ), 'green'  => __( 'Green' ), 'orange' => __( 'Orange' ),
-						'pink' => __( 'Pink' ), 'purple' => __( 'Purple' ), 'red' => __( 'Red' ),
-						'silver' => __( 'Silver' ), 'tan' => __( 'Tan' ), 'white' => __( 'White' ),
-						'yellow' => __( 'Yellow' ), 'dark' => __( 'Dark' ), 'light' => __( 'Light' ),
-						'fixed-layout' => __( 'Fixed Layout' ), 'fluid-layout' => __( 'Fluid Layout' ),
-						'responsive-layout' => __( 'Responsive Layout' ), 'blavatar' => __( 'Blavatar' ),
-						'photoblogging' => __( 'Photoblogging' ), 'seasonal' => __( 'Seasonal' ),
-					);
-
-					$feature_list = get_theme_feature_list( false ); // No API
-					foreach ( $feature_list as $tags ) {
-						$tags_list += $tags;
-					}
-				}
-
-				foreach ( $value as &$tag ) {
-					if ( isset( $tags_list[ $tag ] ) ) {
-						$tag = $tags_list[ $tag ];
-					} elseif ( isset( self::$tag_map[ $tag ] ) ) {
-						$tag = $tags_list[ self::$tag_map[ $tag ] ];
-					}
-				}
-
+			$this->name_translated = translate( $value, $this->get('TextDomain' ) );
+			return $this->name_translated;
+		case 'Tags':
+			if ( empty( $value ) || ! function_exists( 'get_theme_feature_list' ) ) {
 				return $value;
+			}
 
-			default :
-				$value = translate( $value, $this->get('TextDomain') );
+			static $tags_list;
+			if ( ! isset( $tags_list ) ) {
+				$tags_list = array(
+					// As of 4.6, deprecated tags which are only used to provide translation for older themes.
+					'black' => __( 'Black' ), 'blue' => __( 'Blue' ), 'brown'  => __( 'Brown' ),
+					'gray' => __( 'Gray' ), 'green'  => __( 'Green' ), 'orange' => __( 'Orange' ),
+					'pink' => __( 'Pink' ), 'purple' => __( 'Purple' ), 'red' => __( 'Red' ),
+					'silver' => __( 'Silver' ), 'tan' => __( 'Tan' ), 'white' => __( 'White' ),
+					'yellow' => __( 'Yellow' ), 'dark' => __( 'Dark' ), 'light' => __( 'Light' ),
+					'fixed-layout' => __( 'Fixed Layout' ), 'fluid-layout' => __( 'Fluid Layout' ),
+					'responsive-layout' => __( 'Responsive Layout' ), 'blavatar' => __( 'Blavatar' ),
+					'photoblogging' => __( 'Photoblogging' ), 'seasonal' => __( 'Seasonal' ),
+				);
+
+				$feature_list = get_theme_feature_list( false ); // No API
+				foreach ( $feature_list as $tags ) {
+					$tags_list += $tags;
+				}
+			}
+
+			foreach ( $value as &$tag ) {
+				if ( isset( $tags_list[ $tag ] ) ) {
+					$tag = $tags_list[ $tag ];
+				} elseif ( isset( self::$tag_map[ $tag ] ) ) {
+					$tag = $tags_list[ self::$tag_map[ $tag ] ];
+				}
+			}
+
+			return $value;
+
+		default :
+			$value = translate( $value, $this->get('TextDomain') );
 		}
 		return $value;
 	}

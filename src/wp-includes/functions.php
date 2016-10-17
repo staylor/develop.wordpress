@@ -28,21 +28,25 @@ require( ABSPATH . WPINC . '/option.php' );
  * @return string|int|bool Formatted date string or Unix timestamp. False if $date is empty.
  */
 function mysql2date( $format, $date, $translate = true ) {
-	if ( empty( $date ) )
+	if ( empty( $date ) ) {
 		return false;
+	}
 
-	if ( 'G' == $format )
+	if ( 'G' == $format ) {
 		return strtotime( $date . ' +0000' );
+	}
 
 	$i = strtotime( $date );
 
-	if ( 'U' == $format )
+	if ( 'U' == $format ) {
 		return $i;
+	}
 
-	if ( $translate )
+	if ( $translate ) {
 		return date_i18n( $format, $i );
-	else
+	} else {
 		return date( $format, $i );
+	}
 }
 
 /**
@@ -64,12 +68,12 @@ function mysql2date( $format, $date, $translate = true ) {
  */
 function current_time( $type, $gmt = 0 ) {
 	switch ( $type ) {
-		case 'mysql':
-			return ( $gmt ) ? gmdate( 'Y-m-d H:i:s' ) : gmdate( 'Y-m-d H:i:s', ( time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) ) );
-		case 'timestamp':
-			return ( $gmt ) ? time() : time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
-		default:
-			return ( $gmt ) ? date( $type ) : date( $type, time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) );
+	case 'mysql':
+		return ( $gmt ) ? gmdate( 'Y-m-d H:i:s' ) : gmdate( 'Y-m-d H:i:s', ( time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) ) );
+	case 'timestamp':
+		return ( $gmt ) ? time() : time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+	default:
+		return ( $gmt ) ? date( $type ) : date( $type, time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) );
 	}
 }
 
@@ -103,14 +107,14 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
 	 */
 	$req_format = $dateformatstring;
 
-	if ( ( !empty( $wp_locale->month ) ) && ( !empty( $wp_locale->weekday ) ) ) {
+	if ( ( ! empty( $wp_locale->month ) ) && ( ! empty( $wp_locale->weekday ) ) ) {
 		$datemonth = $wp_locale->get_month( date( 'm', $i ) );
 		$datemonth_abbrev = $wp_locale->get_month_abbrev( $datemonth );
 		$dateweekday = $wp_locale->get_weekday( date( 'w', $i ) );
 		$dateweekday_abbrev = $wp_locale->get_weekday_abbrev( $dateweekday );
 		$datemeridiem = $wp_locale->get_meridiem( date( 'a', $i ) );
 		$datemeridiem_capital = $wp_locale->get_meridiem( date( 'A', $i ) );
-		$dateformatstring = ' '.$dateformatstring;
+		$dateformatstring = ' ' . $dateformatstring;
 		$dateformatstring = preg_replace( '/([^\\\])D/', '\\1' . backslashit( $dateweekday_abbrev ), $dateformatstring );
 		$dateformatstring = preg_replace( '/([^\\\])F/', '\\1' . backslashit( $datemonth ), $dateformatstring );
 		$dateformatstring = preg_replace( '/([^\\\])l/', '\\1' . backslashit( $dateweekday ), $dateformatstring );
@@ -118,9 +122,9 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
 		$dateformatstring = preg_replace( '/([^\\\])a/', '\\1' . backslashit( $datemeridiem ), $dateformatstring );
 		$dateformatstring = preg_replace( '/([^\\\])A/', '\\1' . backslashit( $datemeridiem_capital ), $dateformatstring );
 
-		$dateformatstring = substr( $dateformatstring, 1, strlen( $dateformatstring ) -1 );
+		$dateformatstring = substr( $dateformatstring, 1, strlen( $dateformatstring ) - 1 );
 	}
-	$timezone_formats = array( 'P', 'I', 'O', 'T', 'Z', 'e' );
+	$timezone_formats = [ 'P', 'I', 'O', 'T', 'Z', 'e' ];
 	$timezone_formats_re = implode( '|', $timezone_formats );
 	if ( preg_match( "/$timezone_formats_re/", $dateformatstring ) ) {
 		$timezone_string = get_option( 'timezone_string' );
@@ -130,9 +134,9 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
 			foreach ( $timezone_formats as $timezone_format ) {
 				if ( false !== strpos( $dateformatstring, $timezone_format ) ) {
 					$formatted = date_format( $date_object, $timezone_format );
-					$dateformatstring = ' '.$dateformatstring;
+					$dateformatstring = ' ' . $dateformatstring;
 					$dateformatstring = preg_replace( "/([^\\\])$timezone_format/", "\\1" . backslashit( $formatted ), $dateformatstring );
-					$dateformatstring = substr( $dateformatstring, 1, strlen( $dateformatstring ) -1 );
+					$dateformatstring = substr( $dateformatstring, 1, strlen( $dateformatstring ) - 1 );
 				}
 			}
 		}
@@ -300,7 +304,7 @@ function get_weekstartend( $mysqlstring, $start_of_week = '' ) {
 	// The day of the week from the timestamp.
 	$weekday = date( 'w', $day );
 
-	if ( !is_numeric($start_of_week) )
+	if ( ! is_numeric( $start_of_week ) )
 		$start_of_week = get_option( 'start_of_week' );
 
 	if ( $weekday < $start_of_week )
@@ -323,8 +327,10 @@ function get_weekstartend( $mysqlstring, $start_of_week = '' ) {
  * @return mixed Unserialized data can be any type.
  */
 function maybe_unserialize( $original ) {
-	if ( is_serialized( $original ) ) // don't attempt to unserialize data that wasn't serialized going in
+	if ( is_serialized( $original ) ) {
+		// don't attempt to unserialize data that wasn't serialized going in
 		return @unserialize( $original );
+	}
 	return $original;
 }
 
@@ -364,36 +370,39 @@ function is_serialized( $data, $strict = true ) {
 		$semicolon = strpos( $data, ';' );
 		$brace     = strpos( $data, '}' );
 		// Either ; or } must exist.
-		if ( false === $semicolon && false === $brace )
+		if ( false === $semicolon && false === $brace ) {
 			return false;
+		}
 		// But neither must be in the first X characters.
-		if ( false !== $semicolon && $semicolon < 3 )
+		if ( false !== $semicolon && $semicolon < 3 ) {
 			return false;
-		if ( false !== $brace && $brace < 4 )
+		}
+		if ( false !== $brace && $brace < 4 ) {
 			return false;
+		}
 	}
 	$token = $data[0];
 	switch ( $token ) {
-		case 's':
-			if ( $strict ) {
-				if ( '"' !== substr( $data, -2, 1 ) ) {
-					return false;
-				}
-			} elseif ( false === strpos( $data, '"' ) ) {
+	case 's':
+		if ( $strict ) {
+			if ( '"' !== substr( $data, -2, 1 ) ) {
 				return false;
 			}
-			// or else fall through
-		case 'a':
-		case 'O':
-			$pattern = '/^' . $token . ':[0-9]+:/s';
-			return (bool) preg_match( $pattern, $data );
+		} elseif ( false === strpos( $data, '"' ) ) {
+			return false;
+		}
+		// or else fall through
+	case 'a':
+	case 'O':
+		$pattern = '/^' . $token . ':[0-9]+:/s';
+		return (bool) preg_match( $pattern, $data );
 
-		case 'b':
-		case 'i':
-		case 'd':
-			$end = $strict ? '$' : '';
-			$pattern = '/^' . $token . ':[0-9.E-]+;' . $end . '/';
-			return (bool) preg_match( $pattern, $data );
+	case 'b':
+	case 'i':
+	case 'd':
+		$end = $strict ? '$' : '';
+		$pattern = '/^' . $token . ':[0-9.E-]+;' . $end . '/';
+		return (bool) preg_match( $pattern, $data );
 	}
 	return false;
 }
@@ -436,14 +445,16 @@ function is_serialized_string( $data ) {
  * @return mixed A scalar data
  */
 function maybe_serialize( $data ) {
-	if ( is_array( $data ) || is_object( $data ) )
+	if ( is_array( $data ) || is_object( $data ) ) {
 		return serialize( $data );
+	}
 
 	// Double serialization is required for backward compatibility.
 	// See https://core.trac.wordpress.org/ticket/12930
 	// Also the world will end. See WP 3.6.1.
-	if ( is_serialized( $data, false ) )
+	if ( is_serialized( $data, false ) ) {
 		return serialize( $data );
+	}
 
 	return $data;
 }
@@ -564,20 +575,20 @@ function do_enclose( $content, $post_ID ) {
 
 	foreach ( $pung as $link_test ) {
 		if ( ! in_array( $link_test, $post_links_temp ) ) { // link no longer in post
-			$mids = $wpdb->get_col( $wpdb->prepare("SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = 'enclosure' AND meta_value LIKE %s", $post_ID, $wpdb->esc_like( $link_test ) . '%') );
+			$mids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = 'enclosure' AND meta_value LIKE %s", $post_ID, $wpdb->esc_like( $link_test ) . '%' ) );
 			foreach ( $mids as $mid )
 				delete_metadata_by_mid( 'post', $mid );
 		}
 	}
 
-	foreach ( (array) $post_links_temp as $link_test ) {
-		if ( !in_array( $link_test, $pung ) ) { // If we haven't pung it already
+	foreach ( ( array ) $post_links_temp as $link_test ) {
+		if ( ! in_array( $link_test, $pung ) ) { // If we haven't pung it already
 			$test = @parse_url( $link_test );
 			if ( false === $test )
 				continue;
 			if ( isset( $test['query'] ) )
 				$post_links[] = $link_test;
-			elseif ( isset($test['path']) && ( $test['path'] != '/' ) &&  ($test['path'] != '' ) )
+			elseif ( isset( $test['path'] ) && ( $test['path'] != '/' ) && ( $test['path'] != '' ) )
 				$post_links[] = $link_test;
 		}
 	}
@@ -595,20 +606,20 @@ function do_enclose( $content, $post_ID ) {
 	 */
 	$post_links = apply_filters( 'enclosure_links', $post_links, $post_ID );
 
-	foreach ( (array) $post_links as $url ) {
-		if ( $url != '' && !$wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = 'enclosure' AND meta_value LIKE %s", $post_ID, $wpdb->esc_like( $url ) . '%' ) ) ) {
+	foreach ( ( array ) $post_links as $url ) {
+		if ( $url != '' && ! $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = 'enclosure' AND meta_value LIKE %s", $post_ID, $wpdb->esc_like( $url ) . '%' ) ) ) {
 
-			if ( $headers = wp_get_http_headers( $url) ) {
-				$len = isset( $headers['content-length'] ) ? (int) $headers['content-length'] : 0;
+			if ( $headers = wp_get_http_headers( $url ) ) {
+				$len = isset( $headers['content-length'] ) ? ( int ) $headers['content-length'] : 0;
 				$type = isset( $headers['content-type'] ) ? $headers['content-type'] : '';
-				$allowed_types = array( 'video', 'audio' );
+				$allowed_types = array('video', 'audio');
 
 				// Check to see if we can figure out the mime type from
 				// the extension
 				$url_parts = @parse_url( $url );
 				if ( false !== $url_parts ) {
 					$extension = pathinfo( $url_parts['path'], PATHINFO_EXTENSION );
-					if ( !empty( $extension ) ) {
+					if ( ! empty( $extension ) ) {
 						foreach ( wp_get_mime_types() as $exts => $mime ) {
 							if ( preg_match( '!^(' . $exts . ')$!i', $extension ) ) {
 								$type = $mime;
@@ -636,7 +647,7 @@ function do_enclose( $content, $post_ID ) {
  * @return bool|string False on failure, headers on success.
  */
 function wp_get_http_headers( $url, $deprecated = false ) {
-	if ( !empty( $deprecated ) )
+	if ( ! empty( $deprecated ) )
 		_deprecated_argument( __FUNCTION__, '2.7.0' );
 
 	$response = wp_safe_remote_head( $url );
@@ -700,30 +711,30 @@ function build_query( $data ) {
 function _http_build_query( $data, $prefix = null, $sep = null, $key = '', $urlencode = true ) {
 	$ret = [];
 
-	foreach ( (array) $data as $k => $v ) {
-		if ( $urlencode)
-			$k = urlencode($k);
-		if ( is_int($k) && $prefix != null )
-			$k = $prefix.$k;
-		if ( !empty($key) )
+	foreach ( ( array ) $data as $k => $v ) {
+		if ( $urlencode )
+			$k = urlencode( $k );
+		if ( is_int( $k ) && $prefix != null )
+			$k = $prefix . $k;
+		if ( ! empty( $key ) )
 			$k = $key . '%5B' . $k . '%5D';
 		if ( $v === null )
 			continue;
 		elseif ( $v === false )
 			$v = '0';
 
-		if ( is_array($v) || is_object($v) )
-			array_push($ret,_http_build_query($v, '', $sep, $k, $urlencode));
+		if ( is_array( $v ) || is_object( $v ) )
+			array_push( $ret, _http_build_query( $v, '', $sep, $k, $urlencode ) );
 		elseif ( $urlencode )
-			array_push($ret, $k.'='.urlencode($v));
+			array_push( $ret, $k . '=' . urlencode( $v ) );
 		else
-			array_push($ret, $k.'='.$v);
+			array_push( $ret, $k . '=' . $v );
 	}
 
 	if ( null === $sep )
-		$sep = ini_get('arg_separator.output');
+		$sep = ini_get( 'arg_separator.output' );
 
-	return implode($sep, $ret);
+	return implode( $sep, $ret );
 }
 
 /**
@@ -814,7 +825,7 @@ function add_query_arg() {
 
 	foreach ( $qs as $k => $v ) {
 		if ( $v === false )
-			unset( $qs[$k] );
+			unset( $qs[ $k ] );
 	}
 
 	$ret = build_query( $qs );
@@ -836,8 +847,9 @@ function add_query_arg() {
  */
 function remove_query_arg( $key, $query = false ) {
 	if ( is_array( $key ) ) { // removing multiple keys
-		foreach ( $key as $k )
+		foreach ( $key as $k ) {
 			$query = add_query_arg( $k, false, $query );
+		}
 		return $query;
 	}
 	return add_query_arg( $key, false, $query );
@@ -896,11 +908,11 @@ function wp_removable_query_args() {
  * @return array Sanitized $array.
  */
 function add_magic_quotes( $array ) {
-	foreach ( (array) $array as $k => $v ) {
+	foreach ( ( array ) $array as $k => $v ) {
 		if ( is_array( $v ) ) {
-			$array[$k] = add_magic_quotes( $v );
+			$array[ $k ] = add_magic_quotes( $v );
 		} else {
-			$array[$k] = addslashes( $v );
+			$array[ $k ] = addslashes( $v );
 		}
 	}
 	return $array;
@@ -919,7 +931,7 @@ function add_magic_quotes( $array ) {
 function wp_remote_fopen( $uri ) {
 	$parsed_url = @parse_url( $uri );
 
-	if ( !$parsed_url || !is_array( $parsed_url ) )
+	if ( ! $parsed_url || ! is_array( $parsed_url ) )
 		return false;
 
 	$options = [];
@@ -963,7 +975,7 @@ function get_status_header_desc( $code ) {
 
 	$code = absint( $code );
 
-	if ( !isset( $wp_header_to_desc ) ) {
+	if ( ! isset( $wp_header_to_desc ) ) {
 		$wp_header_to_desc = array(
 			100 => 'Continue',
 			101 => 'Switching Protocols',
@@ -1031,8 +1043,8 @@ function get_status_header_desc( $code ) {
 		);
 	}
 
-	if ( isset( $wp_header_to_desc[$code] ) )
-		return $wp_header_to_desc[$code];
+	if ( isset( $wp_header_to_desc[ $code ] ) )
+		return $wp_header_to_desc[ $code ];
 	else
 		return '';
 }
@@ -1059,7 +1071,7 @@ function status_header( $code, $description = '' ) {
 
 	$protocol = wp_get_server_protocol();
 	$status_header = "$protocol $code $description";
-	if ( function_exists( 'apply_filters' ) )
+	if ( function_exists( 'apply_filters' ) ) {
 
 		/**
 		 * Filters an HTTP status header.
@@ -1072,6 +1084,7 @@ function status_header( $code, $description = '' ) {
 		 * @param string $protocol      Server protocol.
 		 */
 		$status_header = apply_filters( 'status_header', $status_header, $code, $description, $protocol );
+	}
 
 	@header( $status_header, true, $code );
 }
@@ -1092,7 +1105,7 @@ function wp_get_nocache_headers() {
 		'Cache-Control' => 'no-cache, must-revalidate, max-age=0',
 	);
 
-	if ( function_exists('apply_filters') ) {
+	if ( function_exists( 'apply_filters' ) ) {
 		/**
 		 * Filters the cache-controlling headers.
 		 *
@@ -1107,7 +1120,7 @@ function wp_get_nocache_headers() {
 		 *     @type string $Cache-Control Cache-Control header.
 		 * }
 		 */
-		$headers = (array) apply_filters( 'nocache_headers', $headers );
+		$headers = ( array ) apply_filters( 'nocache_headers', $headers );
 	}
 	$headers['Last-Modified'] = false;
 	return $headers;
@@ -1144,7 +1157,7 @@ function nocache_headers() {
 	}
 
 	foreach ( $headers as $name => $field_value )
-		@header("{$name}: {$field_value}");
+		@header( "{$name}: {$field_value}" );
 }
 
 /**
@@ -1203,11 +1216,12 @@ function do_feed() {
 	// Remove the pad, if present.
 	$feed = preg_replace( '/^_+/', '', $feed );
 
-	if ( $feed == '' || $feed == 'feed' )
-		$feed = get_default_feed();
+	if ( $feed == '' || $feed == 'feed' ) {
+			$feed = get_default_feed();
+	}
 
 	if ( ! has_action( "do_feed_{$feed}" ) ) {
-		wp_die( __( 'ERROR: This is not a valid feed template.' ), '', array( 'response' => 404 ) );
+		wp_die( __( 'ERROR: This is not a valid feed template.' ), '', array('response' => 404) );
 	}
 
 	/**
@@ -1257,11 +1271,12 @@ function do_feed_rss() {
  * @param bool $for_comments True for the comment feed, false for normal feed.
  */
 function do_feed_rss2( $for_comments ) {
-	if ( $for_comments )
-		load_template( ABSPATH . WPINC . '/feed-rss2-comments.php' );
-	else
-		load_template( ABSPATH . WPINC . '/feed-rss2.php' );
-}
+	if ( $for_comments ) {
+			load_template( ABSPATH . WPINC . '/feed-rss2-comments.php' );
+	} else {
+			load_template( ABSPATH . WPINC . '/feed-rss2.php' );
+	}
+	}
 
 /**
  * Load either Atom comment feed or Atom posts feed.
@@ -1273,8 +1288,8 @@ function do_feed_rss2( $for_comments ) {
  * @param bool $for_comments True for the comment feed, false for normal feed.
  */
 function do_feed_atom( $for_comments ) {
-	if ($for_comments)
-		load_template( ABSPATH . WPINC . '/feed-atom-comments.php');
+	if ( $for_comments )
+		load_template( ABSPATH . WPINC . '/feed-atom-comments.php' );
 	else
 		load_template( ABSPATH . WPINC . '/feed-atom.php' );
 }
@@ -1303,7 +1318,7 @@ function do_robots() {
 		$output .= "Disallow: /\n";
 	} else {
 		$site_url = parse_url( site_url() );
-		$path = ( !empty( $site_url['path'] ) ) ? $site_url['path'] : '';
+		$path = ( ! empty( $site_url['path'] ) ) ? $site_url['path'] : '';
 		$output .= "Disallow: $path/wp-admin/\n";
 		$output .= "Allow: $path/wp-admin/admin-ajax.php\n";
 	}
@@ -1348,13 +1363,13 @@ function is_blog_installed() {
 		$alloptions = wp_load_alloptions();
 	}
 	// If siteurl is not set to autoload, check it specifically
-	if ( !isset( $alloptions['siteurl'] ) )
+	if ( ! isset( $alloptions['siteurl'] ) )
 		$installed = $wpdb->get_var( "SELECT option_value FROM $wpdb->options WHERE option_name = 'siteurl'" );
 	else
 		$installed = $alloptions['siteurl'];
 	$wpdb->suppress_errors( $suppress );
 
-	$installed = !empty( $installed );
+	$installed = ! empty( $installed );
 	wp_cache_set( 'is_blog_installed', $installed );
 
 	if ( $installed )
@@ -1374,13 +1389,16 @@ function is_blog_installed() {
 	$wp_tables = $wpdb->tables();
 	foreach ( $wp_tables as $table ) {
 		// The existence of custom user tables shouldn't suggest an insane state or prevent a clean install.
-		if ( defined( 'CUSTOM_USER_TABLE' ) && CUSTOM_USER_TABLE == $table )
-			continue;
-		if ( defined( 'CUSTOM_USER_META_TABLE' ) && CUSTOM_USER_META_TABLE == $table )
-			continue;
+		if ( defined( 'CUSTOM_USER_TABLE' ) && CUSTOM_USER_TABLE == $table ) {
+					continue;
+		}
+		if ( defined( 'CUSTOM_USER_META_TABLE' ) && CUSTOM_USER_META_TABLE == $table ) {
+					continue;
+		}
 
-		if ( ! $wpdb->get_results( "DESCRIBE $table;" ) )
-			continue;
+		if ( ! $wpdb->get_results( "DESCRIBE $table;" ) ) {
+					continue;
+		}
 
 		// One or more tables exist. We are insane.
 
@@ -1444,15 +1462,17 @@ function wp_nonce_url( $actionurl, $action = -1, $name = '_wpnonce' ) {
  * @param bool       $echo    Optional. Whether to display or return hidden form field. Default true.
  * @return string Nonce field HTML markup.
  */
-function wp_nonce_field( $action = -1, $name = "_wpnonce", $referer = true , $echo = true ) {
+function wp_nonce_field( $action = -1, $name = "_wpnonce", $referer = true, $echo = true ) {
 	$name = esc_attr( $name );
 	$nonce_field = '<input type="hidden" id="' . $name . '" name="' . $name . '" value="' . wp_create_nonce( $action ) . '" />';
 
-	if ( $referer )
-		$nonce_field .= wp_referer_field( false );
+	if ( $referer ) {
+			$nonce_field .= wp_referer_field( false );
+	}
 
-	if ( $echo )
-		echo $nonce_field;
+	if ( $echo ) {
+			echo $nonce_field;
+	}
 
 	return $nonce_field;
 }
@@ -1470,10 +1490,11 @@ function wp_nonce_field( $action = -1, $name = "_wpnonce", $referer = true , $ec
  */
 function wp_referer_field( $echo = true ) {
 	$app = getApp();
-	$referer_field = '<input type="hidden" name="_wp_http_referer" value="'. esc_attr( wp_unslash( $app['request.uri'] ) ) . '" />';
+	$referer_field = '<input type="hidden" name="_wp_http_referer" value="' . esc_attr( wp_unslash( $app['request.uri'] ) ) . '" />';
 
-	if ( $echo )
-		echo $referer_field;
+	if ( $echo ) {
+			echo $referer_field;
+	}
 	return $referer_field;
 }
 
@@ -1497,8 +1518,9 @@ function wp_original_referer_field( $echo = true, $jump_back_to = 'current' ) {
 		$ref = 'previous' == $jump_back_to ? wp_get_referer() : wp_unslash( $app['request.uri'] );
 	}
 	$orig_referer_field = '<input type="hidden" name="_wp_original_http_referer" value="' . esc_attr( $ref ) . '" />';
-	if ( $echo )
-		echo $orig_referer_field;
+	if ( $echo ) {
+			echo $orig_referer_field;
+	}
 	return $orig_referer_field;
 }
 
@@ -1595,8 +1617,8 @@ function wp_mkdir_p( $target ) {
 	 * Safe mode fails with a trailing slash under certain PHP versions.
 	 * Use rtrim() instead of untrailingslashit to avoid formatting.php dependency.
 	 */
-	$target = rtrim($target, '/');
-	if ( empty($target) )
+	$target = rtrim( $target, '/' );
+	if ( empty( $target ) )
 		$target = '/';
 
 	if ( file_exists( $target ) )
@@ -1649,14 +1671,14 @@ function path_is_absolute( $path ) {
 	 * This is definitive if true but fails if $path does not exist or contains
 	 * a symbolic link.
 	 */
-	if ( realpath($path) == $path )
+	if ( realpath( $path ) == $path )
 		return true;
 
-	if ( strlen($path) == 0 || $path[0] == '.' )
+	if ( strlen( $path ) == 0 || $path[0] == '.' )
 		return false;
 
 	// Windows allows absolute paths like this.
-	if ( preg_match('#^[a-zA-Z]:\\\\#', $path) )
+	if ( preg_match( '#^[a-zA-Z]:\\\\#', $path ) )
 		return true;
 
 	// A path starting with / or \ is absolute; anything else is relative.
@@ -1676,10 +1698,10 @@ function path_is_absolute( $path ) {
  * @return string The path with the base or absolute path.
  */
 function path_join( $base, $path ) {
-	if ( path_is_absolute($path) )
+	if ( path_is_absolute( $path ) )
 		return $path;
 
-	return rtrim($base, '/') . '/' . ltrim($path, '/');
+	return rtrim( $base, '/' ) . '/' . ltrim( $path, '/' );
 }
 
 /**
@@ -1724,19 +1746,19 @@ function wp_normalize_path( $path ) {
  */
 function get_temp_dir() {
 	static $temp = '';
-	if ( defined('WP_TEMP_DIR') )
-		return trailingslashit(WP_TEMP_DIR);
+	if ( defined( 'WP_TEMP_DIR' ) )
+		return trailingslashit( WP_TEMP_DIR );
 
 	if ( $temp )
 		return trailingslashit( $temp );
 
-	if ( function_exists('sys_get_temp_dir') ) {
+	if ( function_exists( 'sys_get_temp_dir' ) ) {
 		$temp = sys_get_temp_dir();
 		if ( @is_dir( $temp ) && wp_is_writable( $temp ) )
 			return trailingslashit( $temp );
 	}
 
-	$temp = ini_get('upload_tmp_dir');
+	$temp = ini_get( 'upload_tmp_dir' );
 	if ( @is_dir( $temp ) && wp_is_writable( $temp ) )
 		return trailingslashit( $temp );
 
@@ -1761,11 +1783,12 @@ function get_temp_dir() {
  * @return bool Whether the path is writable.
  */
 function wp_is_writable( $path ) {
-	if ( 'WIN' === strtoupper( substr( PHP_OS, 0, 3 ) ) )
-		return win_is_writable( $path );
-	else
-		return @is_writable( $path );
-}
+	if ( 'WIN' === strtoupper( substr( PHP_OS, 0, 3 ) ) ) {
+			return win_is_writable( $path );
+	} else {
+			return @is_writable( $path );
+	}
+	}
 
 /**
  * Workaround for Windows bug in is_writable() function
@@ -1785,19 +1808,21 @@ function wp_is_writable( $path ) {
  */
 function win_is_writable( $path ) {
 
-	if ( $path[strlen( $path ) - 1] == '/' ) { // if it looks like a directory, check a random file within the directory
-		return win_is_writable( $path . uniqid( mt_rand() ) . '.tmp');
+	if ( $path[ strlen( $path ) - 1 ] == '/' ) { // if it looks like a directory, check a random file within the directory
+		return win_is_writable( $path . uniqid( mt_rand() ) . '.tmp' );
 	} elseif ( is_dir( $path ) ) { // If it's a directory (and not a file) check a random file within the directory
 		return win_is_writable( $path . '/' . uniqid( mt_rand() ) . '.tmp' );
 	}
 	// check tmp file for read/write capabilities
-	$should_delete_tmp_file = !file_exists( $path );
+	$should_delete_tmp_file = ! file_exists( $path );
 	$f = @fopen( $path, 'a' );
-	if ( $f === false )
-		return false;
+	if ( $f === false ) {
+			return false;
+	}
 	fclose( $f );
-	if ( $should_delete_tmp_file )
-		unlink( $path );
+	if ( $should_delete_tmp_file ) {
+			unlink( $path );
+	}
 	return true;
 }
 
@@ -1857,7 +1882,7 @@ function wp_get_upload_dir() {
 function wp_upload_dir( $time = null, $create_dir = true, $refresh_cache = false ) {
 	static $cache = [], $tested_paths = [];
 
-	$key = sprintf( '%d-%s', get_current_blog_id(), (string) $time );
+	$key = sprintf( '%d-%s', get_current_blog_id(), ( string ) $time );
 
 	if ( $refresh_cache || empty( $cache[ $key ] ) ) {
 		$cache[ $key ] = _wp_upload_dir( $time );
@@ -1921,8 +1946,8 @@ function _wp_upload_dir( $time = null ) {
 		$dir = $upload_path;
 	}
 
-	if ( !$url = get_option( 'upload_url_path' ) ) {
-		if ( empty($upload_path) || ( 'wp-content/uploads' == $upload_path ) || ( $upload_path == $dir ) )
+	if ( ! $url = get_option( 'upload_url_path' ) ) {
+		if ( empty( $upload_path ) || ( 'wp-content/uploads' == $upload_path ) || ( $upload_path == $dir ) )
 			$url = WP_CONTENT_URL . '/uploads';
 		else
 			$url = trailingslashit( $siteurl ) . $upload_path;
@@ -1950,10 +1975,11 @@ function _wp_upload_dir( $time = null ) {
 			 * had wp-content/uploads for the main site.)
 			 */
 
-			if ( defined( 'MULTISITE' ) )
-				$ms_dir = '/sites/' . get_current_blog_id();
-			else
-				$ms_dir = '/' . get_current_blog_id();
+			if ( defined( 'MULTISITE' ) ) {
+							$ms_dir = '/sites/' . get_current_blog_id();
+			} else {
+							$ms_dir = '/' . get_current_blog_id();
+			}
 
 			$dir .= $ms_dir;
 			$url .= $ms_dir;
@@ -1973,10 +1999,11 @@ function _wp_upload_dir( $time = null ) {
 			 * rewriting in multisite, the resulting URL is /files. (#WP22702 for background.)
 			 */
 
-			if ( defined( 'BLOGUPLOADDIR' ) )
-				$dir = untrailingslashit( BLOGUPLOADDIR );
-			else
-				$dir = ABSPATH . UPLOADS;
+			if ( defined( 'BLOGUPLOADDIR' ) ) {
+							$dir = untrailingslashit( BLOGUPLOADDIR );
+			} else {
+							$dir = ABSPATH . UPLOADS;
+			}
 			$url = trailingslashit( $siteurl ) . 'files';
 		}
 	}
@@ -1987,7 +2014,7 @@ function _wp_upload_dir( $time = null ) {
 	$subdir = '';
 	if ( get_option( 'uploads_use_yearmonth_folders' ) ) {
 		// Generate the yearly and monthly dirs
-		if ( !$time )
+		if ( ! $time )
 			$time = current_time( 'mysql' );
 		$y = substr( $time, 0, 4 );
 		$m = substr( $time, 5, 2 );
@@ -2026,7 +2053,7 @@ function _wp_upload_dir( $time = null ) {
  */
 function wp_unique_filename( $dir, $filename, $unique_filename_callback = null ) {
 	// Sanitize the file name before we begin processing.
-	$filename = sanitize_file_name($filename);
+	$filename = sanitize_file_name( $filename );
 
 	// Separate the filename into a name and extension.
 	$ext = pathinfo( $filename, PATHINFO_EXTENSION );
@@ -2050,15 +2077,15 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 		$number = '';
 
 		// Change '.ext' to lower case.
-		if ( $ext && strtolower($ext) != $ext ) {
-			$ext2 = strtolower($ext);
-			$filename2 = preg_replace( '|' . preg_quote($ext) . '$|', $ext2, $filename );
+		if ( $ext && strtolower( $ext ) != $ext ) {
+			$ext2 = strtolower( $ext );
+			$filename2 = preg_replace( '|' . preg_quote( $ext ) . '$|', $ext2, $filename );
 
 			// Check for both lower and upper case extension or image sub-sizes may be overwritten.
-			while ( file_exists($dir . "/$filename") || file_exists($dir . "/$filename2") ) {
+			while ( file_exists( $dir . "/$filename" ) || file_exists( $dir . "/$filename2" ) ) {
 				$new_number = $number + 1;
-				$filename = str_replace( array( "-$number$ext", "$number$ext" ), "-$new_number$ext", $filename );
-				$filename2 = str_replace( array( "-$number$ext2", "$number$ext2" ), "-$new_number$ext2", $filename2 );
+				$filename = str_replace( array("-$number$ext", "$number$ext"), "-$new_number$ext", $filename );
+				$filename2 = str_replace( array("-$number$ext2", "$number$ext2"), "-$new_number$ext2", $filename2 );
 				$number = $new_number;
 			}
 
@@ -2079,7 +2106,7 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 			if ( '' == "$number$ext" ) {
 				$filename = "$filename-" . ++$number;
 			} else {
-				$filename = str_replace( array( "-$number$ext", "$number$ext" ), "-" . ++$number . $ext, $filename );
+				$filename = str_replace( array("-$number$ext", "$number$ext"), "-" . ++$number . $ext, $filename );
 			}
 		}
 	}
@@ -2112,15 +2139,15 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
  * @return array
  */
 function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
-	if ( !empty( $deprecated ) )
+	if ( ! empty( $deprecated ) )
 		_deprecated_argument( __FUNCTION__, '2.0.0' );
 
 	if ( empty( $name ) )
-		return array( 'error' => __( 'Empty filename' ) );
+		return array('error' => __( 'Empty filename' ));
 
 	$wp_filetype = wp_check_filetype( $name );
 	if ( ! $wp_filetype['ext'] && ! current_user_can( 'unfiltered_upload' ) )
-		return array( 'error' => __( 'Invalid file type' ) );
+		return array('error' => __( 'Invalid file type' ));
 
 	$upload = wp_upload_dir( $time );
 
@@ -2137,9 +2164,9 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 	 *
 	 * @param mixed $upload_bits_error An array of upload bits data, or a non-array error to return.
 	 */
-	$upload_bits_error = apply_filters( 'wp_upload_bits', array( 'name' => $name, 'bits' => $bits, 'time' => $time ) );
-	if ( !is_array( $upload_bits_error ) ) {
-		$upload[ 'error' ] = $upload_bits_error;
+	$upload_bits_error = apply_filters( 'wp_upload_bits', array('name' => $name, 'bits' => $bits, 'time' => $time) );
+	if ( ! is_array( $upload_bits_error ) ) {
+		$upload['error'] = $upload_bits_error;
 		return $upload;
 	}
 
@@ -2157,12 +2184,12 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 			__( 'Unable to create directory %s. Is its parent directory writable by the server?' ),
 			$error_path
 		);
-		return array( 'error' => $message );
+		return array('error' => $message);
 	}
 
 	$ifp = @ fopen( $new_file, 'wb' );
 	if ( ! $ifp )
-		return array( 'error' => sprintf( __( 'Could not write file %s' ), $new_file ) );
+		return array('error' => sprintf( __( 'Could not write file %s' ), $new_file ));
 
 	@fwrite( $ifp, $bits );
 	fclose( $ifp );
@@ -2179,7 +2206,7 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 	$url = $upload['url'] . "/$filename";
 
 	/** This filter is documented in wp-admin/includes/file.php */
-	return apply_filters( 'wp_handle_upload', array( 'file' => $new_file, 'url' => $url, 'type' => $wp_filetype['type'], 'error' => false ), 'sideload' );
+	return apply_filters( 'wp_handle_upload', array('file' => $new_file, 'url' => $url, 'type' => $wp_filetype['type'], 'error' => false), 'sideload' );
 }
 
 /**
@@ -2194,10 +2221,11 @@ function wp_ext2type( $ext ) {
 	$ext = strtolower( $ext );
 
 	$ext2type = wp_get_ext_types();
-	foreach ( $ext2type as $type => $exts )
-		if ( in_array( $ext, $exts ) )
+	foreach ( $ext2type as $type => $exts ) {
+			if ( in_array( $ext, $exts ) )
 			return $type;
-}
+	}
+	}
 
 /**
  * Retrieve the file type from the file name.
@@ -2211,7 +2239,7 @@ function wp_ext2type( $ext ) {
  * @return array Values with extension first and mime type.
  */
 function wp_check_filetype( $filename, $mimes = null ) {
-	if ( empty($mimes) )
+	if ( empty( $mimes ) )
 		$mimes = get_allowed_mime_types();
 	$type = false;
 	$ext = false;
@@ -2261,13 +2289,13 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 	}
 
 	// We're able to validate images using GD
-	if ( $type && 0 === strpos( $type, 'image/' ) && function_exists('getimagesize') ) {
+	if ( $type && 0 === strpos( $type, 'image/' ) && function_exists( 'getimagesize' ) ) {
 
 		// Attempt to figure out what type of image it actually is
 		$imgstats = @getimagesize( $file );
 
 		// If getimagesize() knows what kind of image it really is and if the real MIME doesn't match the claimed MIME
-		if ( !empty($imgstats['mime']) && $imgstats['mime'] != $type ) {
+		if ( ! empty( $imgstats['mime'] ) && $imgstats['mime'] != $type ) {
 			/**
 			 * Filters the list mapping image mime types to their respective extensions.
 			 *
@@ -2459,15 +2487,15 @@ function wp_get_ext_types() {
 	 *                        of file types.
 	 */
 	return apply_filters( 'ext2type', array(
-		'image'       => array( 'jpg', 'jpeg', 'jpe',  'gif',  'png',  'bmp',   'tif',  'tiff', 'ico' ),
-		'audio'       => array( 'aac', 'ac3',  'aif',  'aiff', 'm3a',  'm4a',   'm4b',  'mka',  'mp1',  'mp2',  'mp3', 'ogg', 'oga', 'ram', 'wav', 'wma' ),
-		'video'       => array( '3g2',  '3gp', '3gpp', 'asf', 'avi',  'divx', 'dv',   'flv',  'm4v',   'mkv',  'mov',  'mp4',  'mpeg', 'mpg', 'mpv', 'ogm', 'ogv', 'qt',  'rm', 'vob', 'wmv' ),
-		'document'    => array( 'doc', 'docx', 'docm', 'dotm', 'odt',  'pages', 'pdf',  'xps',  'oxps', 'rtf',  'wp', 'wpd', 'psd', 'xcf' ),
-		'spreadsheet' => array( 'numbers',     'ods',  'xls',  'xlsx', 'xlsm',  'xlsb' ),
-		'interactive' => array( 'swf', 'key',  'ppt',  'pptx', 'pptm', 'pps',   'ppsx', 'ppsm', 'sldx', 'sldm', 'odp' ),
-		'text'        => array( 'asc', 'csv',  'tsv',  'txt' ),
-		'archive'     => array( 'bz2', 'cab',  'dmg',  'gz',   'rar',  'sea',   'sit',  'sqx',  'tar',  'tgz',  'zip', '7z' ),
-		'code'        => array( 'css', 'htm',  'html', 'php',  'js' ),
+		'image'       => array('jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp', 'tif', 'tiff', 'ico'),
+		'audio'       => array('aac', 'ac3', 'aif', 'aiff', 'm3a', 'm4a', 'm4b', 'mka', 'mp1', 'mp2', 'mp3', 'ogg', 'oga', 'ram', 'wav', 'wma'),
+		'video'       => array('3g2', '3gp', '3gpp', 'asf', 'avi', 'divx', 'dv', 'flv', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'mpv', 'ogm', 'ogv', 'qt', 'rm', 'vob', 'wmv'),
+		'document'    => array('doc', 'docx', 'docm', 'dotm', 'odt', 'pages', 'pdf', 'xps', 'oxps', 'rtf', 'wp', 'wpd', 'psd', 'xcf'),
+		'spreadsheet' => array('numbers', 'ods', 'xls', 'xlsx', 'xlsm', 'xlsb'),
+		'interactive' => array('swf', 'key', 'ppt', 'pptx', 'pptm', 'pps', 'ppsx', 'ppsm', 'sldx', 'sldm', 'odp'),
+		'text'        => array('asc', 'csv', 'tsv', 'txt'),
+		'archive'     => array('bz2', 'cab', 'dmg', 'gz', 'rar', 'sea', 'sit', 'sqx', 'tar', 'tgz', 'zip', '7z'),
+		'code'        => array('css', 'htm', 'html', 'php', 'js'),
 	) );
 }
 
@@ -2581,9 +2609,9 @@ function wp_nonce_ays( $action ) {
 function wp_die( $message = '', $title = '', $args = [] ) {
 
 	if ( is_int( $args ) ) {
-		$args = array( 'response' => $args );
+		$args = array('response' => $args);
 	} elseif ( is_int( $title ) ) {
-		$args  = array( 'response' => $title );
+		$args  = array('response' => $title);
 		$title = '';
 	}
 
@@ -2633,10 +2661,10 @@ function wp_die( $message = '', $title = '', $args = [] ) {
  * @param string|array    $args    Optional. Arguments to control behavior. Default empty array.
  */
 function _default_wp_die_handler( $message, $title = '', $args = [] ) {
-	$defaults = array( 'response' => 500 );
-	$r = wp_parse_args($args, $defaults);
+	$defaults = array('response' => 500);
+	$r = wp_parse_args( $args, $defaults );
 
-	$have_gettext = function_exists('__');
+	$have_gettext = function_exists( '__' );
 
 	if ( function_exists( 'is_wp_error' ) && is_wp_error( $message ) ) {
 		if ( empty( $title ) ) {
@@ -2661,22 +2689,22 @@ function _default_wp_die_handler( $message, $title = '', $args = [] ) {
 	}
 
 	if ( isset( $r['back_link'] ) && $r['back_link'] ) {
-		$back_text = $have_gettext? __('&laquo; Back') : '&laquo; Back';
+		$back_text = $have_gettext ? __( '&laquo; Back' ) : '&laquo; Back';
 		$message .= "\n<p><a href='javascript:history.back()'>$back_text</a></p>";
 	}
 
 	if ( ! did_action( 'admin_head' ) ) :
-		if ( !headers_sent() ) {
+		if ( ! headers_sent() ) {
 			status_header( $r['response'] );
 			nocache_headers();
 			header( 'Content-Type: text/html; charset=utf-8' );
 		}
 
-		if ( empty($title) )
-			$title = $have_gettext ? __('WordPress &rsaquo; Error') : 'WordPress &rsaquo; Error';
+		if ( empty( $title ) )
+			$title = $have_gettext ? __( 'WordPress &rsaquo; Error' ) : 'WordPress &rsaquo; Error';
 
 		$text_direction = 'ltr';
-		if ( isset($r['text_direction']) && 'rtl' == $r['text_direction'] )
+		if ( isset( $r['text_direction'] ) && 'rtl' == $r['text_direction'] )
 			$text_direction = 'rtl';
 		elseif ( function_exists( 'is_rtl' ) && is_rtl() )
 			$text_direction = 'rtl';
@@ -2836,12 +2864,12 @@ function _default_wp_die_handler( $message, $title = '', $args = [] ) {
  */
 function _xmlrpc_wp_die_handler( $message, $title = '', $args = [] ) {
 	global $wp_xmlrpc_server;
-	$defaults = array( 'response' => 500 );
+	$defaults = array('response' => 500);
 
-	$r = wp_parse_args($args, $defaults);
+	$r = wp_parse_args( $args, $defaults );
 
 	if ( $wp_xmlrpc_server ) {
-		$error = new IXR_Error( $r['response'] , $message);
+		$error = new IXR_Error( $r['response'], $message );
 		$wp_xmlrpc_server->output( $error->getXml() );
 	}
 	die();
@@ -2869,7 +2897,7 @@ function _ajax_wp_die_handler( $message, $title = '', $args = [] ) {
 		status_header( $r['response'] );
 	}
 	if ( is_scalar( $message ) )
-		die( (string) $message );
+		die( ( string ) $message );
 	die( '0' );
 }
 
@@ -2885,7 +2913,7 @@ function _ajax_wp_die_handler( $message, $title = '', $args = [] ) {
  */
 function _scalar_wp_die_handler( $message = '' ) {
 	if ( is_scalar( $message ) )
-		die( (string) $message );
+		die( ( string ) $message );
 	die();
 }
 
@@ -2907,11 +2935,11 @@ function wp_json_encode( $data, $options = 0, $depth = 512 ) {
 	 * We need to make sure we call it with the correct arguments.
 	 */
 	if ( version_compare( PHP_VERSION, '5.5', '>=' ) ) {
-		$args = array( $data, $options, $depth );
+		$args = array($data, $options, $depth);
 	} elseif ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
-		$args = array( $data, $options );
+		$args = array($data, $options);
 	} else {
-		$args = array( $data );
+		$args = array($data);
 	}
 
 	// Prepare the data for JSON serialization.
@@ -2922,7 +2950,7 @@ function wp_json_encode( $data, $options = 0, $depth = 512 ) {
 	// If json_encode() was successful, no need to do more sanity checking.
 	// ... unless we're in an old version of PHP, and json_encode() returned
 	// a string containing 'null'. Then we need to do more sanity checking.
-	if ( false !== $json && ( version_compare( PHP_VERSION, '5.5', '>=' ) || false === strpos( $json, 'null' ) ) )  {
+	if ( false !== $json && ( version_compare( PHP_VERSION, '5.5', '>=' ) || false === strpos( $json, 'null' ) ) ) {
 		return $json;
 	}
 
@@ -3048,35 +3076,35 @@ function _wp_json_prepare_data( $data ) {
 	}
 
 	switch ( gettype( $data ) ) {
-		case 'boolean':
-		case 'integer':
-		case 'double':
-		case 'string':
-		case 'NULL':
-			// These values can be passed through.
-			return $data;
+	case 'boolean':
+	case 'integer':
+	case 'double':
+	case 'string':
+	case 'NULL':
+		// These values can be passed through.
+		return $data;
 
-		case 'array':
-			// Arrays must be mapped in case they also return objects.
-			return array_map( '_wp_json_prepare_data', $data );
+	case 'array':
+		// Arrays must be mapped in case they also return objects.
+		return array_map( '_wp_json_prepare_data', $data );
 
-		case 'object':
-			// If this is an incomplete object (__PHP_Incomplete_Class), bail.
-			if ( ! is_object( $data ) ) {
-				return null;
-			}
-
-			if ( $data instanceof JsonSerializable ) {
-				$data = $data->jsonSerialize();
-			} else {
-				$data = get_object_vars( $data );
-			}
-
-			// Now, pass the array (or whatever was returned from jsonSerialize through).
-			return _wp_json_prepare_data( $data );
-
-		default:
+	case 'object':
+		// If this is an incomplete object (__PHP_Incomplete_Class), bail.
+		if ( ! is_object( $data ) ) {
 			return null;
+		}
+
+		if ( $data instanceof JsonSerializable ) {
+			$data = $data->jsonSerialize();
+		} else {
+			$data = get_object_vars( $data );
+		}
+
+		// Now, pass the array (or whatever was returned from jsonSerialize through).
+		return _wp_json_prepare_data( $data );
+
+	default:
+		return null;
 	}
 }
 
@@ -3096,11 +3124,12 @@ function wp_send_json( $response, $status_code = null ) {
 		status_header( $status_code );
 	}
 	echo wp_json_encode( $response );
-	if ( wp_doing_ajax() )
-		wp_die();
-	else
-		die;
-}
+	if ( wp_doing_ajax() ) {
+			wp_die();
+	} else {
+			die;
+	}
+	}
 
 /**
  * Send a JSON response back to an Ajax request, indicating success.
@@ -3112,7 +3141,7 @@ function wp_send_json( $response, $status_code = null ) {
  * @param int   $status_code The HTTP status code to output.
  */
 function wp_send_json_success( $data = null, $status_code = null ) {
-	$response = array( 'success' => true );
+	$response = array('success' => true);
 
 	if ( isset( $data ) )
 		$response['data'] = $data;
@@ -3136,14 +3165,14 @@ function wp_send_json_success( $data = null, $status_code = null ) {
  * @param int   $status_code The HTTP status code to output.
  */
 function wp_send_json_error( $data = null, $status_code = null ) {
-	$response = array( 'success' => false );
+	$response = array('success' => false);
 
 	if ( isset( $data ) ) {
 		if ( is_wp_error( $data ) ) {
 			$result = [];
 			foreach ( $data->errors as $code => $messages ) {
 				foreach ( $messages as $message ) {
-					$result[] = array( 'code' => $code, 'message' => $message );
+					$result[] = array('code' => $code, 'message' => $message);
 				}
 			}
 
@@ -3194,8 +3223,9 @@ function wp_check_jsonp_callback( $callback ) {
  * @return string Homepage location.
  */
 function _config_wp_home( $url = '' ) {
-	if ( defined( 'WP_HOME' ) )
-		return untrailingslashit( WP_HOME );
+	if ( defined( 'WP_HOME' ) ) {
+			return untrailingslashit( WP_HOME );
+	}
 	return $url;
 }
 
@@ -3215,8 +3245,9 @@ function _config_wp_home( $url = '' ) {
  * @return string The WordPress Site URL.
  */
 function _config_wp_siteurl( $url = '' ) {
-	if ( defined( 'WP_SITEURL' ) )
-		return untrailingslashit( WP_SITEURL );
+	if ( defined( 'WP_SITEURL' ) ) {
+			return untrailingslashit( WP_SITEURL );
+	}
 	return $url;
 }
 
@@ -3343,9 +3374,9 @@ function smilies_init() {
 	 *
 	 * @param array $wpsmiliestrans List of the smilies.
 	 */
-	$wpsmiliestrans = apply_filters('smilies', $wpsmiliestrans);
+	$wpsmiliestrans = apply_filters( 'smilies', $wpsmiliestrans );
 
-	if (count($wpsmiliestrans) == 0) {
+	if ( count( $wpsmiliestrans ) == 0 ) {
 		$app->wpsmiliestrans = [];
 		return;
 	}
@@ -3369,7 +3400,7 @@ function smilies_init() {
 		$rest = substr( $smiley, 1 );
 
 		// new subpattern?
-		if ($firstchar != $subchar) {
+		if ( $firstchar != $subchar ) {
 			if ( $subchar !== '' ) {
 				// End previous "subpattern"
 				$wp_smiliessearch .= ')(?=' . $spaces . '|$)';
@@ -3377,11 +3408,11 @@ function smilies_init() {
 				$wp_smiliessearch .= '|(?<=' . $spaces . '|^)';
 			}
 			$subchar = $firstchar;
-			$wp_smiliessearch .= preg_quote($firstchar, '/') . '(?:';
+			$wp_smiliessearch .= preg_quote( $firstchar, '/' ) . '(?:';
 		} else {
 			$wp_smiliessearch .= '|';
 		}
-		$wp_smiliessearch .= preg_quote($rest, '/');
+		$wp_smiliessearch .= preg_quote( $rest, '/' );
 	}
 
 	$wp_smiliessearch .= ')(?=' . $spaces . '|$)/m';
@@ -3406,7 +3437,7 @@ function wp_parse_args( $args, $defaults = '' ) {
 	if ( is_object( $args ) )
 		$r = get_object_vars( $args );
 	elseif ( is_array( $args ) )
-		$r =& $args;
+		$r = & $args;
 	else
 		wp_parse_str( $args, $r );
 
@@ -3424,10 +3455,10 @@ function wp_parse_args( $args, $defaults = '' ) {
  * @return array Sanitized array of IDs.
  */
 function wp_parse_id_list( $list ) {
-	if ( !is_array($list) )
-		$list = preg_split('/[\s,]+/', $list);
+	if ( ! is_array( $list ) )
+		$list = preg_split( '/[\s,]+/', $list );
 
-	return array_unique(array_map('absint', $list));
+	return array_unique( array_map( 'absint', $list ) );
 }
 
 /**
@@ -3520,18 +3551,19 @@ function wp_list_filter( $list, $args = [], $operator = 'AND' ) {
 	$filtered = [];
 
 	foreach ( $list as $key => $obj ) {
-		$to_match = (array) $obj;
+		$to_match = ( array ) $obj;
 
 		$matched = 0;
 		foreach ( $args as $m_key => $m_value ) {
-			if ( array_key_exists( $m_key, $to_match ) && $m_value == $to_match[ $m_key ] )
-				$matched++;
+			if ( array_key_exists( $m_key, $to_match ) && $m_value == $to_match[ $m_key ] ) {
+							$matched++;
+			}
 		}
 
 		if ( ( 'AND' == $operator && $matched == $count )
 		  || ( 'OR' == $operator && $matched > 0 )
 		  || ( 'NOT' == $operator && 0 == $matched ) ) {
-			$filtered[$key] = $obj;
+			$filtered[ $key ] = $obj;
 		}
 	}
 
@@ -3635,7 +3667,7 @@ function wp_widgets_add_menu() {
 	if ( ! current_theme_supports( 'widgets' ) ) {
 		return;
 	}
-	$app->submenu['themes.php'][7] = [ __( 'Widgets' ), 'edit_theme_options', 'widgets.php' ];
+	$app->submenu['themes.php'][ 7 ] = [ __( 'Widgets' ), 'edit_theme_options', 'widgets.php'];
 	ksort( $app->submenu['themes.php'], SORT_NUMERIC );
 }
 
@@ -3648,7 +3680,7 @@ function wp_widgets_add_menu() {
  */
 function wp_ob_end_flush_all() {
 	$levels = ob_get_level();
-	for ($i=0; $i<$levels; $i++)
+	for ( $i = 0; $i < $levels; $i++ )
 		ob_end_flush();
 }
 
@@ -3682,7 +3714,7 @@ function dead_db() {
 
 	// If installing or in the admin, provide the verbose message.
 	if ( wp_installing() || defined( 'WP_ADMIN' ) )
-		wp_die($wpdb->error);
+		wp_die( $wpdb->error );
 
 	// Otherwise, be terse.
 	status_header( 500 );
@@ -3690,7 +3722,10 @@ function dead_db() {
 	header( 'Content-Type: text/html; charset=utf-8' );
 ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) echo ' dir="rtl"'; ?>>
+<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) {
+	echo ' dir="rtl"';
+}
+?>>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><?php _e( 'Database Error' ); ?></title>
@@ -3757,9 +3792,9 @@ function _deprecated_function( $function, $version, $replacement = null ) {
 	if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
 			if ( ! is_null( $replacement ) )
-				trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );
+				trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.' ), $function, $version, $replacement ) );
 			else
-				trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.'), $function, $version ) );
+				trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.' ), $function, $version ) );
 		} else {
 			if ( ! is_null( $replacement ) )
 				trigger_error( sprintf( '%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.', $function, $version, $replacement ) );
@@ -3881,9 +3916,9 @@ function _deprecated_file( $file, $version, $replacement = null, $message = '' )
 		$message = empty( $message ) ? '' : ' ' . $message;
 		if ( function_exists( '__' ) ) {
 			if ( ! is_null( $replacement ) )
-				trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.'), $file, $version, $replacement ) . $message );
+				trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.' ), $file, $version, $replacement ) . $message );
 			else
-				trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.'), $file, $version ) . $message );
+				trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.' ), $file, $version ) . $message );
 		} else {
 			if ( ! is_null( $replacement ) )
 				trigger_error( sprintf( '%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.', $file, $version, $replacement ) . $message );
@@ -3941,9 +3976,9 @@ function _deprecated_argument( $function, $version, $message = null ) {
 	if ( WP_DEBUG && apply_filters( 'deprecated_argument_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
 			if ( ! is_null( $message ) )
-				trigger_error( sprintf( __('%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s! %3$s'), $function, $version, $message ) );
+				trigger_error( sprintf( __( '%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s! %3$s' ), $function, $version, $message ) );
 			else
-				trigger_error( sprintf( __('%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s with no alternative available.'), $function, $version ) );
+				trigger_error( sprintf( __( '%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s with no alternative available.' ), $function, $version ) );
 		} else {
 			if ( ! is_null( $message ) )
 				trigger_error( sprintf( '%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s! %3$s', $function, $version, $message ) );
@@ -4076,7 +4111,7 @@ function _doing_it_wrong( $function, $message, $version ) {
 function is_lighttpd_before_150() {
 	$app = getApp();
 	$server_parts = explode( '/', $app['request.software'] ?? '' );
-	$server_parts[1] = isset( $server_parts[1] )? $server_parts[1] : '';
+	$server_parts[1] = isset( $server_parts[1] ) ? $server_parts[1] : '';
 	return  'lighttpd' == $server_parts[0] && -1 == version_compare( $server_parts[1], '1.5.0' );
 }
 
@@ -4089,7 +4124,7 @@ function is_lighttpd_before_150() {
  * @param bool   $default Optional. The default return value if the module is not found. Default false.
  * @return bool Whether the specified module is loaded.
  */
-function apache_mod_loaded($mod, $default = false) {
+function apache_mod_loaded( $mod, $default = false ) {
 	$app = getApp();
 
 	if ( ! $app['is_apache'] ) {
@@ -4098,13 +4133,13 @@ function apache_mod_loaded($mod, $default = false) {
 
 	if ( function_exists( 'apache_get_modules' ) ) {
 		$mods = apache_get_modules();
-		if ( in_array($mod, $mods) )
+		if ( in_array( $mod, $mods ) )
 			return true;
 	} elseif ( function_exists( 'phpinfo' ) && false === strpos( ini_get( 'disable_functions' ), 'phpinfo' ) ) {
 			ob_start();
-			phpinfo(8);
+			phpinfo( 8 );
 			$phpinfo = ob_get_clean();
-			if ( false !== strpos($phpinfo, $mod) )
+			if ( false !== strpos( $phpinfo, $mod ) )
 				return true;
 	}
 	return $default;
@@ -4131,7 +4166,7 @@ function iis7_supports_permalinks() {
 		 * Lastly we make sure that PHP is running via FastCGI. This is important because if it runs
 		 * via ISAPI then pretty permalinks will not work.
 		 */
-		$supports_permalinks = class_exists( 'DOMDocument', false ) && isset($_SERVER['IIS_UrlRewriteModule']) && ( PHP_SAPI == 'cgi-fcgi' );
+		$supports_permalinks = class_exists( 'DOMDocument', false ) && isset( $_SERVER['IIS_UrlRewriteModule'] ) && ( PHP_SAPI == 'cgi-fcgi' );
 	}
 
 	/**
@@ -4168,7 +4203,7 @@ function validate_file( $file, $allowed_files = '' ) {
 	if ( ! empty( $allowed_files ) && ! in_array( $file, $allowed_files ) )
 		return 3;
 
-	if (':' == substr( $file, 1, 1 ) )
+	if ( ':' == substr( $file, 1, 1 ) )
 		return 2;
 
 	return 0;
@@ -4187,7 +4222,7 @@ function validate_file( $file, $allowed_files = '' ) {
 function force_ssl_admin( $force = null ) {
 	static $forced = false;
 
-	if ( !is_null( $force ) ) {
+	if ( ! is_null( $force ) ) {
 		$old_forced = $forced;
 		$forced = $force;
 		return $old_forced;
@@ -4207,7 +4242,7 @@ function force_ssl_admin( $force = null ) {
  * @return string The guessed URL.
  */
 function wp_guess_url() {
-	if ( defined('WP_SITEURL') && '' != WP_SITEURL ) {
+	if ( defined( 'WP_SITEURL' ) && '' != WP_SITEURL ) {
 		$url = WP_SITEURL;
 	} else {
 		$app = getApp();
@@ -4228,12 +4263,12 @@ function wp_guess_url() {
 				// Request is hitting a file inside ABSPATH
 				$directory = str_replace( ABSPATH, '', $script_filename_dir );
 				// Strip off the sub directory, and any file/query params
-				$path = preg_replace( '#/' . preg_quote( $directory, '#' ) . '/[^/]*$#i', '' , $app['request.uri'] );
+				$path = preg_replace( '#/' . preg_quote( $directory, '#' ) . '/[^/]*$#i', '', $app['request.uri'] );
 			} elseif ( false !== strpos( $abspath_fix, $script_filename_dir ) ) {
 				// Request is hitting a file above ABSPATH
 				$subdirectory = substr( $abspath_fix, strpos( $abspath_fix, $script_filename_dir ) + strlen( $script_filename_dir ) );
 				// Strip off any file/query params from the path, appending the sub directory to the install
-				$path = preg_replace( '#/[^/]*$#i', '' , $app['request.uri'] ) . $subdirectory;
+				$path = preg_replace( '#/[^/]*$#i', '', $app['request.uri'] ) . $subdirectory;
 			} else {
 				$path = $app['request.uri'];
 			}
@@ -4244,7 +4279,7 @@ function wp_guess_url() {
 		$url = $schema . $app['request.host'] . $path;
 	}
 
-	return rtrim($url, '/');
+	return rtrim( $url, '/' );
 }
 
 /**
@@ -4267,8 +4302,9 @@ function wp_guess_url() {
 function wp_suspend_cache_addition( $suspend = null ) {
 	static $_suspend = false;
 
-	if ( is_bool( $suspend ) )
-		$_suspend = $suspend;
+	if ( is_bool( $suspend ) ) {
+			$_suspend = $suspend;
+	}
 
 	return $_suspend;
 }
@@ -4307,13 +4343,15 @@ function is_main_site( $site_id = null ) {
 	// This is the current network's information; 'site' is old terminology.
 	global $current_site;
 
-	if ( ! is_multisite() )
-		return true;
+	if ( ! is_multisite() ) {
+			return true;
+	}
 
-	if ( ! $site_id )
-		$site_id = get_current_blog_id();
+	if ( ! $site_id ) {
+			$site_id = get_current_blog_id();
+	}
 
-	return (int) $site_id === (int) $current_site->blog_id;
+	return ( int ) $site_id === ( int ) $current_site->blog_id;
 }
 
 /**
@@ -4329,13 +4367,13 @@ function is_main_network( $network_id = null ) {
 		return true;
 	}
 
-	$current_network_id = (int) get_current_site()->id;
+	$current_network_id = ( int ) get_current_site()->id;
 
 	if ( null === $network_id ) {
 		$network_id = $current_network_id;
 	}
 
-	$network_id = (int) $network_id;
+	$network_id = ( int ) $network_id;
 
 	return ( $network_id === get_main_network_id() );
 }
@@ -4356,11 +4394,11 @@ function get_main_network_id() {
 
 	if ( defined( 'PRIMARY_NETWORK_ID' ) ) {
 		$main_network_id = PRIMARY_NETWORK_ID;
-	} elseif ( isset( $current_site->id ) && 1 === (int) $current_site->id ) {
+	} elseif ( isset( $current_site->id ) && 1 === ( int ) $current_site->id ) {
 		// If the current network has an ID of 1, assume it is the main network.
 		$main_network_id = 1;
 	} else {
-		$_networks = get_networks( array( 'fields' => 'ids', 'number' => 1 ) );
+		$_networks = get_networks( array('fields' => 'ids', 'number' => 1) );
 		$main_network_id = array_shift( $_networks );
 	}
 
@@ -4371,7 +4409,7 @@ function get_main_network_id() {
 	 *
 	 * @param int $main_network_id The ID of the main network.
 	 */
-	return (int) apply_filters( 'get_main_network_id', $main_network_id );
+	return ( int ) apply_filters( 'get_main_network_id', $main_network_id );
 }
 
 /**
@@ -4384,8 +4422,9 @@ function get_main_network_id() {
  * @return bool True if multisite and global terms enabled.
  */
 function global_terms_enabled() {
-	if ( ! is_multisite() )
-		return false;
+	if ( ! is_multisite() ) {
+			return false;
+	}
 
 	static $global_terms = null;
 	if ( is_null( $global_terms ) ) {
@@ -4402,9 +4441,9 @@ function global_terms_enabled() {
 		 */
 		$filter = apply_filters( 'global_terms_enabled', null );
 		if ( ! is_null( $filter ) )
-			$global_terms = (bool) $filter;
+			$global_terms = ( bool ) $filter;
 		else
-			$global_terms = (bool) get_site_option( 'global_terms_enabled', false );
+			$global_terms = ( bool ) get_site_option( 'global_terms_enabled', false );
 	}
 	return $global_terms;
 }
@@ -4419,7 +4458,7 @@ function global_terms_enabled() {
  * @return float|false Timezone GMT offset, false otherwise.
  */
 function wp_timezone_override_offset() {
-	if ( !$timezone_string = get_option( 'timezone_string' ) ) {
+	if ( ! $timezone_string = get_option( 'timezone_string' ) ) {
 		return false;
 	}
 
@@ -4492,10 +4531,10 @@ function _wp_timezone_choice_usort_callback( $a, $b ) {
 function wp_timezone_choice( $selected_zone ) {
 	static $mo_loaded = false;
 
-	$continents = array( 'Africa', 'America', 'Antarctica', 'Arctic', 'Asia', 'Atlantic', 'Australia', 'Europe', 'Indian', 'Pacific');
+	$continents = array('Africa', 'America', 'Antarctica', 'Arctic', 'Asia', 'Atlantic', 'Australia', 'Europe', 'Indian', 'Pacific');
 
 	// Load translations for continents and cities
-	if ( !$mo_loaded ) {
+	if ( ! $mo_loaded ) {
 		$locale = get_locale();
 		$mofile = WP_LANG_DIR . '/continents-cities-' . $locale . '.mo';
 		load_textdomain( 'continents-cities', $mofile );
@@ -4505,7 +4544,7 @@ function wp_timezone_choice( $selected_zone ) {
 	$zonen = [];
 	foreach ( timezone_identifiers_list() as $zone ) {
 		$zone = explode( '/', $zone );
-		if ( !in_array( $zone[0], $continents ) ) {
+		if ( ! in_array( $zone[0], $continents ) ) {
 			continue;
 		}
 
@@ -4515,17 +4554,17 @@ function wp_timezone_choice( $selected_zone ) {
 			1 => ( isset( $zone[1] ) && $zone[1] ),
 			2 => ( isset( $zone[2] ) && $zone[2] ),
 		);
-		$exists[3] = ( $exists[0] && 'Etc' !== $zone[0] );
-		$exists[4] = ( $exists[1] && $exists[3] );
-		$exists[5] = ( $exists[2] && $exists[3] );
+		$exists[ 3 ] = ( $exists[0] && 'Etc' !== $zone[0] );
+		$exists[ 4 ] = ( $exists[1] && $exists[ 3 ] );
+		$exists[ 5 ] = ( $exists[2] && $exists[ 3 ] );
 
 		$zonen[] = array(
 			'continent'   => ( $exists[0] ? $zone[0] : '' ),
 			'city'        => ( $exists[1] ? $zone[1] : '' ),
 			'subcity'     => ( $exists[2] ? $zone[2] : '' ),
-			't_continent' => ( $exists[3] ? translate( str_replace( '_', ' ', $zone[0] ), 'continents-cities' ) : '' ),
-			't_city'      => ( $exists[4] ? translate( str_replace( '_', ' ', $zone[1] ), 'continents-cities' ) : '' ),
-			't_subcity'   => ( $exists[5] ? translate( str_replace( '_', ' ', $zone[2] ), 'continents-cities' ) : '' )
+			't_continent' => ( $exists[ 3 ] ? translate( str_replace( '_', ' ', $zone[0] ), 'continents-cities' ) : '' ),
+			't_city'      => ( $exists[ 4 ] ? translate( str_replace( '_', ' ', $zone[1] ), 'continents-cities' ) : '' ),
+			't_subcity'   => ( $exists[ 5 ] ? translate( str_replace( '_', ' ', $zone[2] ), 'continents-cities' ) : '' )
 		);
 	}
 	usort( $zonen, '_wp_timezone_choice_usort_callback' );
@@ -4538,7 +4577,7 @@ function wp_timezone_choice( $selected_zone ) {
 
 	foreach ( $zonen as $key => $zone ) {
 		// Build value in an array to join later
-		$value = array( $zone['continent'] );
+		$value = array($zone['continent']);
 
 		if ( empty( $zone['city'] ) ) {
 			// It's at the continent level (generally won't happen)
@@ -4547,16 +4586,16 @@ function wp_timezone_choice( $selected_zone ) {
 			// It's inside a continent group
 
 			// Continent optgroup
-			if ( !isset( $zonen[$key - 1] ) || $zonen[$key - 1]['continent'] !== $zone['continent'] ) {
+			if ( ! isset( $zonen[ $key - 1 ] ) || $zonen[ $key - 1 ]['continent'] !== $zone['continent'] ) {
 				$label = $zone['t_continent'];
-				$structure[] = '<optgroup label="'. esc_attr( $label ) .'">';
+				$structure[] = '<optgroup label="' . esc_attr( $label ) . '">';
 			}
 
 			// Add the city to the value
 			$value[] = $zone['city'];
 
 			$display = $zone['t_city'];
-			if ( !empty( $zone['subcity'] ) ) {
+			if ( ! empty( $zone['subcity'] ) ) {
 				// Add the subcity to the value
 				$value[] = $zone['subcity'];
 				$display .= ' - ' . $zone['t_subcity'];
@@ -4572,31 +4611,31 @@ function wp_timezone_choice( $selected_zone ) {
 		$structure[] = '<option ' . $selected . 'value="' . esc_attr( $value ) . '">' . esc_html( $display ) . "</option>";
 
 		// Close continent optgroup
-		if ( !empty( $zone['city'] ) && ( !isset($zonen[$key + 1]) || (isset( $zonen[$key + 1] ) && $zonen[$key + 1]['continent'] !== $zone['continent']) ) ) {
+		if ( ! empty( $zone['city'] ) && ( ! isset( $zonen[ $key + 1 ] ) || ( isset( $zonen[ $key + 1 ] ) && $zonen[ $key + 1 ]['continent'] !== $zone['continent'] ) ) ) {
 			$structure[] = '</optgroup>';
 		}
 	}
 
 	// Do UTC
-	$structure[] = '<optgroup label="'. esc_attr__( 'UTC' ) .'">';
+	$structure[] = '<optgroup label="' . esc_attr__( 'UTC' ) . '">';
 	$selected = '';
 	if ( 'UTC' === $selected_zone )
 		$selected = 'selected="selected" ';
-	$structure[] = '<option ' . $selected . 'value="' . esc_attr( 'UTC' ) . '">' . __('UTC') . '</option>';
+	$structure[] = '<option ' . $selected . 'value="' . esc_attr( 'UTC' ) . '">' . __( 'UTC' ) . '</option>';
 	$structure[] = '</optgroup>';
 
 	// Do manual UTC offsets
-	$structure[] = '<optgroup label="'. esc_attr__( 'Manual Offsets' ) .'">';
-	$offset_range = array (-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
+	$structure[] = '<optgroup label="' . esc_attr__( 'Manual Offsets' ) . '">';
+	$offset_range = array(-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
 		0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6, 6.5, 7, 7.5, 8, 8.5, 8.75, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.75, 13, 13.75, 14);
 	foreach ( $offset_range as $offset ) {
 		if ( 0 <= $offset )
 			$offset_name = '+' . $offset;
 		else
-			$offset_name = (string) $offset;
+			$offset_name = ( string ) $offset;
 
 		$offset_value = $offset_name;
-		$offset_name = str_replace(array('.25','.5','.75'), array(':15',':30',':45'), $offset_name);
+		$offset_name = str_replace( array('.25', '.5', '.75'), array(':15', ':30', ':45'), $offset_name );
 		$offset_name = 'UTC' . $offset_name;
 		$offset_value = 'UTC' . $offset_value;
 		$selected = '';
@@ -4622,7 +4661,7 @@ function wp_timezone_choice( $selected_zone ) {
  * @return string
  */
 function _cleanup_header_comment( $str ) {
-	return trim(preg_replace("/\s*(?:\*\/|\?>).*/", '', $str));
+	return trim( preg_replace( "/\s*(?:\*\/|\?>).*/", '', $str ) );
 }
 
 /**
@@ -4639,35 +4678,35 @@ function wp_scheduled_delete() {
 
 	$delete_timestamp = time() - ( DAY_IN_SECONDS * EMPTY_TRASH_DAYS );
 
-	$posts_to_delete = $wpdb->get_results($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_time' AND meta_value < '%d'", $delete_timestamp), ARRAY_A);
+	$posts_to_delete = $wpdb->get_results( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_time' AND meta_value < '%d'", $delete_timestamp ), ARRAY_A );
 
-	foreach ( (array) $posts_to_delete as $post ) {
-		$post_id = (int) $post['post_id'];
-		if ( !$post_id )
+	foreach ( ( array ) $posts_to_delete as $post ) {
+		$post_id = ( int ) $post['post_id'];
+		if ( ! $post_id )
 			continue;
 
-		$del_post = get_post($post_id);
+		$del_post = get_post( $post_id );
 
-		if ( !$del_post || 'trash' != $del_post->post_status ) {
-			delete_post_meta($post_id, '_wp_trash_meta_status');
-			delete_post_meta($post_id, '_wp_trash_meta_time');
+		if ( ! $del_post || 'trash' != $del_post->post_status ) {
+			delete_post_meta( $post_id, '_wp_trash_meta_status' );
+			delete_post_meta( $post_id, '_wp_trash_meta_time' );
 		} else {
-			wp_delete_post($post_id);
+			wp_delete_post( $post_id );
 		}
 	}
 
-	$comments_to_delete = $wpdb->get_results($wpdb->prepare("SELECT comment_id FROM $wpdb->commentmeta WHERE meta_key = '_wp_trash_meta_time' AND meta_value < '%d'", $delete_timestamp), ARRAY_A);
+	$comments_to_delete = $wpdb->get_results( $wpdb->prepare( "SELECT comment_id FROM $wpdb->commentmeta WHERE meta_key = '_wp_trash_meta_time' AND meta_value < '%d'", $delete_timestamp ), ARRAY_A );
 
-	foreach ( (array) $comments_to_delete as $comment ) {
-		$comment_id = (int) $comment['comment_id'];
-		if ( !$comment_id )
+	foreach ( ( array ) $comments_to_delete as $comment ) {
+		$comment_id = ( int ) $comment['comment_id'];
+		if ( ! $comment_id )
 			continue;
 
-		$del_comment = get_comment($comment_id);
+		$del_comment = get_comment( $comment_id );
 
-		if ( !$del_comment || 'trash' != $del_comment->comment_approved ) {
-			delete_comment_meta($comment_id, '_wp_trash_meta_time');
-			delete_comment_meta($comment_id, '_wp_trash_meta_status');
+		if ( ! $del_comment || 'trash' != $del_comment->comment_approved ) {
+			delete_comment_meta( $comment_id, '_wp_trash_meta_time' );
+			delete_comment_meta( $comment_id, '_wp_trash_meta_status' );
 		} else {
 			wp_delete_comment( $del_comment );
 		}
@@ -4719,7 +4758,7 @@ function get_file_data( $file, $default_headers, $context = '' ) {
 	 */
 	if ( $context && $extra_headers = apply_filters( "extra_{$context}_headers", [] ) ) {
 		$extra_headers = array_combine( $extra_headers, $extra_headers ); // keys equal values
-		$all_headers = array_merge( $extra_headers, (array) $default_headers );
+		$all_headers = array_merge( $extra_headers, ( array ) $default_headers );
 	} else {
 		$all_headers = $default_headers;
 	}
@@ -4840,7 +4879,7 @@ function send_nosniff_header() {
  * @return string SQL clause.
  */
 function _wp_mysql_week( $column ) {
-	switch ( $start_of_week = (int) get_option( 'start_of_week' ) ) {
+	switch ( $start_of_week = ( int ) get_option( 'start_of_week' ) ) {
 	case 1 :
 		return "WEEK( $column, 1 )";
 	case 2 :
@@ -4869,9 +4908,9 @@ function _wp_mysql_week( $column ) {
  * @return array IDs of all members of loop.
  */
 function wp_find_hierarchy_loop( $callback, $start, $start_parent, $callback_args = [] ) {
-	$override = is_null( $start_parent ) ? [] : array( $start => $start_parent );
+	$override = is_null( $start_parent ) ? [] : array($start => $start_parent);
 
-	if ( !$arbitrary_loop_member = wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override, $callback_args ) )
+	if ( ! $arbitrary_loop_member = wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override, $callback_args ) )
 		return [];
 
 	return wp_find_hierarchy_loop_tortoise_hare( $callback, $arbitrary_loop_member, $override, $callback_args, true );
@@ -4906,19 +4945,19 @@ function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = []
 	while (
 		$tortoise
 	&&
-		( $evanescent_hare = isset( $override[$hare] ) ? $override[$hare] : call_user_func_array( $callback, array_merge( array( $hare ), $callback_args ) ) )
+		( $evanescent_hare = isset( $override[ $hare ] ) ? $override[ $hare ] : call_user_func_array( $callback, array_merge( array($hare), $callback_args ) ) )
 	&&
-		( $hare = isset( $override[$evanescent_hare] ) ? $override[$evanescent_hare] : call_user_func_array( $callback, array_merge( array( $evanescent_hare ), $callback_args ) ) )
+		( $hare = isset( $override[ $evanescent_hare ] ) ? $override[ $evanescent_hare ] : call_user_func_array( $callback, array_merge( array($evanescent_hare), $callback_args ) ) )
 	) {
 		if ( $_return_loop )
-			$return[$tortoise] = $return[$evanescent_hare] = $return[$hare] = true;
+			$return[ $tortoise ] = $return[ $evanescent_hare ] = $return[ $hare ] = true;
 
 		// tortoise got lapped - must be a loop
 		if ( $tortoise == $evanescent_hare || $tortoise == $hare )
 			return $_return_loop ? $return : $tortoise;
 
 		// Increment tortoise by one step
-		$tortoise = isset( $override[$tortoise] ) ? $override[$tortoise] : call_user_func_array( $callback, array_merge( array( $tortoise ), $callback_args ) );
+		$tortoise = isset( $override[ $tortoise ] ) ? $override[ $tortoise ] : call_user_func_array( $callback, array_merge( array($tortoise), $callback_args ) );
 	}
 
 	return false;
@@ -4955,7 +4994,7 @@ function wp_allowed_protocols() {
 	static $protocols = [];
 
 	if ( empty( $protocols ) ) {
-		$protocols = array( 'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal', 'urn' );
+		$protocols = array('http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal', 'urn');
 
 		/**
 		 * Filters the list of protocols allowed in HTML attributes.
@@ -4988,10 +5027,11 @@ function wp_allowed_protocols() {
  *                      of individual calls.
  */
 function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pretty = true ) {
-	if ( version_compare( PHP_VERSION, '5.2.5', '>=' ) )
-		$trace = debug_backtrace( false );
-	else
-		$trace = debug_backtrace();
+	if ( version_compare( PHP_VERSION, '5.2.5', '>=' ) ) {
+			$trace = debug_backtrace( false );
+	} else {
+			$trace = debug_backtrace();
+	}
 
 	$caller = [];
 	$check_class = ! is_null( $ignore_class );
@@ -5006,20 +5046,21 @@ function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pr
 
 			$caller[] = "{$call['class']}{$call['type']}{$call['function']}";
 		} else {
-			if ( in_array( $call['function'], array( 'do_action', 'apply_filters' ) ) ) {
+			if ( in_array( $call['function'], array('do_action', 'apply_filters') ) ) {
 				$caller[] = "{$call['function']}('{$call['args'][0]}')";
-			} elseif ( in_array( $call['function'], array( 'include', 'include_once', 'require', 'require_once' ) ) ) {
-				$caller[] = $call['function'] . "('" . str_replace( array( WP_CONTENT_DIR, ABSPATH ) , '', $call['args'][0] ) . "')";
+			} elseif ( in_array( $call['function'], array('include', 'include_once', 'require', 'require_once') ) ) {
+				$caller[] = $call['function'] . "('" . str_replace( array(WP_CONTENT_DIR, ABSPATH), '', $call['args'][0] ) . "')";
 			} else {
 				$caller[] = $call['function'];
 			}
 		}
 	}
-	if ( $pretty )
-		return join( ', ', array_reverse( $caller ) );
-	else
-		return $caller;
-}
+	if ( $pretty ) {
+			return join( ', ', array_reverse( $caller ) );
+	} else {
+			return $caller;
+	}
+	}
 
 /**
  * Retrieve ids that are not already present in the cache.
@@ -5035,8 +5076,8 @@ function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pr
 function _get_non_cached_ids( $object_ids, $cache_key ) {
 	$clean = [];
 	foreach ( $object_ids as $id ) {
-		$id = (int) $id;
-		if ( !wp_cache_get( $id, $cache_key ) ) {
+		$id = ( int ) $id;
+		if ( ! wp_cache_get( $id, $cache_key ) ) {
 			$clean[] = $id;
 		}
 	}
@@ -5053,15 +5094,16 @@ function _get_non_cached_ids( $object_ids, $cache_key ) {
  * @return bool Whether the device is able to upload files.
  */
 function _device_can_upload() {
-	if ( ! wp_is_mobile() )
-		return true;
+	if ( ! wp_is_mobile() ) {
+			return true;
+	}
 
 	$app = getApp();
 	$ua = $app['request.useragent'];
 
-	if ( strpos($ua, 'iPhone') !== false
-		|| strpos($ua, 'iPad') !== false
-		|| strpos($ua, 'iPod') !== false ) {
+	if ( strpos( $ua, 'iPhone' ) !== false
+		|| strpos( $ua, 'iPad' ) !== false
+		|| strpos( $ua, 'iPod' ) !== false ) {
 			return preg_match( '#OS ([\d_]+) like Mac OS X#', $ua, $version ) && version_compare( $version[1], '6', '>=' );
 	}
 
@@ -5076,7 +5118,7 @@ function _device_can_upload() {
  */
 function wp_is_stream( $path ) {
 	$wrappers = stream_get_wrappers();
-	$wrappers_re = '(' . join('|', $wrappers) . ')';
+	$wrappers_re = '(' . join( '|', $wrappers ) . ')';
 
 	return preg_match( "!^$wrappers_re://!", $path ) === 1;
 }
@@ -5118,14 +5160,16 @@ function wp_checkdate( $month, $day, $year, $source_date ) {
  * @since 3.6.0
  */
 function wp_auth_check_load() {
-	if ( ! is_admin() && ! is_user_logged_in() )
-		return;
+	if ( ! is_admin() && ! is_user_logged_in() ) {
+			return;
+	}
 
-	if ( defined( 'IFRAME_REQUEST' ) )
-		return;
+	if ( defined( 'IFRAME_REQUEST' ) ) {
+			return;
+	}
 
 	$screen = get_current_screen();
-	$hidden = array( 'update', 'update-network', 'update-core', 'update-core-network', 'upgrade', 'upgrade-network', 'network' );
+	$hidden = array('update', 'update-network', 'update-core', 'update-core-network', 'upgrade', 'upgrade-network', 'network');
 	$show = ! in_array( $screen->id, $hidden );
 
 	/**
@@ -5178,15 +5222,15 @@ function wp_auth_check_html() {
 
 	if ( $same_domain ) {
 		?>
-		<div id="wp-auth-check-form" class="loading" data-src="<?php echo esc_url( add_query_arg( array( 'interim-login' => 1 ), $login_url ) ); ?>"></div>
+		<div id="wp-auth-check-form" class="loading" data-src="<?php echo esc_url( add_query_arg( array('interim-login' => 1), $login_url ) ); ?>"></div>
 		<?php
 	}
 
 	?>
 	<div class="wp-auth-fallback">
-		<p><b class="wp-auth-fallback-expired" tabindex="0"><?php _e('Session expired'); ?></b></p>
-		<p><a href="<?php echo esc_url( $login_url ); ?>" target="_blank"><?php _e('Please log in again.'); ?></a>
-		<?php _e('The login page will open in a new window. After logging in you can close it and return to this page.'); ?></p>
+		<p><b class="wp-auth-fallback-expired" tabindex="0"><?php _e( 'Session expired' ); ?></b></p>
+		<p><a href="<?php echo esc_url( $login_url ); ?>" target="_blank"><?php _e( 'Please log in again.' ); ?></a>
+		<?php _e( 'The login page will open in a new window. After logging in you can close it and return to this page.' ); ?></p>
 	</div>
 	</div>
 	</div>
@@ -5228,8 +5272,9 @@ function wp_auth_check( $response ) {
  * @return string Tag RegEx.
  */
 function get_tag_regex( $tag ) {
-	if ( empty( $tag ) )
-		return;
+	if ( empty( $tag ) ) {
+			return;
+	}
 	return sprintf( '<%1$s[^<]*(?:>[\s\S]*<\/%1$s>|\s*\/>)', tag_escape( $tag ) );
 }
 
@@ -5247,12 +5292,14 @@ function get_tag_regex( $tag ) {
  */
 function _canonical_charset( $charset ) {
 	if ( 'UTF-8' === $charset || 'utf-8' === $charset || 'utf8' === $charset ||
-		'UTF8' === $charset )
-		return 'UTF-8';
+		'UTF8' === $charset ) {
+			return 'UTF-8';
+	}
 
 	if ( 'ISO-8859-1' === $charset || 'iso-8859-1' === $charset ||
-		'iso8859-1' === $charset || 'ISO8859-1' === $charset )
-		return 'ISO-8859-1';
+		'iso8859-1' === $charset || 'ISO8859-1' === $charset ) {
+			return 'ISO-8859-1';
+	}
 
 	return $charset;
 }
@@ -5287,11 +5334,13 @@ function mbstring_binary_safe_encoding( $reset = false ) {
 	static $encodings = [];
 	static $overloaded = null;
 
-	if ( is_null( $overloaded ) )
-		$overloaded = function_exists( 'mb_internal_encoding' ) && ( ini_get( 'mbstring.func_overload' ) & 2 );
+	if ( is_null( $overloaded ) ) {
+			$overloaded = function_exists( 'mb_internal_encoding' ) && ( ini_get( 'mbstring.func_overload' ) & 2 );
+	}
 
-	if ( false === $overloaded )
-		return;
+	if ( false === $overloaded ) {
+			return;
+	}
 
 	if ( ! $reset ) {
 		$encoding = mb_internal_encoding();
@@ -5335,7 +5384,7 @@ function wp_validate_boolean( $var ) {
 		return false;
 	}
 
-	return (bool) $var;
+	return ( bool ) $var;
 }
 
 /**
@@ -5374,7 +5423,7 @@ function wp_post_preview_js() {
 	}
 
 	// Has to match the window name used in post_submit_meta_box()
-	$name = 'wp-preview-' . (int) $post->ID;
+	$name = 'wp-preview-' . ( int ) $post->ID;
 
 	?>
 	<script>
@@ -5442,61 +5491,61 @@ function wp_raise_memory_limit( $context = 'admin' ) {
 	$filtered_limit   = $wp_max_limit;
 
 	switch ( $context ) {
-		case 'admin':
-			/**
-			 * Filters the maximum memory limit available for administration screens.
-			 *
-			 * This only applies to administrators, who may require more memory for tasks
-			 * like updates. Memory limits when processing images (uploaded or edited by
-			 * users of any role) are handled separately.
-			 *
-			 * The `WP_MAX_MEMORY_LIMIT` constant specifically defines the maximum memory
-			 * limit available when in the administration back end. The default is 256M
-			 * (256 megabytes of memory) or the original `memory_limit` php.ini value if
-			 * this is higher.
-			 *
-			 * @since 3.0.0
-			 * @since 4.6.0 The default now takes the original `memory_limit` into account.
-			 *
-			 * @param int|string $filtered_limit The maximum WordPress memory limit. Accepts an integer
-			 *                                   (bytes), or a shorthand string notation, such as '256M'.
-			 */
-			$filtered_limit = apply_filters( 'admin_memory_limit', $filtered_limit );
-			break;
+	case 'admin':
+		/**
+		 * Filters the maximum memory limit available for administration screens.
+		 *
+		 * This only applies to administrators, who may require more memory for tasks
+		 * like updates. Memory limits when processing images (uploaded or edited by
+		 * users of any role) are handled separately.
+		 *
+		 * The `WP_MAX_MEMORY_LIMIT` constant specifically defines the maximum memory
+		 * limit available when in the administration back end. The default is 256M
+		 * (256 megabytes of memory) or the original `memory_limit` php.ini value if
+		 * this is higher.
+		 *
+		 * @since 3.0.0
+		 * @since 4.6.0 The default now takes the original `memory_limit` into account.
+		 *
+		 * @param int|string $filtered_limit The maximum WordPress memory limit. Accepts an integer
+		 *                                   (bytes), or a shorthand string notation, such as '256M'.
+		 */
+		$filtered_limit = apply_filters( 'admin_memory_limit', $filtered_limit );
+		break;
 
-		case 'image':
-			/**
-			 * Filters the memory limit allocated for image manipulation.
-			 *
-			 * @since 3.5.0
-			 * @since 4.6.0 The default now takes the original `memory_limit` into account.
-			 *
-			 * @param int|string $filtered_limit Maximum memory limit to allocate for images.
-			 *                                   Default `WP_MAX_MEMORY_LIMIT` or the original
-			 *                                   php.ini `memory_limit`, whichever is higher.
-			 *                                   Accepts an integer (bytes), or a shorthand string
-			 *                                   notation, such as '256M'.
-			 */
-			$filtered_limit = apply_filters( 'image_memory_limit', $filtered_limit );
-			break;
+	case 'image':
+		/**
+		 * Filters the memory limit allocated for image manipulation.
+		 *
+		 * @since 3.5.0
+		 * @since 4.6.0 The default now takes the original `memory_limit` into account.
+		 *
+		 * @param int|string $filtered_limit Maximum memory limit to allocate for images.
+		 *                                   Default `WP_MAX_MEMORY_LIMIT` or the original
+		 *                                   php.ini `memory_limit`, whichever is higher.
+		 *                                   Accepts an integer (bytes), or a shorthand string
+		 *                                   notation, such as '256M'.
+		 */
+		$filtered_limit = apply_filters( 'image_memory_limit', $filtered_limit );
+		break;
 
-		default:
-			/**
-			 * Filters the memory limit allocated for arbitrary contexts.
-			 *
-			 * The dynamic portion of the hook name, `$context`, refers to an arbitrary
-			 * context passed on calling the function. This allows for plugins to define
-			 * their own contexts for raising the memory limit.
-			 *
-			 * @since 4.6.0
-			 *
-			 * @param int|string $filtered_limit Maximum memory limit to allocate for images.
-			 *                                   Default '256M' or the original php.ini `memory_limit`,
-			 *                                   whichever is higher. Accepts an integer (bytes), or a
-			 *                                   shorthand string notation, such as '256M'.
-			 */
-			$filtered_limit = apply_filters( "{$context}_memory_limit", $filtered_limit );
-			break;
+	default:
+		/**
+	 	 * Filters the memory limit allocated for arbitrary contexts.
+		 *
+		 * The dynamic portion of the hook name, `$context`, refers to an arbitrary
+		 * context passed on calling the function. This allows for plugins to define
+		 * their own contexts for raising the memory limit.
+		 *
+		 * @since 4.6.0
+		 *
+		 * @param int|string $filtered_limit Maximum memory limit to allocate for images.
+		 *                                   Default '256M' or the original php.ini `memory_limit`,
+		 *                                   whichever is higher. Accepts an integer (bytes), or a
+		 *                                   shorthand string notation, such as '256M'.
+		 */
+		$filtered_limit = apply_filters( "{$context}_memory_limit", $filtered_limit );
+		break;
 	}
 
 	$filtered_limit_int = wp_convert_hr_to_bytes( $filtered_limit );
