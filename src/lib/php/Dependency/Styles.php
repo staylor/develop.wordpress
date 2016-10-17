@@ -130,21 +130,27 @@ class Styles extends Dependencies {
 	 * @return bool True on success, false on failure.
 	 */
 	public function do_item( $handle, $group = false ) {
-		if ( !parent::do_item($handle) )
+		if ( ! parent::do_item( $handle ) ) {
 			return false;
+		}
 
-		$obj = $this->registered[$handle];
-		if ( null === $obj->ver )
+		$obj = $this->registered[ $handle ];
+		if ( null === $obj->ver ) {
 			$ver = '';
-		else
+		} else {
 			$ver = $obj->ver ? $obj->ver : $this->default_version;
+		}
 
-		if ( isset($this->args[$handle]) )
-			$ver = $ver ? $ver . '&amp;' . $this->args[$handle] : $this->args[$handle];
+		if ( isset( $this->args[ $handle ] ) ) {
+			$ver = $ver ? $ver . '&amp;' . $this->args[ $handle ] : $this->args[ $handle ];
+		}
 
 		if ( $this->do_concat ) {
-			if ( $this->in_default_dir($obj->src) && !isset($obj->extra['conditional']) && !isset($obj->extra['alt']) ) {
-				$this->concat .= "$handle,";
+			if ( $this->in_default_dir( $obj->src ) &&
+				! isset( $obj->extra['conditional'] ) &&
+				! isset( $obj->extra['alt'] )
+			) {
+				$this->concat .= $handle . ',';
 
 				$this->print_code .= $this->print_inline_style( $handle, false );
 
@@ -202,7 +208,7 @@ class Styles extends Dependencies {
 		if ( 'rtl' === $this->text_direction && isset($obj->extra['rtl']) && $obj->extra['rtl'] ) {
 			if ( is_bool( $obj->extra['rtl'] ) || 'replace' === $obj->extra['rtl'] ) {
 				$suffix = isset( $obj->extra['suffix'] ) ? $obj->extra['suffix'] : '';
-				$rtl_href = str_replace( $suffix . '.css', '-rtl' . $suffix . '.css', $this->_css_href( $obj->src , $ver, "$handle-rtl" ));
+				$rtl_href = str_replace( $suffix . '.css', '-rtl' . $suffix . '.css', $this->_css_href( $obj->src , $ver, $handle . '-rtl' ));
 			} else {
 				$rtl_href = $this->_css_href( $obj->extra['rtl'], $ver, $handle . '-rtl' );
 			}

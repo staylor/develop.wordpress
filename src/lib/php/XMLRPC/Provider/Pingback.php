@@ -102,7 +102,7 @@ class Pingback implements ProviderInterface {
 			} elseif ( is_string( $urltest['fragment'] ) ) {
 				// ...or a string #title, a little more complicated
 				$title = preg_replace( '/[^a-z0-9]/i', '.', $urltest['fragment'] );
-				$sql = "SELECT ID FROM {$db->posts} WHERE post_title RLIKE %s";
+				$sql = 'SELECT ID FROM ' . $db->posts . ' WHERE post_title RLIKE %s';
 				$post_ID = (int) $db->get_var( $db->prepare( $sql, $title ) );
 			}
 
@@ -133,7 +133,7 @@ class Pingback implements ProviderInterface {
 		}
 
 		// Let's check that the remote site didn't already pingback this entry
-		$sql = "SELECT * FROM {$db->comments} WHERE comment_post_ID = %d AND comment_author_url = %s";
+		$sql = 'SELECT * FROM ' . $db->comments . ' WHERE comment_post_ID = %d AND comment_author_url = %s';
 		if ( $db->get_results( $db->prepare( $sql, $post_ID, $pagelinkedfrom ) ) ) {
 			return $this->pingback_error( 48, __( 'The pingback has already been registered.' ) );
 		}
@@ -151,7 +151,7 @@ class Pingback implements ProviderInterface {
 			'timeout' => 10,
 			'redirection' => 0,
 			'limit_response_size' => 153600, // 150 KB
-			'user-agent' => "{$user_agent}; verifying pingback from {$remote_ip}",
+			'user-agent' => $user_agent . '; verifying pingback from ' . $remote_ip,
 			'headers' => [
 				'X-Pingback-Forwarded-For' => $remote_ip,
 			],
@@ -309,7 +309,7 @@ class Pingback implements ProviderInterface {
 
 		$app = getApp();
 		$db = $app['db'];
-		$sql = "SELECT comment_author_url, comment_content, comment_author_IP, comment_type FROM {$db->comments} WHERE comment_post_ID = %d";
+		$sql = 'SELECT comment_author_url, comment_content, comment_author_IP, comment_type FROM ' . $db->comments . ' WHERE comment_post_ID = %d';
 		$comments = $db->get_results( $db->prepare( $sql, $id ) );
 
 		if ( ! $comments ) {

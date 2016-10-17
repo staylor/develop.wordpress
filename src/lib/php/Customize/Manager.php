@@ -675,7 +675,7 @@ class Manager {
 		 * @param mixed   $value Unsanitized setting post value.
 		 * @param Manager $this  Manager instance.
 		 */
-		do_action( "customize_post_value_set_{$setting_id}", $value, $this );
+		do_action( 'customize_post_value_set_' . $setting_id, $value, $this );
 
 		/**
 		 * Announce when any setting's unsanitized post value has been set.
@@ -973,7 +973,12 @@ class Manager {
 			$validity = $setting->validate( $unsanitized_value );
 			if ( ! is_wp_error( $validity ) ) {
 				/** This filter is documented in wp-includes/class-wp-customize-setting.php */
-				$late_validity = apply_filters( "customize_validate_{$setting->id}", new WP_Error(), $unsanitized_value, $setting );
+				$late_validity = apply_filters(
+					'customize_validate_' . $setting->id,
+					new \WP_Error(),
+					$unsanitized_value,
+					$setting
+				);
 				if ( ! empty( $late_validity->errors ) ) {
 					$validity = $late_validity;
 				}

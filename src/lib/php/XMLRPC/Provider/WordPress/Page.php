@@ -398,17 +398,17 @@ trait Page {
 		$app = getApp();
 		$db = $app['db'];
 		// Get list of pages ids and titles
-		$pages = $db->get_results("
+		$pages = $db->get_results( '
 			SELECT ID page_id,
 				post_title page_title,
 				post_parent page_parent_id,
 				post_date_gmt,
 				post_date,
 				post_status
-			FROM {$db->posts}
-			WHERE post_type = 'page'
+			FROM ' . $db->posts . '
+			WHERE post_type = "page"
 			ORDER BY ID
-		");
+		' );
 
 		foreach ( $pages as &$page ) {
 			// The date needs to be formatted properly.

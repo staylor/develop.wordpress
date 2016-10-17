@@ -175,13 +175,14 @@ class MetaWeblog implements ProviderInterface {
 		$post_content = $content_struct['description'] ?? null;
 		$post_status = $publish ? 'publish' : 'draft';
 
-		if ( isset( $content_struct["{$post_type}_status"] ) ) {
-			switch ( $content_struct["{$post_type}_status"] ) {
+		$key = $post_type = '_status';
+		if ( isset( $content_struct[ $key ] ) ) {
+			switch ( $content_struct[ $key ] ) {
 			case 'draft':
 			case 'pending':
 			case 'private':
 			case 'publish':
-				$post_status = $content_struct["{$post_type}_status"];
+				$post_status = $content_struct[ $key ];
 				break;
 
 			default:
@@ -542,13 +543,14 @@ class MetaWeblog implements ProviderInterface {
 		}
 
 		$post_status = $publish ? 'publish' : 'draft';
-		if ( isset( $content_struct["{$post_type}_status"] ) ) {
-			switch( $content_struct["{$post_type}_status"] ) {
+		$key = $post_type . '_status';
+		if ( isset( $content_struct[ $key ] ) ) {
+			switch( $content_struct[ $key ] ) {
 			case 'draft':
 			case 'pending':
 			case 'private':
 			case 'publish':
-				$post_status = $content_struct["{$post_type}_status"];
+				$post_status = $content_struct[ $key ];
 				break;
 
 			default:

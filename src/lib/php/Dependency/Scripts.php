@@ -213,7 +213,7 @@ class Scripts extends Dependencies {
 
 		echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5
 		echo "/* <![CDATA[ */\n";
-		echo "$output\n";
+		echo $output . "\n";
 		echo "/* ]]> */\n";
 		echo "</script>\n";
 
@@ -295,11 +295,11 @@ class Scripts extends Dependencies {
 				$this->reset();
 			} elseif ( $this->in_default_dir( $srce ) && ! $conditional ) {
 				$this->print_code .= $this->print_extra_script( $handle, false );
-				$this->concat .= "$handle,";
+				$this->concat .= $handle . ',';
 				return true;
 			} else {
-				$this->ext_handles .= "$handle,";
-				$this->ext_version .= "$handle$ver";
+				$this->ext_handles .= $handle . ',';
+				$this->ext_version .= $handle . $ver;
 			}
 		}
 
@@ -439,22 +439,22 @@ class Scripts extends Dependencies {
 		}
 
 		foreach ( (array) $l10n as $key => $value ) {
-			if ( !is_scalar($value) )
+			if ( ! is_scalar( $value ) ) {
 				continue;
-
-			$l10n[$key] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8');
+			}
+			$l10n[ $key ] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8' );
 		}
 
-		$script = "var $object_name = " . wp_json_encode( $l10n ) . ';';
+		$script = 'var ' . $object_name . ' = ' . wp_json_encode( $l10n ) . ';';
 
-		if ( !empty($after) )
-			$script .= "\n$after;";
-
+		if ( ! empty( $after ) ) {
+			$script .= "\n" . $after . ';';
+		}
 		$data = $this->get_data( $handle, 'data' );
 
-		if ( !empty( $data ) )
-			$script = "$data\n$script";
-
+		if ( ! empty( $data ) ) {
+			$script = $data . "\n" . $script;
+		}
 		return $this->add_data( $handle, 'data', $script );
 	}
 

@@ -310,7 +310,7 @@ class MovableType implements ProviderInterface {
 
 		$app = getApp();
 		$db = $app['db'];
-		$sql = "SELECT comment_author_url, comment_content, comment_author_IP, comment_type FROM {$db->comments} WHERE comment_post_ID = %d";
+		$sql = 'SELECT comment_author_url, comment_content, comment_author_IP, comment_type FROM ' . $db->comments . ' WHERE comment_post_ID = %d';
 		$comments = $db->get_results( $db->prepare( $sql, $post_ID ) );
 
 		if ( ! $comments ) {

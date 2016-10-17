@@ -31,7 +31,7 @@ $trackback_response = function ($error = 0, $error_message = '') {
 		echo '<?xml version="1.0" encoding="utf-8"?'.">\n";
 		echo "<response>\n";
 		echo "<error>1</error>\n";
-		echo "<message>$error_message</message>\n";
+		echo '<message>' . $error_message . "</message>\n";
 		echo '</response>';
 		die();
 	} else {
@@ -118,13 +118,14 @@ if ( !empty($tb_url) && !empty($title) ) {
 	$comment_author = $blog_name;
 	$comment_author_email = '';
 	$comment_author_url = $tb_url;
-	$comment_content = "<strong>$title</strong>\n\n$excerpt";
+	$comment_content = sprintf( "<strong>%s</strong>\n\n%s", $title, $excerpt );
 	$comment_type = 'trackback';
 
-	$dupe = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_author_url = %s", $comment_post_ID, $comment_author_url) );
-	if ( $dupe )
+	$sql = 'SELECT * FROM ' . $wpdb->comments . ' WHERE comment_post_ID = %d AND comment_author_url = %s';
+	$dupe = $wpdb->get_results( $wpdb->prepare( $sql, $comment_post_ID, $comment_author_url) );
+	if ( $dupe ) {
 		trackback_response( 1, __( 'We already have a ping from that URL for this post.' ) );
-
+	}
 	$commentdata = compact('comment_post_ID', 'comment_author', 'comment_author_email', 'comment_author_url', 'comment_content', 'comment_type');
 
 	wp_new_comment($commentdata);

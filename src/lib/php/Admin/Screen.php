@@ -263,7 +263,7 @@ final class Screen {
 			}
 
 			switch ( $base ) {
-			case 'post' :
+			case 'post':
 				if ( $_get->getInt( 'post' ) ) {
 					$post_id = $_get->getInt( 'post' );
 				} elseif ( $_post->getInt( 'post_ID' ) ) {
@@ -279,8 +279,8 @@ final class Screen {
 					}
 				}
 				break;
-			case 'edit-tags' :
-			case 'term' :
+			case 'edit-tags':
+			case 'term':
 				if ( null === $post_type && is_object_in_taxonomy( 'post', $taxonomy ? $taxonomy : 'post_tag' ) ) {
 					$post_type = 'post';
 				}
@@ -880,7 +880,7 @@ final class Screen {
 		 */
 		$this->_screen_settings = apply_filters( 'screen_settings', $this->_screen_settings, $this );
 
-		if ( $this->_screen_settings || $this->_options ) {
+		if ( $this->_screen_settings || ! empty( $this->_options ) ) {
 			$show_screen = true;
 		}
 
@@ -1058,7 +1058,7 @@ final class Screen {
 				$title = __( 'Comments' );
 			}
 
-			$id = "$column-hide";
+			$id = $column . '-hide';
 
 			$prefs[] = [
 				'column' => $column,

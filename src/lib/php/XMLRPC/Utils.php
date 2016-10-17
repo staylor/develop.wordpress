@@ -648,7 +648,7 @@ trait Utils {
 		$db = $app['db'];
 
 		// find any unattached files
-		$attachments = $db->get_results( "SELECT ID, guid FROM {$db->posts} WHERE post_parent = '0' AND post_type = 'attachment'" );
+		$attachments = $db->get_results( 'SELECT ID, guid FROM ' . $db->posts . ' WHERE post_parent = 0 AND post_type = "attachment"' );
 		if ( is_array( $attachments ) ) {
 			foreach ( $attachments as $file ) {
 				if ( ! empty( $file->guid ) && strpos( $post_content, $file->guid ) !== false ) {

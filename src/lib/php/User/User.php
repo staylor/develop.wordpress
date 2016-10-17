@@ -118,7 +118,7 @@ class User {
 	 * @param string $name Optional. User's username
 	 * @param int $blog_id Optional Site ID, defaults to current site.
 	 */
-	public function __construct( $id = 0, $name = '', $blog_id = '' ) {
+	public function __construct( $id = 0, $name = '', $blog_id = 0 ) {
 		if ( ! isset( self::$back_compat_keys ) ) {
 			$app = getApp();
 			$prefix = $app['db']->prefix;
@@ -164,7 +164,7 @@ class User {
 	 * @param object $data    User DB row object.
 	 * @param int    $blog_id Optional. The site ID to initialize for.
 	 */
-	public function init( $data, $blog_id = '' ) {
+	public function init( $data, $blog_id = 0 ) {
 		$this->data = $data;
 		$this->ID = (int) $data->ID;
 
@@ -242,7 +242,7 @@ class User {
 
 		$app = getApp();
 		$wpdb = $app['db'];
-		$sql = "SELECT * FROM {$wpdb->users} WHERE $db_field = %s";
+		$sql = 'SELECT * FROM ' . $wpdb->users . ' WHERE ' . $db_field . ' = %s';
 		$user = $wpdb->get_row( $wpdb->prepare( $sql, $value ) );
 		if ( ! $user ) {
 			return false;
@@ -769,8 +769,8 @@ class User {
 	 *
 	 * @param int $blog_id Optional. Site ID, defaults to current site.
 	 */
-	public function for_blog( $blog_id = '' ) {
-		if ( ! empty( $blog_id ) ) {
+	public function for_blog( $blog_id = 0 ) {
+		if ( 0 !== $blog_id ) {
 			$app = getApp();
 			$cap_key = $app['db']->get_blog_prefix( $blog_id ) . 'capabilities';
 		} else {

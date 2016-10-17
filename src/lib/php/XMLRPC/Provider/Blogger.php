@@ -44,7 +44,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string  $username
 	 *     @type string  $password
 	 * }
-	 * @return array|WP\IXR\Error
+	 * @return \WP\IXR\Error|array
 	 */
 	public function blogger_getUsersBlogs( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) ) {
@@ -93,7 +93,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $username Username.
 	 *     @type string $password Password.
 	 * }
-	 * @return array|WP\IXR\Error
+	 * @return \WP\IXR\Error|array
 	 */
 	protected function _multisite_getUsersBlogs( $args ) {
 		$current_blog = get_blog_details();
@@ -101,7 +101,8 @@ class Blogger implements ProviderInterface {
 		$domain = $current_blog->domain;
 		$path = $current_blog->path . 'xmlrpc.php';
 
-		$rpc = new Client( set_url_scheme( "http://{$domain}{$path}" ) );
+		$url = sprintf( 'http://%s%s', $domain, $path );
+		$rpc = new Client( set_url_scheme( $url ) );
 		$rpc->query( 'wp.getUsersBlogs', $args[1], $args[2] );
 		$blogs = $rpc->getResponse();
 
@@ -110,13 +111,12 @@ class Blogger implements ProviderInterface {
 		}
 
 		$app = getApp();
-		$host = $app['request']->getHttpHost();
-		if ( $domain === $host && $path === $app['request']->getRequestUri() ) {
+		if ( $domain === $app['request.host'] && $path === $app['request.uri'] ) {
 			return $blogs;
 		}
 
 		foreach ( (array) $blogs as $blog ) {
-			if ( strpos( $blog['url'], $host ) ) {
+			if ( strpos( $blog['url'], $app['request.host'] ) ) {
 				return [ $blog ];
 			}
 		}
@@ -137,7 +137,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $username
 	 *     @type string $password
 	 * }
-	 * @return array|WP\IXR\Error
+	 * @return \WP\IXR\Error|array
 	 */
 	public function blogger_getUserInfo( $args ) {
 		$this->escape( $args );
@@ -181,7 +181,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string  $username
 	 *     @type string  $password
 	 * }
-	 * @return array|WP\IXR\Error
+	 * @return \WP\IXR\Error|array
 	 */
 	public function blogger_getPost( $args ) {
 		$this->escape( $args );
@@ -237,7 +237,7 @@ class Blogger implements ProviderInterface {
 	 *     @type string $password
 	 *     @type int    $numberposts (optional)
 	 * }
-	 * @return array|WP\IXR\Error
+	 * @return \WP\IXR\Error|array
 	 */
 	public function blogger_getRecentPosts( $args ) {
 

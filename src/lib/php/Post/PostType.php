@@ -590,9 +590,17 @@ class PostType extends Observable {
 
 		if ( false !== $this->rewrite && ( is_admin() || '' != get_option( 'permalink_structure' ) ) ) {
 			if ( $this->hierarchical ) {
-				add_rewrite_tag( "%$this->name%", '(.+?)', $this->query_var ? "{$this->query_var}=" : "post_type=$this->name&pagename=" );
+				add_rewrite_tag(
+					'%' . $this->name . '%',
+					'(.+?)',
+					$this->query_var ? $this->query_var . '=' : ( 'post_type=' . $this->name . '&pagename=' )
+				);
 			} else {
-				add_rewrite_tag( "%$this->name%", '([^/]+)', $this->query_var ? "{$this->query_var}=" : "post_type=$this->name&name=" );
+				add_rewrite_tag(
+					'%' . $this->name . '%',
+					'([^/]+)',
+					$this->query_var ? $this->query_var . '=' : ( 'post_type=' . $this->name . '&name=' )
+				);
 			}
 
 			if ( $this->has_archive ) {
@@ -603,20 +611,40 @@ class PostType extends Observable {
 					$archive_slug = $app['rewrite']->root . $archive_slug;
 				}
 
-				add_rewrite_rule( "{$archive_slug}/?$", "index.php?post_type=$this->name", 'top' );
+				add_rewrite_rule(
+					$archive_slug . '/?$',
+					'index.php?post_type=' . $this->name,
+					'top'
+				);
 				if ( $this->rewrite['feeds'] && $app['rewrite']->feeds ) {
 					$feeds = '(' . trim( implode( '|', $app['rewrite']->feeds ) ) . ')';
-					add_rewrite_rule( "{$archive_slug}/feed/$feeds/?$", "index.php?post_type=$this->name" . '&feed=$matches[1]', 'top' );
-					add_rewrite_rule( "{$archive_slug}/$feeds/?$", "index.php?post_type=$this->name" . '&feed=$matches[1]', 'top' );
+					add_rewrite_rule(
+						$archive_slug . '/feed/' . $feeds . '/?$',
+						'index.php?post_type=' . $this->name . '&feed=$matches[1]',
+						'top'
+					);
+					add_rewrite_rule(
+						$archive_slug . '/' . $feeds . '/?$',
+						'index.php?post_type=' . $this->name . '&feed=$matches[1]',
+						'top'
+					);
 				}
 				if ( $this->rewrite['pages'] ) {
-					add_rewrite_rule( "{$archive_slug}/{$app['rewrite']->pagination_base}/([0-9]{1,})/?$", "index.php?post_type=$this->name" . '&paged=$matches[1]', 'top' );
+					add_rewrite_rule(
+						$archive_slug . '/' . $app['rewrite']->pagination_base . '/([0-9]{1,})/?$',
+						'index.php?post_type=' . $this->name . '&paged=$matches[1]',
+						'top'
+					);
 				}
 			}
 
 			$permastruct_args         = $this->rewrite;
 			$permastruct_args['feed'] = $permastruct_args['feeds'];
-			add_permastruct( $this->name, "{$this->rewrite['slug']}/%$this->name%", $permastruct_args );
+			add_permastruct(
+				$this->name,
+				$this->rewrite['slug'] . '/%' . $this->name . '%',
+				$permastruct_args
+			);
 		}
 	}
 
@@ -684,10 +712,10 @@ class PostType extends Observable {
 
 		// Remove any rewrite rules, permastructs, and rules.
 		if ( false !== $this->rewrite ) {
-			remove_rewrite_tag( "%$this->name%" );
+			remove_rewrite_tag( '%' . $this->name . '%' );
 			remove_permastruct( $this->name );
 			foreach ( $app['rewrite']->extra_rules_top as $regex => $query ) {
-				if ( false !== strpos( $query, "index.php?post_type=$this->name" ) ) {
+				if ( false !== strpos( $query, 'index.php?post_type=' . $this->name ) ) {
 					unset( $app['rewrite']->extra_rules_top[ $regex ] );
 				}
 			}
