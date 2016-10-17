@@ -14,13 +14,7 @@ use function WP\getApp;
 /**
  * @since 0.71
  */
-const EZSQL_VERSION = 'WP1.25';
-
-/**
- * @since 0.71
- */
 const OBJECT = 'OBJECT';
-const object = 'OBJECT'; // Back compat.
 
 /**
  * @since 2.5.0
@@ -1037,23 +1031,23 @@ class wpdb {
 	 */
 	public function tables( $scope = 'all', $prefix = true, $blog_id = 0 ) {
 		switch ( $scope ) {
-		case 'all' :
+		case 'all':
 			$tables = array_merge( $this->global_tables, $this->tables );
 			if ( is_multisite() )
 				$tables = array_merge( $tables, $this->ms_global_tables );
 			break;
 
-		case 'blog' :
+		case 'blog':
 			$tables = $this->tables;
 			break;
 
-		case 'global' :
+		case 'global':
 			$tables = $this->global_tables;
 			if ( is_multisite() )
 				$tables = array_merge( $tables, $this->ms_global_tables );
 			break;
 
-		case 'ms_global' :
+		case 'ms_global':
 			$tables = $this->ms_global_tables;
 			break;
 
@@ -3212,13 +3206,13 @@ class wpdb {
 		$version = $this->db_version();
 
 		switch ( strtolower( $db_cap ) ) {
-			case 'collation' :    // @since 2.5.0
-			case 'group_concat' : // @since 2.7.0
-			case 'subqueries' :   // @since 2.7.0
+			case 'collation':    // @since 2.5.0
+			case 'group_concat': // @since 2.7.0
+			case 'subqueries':   // @since 2.7.0
 				return version_compare( $version, '4.1', '>=' );
-			case 'set_charset' :
+			case 'set_charset':
 				return version_compare( $version, '5.0.7', '>=' );
-			case 'utf8mb4' :      // @since 4.1.0
+			case 'utf8mb4':      // @since 4.1.0
 				if ( version_compare( $version, '5.5.3', '<' ) ) {
 					return false;
 				}
@@ -3238,7 +3232,7 @@ class wpdb {
 				} else {
 					return version_compare( $client_version, '5.5.3', '>=' );
 				}
-			case 'utf8mb4_520' : // @since 4.6.0
+			case 'utf8mb4_520': // @since 4.6.0
 				return version_compare( $version, '5.6', '>=' );
 		}
 

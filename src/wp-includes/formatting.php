@@ -26,7 +26,6 @@ use function WP\getApp;
  *
  * @since 0.71
  *
- * @global array $wp_cockneyreplace Array of formatted entities for certain common phrases
  * @staticvar array $static_characters
  * @staticvar array $static_replacements
  * @staticvar array $dynamic_characters
@@ -40,7 +39,6 @@ use function WP\getApp;
  * @return string The string replaced with html entities
  */
 function wptexturize( $text, $reset = false ) {
-	global $wp_cockneyreplace;
 	static $static_characters = null,
 		$static_replacements = null,
 		$dynamic_characters = null,
@@ -112,20 +110,15 @@ function wptexturize( $text, $reset = false ) {
 		$default_no_texturize_shortcodes = array('code');
 
 		// if a plugin has provided an autocorrect array, use it
-		if ( isset($wp_cockneyreplace) ) {
-			$cockney = array_keys( $wp_cockneyreplace );
-			$cockneyreplace = array_values( $wp_cockneyreplace );
-		} else {
-			/* translators: This is a comma-separated list of words that defy the syntax of quotations in normal use,
-			 * for example...  'We do not have enough words yet' ... is a typical quoted phrase.  But when we write
-			 * lines of code 'til we have enough of 'em, then we need to insert apostrophes instead of quotes.
-			 */
-			$cockney = explode( ',', _x( "'tain't,'twere,'twas,'tis,'twill,'til,'bout,'nuff,'round,'cause,'em",
-				'Comma-separated list of words to texturize in your language' ) );
+		/* translators: This is a comma-separated list of words that defy the syntax of quotations in normal use,
+		 * for example...  'We do not have enough words yet' ... is a typical quoted phrase.  But when we write
+		 * lines of code 'til we have enough of 'em, then we need to insert apostrophes instead of quotes.
+		 */
+		$cockney = explode( ',', _x( "'tain't,'twere,'twas,'tis,'twill,'til,'bout,'nuff,'round,'cause,'em",
+			'Comma-separated list of words to texturize in your language' ) );
 
-			$cockneyreplace = explode( ',', _x( '&#8217;tain&#8217;t,&#8217;twere,&#8217;twas,&#8217;tis,&#8217;twill,&#8217;til,&#8217;bout,&#8217;nuff,&#8217;round,&#8217;cause,&#8217;em',
-				'Comma-separated list of replacement words in your language' ) );
-		}
+		$cockneyreplace = explode( ',', _x( '&#8217;tain&#8217;t,&#8217;twere,&#8217;twas,&#8217;tis,&#8217;twill,&#8217;til,&#8217;bout,&#8217;nuff,&#8217;round,&#8217;cause,&#8217;em',
+			'Comma-separated list of replacement words in your language' ) );
 
 		$static_characters = array_merge( array( '...', '``', '\'\'', ' (tm)' ), $cockney );
 		$static_replacements = array_merge( array( '&#8230;', $opening_quote, $closing_quote, ' &#8482;' ), $cockneyreplace );
@@ -307,10 +300,10 @@ function wptexturize( $text, $reset = false ) {
 function wptexturize_primes( $haystack, $needle, $prime, $open_quote, $close_quote ) {
 	$spaces = wp_spaces_regexp();
 	$flag = '<!--wp-prime-or-quote-->';
-	$quote_pattern = "/$needle(?=\\Z|[.,:;!?)}\\-\\]]|&gt;|" . $spaces . ")/";
-	$prime_pattern    = "/(?<=\\d)$needle/";
-	$flag_after_digit = "/(?<=\\d)$flag/";
-	$flag_no_digit    = "/(?<!\\d)$flag/";
+	$quote_pattern = '/' . $needle . '(?=\\Z|[.,:;!?)}\\-\\]]|&gt;|' . $spaces . ')/';
+	$prime_pattern = '/(?<=\\d)' . $needle . '/';
+	$flag_after_digit = '/(?<=\\d)' . $flag . '/';
+	$flag_no_digit = '/(?<!\\d)' . $flag . '/';
 
 	$sentences = explode( $open_quote, $haystack );
 
@@ -479,7 +472,7 @@ function wpautop( $pee, $br = true ) {
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee);
 
 	// Find newlines in all elements and add placeholders.
-	$pee = wp_replace_in_html_tags( $pee, array( "\n" => " <!-- wpnl --> " ) );
+	$pee = wp_replace_in_html_tags( $pee, array( "\n" => ' <!-- wpnl --> ' ) );
 
 	// Collapse line breaks before and after <option> elements so they don't get autop'd.
 	if ( strpos( $pee, '<option' ) !== false ) {
@@ -2282,8 +2275,8 @@ function force_balance_tags( $text ) {
 		$newtext .= '</' . $x . '>'; // Add remaining tags to close
 
 	// WP fix for the bug with HTML comments
-	$newtext = str_replace("< !--","<!--",$newtext);
-	$newtext = str_replace("<    !--","< !--",$newtext);
+	$newtext = str_replace( '< !--', '<!--', $newtext );
+	$newtext = str_replace( '<    !--', '< !--', $newtext );
 
 	return $newtext;
 }
@@ -2636,7 +2629,7 @@ function make_clickable( $text ) {
 	}
 
 	// Cleanup of accidental links within links
-	return preg_replace( '#(<a([ \r\n\t]+[^>]+?>|>))<a [^>]+?>([^>]+?)</a></a>#i', "$1$3</a>", $r );
+	return preg_replace( '#(<a([ \r\n\t]+[^>]+?>|>))<a [^>]+?>([^>]+?)</a></a>#i', '$1$3</a>', $r );
 }
 
 /**
@@ -2759,19 +2752,17 @@ function wp_rel_nofollow_callback( $matches ) {
  *
  * @since 2.8.0
  *
- * @global array $wpsmiliestrans
- *
  * @param array $matches Single match. Smiley code to convert to image.
  * @return string Image string for smiley.
  */
 function translate_smiley( $matches ) {
-	global $wpsmiliestrans;
+	$app = getApp();
 
 	if ( count( $matches ) == 0 )
 		return '';
 
 	$smiley = trim( reset( $matches ) );
-	$img = $wpsmiliestrans[ $smiley ];
+	$img = $app->wpsmiliestrans[ $smiley ];
 
 	$matches = [];
 	$ext = preg_match( '/\.([^.]+)$/', $img, $matches ) ? strtolower( $matches[1] ) : false;
@@ -2810,9 +2801,10 @@ function translate_smiley( $matches ) {
  * @return string Converted content with text smilies replaced with images.
  */
 function convert_smilies( $text ) {
-	global $wp_smiliessearch;
+	$app = getApp();
+
 	$output = '';
-	if ( get_option( 'use_smilies' ) && ! empty( $wp_smiliessearch ) ) {
+	if ( get_option( 'use_smilies' ) && ! empty( $app->wp_smiliessearch ) ) {
 		// HTML loop taken from texturize function, could possible be consolidated
 		$textarr = preg_split( '/(<.*>)/U', $text, -1, PREG_SPLIT_DELIM_CAPTURE ); // capture the tags as well as in between
 		$stop = count( $textarr );// loop stuff
@@ -2831,7 +2823,7 @@ function convert_smilies( $text ) {
 
 			// If it's not a tag and not in ignore block
 			if ( '' ==  $ignore_block_element && strlen( $content ) > 0 && '<' != $content[0] ) {
-				$content = preg_replace_callback( $wp_smiliessearch, 'translate_smiley', $content );
+				$content = preg_replace_callback( $app->wp_smiliessearch, 'translate_smiley', $content );
 			}
 
 			// did we exit ignore block

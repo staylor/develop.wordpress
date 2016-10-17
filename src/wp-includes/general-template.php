@@ -2162,9 +2162,6 @@ function the_date_xml() {
  *
  * @since 0.71
  *
- * @global string|int|bool $currentday
- * @global string|int|bool $previousday
- *
  * @param string $d      Optional. PHP date format defaults to the date_format option if not specified.
  * @param string $before Optional. Output before the date.
  * @param string $after  Optional. Output after the date.
@@ -2172,11 +2169,11 @@ function the_date_xml() {
  * @return string|void String if retrieving.
  */
 function the_date( $d = '', $before = '', $after = '', $echo = true ) {
-	global $currentday, $previousday;
-
 	if ( is_new_day() ) {
 		$the_date = $before . get_the_date( $d ) . $after;
-		$previousday = $currentday;
+
+		$app = getApp();
+		$app->set( 'previousday', $app->get( 'currentday' ) );
 
 		/**
 		 * Filters the date a post was published for display.
@@ -2191,10 +2188,11 @@ function the_date( $d = '', $before = '', $after = '', $echo = true ) {
 		 */
 		$the_date = apply_filters( 'the_date', $the_date, $d, $before, $after );
 
-		if ( $echo )
+		if ( $echo ) {
 			echo $the_date;
-		else
+		} else {
 			return $the_date;
+		}
 	}
 }
 
@@ -2526,22 +2524,20 @@ function the_weekday() {
  *
  * @since 0.71
  *
- * @global string|int|bool $currentday
- * @global string|int|bool $previousweekday
- *
  * @param string $before Optional Output before the date.
  * @param string $after Optional Output after the date.
  */
-function the_weekday_date($before='',$after='') {
-	global $currentday, $previousweekday;
+function the_weekday_date( $before='', $after='' ) {
 	$app = getApp();
+	$currentday = $app->get( 'currentday' );
+	$previousweekday = $app->get( 'previousweekday' );
 
 	$the_weekday_date = '';
-	if ( $currentday != $previousweekday ) {
+	if ( $currentday !== $previousweekday ) {
 		$the_weekday_date .= $before;
 		$the_weekday_date .= $app['locale']->get_weekday( mysql2date( 'w', get_post()->post_date, false ) );
 		$the_weekday_date .= $after;
-		$previousweekday = $currentday;
+		$app->set( 'previousweekday', $currentday );
 	}
 
 	/**
@@ -2553,8 +2549,7 @@ function the_weekday_date($before='',$after='') {
 	 * @param string $before           The HTML to output before the date.
 	 * @param string $after            The HTML to output after the date.
 	 */
-	$the_weekday_date = apply_filters( 'the_weekday_date', $the_weekday_date, $before, $after );
-	echo $the_weekday_date;
+	echo apply_filters( 'the_weekday_date', $the_weekday_date, $before, $after );
 }
 
 /**

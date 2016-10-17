@@ -111,12 +111,12 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
 		$datemeridiem = $wp_locale->get_meridiem( date( 'a', $i ) );
 		$datemeridiem_capital = $wp_locale->get_meridiem( date( 'A', $i ) );
 		$dateformatstring = ' '.$dateformatstring;
-		$dateformatstring = preg_replace( "/([^\\\])D/", "\\1" . backslashit( $dateweekday_abbrev ), $dateformatstring );
-		$dateformatstring = preg_replace( "/([^\\\])F/", "\\1" . backslashit( $datemonth ), $dateformatstring );
-		$dateformatstring = preg_replace( "/([^\\\])l/", "\\1" . backslashit( $dateweekday ), $dateformatstring );
-		$dateformatstring = preg_replace( "/([^\\\])M/", "\\1" . backslashit( $datemonth_abbrev ), $dateformatstring );
-		$dateformatstring = preg_replace( "/([^\\\])a/", "\\1" . backslashit( $datemeridiem ), $dateformatstring );
-		$dateformatstring = preg_replace( "/([^\\\])A/", "\\1" . backslashit( $datemeridiem_capital ), $dateformatstring );
+		$dateformatstring = preg_replace( '/([^\\\])D/', '\\1' . backslashit( $dateweekday_abbrev ), $dateformatstring );
+		$dateformatstring = preg_replace( '/([^\\\])F/', '\\1' . backslashit( $datemonth ), $dateformatstring );
+		$dateformatstring = preg_replace( '/([^\\\])l/', '\\1' . backslashit( $dateweekday ), $dateformatstring );
+		$dateformatstring = preg_replace( '/([^\\\])M/', '\\1' . backslashit( $datemonth_abbrev ), $dateformatstring );
+		$dateformatstring = preg_replace( '/([^\\\])a/', '\\1' . backslashit( $datemeridiem ), $dateformatstring );
+		$dateformatstring = preg_replace( '/([^\\\])A/', '\\1' . backslashit( $datemeridiem_capital ), $dateformatstring );
 
 		$dateformatstring = substr( $dateformatstring, 1, strlen( $dateformatstring ) -1 );
 	}
@@ -346,7 +346,7 @@ function is_serialized( $data, $strict = true ) {
 		return false;
 	}
 	$data = trim( $data );
- 	if ( 'N;' == $data ) {
+	if ( 'N;' == $data ) {
 		return true;
 	}
 	if ( strlen( $data ) < 4 ) {
@@ -374,7 +374,7 @@ function is_serialized( $data, $strict = true ) {
 	}
 	$token = $data[0];
 	switch ( $token ) {
-		case 's' :
+		case 's':
 			if ( $strict ) {
 				if ( '"' !== substr( $data, -2, 1 ) ) {
 					return false;
@@ -383,14 +383,17 @@ function is_serialized( $data, $strict = true ) {
 				return false;
 			}
 			// or else fall through
-		case 'a' :
-		case 'O' :
-			return (bool) preg_match( "/^{$token}:[0-9]+:/s", $data );
-		case 'b' :
-		case 'i' :
-		case 'd' :
+		case 'a':
+		case 'O':
+			$pattern = '/^' . $token . ':[0-9]+:/s';
+			return (bool) preg_match( $pattern, $data );
+
+		case 'b':
+		case 'i':
+		case 'd':
 			$end = $strict ? '$' : '';
-			return (bool) preg_match( "/^{$token}:[0-9.E-]+;$end/", $data );
+			$pattern = '/^' . $token . ':[0-9.E-]+;' . $end . '/';
+			return (bool) preg_match( $pattern, $data );
 	}
 	return false;
 }
@@ -516,17 +519,17 @@ function xmlrpc_removepostdata( $content ) {
 function wp_extract_urls( $content ) {
 	preg_match_all(
 		"#([\"']?)("
-			. "(?:([\w-]+:)?//?)"
-			. "[^\s()<>]+"
-			. "[.]"
-			. "(?:"
-				. "\([\w\d]+\)|"
+			. "'(?:([\w-]+:)?//?)"
+			. '[^\s()<>]+'
+			. '[.]'
+			. '(?:'
+				. '\([\w\d]+\)|'
 				. "(?:"
 					. "[^`!()\[\]{};:'\".,<>«»“”‘’\s]|"
-					. "(?:[:]\d+)?/?"
-				. ")+"
-			. ")"
-		. ")\\1#",
+					. '(?:[:]\d+)?/?'
+				. ')+'
+			. ')'
+		. ')\\1#',
 		$content,
 		$post_links
 	);
@@ -650,17 +653,11 @@ function wp_get_http_headers( $url, $deprecated = false ) {
  *
  * @since 0.71
  *
- * @global string $currentday  The day of the current post in the loop.
- * @global string $previousday The day of the previous post in the loop.
- *
  * @return int 1 when new day, 0 if not a new day.
  */
 function is_new_day() {
-	global $currentday, $previousday;
-	if ( $currentday != $previousday )
-		return 1;
-	else
-		return 0;
+	$app = getApp();
+	return $app->get( 'currentday' ) !== $app->get( 'previousday' ) ? 1 : 0;
 }
 
 /**
@@ -2744,11 +2741,11 @@ function _default_wp_die_handler( $message, $title = '', $args = [] ) {
 		}
 		a:focus {
 			color: #124964;
-		    -webkit-box-shadow:
-		    	0 0 0 1px #5b9dd9,
+			-webkit-box-shadow:
+				0 0 0 1px #5b9dd9,
 				0 0 2px 1px rgba(30, 140, 190, .8);
-		    box-shadow:
-		    	0 0 0 1px #5b9dd9,
+			box-shadow:
+				0 0 0 1px #5b9dd9,
 				0 0 2px 1px rgba(30, 140, 190, .8);
 			outline: none;
 		}
@@ -2774,7 +2771,7 @@ function _default_wp_die_handler( $message, $title = '', $args = [] ) {
 
 			-webkit-box-shadow: 0 1px 0 #ccc;
 			box-shadow: 0 1px 0 #ccc;
-		 	vertical-align: top;
+			vertical-align: top;
 		}
 
 		.button.button-large {
@@ -2800,11 +2797,11 @@ function _default_wp_die_handler( $message, $title = '', $args = [] ) {
 		.button:active {
 			background: #eee;
 			border-color: #999;
-		 	-webkit-box-shadow: inset 0 2px 5px -3px rgba( 0, 0, 0, 0.5 );
-		 	box-shadow: inset 0 2px 5px -3px rgba( 0, 0, 0, 0.5 );
-		 	-webkit-transform: translateY(1px);
-		 	-ms-transform: translateY(1px);
-		 	transform: translateY(1px);
+			-webkit-box-shadow: inset 0 2px 5px -3px rgba( 0, 0, 0, 0.5 );
+			box-shadow: inset 0 2px 5px -3px rgba( 0, 0, 0, 0.5 );
+			-webkit-transform: translateY(1px);
+			-ms-transform: translateY(1px);
+			transform: translateY(1px);
 		}
 
 		<?php
@@ -3275,27 +3272,24 @@ function _mce_set_direction( $mce_init ) {
  * the description. Probably should create a Codex page for it, so that it is
  * available.
  *
- * @global array $wpsmiliestrans
- * @global array $wp_smiliessearch
- *
  * @since 2.2.0
  */
 function smilies_init() {
-	global $wpsmiliestrans, $wp_smiliessearch;
-
 	// don't bother setting up smilies if they are disabled
-	if ( !get_option( 'use_smilies' ) )
+	if ( ! get_option( 'use_smilies' ) ) {
 		return;
+	}
 
-	if ( !isset( $wpsmiliestrans ) ) {
-		$wpsmiliestrans = array(
+	$app = getApp();
+	if ( empty( $app->wpsmiliestrans ) ) {
+		$wpsmiliestrans = [
 		':mrgreen:' => 'mrgreen.png',
 		':neutral:' => "\xf0\x9f\x98\x90",
 		':twisted:' => "\xf0\x9f\x98\x88",
 		  ':arrow:' => "\xe2\x9e\xa1",
 		  ':shock:' => "\xf0\x9f\x98\xaf",
 		  ':smile:' => "\xf0\x9f\x99\x82",
-		    ':???:' => "\xf0\x9f\x98\x95",
+			':???:' => "\xf0\x9f\x98\x95",
 		   ':cool:' => "\xf0\x9f\x98\x8e",
 		   ':evil:' => "\xf0\x9f\x91\xbf",
 		   ':grin:' => "\xf0\x9f\x98\x80",
@@ -3304,37 +3298,39 @@ function smilies_init() {
 		   ':razz:' => "\xf0\x9f\x98\x9b",
 		   ':roll:' => "\xf0\x9f\x99\x84",
 		   ':wink:' => "\xf0\x9f\x98\x89",
-		    ':cry:' => "\xf0\x9f\x98\xa5",
-		    ':eek:' => "\xf0\x9f\x98\xae",
-		    ':lol:' => "\xf0\x9f\x98\x86",
-		    ':mad:' => "\xf0\x9f\x98\xa1",
-		    ':sad:' => "\xf0\x9f\x99\x81",
-		      '8-)' => "\xf0\x9f\x98\x8e",
-		      '8-O' => "\xf0\x9f\x98\xaf",
-		      ':-(' => "\xf0\x9f\x99\x81",
-		      ':-)' => "\xf0\x9f\x99\x82",
-		      ':-?' => "\xf0\x9f\x98\x95",
-		      ':-D' => "\xf0\x9f\x98\x80",
-		      ':-P' => "\xf0\x9f\x98\x9b",
-		      ':-o' => "\xf0\x9f\x98\xae",
-		      ':-x' => "\xf0\x9f\x98\xa1",
-		      ':-|' => "\xf0\x9f\x98\x90",
-		      ';-)' => "\xf0\x9f\x98\x89",
+			':cry:' => "\xf0\x9f\x98\xa5",
+			':eek:' => "\xf0\x9f\x98\xae",
+			':lol:' => "\xf0\x9f\x98\x86",
+			':mad:' => "\xf0\x9f\x98\xa1",
+			':sad:' => "\xf0\x9f\x99\x81",
+			  '8-)' => "\xf0\x9f\x98\x8e",
+			  '8-O' => "\xf0\x9f\x98\xaf",
+			  ':-(' => "\xf0\x9f\x99\x81",
+			  ':-)' => "\xf0\x9f\x99\x82",
+			  ':-?' => "\xf0\x9f\x98\x95",
+			  ':-D' => "\xf0\x9f\x98\x80",
+			  ':-P' => "\xf0\x9f\x98\x9b",
+			  ':-o' => "\xf0\x9f\x98\xae",
+			  ':-x' => "\xf0\x9f\x98\xa1",
+			  ':-|' => "\xf0\x9f\x98\x90",
+			  ';-)' => "\xf0\x9f\x98\x89",
 		// This one transformation breaks regular text with frequency.
 		//     '8)' => "\xf0\x9f\x98\x8e",
-		       '8O' => "\xf0\x9f\x98\xaf",
-		       ':(' => "\xf0\x9f\x99\x81",
-		       ':)' => "\xf0\x9f\x99\x82",
-		       ':?' => "\xf0\x9f\x98\x95",
-		       ':D' => "\xf0\x9f\x98\x80",
-		       ':P' => "\xf0\x9f\x98\x9b",
-		       ':o' => "\xf0\x9f\x98\xae",
-		       ':x' => "\xf0\x9f\x98\xa1",
-		       ':|' => "\xf0\x9f\x98\x90",
-		       ';)' => "\xf0\x9f\x98\x89",
-		      ':!:' => "\xe2\x9d\x97",
-		      ':?:' => "\xe2\x9d\x93",
-		);
+			   '8O' => "\xf0\x9f\x98\xaf",
+			   ':(' => "\xf0\x9f\x99\x81",
+			   ':)' => "\xf0\x9f\x99\x82",
+			   ':?' => "\xf0\x9f\x98\x95",
+			   ':D' => "\xf0\x9f\x98\x80",
+			   ':P' => "\xf0\x9f\x98\x9b",
+			   ':o' => "\xf0\x9f\x98\xae",
+			   ':x' => "\xf0\x9f\x98\xa1",
+			   ':|' => "\xf0\x9f\x98\x90",
+			   ';)' => "\xf0\x9f\x98\x89",
+			  ':!:' => "\xe2\x9d\x97",
+			  ':?:' => "\xe2\x9d\x93",
+		];
+	} else {
+		$wpsmiliestrans = $app->wpsmiliestrans;
 	}
 
 	/**
@@ -3350,6 +3346,7 @@ function smilies_init() {
 	$wpsmiliestrans = apply_filters('smilies', $wpsmiliestrans);
 
 	if (count($wpsmiliestrans) == 0) {
+		$app->wpsmiliestrans = [];
 		return;
 	}
 
@@ -3358,7 +3355,8 @@ function smilies_init() {
 	 * we match the longest possible smilie (:???: vs :?) as the regular
 	 * expression used below is first-match
 	 */
-	krsort($wpsmiliestrans);
+	krsort( $wpsmiliestrans );
+	$app->wpsmiliestrans = $wpsmiliestrans;
 
 	$spaces = wp_spaces_regexp();
 
@@ -3366,15 +3364,17 @@ function smilies_init() {
 	$wp_smiliessearch = '/(?<=' . $spaces . '|^)';
 
 	$subchar = '';
-	foreach ( (array) $wpsmiliestrans as $smiley => $img ) {
-		$firstchar = substr($smiley, 0, 1);
-		$rest = substr($smiley, 1);
+	foreach ( array_keys( $wpsmiliestrans ) as $smiley ) {
+		$firstchar = substr( $smiley, 0, 1 );
+		$rest = substr( $smiley, 1 );
 
 		// new subpattern?
 		if ($firstchar != $subchar) {
-			if ($subchar != '') {
-				$wp_smiliessearch .= ')(?=' . $spaces . '|$)';  // End previous "subpattern"
-				$wp_smiliessearch .= '|(?<=' . $spaces . '|^)'; // Begin another "subpattern"
+			if ( $subchar !== '' ) {
+				// End previous "subpattern"
+				$wp_smiliessearch .= ')(?=' . $spaces . '|$)';
+				// Begin another "subpattern"
+				$wp_smiliessearch .= '|(?<=' . $spaces . '|^)';
 			}
 			$subchar = $firstchar;
 			$wp_smiliessearch .= preg_quote($firstchar, '/') . '(?:';
@@ -3386,6 +3386,7 @@ function smilies_init() {
 
 	$wp_smiliessearch .= ')(?=' . $spaces . '|$)/m';
 
+	$app->wp_smiliessearch = $wp_smiliessearch;
 }
 
 /**

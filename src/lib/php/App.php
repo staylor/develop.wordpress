@@ -14,10 +14,11 @@ class App extends Container {
 	public $taxonomies = [];
 	public $meta_boxes = [];
 	public $meta_keys = [];
-
 	public $post_statuses = [];
-
 	public $shortcode_tags = [];
+
+	public $wpsmiliestrans = [];
+	public $wp_smiliessearch;
 
 	public $widgets = [
 		'registered' => [],
