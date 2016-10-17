@@ -1749,7 +1749,7 @@ class Rewrite extends Observable {
 	 *
 	 * @param string $name   Name for permalink structure.
 	 * @param string $struct Permalink structure (e.g. category/%category%)
-	 * @param array  $args   {
+	 * @param array  $arguments   {
 	 *     Optional. Arguments for building rewrite rules based on the permalink structure.
 	 *     Default empty array.
 	 *

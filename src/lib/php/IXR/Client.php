@@ -81,7 +81,8 @@ class Client {
         }
 
         if ( $this->timeout ) {
-            $fp = fsockopen( $this->server, $this->port, null, null, $this->timeout );
+			$null = null;
+            $fp = fsockopen( $this->server, $this->port, $null, $null, $this->timeout );
         } else {
             $fp = fsockopen( $this->server, $this->port );
         }

@@ -19,6 +19,18 @@ trait Page {
 	 */
 	abstract public function login( $username, $password );
 	/**
+	 * @return Date Date object.
+	 */
+	abstract public function _convert_date_gmt( $date_gmt, $date );
+	/**
+	 * @return Date Date object.
+	 */
+	abstract public function _convert_date( $date );
+	/**
+	 * @return array
+	 */
+	abstract public function get_custom_fields( $id );
+	/**
 	 * Prepares page data for return in an XML-RPC object.
 	 *
 	 * @access protected

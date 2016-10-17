@@ -20,6 +20,7 @@ trait Term {
 	 * @return bool
 	 */
 	abstract public function minimum_args( $args, $count );
+	abstract public function _prepare_term( $term );
 	/**
 	 * Create a new term.
 	 *

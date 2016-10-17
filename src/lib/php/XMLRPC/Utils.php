@@ -191,7 +191,7 @@ trait Utils {
 	 * @param array|Error $content_struct Post data to insert.
 	 * @return Error|string
 	 */
-	protected function _insert_post( $user, $content_struct ) {
+	public function _insert_post( $user, $content_struct ) {
 		$defaults = [
 			'post_status' => 'draft',
 			'post_type' => 'post',
@@ -504,7 +504,7 @@ trait Utils {
 	 * @param string $date     Date string.
 	 * @return Date Date object.
 	 */
-	protected function _convert_date_gmt( $date_gmt, $date ) {
+	public function _convert_date_gmt( $date_gmt, $date ) {
 		if ( $date !== '0000-00-00 00:00:00' && $date_gmt === '0000-00-00 00:00:00' ) {
 			return new Date( get_gmt_from_date( mysql2date( 'Y-m-d H:i:s', $date, false ), 'Ymd\TH:i:s' ) );
 		}
@@ -519,7 +519,7 @@ trait Utils {
 	 * @param string $date Date string to convert.
 	 * @return Date Date object.
 	 */
-	protected function _convert_date( $date ) {
+	public function _convert_date( $date ) {
 		if ( $date === '0000-00-00 00:00:00' ) {
 			return new Date( '00000000T00:00:00Z' );
 		}

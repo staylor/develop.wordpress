@@ -21,6 +21,12 @@ trait Post {
 	 */
 	abstract public function minimum_args( $args, $count );
 	/**
+	 * @return Date Date object.
+	 */
+	abstract public function _convert_date( $date );
+	abstract public function _insert_post( $user, $content_struct );
+	abstract public function _prepare_post( $post, $fields );
+	/**
 	 * Prepares post data for return in an XML-RPC object.
 	 *
 	 * @since 3.4.0

@@ -144,7 +144,9 @@ class Message {
     }
 
     public function tag_close( $parser, $tag ) {
+		$value = null;
         $valueFlag = false;
+
         switch( $tag ) {
 		case 'int':
 		case 'i4':

@@ -21,6 +21,10 @@ trait User {
 	 */
 	abstract public function minimum_args( $args, $count );
 	/**
+	 * @return Date Date object.
+	 */
+	abstract public function _convert_date( $date );
+	/**
 	 * Prepares user data for return in an XML-RPC object.
 	 *
 	 * @access protected

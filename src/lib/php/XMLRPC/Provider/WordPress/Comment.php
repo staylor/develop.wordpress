@@ -1,11 +1,11 @@
 <?php
 namespace WP\XMLRPC\Provider\WordPress;
 
-use WP\IXR\Error;
+use WP\IXR\{Date,Error};
 use WP\User\User as WP_User;
 
 /**
- * @property \WP\IXR\Error $error
+ * @property Error $error
  */
 trait Comment {
 	/**
@@ -16,6 +16,10 @@ trait Comment {
 	 * @return WP_User|bool
 	 */
 	abstract public function login( $username, $password );
+	/**
+	 * @return Date Date object.
+	 */
+	abstract public function _convert_date_gmt( $date_gmt, $date );
 	/**
 	 * Prepares comment data for return in an XML-RPC object.
 	 *

@@ -34,7 +34,7 @@ if ( force_ssl_admin() && ! is_ssl() ) {
  * @param WP_Error $wp_error Optional. The error to pass. Default empty.
  */
 function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
-	global $error, $action;
+	global $error;
 
 	$app = getApp();
 
@@ -127,6 +127,7 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	 */
 	$login_header_title = apply_filters( 'login_headertitle', $login_header_title );
 
+	$action = $app->get( 'action' );
 	$classes = array( 'login-action-' . $action, 'wp-core-ui' );
 	if ( is_rtl() ) {
 		$classes[] = 'rtl';
@@ -392,13 +393,14 @@ function retrieve_password() {
 $action = $_request->get( 'action', 'login' );
 $errors = new WP_Error();
 
-if ( $_get->get( 'key' ) )
+if ( $_get->get( 'key' ) ) {
 	$action = 'resetpass';
-
+}
 // validate action so as to default to the login screen
-if ( !in_array( $action, array( 'postpass', 'logout', 'lostpassword', 'retrievepassword', 'resetpass', 'rp', 'register', 'login' ), true ) && false === has_filter( 'login_form_' . $action ) )
+if ( ! in_array( $action, [ 'postpass', 'logout', 'lostpassword', 'retrievepassword', 'resetpass', 'rp', 'register', 'login' ], true ) && false === has_filter( 'login_form_' . $action ) ) {
 	$action = 'login';
-
+}
+$app->set( 'action', $action );
 nocache_headers();
 
 header('Content-Type: '.get_bloginfo('html_type').'; charset='.get_bloginfo('charset'));

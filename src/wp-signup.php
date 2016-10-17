@@ -118,6 +118,7 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 		<p class="error"><?php echo $errmsg ?></p>
 	<?php }
 
+	$site_domain = null;
 	if ( !is_subdomain_install() )
 		echo '<span class="prefix_address">' . $current_site->domain . $current_site->path . '</span><input name="blogname" type="text" id="blogname" value="'. esc_attr($blogname) .'" maxlength="60" /><br />';
 	else
@@ -454,8 +455,6 @@ function validate_another_blog_signup() {
  * @param string $path       The site root path.
  * @param string $blog_title The site title.
  * @param string $user_name  The username.
- * @param string $user_email The user's email address.
- * @param array  $meta       Any additional meta from the {@see 'add_signup_meta'} filter in validate_blog_signup().
  * @param int    $blog_id    The site ID.
  */
 function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $blog_id = 0 ) {
@@ -509,7 +508,8 @@ function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $
  * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
  */
 function signup_user( $user_name = '', $user_email = '', $errors = '' ) {
-	global $active_signup;
+	$app = getApp();
+	$active_signup = $app->get( 'active_signup' );
 
 	if ( !is_wp_error($errors) )
 		$errors = new WP_Error();
@@ -770,7 +770,7 @@ function confirm_blog_signup( $domain, $path, $blog_title, $user_email = '' ) {
 			'<a href="http://%s%s">%s</a>',
 			$domain,
 			$path,
-			$blog_title		
+			$blog_title
 		)
 	) ?></h2>
 
@@ -840,6 +840,7 @@ $active_signup = get_site_option( 'registration', 'none' );
  *                              'all', 'none', 'blog', or 'user'.
  */
 $active_signup = apply_filters( 'wpmu_active_signup', $active_signup );
+$app->set( 'active_signup', $active_signup );
 
 // Make the signup type translatable.
 $i18n_signup['all'] = _x('all', 'Multisite active signup type');
@@ -897,7 +898,7 @@ if ( $active_signup == 'none' ) {
 			else
 				_e( 'You are logged in already. No need to register again!' );
 
-			if ( $newblogname ) {
+			if ( null !== $newblogname ) {
 				$newblog = get_blogaddress_by_name( $newblogname );
 
 				if ( $active_signup == 'blog' || $active_signup == 'all' )

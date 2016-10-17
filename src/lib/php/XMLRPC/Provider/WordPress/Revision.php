@@ -17,6 +17,7 @@ trait Revision {
 	 */
 	abstract public function login( $username, $password );
 	abstract public function minimum_args( $args, $count );
+	abstract public function _prepare_post( $post, $fields );
 	/**
 	 * Retrieve revisions for a specific post.
 	 *

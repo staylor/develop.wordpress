@@ -3,6 +3,18 @@ namespace WP\XMLRPC\Provider\WordPress;
 
 trait Utils {
 	/**
+	 * @return Date Date object.
+	 */
+	abstract public function _convert_date_gmt( $date_gmt, $date );
+	/**
+	 * @return Date Date object.
+	 */
+	abstract public function _convert_date( $date );
+	/**
+	 * @return array
+	 */
+	abstract public function get_custom_fields( $id );
+	/**
 	 * Prepares post data for return in an XML-RPC object.
 	 *
 	 * @access protected
@@ -11,7 +23,7 @@ trait Utils {
 	 * @param array $fields The subset of post type fields to return.
 	 * @return array The prepared post data.
 	 */
-	protected function _prepare_post( $post, $fields ) {
+	public function _prepare_post( $post, $fields ) {
 		// Holds the data for this post. built up based on $fields.
 		$_post = [ 'post_id' => strval( $post['ID'] ) ];
 
@@ -111,7 +123,7 @@ trait Utils {
 	 * @param array|object $term The unprepared term data.
 	 * @return array The prepared term data.
 	 */
-	protected function _prepare_term( $term ) {
+	public function _prepare_term( $term ) {
 		$_term = $term;
 		if ( ! is_array( $_term ) ) {
 			$_term = get_object_vars( $_term );
