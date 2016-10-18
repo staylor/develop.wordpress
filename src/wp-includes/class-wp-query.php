@@ -1007,7 +1007,7 @@ class WP_Query {
 			$this->queried_object = get_page_by_path( $qv['pagename'] );
 
 			if ( $this->queried_object && 'attachment' == $this->queried_object->post_type ) {
-				if ( preg_match( "/^[^%]*%(?:postname)%/", get_option( 'permalink_structure' ) ) ) {
+				if ( preg_match( '/^[^%]*%(?:postname)%/', get_option( 'permalink_structure' ) ) ) {
 					// See if we also have a post with the same slug
 					$post = get_page_by_path( $qv['pagename'], OBJECT, 'post' );
 					if ( $post ) {
@@ -2391,20 +2391,20 @@ class WP_Query {
 			}
 
 			if ( ! empty( $e_status ) ) {
-				$statuswheres[] = "(" . join( ' AND ', $e_status ) . ")";
+				$statuswheres[] = '(' . join( ' AND ', $e_status ) . ')';
 			}
 			if ( ! empty( $r_status ) ) {
 				if ( ! empty( $q['perm'] ) && 'editable' == $q['perm'] && ! current_user_can( $edit_others_cap ) ) {
-					$statuswheres[] = "({$wpdb->posts}.post_author = $user_id " . "AND (" . join( ' OR ', $r_status ) . "))";
+					$statuswheres[] = "({$wpdb->posts}.post_author = $user_id " . 'AND (' . join( ' OR ', $r_status ) . '))';
 				} else {
-					$statuswheres[] = "(" . join( ' OR ', $r_status ) . ")";
+					$statuswheres[] = '(' . join( ' OR ', $r_status ) . ')';
 				}
 			}
 			if ( ! empty( $p_status ) ) {
 				if ( ! empty( $q['perm'] ) && 'readable' == $q['perm'] && ! current_user_can( $read_private_cap ) ) {
-					$statuswheres[] = "({$wpdb->posts}.post_author = $user_id " . "AND (" . join( ' OR ', $p_status ) . "))";
+					$statuswheres[] = "({$wpdb->posts}.post_author = $user_id " . 'AND (' . join( ' OR ', $p_status ) . '))';
 				} else {
-					$statuswheres[] = "(" . join( ' OR ', $p_status ) . ")";
+					$statuswheres[] = '(' . join( ' OR ', $p_status ) . ')';
 				}
 			}
 			if ( $post_status_join ) {
@@ -2574,7 +2574,7 @@ class WP_Query {
 			if ( $post_ids ) {
 				$where = "AND {$wpdb->posts}.ID IN ($post_ids) ";
 			} else {
-				$where = "AND 0";
+				$where = 'AND 0';
 			}
 		}
 

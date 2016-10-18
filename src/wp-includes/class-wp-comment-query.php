@@ -501,20 +501,20 @@ class WP_Comment_Query {
 			foreach ( $statuses as $status ) {
 				switch ( $status ) {
 				case 'hold' :
-					$status_clauses[] = "comment_approved = '0'";
+					$status_clauses[] = 'comment_approved = "0"';
 					break;
 
 				case 'approve' :
-					$status_clauses[] = "comment_approved = '1'";
+					$status_clauses[] = 'comment_approved = "1"';
 					break;
 
 				case 'all' :
 				case '' :
-					$status_clauses[] = "( comment_approved = '0' OR comment_approved = '1' )";
+					$status_clauses[] = '( comment_approved = "0" OR comment_approved = "1" )';
 					break;
 
 				default :
-					$status_clauses[] = $wpdb->prepare( "comment_approved = %s", $status );
+					$status_clauses[] = $wpdb->prepare( 'comment_approved = %s', $status );
 					break;
 				}
 			}
@@ -600,7 +600,7 @@ class WP_Comment_Query {
 
 			// If no valid clauses were found, order by comment_date_gmt.
 			if ( empty( $orderby_array ) ) {
-				$orderby_array[] = "{$wpdb->comments}.comment_date_gmt $order";
+				$orderby_array[] = $wpdb->comments . '.comment_date_gmt ' . $order;
 			}
 
 			// To ensure determinate sorting, always include a comment_ID clause.
@@ -665,12 +665,12 @@ class WP_Comment_Query {
 
 		// Parse comment IDs for an IN clause.
 		if ( ! empty( $this->query_vars['comment__in'] ) ) {
-			$this->sql_clauses['where']['comment__in'] = "{$wpdb->comments}.comment_ID IN ( " . implode( ',', wp_parse_id_list( $this->query_vars['comment__in'] ) ) . ' )';
+			$this->sql_clauses['where']['comment__in'] = $wpdb->comments . '.comment_ID IN ( ' . implode( ',', wp_parse_id_list( $this->query_vars['comment__in'] ) ) . ' )';
 		}
 
 		// Parse comment IDs for a NOT IN clause.
 		if ( ! empty( $this->query_vars['comment__not_in'] ) ) {
-			$this->sql_clauses['where']['comment__not_in'] = "{$wpdb->comments}.comment_ID NOT IN ( " . implode( ',', wp_parse_id_list( $this->query_vars['comment__not_in'] ) ) . ' )';
+			$this->sql_clauses['where']['comment__not_in'] = $wpdb->comments . '.comment_ID NOT IN ( ' . implode( ',', wp_parse_id_list( $this->query_vars['comment__not_in'] ) ) . ' )';
 		}
 
 		// Parse comment parent IDs for an IN clause.
@@ -801,7 +801,7 @@ class WP_Comment_Query {
 				$join_posts_table = true;
 
 				$esses = array_fill( 0, count( $q_values ), '%s' );
-				$this->sql_clauses['where'][ $field_name ] = $wpdb->prepare( " {$wpdb->posts}.{$field_name} IN (" . implode( ',', $esses ) . ")", $q_values );
+				$this->sql_clauses['where'][ $field_name ] = $wpdb->prepare( " {$wpdb->posts}.{$field_name} IN (" . implode( ',', $esses ) . ')', $q_values );
 			}
 		}
 
@@ -1142,9 +1142,9 @@ class WP_Comment_Query {
 
 			if ( isset( $meta_query_clauses[ $orderby ] ) ) {
 				$meta_clause = $meta_query_clauses[ $orderby ];
-				$parsed = sprintf( "CAST(%s.meta_value AS %s)", esc_sql( $meta_clause['alias'] ), esc_sql( $meta_clause['cast'] ) );
+				$parsed = sprintf( 'CAST(%s.meta_value AS %s)', esc_sql( $meta_clause['alias'] ), esc_sql( $meta_clause['cast'] ) );
 			} else {
-				$parsed = "{$wpdb->comments}.$orderby";
+				$parsed = $wpdb->comments . '.' . $orderby;
 			}
 		}
 

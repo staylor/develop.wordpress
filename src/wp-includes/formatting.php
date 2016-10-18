@@ -519,23 +519,23 @@ function wpautop( $pee, $br = true ) {
 	$pee = preg_replace( '|<p>\s*</p>|', '', $pee );
 
 	// Add a closing <p> inside <div>, <address>, or <form> tag if missing.
-	$pee = preg_replace( '!<p>([^<]+)</(div|address|form)>!', "<p>$1</p></$2>", $pee );
+	$pee = preg_replace( '!<p>([^<]+)</(div|address|form)>!', '<p>$1</p></$2>', $pee );
 
 	// If an opening or closing block element tag is wrapped in a <p>, unwrap it.
 	$pee = preg_replace( '!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee );
 
 	// In some cases <li> may get wrapped in <p>, fix them.
-	$pee = preg_replace( "|<p>(<li.+?)</p>|", "$1", $pee );
+	$pee = preg_replace( "|<p>(<li.+?)</p>|", '$1', $pee );
 
 	// If a <blockquote> is wrapped with a <p>, move it inside the <blockquote>.
-	$pee = preg_replace( '|<p><blockquote([^>]*)>|i', "<blockquote$1><p>", $pee );
+	$pee = preg_replace( '|<p><blockquote([^>]*)>|i', '<blockquote$1><p>', $pee );
 	$pee = str_replace( '</blockquote></p>', '</p></blockquote>', $pee );
 
 	// If an opening or closing block element tag is preceded by an opening <p> tag, remove it.
-	$pee = preg_replace( '!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee );
+	$pee = preg_replace( '!<p>\s*(</?' . $allblocks . '[^>]*>)!', '$1', $pee );
 
 	// If an opening or closing block element tag is followed by a closing <p> tag, remove it.
-	$pee = preg_replace( '!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee );
+	$pee = preg_replace( '!(</?' . $allblocks . '[^>]*>)\s*</p>!', '$1', $pee );
 
 	// Optionally insert line breaks.
 	if ( $br ) {
@@ -553,11 +553,11 @@ function wpautop( $pee, $br = true ) {
 	}
 
 	// If a <br /> tag is after an opening or closing block tag, remove it.
-	$pee = preg_replace( '!(</?' . $allblocks . '[^>]*>)\s*<br />!', "$1", $pee );
+	$pee = preg_replace( '!(</?' . $allblocks . '[^>]*>)\s*<br />!', '$1', $pee );
 
 	// If a <br /> tag is before a subset of opening or closing block tags, remove it.
 	$pee = preg_replace( '!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $pee );
-	$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
+	$pee = preg_replace( '|\n</p>$|', '</p>', $pee );
 
 	// Replace placeholder <pre> tags with their original content.
 	if ( ! empty( $pre_tags ) ) {
@@ -1749,7 +1749,7 @@ function remove_accents( $string ) {
 			."\xf4\xf5\xf6\xf8\xf9\xfa\xfb"
 			."\xfc\xfd\xff";
 
-		$chars['out'] = "EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy";
+		$chars['out'] = 'EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy';
 
 		$string = strtr( $string, $chars['in'], $chars['out'] );
 		$double_chars = [];
@@ -1778,7 +1778,7 @@ function remove_accents( $string ) {
  */
 function sanitize_file_name( $filename ) {
 	$filename_raw = $filename;
-	$special_chars = [ "?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", chr( 0 ) ];
+	$special_chars = [ '?', '[', ']', '/', '\\', '=', '<', '>', ':', ';', ',', "'", '"', '&', '$', '#', '*', '(', ')', '|', '~', '`', '!', '{', '}', '%', '+', chr( 0 ) ];
 	/**
 	 * Filters the list of characters to remove from a filename.
 	 *
@@ -1830,7 +1830,7 @@ function sanitize_file_name( $filename ) {
 	foreach ( (array) $parts as $part ) {
 		$filename .= '.' . $part;
 
-		if ( preg_match( "/^[a-zA-Z]{2,5}\d?$/", $part ) ) {
+		if ( preg_match( '/^[a-zA-Z]{2,5}\d?$/', $part ) ) {
 			$allowed = false;
 			foreach ( $mimes as $ext_preg => $mime_match ) {
 				$ext_preg = '!^(' . $ext_preg . ')$!i';
@@ -2219,7 +2219,7 @@ function force_balance_tags( $text ) {
 	// WP bug fix for LOVE <3 (and other situations with '<' before a number)
 	$text = preg_replace( '#<([0-9]{1})#', '&lt;$1', $text );
 
-	while ( preg_match( "/<(\/?[\w:]*)\s*([^>]*)>/", $text, $regex ) ) {
+	while ( preg_match( '/<(\/?[\w:]*)\s*([^>]*)>/', $text, $regex ) ) {
 		$newtext .= $tagqueue;
 
 		$i = strpos( $text, $regex[0] );
@@ -3912,7 +3912,7 @@ function esc_url_raw( $url, $protocols = null ) {
 function htmlentities2( $myHTML ) {
 	$translation_table = get_html_translation_table( HTML_ENTITIES, ENT_QUOTES );
 	$translation_table[ chr( 38 ) ] = '&';
-	return preg_replace( "/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,3};)/", "&amp;", strtr( $myHTML, $translation_table ) );
+	return preg_replace( '/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,3};)/', '&amp;', strtr( $myHTML, $translation_table ) );
 }
 
 /**
@@ -4998,21 +4998,21 @@ function _print_emoji_detection_script() {
 	if ( SCRIPT_DEBUG ) {
 		$settings['source'] = array(
 			/** This filter is documented in wp-includes/class.wp-scripts.php */
-			'wpemoji' => apply_filters( 'script_loader_src', includes_url( "js/wp-emoji.js?$version" ), 'wpemoji' ),
+			'wpemoji' => apply_filters( 'script_loader_src', includes_url( 'js/wp-emoji.js?' . $version ), 'wpemoji' ),
 			/** This filter is documented in wp-includes/class.wp-scripts.php */
-			'twemoji' => apply_filters( 'script_loader_src', includes_url( "js/twemoji.js?$version" ), 'twemoji' ),
+			'twemoji' => apply_filters( 'script_loader_src', includes_url( 'js/twemoji.js?' . $version ), 'twemoji' ),
 		);
 
 		?>
 		<script type="text/javascript">
 			window._wpemojiSettings = <?php echo wp_json_encode( $settings ); ?>;
-			<?php readfile( ABSPATH . WPINC . "/js/wp-emoji-loader.js" ); ?>
+			<?php readfile( ABSPATH . WPINC . '/js/wp-emoji-loader.js' ); ?>
 		</script>
 		<?php
 	} else {
 		$settings['source'] = array(
 			/** This filter is documented in wp-includes/class.wp-scripts.php */
-			'concatemoji' => apply_filters( 'script_loader_src', includes_url( "js/wp-emoji-release.min.js?$version" ), 'concatemoji' ),
+			'concatemoji' => apply_filters( 'script_loader_src', includes_url( 'js/wp-emoji-release.min.js?' . $version ), 'concatemoji' ),
 		);
 
 		/*

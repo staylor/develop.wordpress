@@ -41,7 +41,7 @@ do_action( 'rss_tag_pre', 'rss2' );
 	<title><?php wp_title_rss(); ?></title>
 	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
 	<link><?php bloginfo_rss( 'url' ) ?></link>
-	<description><?php bloginfo_rss( "description" ) ?></description>
+	<description><?php bloginfo_rss( 'description' ) ?></description>
 	<lastBuildDate><?php echo mysql2date( 'D, d M Y H:i:s +0000', get_lastpostmodified( 'GMT' ), false ); ?></lastBuildDate>
 	<language><?php bloginfo_rss( 'language' ); ?></language>
 	<sy:updatePeriod><?php

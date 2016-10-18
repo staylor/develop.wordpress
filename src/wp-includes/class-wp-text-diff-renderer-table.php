@@ -314,7 +314,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 				if ( $this->_show_split_view ) {
 					$r .= '<tr>' . $this->deletedLine( $orig_line ) . $this->emptyLine() . $this->addedLine( $final_line ) . "</tr>\n";
 				} else {
-					$r .= '<tr>' . $this->deletedLine( $orig_line ) . "</tr><tr>" . $this->addedLine( $final_line ) . "</tr>\n";
+					$r .= '<tr>' . $this->deletedLine( $orig_line ) . '</tr><tr>' . $this->addedLine( $final_line ) . "</tr>\n";
 				}
 			}
 		}

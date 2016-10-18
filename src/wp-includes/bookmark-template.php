@@ -96,7 +96,7 @@ function _walk_bookmarks( $bookmarks, $args = '' ) {
 		}
 		$rel = $bookmark->link_rel;
 		if ( '' != $rel ) {
-			$rel = ' rel="' . esc_attr($rel) . '"';
+			$rel = ' rel="' . esc_attr( $rel ) . '"';
 		}
 		$target = $bookmark->link_target;
 		if ( '' != $target ) {
@@ -108,12 +108,22 @@ function _walk_bookmarks( $bookmarks, $args = '' ) {
 
 		if ( $bookmark->link_image != null && $r['show_images'] ) {
 			if ( strpos( $bookmark->link_image, 'http' ) === 0 ) {
-				$output .= "<img src=\"$bookmark->link_image\" $alt $title />";
+				$output .= sprintf(
+					'<img src="%s" %s %s />',
+					$bookmark->link_image,
+					$alt,
+					$title
+				);
 			} else { // If it's a relative path
-				$output .= "<img src=\"" . get_option('siteurl') . "$bookmark->link_image\" $alt $title />";
+				$output .= sprintf(
+					'<img src="%s" %s %s />',
+					get_option( 'siteurl' ) . $bookmark->link_image,
+					$alt,
+					$title
+				);
 			}
 			if ( $r['show_name'] ) {
-				$output .= " $name";
+				$output .= ' ' . $name;
 			}
 		} else {
 			$output .= $name;
@@ -243,8 +253,8 @@ function wp_list_bookmarks( $args = '' ) {
 				continue;
 			}
 			$output .= str_replace(
-				array( '%id', '%class' ),
-				array( "linkcat-$cat->term_id", $r['class'] ),
+				[ '%id', '%class' ],
+				[ 'linkcat-' . $cat->term_id, $r['class'] ],
 				$r['category_before']
 			);
 			/**
@@ -259,10 +269,10 @@ function wp_list_bookmarks( $args = '' ) {
 			$output .= $r['title_before'];
 			$output .= $catname;
 			$output .= $r['title_after'];
-			$output .= "\n\t<ul class='xoxo blogroll'>\n";
+			$output .= '<ul class="xoxo blogroll">';
 			$output .= _walk_bookmarks( $bookmarks, $r );
-			$output .= "\n\t</ul>\n";
-			$output .= $r['category_after'] . "\n";
+			$output .= '</ul>';
+			$output .= $r['category_after'];
 		}
 	} else {
 		//output one single list using title_li for the title
@@ -271,17 +281,17 @@ function wp_list_bookmarks( $args = '' ) {
 		if ( ! empty( $bookmarks ) ) {
 			if ( ! empty( $r['title_li'] ) ) {
 				$output .= str_replace(
-					array( '%id', '%class' ),
-					array( "linkcat-" . $r['category'], $r['class'] ),
+					[ '%id', '%class' ],
+					[ 'linkcat-' . $r['category'], $r['class'] ],
 					$r['category_before']
 				);
 				$output .= $r['title_before'];
 				$output .= $r['title_li'];
 				$output .= $r['title_after'];
-				$output .= "\n\t<ul class='xoxo blogroll'>\n";
+				$output .= '<ul class="xoxo blogroll">';
 				$output .= _walk_bookmarks( $bookmarks, $r );
-				$output .= "\n\t</ul>\n";
-				$output .= $r['category_after'] . "\n";
+				$output .= '</ul>';
+				$output .= $r['category_after'];
 			} else {
 				$output .= _walk_bookmarks( $bookmarks, $r );
 			}

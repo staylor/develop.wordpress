@@ -89,7 +89,11 @@ class WP_Ajax_Response {
 		$response = '';
 		if ( is_wp_error( $data ) ) {
 			foreach ( (array) $data->get_error_codes() as $code ) {
-				$response .= "<wp_error code='$code'><![CDATA[" . $data->get_error_message( $code ) . "]]></wp_error>";
+				$response .= sprintf(
+					'<wp_error code="%s"><![CDATA[%s]]></wp_error>',
+					$code,
+					$data->get_error_message( $code )
+				);
 				if ( ! $error_data = $data->get_error_data( $code ) ) {
 					continue;
 				}
@@ -99,20 +103,24 @@ class WP_Ajax_Response {
 					$error_data = get_object_vars( $error_data );
 				}
 
-				$response .= "<wp_error_data code='$code'$class>";
+				$response .= sprintf(
+					'<wp_error_data code="%s"%s>',
+					$code,
+					$class
+				);
 
 				if ( is_scalar( $error_data ) ) {
-					$response .= "<![CDATA[$error_data]]>";
+					$response .= '<![CDATA[' . $error_data . ']]>';
 				} elseif ( is_array( $error_data ) ) {
 					foreach ( $error_data as $k => $v ) {
-						$response .= "<$k><![CDATA[$v]]></$k>";
+						$response .= '<'. $k . '><![CDATA[' . $v . ']]></' . $k . '>';
 					}
 				}
 
-				$response .= "</wp_error_data>";
+				$response .= '</wp_error_data>';
 			}
 		} else {
-			$response = "<response_data><![CDATA[$data]]></response_data>";
+			$response = '<response_data><![CDATA[' . $data . ']]></response_data>';
 		}
 
 		$s = '';
@@ -120,20 +128,29 @@ class WP_Ajax_Response {
 			foreach ( $r['supplemental'] as $k => $v ) {
 				$s .= "<$k><![CDATA[$v]]></$k>";
 			}
-			$s = "<supplemental>$s</supplemental>";
+			$s = '<supplemental>' . $s . '</supplemental>';
 		}
 
 		if ( false === $action ) {
 			$app = getApp();
 			$action = $app['request']->request->get( 'action' );
 		}
-		$x = '';
-		$x .= "<response action='{$action}_$id'>"; // The action attribute in the xml output is formatted like a nonce action
-		$x .=	"<$what id='$id' " . ( false === $old_id ? '' : "old_id='$old_id' " ) . "position='$position'>";
-		$x .=		$response;
-		$x .=		$s;
-		$x .=	"</$what>";
-		$x .= "</response>";
+		$x = sprintf(
+			// The action attribute in the xml output is formatted like a nonce action
+			'<response action="%1$s_%2$s">' .
+				'<%3$s id="%2$s"%4$s position="%5$s">' .
+					'%6$s' .
+					'%7$s' .
+				'</%3$s>' .
+			'</response>',
+			$action,
+			$id,
+			$what,
+			( false === $old_id ? '' : ' old_id="' . $old_id . '"' ),
+			$position,
+			$response,
+			$s
+		);
 
 		$this->responses[] = $x;
 		return $x;

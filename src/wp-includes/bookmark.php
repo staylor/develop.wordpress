@@ -211,7 +211,7 @@ function get_bookmarks( $args = '' ) {
 	$search = '';
 	if ( ! empty( $r['search'] ) ) {
 		$like = '%' . $wpdb->esc_like( $r['search'] ) . '%';
-		$search = $wpdb->prepare(" AND ( (link_url LIKE %s) OR (link_name LIKE %s) OR (link_description LIKE %s) ) ", $like, $like, $like );
+		$search = $wpdb->prepare( ' AND ( (link_url LIKE %s) OR (link_name LIKE %s) OR (link_description LIKE %s) ) ', $like, $like, $like );
 	}
 
 	$category_query = '';
@@ -230,11 +230,11 @@ function get_bookmarks( $args = '' ) {
 	}
 	if ( ! empty( $category_query ) ) {
 		$category_query .= ") AND taxonomy = 'link_category'";
-		$join = " INNER JOIN $wpdb->term_relationships AS tr ON ($wpdb->links.link_id = tr.object_id) INNER JOIN $wpdb->term_taxonomy as tt ON tt.term_taxonomy_id = tr.term_taxonomy_id";
+		$join = ' INNER JOIN ' . $wpdb->term_relationships . ' AS tr ON (' . $wpdb->links . '.link_id = tr.object_id) INNER JOIN ' . $wpdb->term_taxonomy . ' as tt ON tt.term_taxonomy_id = tr.term_taxonomy_id';
 	}
 
 	if ( $r['show_updated'] ) {
-		$recently_updated_test = ", IF (DATE_ADD(link_updated, INTERVAL 120 MINUTE) >= NOW(), 1,0) as recently_updated ";
+		$recently_updated_test = ', IF (DATE_ADD(link_updated, INTERVAL 120 MINUTE) >= NOW(), 1,0) as recently_updated ';
 	} else {
 		$recently_updated_test = '';
 	}
@@ -245,13 +245,13 @@ function get_bookmarks( $args = '' ) {
 	$length = '';
 	switch ( $orderby ) {
 	case 'length':
-		$length = ", CHAR_LENGTH(link_name) AS length";
+		$length = ', CHAR_LENGTH(link_name) AS length';
 		break;
 	case 'rand':
 		$orderby = 'rand()';
 		break;
 	case 'link_id':
-		$orderby = "$wpdb->links.link_id";
+		$orderby = $wpdb->links . '.link_id';
 		break;
 	default:
 		$orderparams = [];
@@ -282,9 +282,22 @@ function get_bookmarks( $args = '' ) {
 		$visible = "AND link_visible = 'Y'";
 	}
 
-	$query = "SELECT * $length $recently_updated_test $get_updated FROM $wpdb->links $join WHERE 1=1 $visible $category_query";
-	$query .= " $exclusions $inclusions $search";
-	$query .= " ORDER BY $orderby $order";
+	$query = sprintf(
+		'SELECT * %s %s %s FROM %s %s WHERE 1=1 %s %s %s %s %s ORDER BY %s %s',
+		$length,
+		$recently_updated_test,
+		$get_updated,
+		$wpdb->links,
+		$join,
+		$visible,
+		$category_query,
+		$exclusions,
+		$inclusions,
+		$search,
+		$orderby,
+		$order
+	);
+
 	if ( $r['limit'] != -1 ) {
 		$query .= ' LIMIT ' . $r['limit'];
 	}

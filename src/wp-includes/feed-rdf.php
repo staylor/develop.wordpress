@@ -29,7 +29,7 @@ do_action( 'rss_tag_pre', 'rdf' );
 	do_action( 'rdf_ns' );
 	?>
 >
-<channel rdf:about="<?php bloginfo_rss( "url" ) ?>">
+<channel rdf:about="<?php bloginfo_rss( 'url' ) ?>">
 	<title><?php wp_title_rss(); ?></title>
 	<link><?php bloginfo_rss( 'url' ) ?></link>
 	<description><?php bloginfo_rss( 'description' ) ?></description>

@@ -364,7 +364,7 @@ function get_comment_count( $post_id = 0 ) {
 
 	$where = '';
 	if ( $post_id > 0 ) {
-		$where = $wpdb->prepare("WHERE comment_post_ID = %d", $post_id);
+		$where = $wpdb->prepare( 'WHERE comment_post_ID = %d', $post_id );
 	}
 
 	$totals = (array) $wpdb->get_results("
@@ -630,12 +630,12 @@ function wp_allow_comment( $commentdata, $avoid_die = false ) {
 	);
 	if ( $commentdata['comment_author_email'] ) {
 		$dupe .= $wpdb->prepare(
-			"AND comment_author_email = %s ",
+			'AND comment_author_email = %s ',
 			wp_unslash( $commentdata['comment_author_email'] )
 		);
 	}
 	$dupe .= $wpdb->prepare(
-		") AND comment_content = %s LIMIT 1",
+		') AND comment_content = %s LIMIT 1',
 		wp_unslash( $commentdata['comment_content'] )
 	);
 
@@ -2794,7 +2794,7 @@ function _prime_comment_caches( $comment_ids, $update_meta_cache = true ) {
 
 	$non_cached_ids = _get_non_cached_ids( $comment_ids, 'comment' );
 	if ( !empty( $non_cached_ids ) ) {
-		$fresh_comments = $wpdb->get_results( sprintf( "SELECT $wpdb->comments.* FROM $wpdb->comments WHERE comment_ID IN (%s)", join( ",", array_map( 'intval', $non_cached_ids ) ) ) );
+		$fresh_comments = $wpdb->get_results( sprintf( "SELECT $wpdb->comments.* FROM $wpdb->comments WHERE comment_ID IN (%s)", join( ',', array_map( 'intval', $non_cached_ids ) ) ) );
 
 		update_comment_cache( $fresh_comments, $update_meta_cache );
 	}

@@ -672,25 +672,25 @@ function redirect_guess_404_permalink() {
 	$wpdb = $app['db'];
 
 	if ( get_query_var( 'name' ) ) {
-		$where = $wpdb->prepare( "post_name LIKE %s", $wpdb->esc_like( get_query_var( 'name' ) ) . '%' );
+		$where = $wpdb->prepare( 'post_name LIKE %s', $wpdb->esc_like( get_query_var( 'name' ) ) . '%' );
 
 		// if any of post_type, year, monthnum, or day are set, use them to refine the query
 		if ( get_query_var( 'post_type' ) ) {
-			$where .= $wpdb->prepare( " AND post_type = %s", get_query_var( 'post_type' ) );
+			$where .= $wpdb->prepare( ' AND post_type = %s', get_query_var( 'post_type' ) );
 		} else {
 			$where .= " AND post_type IN ( '" . implode( "', '", get_post_types( array( 'public' => true ) ) ) . "' )";
 		}
 
 		if ( get_query_var( 'year' ) ) {
-			$where .= $wpdb->prepare( " AND YEAR(post_date) = %d", get_query_var( 'year' ) );
+			$where .= $wpdb->prepare( ' AND YEAR(post_date) = %d', get_query_var( 'year' ) );
 		}
 
 		if ( get_query_var( 'monthnum' ) ) {
-			$where .= $wpdb->prepare( " AND MONTH(post_date) = %d", get_query_var( 'monthnum' ) );
+			$where .= $wpdb->prepare( ' AND MONTH(post_date) = %d', get_query_var( 'monthnum' ) );
 		}
 
 		if ( get_query_var( 'day' ) ) {
-			$where .= $wpdb->prepare( " AND DAYOFMONTH(post_date) = %d", get_query_var( 'day' ) );
+			$where .= $wpdb->prepare( ' AND DAYOFMONTH(post_date) = %d', get_query_var( 'day' ) );
 		}
 
 		$post_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE $where AND post_status = 'publish'" );

@@ -330,7 +330,7 @@ class WP_Tax_Query {
 
 		$indent = '';
 		for ( $i = 0; $i < $depth; $i++ ) {
-			$indent .= "  ";
+			$indent .= '  ';
 		}
 
 		foreach ( $query as $key => &$clause ) {
@@ -629,7 +629,7 @@ class WP_Tax_Query {
 				$term = "'" . esc_sql( sanitize_term_field( $query['field'], $term, 0, $query['taxonomy'], 'db' ) ) . "'";
 			}
 
-			$terms = implode( ",", $query['terms'] );
+			$terms = implode( ',', $query['terms'] );
 
 			$terms = $wpdb->get_col( "
 					SELECT {$wpdb->term_taxonomy}.$resulting_field

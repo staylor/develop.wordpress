@@ -64,7 +64,7 @@ function wp_schedule_single_event( $timestamp, $hook, $args = []) {
 	$key = md5(serialize($event->args));
 
 	$crons[$event->timestamp][$event->hook][$key] = array( 'schedule' => $event->schedule, 'args' => $event->args );
-	uksort( $crons, "strnatcasecmp" );
+	uksort( $crons, 'strnatcasecmp' );
 	_set_cron_array( $crons );
 }
 
@@ -113,7 +113,7 @@ function wp_schedule_event( $timestamp, $recurrence, $hook, $args = []) {
 	$key = md5(serialize($event->args));
 
 	$crons[$event->timestamp][$event->hook][$key] = array( 'schedule' => $event->schedule, 'args' => $event->args, 'interval' => $event->interval );
-	uksort( $crons, "strnatcasecmp" );
+	uksort( $crons, 'strnatcasecmp' );
 	_set_cron_array( $crons );
 }
 

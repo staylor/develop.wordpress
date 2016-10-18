@@ -537,7 +537,7 @@ function wp_extract_urls( $content ) {
 			. '[.]'
 			. '(?:'
 				. '\([\w\d]+\)|'
-				. "(?:"
+				. '(?:'
 					. "[^`!()\[\]{};:'\".,<>«»“”‘’\s]|"
 					. '(?:[:]\d+)?/?'
 				. ')+'
@@ -634,7 +634,7 @@ function do_enclose( $content, $post_ID ) {
 					}
 				}
 
-				if ( in_array( substr( $type, 0, strpos( $type, "/" ) ), $allowed_types ) ) {
+				if ( in_array( substr( $type, 0, strpos( $type, '/' ) ), $allowed_types ) ) {
 					add_post_meta( $post_ID, 'enclosure', "$url\n$len\n$mime\n" );
 				}
 			}

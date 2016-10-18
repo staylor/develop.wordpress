@@ -965,7 +965,16 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 	// generate the output links array
 	foreach ( $tags_data as $key => $tag_data ) {
 		$class = $tag_data['class'] . ' tag-link-position-' . ( $key + 1 );
-		$a[] = "<a href='" . esc_url( $tag_data[ 'url' ] ) . "'" . $tag_data[ 'role' ] . " class='" . esc_attr( $class ) . "' title='" . esc_attr( $tag_data[ 'title' ] ) . "' style='font-size: " . esc_attr( str_replace( ',', '.', $tag_data[ 'font_size' ] ) . $args[ 'unit' ] ) . ";'>" . esc_html( $tag_data['name'] ) . "</a>";
+		$a[] = sprintf(
+			'<a href="%s" %s class="%s" title="%s" style="font-size: %s%s;">%s</a>',
+			esc_url( $tag_data['url'] ),
+			$tag_data['role'],
+			esc_attr( $class ),
+			esc_attr( $tag_data['title'] ),
+			esc_attr( str_replace( ',', '.', $tag_data['font_size'] ) ),
+			$args['unit'],
+			esc_html( $tag_data['name'] )
+		);
 	}
 
 	switch ( $args['format'] ) {
@@ -973,9 +982,9 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 		$return = & $a;
 		break;
 	case 'list' :
-		$return = "<ul class='wp-tag-cloud'>\n\t<li>";
-		$return .= join( "</li>\n\t<li>", $a );
-		$return .= "</li>\n</ul>\n";
+		$return = '<ul class="wp-tag-cloud"><li>';
+		$return .= join( '</li><li>', $a );
+		$return .= '</li></ul>';
 		break;
 	default :
 		$return = join( $args['separator'], $a );

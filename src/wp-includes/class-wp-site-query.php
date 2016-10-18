@@ -399,12 +399,12 @@ class WP_Site_Query {
 
 		// Parse site IDs for an IN clause.
 		if ( ! empty( $this->query_vars['site__in'] ) ) {
-			$this->sql_clauses['where']['site__in'] = "blog_id IN ( " . implode( ',', wp_parse_id_list( $this->query_vars['site__in'] ) ) . ' )';
+			$this->sql_clauses['where']['site__in'] = 'blog_id IN ( ' . implode( ',', wp_parse_id_list( $this->query_vars['site__in'] ) ) . ' )';
 		}
 
 		// Parse site IDs for a NOT IN clause.
 		if ( ! empty( $this->query_vars['site__not_in'] ) ) {
-			$this->sql_clauses['where']['site__not_in'] = "blog_id NOT IN ( " . implode( ',', wp_parse_id_list( $this->query_vars['site__not_in'] ) ) . ' )';
+			$this->sql_clauses['where']['site__not_in'] = 'blog_id NOT IN ( ' . implode( ',', wp_parse_id_list( $this->query_vars['site__not_in'] ) ) . ' )';
 		}
 
 		$network_id = absint( $this->query_vars['network_id'] );
@@ -429,12 +429,12 @@ class WP_Site_Query {
 
 		// Parse site domain for an IN clause.
 		if ( is_array( $this->query_vars['domain__in'] ) ) {
-			$this->sql_clauses['where']['domain__in'] = "domain IN ( '" . implode( "', '", $wpdb->_escape( $this->query_vars['domain__in'] ) ) . "' )";
+			$this->sql_clauses['where']['domain__in'] = 'domain IN ( "' . implode( '", "', $wpdb->_escape( $this->query_vars['domain__in'] ) ) . '" )';
 		}
 
 		// Parse site domain for a NOT IN clause.
 		if ( is_array( $this->query_vars['domain__not_in'] ) ) {
-			$this->sql_clauses['where']['domain__not_in'] = "domain NOT IN ( '" . implode( "', '", $wpdb->_escape( $this->query_vars['domain__not_in'] ) ) . "' )";
+			$this->sql_clauses['where']['domain__not_in'] = 'domain NOT IN ( "' . implode( '", "', $wpdb->_escape( $this->query_vars['domain__not_in'] ) ) . '" )';
 		}
 
 		if ( ! empty( $this->query_vars['path'] ) ) {
@@ -443,37 +443,37 @@ class WP_Site_Query {
 
 		// Parse site path for an IN clause.
 		if ( is_array( $this->query_vars['path__in'] ) ) {
-			$this->sql_clauses['where']['path__in'] = "path IN ( '" . implode( "', '", $wpdb->_escape( $this->query_vars['path__in'] ) ) . "' )";
+			$this->sql_clauses['where']['path__in'] = 'path IN ( "' . implode( '", "', $wpdb->_escape( $this->query_vars['path__in'] ) ) . '" )';
 		}
 
 		// Parse site path for a NOT IN clause.
 		if ( is_array( $this->query_vars['path__not_in'] ) ) {
-			$this->sql_clauses['where']['path__not_in'] = "path NOT IN ( '" . implode( "', '", $wpdb->_escape( $this->query_vars['path__not_in'] ) ) . "' )";
+			$this->sql_clauses['where']['path__not_in'] = 'path NOT IN ( "' . implode( '", "', $wpdb->_escape( $this->query_vars['path__not_in'] ) ) . '" )';
 		}
 
 		if ( is_numeric( $this->query_vars['archived'] ) ) {
 			$archived = absint( $this->query_vars['archived'] );
-			$this->sql_clauses['where']['archived'] = $wpdb->prepare( "archived = %d ", $archived );
+			$this->sql_clauses['where']['archived'] = $wpdb->prepare( 'archived = %d ', $archived );
 		}
 
 		if ( is_numeric( $this->query_vars['mature'] ) ) {
 			$mature = absint( $this->query_vars['mature'] );
-			$this->sql_clauses['where']['mature'] = $wpdb->prepare( "mature = %d ", $mature );
+			$this->sql_clauses['where']['mature'] = $wpdb->prepare( 'mature = %d ', $mature );
 		}
 
 		if ( is_numeric( $this->query_vars['spam'] ) ) {
 			$spam = absint( $this->query_vars['spam'] );
-			$this->sql_clauses['where']['spam'] = $wpdb->prepare( "spam = %d ", $spam );
+			$this->sql_clauses['where']['spam'] = $wpdb->prepare( 'spam = %d ', $spam );
 		}
 
 		if ( is_numeric( $this->query_vars['deleted'] ) ) {
 			$deleted = absint( $this->query_vars['deleted'] );
-			$this->sql_clauses['where']['deleted'] = $wpdb->prepare( "deleted = %d ", $deleted );
+			$this->sql_clauses['where']['deleted'] = $wpdb->prepare( 'deleted = %d ', $deleted );
 		}
 
 		if ( is_numeric( $this->query_vars['public'] ) ) {
 			$public = absint( $this->query_vars['public'] );
-			$this->sql_clauses['where']['public'] = $wpdb->prepare( "public = %d ", $public );
+			$this->sql_clauses['where']['public'] = $wpdb->prepare( 'public = %d ', $public );
 		}
 
 		// Falsey search strings are ignored.
@@ -542,7 +542,7 @@ class WP_Site_Query {
 		}
 
 		if ( $orderby ) {
-			$orderby = "ORDER BY $orderby";
+			$orderby = 'ORDER BY ' . $orderby;
 		}
 
 		$found_rows = '';

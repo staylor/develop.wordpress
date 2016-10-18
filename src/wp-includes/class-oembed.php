@@ -504,17 +504,17 @@ class WP_oEmbed {
 	 * @since 3.0.0
 	 * @access private
 	 *
-	 * @param string $provider_url_with_args URL to the provider with full arguments list (url, maxheight, etc.)
+	 * @param string $provider_with_args URL to the provider with full arguments list (url, maxheight, etc.)
 	 * @param string $format Format to use
 	 * @return false|object|WP_Error False on failure, otherwise the result in the form of an object.
 	 */
-	private function _fetch_with_format( $provider_url_with_args, $format ) {
-		$provider_url_with_args = add_query_arg( 'format', $format, $provider_url_with_args );
+	private function _fetch_with_format( $provider_with_args, $format ) {
+		$with_format = add_query_arg( 'format', $format, $provider_with_args );
 
 		/** This filter is documented in wp-includes/class-oembed.php */
-		$args = apply_filters( 'oembed_remote_get_args', [], $provider_url_with_args );
+		$args = apply_filters( 'oembed_remote_get_args', [], $with_format );
 
-		$response = wp_safe_remote_get( $provider_url_with_args, $args );
+		$response = wp_safe_remote_get( $with_format, $args );
 		if ( 501 == wp_remote_retrieve_response_code( $response ) ) {
 			return new WP_Error( 'not-implemented' );
 		}

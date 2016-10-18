@@ -870,7 +870,7 @@ function print_embed_styles() {
 	<style type="text/css">
 	<?php
 		if ( SCRIPT_DEBUG ) {
-			readfile( ABSPATH . WPINC . "/css/wp-embed-template.css" );
+			readfile( ABSPATH . WPINC . '/css/wp-embed-template.css' );
 		} else {
 			/*
 			 * If you're looking at a src version of this file, you'll see an "include"
@@ -901,7 +901,7 @@ function print_embed_scripts() {
 	<script type="text/javascript">
 	<?php
 		if ( SCRIPT_DEBUG ) {
-			readfile( ABSPATH . WPINC . "/js/wp-embed-template.js" );
+			readfile( ABSPATH . WPINC . '/js/wp-embed-template.js' );
 		} else {
 			/*
 			 * If you're looking at a src version of this file, you'll see an "include"
