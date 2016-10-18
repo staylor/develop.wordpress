@@ -175,19 +175,19 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 	<?php endif; // Languages. ?>
 
 	<div id="privacy">
-        <p class="privacy-intro">
-            <label for="blog_public_on"><?php _e('Privacy:') ?></label>
-            <?php _e( 'Allow search engines to index this site.' ); ?>
-            <br style="clear:both" />
-            <label class="checkbox" for="blog_public_on">
-                <input type="radio" id="blog_public_on" name="blog_public" value="1" <?php if ( ! $_post->has( 'blog_public' ) || $_post->get( 'blog_public' ) == '1' ) { ?>checked="checked"<?php } ?> />
-                <strong><?php _e( 'Yes' ); ?></strong>
-            </label>
-            <label class="checkbox" for="blog_public_off">
-                <input type="radio" id="blog_public_off" name="blog_public" value="0" <?php if ( $_post->has( 'blog_public' ) && $_post->get( 'blog_public' ) == '0' ) { ?>checked="checked"<?php } ?> />
-                <strong><?php _e( 'No' ); ?></strong>
-            </label>
-        </p>
+		<p class="privacy-intro">
+			<label for="blog_public_on"><?php _e('Privacy:') ?></label>
+			<?php _e( 'Allow search engines to index this site.' ); ?>
+			<br style="clear:both" />
+			<label class="checkbox" for="blog_public_on">
+				<input type="radio" id="blog_public_on" name="blog_public" value="1" <?php if ( ! $_post->has( 'blog_public' ) || $_post->get( 'blog_public' ) == '1' ) { ?>checked="checked"<?php } ?> />
+				<strong><?php _e( 'Yes' ); ?></strong>
+			</label>
+			<label class="checkbox" for="blog_public_off">
+				<input type="radio" id="blog_public_off" name="blog_public" value="0" <?php if ( $_post->has( 'blog_public' ) && $_post->get( 'blog_public' ) == '0' ) { ?>checked="checked"<?php } ?> />
+				<strong><?php _e( 'No' ); ?></strong>
+			</label>
+		</p>
 	</div>
 
 	<?php
@@ -872,16 +872,16 @@ if ( $active_signup == 'none' ) {
 	switch ( $stage ) {
 	case 'validate-user-signup' :
 		if ( $active_signup == 'all' || $_post->get( 'signup_for' ) == 'blog' && $active_signup == 'blog' || $_post->get( 'signup_for' ) == 'user' && $active_signup == 'user' ) {
-						validate_user_signup();
+			validate_user_signup();
 		} else {
-						_e( 'User registration has been disabled.' );
+			_e( 'User registration has been disabled.' );
 		}
 	break;
 	case 'validate-blog-signup':
 		if ( $active_signup == 'all' || $active_signup == 'blog' ) {
-						validate_blog_signup();
+			validate_blog_signup();
 		} else {
-						_e( 'Site registration has been disabled.' );
+			_e( 'Site registration has been disabled.' );
 		}
 		break;
 	case 'gimmeanotherblog':
@@ -891,33 +891,35 @@ if ( $active_signup == 'none' ) {
 	default :
 		$user_email = $_post->get( 'user_email', '' );
 		/**
-			 * Fires when the site sign-up form is sent.
-			 *
-			 * @since 3.0.0
-			 */
+		 * Fires when the site sign-up form is sent.
+		 *
+		 * @since 3.0.0
+		 */
 		do_action( 'preprocess_signup_form' );
-		if ( is_user_logged_in() && ( $active_signup == 'all' || $active_signup == 'blog' ) )
+		if ( is_user_logged_in() && ( $active_signup == 'all' || $active_signup == 'blog' ) ) {
 			signup_another_blog($newblogname);
-		elseif ( ! is_user_logged_in() && ( $active_signup == 'all' || $active_signup == 'user' ) )
+		} elseif ( ! is_user_logged_in() && ( $active_signup == 'all' || $active_signup == 'user' ) ) {
 			signup_user( $newblogname, $user_email );
-		elseif ( ! is_user_logged_in() && ( $active_signup == 'blog' ) )
+		} elseif ( ! is_user_logged_in() && ( $active_signup == 'blog' ) ) {
 			_e( 'Sorry, new registrations are not allowed at this time.' );
-		else
+		} else {
 			_e( 'You are logged in already. No need to register again!' );
+		}
 
 		if ( null !== $newblogname ) {
 			$newblog = get_blogaddress_by_name( $newblogname );
 
-			if ( $active_signup == 'blog' || $active_signup == 'all' )
+			if ( $active_signup == 'blog' || $active_signup == 'all' ) {
 				/* translators: %s: site address */
 				printf( '<p><em>' . __( 'The site you were looking for, %s, does not exist, but you can create it now!' ) . '</em></p>',
 					'<strong>' . $newblog . '</strong>'
 				);
-			else
+			} else {
 				/* translators: %s: site address */
 				printf( '<p><em>' . __( 'The site you were looking for, %s, does not exist.' ) . '</em></p>',
 					'<strong>' . $newblog . '</strong>'
 				);
+			}
 		}
 		break;
 	}

@@ -766,19 +766,19 @@ class WP_Date_Query {
 			$where_parts[] = _wp_mysql_week( $column ) . " $compare $value";
 		}
 		if ( isset( $query['dayofyear'] ) && $value = $this->build_value( $compare, $query['dayofyear'] ) ) {
-					$where_parts[] = "DAYOFYEAR( $column ) $compare $value";
+			$where_parts[] = "DAYOFYEAR( $column ) $compare $value";
 		}
 
 		if ( isset( $query['day'] ) && $value = $this->build_value( $compare, $query['day'] ) ) {
-					$where_parts[] = "DAYOFMONTH( $column ) $compare $value";
+			$where_parts[] = "DAYOFMONTH( $column ) $compare $value";
 		}
 
 		if ( isset( $query['dayofweek'] ) && $value = $this->build_value( $compare, $query['dayofweek'] ) ) {
-					$where_parts[] = "DAYOFWEEK( $column ) $compare $value";
+			$where_parts[] = "DAYOFWEEK( $column ) $compare $value";
 		}
 
 		if ( isset( $query['dayofweek_iso'] ) && $value = $this->build_value( $compare, $query['dayofweek_iso'] ) ) {
-					$where_parts[] = "WEEKDAY( $column ) + 1 $compare $value";
+			$where_parts[] = "WEEKDAY( $column ) + 1 $compare $value";
 		}
 
 		if ( isset( $query['hour'] ) || isset( $query['minute'] ) || isset( $query['second'] ) ) {
@@ -820,44 +820,44 @@ class WP_Date_Query {
 		}
 
 		switch ( $compare ) {
-			case 'IN':
-			case 'NOT IN':
-				$value = (array) $value;
+		case 'IN':
+		case 'NOT IN':
+			$value = (array) $value;
 
-				// Remove non-numeric values.
-				$value = array_filter( $value, 'is_numeric' );
+			// Remove non-numeric values.
+			$value = array_filter( $value, 'is_numeric' );
 
-				if ( empty( $value ) ) {
+			if ( empty( $value ) ) {
+				return false;
+			}
+
+			return '(' . implode( ',', array_map( 'intval', $value ) ) . ')';
+
+		case 'BETWEEN':
+		case 'NOT BETWEEN':
+			if ( ! is_array( $value ) || 2 != count( $value ) ) {
+				$value = array( $value, $value );
+			} else {
+				$value = array_values( $value );
+			}
+
+			// If either value is non-numeric, bail.
+			foreach ( $value as $v ) {
+				if ( ! is_numeric( $v ) ) {
 					return false;
 				}
+			}
 
-				return '(' . implode( ',', array_map( 'intval', $value ) ) . ')';
+			$value = array_map( 'intval', $value );
 
-			case 'BETWEEN':
-			case 'NOT BETWEEN':
-				if ( ! is_array( $value ) || 2 != count( $value ) ) {
-					$value = array( $value, $value );
-				} else {
-					$value = array_values( $value );
-				}
+			return $value[0] . ' AND ' . $value[1];
 
-				// If either value is non-numeric, bail.
-				foreach ( $value as $v ) {
-					if ( ! is_numeric( $v ) ) {
-						return false;
-					}
-				}
+		default;
+			if ( ! is_numeric( $value ) ) {
+				return false;
+			}
 
-				$value = array_map( 'intval', $value );
-
-				return $value[0] . ' AND ' . $value[1];
-
-			default;
-				if ( ! is_numeric( $value ) ) {
-					return false;
-				}
-
-				return (int) $value;
+			return (int) $value;
 		}
 	}
 

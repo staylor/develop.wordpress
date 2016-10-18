@@ -44,10 +44,10 @@ add_action( 'wp_head', function () {
 	 * Fires before the Site Activation page is loaded.
 	 *
 	 * Fires on the {@see 'wp_head'} action.
-     *
-     * @since 3.0.0
-     */
-    do_action( 'activate_wp_head' );
+	 *
+	 * @since 3.0.0
+	 */
+	do_action( 'activate_wp_head' );
 } );
 
 /**
@@ -77,11 +77,11 @@ get_header( 'wp-activate' );
 		<h2><?php _e( 'Activation Key Required' ) ?></h2>
 		<form name="activateform" id="activateform" method="post" action="<?php echo network_site_url( 'wp-activate.php' ); ?>">
 			<p>
-			    <label for="key"><?php _e( 'Activation Key:' ) ?></label>
-			    <br /><input type="text" name="key" id="key" value="" size="50" />
+				<label for="key"><?php _e( 'Activation Key:' ) ?></label>
+				<br /><input type="text" name="key" id="key" value="" size="50" />
 			</p>
 			<p class="submit">
-			    <input id="submit" type="submit" name="Submit" class="submit" value="<?php esc_attr_e( 'Activate' ) ?>" />
+				<input id="submit" type="submit" name="Submit" class="submit" value="<?php esc_attr_e( 'Activate' ) ?>" />
 			</p>
 		</form>
 

@@ -80,7 +80,7 @@ function ms_site_check() {
 	 * @since 3.0.0
 	 *
 	 * @param bool null Whether to skip the blog status check. Default null.
-	*/
+	 */
 	$check = apply_filters( 'ms_site_check', null );
 	if ( null !== $check ) {
 			return true;

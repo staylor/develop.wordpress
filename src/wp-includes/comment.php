@@ -274,14 +274,14 @@ function get_comment_statuses() {
  */
 function get_default_comment_status( $post_type = 'post', $comment_type = 'comment' ) {
 	switch ( $comment_type ) {
-		case 'pingback' :
-		case 'trackback' :
-			$supports = 'trackbacks';
-			$option = 'ping';
-			break;
-		default :
-			$supports = 'comments';
-			$option = 'comment';
+	case 'pingback' :
+	case 'trackback' :
+		$supports = 'trackbacks';
+		$option = 'ping';
+		break;
+	default :
+		$supports = 'comments';
+		$option = 'comment';
 	}
 
 	// Set the status.
@@ -329,15 +329,15 @@ function get_lastcommentmodified($timezone = 'server') {
 	$add_seconds_server = date('Z');
 
 	switch ( strtolower($timezone)) {
-		case 'gmt':
-			$lastcommentmodified = $wpdb->get_var("SELECT comment_date_gmt FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1");
-			break;
-		case 'blog':
-			$lastcommentmodified = $wpdb->get_var("SELECT comment_date FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1");
-			break;
-		case 'server':
-			$lastcommentmodified = $wpdb->get_var($wpdb->prepare("SELECT DATE_ADD(comment_date_gmt, INTERVAL %s SECOND) FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1", $add_seconds_server));
-			break;
+	case 'gmt':
+		$lastcommentmodified = $wpdb->get_var("SELECT comment_date_gmt FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1");
+		break;
+	case 'blog':
+		$lastcommentmodified = $wpdb->get_var("SELECT comment_date FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1");
+		break;
+	case 'server':
+		$lastcommentmodified = $wpdb->get_var($wpdb->prepare("SELECT DATE_ADD(comment_date_gmt, INTERVAL %s SECOND) FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1", $add_seconds_server));
+		break;
 	}
 
 	$cache_lastcommentmodified[$timezone] = $lastcommentmodified;
@@ -386,28 +386,28 @@ function get_comment_count( $post_id = 0 ) {
 
 	foreach ( $totals as $row ) {
 		switch ( $row['comment_approved'] ) {
-			case 'trash':
-				$comment_count['trash'] = $row['total'];
-				break;
-			case 'post-trashed':
-				$comment_count['post-trashed'] = $row['total'];
-				break;
-			case 'spam':
-				$comment_count['spam'] = $row['total'];
-				$comment_count['total_comments'] += $row['total'];
-				break;
-			case '1':
-				$comment_count['approved'] = $row['total'];
-				$comment_count['total_comments'] += $row['total'];
-				$comment_count['all'] += $row['total'];
-				break;
-			case '0':
-				$comment_count['awaiting_moderation'] = $row['total'];
-				$comment_count['total_comments'] += $row['total'];
-				$comment_count['all'] += $row['total'];
-				break;
-			default:
-				break;
+		case 'trash':
+			$comment_count['trash'] = $row['total'];
+			break;
+		case 'post-trashed':
+			$comment_count['post-trashed'] = $row['total'];
+			break;
+		case 'spam':
+			$comment_count['spam'] = $row['total'];
+			$comment_count['total_comments'] += $row['total'];
+			break;
+		case '1':
+			$comment_count['approved'] = $row['total'];
+			$comment_count['total_comments'] += $row['total'];
+			$comment_count['all'] += $row['total'];
+			break;
+		case '0':
+			$comment_count['awaiting_moderation'] = $row['total'];
+			$comment_count['total_comments'] += $row['total'];
+			$comment_count['all'] += $row['total'];
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -2053,23 +2053,23 @@ function wp_set_comment_status($comment_id, $comment_status, $wp_error = false) 
 	$wpdb = $app['db'];
 
 	switch ( $comment_status ) {
-		case 'hold':
-		case '0':
-			$status = '0';
-			break;
-		case 'approve':
-		case '1':
-			$status = '1';
-			add_action( 'wp_set_comment_status', 'wp_new_comment_notify_postauthor' );
-			break;
-		case 'spam':
-			$status = 'spam';
-			break;
-		case 'trash':
-			$status = 'trash';
-			break;
-		default:
-			return false;
+	case 'hold':
+	case '0':
+		$status = '0';
+		break;
+	case 'approve':
+	case '1':
+		$status = '1';
+		add_action( 'wp_set_comment_status', 'wp_new_comment_notify_postauthor' );
+		break;
+	case 'spam':
+		$status = 'spam';
+		break;
+	case 'trash':
+		$status = 'trash';
+		break;
+	default:
+		return false;
 	}
 
 	$comment_old = clone get_comment($comment_id);

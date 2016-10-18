@@ -1102,14 +1102,14 @@ function comment_type( $commenttxt = false, $trackbacktxt = false, $pingbacktxt 
 	}
 	$type = get_comment_type();
 	switch( $type ) {
-		case 'trackback' :
-			echo $trackbacktxt;
-			break;
-		case 'pingback' :
-			echo $pingbacktxt;
-			break;
-		default :
-			echo $commenttxt;
+	case 'trackback' :
+		echo $trackbacktxt;
+		break;
+	case 'pingback' :
+		echo $pingbacktxt;
+		break;
+	default :
+		echo $commenttxt;
 	}
 }
 

@@ -619,39 +619,39 @@ class WP_oEmbed {
 	 */
 	public function data2html( $data, $url ) {
 		if ( ! is_object( $data ) || empty( $data->type ) ) {
-					return false;
+			return false;
 		}
 
 		$return = false;
 
 		switch ( $data->type ) {
-			case 'photo':
-				if ( empty( $data->url ) || empty( $data->width ) || empty( $data->height ) ) {
-					break;
-				}
-				if ( ! is_string( $data->url ) || ! is_numeric( $data->width ) || ! is_numeric( $data->height ) ) {
-					break;
-				}
-
-				$title = ! empty( $data->title ) && is_string( $data->title ) ? $data->title : '';
-				$return = '<a href="' . esc_url( $url ) . '"><img src="' . esc_url( $data->url ) . '" alt="' . esc_attr($title) . '" width="' . esc_attr($data->width) . '" height="' . esc_attr($data->height) . '" /></a>';
+		case 'photo':
+			if ( empty( $data->url ) || empty( $data->width ) || empty( $data->height ) ) {
 				break;
-
-			case 'video':
-			case 'rich':
-				if ( ! empty( $data->html ) && is_string( $data->html ) ) {
-					$return = $data->html;
-				}
+			}
+			if ( ! is_string( $data->url ) || ! is_numeric( $data->width ) || ! is_numeric( $data->height ) ) {
 				break;
+			}
 
-			case 'link':
-				if ( ! empty( $data->title ) && is_string( $data->title ) ) {
-					$return = '<a href="' . esc_url( $url ) . '">' . esc_html( $data->title ) . '</a>';
-				}
-				break;
+			$title = ! empty( $data->title ) && is_string( $data->title ) ? $data->title : '';
+			$return = '<a href="' . esc_url( $url ) . '"><img src="' . esc_url( $data->url ) . '" alt="' . esc_attr($title) . '" width="' . esc_attr($data->width) . '" height="' . esc_attr($data->height) . '" /></a>';
+			break;
 
-			default:
-				$return = false;
+		case 'video':
+		case 'rich':
+			if ( ! empty( $data->html ) && is_string( $data->html ) ) {
+				$return = $data->html;
+			}
+			break;
+
+		case 'link':
+			if ( ! empty( $data->title ) && is_string( $data->title ) ) {
+				$return = '<a href="' . esc_url( $url ) . '">' . esc_html( $data->title ) . '</a>';
+			}
+			break;
+
+		default:
+			$return = false;
 		}
 
 		/**

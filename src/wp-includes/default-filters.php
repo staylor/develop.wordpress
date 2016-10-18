@@ -257,7 +257,7 @@ add_action( 'after_switch_theme', '_wp_sidebars_changed' );
 add_action( 'wp_print_styles', 'print_emoji_styles' );
 
 if ( $app[ 'request' ]->query->get( 'replytocom' ) ) {
-    add_action( 'wp_head', 'wp_no_robots' );
+	add_action( 'wp_head', 'wp_no_robots' );
 }
 
 // Login actions

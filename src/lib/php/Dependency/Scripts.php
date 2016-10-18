@@ -495,7 +495,7 @@ class Scripts extends Dependencies {
 
 	/**
 	 * Determines script dependencies.
-     *
+	 *
 	 * @since 2.1.0
 	 * @access public
 	 *

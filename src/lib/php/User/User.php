@@ -178,7 +178,7 @@ class User {
 	 * @since 4.4.0 Added 'ID' as an alias of 'id' for the `$field` parameter.
 	 *
 	 * @static
-     *
+	 *
 	 * @param string $field The field to query against: 'id', 'ID', 'slug', 'email' or 'login'.
 	 * @param string|int $value The field value
 	 * @return object|false Raw user object
