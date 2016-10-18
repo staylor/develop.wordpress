@@ -226,8 +226,9 @@ class Locale {
 		$this->number_format['decimal_point'] = ( 'number_format_decimal_point' === $decimal_point ) ? '.' : $decimal_point;
 
 		/* translators: 'rtl' or 'ltr'. This sets the text direction for WordPress. */
-		if ( 'rtl' == _x( 'ltr', 'text direction' ) )
+		if ( 'rtl' == _x( 'ltr', 'text direction' ) ) {
 			$this->text_direction = 'rtl';
+		}
 
 		$app = getApp();
 		if ( 'rtl' === $this->text_direction && strpos( $app['wp_version'], '-src' ) ) {

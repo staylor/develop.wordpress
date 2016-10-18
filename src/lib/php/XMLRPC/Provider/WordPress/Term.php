@@ -380,8 +380,9 @@ trait Term {
 	 * @return array|Error An associative array of terms data on success, Error instance otherwise.
 	 */
 	public function wp_getTerms( $args ) {
-		if ( ! $this->minimum_args( $args, 4 ) )
+		if ( ! $this->minimum_args( $args, 4 ) ) {
 			return $this->error;
+		}
 
 		$this->escape( $args );
 

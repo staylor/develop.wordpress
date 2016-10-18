@@ -579,8 +579,9 @@ class WP_Tax_Query {
 		if ( is_taxonomy_hierarchical( $query['taxonomy'] ) && $query['include_children'] ) {
 			$this->transform_query( $query, 'term_id' );
 
-			if ( is_wp_error( $query ) )
+			if ( is_wp_error( $query ) ) {
 				return;
+			}
 
 			$children = [];
 			foreach ( $query['terms'] as $term ) {
@@ -606,11 +607,13 @@ class WP_Tax_Query {
 		$app = getApp();
 		$wpdb = $app['db'];
 
-		if ( empty( $query['terms'] ) )
+		if ( empty( $query['terms'] ) ) {
 			return;
+		}
 
-		if ( $query['field'] == $resulting_field )
+		if ( $query['field'] == $resulting_field ) {
 			return;
+		}
 
 		$resulting_field = sanitize_key( $resulting_field );
 

@@ -90,8 +90,9 @@ function get_categories( $args = '' ) {
 function get_category( $category, $output = OBJECT, $filter = 'raw' ) {
 	$category = get_term( $category, 'category', $output, $filter );
 
-	if ( is_wp_error( $category ) )
-		return $category;
+	if ( is_wp_error( $category ) ) {
+			return $category;
+	}
 
 	_make_cat_compat( $category );
 
@@ -170,8 +171,9 @@ function get_category_by_path( $category_path, $full_match = true, $output = OBJ
  */
 function get_category_by_slug( $slug  ) {
 	$category = get_term_by( 'slug', $slug, 'category' );
-	if ( $category )
-		_make_cat_compat( $category );
+	if ( $category ) {
+			_make_cat_compat( $category );
+	}
 
 	return $category;
 }
@@ -186,8 +188,9 @@ function get_category_by_slug( $slug  ) {
  */
 function get_cat_ID( $cat_name ) {
 	$cat = get_term_by( 'name', $cat_name, 'category' );
-	if ( $cat )
-		return $cat->term_id;
+	if ( $cat ) {
+			return $cat->term_id;
+	}
 	return 0;
 }
 
@@ -202,8 +205,9 @@ function get_cat_ID( $cat_name ) {
 function get_cat_name( $cat_id ) {
 	$cat_id = (int) $cat_id;
 	$category = get_term( $cat_id, 'category' );
-	if ( ! $category || is_wp_error( $category ) )
-		return '';
+	if ( ! $category || is_wp_error( $category ) ) {
+			return '';
+	}
 	return $category->name;
 }
 

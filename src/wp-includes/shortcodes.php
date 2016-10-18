@@ -149,8 +149,9 @@ function has_shortcode( $content, $tag ) {
 
 	if ( shortcode_exists( $tag ) ) {
 		preg_match_all( '/' . get_shortcode_regex() . '/', $content, $matches, PREG_SET_ORDER );
-		if ( empty( $matches ) )
+		if ( empty( $matches ) ) {
 			return false;
+		}
 
 		foreach ( $matches as $shortcode ) {
 			if ( $tag === $shortcode[2] ) {
@@ -483,16 +484,17 @@ function shortcode_parse_atts($text) {
 	$text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
 	if ( preg_match_all($pattern, $text, $match, PREG_SET_ORDER) ) {
 		foreach ($match as $m) {
-			if (!empty($m[1]))
+			if (!empty($m[1])) {
 				$atts[strtolower($m[1])] = stripcslashes($m[2]);
-			elseif (!empty($m[3]))
+			} elseif (!empty($m[3])) {
 				$atts[strtolower($m[3])] = stripcslashes($m[4]);
-			elseif (!empty($m[5]))
+			} elseif (!empty($m[5])) {
 				$atts[strtolower($m[5])] = stripcslashes($m[6]);
-			elseif (isset($m[7]) && strlen($m[7]))
+			} elseif (isset($m[7]) && strlen($m[7])) {
 				$atts[] = stripcslashes($m[7]);
-			elseif (isset($m[8]))
+			} elseif (isset($m[8])) {
 				$atts[] = stripcslashes($m[8]);
+			}
 		}
 
 		// Reject any unclosed HTML elements
@@ -530,10 +532,11 @@ function shortcode_atts( $pairs, $atts, $shortcode = '' ) {
 	$atts = (array)$atts;
 	$out = [];
 	foreach ($pairs as $name => $default) {
-		if ( array_key_exists($name, $atts) )
+		if ( array_key_exists($name, $atts) ) {
 			$out[$name] = $atts[$name];
-		else
+		} else {
 			$out[$name] = $default;
+		}
 	}
 	/**
 	 * Filters a shortcode's default attributes.
@@ -571,8 +574,9 @@ function strip_shortcodes( $content ) {
 		return $content;
 	}
 
-	if ( empty( $app->shortcode_tags ) || ! is_array( $app->shortcode_tags ) )
+	if ( empty( $app->shortcode_tags ) || ! is_array( $app->shortcode_tags ) ) {
 		return $content;
+	}
 
 	// Find all registered tag names in $content.
 	preg_match_all( '@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches );

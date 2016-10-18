@@ -316,12 +316,12 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 
 					} else { // Some query vars are set via $_GET. Unset those from $_GET that exist via the rewrite
 						foreach ( $qv_remove as $_qv ) {
-							if ( isset( $rewrite_vars[$_qv] ) )
+							if ( isset( $rewrite_vars[$_qv] ) ) {
 								$redirect['query'] = remove_query_arg( $_qv, $redirect['query'] );
+							}
 						}
 					}
 				}
-
 			}
 		} elseif ( is_single() && strpos( $app['rewrite']->permalink_structure, '%category%' ) !== false && $cat = get_query_var( 'category_name' ) ) {
 			$category = get_category_by_path( $cat );
@@ -358,12 +358,14 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 			$addl_path = '';
 			if ( is_feed() && in_array( get_query_var( 'feed' ), $app['rewrite']->feeds ) ) {
 				$addl_path = ! empty( $addl_path ) ? trailingslashit( $addl_path) : '';
-				if ( !is_singular() && get_query_var( 'withcomments' ) )
+				if ( !is_singular() && get_query_var( 'withcomments' ) ) {
 					$addl_path .= 'comments/';
-				if ( ( 'rss' == get_default_feed() && 'feed' == get_query_var( 'feed' ) ) || 'rss' == get_query_var( 'feed' ) )
+				}
+				if ( ( 'rss' == get_default_feed() && 'feed' == get_query_var( 'feed' ) ) || 'rss' == get_query_var( 'feed' ) ) {
 					$addl_path .= user_trailingslashit( 'feed/' . ( ( get_default_feed() == 'rss2' ) ? '' : 'rss2' ), 'feed' );
-				else
+				} else {
 					$addl_path .= user_trailingslashit( 'feed/' . ( ( get_default_feed() ==  get_query_var( 'feed' ) || 'feed' == get_query_var( 'feed' ) ) ? '' : get_query_var( 'feed' ) ), 'feed' );
+				}
 				$redirect['query'] = remove_query_arg( 'feed', $redirect['query'] );
 			} elseif ( is_feed() && 'old' == get_query_var( 'feed' ) ) {
 				$old_feed_files = array(

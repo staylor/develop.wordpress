@@ -569,8 +569,9 @@ class Manager {
 		 */
 		do_action( 'customize_register', $this );
 
-		if ( $this->is_preview() && ! is_admin() )
+		if ( $this->is_preview() && ! is_admin() ) {
 			$this->customize_preview_init();
+		}
 	}
 
 	/**
@@ -585,8 +586,9 @@ class Manager {
 	 * @return int
 	 */
 	public function wp_redirect_status( $status ) {
-		if ( $this->is_preview() && ! is_admin() )
+		if ( $this->is_preview() && ! is_admin() ) {
 			return 200;
+		}
 
 		return $status;
 	}
@@ -1375,8 +1377,9 @@ class Manager {
 	 * @return WP_Customize_Section|void The section, if set.
 	 */
 	public function get_section( $id ) {
-		if ( isset( $this->sections[ $id ] ) )
+		if ( isset( $this->sections[ $id ] ) ) {
 			return $this->sections[ $id ];
+		}
 	}
 
 	/**
@@ -1451,8 +1454,9 @@ class Manager {
 	 * @return WP_Customize_Control|void The control object, if set.
 	 */
 	public function get_control( $id ) {
-		if ( isset( $this->controls[ $id ] ) )
+		if ( isset( $this->controls[ $id ] ) ) {
 			return $this->controls[ $id ];
+		}
 	}
 
 	/**
@@ -2325,12 +2329,14 @@ class Manager {
 	 * @return mixed
 	 */
 	public function _sanitize_header_textcolor( $color ) {
-		if ( 'blank' === $color )
+		if ( 'blank' === $color ) {
 			return 'blank';
+		}
 
 		$color = sanitize_hex_color_no_hash( $color );
-		if ( empty( $color ) )
+		if ( empty( $color ) ) {
 			$color = get_theme_support( 'custom-header', 'default-text-color' );
+		}
 
 		return $color;
 	}
