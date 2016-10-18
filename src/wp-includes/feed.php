@@ -185,8 +185,9 @@ function the_title_rss() {
  * @return string The filtered content.
  */
 function get_the_content_feed($feed_type = null) {
-	if ( !$feed_type )
+	if ( !$feed_type ) {
 		$feed_type = get_default_feed();
+	}
 
 	/** This filter is documented in wp-includes/post-template.php */
 	$content = apply_filters( 'the_content', get_the_content() );
@@ -287,8 +288,9 @@ function comment_guid($comment_id = null) {
 function get_comment_guid($comment_id = null) {
 	$comment = get_comment($comment_id);
 
-	if ( !is_object($comment) )
+	if ( !is_object($comment) ) {
 		return false;
+	}
 
 	return get_the_guid($comment->comment_post_ID) . '#comment-' . $comment->comment_ID;
 }
@@ -374,34 +376,41 @@ function comment_text_rss() {
  * @return string All of the post categories for displaying in the feed.
  */
 function get_the_category_rss($type = null) {
-	if ( empty($type) )
+	if ( empty($type) ) {
 		$type = get_default_feed();
+	}
 	$categories = get_the_category();
 	$tags = get_the_tags();
 	$the_list = '';
 	$cat_names = [];
 
 	$filter = 'rss';
-	if ( 'atom' == $type )
+	if ( 'atom' == $type ) {
 		$filter = 'raw';
-
-	if ( !empty($categories) ) foreach ( (array) $categories as $category ) {
-		$cat_names[] = sanitize_term_field('name', $category->name, $category->term_id, 'category', $filter);
 	}
 
-	if ( !empty($tags) ) foreach ( (array) $tags as $tag ) {
+	if ( !empty($categories) ) {
+		foreach ( (array) $categories as $category ) {
+			$cat_names[] = sanitize_term_field('name', $category->name, $category->term_id, 'category', $filter);
+		}
+	}
+
+	if ( !empty($tags) ) {
+		foreach ( (array) $tags as $tag ) {
 		$cat_names[] = sanitize_term_field('name', $tag->name, $tag->term_id, 'post_tag', $filter);
 	}
+}
 
 	$cat_names = array_unique($cat_names);
 
 	foreach ( $cat_names as $cat_name ) {
-		if ( 'rdf' == $type )
+		if ( 'rdf' == $type ) {
 			$the_list .= "\t\t<dc:subject><![CDATA[$cat_name]]></dc:subject>\n";
-		elseif ( 'atom' == $type )
+		} elseif ( 'atom' == $type ) {
 			$the_list .= sprintf( '<category scheme="%1$s" term="%2$s" />', esc_attr( get_bloginfo_rss( 'url' ) ), esc_attr( $cat_name ) );
-		else
+		} else {
 			$the_list .= "\t\t<category><![CDATA[" . @html_entity_decode( $cat_name, ENT_COMPAT, get_option('blog_charset') ) . "]]></category>\n";
+		}
 	}
 
 	/**
@@ -437,10 +446,11 @@ function the_category_rss($type = null) {
  */
 function html_type_rss() {
 	$type = get_bloginfo('html_type');
-	if (strpos($type, 'xhtml') !== false)
+	if (strpos($type, 'xhtml') !== false) {
 		$type = 'xhtml';
-	else
+	} else {
 		$type = 'html';
+	}
 	echo $type;
 }
 
@@ -459,8 +469,9 @@ function html_type_rss() {
  * @since 1.5.0
  */
 function rss_enclosure() {
-	if ( post_password_required() )
+	if ( post_password_required() ) {
 		return;
+	}
 
 	foreach ( (array) get_post_custom() as $key => $val) {
 		if ($key == 'enclosure') {
@@ -498,8 +509,9 @@ function rss_enclosure() {
  * @since 2.2.0
  */
 function atom_enclosure() {
-	if ( post_password_required() )
+	if ( post_password_required() ) {
 		return;
+	}
 
 	foreach ( (array) get_post_custom() as $key => $val ) {
 		if ($key == 'enclosure') {
@@ -630,8 +642,9 @@ function self_link() {
  * @param string $type Type of feed. Possible values include 'rss', rss2', 'atom', and 'rdf'.
  */
 function feed_content_type( $type = '' ) {
-	if ( empty($type) )
+	if ( empty($type) ) {
 		$type = get_default_feed();
+	}
 
 	$types = array(
 		'rss'      => 'application/rss+xml',
@@ -696,8 +709,9 @@ function fetch_feed( $url ) {
 	$feed->set_output_encoding( get_option( 'blog_charset' ) );
 	$feed->handle_content_type();
 
-	if ( $feed->error() )
+	if ( $feed->error() ) {
 		return new WP_Error( 'simplepie-error', $feed->error() );
+	}
 
 	return $feed;
 }

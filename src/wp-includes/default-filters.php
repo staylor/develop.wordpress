@@ -52,8 +52,9 @@ foreach ( array( 'pre_comment_author_email', 'pre_user_email' ) as $filter ) {
 // Email admin display
 foreach ( array( 'comment_author_email', 'user_email' ) as $filter ) {
 	add_filter( $filter, 'sanitize_email' );
-	if ( is_admin() )
+	if ( is_admin() ) {
 		add_filter( $filter, 'wp_kses_data' );
+	}
 }
 
 // Save URL
@@ -66,11 +67,13 @@ foreach ( array( 'pre_comment_author_url', 'pre_user_url', 'pre_link_url', 'pre_
 
 // Display URL
 foreach ( array( 'user_url', 'link_url', 'link_image', 'link_rss', 'comment_url', 'post_guid' ) as $filter ) {
-	if ( is_admin() )
+	if ( is_admin() ) {
 		add_filter( $filter, 'wp_strip_all_tags' );
+	}
 	add_filter( $filter, 'esc_url'           );
-	if ( is_admin() )
+	if ( is_admin() ) {
 		add_filter( $filter, 'wp_kses_data'    );
+	}
 }
 
 // Slugs
@@ -102,8 +105,9 @@ foreach ( array( 'comment_author', 'term_name', 'link_name', 'link_description',
 }
 
 // Format WordPress
-foreach ( array( 'the_content', 'the_title', 'wp_title' ) as $filter )
+foreach ( array( 'the_content', 'the_title', 'wp_title' ) as $filter ) {
 	add_filter( $filter, 'capital_P_dangit', 11 );
+}
 add_filter( 'comment_text', 'capital_P_dangit', 31 );
 
 // Format titles
@@ -275,8 +279,9 @@ add_action( 'rss2_head', 'rss2_site_icon' );
 
 
 // WP Cron
-if ( !defined( 'DOING_CRON' ) )
+if ( !defined( 'DOING_CRON' ) ) {
 	add_action( 'init', 'wp_cron' );
+}
 
 // 2 Actions 2 Furious
 add_action( 'do_feed_rdf',                'do_feed_rdf',                             10, 1 );

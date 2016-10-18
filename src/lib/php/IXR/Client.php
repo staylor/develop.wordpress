@@ -29,17 +29,17 @@ class Client {
 		if ( ! $path ) {
 			// Assume we have been given a URL instead
 			$bits = parse_url( $server );
-			$this->server = $bits['host'];
-			$this->port = $bits['port'] ?? $port;
-			$this->path = $bits['path'] ?? '/';
+			$this->server = $bits[ 'host' ];
+			$this->port = $bits[ 'port' ] ?? $port;
+			$this->path = $bits[ 'path' ] ?? '/';
 
 			// Make absolutely sure we have a path
 			if ( ! $this->path ) {
 				$this->path = '/';
 			}
 
-			if ( ! empty( $bits['query'] ) ) {
-				$this->path .= '?' . $bits['query'];
+			if ( ! empty( $bits[ 'query' ] ) ) {
+				$this->path .= '?' . $bits[ 'query' ];
 			}
 		} else {
 			$this->server = $server;
@@ -61,13 +61,13 @@ class Client {
 		$xml = $r->getXml();
 
 		$nl = "\r\n";
-		$request  = 'POST ' . $this->path . ' HTTP/1.0' . $nl;
+		$request = 'POST ' . $this->path . ' HTTP/1.0' . $nl;
 
 		// Merged from WP #8145 - allow custom headers
-		$this->headers['Host']          = $this->server;
-		$this->headers['Content-Type']  = 'text/xml';
-		$this->headers['User-Agent']    = $this->useragent;
-		$this->headers['Content-Length']= $length;
+		$this->headers[ 'Host' ]          = $this->server;
+		$this->headers[ 'Content-Type' ]  = 'text/xml';
+		$this->headers[ 'User-Agent' ]    = $this->useragent;
+		$this->headers[ 'Content-Length' ] = $length;
 
 		foreach ( $this->headers as $header => $value ) {
 			$request .= sprintf( '%s: %s%s', $header, $value, $nl );
@@ -147,7 +147,7 @@ class Client {
 
 	public function getResponse() {
 		// methodResponses can only have one param - return that
-		return $this->message->params[0];
+		return $this->message->params[ 0 ];
 	}
 
 	public function isError()

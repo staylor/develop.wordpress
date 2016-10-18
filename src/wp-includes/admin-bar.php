@@ -49,8 +49,9 @@ function _wp_admin_bar_init() {
 function wp_admin_bar_render() {
 	$app = getApp();
 
-	if ( ! is_admin_bar_showing() || ! is_object( $app['admin_bar'] ) )
+	if ( ! is_admin_bar_showing() || ! is_object( $app['admin_bar'] ) ) {
 		return;
+	}
 
 	/**
 	 * Load all necessary admin bar items.
@@ -182,8 +183,9 @@ function wp_admin_bar_my_account_item( $wp_admin_bar ) {
 	$user_id      = get_current_user_id();
 	$current_user = wp_get_current_user();
 
-	if ( ! $user_id )
+	if ( ! $user_id ) {
 		return;
+	}
 
 	if ( current_user_can( 'read' ) ) {
 		$profile_url = get_edit_profile_url( $user_id );
@@ -220,8 +222,9 @@ function wp_admin_bar_my_account_menu( $wp_admin_bar ) {
 	$user_id      = get_current_user_id();
 	$current_user = wp_get_current_user();
 
-	if ( ! $user_id )
+	if ( ! $user_id ) {
 		return;
+	}
 
 	if ( current_user_can( 'read' ) ) {
 		$profile_url = get_edit_profile_url( $user_id );
@@ -239,8 +242,9 @@ function wp_admin_bar_my_account_menu( $wp_admin_bar ) {
 	$user_info  = get_avatar( $user_id, 64 );
 	$user_info .= "<span class='display-name'>{$current_user->display_name}</span>";
 
-	if ( $current_user->display_name !== $current_user->user_login )
+	if ( $current_user->display_name !== $current_user->user_login ) {
 		$user_info .= "<span class='username'>{$current_user->user_login}</span>";
+	}
 
 	$wp_admin_bar->add_menu( [
 		'parent' => 'user-actions',
@@ -278,12 +282,14 @@ function wp_admin_bar_my_account_menu( $wp_admin_bar ) {
  */
 function wp_admin_bar_site_menu( $wp_admin_bar ) {
 	// Don't show for logged out users.
-	if ( ! is_user_logged_in() )
+	if ( ! is_user_logged_in() ) {
 		return;
+	}
 
 	// Show only when the user is a member of this site, or they're a super admin.
-	if ( ! is_user_member_of_blog() && ! is_super_admin() )
+	if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
 		return;
+	}
 
 	$blogname = get_bloginfo('name');
 
@@ -378,12 +384,14 @@ function wp_admin_bar_customize_menu( $wp_admin_bar ) {
  */
 function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 	// Don't show for logged out users or single site mode.
-	if ( ! is_user_logged_in() || ! is_multisite() )
+	if ( ! is_user_logged_in() || ! is_multisite() ) {
 		return;
+	}
 
 	// Show only when the user has at least one site, or they're a super admin.
-	if ( count( $wp_admin_bar->user->blogs ) < 1 && ! is_super_admin() )
+	if ( count( $wp_admin_bar->user->blogs ) < 1 && ! is_super_admin() ) {
 		return;
+	}
 
 	if ( $wp_admin_bar->user->active_blog ) {
 		$my_sites_url = get_admin_url( $wp_admin_bar->user->active_blog->blog_id, 'my-sites.php' );
@@ -524,8 +532,9 @@ function wp_admin_bar_shortlink_menu( $wp_admin_bar ) {
 	$short = wp_get_shortlink( 0, 'query' );
 	$id = 'get-shortlink';
 
-	if ( empty( $short ) )
+	if ( empty( $short ) ) {
 		return;
+	}
 
 	$html = '<input class="shortlink-input" type="text" readonly="readonly" value="' . esc_attr( $short ) . '" />';
 
@@ -602,8 +611,9 @@ function wp_admin_bar_edit_menu( $wp_admin_bar ) {
 		$app = getApp();
 		$current_object = $app['wp']->query->get_queried_object();
 
-		if ( empty( $current_object ) )
+		if ( empty( $current_object ) ) {
 			return;
+		}
 
 		if ( ! empty( $current_object->post_type )
 			&& ( $post_type_object = get_post_type_object( $current_object->post_type ) )
@@ -642,37 +652,45 @@ function wp_admin_bar_new_content_menu( $wp_admin_bar ) {
 
 	$cpts = (array) get_post_types( [ 'show_in_admin_bar' => true ], 'objects' );
 
-	if ( isset( $cpts['post'] ) && current_user_can( $cpts['post']->cap->create_posts ) )
+	if ( isset( $cpts['post'] ) && current_user_can( $cpts['post']->cap->create_posts ) ) {
 		$actions[ 'post-new.php' ] = [ $cpts['post']->labels->name_admin_bar, 'new-post' ];
+	}
 
-	if ( isset( $cpts['attachment'] ) && current_user_can( 'upload_files' ) )
+	if ( isset( $cpts['attachment'] ) && current_user_can( 'upload_files' ) ) {
 		$actions[ 'media-new.php' ] = [ $cpts['attachment']->labels->name_admin_bar, 'new-media' ];
+	}
 
-	if ( current_user_can( 'manage_links' ) )
+	if ( current_user_can( 'manage_links' ) ) {
 		$actions[ 'link-add.php' ] = [ _x( 'Link', 'add new from admin bar' ), 'new-link' ];
+	}
 
-	if ( isset( $cpts['page'] ) && current_user_can( $cpts['page']->cap->create_posts ) )
+	if ( isset( $cpts['page'] ) && current_user_can( $cpts['page']->cap->create_posts ) ) {
 		$actions[ 'post-new.php?post_type=page' ] = [ $cpts['page']->labels->name_admin_bar, 'new-page' ];
+	}
 
 	unset( $cpts['post'], $cpts['page'], $cpts['attachment'] );
 
 	// Add any additional custom post types.
 	foreach ( $cpts as $cpt ) {
-		if ( ! current_user_can( $cpt->cap->create_posts ) )
+		if ( ! current_user_can( $cpt->cap->create_posts ) ) {
 			continue;
+		}
 
 		$key = 'post-new.php?post_type=' . $cpt->name;
 		$actions[ $key ] = [ $cpt->labels->name_admin_bar, 'new-' . $cpt->name ];
 	}
 	// Avoid clash with parent node and a 'content' post type.
-	if ( isset( $actions['post-new.php?post_type=content'] ) )
+	if ( isset( $actions['post-new.php?post_type=content'] ) ) {
 		$actions['post-new.php?post_type=content'][1] = 'add-new-content';
+	}
 
-	if ( current_user_can( 'create_users' ) || current_user_can( 'promote_users' ) )
+	if ( current_user_can( 'create_users' ) || current_user_can( 'promote_users' ) ) {
 		$actions[ 'user-new.php' ] = [ _x( 'User', 'add new from admin bar' ), 'new-user' ];
+	}
 
-	if ( ! $actions )
+	if ( ! $actions ) {
 		return;
+	}
 
 	$title = '<span class="ab-icon"></span><span class="ab-label">' . _x( 'New', 'admin bar menu group label' ) . '</span>';
 
@@ -702,8 +720,9 @@ function wp_admin_bar_new_content_menu( $wp_admin_bar ) {
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_comments_menu( $wp_admin_bar ) {
-	if ( !current_user_can('edit_posts') )
+	if ( !current_user_can('edit_posts') ) {
 		return;
+	}
 
 	$awaiting_mod = wp_count_comments();
 	$awaiting_mod = $awaiting_mod->moderated;
@@ -752,8 +771,9 @@ function wp_admin_bar_appearance_menu( $wp_admin_bar ) {
 		] );
 	}
 
-	if ( current_theme_supports( 'menus' ) || current_theme_supports( 'widgets' ) )
+	if ( current_theme_supports( 'menus' ) || current_theme_supports( 'widgets' ) ) {
 		$wp_admin_bar->add_menu( [ 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ] );
+	}
 
 	if ( current_theme_supports( 'custom-background' ) ) {
 		$wp_admin_bar->add_menu( [
@@ -792,8 +812,9 @@ function wp_admin_bar_updates_menu( $wp_admin_bar ) {
 
 	$update_data = wp_get_update_data();
 
-	if ( !$update_data['counts']['total'] )
+	if ( !$update_data['counts']['total'] ) {
 		return;
+	}
 
 	$title = '<span class="ab-icon"></span><span class="ab-label">' . number_format_i18n( $update_data['counts']['total'] ) . '</span>';
 	$title .= '<span class="screen-reader-text">' . $update_data['title'] . '</span>';
@@ -816,8 +837,9 @@ function wp_admin_bar_updates_menu( $wp_admin_bar ) {
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_search_menu( $wp_admin_bar ) {
-	if ( is_admin() )
+	if ( is_admin() ) {
 		return;
+	}
 
 	$form  = '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="adminbarsearch">';
 	$form .= '<input class="adminbar-input" name="s" id="adminbar-search" type="text" value="" maxlength="150" />';
@@ -913,8 +935,9 @@ function is_admin_bar_showing() {
 	$app = getApp();
 
 	// For all these types of requests, we never want an admin bar.
-	if ( defined('XMLRPC_REQUEST') || defined('DOING_AJAX') || defined('IFRAME_REQUEST') )
+	if ( defined('XMLRPC_REQUEST') || defined('DOING_AJAX') || defined('IFRAME_REQUEST') ) {
 		return false;
+	}
 
 	// Integrated into the admin.
 	if ( is_admin() ) {
@@ -961,8 +984,9 @@ function is_admin_bar_showing() {
  */
 function _get_admin_bar_pref( $context = 'front', $user = 0 ) {
 	$pref = get_user_option( "show_admin_bar_{$context}", $user );
-	if ( false === $pref )
+	if ( false === $pref ) {
 		return true;
+	}
 
 	return 'true' === $pref;
 }

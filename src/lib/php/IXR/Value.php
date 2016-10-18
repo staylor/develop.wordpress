@@ -78,7 +78,7 @@ class Value {
 		// Return XML for this value
 		switch ( $this->type ) {
 		case 'boolean':
-			return '<boolean>' . ( $this->data ? '1' : '0') . '</boolean>';
+			return '<boolean>' . ( $this->data ? '1' : '0' ) . '</boolean>';
 
 		case 'int':
 			return '<int>' . $this->data . '</int>';

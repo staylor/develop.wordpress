@@ -17,22 +17,22 @@ class Message {
 	public $faultString;
 
 	// Current variable stacks
-	private $_arraystructs = [];   // The stack used to keep track of the current array/struct
+	private $_arraystructs = []; // The stack used to keep track of the current array/struct
 	private $_arraystructstypes = []; // Stack keeping track of if things are structs or array
-	private $_currentStructName = [];  // A stack as well
+	private $_currentStructName = []; // A stack as well
 	private $_currentTagContents;
 	// The XML parser
 	private $_parser;
 
 	public function __construct( $message ) {
-		$this->message =& $message;
+		$this->message = & $message;
 	}
 
 	public function parse(): bool
 	{
 		// first remove the XML declaration
 		// merged from WP #10698 - this method avoids the RAM usage of preg_replace on very large messages
-		$xml = preg_replace( '/<\?xml.*?\?'.'>/s', '', substr( $this->message, 0, 100 ), 1 );
+		$xml = preg_replace( '/<\?xml.*?\?' . '>/s', '', substr( $this->message, 0, 100 ), 1 );
 		$this->message = trim( substr_replace( $this->message, $xml, 0, 100 ) );
 		if ( '' == $this->message ) {
 			return false;
@@ -110,8 +110,8 @@ class Message {
 
 		// Grab the error messages, if any
 		if ( 'fault' === $this->messageType ) {
-			$this->faultCode = $this->params[0]['faultCode'];
-			$this->faultString = $this->params[0]['faultString'];
+			$this->faultCode = $this->params[ 0 ][ 'faultCode' ];
+			$this->faultString = $this->params[ 0 ][ 'faultString' ];
 		}
 		return true;
 	}
@@ -119,7 +119,7 @@ class Message {
 	public function tag_open( $parser, $tag, $attr ) {
 		$this->_currentTagContents = '';
 
-		switch( $tag ) {
+		switch ( $tag ) {
 		case 'methodCall':
 		case 'methodResponse':
 		case 'fault':
@@ -147,7 +147,7 @@ class Message {
 		$value = null;
 		$valueFlag = false;
 
-		switch( $tag ) {
+		switch ( $tag ) {
 		case 'int':
 		case 'i4':
 			$value = (int) trim( $this->_currentTagContents );
@@ -215,7 +215,7 @@ class Message {
 				$structIndex = count( $this->_currentStructName ) - 1;
 
 				// Add value to struct or array
-				if ( $this->_arraystructstypes[ $index ] == 'struct') {
+				if ( $this->_arraystructstypes[ $index ] == 'struct' ) {
 					// Add to struct
 					$this->_arraystructs[ $index ][ $this->_currentStructName[ $structIndex ] ] = $value;
 				} else {

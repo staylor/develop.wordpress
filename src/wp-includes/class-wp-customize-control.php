@@ -359,8 +359,9 @@ class WP_Customize_Control {
 	 * @uses WP_Customize_Control::render()
 	 */
 	final public function maybe_render() {
-		if ( ! $this->check_capabilities() )
+		if ( ! $this->check_capabilities() ) {
 			return;
+		}
 
 		/**
 		 * Fires just before the current Customizer control is rendered.
@@ -409,8 +410,9 @@ class WP_Customize_Control {
 	 * @return string Data link parameter, if $setting_key is a valid setting, empty string otherwise.
 	 */
 	public function get_link( $setting_key = 'default' ) {
-		if ( ! isset( $this->settings[ $setting_key ] ) )
+		if ( ! isset( $this->settings[ $setting_key ] ) ) {
 			return '';
+		}
 
 		return 'data-customize-setting-link="' . esc_attr( $this->settings[ $setting_key ]->id ) . '"';
 	}
@@ -465,8 +467,9 @@ class WP_Customize_Control {
 				<?php
 				break;
 			case 'radio':
-				if ( empty( $this->choices ) )
+				if ( empty( $this->choices ) ) {
 					return;
+				}
 
 				$name = '_customize-radio-' . $this->id;
 
@@ -487,8 +490,9 @@ class WP_Customize_Control {
 				endforeach;
 				break;
 			case 'select':
-				if ( empty( $this->choices ) )
+				if ( empty( $this->choices ) ) {
 					return;
+				}
 
 				?>
 				<label>
@@ -501,8 +505,9 @@ class WP_Customize_Control {
 
 					<select <?php $this->link(); ?>>
 						<?php
-						foreach ( $this->choices as $value => $label )
+						foreach ( $this->choices as $value => $label ) {
 							echo '<option value="' . esc_attr( $value ) . '"' . selected( $this->value(), $value, false ) . '>' . $label . '</option>';
+						}
 						?>
 					</select>
 				</label>

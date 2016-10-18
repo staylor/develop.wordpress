@@ -13,7 +13,7 @@ class IntrospectionServer extends Server {
 		$this->setCallbacks();
 		$this->setCapabilities();
 
-		$this->capabilities['introspection'] = [
+		$this->capabilities[ 'introspection' ] = [
 			'specUrl' => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
 			'specVersion' => 1
 		];
@@ -152,7 +152,7 @@ class IntrospectionServer extends Server {
 				break;
 
 			case 'base64':
-				$return[] = new Base64('base64');
+				$return[] = new Base64( 'base64' );
 				break;
 
 			case 'array':
