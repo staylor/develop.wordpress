@@ -131,12 +131,14 @@ function register_sidebars( $number = 1, $args = [] ) {
 			$_args['id'] = $args['id'];
 			$n = 2; // Start at -2 for conflicting custom ID's
 			while ( is_registered_sidebar( $_args['id'] ) ) {
-				$_args['id'] = $args['id'] . '-' . $n++;
+				$n++;
+				$_args['id'] = $args['id'] . '-' . $n;
 			}
 		} else {
 			$n = count( $app->sidebars['registered'] );
 			do {
-				$_args['id'] = 'sidebar-' . ++$n;
+				++$n;
+				$_args['id'] = 'sidebar-' . $n;
 			} while ( is_registered_sidebar( $_args['id'] ) );
 		}
 		register_sidebar( $_args );
@@ -1055,7 +1057,8 @@ function retrieve_widgets( $theme_changed = false ) {
 			}
 
 			if ( ! in_array( $sidebar, $registered_sidebar_keys ) ) {
-				$_sidebars_widgets[ 'orphaned_widgets_' . ++$orphaned ] = $widgets;
+				++$orphaned;
+				$_sidebars_widgets[ 'orphaned_widgets_' . $orphaned ] = $widgets;
 				unset( $_sidebars_widgets[ $sidebar ] );
 			}
 		}
@@ -1094,7 +1097,8 @@ function retrieve_widgets( $theme_changed = false ) {
 
 		foreach ( $sidebars_widgets as $val ) {
 			if ( is_array( $val ) && ! empty( $val ) ) {
-				$_sidebars_widgets[ 'orphaned_widgets_' . ++$orphaned ] = $val;
+				++$orphaned;
+				$_sidebars_widgets[ 'orphaned_widgets_' . $orphaned ] = $val;
 			}
 		}
 	}

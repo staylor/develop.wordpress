@@ -197,7 +197,7 @@ class WP_Customize_Control {
 		if ( empty( $this->active_callback ) ) {
 			$this->active_callback = array( $this, 'active_callback' );
 		}
-		self::$instance_count += 1;
+		self::$instance_count++;
 		$this->instance_number = self::$instance_count;
 
 		// Process settings.

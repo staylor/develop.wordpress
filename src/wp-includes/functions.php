@@ -2143,9 +2143,16 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 
 		while ( file_exists( $dir . "/$filename" ) ) {
 			if ( '' == "$number$ext" ) {
-				$filename = "$filename-" . ++$number;
+				++$number;
+				$filename = $filename . '-' . $number;
 			} else {
-				$filename = str_replace( array("-$number$ext", "$number$ext"), "-" . ++$number . $ext, $filename );
+				$patterns = [ '-' . $number . $ext, $number. $ext ];
+				++$number;
+				$filename = str_replace(
+					$patterns,
+					'-' . $number . $ext,
+					$filename
+				);
 			}
 		}
 	}

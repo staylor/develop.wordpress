@@ -171,7 +171,7 @@ class WP_Customize_Section {
 		if ( empty( $this->active_callback ) ) {
 			$this->active_callback = array( $this, 'active_callback' );
 		}
-		self::$instance_count += 1;
+		self::$instance_count++;
 		$this->instance_number = self::$instance_count;
 
 		$this->controls = []; // Users cannot customize the $controls array.
