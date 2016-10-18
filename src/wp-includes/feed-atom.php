@@ -44,7 +44,8 @@ do_action( 'rss_tag_pre', 'atom' );
 	 */
 	do_action( 'atom_head' );
 
-	while ( have_posts() ) : the_post();
+	while ( have_posts() ) {
+		the_post();
 	?>
 	<entry>
 		<author>
@@ -68,10 +69,11 @@ do_action( 'rss_tag_pre', 'atom' );
 		<published><?php echo get_post_time('Y-m-d\TH:i:s\Z', true); ?></published>
 		<?php the_category_rss('atom') ?>
 		<summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
-<?php if ( !get_option('rss_use_excerpt') ) : ?>
+<?php if ( !get_option('rss_use_excerpt') ) { ?>
 		<content type="<?php html_type_rss(); ?>" xml:base="<?php the_permalink_rss() ?>"><![CDATA[<?php the_content_feed('atom') ?>]]></content>
-<?php endif; ?>
-	<?php atom_enclosure();
+<?php }
+
+	atom_enclosure();
 	/**
 	 * Fires at the end of each Atom feed item.
 	 *
@@ -79,12 +81,12 @@ do_action( 'rss_tag_pre', 'atom' );
 	 */
 	do_action( 'atom_entry' );
 
-	if ( get_comments_number() || comments_open() ) :
+	if ( get_comments_number() || comments_open() ) {
 		?>
 		<link rel="replies" type="<?php bloginfo_rss('html_type'); ?>" href="<?php the_permalink_rss() ?>#comments" thr:count="<?php echo get_comments_number()?>"/>
 		<link rel="replies" type="application/atom+xml" href="<?php echo esc_url( get_post_comments_feed_link(0, 'atom') ); ?>" thr:count="<?php echo get_comments_number()?>"/>
 		<thr:total><?php echo get_comments_number()?></thr:total>
-	<?php endif; ?>
+	<?php } ?>
 	</entry>
-	<?php endwhile ; ?>
+<?php } ?>
 </feed>

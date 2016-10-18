@@ -202,7 +202,7 @@ class Walker {
 		if ( -1 == $max_depth ) {
 			$empty_array = [];
 			foreach ( $elements as $e ) {
-							$this->display_element( $e, $empty_array, 1, 0, $args, $output );
+				$this->display_element( $e, $empty_array, 1, 0, $args, $output );
 			}
 			return $output;
 		}
@@ -217,9 +217,9 @@ class Walker {
 		$children_elements  = [];
 		foreach ( $elements as $e) {
 			if ( empty( $e->$parent_field ) ) {
-							$top_level_elements[] = $e;
+				$top_level_elements[] = $e;
 			} else {
-							$children_elements[ $e->$parent_field ][] = $e;
+				$children_elements[ $e->$parent_field ][] = $e;
 			}
 		}
 
@@ -236,15 +236,15 @@ class Walker {
 			$children_elements  = [];
 			foreach ( $elements as $e) {
 				if ( $root->$parent_field == $e->$parent_field ) {
-									$top_level_elements[] = $e;
+					$top_level_elements[] = $e;
 				} else {
-									$children_elements[ $e->$parent_field ][] = $e;
+					$children_elements[ $e->$parent_field ][] = $e;
 				}
 			}
 		}
 
 		foreach ( $top_level_elements as $e ) {
-					$this->display_element( $e, $children_elements, $max_depth, 0, $args, $output );
+			$this->display_element( $e, $children_elements, $max_depth, 0, $args, $output );
 		}
 
 		/*
@@ -254,8 +254,9 @@ class Walker {
 		if ( ( $max_depth == 0 ) && count( $children_elements ) > 0 ) {
 			$empty_array = [];
 			foreach ( $children_elements as $orphans ) {
-							foreach ( $orphans as $op )
+				foreach ( $orphans as $op ) {
 					$this->display_element( $op, $empty_array, 1, 0, $args, $output );
+				}
 			}
 		 }
 
@@ -292,14 +293,14 @@ class Walker {
 
 		$count = -1;
 		if ( -1 == $max_depth ) {
-					$total_top = count( $elements );
+			$total_top = count( $elements );
 		}
 		if ( $page_num < 1 || $per_page < 0  ) {
 			// No paging
 			$paging = false;
 			$start = 0;
 			if ( -1 == $max_depth ) {
-							$end = $total_top;
+				$end = $total_top;
 			}
 			$this->max_pages = 1;
 		} else {
@@ -307,7 +308,7 @@ class Walker {
 			$start = ( (int)$page_num - 1 ) * (int)$per_page;
 			$end   = $start + $per_page;
 			if ( -1 == $max_depth ) {
-							$this->max_pages = ceil($total_top / $per_page);
+				$this->max_pages = ceil($total_top / $per_page);
 			}
 		}
 
@@ -324,10 +325,10 @@ class Walker {
 			foreach ( $elements as $e ) {
 				$count++;
 				if ( $count < $start ) {
-									continue;
+					continue;
 				}
 				if ( $count >= $end ) {
-									break;
+					break;
 				}
 				$this->display_element( $e, $empty_array, 1, 0, $args, $output );
 			}
@@ -343,17 +344,17 @@ class Walker {
 		$children_elements  = [];
 		foreach ( $elements as $e) {
 			if ( 0 == $e->$parent_field ) {
-							$top_level_elements[] = $e;
+				$top_level_elements[] = $e;
 			} else {
-							$children_elements[ $e->$parent_field ][] = $e;
+				$children_elements[ $e->$parent_field ][] = $e;
 			}
 		}
 
 		$total_top = count( $top_level_elements );
 		if ( $paging ) {
-					$this->max_pages = ceil($total_top / $per_page);
+			$this->max_pages = ceil($total_top / $per_page);
 		} else {
-					$end = $total_top;
+			$end = $total_top;
 		}
 
 		if ( !empty($args[0]['reverse_top_level']) ) {
@@ -364,7 +365,7 @@ class Walker {
 		}
 		if ( !empty($args[0]['reverse_children']) ) {
 			foreach ( $children_elements as $parent => $children ) {
-							$children_elements[$parent] = array_reverse( $children );
+				$children_elements[$parent] = array_reverse( $children );
 			}
 		}
 
@@ -373,15 +374,15 @@ class Walker {
 
 			// For the last page, need to unset earlier children in order to keep track of orphans.
 			if ( $end >= $total_top && $count < $start ) {
-								$this->unset_children( $e, $children_elements );
+				$this->unset_children( $e, $children_elements );
 			}
 
 			if ( $count < $start ) {
-							continue;
+				continue;
 			}
 
 			if ( $count >= $end ) {
-							break;
+				break;
 			}
 
 			$this->display_element( $e, $children_elements, $max_depth, 0, $args, $output );
@@ -390,8 +391,9 @@ class Walker {
 		if ( $end >= $total_top && count( $children_elements ) > 0 ) {
 			$empty_array = [];
 			foreach ( $children_elements as $orphans ) {
-							foreach ( $orphans as $op )
+				foreach ( $orphans as $op ) {
 					$this->display_element( $op, $empty_array, 1, 0, $args, $output );
+				}
 			}
 		}
 
@@ -413,7 +415,7 @@ class Walker {
 
 		foreach ( $elements as $e) {
 			if ( 0 == $e->$parent_field ) {
-							$num++;
+				$num++;
 			}
 		}
 		return $num;
@@ -434,8 +436,9 @@ class Walker {
 		$id = $e->$id_field;
 
 		if ( !empty($children_elements[$id]) && is_array($children_elements[$id]) ) {
-					foreach ( (array) $children_elements[$id] as $child )
+			foreach ( (array) $children_elements[$id] as $child ) {
 				$this->unset_children( $child, $children_elements );
+			}
 		}
 
 		unset( $children_elements[ $id ] );

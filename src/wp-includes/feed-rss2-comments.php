@@ -33,12 +33,13 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 >
 <channel>
 	<title><?php
-		if ( is_singular() )
+		if ( is_singular() ) {
 			printf( ent2ncr( __( 'Comments on: %s' ) ), get_the_title_rss() );
-		elseif ( is_search() )
+		} elseif ( is_search() ) {
 			printf( ent2ncr( __( 'Comments for %1$s searching on %2$s' ) ), get_bloginfo_rss( 'name' ), get_search_query() );
-		else
+		} else {
 			printf( ent2ncr( __( 'Comments for %s' ) ), get_wp_title_rss() );
+		}
 	?></title>
 	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
 	<link><?php (is_single()) ? the_permalink_rss() : bloginfo_rss("url") ?></link>
@@ -60,7 +61,9 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 	 */
 	do_action( 'commentsrss2_head' );
 
-	if ( have_comments() ) : while ( have_comments() ) : the_comment();
+	if ( have_comments() ) {
+		while ( have_comments() ) {
+			the_comment();
 		$comment_post = $GLOBALS['post'] = get_post( $comment->comment_post_ID );
 	?>
 	<item>
@@ -78,13 +81,13 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 		<dc:creator><![CDATA[<?php echo get_comment_author_rss() ?>]]></dc:creator>
 		<pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_comment_time('Y-m-d H:i:s', true, false), false); ?></pubDate>
 		<guid isPermaLink="false"><?php comment_guid() ?></guid>
-<?php if ( post_password_required($comment_post) ) : ?>
+<?php if ( post_password_required($comment_post) ) { ?>
 		<description><?php echo ent2ncr(__('Protected Comments: Please enter your password to view comments.')); ?></description>
 		<content:encoded><![CDATA[<?php echo get_the_password_form() ?>]]></content:encoded>
-<?php else : // post pass ?>
+<?php } else { // post pass ?>
 		<description><![CDATA[<?php comment_text_rss() ?>]]></description>
 		<content:encoded><![CDATA[<?php comment_text() ?>]]></content:encoded>
-<?php endif; // post pass
+<?php } // post pass
 	/**
 	 * Fires at the end of each RSS2 comment feed item.
 	 *
@@ -96,6 +99,9 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 	do_action( 'commentrss2_item', $comment->comment_ID, $comment_post->ID );
 ?>
 	</item>
-<?php endwhile; endif; ?>
+<?php
+		}
+	}
+?>
 </channel>
 </rss>

@@ -441,9 +441,9 @@ class WP_Admin_Bar {
 					$this->_render_group( $group );
 				} ?>
 			</div>
-			<?php if ( is_user_logged_in() ) : ?>
+			<?php if ( is_user_logged_in() ) { ?>
 			<a class="screen-reader-shortcut" href="<?php echo esc_url( wp_logout_url() ); ?>"><?php _e('Log Out'); ?></a>
-			<?php endif; ?>
+			<?php } ?>
 		</div>
 
 		<?php
@@ -522,56 +522,56 @@ class WP_Admin_Bar {
 		?>
 
 		<li id="<?php echo esc_attr( 'wp-admin-bar-' . $node->id ); ?>"<?php echo $menuclass; ?>><?php
-			if ( $has_link ):
+			if ( $has_link ) {
 				?><a class="ab-item"<?php echo $aria_attributes; ?> href="<?php echo esc_url( $node->href ) ?>"<?php
-					if ( ! empty( $node->meta['onclick'] ) ) :
+					if ( ! empty( $node->meta['onclick'] ) ) {
 						?> onclick="<?php echo esc_js( $node->meta['onclick'] ); ?>"<?php
-					endif;
-				if ( ! empty( $node->meta['target'] ) ) :
+					}
+				if ( ! empty( $node->meta['target'] ) ) {
 					?> target="<?php echo esc_attr( $node->meta['target'] ); ?>"<?php
-				endif;
-				if ( ! empty( $node->meta['title'] ) ) :
+				}
+				if ( ! empty( $node->meta['title'] ) ) {
 					?> title="<?php echo esc_attr( $node->meta['title'] ); ?>"<?php
-				endif;
-				if ( ! empty( $node->meta['rel'] ) ) :
+				}
+				if ( ! empty( $node->meta['rel'] ) ) {
 					?> rel="<?php echo esc_attr( $node->meta['rel'] ); ?>"<?php
-				endif;
-				if ( ! empty( $node->meta['lang'] ) ) :
+				}
+				if ( ! empty( $node->meta['lang'] ) ) {
 					?> lang="<?php echo esc_attr( $node->meta['lang'] ); ?>"<?php
-				endif;
-				if ( ! empty( $node->meta['dir'] ) ) :
+				}
+				if ( ! empty( $node->meta['dir'] ) ) {
 					?> dir="<?php echo esc_attr( $node->meta['dir'] ); ?>"<?php
-				endif;
+				}
 				?>><?php
-			else:
+			} else {
 				?><div class="ab-item ab-empty-item"<?php echo $aria_attributes;
-				if ( ! empty( $node->meta['title'] ) ) :
+				if ( ! empty( $node->meta['title'] ) ) {
 					?> title="<?php echo esc_attr( $node->meta['title'] ); ?>"<?php
-				endif;
-				if ( ! empty( $node->meta['lang'] ) ) :
+				}
+				if ( ! empty( $node->meta['lang'] ) ) {
 					?> lang="<?php echo esc_attr( $node->meta['lang'] ); ?>"<?php
-				endif;
-				if ( ! empty( $node->meta['dir'] ) ) :
+				}
+				if ( ! empty( $node->meta['dir'] ) ) {
 					?> dir="<?php echo esc_attr( $node->meta['dir'] ); ?>"<?php
-				endif;
+				}
 				?>><?php
-			endif;
+			}
 
 			echo $node->title;
 
-			if ( $has_link ) :
+			if ( $has_link ) {
 				?></a><?php
-			else:
+			} else {
 				?></div><?php
-			endif;
+			}
 
-			if ( $is_parent ) :
+			if ( $is_parent ) {
 				?><div class="ab-sub-wrapper"><?php
 					foreach ( $node->children as $group ) {
 						$this->_render_group( $group );
 					}
 				?></div><?php
-			endif;
+			}
 
 			if ( ! empty( $node->meta['html'] ) ) {
 				echo $node->meta['html'];

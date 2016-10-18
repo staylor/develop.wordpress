@@ -178,15 +178,15 @@ function wp_print_media_templates() {
 		<# if ( data.message ) { #>
 			<h2 class="upload-message">{{ data.message }}</h2>
 		<# } #>
-		<?php if ( ! _device_can_upload() ) : ?>
+		<?php if ( ! _device_can_upload() ) { ?>
 			<h2 class="upload-instructions"><?php printf( __( 'The web browser on your device cannot be used to upload files. You may be able to use the <a href="%s">native app for your device</a> instead.' ), 'https://apps.wordpress.org/' ); ?></h2>
-		<?php elseif ( is_multisite() && ! is_upload_space_available() ) : ?>
+		<?php } elseif ( is_multisite() && ! is_upload_space_available() ) { ?>
 			<h2 class="upload-instructions"><?php _e( 'Upload Limit Exceeded' ); ?></h2>
 			<?php
 			/** This action is documented in wp-admin/includes/media.php */
 			do_action( 'upload_ui_over_quota' ); ?>
 
-		<?php else : ?>
+		<?php } else { ?>
 			<div class="upload-ui">
 				<h2 class="upload-instructions drop-instructions"><?php _e( 'Drop files anywhere to upload' ); ?></h2>
 				<p class="upload-instructions drop-instructions"><?php _ex( 'or', 'Uploader: Drop files here - or - Select Files' ); ?></p>
@@ -231,7 +231,7 @@ function wp_print_media_templates() {
 				/** This action is documented in wp-admin/includes/media.php */
 				do_action( 'post-upload-ui' ); ?>
 			</div>
-		<?php endif; ?>
+		<?php } ?>
 		</div>
 	</script>
 
@@ -414,15 +414,15 @@ function wp_print_media_templates() {
 					<a href="post.php?post={{ data.id }}&action=edit"><?php _e( 'Edit more details' ); ?></a>
 				<# } #>
 				<# if ( ! data.uploading && data.can.remove ) { #> |
-					<?php if ( MEDIA_TRASH ): ?>
+					<?php if ( MEDIA_TRASH ) { ?>
 						<# if ( 'trash' === data.status ) { #>
 							<button type="button" class="button-link untrash-attachment"><?php _e( 'Untrash' ); ?></button>
 						<# } else { #>
 							<button type="button" class="button-link trash-attachment"><?php _ex( 'Trash', 'verb' ); ?></button>
 						<# } #>
-					<?php else: ?>
+					<?php } else { ?>
 						<button type="button" class="button-link delete-attachment"><?php _e( 'Delete Permanently' ); ?></button>
-					<?php endif; ?>
+					<?php } ?>
 				<# } #>
 			</div>
 
@@ -515,15 +515,15 @@ function wp_print_media_templates() {
 				<# } #>
 
 				<# if ( ! data.uploading && data.can.remove ) { #>
-					<?php if ( MEDIA_TRASH ): ?>
+					<?php if ( MEDIA_TRASH ) { ?>
 					<# if ( 'trash' === data.status ) { #>
 						<button type="button" class="button-link untrash-attachment"><?php _e( 'Untrash' ); ?></button>
 					<# } else { #>
 						<button type="button" class="button-link trash-attachment"><?php _ex( 'Trash', 'verb' ); ?></button>
 					<# } #>
-					<?php else: ?>
+					<?php } else { ?>
 						<button type="button" class="button-link delete-attachment"><?php _e( 'Delete Permanently' ); ?></button>
-					<?php endif; ?>
+					<?php } ?>
 				<# } #>
 
 				<div class="compat-meta">

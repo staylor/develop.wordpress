@@ -53,26 +53,32 @@ do_action( 'rss_tag_pre', 'rdf' );
 	?>
 	<items>
 		<rdf:Seq>
-		<?php while (have_posts()): the_post(); ?>
+		<?php
+		while (have_posts()) {
+			the_post(); ?>
 			<rdf:li rdf:resource="<?php the_permalink_rss() ?>"/>
-		<?php endwhile; ?>
+		<?php } ?>
 		</rdf:Seq>
 	</items>
 </channel>
-<?php rewind_posts(); while (have_posts()): the_post(); ?>
+<?php
+rewind_posts();
+
+while (have_posts()) {
+	the_post(); ?>
 <item rdf:about="<?php the_permalink_rss() ?>">
 	<title><?php the_title_rss() ?></title>
 	<link><?php the_permalink_rss() ?></link>
 	<dc:date><?php echo mysql2date('Y-m-d\TH:i:s\Z', $post->post_date_gmt, false); ?></dc:date>
 	<dc:creator><![CDATA[<?php the_author() ?>]]></dc:creator>
 	<?php the_category_rss('rdf') ?>
-<?php if (get_option('rss_use_excerpt')) : ?>
+<?php if (get_option('rss_use_excerpt')) { ?>
 	<description><![CDATA[<?php the_excerpt_rss() ?>]]></description>
-<?php else : ?>
+<?php } else { ?>
 	<description><![CDATA[<?php the_excerpt_rss() ?>]]></description>
 	<content:encoded><![CDATA[<?php the_content_feed('rdf') ?>]]></content:encoded>
-<?php endif; ?>
-	<?php
+<?php }
+
 	/**
 	 * Fires at the end of each RDF feed item.
 	 *
@@ -81,5 +87,5 @@ do_action( 'rss_tag_pre', 'rdf' );
 	do_action( 'rdf_item' );
 	?>
 </item>
-<?php endwhile;  ?>
+<?php } ?>
 </rdf:RDF>

@@ -2300,7 +2300,7 @@ function comment_form( $args = [], $post_id = null ) {
 	// Ensure that the filtered args contain all required default values.
 	$args = array_merge( $defaults, $args );
 
-	if ( comments_open( $post_id ) ) : ?>
+	if ( comments_open( $post_id ) ) { ?>
 		<?php
 		/**
 		 * Fires before the comment form.
@@ -2323,7 +2323,7 @@ function comment_form( $args = [], $post_id = null ) {
 
 			echo $args['title_reply_after'];
 
-			if ( get_option( 'comment_registration' ) && !is_user_logged_in() ) :
+			if ( get_option( 'comment_registration' ) && !is_user_logged_in() ) {
 				echo $args['must_log_in'];
 				/**
 				 * Fires after the HTML-formatted 'must log in after' message in the comment form.
@@ -2331,7 +2331,7 @@ function comment_form( $args = [], $post_id = null ) {
 				 * @since 3.0.0
 				 */
 				do_action( 'comment_form_must_log_in_after' );
-			else: ?>
+			} else { ?>
 				<form action="<?php echo esc_url( $args['action'] );
 			?>" method="post" id="<?php echo esc_attr( $args['id_form'] ); ?>" class="<?php echo esc_attr( $args['class_form'] ); ?>"<?php echo $html5 ? ' novalidate' : ''; ?>>
 					<?php
@@ -2342,7 +2342,7 @@ function comment_form( $args = [], $post_id = null ) {
 					 */
 					do_action( 'comment_form_top' );
 
-					if ( is_user_logged_in() ) :
+					if ( is_user_logged_in() ) {
 						/**
 						 * Filters the 'logged in' message for the comment form for display.
 						 *
@@ -2368,11 +2368,11 @@ function comment_form( $args = [], $post_id = null ) {
 						 */
 						do_action( 'comment_form_logged_in_after', $commenter, $user_identity );
 
-					else:
+					} else {
 
 						echo $args['comment_notes_before'];
 
-					endif;
+					}
 
 					// Prepare an array of all fields, including the textarea
 					$comment_fields = array( 'comment' => $args['comment_field'] ) + (array) $args['fields'];
@@ -2489,7 +2489,7 @@ function comment_form( $args = [], $post_id = null ) {
 					do_action( 'comment_form', $post_id );
 					?>
 				</form>
-			<?php endif; ?>
+			<?php } ?>
 		</div><!-- #respond -->
 		<?php
 		/**
@@ -2498,12 +2498,12 @@ function comment_form( $args = [], $post_id = null ) {
 		 * @since 3.0.0
 		 */
 		do_action( 'comment_form_after' );
-	else:
+	} else {
 		/**
 		 * Fires after the comment form if comments are closed.
 		 *
 		 * @since 3.0.0
 		 */
 		do_action( 'comment_form_comments_closed' );
-	endif;
+	}
 }

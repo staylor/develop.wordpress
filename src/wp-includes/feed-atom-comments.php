@@ -28,12 +28,13 @@ do_action( 'rss_tag_pre', 'atom-comments' );
 	?>
 >
 	<title type="text"><?php
-		if ( is_singular() )
+		if ( is_singular() ) {
 			printf( ent2ncr( __( 'Comments on %s' ) ), get_the_title_rss() );
-		elseif ( is_search() )
+		} elseif ( is_search() ) {
 			printf( ent2ncr( __( 'Comments for %1$s searching on %2$s' ) ), get_bloginfo_rss( 'name' ), get_search_query() );
-		else
+		} else {
 			printf( ent2ncr( __( 'Comments for %s' ) ), get_wp_title_rss() );
+		}
 	?></title>
 	<subtitle type="text"><?php bloginfo_rss('description'); ?></subtitle>
 
@@ -61,7 +62,9 @@ do_action( 'rss_tag_pre', 'atom-comments' );
 	do_action( 'comments_atom_head' );
 ?>
 <?php
-if ( have_comments() ) : while ( have_comments() ) : the_comment();
+if ( have_comments() ) {
+	while ( have_comments() ) {
+		the_comment();
 	$comment_post = $GLOBALS['post'] = get_post( $comment->comment_post_ID );
 ?>
 	<entry>
@@ -86,20 +89,20 @@ if ( have_comments() ) : while ( have_comments() ) : the_comment();
 		<id><?php comment_guid(); ?></id>
 		<updated><?php echo mysql2date('Y-m-d\TH:i:s\Z', get_comment_time('Y-m-d H:i:s', true, false), false); ?></updated>
 		<published><?php echo mysql2date('Y-m-d\TH:i:s\Z', get_comment_time('Y-m-d H:i:s', true, false), false); ?></published>
-<?php if ( post_password_required($comment_post) ) : ?>
+<?php if ( post_password_required($comment_post) ) { ?>
 		<content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php echo get_the_password_form(); ?>]]></content>
-<?php else : // post pass ?>
+<?php } else { // post pass ?>
 		<content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php comment_text(); ?>]]></content>
-<?php endif; // post pass
+<?php } // post pass
 	// Return comment threading information (https://www.ietf.org/rfc/rfc4685.txt)
-	if ( $comment->comment_parent == 0 ) : // This comment is top level ?>
+	if ( $comment->comment_parent == 0 ) { // This comment is top level ?>
 		<thr:in-reply-to ref="<?php the_guid(); ?>" href="<?php the_permalink_rss() ?>" type="<?php bloginfo_rss('html_type'); ?>" />
-<?php else : // This comment is in reply to another comment
+<?php } else { // This comment is in reply to another comment
 	$parent_comment = get_comment($comment->comment_parent);
 	// The rel attribute below and the id tag above should be GUIDs, but WP doesn't create them for comments (unlike posts). Either way, it's more important that they both use the same system
 ?>
 		<thr:in-reply-to ref="<?php comment_guid($parent_comment) ?>" href="<?php echo get_comment_link($parent_comment) ?>" type="<?php bloginfo_rss('html_type'); ?>" />
-<?php endif;
+<?php }
 	/**
 	 * Fires at the end of each Atom comment feed item.
 	 *
@@ -111,5 +114,10 @@ if ( have_comments() ) : while ( have_comments() ) : the_comment();
 	do_action( 'comment_atom_entry', $comment->comment_ID, $comment_post->ID );
 ?>
 	</entry>
-<?php endwhile; endif; ?>
+<?php
+		}
+
+	}
+
+?>
 </feed>

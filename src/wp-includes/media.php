@@ -2754,9 +2754,11 @@ function get_attachment_taxonomies( $attachment, $output = 'names' ) {
 	if ( !empty($attachment->post_mime_type) ) {
 		$objects[] = 'attachment:' . $attachment->post_mime_type;
 		if ( false !== strpos($attachment->post_mime_type, '/') ) {
-					foreach ( explode('/', $attachment->post_mime_type) as $token )
-				if ( !empty($token) )
+			foreach ( explode('/', $attachment->post_mime_type) as $token ) {
+				if ( !empty($token) ) {
 					$objects[] = "attachment:$token";
+				}
+			}
 		}
 	}
 
@@ -2793,9 +2795,9 @@ function get_taxonomies_for_attachments( $output = 'names' ) {
 		foreach ( $taxonomy->object_type as $object_type ) {
 			if ( 'attachment' == $object_type || 0 === strpos( $object_type, 'attachment:' ) ) {
 				if ( 'names' == $output ) {
-									$taxonomies[] = $taxonomy->name;
+					$taxonomies[] = $taxonomy->name;
 				} else {
-									$taxonomies[ $taxonomy->name ] = $taxonomy;
+					$taxonomies[ $taxonomy->name ] = $taxonomy;
 				}
 				break;
 			}
