@@ -58,7 +58,7 @@ class FormHandler extends AdminHandler {
 		$username = $user_details->user_login;
 		$user_id = $user_details->ID;
 
-		if ( ( $username != null && !is_super_admin( $user_id ) ) && ( array_key_exists( $this->app->blog_id, get_blogs_of_user($user_id)) ) ) {
+		if ( ( $username != null && ! is_super_admin( $user_id ) ) && ( array_key_exists( $this->app->blog_id, get_blogs_of_user( $user_id )) ) ) {
 			$location = add_query_arg( [ 'update' => 'addexisting' ], 'user-new.php' );
 			$this->redirect( $location );
 		} else {
@@ -69,7 +69,7 @@ class FormHandler extends AdminHandler {
 				] );
 
 				$location = add_query_arg( [
-					'update' => 'addnoconfirmation' ,
+					'update' => 'addnoconfirmation',
 					'user_id' => $user_id
 				], 'user-new.php' );
 				$this->redirect( $location );
@@ -178,7 +178,7 @@ class FormHandler extends AdminHandler {
 				if ( is_wp_error( $new_user ) ) {
 					$redirect = add_query_arg( [ 'update' => 'addnoconfirmation' ], 'user-new.php' );
 				} else {
-					$redirect = add_query_arg( [ 'update' => 'addnoconfirmation', 'user_id' => $new_user['user_id'] ], 'user-new.php' );
+					$redirect = add_query_arg( [ 'update' => 'addnoconfirmation', 'user_id' => $new_user[ 'user_id' ] ], 'user-new.php' );
 				}
 			} else {
 				$redirect = add_query_arg( [ 'update' => 'newuserconfirmation' ], 'user-new.php' );
@@ -234,7 +234,7 @@ class FormHandler extends AdminHandler {
 		$errors = edit_user( $user_id );
 
 		// Grant or revoke super admin status if requested.
-		if ( is_multisite() && is_network_admin() && !IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && ! $this->app['super_admins'] && empty( $this->_post->get( 'super_admin' ) ) == is_super_admin( $user_id ) ) {
+		if ( is_multisite() && is_network_admin() && ! IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && ! $this->app['super_admins'] && empty( $this->_post->get( 'super_admin' ) ) == is_super_admin( $user_id ) ) {
 			if ( empty( $this->_post->get( 'super_admin' ) ) ) {
 				revoke_super_admin( $user_id );
 			} else {
@@ -268,7 +268,7 @@ class FormHandler extends AdminHandler {
 			$wpdb = $this->app['db'];
 			$sql = 'SELECT user_login FROM ' . $wpdb->signups . ' WHERE user_login = %s';
 			if ( $wpdb->get_var( $wpdb->prepare( $sql, $current_user->user_login ) ) ) {
-				$sql = 'UPDATE '. $wpdb->signups . ' SET user_email = %s WHERE user_login = %s';
+				$sql = 'UPDATE ' . $wpdb->signups . ' SET user_email = %s WHERE user_login = %s';
 				$wpdb->query( $wpdb->prepare( $sql, $user->user_email, $current_user->user_login ) );
 			}
 			wp_update_user( $user );
@@ -349,7 +349,7 @@ class FormHandler extends AdminHandler {
 
 	public function doDeleteOrReassign( $redirect ) {
 		if ( is_multisite() ) {
-			wp_die( __('User deletion is not allowed from this screen.') );
+			wp_die( __( 'User deletion is not allowed from this screen.' ) );
 		}
 		check_admin_referer( 'delete-users' );
 

@@ -106,7 +106,7 @@ class Pingback implements ProviderInterface {
 				$post_ID = (int) $db->get_var( $db->prepare( $sql, $title ) );
 			}
 
-			if ( ! $post_ID  ) {
+			if ( ! $post_ID ) {
 				// returning unknown error '0' is better than die()ing
 				return $this->pingback_error( 0, '' );
 			}
@@ -194,7 +194,7 @@ class Pingback implements ProviderInterface {
 		$preg_target = preg_quote( $pagelinkedto, '|' );
 
 		foreach ( $p as $para ) {
-			if ( false === strpos( $para, $pagelinkedto) ) {
+			if ( false === strpos( $para, $pagelinkedto ) ) {
 				continue;
 			}
 			$context = null;

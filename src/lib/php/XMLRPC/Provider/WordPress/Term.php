@@ -317,7 +317,7 @@ trait Term {
 	 *  - 'count'
 	 */
 	public function wp_getTerm( $args ) {
-		if ( ! $this->minimum_args( $args, 5 ) ){
+		if ( ! $this->minimum_args( $args, 5 ) ) {
 			return $this->error;
 		}
 
@@ -343,7 +343,7 @@ trait Term {
 		}
 		$tax = get_taxonomy( $taxonomy );
 
-		$term = get_term( $term_id , $tax->name, ARRAY_A );
+		$term = get_term( $term_id, $tax->name, ARRAY_A );
 
 		if ( is_wp_error( $term ) ) {
 			return new Error( 500, $term->get_error_message() );
@@ -535,7 +535,7 @@ trait Term {
 
 		// Make sure the user is allowed to add a category.
 		if ( ! current_user_can( 'manage_categories' ) ) {
-			return new Error( 401, __( 'Sorry, you are not allowed to add a category.'  ) );
+			return new Error( 401, __( 'Sorry, you are not allowed to add a category.' ) );
 		}
 		// If no slug was provided make it empty so that
 		// WordPress will generate one.

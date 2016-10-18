@@ -44,7 +44,7 @@ class View extends BaseView {
 	public function setAdminData( $hook_suffix ) {
 		$title = esc_html( strip_tags( get_admin_page_title() ) );
 
-		$admin_page = preg_replace('/[^a-z0-9_-]+/i', '-', $hook_suffix );
+		$admin_page = preg_replace( '/[^a-z0-9_-]+/i', '-', $hook_suffix );
 
 		$admin_footer_text = sprintf(
 			__( 'Thank you for creating with <a href="%s">WordPress</a>.' ), __( 'https://wordpress.org/' )
@@ -330,11 +330,11 @@ class View extends BaseView {
 	protected function getAdminBodyClass( $admin_page ) {
 		$admin_body_class = $admin_page;
 
-		if ( get_user_setting('mfold') == 'f' ) {
+		if ( get_user_setting( 'mfold' ) === 'f' ) {
 			$admin_body_class .= ' folded';
 		}
 
-		if ( ! get_user_setting('unfold') ) {
+		if ( ! get_user_setting( 'unfold' ) ) {
 			$admin_body_class .= ' auto-fold';
 		}
 

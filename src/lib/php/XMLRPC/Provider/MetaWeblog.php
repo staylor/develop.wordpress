@@ -65,8 +65,8 @@ class MetaWeblog implements ProviderInterface {
 	 * }
 	 * @return int|Error
 	 */
-	public function mw_newPost( $args) {
-		$this->escape( $args);
+	public function mw_newPost( $args ) {
+		$this->escape( $args );
 
 		list(
 			/* $blog_id */,
@@ -278,7 +278,7 @@ class MetaWeblog implements ProviderInterface {
 		}
 
 		if ( ! empty( $dateCreated ) ) {
-			$post_date = get_date_from_gmt(iso8601_to_datetime( $dateCreated ) );
+			$post_date = get_date_from_gmt( iso8601_to_datetime( $dateCreated ) );
 			$post_date_gmt = iso8601_to_datetime( $dateCreated, 'GMT' );
 		} else {
 			$post_date = '';

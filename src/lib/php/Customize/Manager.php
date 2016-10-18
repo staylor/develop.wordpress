@@ -2183,10 +2183,10 @@ class Manager {
 			'section'    => 'background_image',
 			'type'       => 'radio',
 			'choices'    => array(
-				'no-repeat'  => __('No Repeat'),
-				'repeat'     => __('Tile'),
-				'repeat-x'   => __('Tile Horizontally'),
-				'repeat-y'   => __('Tile Vertically'),
+				'no-repeat'  => __( 'No Repeat' ),
+				'repeat'     => __( 'Tile' ),
+				'repeat-x'   => __( 'Tile Horizontally' ),
+				'repeat-y'   => __( 'Tile Vertically' ),
 			),
 		) );
 
@@ -2200,9 +2200,9 @@ class Manager {
 			'section'    => 'background_image',
 			'type'       => 'radio',
 			'choices'    => array(
-				'left'       => __('Left'),
-				'center'     => __('Center'),
-				'right'      => __('Right'),
+				'left'       => __( 'Left' ),
+				'center'     => __( 'Center' ),
+				'right'      => __( 'Right' ),
 			),
 		) );
 
@@ -2216,8 +2216,8 @@ class Manager {
 			'section'    => 'background_image',
 			'type'       => 'radio',
 			'choices'    => array(
-				'scroll'     => __('Scroll'),
-				'fixed'      => __('Fixed'),
+				'scroll'     => __( 'Scroll' ),
+				'fixed'      => __( 'Fixed' ),
 			),
 		) );
 

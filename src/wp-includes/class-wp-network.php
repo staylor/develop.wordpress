@@ -134,7 +134,7 @@ class WP_Network {
 	 * @param WP_Network|object $network A network object.
 	 */
 	public function __construct( $network ) {
-		foreach( get_object_vars( $network ) as $key => $value ) {
+		foreach ( get_object_vars( $network ) as $key => $value ) {
 			$this->$key = $value;
 		}
 
@@ -298,7 +298,7 @@ class WP_Network {
 			$using_paths = wp_cache_get( 'networks_have_paths', 'site-options' );
 			if ( false === $using_paths ) {
 				$using_paths = (int) $wpdb->get_var( "SELECT id FROM {$wpdb->site} WHERE path <> '/' LIMIT 1" );
-				wp_cache_add( 'networks_have_paths', $using_paths, 'site-options'  );
+				wp_cache_add( 'networks_have_paths', $using_paths, 'site-options' );
 			}
 		}
 

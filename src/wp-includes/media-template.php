@@ -320,7 +320,7 @@ function wp_print_media_templates() {
 		<div class="attachment-info">
 			<span class="settings-save-status">
 				<span class="spinner"></span>
-				<span class="saved"><?php esc_html_e('Saved.'); ?></span>
+				<span class="saved"><?php esc_html_e( 'Saved.' ); ?></span>
 			</span>
 			<div class="details">
 				<div class="filename"><strong><?php _e( 'File name:' ); ?></strong> {{ data.filename }}</div>
@@ -356,13 +356,13 @@ function wp_print_media_templates() {
 
 			<div class="settings">
 				<label class="setting" data-setting="url">
-					<span class="name"><?php _e('URL'); ?></span>
+					<span class="name"><?php _e( 'URL' ); ?></span>
 					<input type="text" value="{{ data.url }}" readonly />
 				</label>
 				<# var maybeReadOnly = data.can.save || data.allowLocalEdits ? '' : 'readonly'; #>
 				<?php if ( post_type_supports( 'attachment', 'title' ) ) : ?>
 				<label class="setting" data-setting="title">
-					<span class="name"><?php _e('Title'); ?></span>
+					<span class="name"><?php _e( 'Title' ); ?></span>
 					<input type="text" value="{{ data.title }}" {{ maybeReadOnly }} />
 				</label>
 				<?php endif; ?>
@@ -388,7 +388,7 @@ function wp_print_media_templates() {
 					</label>
 				<# } #>
 				<label class="setting" data-setting="description">
-					<span class="name"><?php _e('Description'); ?></span>
+					<span class="name"><?php _e( 'Description' ); ?></span>
 					<textarea {{ maybeReadOnly }}>{{ data.description }}</textarea>
 				</label>
 				<label class="setting">
@@ -463,15 +463,15 @@ function wp_print_media_templates() {
 		if ( data.describe ) {
 			if ( 'image' === data.type ) { #>
 				<input type="text" value="{{ data.caption }}" class="describe" data-setting="caption"
-					placeholder="<?php esc_attr_e('Caption this image&hellip;'); ?>" {{ maybeReadOnly }} />
+					placeholder="<?php esc_attr_e( 'Caption this image&hellip;' ); ?>" {{ maybeReadOnly }} />
 			<# } else { #>
 				<input type="text" value="{{ data.title }}" class="describe" data-setting="title"
 					<# if ( 'video' === data.type ) { #>
-						placeholder="<?php esc_attr_e('Describe this video&hellip;'); ?>"
+						placeholder="<?php esc_attr_e( 'Describe this video&hellip;' ); ?>"
 					<# } else if ( 'audio' === data.type ) { #>
-						placeholder="<?php esc_attr_e('Describe this audio file&hellip;'); ?>"
+						placeholder="<?php esc_attr_e( 'Describe this audio file&hellip;' ); ?>"
 					<# } else { #>
-						placeholder="<?php esc_attr_e('Describe this media file&hellip;'); ?>"
+						placeholder="<?php esc_attr_e( 'Describe this media file&hellip;' ); ?>"
 					<# } #> {{ maybeReadOnly }} />
 			<# }
 		} #>
@@ -482,7 +482,7 @@ function wp_print_media_templates() {
 			<?php _e( 'Attachment Details' ); ?>
 			<span class="settings-save-status">
 				<span class="spinner"></span>
-				<span class="saved"><?php esc_html_e('Saved.'); ?></span>
+				<span class="saved"><?php esc_html_e( 'Saved.' ); ?></span>
 			</span>
 		</h2>
 		<div class="attachment-info">
@@ -535,13 +535,13 @@ function wp_print_media_templates() {
 		</div>
 
 		<label class="setting" data-setting="url">
-			<span class="name"><?php _e('URL'); ?></span>
+			<span class="name"><?php _e( 'URL' ); ?></span>
 			<input type="text" value="{{ data.url }}" readonly />
 		</label>
 		<# var maybeReadOnly = data.can.save || data.allowLocalEdits ? '' : 'readonly'; #>
 		<?php if ( post_type_supports( 'attachment', 'title' ) ) : ?>
 		<label class="setting" data-setting="title">
-			<span class="name"><?php _e('Title'); ?></span>
+			<span class="name"><?php _e( 'Title' ); ?></span>
 			<input type="text" value="{{ data.title }}" {{ maybeReadOnly }} />
 		</label>
 		<?php endif; ?>
@@ -557,17 +557,17 @@ function wp_print_media_templates() {
 		<?php endforeach; ?>
 		<# } #>
 		<label class="setting" data-setting="caption">
-			<span class="name"><?php _e('Caption'); ?></span>
+			<span class="name"><?php _e( 'Caption' ); ?></span>
 			<textarea {{ maybeReadOnly }}>{{ data.caption }}</textarea>
 		</label>
 		<# if ( 'image' === data.type ) { #>
 			<label class="setting" data-setting="alt">
-				<span class="name"><?php _e('Alt Text'); ?></span>
+				<span class="name"><?php _e( 'Alt Text' ); ?></span>
 				<input type="text" value="{{ data.alt }}" {{ maybeReadOnly }} />
 			</label>
 		<# } #>
 		<label class="setting" data-setting="description">
-			<span class="name"><?php _e('Description'); ?></span>
+			<span class="name"><?php _e( 'Description' ); ?></span>
 			<textarea {{ maybeReadOnly }}>{{ data.description }}</textarea>
 		</label>
 	</script>
@@ -590,7 +590,7 @@ function wp_print_media_templates() {
 
 		<# if ( 'image' === data.type ) { #>
 			<label class="setting">
-				<span><?php _e('Alignment'); ?></span>
+				<span><?php _e( 'Alignment' ); ?></span>
 				<select class="alignment"
 					data-setting="align"
 					<# if ( data.userSettings ) { #>
@@ -616,9 +616,9 @@ function wp_print_media_templates() {
 		<div class="setting">
 			<label>
 				<# if ( data.model.canEmbed ) { #>
-					<span><?php _e('Embed or Link'); ?></span>
+					<span><?php _e( 'Embed or Link' ); ?></span>
 				<# } else { #>
-					<span><?php _e('Link To'); ?></span>
+					<span><?php _e( 'Link To' ); ?></span>
 				<# } #>
 
 				<select class="link-to"
@@ -663,7 +663,7 @@ function wp_print_media_templates() {
 
 		<# if ( 'undefined' !== typeof data.sizes ) { #>
 			<label class="setting">
-				<span><?php _e('Size'); ?></span>
+				<span><?php _e( 'Size' ); ?></span>
 				<select class="size" name="size"
 					data-setting="size"
 					<# if ( data.userSettings ) { #>
@@ -696,7 +696,7 @@ function wp_print_media_templates() {
 		<h2><?php _e( 'Gallery Settings' ); ?></h2>
 
 		<label class="setting">
-			<span><?php _e('Link To'); ?></span>
+			<span><?php _e( 'Link To' ); ?></span>
 			<select class="link-to"
 				data-setting="link"
 				<# if ( data.userSettings ) { #>
@@ -718,7 +718,7 @@ function wp_print_media_templates() {
 		</label>
 
 		<label class="setting">
-			<span><?php _e('Columns'); ?></span>
+			<span><?php _e( 'Columns' ); ?></span>
 			<select class="columns" name="columns"
 				data-setting="columns">
 				<?php for ( $i = 1; $i <= 9; $i++ ) : ?>
@@ -815,18 +815,18 @@ function wp_print_media_templates() {
 		/** This filter is documented in wp-admin/includes/media.php */
 		if ( ! apply_filters( 'disable_captions', '' ) ) : ?>
 			<label class="setting caption">
-				<span><?php _e('Caption'); ?></span>
+				<span><?php _e( 'Caption' ); ?></span>
 				<textarea data-setting="caption" />
 			</label>
 		<?php endif; ?>
 
 		<label class="setting alt-text">
-			<span><?php _e('Alt Text'); ?></span>
+			<span><?php _e( 'Alt Text' ); ?></span>
 			<input type="text" data-setting="alt" />
 		</label>
 
 		<div class="setting align">
-			<span><?php _e('Align'); ?></span>
+			<span><?php _e( 'Align' ); ?></span>
 			<div class="button-group button-large" data-setting="align">
 				<button class="button" value="left">
 					<?php esc_html_e( 'Left' ); ?>
@@ -844,7 +844,7 @@ function wp_print_media_templates() {
 		</div>
 
 		<div class="setting link-to">
-			<span><?php _e('Link To'); ?></span>
+			<span><?php _e( 'Link To' ); ?></span>
 			<div class="button-group button-large" data-setting="link">
 				<button class="button" value="file">
 					<?php esc_html_e( 'Image URL' ); ?>
@@ -880,19 +880,19 @@ function wp_print_media_templates() {
 					/** This filter is documented in wp-admin/includes/media.php */
 					if ( ! apply_filters( 'disable_captions', '' ) ) : ?>
 						<label class="setting caption">
-							<span><?php _e('Caption'); ?></span>
+							<span><?php _e( 'Caption' ); ?></span>
 							<textarea data-setting="caption">{{ data.model.caption }}</textarea>
 						</label>
 					<?php endif; ?>
 
 					<label class="setting alt-text">
-						<span><?php _e('Alternative Text'); ?></span>
+						<span><?php _e( 'Alternative Text' ); ?></span>
 						<input type="text" data-setting="alt" value="{{ data.model.alt }}" />
 					</label>
 
 					<h2><?php _e( 'Display Settings' ); ?></h2>
 					<div class="setting align">
-						<span><?php _e('Align'); ?></span>
+						<span><?php _e( 'Align' ); ?></span>
 						<div class="button-group button-large" data-setting="align">
 							<button class="button" value="left">
 								<?php esc_html_e( 'Left' ); ?>
@@ -912,7 +912,7 @@ function wp_print_media_templates() {
 					<# if ( data.attachment ) { #>
 						<# if ( 'undefined' !== typeof data.attachment.sizes ) { #>
 							<label class="setting size">
-								<span><?php _e('Size'); ?></span>
+								<span><?php _e( 'Size' ); ?></span>
 								<select class="size" name="size"
 									data-setting="size"
 									<# if ( data.userSettings ) { #>
@@ -948,7 +948,7 @@ function wp_print_media_templates() {
 					<# } #>
 
 					<div class="setting link-to">
-						<span><?php _e('Link To'); ?></span>
+						<span><?php _e( 'Link To' ); ?></span>
 						<select data-setting="link">
 						<# if ( data.attachment ) { #>
 							<option value="file">
@@ -976,11 +976,11 @@ function wp_print_media_templates() {
 						<div class="advanced-settings hidden">
 							<div class="advanced-image">
 								<label class="setting title-text">
-									<span><?php _e('Image Title Attribute'); ?></span>
+									<span><?php _e( 'Image Title Attribute' ); ?></span>
 									<input type="text" data-setting="title" value="{{ data.model.title }}" />
 								</label>
 								<label class="setting extra-classes">
-									<span><?php _e('Image CSS Class'); ?></span>
+									<span><?php _e( 'Image CSS Class' ); ?></span>
 									<input type="text" data-setting="extraClasses" value="{{ data.model.extraClasses }}" />
 								</label>
 							</div>
@@ -989,11 +989,11 @@ function wp_print_media_templates() {
 									<label><input type="checkbox" data-setting="linkTargetBlank" value="_blank" <# if ( data.model.linkTargetBlank ) { #>checked="checked"<# } #>><?php _e( 'Open link in a new tab' ); ?></label>
 								</div>
 								<label class="setting link-rel">
-									<span><?php _e('Link Rel'); ?></span>
+									<span><?php _e( 'Link Rel' ); ?></span>
 									<input type="text" data-setting="linkRel" value="{{ data.model.linkClassName }}" />
 								</label>
 								<label class="setting link-class-name">
-									<span><?php _e('Link CSS Class'); ?></span>
+									<span><?php _e( 'Link CSS Class' ); ?></span>
 									<input type="text" data-setting="linkClassName" value="{{ data.model.linkClassName }}" />
 								</label>
 							</div>

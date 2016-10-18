@@ -145,16 +145,16 @@ class Walker_Nav_Menu extends Walker {
 		 * @param stdClass $args    An object of wp_nav_menu() arguments.
 		 * @param int      $depth   Depth of menu item. Used for padding.
 		 */
-		$id = apply_filters( 'nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args, $depth );
+		$id = apply_filters( 'nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args, $depth );
 		$id = $id ? ' id="' . esc_attr( $id ) . '"' : '';
 
-		$output .= $indent . '<li' . $id . $class_names .'>';
+		$output .= $indent . '<li' . $id . $class_names . '>';
 
 		$atts = [];
 		$atts['title']  = ! empty( $item->attr_title ) ? $item->attr_title : '';
-		$atts['target'] = ! empty( $item->target )     ? $item->target     : '';
-		$atts['rel']    = ! empty( $item->xfn )        ? $item->xfn        : '';
-		$atts['href']   = ! empty( $item->url )        ? $item->url        : '';
+		$atts['target'] = ! empty( $item->target ) ? $item->target : '';
+		$atts['rel']    = ! empty( $item->xfn ) ? $item->xfn : '';
+		$atts['href']   = ! empty( $item->url ) ? $item->url : '';
 
 		/**
 		 * Filters the HTML attributes applied to a menu item's anchor element.
@@ -200,7 +200,7 @@ class Walker_Nav_Menu extends Walker {
 		$title = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
 
 		$item_output = $args->before;
-		$item_output .= '<a'. $attributes .'>';
+		$item_output .= '<a' . $attributes . '>';
 		$item_output .= $args->link_before . $title . $args->link_after;
 		$item_output .= '</a>';
 		$item_output .= $args->after;

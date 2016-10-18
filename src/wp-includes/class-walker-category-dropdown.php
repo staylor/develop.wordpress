@@ -37,7 +37,7 @@ class Walker_CategoryDropdown extends Walker {
 	 *
 	 * @see Walker::$db_fields
 	 */
-	public $db_fields = array ('parent' => 'parent', 'id' => 'term_id');
+	public $db_fields = array( 'parent' => 'parent', 'id' => 'term_id' );
 
 	/**
 	 * Starts the element output.
@@ -54,14 +54,14 @@ class Walker_CategoryDropdown extends Walker {
 	 *                         See wp_dropdown_categories().
 	 * @param int    $id       Optional. ID of the current category. Default 0 (unused).
 	 */
-	public function start_el( &$output, $category, $depth = 0, $args = [], $id = 0 ) {
-		$pad = str_repeat('&nbsp;', $depth * 3);
+	public function start_el( &$output, $category, $depth = 0, $args = [ ], $id = 0 ) {
+		$pad = str_repeat( '&nbsp;', $depth * 3 );
 
 		/** This filter is documented in wp-includes/category-template.php */
 		$cat_name = apply_filters( 'list_cats', $category->name, $category );
 
-		if ( isset( $args['value_field'] ) && isset( $category->{$args['value_field']} ) ) {
-			$value_field = $args['value_field'];
+		if ( isset( $args[ 'value_field' ] ) && isset( $category->{$args[ 'value_field' ]} ) ) {
+			$value_field = $args[ 'value_field' ];
 		} else {
 			$value_field = 'term_id';
 		}
@@ -69,13 +69,13 @@ class Walker_CategoryDropdown extends Walker {
 		$output .= "\t<option class=\"level-$depth\" value=\"" . esc_attr( $category->{$value_field} ) . "\"";
 
 		// Type-juggling causes false matches, so we force everything to a string.
-		if ( (string) $category->{$value_field} === (string) $args['selected'] ) {
+		if ( (string) $category->{$value_field} === (string) $args[ 'selected' ] ) {
 			$output .= ' selected="selected"';
 		}
 		$output .= '>';
-		$output .= $pad.$cat_name;
-		if ( $args['show_count'] ) {
-			$output .= '&nbsp;&nbsp;('. number_format_i18n( $category->count ) .')';
+		$output .= $pad . $cat_name;
+		if ( $args[ 'show_count' ] ) {
+			$output .= '&nbsp;&nbsp;(' . number_format_i18n( $category->count ) . ')';
 		}
 		$output .= "</option>\n";
 	}
