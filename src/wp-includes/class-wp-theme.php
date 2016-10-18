@@ -231,23 +231,29 @@ final class WP_Theme implements ArrayAccess {
 
 		if ( is_array( $cache ) ) {
 			foreach ( [ 'errors', 'headers', 'template' ] as $key ) {
-				if ( isset( $cache[ $key ] ) )
+				if ( isset( $cache[ $key ] ) ) {
 					$this->$key = $cache[ $key ];
+				}
 			}
-			if ( $this->errors )
+			if ( $this->errors ) {
 				return;
-			if ( isset( $cache['theme_root_template'] ) )
+			}
+			if ( isset( $cache['theme_root_template'] ) ) {
 				$theme_root_template = $cache['theme_root_template'];
+			}
 		} elseif ( ! file_exists( $this->theme_root . '/' . $theme_file ) ) {
 			$this->headers['Name'] = $this->stylesheet;
-			if ( ! file_exists( $this->theme_root . '/' . $this->stylesheet ) )
+			if ( ! file_exists( $this->theme_root . '/' . $this->stylesheet ) ) {
 				$this->errors = new WP_Error( 'theme_not_found', sprintf( __( 'The theme directory "%s" does not exist.' ), esc_html( $this->stylesheet ) ) );
-			else
+			} else {
 				$this->errors = new WP_Error( 'theme_no_stylesheet', __( 'Stylesheet is missing.' ) );
+			}
 			$this->template = $this->stylesheet;
 			$this->cache_add( 'theme', [ 'headers' => $this->headers, 'errors' => $this->errors, 'stylesheet' => $this->stylesheet, 'template' => $this->template ] );
-			if ( ! file_exists( $this->theme_root ) ) // Don't cache this one.
+			if ( ! file_exists( $this->theme_root ) ) {
+				// Don't cache this one.
 				$this->errors->add( 'theme_root_missing', __( 'ERROR: The themes directory is either empty or doesn&#8217;t exist. Please check your installation.' ) );
+			}
 			return;
 		} elseif ( ! is_readable( $this->theme_root . '/' . $theme_file ) ) {
 			$this->headers['Name'] = $this->stylesheet;
@@ -260,8 +266,9 @@ final class WP_Theme implements ArrayAccess {
 			// Default themes always trump their pretenders.
 			// Properly identify default themes that are inside a directory within wp-content/themes.
 			if ( $default_theme_slug = array_search( $this->headers['Name'], self::$default_themes ) ) {
-				if ( basename( $this->stylesheet ) != $default_theme_slug )
+				if ( basename( $this->stylesheet ) != $default_theme_slug ) {
 					$this->headers['Name'] .= '/' . $this->stylesheet;
+				}
 			}
 		}
 
@@ -324,8 +331,9 @@ final class WP_Theme implements ArrayAccess {
 		if ( ! is_array( $cache ) ) {
 			$cache = [ 'headers' => $this->headers, 'errors' => $this->errors, 'stylesheet' => $this->stylesheet, 'template' => $this->template ];
 			// If the parent theme is in another root, we'll want to cache this. Avoids an entire branch of filesystem calls above.
-			if ( isset( $theme_root_template ) )
+			if ( isset( $theme_root_template ) ) {
 				$cache['theme_root_template'] = $theme_root_template;
+			}
 			$this->cache_add( 'theme', $cache );
 		}
 	}
@@ -336,7 +344,7 @@ final class WP_Theme implements ArrayAccess {
 	 * @return string Theme name, ready for display (translated)
 	 */
 	public function __toString() {
-		return ( string ) $this->display( 'Name' );
+		return (string) $this->display( 'Name' );
 	}
 
 	/**
@@ -568,8 +576,9 @@ final class WP_Theme implements ArrayAccess {
 	 * @access public
 	 */
 	public function cache_delete() {
-		foreach ( [ 'theme', 'screenshot', 'headers', 'page_templates' ] as $key )
+		foreach ( [ 'theme', 'screenshot', 'headers', 'page_templates' ] as $key ) {
 			wp_cache_delete( $key . '-' . $this->cache_hash, 'themes' );
+		}
 		$this->template = $this->textdomain_loaded = $this->theme_root_uri = $this->parent = $this->errors = $this->headers_sanitized = $this->name_translated = null;
 		$this->headers = [];
 		$this->__construct( $this->stylesheet, $this->theme_root );
@@ -775,8 +784,9 @@ final class WP_Theme implements ArrayAccess {
 		switch ( $header ) {
 		case 'Name':
 			// Cached for sorting reasons.
-			if ( isset( $this->name_translated ) )
+			if ( isset( $this->name_translated ) ) {
 				return $this->name_translated;
+			}
 			$this->name_translated = translate( $value, $this->get( 'TextDomain' ) );
 			return $this->name_translated;
 		case 'Tags':
@@ -1031,8 +1041,9 @@ final class WP_Theme implements ArrayAccess {
 	 */
 	public function get_page_templates( $post = null ) {
 		// If you screw up your current theme and we invalidate your parent, most things still work. Let it slide.
-		if ( $this->errors() && $this->errors()->get_error_codes() !== [ 'theme_parent_invalid' ] )
+		if ( $this->errors() && $this->errors()->get_error_codes() !== [ 'theme_parent_invalid' ] ) {
 			return [];
+		}
 
 		$page_templates = $this->cache_get( 'page_templates' );
 
@@ -1042,8 +1053,9 @@ final class WP_Theme implements ArrayAccess {
 			$files = (array) $this->get_files( 'php', 1 );
 
 			foreach ( $files as $file => $full_path ) {
-				if ( ! preg_match( '|Template Name:(.*)$|mi', file_get_contents( $full_path ), $header ) )
+				if ( ! preg_match( '|Template Name:(.*)$|mi', file_get_contents( $full_path ), $header ) ) {
 					continue;
+				}
 				$page_templates[ $file ] = _cleanup_header_comment( $header[1] );
 			}
 
@@ -1104,18 +1116,21 @@ final class WP_Theme implements ArrayAccess {
 		}
 
 		$relative_path = trailingslashit( $relative_path );
-		if ( '/' == $relative_path )
+		if ( '/' == $relative_path ) {
 			$relative_path = '';
+		}
 
 		$results = scandir( $path );
 		$files = [];
 
 		foreach ( $results as $result ) {
-			if ( '.' == $result[0] )
+			if ( '.' == $result[0] ) {
 				continue;
+			}
 			if ( is_dir( $path . '/' . $result ) ) {
-				if ( ! $depth || 'CVS' == $result )
+				if ( ! $depth || 'CVS' == $result ) {
 					continue;
+				}
 				$found = self::scandir( $path . '/' . $result, $extensions, $depth - 1, $relative_path . $result );
 				$files = array_merge_recursive( $files, $found );
 			} elseif ( ! $extensions || preg_match( '~\.(' . $_extensions . ')$~', $result ) ) {
@@ -1155,10 +1170,11 @@ final class WP_Theme implements ArrayAccess {
 		}
 
 		$path = $this->get_stylesheet_directory();
-		if ( $domainpath = $this->get( 'DomainPath' ) )
+		if ( $domainpath = $this->get( 'DomainPath' ) ) {
 			$path .= $domainpath;
-		else
+		} else {
 			$path .= '/languages';
+		}
 
 		$this->textdomain_loaded = load_theme_textdomain( $textdomain, $path );
 		return $this->textdomain_loaded;
@@ -1330,8 +1346,9 @@ final class WP_Theme implements ArrayAccess {
 				$converted = [];
 				$themes = wp_get_themes();
 				foreach ( $themes as $stylesheet => $theme_data ) {
-					if ( isset( $allowed_themes[ $blog_id ][ $theme_data->get( 'Name' ) ] ) )
+					if ( isset( $allowed_themes[ $blog_id ][ $theme_data->get( 'Name' ) ] ) ) {
 						$converted[ $stylesheet ] = true;
+					}
 				}
 				$allowed_themes[ $blog_id ] = $converted;
 			}

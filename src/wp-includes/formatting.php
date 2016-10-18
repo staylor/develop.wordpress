@@ -2267,8 +2267,9 @@ function force_balance_tags( $text ) {
 			elseif ( substr( $regex[2], -1 ) == '/' ) {
 				// ...but it isn't a known single-entity self-closing tag, then don't let it be treated as such and
 				// immediately close it with a closing tag (the tag will encapsulate no text as a result)
-				if ( ! in_array( $tag, $single_tags ) )
+				if ( ! in_array( $tag, $single_tags ) ) {
 					$regex[2] = trim( substr( $regex[2], 0, -1 ) ) . "></$tag";
+				}
 			}
 			// ElseIf it's a known single-entity tag but it doesn't close itself, do so
 			elseif ( in_array( $tag, $single_tags ) ) {
@@ -2286,8 +2287,9 @@ function force_balance_tags( $text ) {
 
 			// Attributes
 			$attributes = $regex[2];
-			if ( ! empty( $attributes ) && $attributes[0] != '>' )
+			if ( ! empty( $attributes ) && $attributes[0] != '>' ) {
 				$attributes = ' ' . $attributes;
+			}
 
 			$tag = '<' . $tag . $attributes . '>';
 			//If already queuing a close tag, then put this tag on, too
@@ -2380,8 +2382,9 @@ function zeroise( $number, $threshold ) {
  * @return string String with backslashes inserted.
  */
 function backslashit( $string ) {
-	if ( isset( $string[0] ) && $string[0] >= '0' && $string[0] <= '9' )
+	if ( isset( $string[0] ) && $string[0] >= '0' && $string[0] <= '9' ) {
 		$string = '\\\\' . $string;
+	}
 	return addcslashes( $string, 'A..Za..z' );
 }
 
@@ -2552,8 +2555,9 @@ function _make_url_clickable_cb( $matches ) {
 	}
 
 	$url = esc_url( $url );
-	if ( empty( $url ) )
+	if ( empty( $url ) ) {
 		return $matches[0];
+	}
 
 	return $matches[1] . "<a href=\"$url\" rel=\"nofollow\">$url</a>" . $suffix;
 }
@@ -2581,8 +2585,9 @@ function _make_web_ftp_clickable_cb( $matches ) {
 	}
 
 	$dest = esc_url( $dest );
-	if ( empty( $dest ) )
+	if ( empty( $dest ) ) {
 		return $matches[0];
+	}
 
 	return $matches[1] . "<a href=\"$dest\" rel=\"nofollow\">$dest</a>$ret";
 }
@@ -3049,13 +3054,15 @@ function get_date_from_gmt( $string, $format = 'Y-m-d H:i:s' ) {
 	$tz = get_option( 'timezone_string' );
 	if ( $tz ) {
 		$datetime = date_create( $string, new DateTimeZone( 'UTC' ) );
-		if ( ! $datetime )
+		if ( ! $datetime ) {
 			return date( $format, 0 );
+		}
 		$datetime->setTimezone( new DateTimeZone( $tz ) );
 		$string_localtime = $datetime->format( $format );
 	} else {
-		if ( ! preg_match( '#([0-9]{1,4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})#', $string, $matches ) )
+		if ( ! preg_match( '#([0-9]{1,4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})#', $string, $matches ) ) {
 			return date( $format, 0 );
+		}
 		$string_time = gmmktime( $matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1] );
 		$string_localtime = gmdate( $format, $string_time + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
 	}
@@ -3807,8 +3814,9 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 	 * link starting with /, # or ? or a php file).
 	 */
 	if ( strpos( $url, ':' ) === false && ! in_array( $url[0], [ '/', '#', '?' ] ) &&
-		! preg_match( '/^[a-z0-9-]+?\.php/i', $url ) )
+		! preg_match( '/^[a-z0-9-]+?\.php/i', $url ) ) {
 		$url = 'http://' . $url;
+	}
 
 	// Replace ampersands and single quotes only when displaying.
 	if ( 'display' == $_context ) {
@@ -4108,17 +4116,20 @@ function sanitize_option( $option, $value ) {
 	case 'posts_per_page':
 	case 'posts_per_rss':
 		$value = (int) $value;
-		if ( empty( $value ) )
+		if ( empty( $value ) ) {
 			$value = 1;
-		if ( $value < -1 )
+		}
+		if ( $value < -1 ) {
 			$value = abs( $value );
+		}
 		break;
 
 	case 'default_ping_status':
 	case 'default_comment_status':
 		// Options that if not there have 0 value but need to be something like "closed"
-		if ( $value == '0' || $value == '' )
+		if ( $value == '0' || $value == '' ) {
 			$value = 'closed';
+		}
 		break;
 
 	case 'blogdescription':
@@ -4141,10 +4152,11 @@ function sanitize_option( $option, $value ) {
 
 	case 'blog_public':
 		// This is the value if the settings checkbox is not checked on POST. Don't rely on this.
-		if ( null === $value )
+		if ( null === $value ) {
 			$value = 1;
-		else
+		} else {
 			$value = intval( $value );
+		}
 		break;
 
 	case 'date_format':
@@ -4214,13 +4226,15 @@ function sanitize_option( $option, $value ) {
 		if ( is_wp_error( $value ) ) {
 			$error = $value->get_error_message();
 		} else {
-			if ( ! is_array( $value ) )
+			if ( ! is_array( $value ) ) {
 				$value = explode( ' ', $value );
+			}
 
 			$value = array_values( array_filter( array_map( 'trim', $value ) ) );
 
-			if ( ! $value )
+			if ( ! $value ) {
 				$value = '';
+			}
 		}
 		break;
 
@@ -4230,8 +4244,9 @@ function sanitize_option( $option, $value ) {
 		if ( is_wp_error( $value ) ) {
 			$error = $value->get_error_message();
 		} else {
-			if ( ! is_array( $value ) )
+			if ( ! is_array( $value ) ) {
 				$value = explode( "\n", $value );
+			}
 
 			$domains = array_values( array_filter( array_map( 'trim', $value ) ) );
 			$value = [];
@@ -4241,8 +4256,9 @@ function sanitize_option( $option, $value ) {
 					$value[] = $domain;
 				}
 			}
-			if ( ! $value )
+			if ( ! $value ) {
 				$value = '';
+			}
 		}
 		break;
 
@@ -4274,8 +4290,9 @@ function sanitize_option( $option, $value ) {
 		break;
 
 	case 'default_role' :
-		if ( ! get_role( $value ) && get_role( 'subscriber' ) )
+		if ( ! get_role( $value ) && get_role( 'subscriber' ) ) {
 			$value = 'subscriber';
+		}
 		break;
 
 	case 'moderation_keys':
@@ -4504,17 +4521,19 @@ function wp_sprintf_l( $pattern, $args ) {
 
 	$args = (array) $args;
 	$result = array_shift( $args );
-	if ( count( $args ) == 1 )
+	if ( count( $args ) == 1 ) {
 		$result .= $l['between_only_two'] . array_shift( $args );
+	}
 	// Loop when more than two args
 	$i = count( $args );
 	while ( $i ) {
 		$arg = array_shift( $args );
 		$i--;
-		if ( 0 == $i )
+		if ( 0 == $i ) {
 			$result .= $l['between_last_two'] . $arg;
-		else
+		} else {
 			$result .= $l['between'] . $arg;
+		}
 	}
 	return $result . substr( $pattern, 2 );
 }

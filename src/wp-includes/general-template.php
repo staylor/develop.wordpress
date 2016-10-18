@@ -119,8 +119,9 @@ function get_sidebar( $name = null ) {
 
 	$templates = [];
 	$name = (string) $name;
-	if ( '' !== $name )
+	if ( '' !== $name ) {
 		$templates[] = "sidebar-{$name}.php";
+	}
 
 	$templates[] = 'sidebar.php';
 
@@ -164,8 +165,9 @@ function get_template_part( $slug, $name = null ) {
 
 	$templates = [];
 	$name = (string) $name;
-	if ( '' !== $name )
+	if ( '' !== $name ) {
 		$templates[] = "{$slug}-{$name}.php";
+	}
 
 	$templates[] = "{$slug}.php";
 
@@ -3288,11 +3290,12 @@ function paginate_links( $args = '' ) {
 	$page_links = [];
 	$dots = false;
 
-	if ( $args['prev_next'] && $current && 1 < $current ) :
+	if ( $args['prev_next'] && $current && 1 < $current ) {
 		$link = str_replace( '%_%', 2 == $current ? '' : $args['format'], $args['base'] );
 		$link = str_replace( '%#%', $current - 1, $link );
-		if ( $add_args )
+		if ( $add_args ) {
 			$link = add_query_arg( $add_args, $link );
+		}
 		$link .= $args['add_fragment'];
 
 		/**
@@ -3303,8 +3306,9 @@ function paginate_links( $args = '' ) {
 		 * @param string $link The paginated link URL.
 		 */
 		$page_links[] = '<a class="prev page-numbers" href="' . esc_url( apply_filters( 'paginate_links', $link ) ) . '">' . $args['prev_text'] . '</a>';
-	endif;
-	for ( $n = 1; $n <= $total; $n++ ) :
+	}
+
+	for ( $n = 1; $n <= $total; $n++ ) {
 		if ( $n === $current ) {
 			$page_links[] = "<span class='page-numbers current'>" . $args['before_page_number'] . number_format_i18n( $n ) . $args['after_page_number'] . "</span>";
 			$dots = true;
@@ -3325,8 +3329,9 @@ function paginate_links( $args = '' ) {
 				$dots = false;
 			}
 		}
-	endfor;
-	if ( $args['prev_next'] && $current && ( $current < $total || -1 == $total ) ) :
+	}
+
+	if ( $args['prev_next'] && $current && ( $current < $total || -1 == $total ) ) {
 		$link = str_replace( '%_%', $args['format'], $args['base'] );
 		$link = str_replace( '%#%', $current + 1, $link );
 		if ( $add_args ) {
@@ -3336,7 +3341,8 @@ function paginate_links( $args = '' ) {
 
 		/** This filter is documented in wp-includes/general-template.php */
 		$page_links[] = '<a class="next page-numbers" href="' . esc_url( apply_filters( 'paginate_links', $link ) ) . '">' . $args['next_text'] . '</a>';
-	endif;
+	}
+
 	switch ( $args['type'] ) {
 	case 'array' :
 		return $page_links;
@@ -3745,13 +3751,15 @@ function disabled( $disabled, $current = true, $echo = true ) {
  * @return string html attribute or empty string
  */
 function __checked_selected_helper( $helper, $current, $echo, $type ) {
-	if ( (string) $helper === (string) $current )
+	if ( (string) $helper === (string) $current ) {
 		$result = " $type='$type'";
-	else
+	} else {
 		$result = '';
+	}
 
-	if ( $echo )
+	if ( $echo ) {
 		echo $result;
+	}
 
 	return $result;
 }
@@ -3767,11 +3775,13 @@ function __checked_selected_helper( $helper, $current, $echo, $type ) {
  * @return array $settings
  */
 function wp_heartbeat_settings( $settings ) {
-	if ( ! is_admin() )
+	if ( ! is_admin() ) {
 		$settings['ajaxurl'] = admin_url( 'admin-ajax.php', 'relative' );
+	}
 
-	if ( is_user_logged_in() )
+	if ( is_user_logged_in() ) {
 		$settings['nonce'] = wp_create_nonce( 'heartbeat-nonce' );
+	}
 
 	return $settings;
 }
