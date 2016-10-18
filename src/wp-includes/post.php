@@ -4600,23 +4600,23 @@ function get_pages( $args = [] ) {
 		}
 
 		switch ( $orderby ) {
-			case 'menu_order':
-				break;
-			case 'ID':
-				$orderby = "$wpdb->posts.ID";
-				break;
-			case 'rand':
-				$orderby = 'RAND()';
-				break;
-			case 'comment_count':
-				$orderby = "$wpdb->posts.comment_count";
-				break;
-			default:
-				if ( 0 === strpos( $orderby, 'post_' ) ) {
-					$orderby = "$wpdb->posts." . $orderby;
-				} else {
-					$orderby = "$wpdb->posts.post_" . $orderby;
-				}
+		case 'menu_order':
+			break;
+		case 'ID':
+			$orderby = "$wpdb->posts.ID";
+			break;
+		case 'rand':
+			$orderby = 'RAND()';
+			break;
+		case 'comment_count':
+			$orderby = "$wpdb->posts.comment_count";
+			break;
+		default:
+			if ( 0 === strpos( $orderby, 'post_' ) ) {
+				$orderby = "$wpdb->posts." . $orderby;
+			} else {
+				$orderby = "$wpdb->posts.post_" . $orderby;
+			}
 		}
 
 		$orderby_array[] = $orderby;
@@ -5584,16 +5584,16 @@ function _get_last_post_time( $timezone, $field, $post_type = 'any' ) {
 		}
 
 		switch ( $timezone ) {
-			case 'gmt':
-				$date = $wpdb->get_var("SELECT post_{$field}_gmt FROM $wpdb->posts WHERE post_status = 'publish' AND post_type IN ({$post_types}) ORDER BY post_{$field}_gmt DESC LIMIT 1");
-				break;
-			case 'blog':
-				$date = $wpdb->get_var("SELECT post_{$field} FROM $wpdb->posts WHERE post_status = 'publish' AND post_type IN ({$post_types}) ORDER BY post_{$field}_gmt DESC LIMIT 1");
-				break;
-			case 'server':
-				$add_seconds_server = date( 'Z' );
-				$date = $wpdb->get_var("SELECT DATE_ADD(post_{$field}_gmt, INTERVAL '$add_seconds_server' SECOND) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type IN ({$post_types}) ORDER BY post_{$field}_gmt DESC LIMIT 1");
-				break;
+		case 'gmt':
+			$date = $wpdb->get_var("SELECT post_{$field}_gmt FROM $wpdb->posts WHERE post_status = 'publish' AND post_type IN ({$post_types}) ORDER BY post_{$field}_gmt DESC LIMIT 1");
+			break;
+		case 'blog':
+			$date = $wpdb->get_var("SELECT post_{$field} FROM $wpdb->posts WHERE post_status = 'publish' AND post_type IN ({$post_types}) ORDER BY post_{$field}_gmt DESC LIMIT 1");
+			break;
+		case 'server':
+			$add_seconds_server = date( 'Z' );
+			$date = $wpdb->get_var("SELECT DATE_ADD(post_{$field}_gmt, INTERVAL '$add_seconds_server' SECOND) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type IN ({$post_types}) ORDER BY post_{$field}_gmt DESC LIMIT 1");
+			break;
 		}
 
 		if ( $date ) {

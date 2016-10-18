@@ -637,32 +637,32 @@ class WP_Site_Query {
 		$parsed = false;
 
 		switch ( $orderby ) {
-			case 'site__in':
-				$site__in = implode( ',', array_map( 'absint', $this->query_vars['site__in'] ) );
-				$parsed = "FIELD( {$wpdb->blogs}.blog_id, $site__in )";
-				break;
-			case 'network__in':
-				$network__in = implode( ',', array_map( 'absint', $this->query_vars['network__in'] ) );
-				$parsed = "FIELD( {$wpdb->blogs}.site_id, $network__in )";
-				break;
-			case 'domain':
-			case 'last_updated':
-			case 'path':
-			case 'registered':
-				$parsed = $orderby;
-				break;
-			case 'network_id':
-				$parsed = 'site_id';
-				break;
-			case 'domain_length':
-				$parsed = 'CHAR_LENGTH(domain)';
-				break;
-			case 'path_length':
-				$parsed = 'CHAR_LENGTH(path)';
-				break;
-			case 'id':
-				$parsed = 'blog_id';
-				break;
+		case 'site__in':
+			$site__in = implode( ',', array_map( 'absint', $this->query_vars['site__in'] ) );
+			$parsed = "FIELD( {$wpdb->blogs}.blog_id, $site__in )";
+			break;
+		case 'network__in':
+			$network__in = implode( ',', array_map( 'absint', $this->query_vars['network__in'] ) );
+			$parsed = "FIELD( {$wpdb->blogs}.site_id, $network__in )";
+			break;
+		case 'domain':
+		case 'last_updated':
+		case 'path':
+		case 'registered':
+			$parsed = $orderby;
+			break;
+		case 'network_id':
+			$parsed = 'site_id';
+			break;
+		case 'domain_length':
+			$parsed = 'CHAR_LENGTH(domain)';
+			break;
+		case 'path_length':
+			$parsed = 'CHAR_LENGTH(path)';
+			break;
+		case 'id':
+			$parsed = 'blog_id';
+			break;
 		}
 
 		return $parsed;

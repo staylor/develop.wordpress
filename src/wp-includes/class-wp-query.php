@@ -906,14 +906,14 @@ class WP_Query {
 
 				if ( isset( $tax_query['operator'] ) && 'NOT IN' != $tax_query['operator'] ) {
 					switch ( $tax_query['taxonomy'] ) {
-						case 'category':
-							$this->is_category = true;
-							break;
-						case 'post_tag':
-							$this->is_tag = true;
-							break;
-						default:
-							$this->is_tax = true;
+					case 'category':
+						$this->is_category = true;
+						break;
+					case 'post_tag':
+						$this->is_tag = true;
+						break;
+					default:
+						$this->is_tax = true;
 					}
 				}
 			}
@@ -1578,45 +1578,45 @@ class WP_Query {
 		}
 
 		switch ( $orderby ) {
-			case 'post_name':
-			case 'post_author':
-			case 'post_date':
-			case 'post_title':
-			case 'post_modified':
-			case 'post_parent':
-			case 'post_type':
-			case 'ID':
-			case 'menu_order':
-			case 'comment_count':
-				$orderby_clause = "{$wpdb->posts}.{$orderby}";
-				break;
-			case 'rand':
-				$orderby_clause = 'RAND()';
-				break;
-			case $primary_meta_key:
-			case 'meta_value':
-				if ( ! empty( $primary_meta_query['type'] ) ) {
-					$orderby_clause = "CAST({$primary_meta_query['alias']}.meta_value AS {$primary_meta_query['cast']})";
-				} else {
-					$orderby_clause = "{$primary_meta_query['alias']}.meta_value";
-				}
-				break;
-			case 'meta_value_num':
-				$orderby_clause = "{$primary_meta_query['alias']}.meta_value+0";
-				break;
-			default:
-				if ( array_key_exists( $orderby, $meta_clauses ) ) {
-					// $orderby corresponds to a meta_query clause.
-					$meta_clause = $meta_clauses[ $orderby ];
-					$orderby_clause = "CAST({$meta_clause['alias']}.meta_value AS {$meta_clause['cast']})";
-				} elseif ( $rand_with_seed ) {
-					$orderby_clause = $orderby;
-				} else {
-					// Default: order by post field.
-					$orderby_clause = "{$wpdb->posts}.post_" . sanitize_key( $orderby );
-				}
+		case 'post_name':
+		case 'post_author':
+		case 'post_date':
+		case 'post_title':
+		case 'post_modified':
+		case 'post_parent':
+		case 'post_type':
+		case 'ID':
+		case 'menu_order':
+		case 'comment_count':
+			$orderby_clause = "{$wpdb->posts}.{$orderby}";
+			break;
+		case 'rand':
+			$orderby_clause = 'RAND()';
+			break;
+		case $primary_meta_key:
+		case 'meta_value':
+			if ( ! empty( $primary_meta_query['type'] ) ) {
+				$orderby_clause = "CAST({$primary_meta_query['alias']}.meta_value AS {$primary_meta_query['cast']})";
+			} else {
+				$orderby_clause = "{$primary_meta_query['alias']}.meta_value";
+			}
+			break;
+		case 'meta_value_num':
+			$orderby_clause = "{$primary_meta_query['alias']}.meta_value+0";
+			break;
+		default:
+			if ( array_key_exists( $orderby, $meta_clauses ) ) {
+				// $orderby corresponds to a meta_query clause.
+				$meta_clause = $meta_clauses[ $orderby ];
+				$orderby_clause = "CAST({$meta_clause['alias']}.meta_value AS {$meta_clause['cast']})";
+			} elseif ( $rand_with_seed ) {
+				$orderby_clause = $orderby;
+			} else {
+				// Default: order by post field.
+				$orderby_clause = "{$wpdb->posts}.post_" . sanitize_key( $orderby );
+			}
 
-				break;
+			break;
 		}
 
 		return $orderby_clause;
@@ -3441,14 +3441,14 @@ class WP_Query {
 	}
 
 	/**
- 	 * Is the query for an existing archive page?
- 	 *
- 	 * Month, Year, Category, Author, Post Type archive...
+	 * Is the query for an existing archive page?
 	 *
- 	 * @since 3.1.0
- 	 *
- 	 * @return bool
- 	 */
+	 * Month, Year, Category, Author, Post Type archive...
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return bool
+	 */
 	public function is_archive() {
 		return (bool) $this->is_archive;
 	}

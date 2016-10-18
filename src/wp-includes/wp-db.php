@@ -1050,8 +1050,9 @@ class wpdb {
 		switch ( $scope ) {
 		case 'all':
 			$tables = array_merge( $this->global_tables, $this->tables );
-			if ( is_multisite() )
-				$tables = array_merge( $tables, $this->ms_global_tables );
+			if ( is_multisite() ) {
+							$tables = array_merge( $tables, $this->ms_global_tables );
+			}
 			break;
 
 		case 'blog':
@@ -1060,8 +1061,9 @@ class wpdb {
 
 		case 'global':
 			$tables = $this->global_tables;
-			if ( is_multisite() )
-				$tables = array_merge( $tables, $this->ms_global_tables );
+			if ( is_multisite() ) {
+							$tables = array_merge( $tables, $this->ms_global_tables );
+			}
 			break;
 
 		case 'ms_global':

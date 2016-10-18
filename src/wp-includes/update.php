@@ -218,22 +218,22 @@ function wp_update_plugins( $extra_stats = [] ) {
 
 	// Check for update on a different schedule, depending on the page.
 	switch ( current_filter() ) {
-		case 'upgrader_process_complete' :
+	case 'upgrader_process_complete' :
+		$timeout = 0;
+		break;
+	case 'load-update-core.php' :
+		$timeout = MINUTE_IN_SECONDS;
+		break;
+	case 'load-plugins.php' :
+	case 'load-update.php' :
+		$timeout = HOUR_IN_SECONDS;
+		break;
+	default :
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
 			$timeout = 0;
-			break;
-		case 'load-update-core.php' :
-			$timeout = MINUTE_IN_SECONDS;
-			break;
-		case 'load-plugins.php' :
-		case 'load-update.php' :
-			$timeout = HOUR_IN_SECONDS;
-			break;
-		default :
-			if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
-				$timeout = 0;
-			} else {
-				$timeout = 12 * HOUR_IN_SECONDS;
-			}
+		} else {
+			$timeout = 12 * HOUR_IN_SECONDS;
+		}
 	}
 
 	$time_not_changed = isset( $current->last_checked ) && $timeout > ( time() - $current->last_checked );
@@ -396,22 +396,22 @@ function wp_update_themes( $extra_stats = [] ) {
 
 	// Check for update on a different schedule, depending on the page.
 	switch ( current_filter() ) {
-		case 'upgrader_process_complete' :
+	case 'upgrader_process_complete' :
+		$timeout = 0;
+		break;
+	case 'load-update-core.php' :
+		$timeout = MINUTE_IN_SECONDS;
+		break;
+	case 'load-themes.php' :
+	case 'load-update.php' :
+		$timeout = HOUR_IN_SECONDS;
+		break;
+	default :
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
 			$timeout = 0;
-			break;
-		case 'load-update-core.php' :
-			$timeout = MINUTE_IN_SECONDS;
-			break;
-		case 'load-themes.php' :
-		case 'load-update.php' :
-			$timeout = HOUR_IN_SECONDS;
-			break;
-		default :
-			if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
-				$timeout = 0;
-			} else {
-				$timeout = 12 * HOUR_IN_SECONDS;
-			}
+		} else {
+			$timeout = 12 * HOUR_IN_SECONDS;
+		}
 	}
 
 	$time_not_changed = isset( $last_update->last_checked ) && $timeout > ( time() - $last_update->last_checked );

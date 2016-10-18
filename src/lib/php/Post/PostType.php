@@ -138,7 +138,6 @@ class PostType extends Observable {
 	 * Default is the value $public.
 	 *
 	 * @since 4.6.0
-
 	 * @var bool $show_in_nav_menus
 	 */
 	public $show_in_nav_menus = null;
@@ -373,7 +372,6 @@ class PostType extends Observable {
 	 * default properties based on that information.
 	 *
 	 * @since 4.6.0
-
 	 *
 	 * @see register_post_type()
 	 *
@@ -409,7 +407,6 @@ class PostType extends Observable {
 	 * Sets post type properties.
 	 *
 	 * @since 4.6.0
-
 	 *
 	 * @param array|string $args Array or string of arguments for registering a post type.
 	 */
@@ -558,7 +555,6 @@ class PostType extends Observable {
 	 * Sets the features support for the post type.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function add_supports() {
 		if ( ! empty( $this->supports ) ) {
@@ -574,7 +570,6 @@ class PostType extends Observable {
 	 * Adds the necessary rewrite rules for the post type.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function add_rewrite_rules() {
 		$app = getApp();
@@ -652,7 +647,6 @@ class PostType extends Observable {
 	 * Registers the post type meta box if a custom callback was specified.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function register_meta_boxes() {
 		if ( $this->register_meta_box_cb ) {
@@ -664,7 +658,6 @@ class PostType extends Observable {
 	 * Adds the future post hook action for the post type.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function add_hooks() {
 		add_action( 'future_' . $this->name, '_future_post_hook', 5, 2 );
@@ -674,7 +667,6 @@ class PostType extends Observable {
 	 * Registers the taxonomies for the post type.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function register_taxonomies() {
 		foreach ( $this->taxonomies as $taxonomy ) {
@@ -686,7 +678,6 @@ class PostType extends Observable {
 	 * Removes the features support for the post type.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function remove_supports() {
 		$this->features = [];
@@ -696,7 +687,6 @@ class PostType extends Observable {
 	 * Removes any rewrite rules, permastructs, and rules for the post type.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function remove_rewrite_rules() {
 		$app = getApp();
@@ -731,7 +721,6 @@ class PostType extends Observable {
 	 * Unregisters the post type meta box if a custom callback was specified.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function unregister_meta_boxes() {
 		if ( $this->register_meta_box_cb ) {
@@ -743,7 +732,6 @@ class PostType extends Observable {
 	 * Removes the post type from all taxonomies.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function unregister_taxonomies() {
 		foreach ( get_object_taxonomies( $this->name ) as $taxonomy ) {
@@ -755,7 +743,6 @@ class PostType extends Observable {
 	 * Removes the future post hook action for the post type.
 	 *
 	 * @since 4.6.0
-
 	 */
 	public function remove_hooks() {
 		remove_action( 'future_' . $this->name, '_future_post_hook', 5 );

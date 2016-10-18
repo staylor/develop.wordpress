@@ -207,22 +207,22 @@ function get_the_category_list( $separator = '', $parents = '', $post_id = false
 		foreach ( $categories as $category ) {
 			$thelist .= "\n\t<li>";
 			switch ( strtolower( $parents ) ) {
-				case 'multiple':
-					if ( $category->parent ) {
-						$thelist .= get_category_parents( $category->parent, true, $separator );
-					}
-					$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>' . $category->name . '</a></li>';
-					break;
-				case 'single':
-					$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '"  ' . $rel . '>';
-					if ( $category->parent ) {
-						$thelist .= get_category_parents( $category->parent, false, $separator );
-					}
-					$thelist .= $category->name . '</a></li>';
-					break;
-				case '':
-				default:
-					$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>' . $category->name . '</a></li>';
+			case 'multiple':
+				if ( $category->parent ) {
+					$thelist .= get_category_parents( $category->parent, true, $separator );
+				}
+				$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>' . $category->name . '</a></li>';
+				break;
+			case 'single':
+				$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '"  ' . $rel . '>';
+				if ( $category->parent ) {
+					$thelist .= get_category_parents( $category->parent, false, $separator );
+				}
+				$thelist .= $category->name . '</a></li>';
+				break;
+			case '':
+			default:
+				$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>' . $category->name . '</a></li>';
 			}
 		}
 		$thelist .= '</ul>';
@@ -233,22 +233,22 @@ function get_the_category_list( $separator = '', $parents = '', $post_id = false
 				$thelist .= $separator;
 			}
 			switch ( strtolower( $parents ) ) {
-				case 'multiple':
-					if ( $category->parent ) {
-						$thelist .= get_category_parents( $category->parent, true, $separator );
-					}
-					$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>' . $category->name . '</a>';
-					break;
-				case 'single':
-					$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>';
-					if ( $category->parent ) {
-						$thelist .= get_category_parents( $category->parent, false, $separator );
-					}
-					$thelist .= "$category->name</a>";
-					break;
-				case '':
-				default:
-					$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>' . $category->name . '</a>';
+			case 'multiple':
+				if ( $category->parent ) {
+					$thelist .= get_category_parents( $category->parent, true, $separator );
+				}
+				$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>' . $category->name . '</a>';
+				break;
+			case 'single':
+				$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>';
+				if ( $category->parent ) {
+					$thelist .= get_category_parents( $category->parent, false, $separator );
+				}
+				$thelist .= "$category->name</a>";
+				break;
+			case '':
+			default:
+				$thelist .= '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" ' . $rel . '>' . $category->name . '</a>';
 			}
 			++$i;
 		}
@@ -969,17 +969,17 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 	}
 
 	switch ( $args['format'] ) {
-		case 'array' :
-			$return = & $a;
-			break;
-		case 'list' :
-			$return = "<ul class='wp-tag-cloud'>\n\t<li>";
-			$return .= join( "</li>\n\t<li>", $a );
-			$return .= "</li>\n</ul>\n";
-			break;
-		default :
-			$return = join( $args['separator'], $a );
-			break;
+	case 'array' :
+		$return = & $a;
+		break;
+	case 'list' :
+		$return = "<ul class='wp-tag-cloud'>\n\t<li>";
+		$return .= join( "</li>\n\t<li>", $a );
+		$return .= "</li>\n</ul>\n";
+		break;
+	default :
+		$return = join( $args['separator'], $a );
+		break;
 	}
 
 	if ( $args['filter'] ) {

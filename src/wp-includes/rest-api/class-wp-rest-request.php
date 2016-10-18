@@ -423,13 +423,13 @@ class WP_REST_Request implements ArrayAccess {
 	 */
 	public function set_param( $key, $value ) {
 		switch ( $this->method ) {
-			case 'POST':
-				$this->params['POST'][ $key ] = $value;
-				break;
+		case 'POST':
+			$this->params['POST'][ $key ] = $value;
+			break;
 
-			default:
-				$this->params['GET'][ $key ] = $value;
-				break;
+		default:
+			$this->params['GET'][ $key ] = $value;
+			break;
 		}
 	}
 

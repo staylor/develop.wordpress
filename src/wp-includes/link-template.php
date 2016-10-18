@@ -79,14 +79,14 @@ function user_trailingslashit($string, $type_of_url = '') {
 function permalink_anchor( $mode = 'id' ) {
 	$post = get_post();
 	switch ( strtolower( $mode ) ) {
-		case 'title':
-			$title = sanitize_title( $post->post_title ) . '-' . $post->ID;
-			echo '<a id="'.$title.'"></a>';
-			break;
-		case 'id':
-		default:
-			echo '<a id="post-' . $post->ID . '"></a>';
-			break;
+	case 'title':
+		$title = sanitize_title( $post->post_title ) . '-' . $post->ID;
+		echo '<a id="'.$title.'"></a>';
+		break;
+	case 'id':
+	default:
+		echo '<a id="post-' . $post->ID . '"></a>';
+		break;
 	}
 }
 
@@ -995,18 +995,21 @@ function get_edit_term_link( $term_id, $taxonomy = '', $object_type = '' ) {
  * @return string|void HTML content.
  */
 function edit_term_link( $link = '', $before = '', $after = '', $term = null, $echo = true ) {
-	if ( is_null( $term ) )
-		$term = get_queried_object();
+	if ( is_null( $term ) ) {
+			$term = get_queried_object();
+	}
 
-	if ( ! $term )
-		return;
+	if ( ! $term ) {
+			return;
+	}
 
 	if ( ! current_user_can( 'edit_term', $term->term_id ) ) {
 		return;
 	}
 
-	if ( empty( $link ) )
-		$link = __('Edit This');
+	if ( empty( $link ) ) {
+			$link = __('Edit This');
+	}
 
 	$link = '<a href="' . get_edit_term_link( $term->term_id, $term->taxonomy ) . '">' . $link . '</a>';
 
@@ -3964,14 +3967,14 @@ function get_avatar_data( $id_or_email, $args = null ) {
 	}
 
 	switch ( $args['default'] ) {
-		case 'mm' :
-		case 'mystery' :
-		case 'mysteryman' :
-			$args['default'] = 'mm';
-			break;
-		case 'gravatar_default' :
-			$args['default'] = false;
-			break;
+	case 'mm' :
+	case 'mystery' :
+	case 'mysteryman' :
+		$args['default'] = 'mm';
+		break;
+	case 'gravatar_default' :
+		$args['default'] = false;
+		break;
 	}
 
 	$args['force_default'] = (bool) $args['force_default'];

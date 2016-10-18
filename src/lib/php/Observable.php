@@ -26,8 +26,8 @@ abstract class Observable implements \SplSubject {
 			return;
 		}
 
-        foreach ( $this->observers as $observer ) {
-            $observer->update( $this );
-        }
+		foreach ( $this->observers as $observer ) {
+			$observer->update( $this );
+		}
 	}
 }

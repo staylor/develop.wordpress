@@ -264,16 +264,16 @@ class Walker {
 	}
 
 	/**
- 	 * paged_walk() - produce a page of nested elements
- 	 *
- 	 * Given an array of hierarchical elements, the maximum depth, a specific page number,
- 	 * and number of elements per page, this function first determines all top level root elements
- 	 * belonging to that page, then lists them and all of their children in hierarchical order.
- 	 *
+	 * paged_walk() - produce a page of nested elements
+	 *
+	 * Given an array of hierarchical elements, the maximum depth, a specific page number,
+	 * and number of elements per page, this function first determines all top level root elements
+	 * belonging to that page, then lists them and all of their children in hierarchical order.
+	 *
 	 * $max_depth = 0 means display all levels.
 	 * $max_depth > 0 specifies the number of display levels.
 	 *
- 	 * @since 2.7.0
+	 * @since 2.7.0
 	 *
 	 * @param array $elements
 	 * @param int   $max_depth The maximum hierarchical depth.

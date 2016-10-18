@@ -500,22 +500,22 @@ class WP_Comment_Query {
 		if ( ! in_array( 'any', $statuses ) ) {
 			foreach ( $statuses as $status ) {
 				switch ( $status ) {
-					case 'hold' :
-						$status_clauses[] = "comment_approved = '0'";
-						break;
+				case 'hold' :
+					$status_clauses[] = "comment_approved = '0'";
+					break;
 
-					case 'approve' :
-						$status_clauses[] = "comment_approved = '1'";
-						break;
+				case 'approve' :
+					$status_clauses[] = "comment_approved = '1'";
+					break;
 
-					case 'all' :
-					case '' :
-						$status_clauses[] = "( comment_approved = '0' OR comment_approved = '1' )";
-						break;
+				case 'all' :
+				case '' :
+					$status_clauses[] = "( comment_approved = '0' OR comment_approved = '1' )";
+					break;
 
-					default :
-						$status_clauses[] = $wpdb->prepare( "comment_approved = %s", $status );
-						break;
+				default :
+					$status_clauses[] = $wpdb->prepare( "comment_approved = %s", $status );
+					break;
 				}
 			}
 
@@ -718,23 +718,23 @@ class WP_Comment_Query {
 			foreach ( $_raw_types as $type ) {
 				switch ( $type ) {
 					// An empty translates to 'all', for backward compatibility
-					case '':
-					case 'all' :
-						break;
+				case '':
+				case 'all' :
+					break;
 
-					case 'comment':
-					case 'comments':
-						$comment_types[ $operator ][] = "''";
-						break;
+				case 'comment':
+				case 'comments':
+					$comment_types[ $operator ][] = "''";
+					break;
 
-					case 'pings':
-						$comment_types[ $operator ][] = "'pingback'";
-						$comment_types[ $operator ][] = "'trackback'";
-						break;
+				case 'pings':
+					$comment_types[ $operator ][] = "'pingback'";
+					$comment_types[ $operator ][] = "'trackback'";
+					break;
 
-					default:
-						$comment_types[ $operator ][] = $wpdb->prepare( '%s', $type );
-						break;
+				default:
+					$comment_types[ $operator ][] = $wpdb->prepare( '%s', $type );
+					break;
 				}
 			}
 

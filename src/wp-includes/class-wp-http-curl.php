@@ -151,23 +151,23 @@ class WP_Http_Curl {
 		}
 
 		switch ( $r['method'] ) {
-			case 'HEAD':
-				curl_setopt( $handle, CURLOPT_NOBODY, true );
-				break;
-			case 'POST':
-				curl_setopt( $handle, CURLOPT_POST, true );
+		case 'HEAD':
+			curl_setopt( $handle, CURLOPT_NOBODY, true );
+			break;
+		case 'POST':
+			curl_setopt( $handle, CURLOPT_POST, true );
+			curl_setopt( $handle, CURLOPT_POSTFIELDS, $r['body'] );
+			break;
+		case 'PUT':
+			curl_setopt( $handle, CURLOPT_CUSTOMREQUEST, 'PUT' );
+			curl_setopt( $handle, CURLOPT_POSTFIELDS, $r['body'] );
+			break;
+		default:
+			curl_setopt( $handle, CURLOPT_CUSTOMREQUEST, $r['method'] );
+			if ( ! is_null( $r['body'] ) ) {
 				curl_setopt( $handle, CURLOPT_POSTFIELDS, $r['body'] );
-				break;
-			case 'PUT':
-				curl_setopt( $handle, CURLOPT_CUSTOMREQUEST, 'PUT' );
-				curl_setopt( $handle, CURLOPT_POSTFIELDS, $r['body'] );
-				break;
-			default:
-				curl_setopt( $handle, CURLOPT_CUSTOMREQUEST, $r['method'] );
-				if ( ! is_null( $r['body'] ) ) {
-					curl_setopt( $handle, CURLOPT_POSTFIELDS, $r['body'] );
-				}
-				break;
+			}
+			break;
 		}
 
 		if ( true === $r['blocking'] ) {

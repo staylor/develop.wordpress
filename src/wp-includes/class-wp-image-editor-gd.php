@@ -71,12 +71,12 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	public static function supports_mime_type( $mime_type ) {
 		$image_types = imagetypes();
 		switch( $mime_type ) {
-			case 'image/jpeg':
-				return ($image_types & IMG_JPG) != 0;
-			case 'image/png':
-				return ($image_types & IMG_PNG) != 0;
-			case 'image/gif':
-				return ($image_types & IMG_GIF) != 0;
+		case 'image/jpeg':
+			return ($image_types & IMG_JPG) != 0;
+		case 'image/png':
+			return ($image_types & IMG_PNG) != 0;
+		case 'image/gif':
+			return ($image_types & IMG_GIF) != 0;
 		}
 
 		return false;

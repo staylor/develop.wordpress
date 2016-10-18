@@ -322,7 +322,7 @@ class WP_Customize_Section {
 	 * @see Manager::render_template()
 	 */
 	public function print_template() {
-        ?>
+		?>
 		<script type="text/html" id="tmpl-customize-section-<?php echo $this->type; ?>">
 			<?php $this->render_template(); ?>
 		</script>

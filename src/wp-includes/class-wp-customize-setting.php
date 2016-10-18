@@ -317,32 +317,32 @@ class WP_Customize_Setting {
 		}
 
 		switch ( $this->type ) {
-			case 'theme_mod' :
-				if ( ! $is_multidimensional ) {
-					add_filter( "theme_mod_{$id_base}", array( $this, '_preview_filter' ) );
-				} else {
-					if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
-						// Only add this filter once for this ID base.
-						add_filter( "theme_mod_{$id_base}", $multidimensional_filter );
-					}
-					self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
+		case 'theme_mod' :
+			if ( ! $is_multidimensional ) {
+				add_filter( "theme_mod_{$id_base}", array( $this, '_preview_filter' ) );
+			} else {
+				if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
+					// Only add this filter once for this ID base.
+					add_filter( "theme_mod_{$id_base}", $multidimensional_filter );
 				}
-				break;
-			case 'option' :
-				if ( ! $is_multidimensional ) {
-					add_filter( "pre_option_{$id_base}", array( $this, '_preview_filter' ) );
-				} else {
-					if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
-						// Only add these filters once for this ID base.
-						add_filter( "option_{$id_base}", $multidimensional_filter );
-						add_filter( "default_option_{$id_base}", $multidimensional_filter );
-					}
-					self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
+				self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
+			}
+			break;
+		case 'option' :
+			if ( ! $is_multidimensional ) {
+				add_filter( "pre_option_{$id_base}", array( $this, '_preview_filter' ) );
+			} else {
+				if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
+					// Only add these filters once for this ID base.
+					add_filter( "option_{$id_base}", $multidimensional_filter );
+					add_filter( "default_option_{$id_base}", $multidimensional_filter );
 				}
-				break;
-			default :
+				self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
+			}
+			break;
+		default :
 
-				/**
+			/**
 				 * Fires when the WP_Customize_Setting::preview() method is called for settings
 				 * not handled as theme_mods or options.
 				 *
@@ -352,9 +352,9 @@ class WP_Customize_Setting {
 				 *
 				 * @param WP_Customize_Setting $this WP_Customize_Setting instance.
 				 */
-				do_action( "customize_preview_{$this->id}", $this );
+			do_action( "customize_preview_{$this->id}", $this );
 
-				/**
+			/**
 				 * Fires when the WP_Customize_Setting::preview() method is called for settings
 				 * not handled as theme_mods or options.
 				 *
@@ -364,7 +364,7 @@ class WP_Customize_Setting {
 				 *
 				 * @param WP_Customize_Setting $this WP_Customize_Setting instance.
 				 */
-				do_action( "customize_preview_{$this->type}", $this );
+			do_action( "customize_preview_{$this->type}", $this );
 		}
 
 		$this->is_previewed = true;

@@ -640,8 +640,9 @@ function confirm_user_signup($user_name, $user_email) {
  * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
  */
 function signup_blog($user_name = '', $user_email = '', $blogname = '', $blog_title = '', $errors = '') {
-	if ( !is_wp_error($errors) )
-		$errors = new WP_Error();
+	if ( !is_wp_error($errors) ) {
+			$errors = new WP_Error();
+	}
 
 	$signup_blog_defaults = array(
 		'user_name'  => $user_name,
@@ -674,8 +675,9 @@ function signup_blog($user_name = '', $user_email = '', $blogname = '', $blog_ti
 	$blog_title = $filtered_results['blog_title'];
 	$errors = $filtered_results['errors'];
 
-	if ( empty($blogname) )
-		$blogname = $user_name;
+	if ( empty($blogname) ) {
+			$blogname = $user_name;
+	}
 	?>
 	<form id="setupform" method="post" action="wp-signup.php">
 		<input type="hidden" name="stage" value="validate-blog-signup" />
@@ -866,16 +868,18 @@ if ( $active_signup == 'none' ) {
 	$stage = $_post->get( 'stage', 'default' );
 	switch ( $stage ) {
 		case 'validate-user-signup' :
-			if ( $active_signup == 'all' || $_post->get( 'signup_for' ) == 'blog' && $active_signup == 'blog' || $_post->get( 'signup_for' ) == 'user' && $active_signup == 'user' )
-				validate_user_signup();
-			else
-				_e( 'User registration has been disabled.' );
+			if ( $active_signup == 'all' || $_post->get( 'signup_for' ) == 'blog' && $active_signup == 'blog' || $_post->get( 'signup_for' ) == 'user' && $active_signup == 'user' ) {
+							validate_user_signup();
+			} else {
+							_e( 'User registration has been disabled.' );
+			}
 		break;
 		case 'validate-blog-signup':
-			if ( $active_signup == 'all' || $active_signup == 'blog' )
-				validate_blog_signup();
-			else
-				_e( 'Site registration has been disabled.' );
+			if ( $active_signup == 'all' || $active_signup == 'blog' ) {
+							validate_blog_signup();
+			} else {
+							_e( 'Site registration has been disabled.' );
+			}
 			break;
 		case 'gimmeanotherblog':
 			validate_another_blog_signup();

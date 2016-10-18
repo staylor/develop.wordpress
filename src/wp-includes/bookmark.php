@@ -244,28 +244,28 @@ function get_bookmarks( $args = '' ) {
 	$orderby = strtolower( $r['orderby'] );
 	$length = '';
 	switch ( $orderby ) {
-		case 'length':
-			$length = ", CHAR_LENGTH(link_name) AS length";
-			break;
-		case 'rand':
-			$orderby = 'rand()';
-			break;
-		case 'link_id':
-			$orderby = "$wpdb->links.link_id";
-			break;
-		default:
-			$orderparams = [];
-			$keys = array( 'link_id', 'link_name', 'link_url', 'link_visible', 'link_rating', 'link_owner', 'link_updated', 'link_notes', 'link_description' );
-			foreach ( explode( ',', $orderby ) as $ordparam ) {
-				$ordparam = trim( $ordparam );
+	case 'length':
+		$length = ", CHAR_LENGTH(link_name) AS length";
+		break;
+	case 'rand':
+		$orderby = 'rand()';
+		break;
+	case 'link_id':
+		$orderby = "$wpdb->links.link_id";
+		break;
+	default:
+		$orderparams = [];
+		$keys = array( 'link_id', 'link_name', 'link_url', 'link_visible', 'link_rating', 'link_owner', 'link_updated', 'link_notes', 'link_description' );
+		foreach ( explode( ',', $orderby ) as $ordparam ) {
+			$ordparam = trim( $ordparam );
 
-				if ( in_array( 'link_' . $ordparam, $keys ) ) {
-					$orderparams[] = 'link_' . $ordparam;
-				} elseif ( in_array( $ordparam, $keys ) ) {
-					$orderparams[] = $ordparam;
-				}
+			if ( in_array( 'link_' . $ordparam, $keys ) ) {
+				$orderparams[] = 'link_' . $ordparam;
+			} elseif ( in_array( $ordparam, $keys ) ) {
+				$orderparams[] = $ordparam;
 			}
-			$orderby = implode( ',', $orderparams );
+		}
+		$orderby = implode( ',', $orderparams );
 	}
 
 	if ( empty( $orderby ) ) {

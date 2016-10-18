@@ -233,19 +233,19 @@ final class WP_Site {
 	 */
 	public function __get( $key ) {
 		switch ( $key ) {
-			case 'id':
-				return (int) $this->blog_id;
-			case 'network_id':
-				return (int) $this->site_id;
-			case 'blogname':
-			case 'siteurl':
-			case 'post_count':
-			case 'home':
-				if ( ! did_action( 'ms_loaded' ) ) {
-					return null;
-				}
-				$details = $this->get_details();
-				return $details->$key;
+		case 'id':
+			return (int) $this->blog_id;
+		case 'network_id':
+			return (int) $this->site_id;
+		case 'blogname':
+		case 'siteurl':
+		case 'post_count':
+		case 'home':
+			if ( ! did_action( 'ms_loaded' ) ) {
+				return null;
+			}
+			$details = $this->get_details();
+			return $details->$key;
 		}
 
 		return null;
@@ -265,15 +265,15 @@ final class WP_Site {
 	 */
 	public function __isset( $key ) {
 		switch ( $key ) {
-			case 'id':
-			case 'network_id':
-				return true;
+		case 'id':
+		case 'network_id':
+			return true;
 
-			case 'blogname':
-			case 'siteurl':
-			case 'post_count':
-			case 'home':
-				return (bool) did_action( 'ms_loaded' );
+		case 'blogname':
+		case 'siteurl':
+		case 'post_count':
+		case 'home':
+			return (bool) did_action( 'ms_loaded' );
 		}
 
 		return false;
@@ -292,14 +292,14 @@ final class WP_Site {
 	 */
 	public function __set( $key, $value ) {
 		switch ( $key ) {
-			case 'id':
-				$this->blog_id = (string) $value;
-				break;
-			case 'network_id':
-				$this->site_id = (string) $value;
-				break;
-			default:
-				$this->$key = $value;
+		case 'id':
+			$this->blog_id = (string) $value;
+			break;
+		case 'network_id':
+			$this->site_id = (string) $value;
+			break;
+		default:
+			$this->$key = $value;
 		}
 	}
 

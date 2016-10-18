@@ -724,7 +724,7 @@ final class WP_Theme implements ArrayAccess {
 	/**
 	 * Mark up a theme header.
 	 *
-     * @since 3.4.0
+	 * @since 3.4.0
 	 * @access private
 	 *
 	 * @staticvar string $comma

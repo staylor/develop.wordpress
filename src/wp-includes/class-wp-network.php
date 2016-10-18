@@ -155,12 +155,12 @@ class WP_Network {
 	 */
 	public function __get( $key ) {
 		switch ( $key ) {
-			case 'id';
-				return (int) $this->id;
-			case 'blog_id':
-				return $this->blog_id;
-			case 'site_id':
-				return (int) $this->blog_id;
+		case 'id';
+			return (int) $this->id;
+		case 'blog_id':
+			return $this->blog_id;
+		case 'site_id':
+			return (int) $this->blog_id;
 		}
 
 		return null;
@@ -179,10 +179,10 @@ class WP_Network {
 	 */
 	public function __isset( $key ) {
 		switch ( $key ) {
-			case 'id':
-			case 'blog_id':
-			case 'site_id':
-				return true;
+		case 'id':
+		case 'blog_id':
+		case 'site_id':
+			return true;
 		}
 
 		return false;
@@ -201,15 +201,15 @@ class WP_Network {
 	 */
 	public function __set( $key, $value ) {
 		switch ( $key ) {
-			case 'id':
-				$this->id = (int) $value;
-				break;
-			case 'blog_id':
-			case 'site_id':
-				$this->blog_id = (string) $value;
-				break;
-			default:
-				$this->$key = $value;
+		case 'id':
+			$this->id = (int) $value;
+			break;
+		case 'blog_id':
+		case 'site_id':
+			$this->blog_id = (string) $value;
+			break;
+		default:
+			$this->$key = $value;
 		}
 	}
 

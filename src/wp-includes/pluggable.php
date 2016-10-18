@@ -253,54 +253,54 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 
 				switch ( strtolower( $name ) ) {
 					// Mainly for legacy -- process a From: header if it's there
-					case 'from':
-						$bracket_pos = strpos( $content, '<' );
-						if ( $bracket_pos !== false ) {
-							// Text before the bracketed email is the "From" name.
-							if ( $bracket_pos > 0 ) {
-								$from_name = substr( $content, 0, $bracket_pos - 1 );
-								$from_name = str_replace( '"', '', $from_name );
-								$from_name = trim( $from_name );
-							}
-
-							$from_email = substr( $content, $bracket_pos + 1 );
-							$from_email = str_replace( '>', '', $from_email );
-							$from_email = trim( $from_email );
-
-						// Avoid setting an empty $from_email.
-						} elseif ( '' !== trim( $content ) ) {
-							$from_email = trim( $content );
+				case 'from':
+					$bracket_pos = strpos( $content, '<' );
+					if ( $bracket_pos !== false ) {
+						// Text before the bracketed email is the "From" name.
+						if ( $bracket_pos > 0 ) {
+							$from_name = substr( $content, 0, $bracket_pos - 1 );
+							$from_name = str_replace( '"', '', $from_name );
+							$from_name = trim( $from_name );
 						}
-						break;
-					case 'content-type':
-						if ( strpos( $content, ';' ) !== false ) {
-							list( $type, $charset_content ) = explode( ';', $content );
-							$content_type = trim( $type );
-							if ( false !== stripos( $charset_content, 'charset=' ) ) {
-								$charset = trim( str_replace( array( 'charset=', '"' ), '', $charset_content ) );
-							} elseif ( false !== stripos( $charset_content, 'boundary=' ) ) {
-								$boundary = trim( str_replace( array( 'BOUNDARY=', 'boundary=', '"' ), '', $charset_content ) );
-								$charset = '';
-							}
 
-						// Avoid setting an empty $content_type.
-						} elseif ( '' !== trim( $content ) ) {
-							$content_type = trim( $content );
+						$from_email = substr( $content, $bracket_pos + 1 );
+						$from_email = str_replace( '>', '', $from_email );
+						$from_email = trim( $from_email );
+
+					// Avoid setting an empty $from_email.
+					} elseif ( '' !== trim( $content ) ) {
+						$from_email = trim( $content );
+					}
+					break;
+				case 'content-type':
+					if ( strpos( $content, ';' ) !== false ) {
+						list( $type, $charset_content ) = explode( ';', $content );
+						$content_type = trim( $type );
+						if ( false !== stripos( $charset_content, 'charset=' ) ) {
+							$charset = trim( str_replace( array( 'charset=', '"' ), '', $charset_content ) );
+						} elseif ( false !== stripos( $charset_content, 'boundary=' ) ) {
+							$boundary = trim( str_replace( array( 'BOUNDARY=', 'boundary=', '"' ), '', $charset_content ) );
+							$charset = '';
 						}
-						break;
-					case 'cc':
-						$cc = array_merge( (array) $cc, explode( ',', $content ) );
-						break;
-					case 'bcc':
-						$bcc = array_merge( (array) $bcc, explode( ',', $content ) );
-						break;
-					case 'reply-to':
-						$reply_to = array_merge( (array) $reply_to, explode( ',', $content ) );
-						break;
-					default:
-						// Add it to our grand headers array
-						$headers[trim( $name )] = trim( $content );
-						break;
+
+					// Avoid setting an empty $content_type.
+					} elseif ( '' !== trim( $content ) ) {
+						$content_type = trim( $content );
+					}
+					break;
+				case 'cc':
+					$cc = array_merge( (array) $cc, explode( ',', $content ) );
+					break;
+				case 'bcc':
+					$bcc = array_merge( (array) $bcc, explode( ',', $content ) );
+					break;
+				case 'reply-to':
+					$reply_to = array_merge( (array) $reply_to, explode( ',', $content ) );
+					break;
+				default:
+					// Add it to our grand headers array
+					$headers[trim( $name )] = trim( $content );
+					break;
 				}
 			}
 		}
@@ -385,18 +385,18 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 				}
 
 				switch ( $address_header ) {
-					case 'to':
-						$phpmailer->addAddress( $address, $recipient_name );
-						break;
-					case 'cc':
-						$phpmailer->addCc( $address, $recipient_name );
-						break;
-					case 'bcc':
-						$phpmailer->addBcc( $address, $recipient_name );
-						break;
-					case 'reply_to':
-						$phpmailer->addReplyTo( $address, $recipient_name );
-						break;
+				case 'to':
+					$phpmailer->addAddress( $address, $recipient_name );
+					break;
+				case 'cc':
+					$phpmailer->addCc( $address, $recipient_name );
+					break;
+				case 'bcc':
+					$phpmailer->addBcc( $address, $recipient_name );
+					break;
+				case 'reply_to':
+					$phpmailer->addReplyTo( $address, $recipient_name );
+					break;
 				}
 			} catch ( phpmailerException $e ) {
 				continue;
@@ -1439,37 +1439,37 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 	$comment_content = wp_specialchars_decode( $comment->comment_content );
 
 	switch ( $comment->comment_type ) {
-		case 'trackback':
-			$notify_message  = sprintf( __( 'New trackback on your post "%s"' ), $post->post_title ) . "\r\n";
-			/* translators: 1: website name, 2: website IP, 3: website hostname */
-			$notify_message .= sprintf( __('Website: %1$s (IP: %2$s, %3$s)'), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-			$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-			$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
-			$notify_message .= __( 'You can see all trackbacks on this post here:' ) . "\r\n";
-			/* translators: 1: blog name, 2: post title */
-			$subject = sprintf( __('[%1$s] Trackback: "%2$s"'), $blogname, $post->post_title );
-			break;
-		case 'pingback':
-			$notify_message  = sprintf( __( 'New pingback on your post "%s"' ), $post->post_title ) . "\r\n";
-			/* translators: 1: website name, 2: website IP, 3: website hostname */
-			$notify_message .= sprintf( __('Website: %1$s (IP: %2$s, %3$s)'), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-			$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-			$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
-			$notify_message .= __( 'You can see all pingbacks on this post here:' ) . "\r\n";
-			/* translators: 1: blog name, 2: post title */
-			$subject = sprintf( __('[%1$s] Pingback: "%2$s"'), $blogname, $post->post_title );
-			break;
-		default: // Comments
-			$notify_message  = sprintf( __( 'New comment on your post "%s"' ), $post->post_title ) . "\r\n";
-			/* translators: 1: comment author, 2: author IP, 3: author domain */
-			$notify_message .= sprintf( __( 'Author: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-			$notify_message .= sprintf( __( 'Email: %s' ), $comment->comment_author_email ) . "\r\n";
-			$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-			$notify_message .= sprintf( __('Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
-			$notify_message .= __( 'You can see all comments on this post here:' ) . "\r\n";
-			/* translators: 1: blog name, 2: post title */
-			$subject = sprintf( __('[%1$s] Comment: "%2$s"'), $blogname, $post->post_title );
-			break;
+	case 'trackback':
+		$notify_message  = sprintf( __( 'New trackback on your post "%s"' ), $post->post_title ) . "\r\n";
+		/* translators: 1: website name, 2: website IP, 3: website hostname */
+		$notify_message .= sprintf( __('Website: %1$s (IP: %2$s, %3$s)'), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
+		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
+		$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
+		$notify_message .= __( 'You can see all trackbacks on this post here:' ) . "\r\n";
+		/* translators: 1: blog name, 2: post title */
+		$subject = sprintf( __('[%1$s] Trackback: "%2$s"'), $blogname, $post->post_title );
+		break;
+	case 'pingback':
+		$notify_message  = sprintf( __( 'New pingback on your post "%s"' ), $post->post_title ) . "\r\n";
+		/* translators: 1: website name, 2: website IP, 3: website hostname */
+		$notify_message .= sprintf( __('Website: %1$s (IP: %2$s, %3$s)'), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
+		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
+		$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
+		$notify_message .= __( 'You can see all pingbacks on this post here:' ) . "\r\n";
+		/* translators: 1: blog name, 2: post title */
+		$subject = sprintf( __('[%1$s] Pingback: "%2$s"'), $blogname, $post->post_title );
+		break;
+	default: // Comments
+		$notify_message  = sprintf( __( 'New comment on your post "%s"' ), $post->post_title ) . "\r\n";
+		/* translators: 1: comment author, 2: author IP, 3: author domain */
+		$notify_message .= sprintf( __( 'Author: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
+		$notify_message .= sprintf( __( 'Email: %s' ), $comment->comment_author_email ) . "\r\n";
+		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
+		$notify_message .= sprintf( __('Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
+		$notify_message .= __( 'You can see all comments on this post here:' ) . "\r\n";
+		/* translators: 1: blog name, 2: post title */
+		$subject = sprintf( __('[%1$s] Comment: "%2$s"'), $blogname, $post->post_title );
+		break;
 	}
 	$notify_message .= get_permalink($comment->comment_post_ID) . "#comments\r\n\r\n";
 	$notify_message .= sprintf( __('Permalink: %s'), get_comment_link( $comment ) ) . "\r\n";
@@ -1595,30 +1595,30 @@ function wp_notify_moderator($comment_id) {
 	$comment_content = wp_specialchars_decode( $comment->comment_content );
 
 	switch ( $comment->comment_type ) {
-		case 'trackback':
-			$notify_message  = sprintf( __('A new trackback on the post "%s" is waiting for your approval'), $post->post_title ) . "\r\n";
-			$notify_message .= get_permalink($comment->comment_post_ID) . "\r\n\r\n";
-			/* translators: 1: website name, 2: website IP, 3: website hostname */
-			$notify_message .= sprintf( __( 'Website: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-			$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-			$notify_message .= __('Trackback excerpt: ') . "\r\n" . $comment_content . "\r\n\r\n";
-			break;
-		case 'pingback':
-			$notify_message  = sprintf( __('A new pingback on the post "%s" is waiting for your approval'), $post->post_title ) . "\r\n";
-			$notify_message .= get_permalink($comment->comment_post_ID) . "\r\n\r\n";
-			/* translators: 1: website name, 2: website IP, 3: website hostname */
-			$notify_message .= sprintf( __( 'Website: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-			$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-			$notify_message .= __('Pingback excerpt: ') . "\r\n" . $comment_content . "\r\n\r\n";
-			break;
-		default: // Comments
-			$notify_message  = sprintf( __('A new comment on the post "%s" is waiting for your approval'), $post->post_title ) . "\r\n";
-			$notify_message .= get_permalink($comment->comment_post_ID) . "\r\n\r\n";
-			$notify_message .= sprintf( __( 'Author: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-			$notify_message .= sprintf( __( 'Email: %s' ), $comment->comment_author_email ) . "\r\n";
-			$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-			$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
-			break;
+	case 'trackback':
+		$notify_message  = sprintf( __('A new trackback on the post "%s" is waiting for your approval'), $post->post_title ) . "\r\n";
+		$notify_message .= get_permalink($comment->comment_post_ID) . "\r\n\r\n";
+		/* translators: 1: website name, 2: website IP, 3: website hostname */
+		$notify_message .= sprintf( __( 'Website: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
+		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
+		$notify_message .= __('Trackback excerpt: ') . "\r\n" . $comment_content . "\r\n\r\n";
+		break;
+	case 'pingback':
+		$notify_message  = sprintf( __('A new pingback on the post "%s" is waiting for your approval'), $post->post_title ) . "\r\n";
+		$notify_message .= get_permalink($comment->comment_post_ID) . "\r\n\r\n";
+		/* translators: 1: website name, 2: website IP, 3: website hostname */
+		$notify_message .= sprintf( __( 'Website: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
+		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
+		$notify_message .= __('Pingback excerpt: ') . "\r\n" . $comment_content . "\r\n\r\n";
+		break;
+	default: // Comments
+		$notify_message  = sprintf( __('A new comment on the post "%s" is waiting for your approval'), $post->post_title ) . "\r\n";
+		$notify_message .= get_permalink($comment->comment_post_ID) . "\r\n\r\n";
+		$notify_message .= sprintf( __( 'Author: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
+		$notify_message .= sprintf( __( 'Email: %s' ), $comment->comment_author_email ) . "\r\n";
+		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
+		$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
+		break;
 	}
 
 	$notify_message .= sprintf( __( 'Approve it: %s' ), admin_url( "comment.php?action=approve&c={$comment_id}#wpbody-content" ) ) . "\r\n";

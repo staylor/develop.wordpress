@@ -640,29 +640,29 @@ function wp_kses_allowed_html( $context = '' ) {
 	}
 
 	switch ( $context ) {
-		case 'post':
-			/** This filter is documented in wp-includes/kses.php */
-			return apply_filters( 'wp_kses_allowed_html', $allowedposttags, $context );
+	case 'post':
+		/** This filter is documented in wp-includes/kses.php */
+		return apply_filters( 'wp_kses_allowed_html', $allowedposttags, $context );
 
-		case 'user_description':
-		case 'pre_user_description':
-			$tags = $allowedtags;
-			$tags['a']['rel'] = true;
-			/** This filter is documented in wp-includes/kses.php */
-			return apply_filters( 'wp_kses_allowed_html', $tags, $context );
+	case 'user_description':
+	case 'pre_user_description':
+		$tags = $allowedtags;
+		$tags['a']['rel'] = true;
+		/** This filter is documented in wp-includes/kses.php */
+		return apply_filters( 'wp_kses_allowed_html', $tags, $context );
 
-		case 'strip':
-			/** This filter is documented in wp-includes/kses.php */
-			return apply_filters( 'wp_kses_allowed_html', [], $context );
+	case 'strip':
+		/** This filter is documented in wp-includes/kses.php */
+		return apply_filters( 'wp_kses_allowed_html', [], $context );
 
-		case 'entities':
-			/** This filter is documented in wp-includes/kses.php */
-			return apply_filters( 'wp_kses_allowed_html', $allowedentitynames, $context);
+	case 'entities':
+		/** This filter is documented in wp-includes/kses.php */
+		return apply_filters( 'wp_kses_allowed_html', $allowedentitynames, $context);
 
-		case 'data':
-		default:
-			/** This filter is documented in wp-includes/kses.php */
-			return apply_filters( 'wp_kses_allowed_html', $allowedtags, $context );
+	case 'data':
+	default:
+		/** This filter is documented in wp-includes/kses.php */
+		return apply_filters( 'wp_kses_allowed_html', $allowedtags, $context );
 	}
 }
 
@@ -926,99 +926,99 @@ function wp_kses_hair($attr, $allowed_protocols) {
 		$working = 0; // Was the last operation successful?
 
 		switch ($mode) {
-			case 0 : // attribute name, href for instance
+		case 0 : // attribute name, href for instance
 
-				if ( preg_match('/^([-a-zA-Z:]+)/', $attr, $match ) ) {
-					$attrname = $match[1];
-					$working = $mode = 1;
-					$attr = preg_replace( '/^[-a-zA-Z:]+/', '', $attr );
-				}
+			if ( preg_match('/^([-a-zA-Z:]+)/', $attr, $match ) ) {
+				$attrname = $match[1];
+				$working = $mode = 1;
+				$attr = preg_replace( '/^[-a-zA-Z:]+/', '', $attr );
+			}
 
+			break;
+
+		case 1 : // equals sign or valueless ("selected")
+
+			if (preg_match('/^\s*=\s*/', $attr)) {
+				// equals sign
+				{
+				$working = 1;
+			}
+				$mode = 2;
+				$attr = preg_replace('/^\s*=\s*/', '', $attr);
 				break;
+			}
 
-			case 1 : // equals sign or valueless ("selected")
+			if (preg_match('/^\s+/', $attr)) {
+				// valueless
+				{
+				$working = 1;
+			}
+				$mode = 0;
+				if(false === array_key_exists($attrname, $attrarr)) {
+					$attrarr[$attrname] = array ('name' => $attrname, 'value' => '', 'whole' => $attrname, 'vless' => 'y');
+				}
+				$attr = preg_replace('/^\s+/', '', $attr);
+			}
 
-				if (preg_match('/^\s*=\s*/', $attr)) {
-					// equals sign
-					{
-					$working = 1;
-				}
-					$mode = 2;
-					$attr = preg_replace('/^\s*=\s*/', '', $attr);
-					break;
+			break;
+
+		case 2 : // attribute value, a URL after href= for instance
+
+			if (preg_match('%^"([^"]*)"(\s+|/?$)%', $attr, $match)) {
+								// "value"
+				{
+				$thisval = $match[1];
+			}
+				if ( in_array(strtolower($attrname), $uris) ) {
+										$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
 				}
 
-				if (preg_match('/^\s+/', $attr)) {
-					// valueless
-					{
-					$working = 1;
+				if(false === array_key_exists($attrname, $attrarr)) {
+					$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname=\"$thisval\"", 'vless' => 'n');
 				}
-					$mode = 0;
-					if(false === array_key_exists($attrname, $attrarr)) {
-						$attrarr[$attrname] = array ('name' => $attrname, 'value' => '', 'whole' => $attrname, 'vless' => 'y');
-					}
-					$attr = preg_replace('/^\s+/', '', $attr);
-				}
-
+				$working = 1;
+				$mode = 0;
+				$attr = preg_replace('/^"[^"]*"(\s+|$)/', '', $attr);
 				break;
+			}
 
-			case 2 : // attribute value, a URL after href= for instance
-
-				if (preg_match('%^"([^"]*)"(\s+|/?$)%', $attr, $match)) {
-									// "value"
-					{
-					$thisval = $match[1];
-				}
-					if ( in_array(strtolower($attrname), $uris) ) {
-											$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
-					}
-
-					if(false === array_key_exists($attrname, $attrarr)) {
-						$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname=\"$thisval\"", 'vless' => 'n');
-					}
-					$working = 1;
-					$mode = 0;
-					$attr = preg_replace('/^"[^"]*"(\s+|$)/', '', $attr);
-					break;
+			if (preg_match("%^'([^']*)'(\s+|/?$)%", $attr, $match)) {
+								// 'value'
+				{
+				$thisval = $match[1];
+			}
+				if ( in_array(strtolower($attrname), $uris) ) {
+										$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
 				}
 
-				if (preg_match("%^'([^']*)'(\s+|/?$)%", $attr, $match)) {
-									// 'value'
-					{
-					$thisval = $match[1];
+				if(false === array_key_exists($attrname, $attrarr)) {
+					$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname='$thisval'", 'vless' => 'n');
 				}
-					if ( in_array(strtolower($attrname), $uris) ) {
-											$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
-					}
-
-					if(false === array_key_exists($attrname, $attrarr)) {
-						$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname='$thisval'", 'vless' => 'n');
-					}
-					$working = 1;
-					$mode = 0;
-					$attr = preg_replace("/^'[^']*'(\s+|$)/", '', $attr);
-					break;
-				}
-
-				if (preg_match("%^([^\s\"']+)(\s+|/?$)%", $attr, $match)) {
-									// value
-					{
-					$thisval = $match[1];
-				}
-					if ( in_array(strtolower($attrname), $uris) ) {
-											$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
-					}
-
-					if(false === array_key_exists($attrname, $attrarr)) {
-						$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname=\"$thisval\"", 'vless' => 'n');
-					}
-					// We add quotes to conform to W3C's HTML spec.
-					$working = 1;
-					$mode = 0;
-					$attr = preg_replace("%^[^\s\"']+(\s+|$)%", '', $attr);
-				}
-
+				$working = 1;
+				$mode = 0;
+				$attr = preg_replace("/^'[^']*'(\s+|$)/", '', $attr);
 				break;
+			}
+
+			if (preg_match("%^([^\s\"']+)(\s+|/?$)%", $attr, $match)) {
+								// value
+				{
+				$thisval = $match[1];
+			}
+				if ( in_array(strtolower($attrname), $uris) ) {
+										$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
+				}
+
+				if(false === array_key_exists($attrname, $attrarr)) {
+					$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname=\"$thisval\"", 'vless' => 'n');
+				}
+				// We add quotes to conform to W3C's HTML spec.
+				$working = 1;
+				$mode = 0;
+				$attr = preg_replace("%^[^\s\"']+(\s+|$)%", '', $attr);
+			}
+
+			break;
 		} // switch
 
 		if ($working == 0) {
@@ -1160,62 +1160,62 @@ function wp_kses_check_attr_val($value, $vless, $checkname, $checkvalue) {
 	$ok = true;
 
 	switch (strtolower($checkname)) {
-		case 'maxlen' :
-			// The maxlen check makes sure that the attribute value has a length not
-			// greater than the given value. This can be used to avoid Buffer Overflows
-			// in WWW clients and various Internet servers.
+	case 'maxlen' :
+		// The maxlen check makes sure that the attribute value has a length not
+		// greater than the given value. This can be used to avoid Buffer Overflows
+		// in WWW clients and various Internet servers.
 
-			if (strlen($value) > $checkvalue) {
-							$ok = false;
-			}
-			break;
+		if (strlen($value) > $checkvalue) {
+						$ok = false;
+		}
+		break;
 
-		case 'minlen' :
-			// The minlen check makes sure that the attribute value has a length not
-			// smaller than the given value.
+	case 'minlen' :
+		// The minlen check makes sure that the attribute value has a length not
+		// smaller than the given value.
 
-			if (strlen($value) < $checkvalue) {
-							$ok = false;
-			}
-			break;
+		if (strlen($value) < $checkvalue) {
+						$ok = false;
+		}
+		break;
 
-		case 'maxval' :
-			// The maxval check does two things: it checks that the attribute value is
-			// an integer from 0 and up, without an excessive amount of zeroes or
-			// whitespace (to avoid Buffer Overflows). It also checks that the attribute
-			// value is not greater than the given value.
-			// This check can be used to avoid Denial of Service attacks.
+	case 'maxval' :
+		// The maxval check does two things: it checks that the attribute value is
+		// an integer from 0 and up, without an excessive amount of zeroes or
+		// whitespace (to avoid Buffer Overflows). It also checks that the attribute
+		// value is not greater than the given value.
+		// This check can be used to avoid Denial of Service attacks.
 
-			if (!preg_match('/^\s{0,6}[0-9]{1,6}\s{0,6}$/', $value)) {
-							$ok = false;
-			}
-			if ($value > $checkvalue) {
-							$ok = false;
-			}
-			break;
+		if (!preg_match('/^\s{0,6}[0-9]{1,6}\s{0,6}$/', $value)) {
+						$ok = false;
+		}
+		if ($value > $checkvalue) {
+						$ok = false;
+		}
+		break;
 
-		case 'minval' :
-			// The minval check makes sure that the attribute value is a positive integer,
-			// and that it is not smaller than the given value.
+	case 'minval' :
+		// The minval check makes sure that the attribute value is a positive integer,
+		// and that it is not smaller than the given value.
 
-			if (!preg_match('/^\s{0,6}[0-9]{1,6}\s{0,6}$/', $value)) {
-							$ok = false;
-			}
-			if ($value < $checkvalue) {
-							$ok = false;
-			}
-			break;
+		if (!preg_match('/^\s{0,6}[0-9]{1,6}\s{0,6}$/', $value)) {
+						$ok = false;
+		}
+		if ($value < $checkvalue) {
+						$ok = false;
+		}
+		break;
 
-		case 'valueless' :
-			// The valueless check makes sure if the attribute has a value
-			// (like <a href="blah">) or not (<option selected>). If the given value
-			// is a "y" or a "Y", the attribute must not have a value.
-			// If the given value is an "n" or an "N", the attribute must have one.
+	case 'valueless' :
+		// The valueless check makes sure if the attribute has a value
+		// (like <a href="blah">) or not (<option selected>). If the given value
+		// is a "y" or a "Y", the attribute must not have a value.
+		// If the given value is an "n" or an "N", the attribute must have one.
 
-			if (strtolower($checkvalue) != $vless) {
-							$ok = false;
-			}
-			break;
+		if (strtolower($checkvalue) != $vless) {
+						$ok = false;
+		}
+		break;
 	} // switch
 
 	return $ok;
