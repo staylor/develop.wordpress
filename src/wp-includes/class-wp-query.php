@@ -1851,14 +1851,14 @@ class WP_Query {
 		}
 
 		switch ( $q['fields'] ) {
-			case 'ids':
-				$fields = "{$wpdb->posts}.ID";
-				break;
-			case 'id=>parent':
-				$fields = "{$wpdb->posts}.ID, {$wpdb->posts}.post_parent";
-				break;
-			default:
-				$fields = "{$wpdb->posts}.*";
+		case 'ids':
+			$fields = "{$wpdb->posts}.ID";
+			break;
+		case 'id=>parent':
+			$fields = "{$wpdb->posts}.ID, {$wpdb->posts}.post_parent";
+			break;
+		default:
+			$fields = "{$wpdb->posts}.*";
 		}
 
 		if ( '' !== $q['menu_order'] ) {

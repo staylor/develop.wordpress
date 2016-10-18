@@ -454,7 +454,7 @@ class WP_Customize_Control {
 	 * @since 3.4.0
 	 */
 	protected function render_content() {
-		switch( $this->type ) {
+		switch ( $this->type ) {
 		case 'checkbox':
 			?>
 				<label>
@@ -473,12 +473,12 @@ class WP_Customize_Control {
 
 			$name = '_customize-radio-' . $this->id;
 
-			if ( ! empty( $this->label ) ) : ?>
+			if ( ! empty( $this->label ) ) { ?>
 					<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-				<?php endif;
-			if ( ! empty( $this->description ) ) : ?>
-					<span class="description customize-control-description"><?php echo $this->description ; ?></span>
-				<?php endif;
+			<?php }
+			if ( ! empty( $this->description ) ) { ?>
+					<span class="description customize-control-description"><?php echo $this->description; ?></span>
+			<?php }
 
 			foreach ( $this->choices as $value => $label ) :
 				?>

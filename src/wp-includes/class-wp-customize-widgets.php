@@ -101,26 +101,26 @@ final class WP_Customize_Widgets {
 			return;
 		}
 
-		add_filter( 'customize_dynamic_setting_args',          array( $this, 'filter_customize_dynamic_setting_args' ), 10, 2 );
-		add_action( 'widgets_init',                            array( $this, 'register_settings' ), 95 );
-		add_action( 'wp_loaded',                               array( $this, 'override_sidebars_widgets_for_theme_switch' ) );
-		add_action( 'customize_controls_init',                 array( $this, 'customize_controls_init' ) );
-		add_action( 'customize_register',                      array( $this, 'schedule_customize_register' ), 1 );
-		add_action( 'customize_controls_enqueue_scripts',      array( $this, 'enqueue_scripts' ) );
-		add_action( 'customize_controls_print_styles',         array( $this, 'print_styles' ) );
-		add_action( 'customize_controls_print_scripts',        array( $this, 'print_scripts' ) );
+		add_filter( 'customize_dynamic_setting_args', array( $this, 'filter_customize_dynamic_setting_args' ), 10, 2 );
+		add_action( 'widgets_init', array( $this, 'register_settings' ), 95 );
+		add_action( 'wp_loaded', array( $this, 'override_sidebars_widgets_for_theme_switch' ) );
+		add_action( 'customize_controls_init', array( $this, 'customize_controls_init' ) );
+		add_action( 'customize_register', array( $this, 'schedule_customize_register' ), 1 );
+		add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'customize_controls_print_styles', array( $this, 'print_styles' ) );
+		add_action( 'customize_controls_print_scripts', array( $this, 'print_scripts' ) );
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_footer_scripts' ) );
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'output_widget_control_templates' ) );
-		add_action( 'customize_preview_init',                  array( $this, 'customize_preview_init' ) );
-		add_filter( 'customize_refresh_nonces',                array( $this, 'refresh_nonces' ) );
+		add_action( 'customize_preview_init', array( $this, 'customize_preview_init' ) );
+		add_filter( 'customize_refresh_nonces', array( $this, 'refresh_nonces' ) );
 
-		add_action( 'dynamic_sidebar',                         array( $this, 'tally_rendered_widgets' ) );
-		add_filter( 'is_active_sidebar',                       array( $this, 'tally_sidebars_via_is_active_sidebar_calls' ), 10, 2 );
-		add_filter( 'dynamic_sidebar_has_widgets',             array( $this, 'tally_sidebars_via_dynamic_sidebar_calls' ), 10, 2 );
+		add_action( 'dynamic_sidebar', array( $this, 'tally_rendered_widgets' ) );
+		add_filter( 'is_active_sidebar', array( $this, 'tally_sidebars_via_is_active_sidebar_calls' ), 10, 2 );
+		add_filter( 'dynamic_sidebar_has_widgets', array( $this, 'tally_sidebars_via_dynamic_sidebar_calls' ), 10, 2 );
 
 		// Selective Refresh.
-		add_filter( 'customize_dynamic_partial_args',          array( $this, 'customize_dynamic_partial_args' ), 10, 2 );
-		add_action( 'customize_preview_init',                  array( $this, 'selective_refresh_init' ) );
+		add_filter( 'customize_dynamic_partial_args', array( $this, 'customize_dynamic_partial_args' ), 10, 2 );
+		add_action( 'customize_preview_init', array( $this, 'selective_refresh_init' ) );
 	}
 
 	/**
@@ -143,7 +143,7 @@ final class WP_Customize_Widgets {
 		if ( ! isset( $this->selective_refreshable_widgets ) ) {
 			$this->selective_refreshable_widgets = [];
 			foreach ( $app['widget_factory']->widgets as $wp_widget ) {
-				$this->selective_refreshable_widgets[ $wp_widget->id_base ] = ! empty( $wp_widget->widget_options['customize_selective_refresh'] );
+				$this->selective_refreshable_widgets[ $wp_widget->id_base ] = ! empty( $wp_widget->widget_options[ 'customize_selective_refresh' ] );
 			}
 		}
 		return $this->selective_refreshable_widgets;
@@ -437,7 +437,7 @@ final class WP_Customize_Widgets {
 				$setting_args = $this->get_setting_args( $setting_id );
 				if ( ! $this->manager->get_setting( $setting_id ) ) {
 					if ( ! $this->manager->is_theme_active() ) {
-						$setting_args['dirty'] = true;
+						$setting_args[ 'dirty' ] = true;
 					}
 					$this->manager->add_setting( $setting_id, $setting_args );
 				}
@@ -484,13 +484,13 @@ final class WP_Customize_Widgets {
 			foreach ( $sidebar_widget_ids as $i => $widget_id ) {
 
 				// Skip widgets that may have gone away due to a plugin being deactivated.
-				if ( ! $is_active_sidebar || ! isset( $app->widgets['registered'][$widget_id] ) ) {
+				if ( ! $is_active_sidebar || ! isset( $app->widgets['registered'][ $widget_id ] ) ) {
 					continue;
 				}
 
-				$registered_widget = $app->widgets['registered'][$widget_id];
+				$registered_widget = $app->widgets['registered'][ $widget_id ];
 				$setting_id        = $this->get_setting_id( $widget_id );
-				$id_base           = $app->widgets['controls'][$widget_id]['id_base'];
+				$id_base           = $app->widgets['controls'][ $widget_id ]['id_base'];
 
 				$control = new WP_Widget_Form_Customize_Control( $this->manager, $setting_id, array(
 					'label'          => $registered_widget['name'],
@@ -499,8 +499,8 @@ final class WP_Customize_Widgets {
 					'widget_id'      => $widget_id,
 					'widget_id_base' => $id_base,
 					'priority'       => $i,
-					'width'          => $app->widgets['controls'][$widget_id]['width'],
-					'height'         => $app->widgets['controls'][$widget_id]['height'],
+					'width'          => $app->widgets['controls'][ $widget_id ]['width'],
+					'height'         => $app->widgets['controls'][ $widget_id ]['height'],
 					'is_wide'        => $this->is_wide_widget( $widget_id ),
 				) );
 				$this->manager->add_control( $control );
@@ -567,7 +567,7 @@ final class WP_Customize_Widgets {
 	public function is_wide_widget( $widget_id ) {
 		$app = getApp();
 		$parsed_widget_id = $this->parse_widget_id( $widget_id );
-		$width            = $app->widgets['controls'][$widget_id]['width'];
+		$width            = $app->widgets['controls'][ $widget_id ]['width'];
 		$is_core          = in_array( $parsed_widget_id['id_base'], $this->core_widget_id_bases );
 		$is_wide          = ( $width > 250 && ! $is_core );
 
@@ -825,14 +825,14 @@ final class WP_Customize_Widgets {
 			'default'    => [],
 		);
 
-		if ( preg_match( $this->setting_id_patterns['sidebar_widgets'], $id, $matches ) ) {
-			$args['sanitize_callback'] = array( $this, 'sanitize_sidebar_widgets' );
-			$args['sanitize_js_callback'] = array( $this, 'sanitize_sidebar_widgets_js_instance' );
-			$args['transport'] = current_theme_supports( 'customize-selective-refresh-widgets' ) ? 'postMessage' : 'refresh';
-		} elseif ( preg_match( $this->setting_id_patterns['widget_instance'], $id, $matches ) ) {
-			$args['sanitize_callback'] = array( $this, 'sanitize_widget_instance' );
-			$args['sanitize_js_callback'] = array( $this, 'sanitize_widget_js_instance' );
-			$args['transport'] = $this->is_widget_selective_refreshable( $matches['id_base'] ) ? 'postMessage' : 'refresh';
+		if ( preg_match( $this->setting_id_patterns[ 'sidebar_widgets' ], $id, $matches ) ) {
+			$args[ 'sanitize_callback' ] = array( $this, 'sanitize_sidebar_widgets' );
+			$args[ 'sanitize_js_callback' ] = array( $this, 'sanitize_sidebar_widgets_js_instance' );
+			$args[ 'transport' ] = current_theme_supports( 'customize-selective-refresh-widgets' ) ? 'postMessage' : 'refresh';
+		} elseif ( preg_match( $this->setting_id_patterns[ 'widget_instance' ], $id, $matches ) ) {
+			$args[ 'sanitize_callback' ] = array( $this, 'sanitize_widget_instance' );
+			$args[ 'sanitize_js_callback' ] = array( $this, 'sanitize_widget_js_instance' );
+			$args[ 'transport' ] = $this->is_widget_selective_refreshable( $matches['id_base'] ) ? 'postMessage' : 'refresh';
 		}
 
 		$args = array_merge( $args, $overrides );
@@ -918,9 +918,9 @@ final class WP_Customize_Widgets {
 			);
 
 			$is_disabled     = false;
-			$is_multi_widget = ( isset( $app->widgets['controls'][$widget['id']]['id_base'] ) && isset( $widget['params'][0]['number'] ) );
+			$is_multi_widget = ( isset( $app->widgets['controls'][ $widget['id'] ]['id_base'] ) && isset( $widget['params'][0]['number'] ) );
 			if ( $is_multi_widget ) {
-				$id_base            = $app->widgets['controls'][$widget['id']]['id_base'];
+				$id_base            = $app->widgets['controls'][ $widget['id'] ]['id_base'];
 				$args['_temp_id']   = "$id_base-__i__";
 				$args['_multi_num'] = next_widget_id_number( $id_base );
 				$args['_add']       = 'multi';
@@ -945,8 +945,8 @@ final class WP_Customize_Widgets {
 				'is_disabled'  => $is_disabled,
 				'id_base'      => $id_base,
 				'transport'    => $this->is_widget_selective_refreshable( $id_base ) ? 'postMessage' : 'refresh',
-				'width'        => $app->widgets['controls'][$widget['id']]['width'],
-				'height'       => $app->widgets['controls'][$widget['id']]['height'],
+				'width'        => $app->widgets['controls'][ $widget['id'] ]['width'],
+				'height'       => $app->widgets['controls'][ $widget['id'] ]['height'],
 				'is_wide'      => $this->is_wide_widget( $widget['id'] ),
 			) );
 
@@ -1029,8 +1029,8 @@ final class WP_Customize_Widgets {
 	 */
 	public function customize_preview_init() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'customize_preview_enqueue' ) );
-		add_action( 'wp_print_styles',    array( $this, 'print_preview_css' ), 1 );
-		add_action( 'wp_footer',          array( $this, 'export_preview_data' ), 20 );
+		add_action( 'wp_print_styles', array( $this, 'print_preview_css' ), 1 );
+		add_action( 'wp_footer', array( $this, 'export_preview_data' ), 20 );
 	}
 
 	/**
@@ -1373,7 +1373,7 @@ final class WP_Customize_Widgets {
 
 			if ( ! is_null( $parsed_id['number'] ) ) {
 				$value = [];
-				$value[$parsed_id['number']] = $instance;
+				$value[ $parsed_id['number'] ] = $instance;
 				$key = 'widget-' . $parsed_id['id_base'];
 
 				$app['request']->attributes->set( $key, wp_slash( $value ) );

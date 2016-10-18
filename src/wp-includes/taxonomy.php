@@ -1865,19 +1865,23 @@ function wp_delete_category( $cat_ID ) {
  *                        WP_Error if any of the $taxonomies don't exist.
  */
 function wp_get_object_terms($object_ids, $taxonomies, $args = []) {
-	if ( empty( $object_ids ) || empty( $taxonomies ) )
-		return [];
-
-	if ( !is_array($taxonomies) )
-		$taxonomies = [ $taxonomies ];
-
-	foreach ( $taxonomies as $taxonomy ) {
-		if ( ! taxonomy_exists($taxonomy) )
-			return new WP_Error( 'invalid_taxonomy', __( 'Invalid taxonomy.' ) );
+	if ( empty( $object_ids ) || empty( $taxonomies ) ) {
+			return [];
 	}
 
-	if ( !is_array($object_ids) )
-		$object_ids = [ $object_ids ];
+	if ( !is_array($taxonomies) ) {
+			$taxonomies = [ $taxonomies ];
+	}
+
+	foreach ( $taxonomies as $taxonomy ) {
+		if ( ! taxonomy_exists($taxonomy) ) {
+					return new WP_Error( 'invalid_taxonomy', __( 'Invalid taxonomy.' ) );
+		}
+	}
+
+	if ( !is_array($object_ids) ) {
+			$object_ids = [ $object_ids ];
+	}
 	$object_ids = array_map('intval', $object_ids);
 
 	$args['taxonomy'] = $taxonomies;
@@ -2316,12 +2320,14 @@ function wp_set_object_terms( $object_id, $terms, $taxonomy, $append = false ) {
 		$term_order = 0;
 		$final_tt_ids = wp_get_object_terms($object_id, $taxonomy, [ 'fields' => 'tt_ids' ] );
 		foreach ( $tt_ids as $tt_id ) {
-					if ( in_array($tt_id, $final_tt_ids) )
-				$values[] = $wpdb->prepare( "(%d, %d, %d)", $object_id, $tt_id, ++$term_order);
+					if ( in_array($tt_id, $final_tt_ids) ) {
+									$values[] = $wpdb->prepare( "(%d, %d, %d)", $object_id, $tt_id, ++$term_order);
+					}
 		}
 		if ( $values ) {
-					if ( false === $wpdb->query( "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES " . join( ',', $values ) . " ON DUPLICATE KEY UPDATE term_order = VALUES(term_order)" ) )
-				return new WP_Error( 'db_insert_error', __( 'Could not insert term relationship into the database' ), $wpdb->last_error );
+					if ( false === $wpdb->query( "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES " . join( ',', $values ) . " ON DUPLICATE KEY UPDATE term_order = VALUES(term_order)" ) ) {
+									return new WP_Error( 'db_insert_error', __( 'Could not insert term relationship into the database' ), $wpdb->last_error );
+					}
 		}
 	}
 
@@ -3344,8 +3350,9 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 
 	// Transfer the touched cells.
 	foreach ( (array) $term_items as $id => $items ) {
-			if ( isset($terms_by_id[$id]) )
-			$terms_by_id[$id]->count = count($items);
+			if ( isset($terms_by_id[$id]) ) {
+						$terms_by_id[$id]->count = count($items);
+			}
 	}
 	}
 

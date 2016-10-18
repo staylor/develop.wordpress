@@ -45,7 +45,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @param array $args
 	 * @return bool
 	 */
-	public static function test( $args = [] ) {
+	public static function test( $args = [ ] ) {
 
 		// First, test Imagick's extension and classes.
 		if ( ! extension_loaded( 'imagick' ) || ! class_exists( 'Imagick', false ) || ! class_exists( 'ImagickPixel', false ) ) {
@@ -88,7 +88,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 		}
 
 		// HHVM Imagick does not support loading from URL, so fail to allow fallback to GD.
-		if ( defined( 'HHVM_VERSION' ) && isset( $args['path'] ) && preg_match( '|^https?://|', $args['path'] ) ) {
+		if ( defined( 'HHVM_VERSION' ) && isset( $args[ 'path' ] ) && preg_match( '|^https?://|', $args[ 'path' ] ) ) {
 			return false;
 		}
 
@@ -140,7 +140,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 		}
 
 		if ( ! is_file( $this->file ) && ! preg_match( '|^https?://|', $this->file ) ) {
-			return new WP_Error( 'error_loading_image', __('File doesn&#8217;t exist?'), $this->file );
+			return new WP_Error( 'error_loading_image', __( 'File doesn&#8217;t exist?' ), $this->file );
 		}
 
 		/*
@@ -153,12 +153,12 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 			$this->image = new Imagick( $this->file );
 
 			if ( ! $this->image->valid() ) {
-				return new WP_Error( 'invalid_image', __('File is not an image.'), $this->file);
+				return new WP_Error( 'invalid_image', __( 'File is not an image.' ), $this->file );
 			}
 
 			// Select the first frame to handle animated images properly
 			if ( is_callable( array( $this->image, 'setIteratorIndex' ) ) ) {
-				$this->image->setIteratorIndex(0);
+				$this->image->setIteratorIndex( 0 );
 			}
 
 			$this->mime_type = $this->get_mime_type( $this->image->getImageFormat() );
@@ -218,7 +218,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 */
 	protected function update_size( $width = null, $height = null ) {
 		$size = null;
-		if ( !$width || !$height ) {
+		if ( ! $width || ! $height ) {
 			try {
 				$size = $this->image->getImageGeometry();
 			} catch ( Exception $e ) {
@@ -227,11 +227,11 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 		}
 
 		if ( ! $width ) {
-			$width = $size['width'];
+			$width = $size[ 'width' ];
 		}
 
 		if ( ! $height ) {
-			$height = $size['height'];
+			$height = $size[ 'height' ];
 		}
 
 		return parent::update_size( $width, $height );
@@ -253,13 +253,13 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @return bool|WP_Error
 	 */
 	public function resize( $max_w, $max_h, $crop = false ) {
-		if ( ( $this->size['width'] == $max_w ) && ( $this->size['height'] == $max_h ) ) {
+		if ( ( $this->size[ 'width' ] == $max_w ) && ( $this->size[ 'height' ] == $max_h ) ) {
 			return true;
 		}
 
-		$dims = image_resize_dimensions( $this->size['width'], $this->size['height'], $max_w, $max_h, $crop );
+		$dims = image_resize_dimensions( $this->size[ 'width' ], $this->size[ 'height' ], $max_w, $max_h, $crop );
 		if ( ! $dims ) {
-			return new WP_Error( 'error_getting_dimensions', __('Could not calculate resized image dimensions') );
+			return new WP_Error( 'error_getting_dimensions', __( 'Could not calculate resized image dimensions' ) );
 		}
 		list( /*$dst_x*/, /*$dst_y*/, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ) = $dims;
 
@@ -341,7 +341,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 			 * unless we would be resampling to a scale smaller than 128x128.
 			 */
 			if ( is_callable( array( $this->image, 'sampleImage' ) ) ) {
-				$resize_ratio = ( $dst_w / $this->size['width'] ) * ( $dst_h / $this->size['height'] );
+				$resize_ratio = ( $dst_w / $this->size[ 'width' ] ) * ( $dst_h / $this->size[ 'height' ] );
 				$sample_factor = 5;
 
 				if ( $resize_ratio < .111 && ( $dst_w * $sample_factor > 128 && $dst_h * $sample_factor > 128 ) ) {
@@ -434,7 +434,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @return array An array of resized images' metadata by size.
 	 */
 	public function multi_resize( $sizes ) {
-		$metadata = [];
+		$metadata = [ ];
 		$orig_size = $this->size;
 		$orig_image = $this->image->getImage();
 
@@ -443,23 +443,23 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 				$this->image = $orig_image->getImage();
 			}
 
-			if ( ! isset( $size_data['width'] ) && ! isset( $size_data['height'] ) ) {
+			if ( ! isset( $size_data[ 'width' ] ) && ! isset( $size_data[ 'height' ] ) ) {
 				continue;
 			}
 
-			if ( ! isset( $size_data['width'] ) ) {
-				$size_data['width'] = null;
+			if ( ! isset( $size_data[ 'width' ] ) ) {
+				$size_data[ 'width' ] = null;
 			}
-			if ( ! isset( $size_data['height'] ) ) {
-				$size_data['height'] = null;
-			}
-
-			if ( ! isset( $size_data['crop'] ) ) {
-				$size_data['crop'] = false;
+			if ( ! isset( $size_data[ 'height' ] ) ) {
+				$size_data[ 'height' ] = null;
 			}
 
-			$resize_result = $this->resize( $size_data['width'], $size_data['height'], $size_data['crop'] );
-			$duplicate = ( ( $orig_size['width'] == $size_data['width'] ) && ( $orig_size['height'] == $size_data['height'] ) );
+			if ( ! isset( $size_data[ 'crop' ] ) ) {
+				$size_data[ 'crop' ] = false;
+			}
+
+			$resize_result = $this->resize( $size_data[ 'width' ], $size_data[ 'height' ], $size_data[ 'crop' ] );
+			$duplicate = ( ( $orig_size[ 'width' ] == $size_data[ 'width' ] ) && ( $orig_size[ 'height' ] == $size_data[ 'height' ] ) );
 
 			if ( ! is_wp_error( $resize_result ) && ! $duplicate ) {
 				$resized = $this->_save( $this->image );
@@ -469,8 +469,8 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 				$this->image = null;
 
 				if ( ! is_wp_error( $resized ) && $resized ) {
-					unset( $resized['path'] );
-					$metadata[$size] = $resized;
+					unset( $resized[ 'path' ] );
+					$metadata[ $size ] = $resized;
 				}
 			}
 
@@ -505,7 +505,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 
 		try {
 			$this->image->cropImage( $src_w, $src_h, $src_x, $src_y );
-			$this->image->setImagePage( $src_w, $src_h, 0, 0);
+			$this->image->setImagePage( $src_w, $src_h, 0, 0 );
 
 			if ( $dst_w || $dst_h ) {
 				// If destination width/height isn't specified, use same as
@@ -545,7 +545,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 		 * (GD rotates counter-clockwise)
 		 */
 		try {
-			$this->image->rotateImage( new ImagickPixel('none'), 360-$angle );
+			$this->image->rotateImage( new ImagickPixel( 'none' ), 360 - $angle );
 
 			// Since this changes the dimensions of the image, update the size.
 			$result = $this->update_size();
@@ -553,7 +553,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 				return $result;
 			}
 
-			$this->image->setImagePage( $this->size['width'], $this->size['height'], 0, 0 );
+			$this->image->setImagePage( $this->size[ 'width' ], $this->size[ 'height' ], 0, 0 );
 		} catch ( Exception $e ) {
 			return new WP_Error( 'image_rotate_error', $e->getMessage() );
 		}
@@ -599,8 +599,8 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 		$saved = $this->_save( $this->image, $destfilename, $mime_type );
 
 		if ( ! is_wp_error( $saved ) ) {
-			$this->file = $saved['path'];
-			$this->mime_type = $saved['mime-type'];
+			$this->file = $saved[ 'path' ];
+			$this->mime_type = $saved[ 'mime-type' ];
 
 			try {
 				$this->image->setImageFormat( strtoupper( $this->get_extension( $this->mime_type ) ) );
@@ -641,15 +641,15 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 
 		// Set correct file permissions
 		$stat = stat( dirname( $filename ) );
-		$perms = $stat['mode'] & 0000666; //same permissions as parent folder, strip off the executable bits
+		$perms = $stat[ 'mode' ] & 0000666; //same permissions as parent folder, strip off the executable bits
 		@ chmod( $filename, $perms );
 
 		/** This filter is documented in wp-includes/class-wp-image-editor-gd.php */
 		return array(
 			'path'      => $filename,
 			'file'      => wp_basename( apply_filters( 'image_make_intermediate_size', $filename ) ),
-			'width'     => $this->size['width'],
-			'height'    => $this->size['height'],
+			'width'     => $this->size[ 'width' ],
+			'height'    => $this->size[ 'height' ],
 			'mime-type' => $mime_type,
 		);
 	}

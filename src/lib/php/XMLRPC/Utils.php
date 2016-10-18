@@ -219,7 +219,7 @@ trait Utils {
 				return new Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
 			}
 
-			if ( $post_data['post_type'] != get_post_type( $post_data['ID'] ) ) {
+			if ( $post_data['post_type'] !== get_post_type( $post_data['ID'] ) ) {
 				return new Error( 401, __( 'The post type may not be changed.' ) );
 			}
 		} elseif ( ! current_user_can( $post_type->cap->create_posts ) || ! current_user_can( $post_type->cap->edit_posts ) ) {
@@ -338,11 +338,11 @@ trait Utils {
 						return new Error( 401, __( 'Sorry, one of the given taxonomies is not supported by the post type.' ) );
 					}
 
-					if ( ! current_user_can( $post_type_taxonomies[$taxonomy]->cap->assign_terms ) ) {
+					if ( ! current_user_can( $post_type_taxonomies[ $taxonomy ]->cap->assign_terms ) ) {
 						return new Error( 401, __( 'Sorry, you are not allowed to assign a term to one of the given taxonomies.' ) );
 					}
 
-					$term_ids = $post_data['terms'][$taxonomy];
+					$term_ids = $post_data['terms'][ $taxonomy ];
 					$terms[ $taxonomy ] = [];
 					foreach ( $term_ids as $term_id ) {
 						$term = get_term_by( 'id', $term_id, $taxonomy );
@@ -589,7 +589,7 @@ trait Utils {
 			if ( isset($meta['id']) ) {
 				$meta['id'] = (int) $meta['id'];
 				$pmeta = get_metadata_by_mid( 'post', $meta['id'] );
-				if ( isset($meta['key']) ) {
+				if ( isset( $meta['key'] ) ) {
 					$meta['key'] = wp_unslash( $meta['key'] );
 					if ( $meta['key'] !== $pmeta->meta_key ) {
 						continue;

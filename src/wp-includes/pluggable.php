@@ -749,23 +749,23 @@ if ( !function_exists('wp_parse_auth_cookie') ) :
 function wp_parse_auth_cookie($cookie = '', $scheme = '') {
 	if ( empty($cookie) ) {
 		switch ($scheme){
-			case 'auth':
-				$cookie_name = AUTH_COOKIE;
-				break;
-			case 'secure_auth':
+		case 'auth':
+			$cookie_name = AUTH_COOKIE;
+			break;
+		case 'secure_auth':
+			$cookie_name = SECURE_AUTH_COOKIE;
+			break;
+		case "logged_in":
+			$cookie_name = LOGGED_IN_COOKIE;
+			break;
+		default:
+			if ( is_ssl() ) {
 				$cookie_name = SECURE_AUTH_COOKIE;
-				break;
-			case "logged_in":
-				$cookie_name = LOGGED_IN_COOKIE;
-				break;
-			default:
-				if ( is_ssl() ) {
-					$cookie_name = SECURE_AUTH_COOKIE;
-					$scheme = 'secure_auth';
-				} else {
-					$cookie_name = AUTH_COOKIE;
-					$scheme = 'auth';
-				}
+				$scheme = 'secure_auth';
+			} else {
+				$cookie_name = AUTH_COOKIE;
+				$scheme = 'auth';
+			}
 		}
 
 		if ( empty($_COOKIE[$cookie_name]) ) {
