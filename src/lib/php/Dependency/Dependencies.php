@@ -154,43 +154,61 @@ class Dependencies {
 	 * @return bool True on success, false on failure.
 	 */
 	public function all_deps( $handles, $recursion = false, $group = false ) {
-		if ( !$handles = (array) $handles )
+		if ( !$handles = (array) $handles ) {
 			return false;
+		}
 
 		foreach ( $handles as $handle ) {
 			$handle_parts = explode('?', $handle);
 			$handle = $handle_parts[0];
 			$queued = in_array($handle, $this->to_do, true);
 
-			if ( in_array($handle, $this->done, true) ) // Already done
+			if ( in_array($handle, $this->done, true) ) {
+				// Already done
 				continue;
+			}
 
 			$moved     = $this->set_group( $handle, $recursion, $group );
 			$new_group = $this->groups[ $handle ];
 
-			if ( $queued && !$moved ) // already queued and in the right group
+			if ( $queued && !$moved ) {
+				// already queued and in the right group
 				continue;
-
-			$keep_going = true;
-			if ( !isset($this->registered[$handle]) )
-				$keep_going = false; // Item doesn't exist.
-			elseif ( $this->registered[$handle]->deps && array_diff($this->registered[$handle]->deps, array_keys($this->registered)) )
-				$keep_going = false; // Item requires dependencies that don't exist.
-			elseif ( $this->registered[$handle]->deps && !$this->all_deps( $this->registered[$handle]->deps, true, $new_group ) )
-				$keep_going = false; // Item requires dependencies that don't exist.
-
-			if ( ! $keep_going ) { // Either item or its dependencies don't exist.
-				if ( $recursion )
-					return false; // Abort this branch.
-				else
-					continue; // We're at the top level. Move on to the next one.
 			}
 
-			if ( $queued ) // Already grabbed it and its dependencies.
-				continue;
+			$keep_going = true;
+			if ( !isset($this->registered[$handle]) ) {
+				$keep_going = false;
+			}
+			// Item doesn't exist.
+			elseif ( $this->registered[$handle]->deps && array_diff($this->registered[$handle]->deps, array_keys($this->registered)) ) {
+				$keep_going = false;
+			}
+			// Item requires dependencies that don't exist.
+			elseif ( $this->registered[$handle]->deps && !$this->all_deps( $this->registered[$handle]->deps, true, $new_group ) ) {
+				$keep_going = false;
+			}
+			// Item requires dependencies that don't exist.
 
-			if ( isset($handle_parts[1]) )
+			if ( ! $keep_going ) { // Either item or its dependencies don't exist.
+				if ( $recursion ) {
+					return false;
+				}
+				// Abort this branch.
+				else {
+					continue;
+				}
+				// We're at the top level. Move on to the next one.
+			}
+
+			if ( $queued ) {
+				// Already grabbed it and its dependencies.
+				continue;
+			}
+
+			if ( isset($handle_parts[1]) ) {
 				$this->args[$handle] = $handle_parts[1];
+			}
 
 			$this->to_do[] = $handle;
 		}
@@ -218,8 +236,9 @@ class Dependencies {
 	 * @return bool Whether the item has been registered. True on success, false on failure.
 	 */
 	public function add( $handle, $src, $deps = [], $ver = false, $args = null ) {
-		if ( isset($this->registered[$handle]) )
+		if ( isset($this->registered[$handle]) ) {
 			return false;
+		}
 		$this->registered[$handle] = new Dependency( $handle, $src, $deps, $ver, $args );
 		return true;
 	}
@@ -238,8 +257,9 @@ class Dependencies {
 	 * @return bool True on success, false on failure.
 	 */
 	public function add_data( $handle, $key, $value ) {
-		if ( !isset( $this->registered[$handle] ) )
+		if ( !isset( $this->registered[$handle] ) ) {
 			return false;
+		}
 
 		return $this->registered[$handle]->add_data( $key, $value );
 	}
@@ -257,11 +277,13 @@ class Dependencies {
 	 * @return mixed Extra item data (string), false otherwise.
 	 */
 	public function get_data( $handle, $key ) {
-		if ( !isset( $this->registered[$handle] ) )
+		if ( !isset( $this->registered[$handle] ) ) {
 			return false;
+		}
 
-		if ( !isset( $this->registered[$handle]->extra[$key] ) )
+		if ( !isset( $this->registered[$handle]->extra[$key] ) ) {
 			return false;
+		}
 
 		return $this->registered[$handle]->extra[$key];
 	}
@@ -277,8 +299,9 @@ class Dependencies {
 	 * @return void
 	 */
 	public function remove( $handles ) {
-		foreach ( (array) $handles as $handle )
+		foreach ( (array) $handles as $handle ) {
 			unset($this->registered[$handle]);
+		}
 	}
 
 	/**
@@ -300,8 +323,9 @@ class Dependencies {
 			$handle = explode('?', $handle);
 			if ( !in_array($handle[0], $this->queue) && isset($this->registered[$handle[0]]) ) {
 				$this->queue[] = $handle[0];
-				if ( isset($handle[1]) )
+				if ( isset($handle[1]) ) {
 					$this->args[$handle[0]] = $handle[1];
+				}
 			}
 		}
 	}

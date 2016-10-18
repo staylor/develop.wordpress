@@ -42,8 +42,9 @@ function map_meta_cap( $cap, $user_id ) {
 	case 'edit_user':
 	case 'edit_users':
 		// Allow user to edit itself
-		if ( 'edit_user' == $cap && isset( $args[0] ) && $user_id == $args[0] )
+		if ( 'edit_user' == $cap && isset( $args[0] ) && $user_id == $args[0] ) {
 			break;
+		}
 
 		// In multisite the user must have manage_network_users caps. If editing a super admin, the user must be a super admin.
 		if ( is_multisite() && ( ( ! is_super_admin( $user_id ) && 'edit_user' === $cap && is_super_admin( $args[0] ) ) || ! user_can( $user_id, 'manage_network_users' ) ) ) {
@@ -84,8 +85,9 @@ function map_meta_cap( $cap, $user_id ) {
 		if ( ! $post_type->map_meta_cap ) {
 			$caps[] = $post_type->cap->$cap;
 			// Prior to 3.1 we would re-call map_meta_cap here.
-			if ( 'delete_post' == $cap )
+			if ( 'delete_post' == $cap ) {
 				$cap = $post_type->cap->$cap;
+			}
 			break;
 		}
 
@@ -145,8 +147,9 @@ function map_meta_cap( $cap, $user_id ) {
 		if ( ! $post_type->map_meta_cap ) {
 			$caps[] = $post_type->cap->$cap;
 			// Prior to 3.1 we would re-call map_meta_cap here.
-			if ( 'edit_post' == $cap )
+			if ( 'edit_post' == $cap ) {
 				$cap = $post_type->cap->$cap;
+			}
 			break;
 		}
 
@@ -204,8 +207,9 @@ function map_meta_cap( $cap, $user_id ) {
 		if ( ! $post_type->map_meta_cap ) {
 			$caps[] = $post_type->cap->$cap;
 			// Prior to 3.1 we would re-call map_meta_cap here.
-			if ( 'read_post' == $cap )
+			if ( 'read_post' == $cap ) {
 				$cap = $post_type->cap->$cap;
+			}
 			break;
 		}
 
@@ -290,8 +294,9 @@ function map_meta_cap( $cap, $user_id ) {
 			 */
 			$allowed = apply_filters( "auth_post_{$post_type}_meta_{$meta_key}", $allowed, $meta_key, $post->ID, $user_id, $cap, $caps );
 
-			if ( ! $allowed )
+			if ( ! $allowed ) {
 				$caps[] = $cap;
+			}
 		} elseif ( $meta_key && is_protected_meta( $meta_key, 'post' ) ) {
 			$caps[] = $cap;
 		}
@@ -316,32 +321,35 @@ function map_meta_cap( $cap, $user_id ) {
 		}
 		break;
 	case 'unfiltered_upload':
-		if ( defined('ALLOW_UNFILTERED_UPLOADS') && ALLOW_UNFILTERED_UPLOADS && ( !is_multisite() || is_super_admin( $user_id ) )  )
+		if ( defined('ALLOW_UNFILTERED_UPLOADS') && ALLOW_UNFILTERED_UPLOADS && ( !is_multisite() || is_super_admin( $user_id ) )  ) {
 			$caps[] = $cap;
-		else
+		} else {
 			$caps[] = 'do_not_allow';
+		}
 		break;
 	case 'unfiltered_html' :
 		// Disallow unfiltered_html for all users, even admins and super admins.
-		if ( defined( 'DISALLOW_UNFILTERED_HTML' ) && DISALLOW_UNFILTERED_HTML )
+		if ( defined( 'DISALLOW_UNFILTERED_HTML' ) && DISALLOW_UNFILTERED_HTML ) {
 			$caps[] = 'do_not_allow';
-		elseif ( is_multisite() && ! is_super_admin( $user_id ) )
+		} elseif ( is_multisite() && ! is_super_admin( $user_id ) ) {
 			$caps[] = 'do_not_allow';
-		else
+		} else {
 			$caps[] = $cap;
+		}
 		break;
 	case 'edit_files':
 	case 'edit_plugins':
 	case 'edit_themes':
 		// Disallow the file editors.
-		if ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT )
+		if ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT ) {
 			$caps[] = 'do_not_allow';
-		elseif ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS )
+		} elseif ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ) {
 			$caps[] = 'do_not_allow';
-		elseif ( is_multisite() && ! is_super_admin( $user_id ) )
+		} elseif ( is_multisite() && ! is_super_admin( $user_id ) ) {
 			$caps[] = 'do_not_allow';
-		else
+		} else {
 			$caps[] = $cap;
+		}
 		break;
 	case 'update_plugins':
 	case 'delete_plugins':
@@ -371,31 +379,36 @@ function map_meta_cap( $cap, $user_id ) {
 		if ( is_multisite() ) {
 			// update_, install_, and delete_ are handled above with is_super_admin().
 			$menu_perms = get_site_option( 'menu_items', [] );
-			if ( empty( $menu_perms['plugins'] ) )
+			if ( empty( $menu_perms['plugins'] ) ) {
 				$caps[] = 'manage_network_plugins';
+			}
 		}
 		break;
 	case 'delete_user':
 	case 'delete_users':
 		// If multisite only super admins can delete users.
-		if ( is_multisite() && ! is_super_admin( $user_id ) )
+		if ( is_multisite() && ! is_super_admin( $user_id ) ) {
 			$caps[] = 'do_not_allow';
-		else
-			$caps[] = 'delete_users'; // delete_user maps to delete_users.
+		} else {
+			$caps[] = 'delete_users';
+		}
+		// delete_user maps to delete_users.
 		break;
 	case 'create_users':
-		if ( !is_multisite() )
+		if ( !is_multisite() ) {
 			$caps[] = $cap;
-		elseif ( is_super_admin( $user_id ) || get_site_option( 'add_new_users' ) )
+		} elseif ( is_super_admin( $user_id ) || get_site_option( 'add_new_users' ) ) {
 			$caps[] = $cap;
-		else
+		} else {
 			$caps[] = 'do_not_allow';
+		}
 		break;
 	case 'manage_links' :
-		if ( get_option( 'link_manager_enabled' ) )
+		if ( get_option( 'link_manager_enabled' ) ) {
 			$caps[] = $cap;
-		else
+		} else {
 			$caps[] = 'do_not_allow';
+		}
 		break;
 	case 'customize' :
 		$caps[] = 'edit_theme_options';
@@ -499,8 +512,9 @@ function map_meta_cap( $cap, $user_id ) {
 function current_user_can( $capability ) {
 	$current_user = wp_get_current_user();
 
-	if ( empty( $current_user ) )
+	if ( empty( $current_user ) ) {
 		return false;
+	}
 
 	$args = array_slice( func_get_args(), 1 );
 	$args = array_merge( [ $capability ], $args );
@@ -551,13 +565,15 @@ function current_user_can_for_blog( $blog_id, $capability ) {
  * @return bool
  */
 function author_can( $post, $capability ) {
-	if ( !$post = get_post($post) )
+	if ( !$post = get_post($post) ) {
 		return false;
+	}
 
 	$author = get_userdata( $post->post_author );
 
-	if ( ! $author )
+	if ( ! $author ) {
 		return false;
+	}
 
 	$args = array_slice( func_get_args(), 2 );
 	$args = array_merge( [ $capability ], $args );
@@ -575,11 +591,13 @@ function author_can( $post, $capability ) {
  * @return bool
  */
 function user_can( $user, $capability ) {
-	if ( ! is_object( $user ) )
+	if ( ! is_object( $user ) ) {
 		$user = get_userdata( $user );
+	}
 
-	if ( ! $user || ! $user->exists() )
+	if ( ! $user || ! $user->exists() ) {
 		return false;
+	}
 
 	$args = array_slice( func_get_args(), 2 );
 	$args = array_merge( [ $capability ], $args );
@@ -642,10 +660,11 @@ function remove_role( $role ) {
 function get_super_admins() {
 	global $super_admins;
 
-	if ( isset($super_admins) )
+	if ( isset($super_admins) ) {
 		return $super_admins;
-	else
+	} else {
 		return get_site_option( 'site_admins', [ 'admin' ] );
+	}
 }
 
 /**
@@ -657,21 +676,25 @@ function get_super_admins() {
  * @return bool True if the user is a site admin.
  */
 function is_super_admin( $user_id = false ) {
-	if ( ! $user_id || $user_id == get_current_user_id() )
+	if ( ! $user_id || $user_id == get_current_user_id() ) {
 		$user = wp_get_current_user();
-	else
+	} else {
 		$user = get_userdata( $user_id );
+	}
 
-	if ( ! $user || ! $user->exists() )
+	if ( ! $user || ! $user->exists() ) {
 		return false;
+	}
 
 	if ( is_multisite() ) {
 		$super_admins = get_super_admins();
-		if ( is_array( $super_admins ) && in_array( $user->user_login, $super_admins ) )
+		if ( is_array( $super_admins ) && in_array( $user->user_login, $super_admins ) ) {
 			return true;
+		}
 	} else {
-		if ( $user->has_cap('delete_users') )
+		if ( $user->has_cap('delete_users') ) {
 			return true;
+		}
 	}
 
 	return false;

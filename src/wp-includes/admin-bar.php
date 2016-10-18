@@ -105,7 +105,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 
 	// Set tabindex="0" to make sub menus accessible when no URL is available.
 	if ( ! $about_url ) {
-		$wp_logo_menu_args['meta'] = [
+		$wp_logo_menu_args[ 'meta' ] = [
 			'tabindex' => 0,
 		];
 	}
@@ -117,7 +117,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 		$wp_admin_bar->add_menu( [
 			'parent' => 'wp-logo',
 			'id'     => 'about',
-			'title'  => __('About WordPress'),
+			'title'  => __( 'About WordPress' ),
 			'href'   => $about_url,
 		] );
 	}
@@ -126,32 +126,32 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 	$wp_admin_bar->add_menu( [
 		'parent'    => 'wp-logo-external',
 		'id'        => 'wporg',
-		'title'     => __('WordPress.org'),
-		'href'      => __('https://wordpress.org/'),
+		'title'     => __( 'WordPress.org' ),
+		'href'      => __( 'https://wordpress.org/' ),
 	] );
 
 	// Add codex link
 	$wp_admin_bar->add_menu( [
 		'parent'    => 'wp-logo-external',
 		'id'        => 'documentation',
-		'title'     => __('Documentation'),
-		'href'      => __('https://codex.wordpress.org/'),
+		'title'     => __( 'Documentation' ),
+		'href'      => __( 'https://codex.wordpress.org/' ),
 	] );
 
 	// Add forums link
 	$wp_admin_bar->add_menu( [
 		'parent'    => 'wp-logo-external',
 		'id'        => 'support-forums',
-		'title'     => __('Support Forums'),
-		'href'      => __('https://wordpress.org/support/'),
+		'title'     => __( 'Support Forums' ),
+		'href'      => __( 'https://wordpress.org/support/' ),
 	] );
 
 	// Add feedback link
 	$wp_admin_bar->add_menu( [
 		'parent'    => 'wp-logo-external',
 		'id'        => 'feedback',
-		'title'     => __('Feedback'),
-		'href'      => __('https://wordpress.org/support/forum/requests-and-feedback'),
+		'title'     => __( 'Feedback' ),
+		'href'      => __( 'https://wordpress.org/support/forum/requests-and-feedback' ),
 	] );
 }
 
@@ -291,7 +291,7 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 		return;
 	}
 
-	$blogname = get_bloginfo('name');
+	$blogname = get_bloginfo( 'name' );
 
 	if ( ! $blogname ) {
 		$blogname = preg_replace( '#^(https?://)?(www.)?#', '', get_home_url() );
@@ -414,7 +414,7 @@ function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 		$wp_admin_bar->add_menu( [
 			'parent' => 'my-sites-super-admin',
 			'id'     => 'network-admin',
-			'title'  => __('Network Admin'),
+			'title'  => __( 'Network Admin' ),
 			'href'   => network_admin_url(),
 		] );
 
@@ -476,7 +476,7 @@ function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 			$blogname = preg_replace( '#^(https?://)?(www.)?#', '', get_home_url() );
 		}
 
-		$menu_id  = 'blog-' . $blog->userblog_id;
+		$menu_id = 'blog-' . $blog->userblog_id;
 
 		$wp_admin_bar->add_menu( [
 			'parent'    => 'my-sites-list',
@@ -652,23 +652,23 @@ function wp_admin_bar_new_content_menu( $wp_admin_bar ) {
 
 	$cpts = (array) get_post_types( [ 'show_in_admin_bar' => true ], 'objects' );
 
-	if ( isset( $cpts['post'] ) && current_user_can( $cpts['post']->cap->create_posts ) ) {
-		$actions[ 'post-new.php' ] = [ $cpts['post']->labels->name_admin_bar, 'new-post' ];
+	if ( isset( $cpts[ 'post' ] ) && current_user_can( $cpts[ 'post' ]->cap->create_posts ) ) {
+		$actions[ 'post-new.php' ] = [ $cpts[ 'post' ]->labels->name_admin_bar, 'new-post' ];
 	}
 
-	if ( isset( $cpts['attachment'] ) && current_user_can( 'upload_files' ) ) {
-		$actions[ 'media-new.php' ] = [ $cpts['attachment']->labels->name_admin_bar, 'new-media' ];
+	if ( isset( $cpts[ 'attachment' ] ) && current_user_can( 'upload_files' ) ) {
+		$actions[ 'media-new.php' ] = [ $cpts[ 'attachment' ]->labels->name_admin_bar, 'new-media' ];
 	}
 
 	if ( current_user_can( 'manage_links' ) ) {
 		$actions[ 'link-add.php' ] = [ _x( 'Link', 'add new from admin bar' ), 'new-link' ];
 	}
 
-	if ( isset( $cpts['page'] ) && current_user_can( $cpts['page']->cap->create_posts ) ) {
-		$actions[ 'post-new.php?post_type=page' ] = [ $cpts['page']->labels->name_admin_bar, 'new-page' ];
+	if ( isset( $cpts[ 'page' ] ) && current_user_can( $cpts[ 'page' ]->cap->create_posts ) ) {
+		$actions[ 'post-new.php?post_type=page' ] = [ $cpts[ 'page' ]->labels->name_admin_bar, 'new-page' ];
 	}
 
-	unset( $cpts['post'], $cpts['page'], $cpts['attachment'] );
+	unset( $cpts[ 'post' ], $cpts[ 'page' ], $cpts[ 'attachment' ] );
 
 	// Add any additional custom post types.
 	foreach ( $cpts as $cpt ) {
@@ -680,8 +680,8 @@ function wp_admin_bar_new_content_menu( $wp_admin_bar ) {
 		$actions[ $key ] = [ $cpt->labels->name_admin_bar, 'new-' . $cpt->name ];
 	}
 	// Avoid clash with parent node and a 'content' post type.
-	if ( isset( $actions['post-new.php?post_type=content'] ) ) {
-		$actions['post-new.php?post_type=content'][1] = 'add-new-content';
+	if ( isset( $actions[ 'post-new.php?post_type=content' ] ) ) {
+		$actions[ 'post-new.php?post_type=content' ][ 1 ] = 'add-new-content';
 	}
 
 	if ( current_user_can( 'create_users' ) || current_user_can( 'promote_users' ) ) {
@@ -720,7 +720,7 @@ function wp_admin_bar_new_content_menu( $wp_admin_bar ) {
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_comments_menu( $wp_admin_bar ) {
-	if ( !current_user_can('edit_posts') ) {
+	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
 	}
 
@@ -735,7 +735,7 @@ function wp_admin_bar_comments_menu( $wp_admin_bar ) {
 	$wp_admin_bar->add_menu( [
 		'id'    => 'comments',
 		'title' => $icon . $title,
-		'href'  => admin_url('edit-comments.php'),
+		'href'  => admin_url( 'edit-comments.php' ),
 	] );
 }
 
@@ -762,7 +762,7 @@ function wp_admin_bar_appearance_menu( $wp_admin_bar ) {
 		return;
 	}
 
-	if ( current_theme_supports( 'widgets' )  ) {
+	if ( current_theme_supports( 'widgets' ) ) {
 		$wp_admin_bar->add_menu( [
 			'parent' => 'appearance',
 			'id'     => 'widgets',
@@ -772,7 +772,7 @@ function wp_admin_bar_appearance_menu( $wp_admin_bar ) {
 	}
 
 	if ( current_theme_supports( 'menus' ) || current_theme_supports( 'widgets' ) ) {
-		$wp_admin_bar->add_menu( [ 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ] );
+		$wp_admin_bar->add_menu( [ 'parent' => 'appearance', 'id' => 'menus', 'title' => __( 'Menus' ), 'href' => admin_url( 'nav-menus.php' ) ] );
 	}
 
 	if ( current_theme_supports( 'custom-background' ) ) {
@@ -812,19 +812,19 @@ function wp_admin_bar_updates_menu( $wp_admin_bar ) {
 
 	$update_data = wp_get_update_data();
 
-	if ( !$update_data['counts']['total'] ) {
+	if ( ! $update_data[ 'counts' ][ 'total' ] ) {
 		return;
 	}
 
-	$title = '<span class="ab-icon"></span><span class="ab-label">' . number_format_i18n( $update_data['counts']['total'] ) . '</span>';
-	$title .= '<span class="screen-reader-text">' . $update_data['title'] . '</span>';
+	$title = '<span class="ab-icon"></span><span class="ab-label">' . number_format_i18n( $update_data[ 'counts' ][ 'total' ] ) . '</span>';
+	$title .= '<span class="screen-reader-text">' . $update_data[ 'title' ] . '</span>';
 
 	$wp_admin_bar->add_menu( [
 		'id'    => 'updates',
 		'title' => $title,
 		'href'  => network_admin_url( 'update-core.php' ),
 		'meta'  => [
-			'title' => $update_data['title'],
+			'title' => $update_data[ 'title' ],
 		],
 	] );
 }
@@ -844,7 +844,7 @@ function wp_admin_bar_search_menu( $wp_admin_bar ) {
 	$form  = '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="adminbarsearch">';
 	$form .= '<input class="adminbar-input" name="s" id="adminbar-search" type="text" value="" maxlength="150" />';
 	$form .= '<label for="adminbar-search" class="screen-reader-text">' . __( 'Search' ) . '</label>';
-	$form .= '<input type="submit" class="adminbar-button" value="' . __('Search') . '"/>';
+	$form .= '<input type="submit" class="adminbar-button" value="' . __( 'Search' ) . '"/>';
 	$form .= '</form>';
 
 	$wp_admin_bar->add_menu( [
@@ -935,7 +935,7 @@ function is_admin_bar_showing() {
 	$app = getApp();
 
 	// For all these types of requests, we never want an admin bar.
-	if ( defined('XMLRPC_REQUEST') || defined('DOING_AJAX') || defined('IFRAME_REQUEST') ) {
+	if ( defined( 'XMLRPC_REQUEST' ) || defined( 'DOING_AJAX' ) || defined( 'IFRAME_REQUEST' ) ) {
 		return false;
 	}
 
