@@ -412,8 +412,9 @@ class WP_Widget {
 		$all_instances = $this->get_settings();
 
 		// We need to update the data
-		if ( $this->updated )
+		if ( $this->updated ) {
 			return;
+		}
 
 		$_request = $app['request']->request;
 
@@ -507,10 +508,10 @@ class WP_Widget {
 	 * @return string|null
 	 */
 	public function form_callback( $widget_args = 1 ) {
-		if ( is_numeric($widget_args) )
-			$widget_args = array( 'number' => $widget_args );
-
-		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		if ( is_numeric( $widget_args ) ) {
+			$widget_args = [ 'number' => $widget_args ];
+		}
+		$widget_args = wp_parse_args( $widget_args, [ 'number' => -1 ] );
 		$all_instances = $this->get_settings();
 
 		if ( -1 == $widget_args['number'] ) {

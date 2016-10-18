@@ -133,7 +133,7 @@ get_header( 'wp-activate' );
 				<p><span class="h3"><?php _e( 'Password:' ); ?></span> <?php echo $result[ 'password' ]; ?></p>
 			</div>
 
-			<?php if ( $url && $url != network_home_url( '', 'http' ) ) :
+			<?php if ( $url && $url != network_home_url( '', 'http' ) ) {
 				switch_to_blog( (int) $result[ 'blog_id' ] );
 				$login_url = wp_login_url();
 				restore_current_blog();
@@ -142,12 +142,12 @@ get_header( 'wp-activate' );
 					/* translators: 1: site URL, 2: login URL */
 					printf( __( 'Your account is now activated. <a href="%1$s">View your site</a> or <a href="%2$s">Log in</a>' ), $url, esc_url( $login_url ) );
 				?></p>
-			<?php else: ?>
+			<?php } else { ?>
 				<p class="view"><?php
 					/* translators: 1: login URL, 2: network home URL */
 					printf( __( 'Your account is now activated. <a href="%1$s">Log in</a> or go back to the <a href="%2$s">homepage</a>.' ), network_site_url( 'wp-login.php', 'login' ), network_home_url() );
 				?></p>
-			<?php endif;
+			<?php }
 		}
 	}
 	?>

@@ -82,7 +82,11 @@ if ( have_comments() ) {
 
 		<author>
 			<name><?php comment_author_rss(); ?></name>
-			<?php if ( get_comment_author_url() ) echo '<uri>' . get_comment_author_url() . '</uri>'; ?>
+			<?php
+			if ( get_comment_author_url() ) {
+				echo '<uri>' . get_comment_author_url() . '</uri>';
+			}
+			?>
 
 		</author>
 

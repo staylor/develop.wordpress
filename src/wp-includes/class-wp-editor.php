@@ -108,32 +108,33 @@ final class _WP_Editors {
 
 		self::$this_quicktags = (bool) $set['quicktags'];
 
-		if ( self::$this_tinymce )
+		if ( self::$this_tinymce ) {
 			self::$has_tinymce = true;
-
-		if ( self::$this_quicktags )
+		}
+		if ( self::$this_quicktags ) {
 			self::$has_quicktags = true;
-
+		}
 		if ( $set['dfw'] ) {
 			self::$old_dfw_compat = true;
 		}
 
-		if ( empty( $set['editor_height'] ) )
+		if ( empty( $set['editor_height'] ) ) {
 			return $set;
-
+		}
 		if ( 'content' === $editor_id && empty( $set['tinymce']['wp_autoresize_on'] ) ) {
 			// A cookie (set when a user resizes the editor) overrides the height.
 			$cookie = (int) get_user_setting( 'ed_size' );
 
-			if ( $cookie )
+			if ( $cookie ) {
 				$set['editor_height'] = $cookie;
+			}
 		}
 
-		if ( $set['editor_height'] < 50 )
+		if ( $set['editor_height'] < 50 ) {
 			$set['editor_height'] = 50;
-		elseif ( $set['editor_height'] > 5000 )
+		} elseif ( $set['editor_height'] > 5000 ) {
 			$set['editor_height'] = 5000;
-
+		}
 		return $set;
 	}
 
@@ -210,9 +211,9 @@ final class _WP_Editors {
 			if ( $set['media_buttons'] ) {
 				self::$has_medialib = true;
 
-				if ( ! function_exists( 'media_buttons' ) )
+				if ( ! function_exists( 'media_buttons' ) ) {
 					include( ABSPATH . 'wp-admin/includes/media.php' );
-
+				}
 				echo '<div id="wp-' . $editor_id_attr . '-media-buttons" class="wp-media-buttons">';
 
 				/**
@@ -322,12 +323,12 @@ final class _WP_Editors {
 				'buttons' => ''
 			);
 
-			if ( is_array($set['quicktags']) )
+			if ( is_array($set['quicktags']) ) {
 				$qtInit = array_merge($qtInit, $set['quicktags']);
-
-			if ( empty($qtInit['buttons']) )
+			}
+			if ( empty($qtInit['buttons']) ) {
 				$qtInit['buttons'] = 'strong,em,link,block,del,ins,img,ul,ol,li,code,more,close';
-
+			}
 			if ( $set['_content_editor_dfw'] ) {
 				$qtInit['buttons'] .= ',dfw';
 			}
@@ -481,14 +482,17 @@ final class _WP_Editors {
 								$path = str_replace( content_url(), '', $plugurl );
 								$path = WP_CONTENT_DIR . $path . '/langs/';
 
-								if ( function_exists('realpath') )
+								if ( function_exists('realpath') ) {
 									$path = trailingslashit( realpath($path) );
+								}
 
-								if ( @is_file( $path . $mce_locale . '.js' ) )
+								if ( @is_file( $path . $mce_locale . '.js' ) ) {
 									$strings .= @file_get_contents( $path . $mce_locale . '.js' ) . "\n";
+								}
 
-								if ( @is_file( $path . $mce_locale . '_dlg.js' ) )
+								if ( @is_file( $path . $mce_locale . '_dlg.js' ) ) {
 									$strings .= @file_get_contents( $path . $mce_locale . '_dlg.js' ) . "\n";
+								}
 
 								if ( 'en' != $mce_locale && empty( $strings ) ) {
 									if ( @is_file( $path . 'en.js' ) ) {
@@ -502,8 +506,9 @@ final class _WP_Editors {
 									}
 								}
 
-								if ( ! empty( $strings ) )
+								if ( ! empty( $strings ) ) {
 									$ext_plugins .= "\n" . $strings . "\n";
+								}
 							}
 
 							$ext_plugins .= 'tinyMCEPreInit.load_ext("' . $plugurl . '", "' . $mce_locale . '");' . "\n";
@@ -585,8 +590,9 @@ final class _WP_Editors {
 				 */
 				$mce_css = trim( apply_filters( 'mce_css', implode( ',', $mce_css ) ), ' ,' );
 
-				if ( ! empty($mce_css) )
+				if ( ! empty($mce_css) ) {
 					self::$first_init['content_css'] = $mce_css;
+				}
 			}
 
 			if ( $set['teeny'] ) {
@@ -668,10 +674,11 @@ final class _WP_Editors {
 
 				if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
 					$post_format = get_post_format( $post );
-					if ( $post_format && ! is_wp_error( $post_format ) )
+					if ( $post_format && ! is_wp_error( $post_format ) ) {
 						$body_class .= ' post-format-' . sanitize_html_class( $post_format );
-					else
+					} else {
 						$body_class .= ' post-format-standard';
+					}
 				}
 
 				if ( $page_template = get_page_template_slug( $post ) ) {
@@ -704,9 +711,9 @@ final class _WP_Editors {
 			// Merge with the first part of the init array
 			$mceInit = array_merge( self::$first_init, $mceInit );
 
-			if ( is_array( $set['tinymce'] ) )
+			if ( is_array( $set['tinymce'] ) ) {
 				$mceInit = array_merge( $mceInit, $set['tinymce'] );
-
+			}
 			/*
 			 * For people who really REALLY know what they're doing with TinyMCE
 			 * You can modify $mceInit to add, remove, change elements of the config
@@ -777,9 +784,9 @@ final class _WP_Editors {
 	 * @static
 	 */
 	public static function enqueue_scripts() {
-		if ( self::$has_tinymce )
+		if ( self::$has_tinymce ) {
 			wp_enqueue_script('editor');
-
+		}
 		if ( self::$has_quicktags ) {
 			wp_enqueue_script( 'quicktags' );
 			wp_enqueue_style( 'buttons' );
@@ -1245,12 +1252,12 @@ final class _WP_Editors {
 		<script type="text/javascript">
 		<?php
 
-		if ( self::$ext_plugins )
+		if ( self::$ext_plugins ) {
 			echo self::$ext_plugins . "\n";
-
-		if ( ! is_admin() )
+		}
+		if ( ! is_admin() ) {
 			echo 'var ajaxurl = "' . admin_url( 'admin-ajax.php', 'relative' ) . '";';
-
+		}
 		?>
 
 		( function() {
@@ -1331,9 +1338,9 @@ final class _WP_Editors {
 
 		$args['pagenum'] = isset( $args['pagenum'] ) ? absint( $args['pagenum'] ) : 1;
 
-		if ( isset( $args['s'] ) )
+		if ( isset( $args['s'] ) ) {
 			$query['s'] = $args['s'];
-
+		}
 		$query['offset'] = $args['pagenum'] > 1 ? $query['posts_per_page'] * ( $args['pagenum'] - 1 ) : 0;
 
 		/**
@@ -1353,17 +1360,18 @@ final class _WP_Editors {
 		$get_posts = new WP_Query;
 		$posts = $get_posts->query( $query );
 		// Check if any posts were found.
-		if ( ! $get_posts->post_count )
+		if ( ! $get_posts->post_count ) {
 			return false;
+		}
 
 		// Build results.
 		$results = [];
 		foreach ( $posts as $post ) {
-			if ( 'post' == $post->post_type )
+			if ( 'post' == $post->post_type ) {
 				$info = mysql2date( __( 'Y/m/d' ), $post->post_date );
-			else
+			} else {
 				$info = $pts[ $post->post_type ]->labels->singular_name;
-
+			}
 			$results[] = array(
 				'ID' => $post->ID,
 				'title' => trim( esc_html( strip_tags( get_the_title( $post ) ) ) ),

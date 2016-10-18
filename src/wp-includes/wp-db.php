@@ -633,8 +633,9 @@ class wpdb {
 
 		register_shutdown_function( [ $this, '__destruct' ] );
 
-		if ( WP_DEBUG && WP_DEBUG_DISPLAY )
-			$this->show_errors();
+		if ( WP_DEBUG && WP_DEBUG_DISPLAY ) {
+					$this->show_errors();
+		}
 
 		/* Use ext/mysqli if it exists and:
 		 *  - WP_USE_EXT_MYSQL is defined as false, or
@@ -685,8 +686,9 @@ class wpdb {
 	 * @return mixed The private member
 	 */
 	public function __get( $name ) {
-		if ( 'col_info' === $name )
-			$this->load_col_info();
+		if ( 'col_info' === $name ) {
+					$this->load_col_info();
+		}
 
 		return $this->$name;
 	}
@@ -818,10 +820,12 @@ class wpdb {
 	 * @param string   $collate Optional. The collation. Default null.
 	 */
 	public function set_charset( $dbh, $charset = null, $collate = null ) {
-		if ( ! isset( $charset ) )
-			$charset = $this->charset;
-		if ( ! isset( $collate ) )
-			$collate = $this->collate;
+		if ( ! isset( $charset ) ) {
+					$charset = $this->charset;
+		}
+		if ( ! isset( $collate ) ) {
+					$collate = $this->collate;
+		}
 		if ( $this->has_cap( 'collation' ) && ! empty( $charset ) ) {
 			$set_charset_succeeded = true;
 
@@ -832,8 +836,9 @@ class wpdb {
 
 				if ( $set_charset_succeeded ) {
 					$query = $this->prepare( 'SET NAMES %s', $charset );
-					if ( ! empty( $collate ) )
-						$query .= $this->prepare( ' COLLATE %s', $collate );
+					if ( ! empty( $collate ) ) {
+											$query .= $this->prepare( ' COLLATE %s', $collate );
+					}
 					mysqli_query( $dbh, $query );
 				}
 			} else {
@@ -842,8 +847,9 @@ class wpdb {
 				}
 				if ( $set_charset_succeeded ) {
 					$query = $this->prepare( 'SET NAMES %s', $charset );
-					if ( ! empty( $collate ) )
-						$query .= $this->prepare( ' COLLATE %s', $collate );
+					if ( ! empty( $collate ) ) {
+											$query .= $this->prepare( ' COLLATE %s', $collate );
+					}
 					mysql_query( $query, $dbh );
 				}
 			}
@@ -926,30 +932,36 @@ class wpdb {
 	 */
 	public function set_prefix( $prefix, $set_table_names = true ) {
 
-		if ( preg_match( '|[^a-z0-9_]|i', $prefix ) )
-			return new WP_Error('invalid_db_prefix', 'Invalid database prefix' );
+		if ( preg_match( '|[^a-z0-9_]|i', $prefix ) ) {
+					return new WP_Error('invalid_db_prefix', 'Invalid database prefix' );
+		}
 
 		$old_prefix = is_multisite() ? '' : $prefix;
 
-		if ( isset( $this->base_prefix ) )
-			$old_prefix = $this->base_prefix;
+		if ( isset( $this->base_prefix ) ) {
+					$old_prefix = $this->base_prefix;
+		}
 
 		$this->base_prefix = $prefix;
 
 		if ( $set_table_names ) {
-			foreach ( $this->tables( 'global' ) as $table => $prefixed_table )
-				$this->$table = $prefixed_table;
+			foreach ( $this->tables( 'global' ) as $table => $prefixed_table ) {
+							$this->$table = $prefixed_table;
+			}
 
-			if ( is_multisite() && empty( $this->blogid ) )
-				return $old_prefix;
+			if ( is_multisite() && empty( $this->blogid ) ) {
+							return $old_prefix;
+			}
 
 			$this->prefix = $this->get_blog_prefix();
 
-			foreach ( $this->tables( 'blog' ) as $table => $prefixed_table )
-				$this->$table = $prefixed_table;
+			foreach ( $this->tables( 'blog' ) as $table => $prefixed_table ) {
+							$this->$table = $prefixed_table;
+			}
 
-			foreach ( $this->tables( 'old' ) as $table => $prefixed_table )
-				$this->$table = $prefixed_table;
+			foreach ( $this->tables( 'old' ) as $table => $prefixed_table ) {
+							$this->$table = $prefixed_table;
+			}
 		}
 		return $old_prefix;
 	}
@@ -965,19 +977,22 @@ class wpdb {
 	 * @return int previous blog id
 	 */
 	public function set_blog_id( $blog_id, $site_id = 0 ) {
-		if ( ! empty( $site_id ) )
-			$this->siteid = $site_id;
+		if ( ! empty( $site_id ) ) {
+					$this->siteid = $site_id;
+		}
 
 		$old_blog_id  = $this->blogid;
 		$this->blogid = $blog_id;
 
 		$this->prefix = $this->get_blog_prefix();
 
-		foreach ( $this->tables( 'blog' ) as $table => $prefixed_table )
-			$this->$table = $prefixed_table;
+		foreach ( $this->tables( 'blog' ) as $table => $prefixed_table ) {
+					$this->$table = $prefixed_table;
+		}
 
-		foreach ( $this->tables( 'old' ) as $table => $prefixed_table )
-			$this->$table = $prefixed_table;
+		foreach ( $this->tables( 'old' ) as $table => $prefixed_table ) {
+					$this->$table = $prefixed_table;
+		}
 
 		return $old_blog_id;
 	}
@@ -991,13 +1006,15 @@ class wpdb {
 	 */
 	public function get_blog_prefix( $blog_id = null ) {
 		if ( is_multisite() ) {
-			if ( null === $blog_id )
-				$blog_id = $this->blogid;
+			if ( null === $blog_id ) {
+							$blog_id = $this->blogid;
+			}
 			$blog_id = (int) $blog_id;
-			if ( defined( 'MULTISITE' ) && ( 0 == $blog_id || 1 == $blog_id ) )
-				return $this->base_prefix;
-			else
-				return $this->base_prefix . $blog_id . '_';
+			if ( defined( 'MULTISITE' ) && ( 0 == $blog_id || 1 == $blog_id ) ) {
+							return $this->base_prefix;
+			} else {
+							return $this->base_prefix . $blog_id . '_';
+			}
 		} else {
 			return $this->base_prefix;
 		}
@@ -1056,24 +1073,28 @@ class wpdb {
 		}
 
 		if ( $prefix ) {
-			if ( ! $blog_id )
-				$blog_id = $this->blogid;
+			if ( ! $blog_id ) {
+							$blog_id = $this->blogid;
+			}
 			$blog_prefix = $this->get_blog_prefix( $blog_id );
 			$base_prefix = $this->base_prefix;
 			$global_tables = array_merge( $this->global_tables, $this->ms_global_tables );
 			foreach ( $tables as $k => $table ) {
-				if ( in_array( $table, $global_tables ) )
-					$tables[ $table ] = $base_prefix . $table;
-				else
-					$tables[ $table ] = $blog_prefix . $table;
+				if ( in_array( $table, $global_tables ) ) {
+									$tables[ $table ] = $base_prefix . $table;
+				} else {
+									$tables[ $table ] = $blog_prefix . $table;
+				}
 				unset( $tables[ $k ] );
 			}
 
-			if ( isset( $tables['users'] ) && defined( 'CUSTOM_USER_TABLE' ) )
-				$tables['users'] = CUSTOM_USER_TABLE;
+			if ( isset( $tables['users'] ) && defined( 'CUSTOM_USER_TABLE' ) ) {
+							$tables['users'] = CUSTOM_USER_TABLE;
+			}
 
-			if ( isset( $tables['usermeta'] ) && defined( 'CUSTOM_USER_META_TABLE' ) )
-				$tables['usermeta'] = CUSTOM_USER_META_TABLE;
+			if ( isset( $tables['usermeta'] ) && defined( 'CUSTOM_USER_META_TABLE' ) ) {
+							$tables['usermeta'] = CUSTOM_USER_META_TABLE;
+			}
 		}
 
 		return $tables;
@@ -1091,8 +1112,9 @@ class wpdb {
 	 * @param resource|null $dbh Optional link identifier.
 	 */
 	public function select( $db, $dbh = null ) {
-		if ( is_null($dbh) )
-			$dbh = $this->dbh;
+		if ( is_null($dbh) ) {
+					$dbh = $this->dbh;
+		}
 
 		if ( $this->use_mysqli ) {
 			$success = mysqli_select_db( $dbh, $db );
@@ -1207,8 +1229,9 @@ class wpdb {
 	 * @param string $string to escape
 	 */
 	public function escape_by_ref( &$string ) {
-		if ( ! is_float( $string ) )
-			$string = $this->_real_escape( $string );
+		if ( ! is_float( $string ) ) {
+					$string = $this->_real_escape( $string );
+		}
 	}
 
 	/**
@@ -1246,8 +1269,9 @@ class wpdb {
 	 * @return string|void Sanitized query string, if there is a query to prepare.
 	 */
 	public function prepare( $query, $args ) {
-		if ( is_null( $query ) )
-			return;
+		if ( is_null( $query ) ) {
+					return;
+		}
 
 		// This is not meant to be foolproof -- but it will catch obviously incorrect usage.
 		if ( strpos( $query, '%' ) === false ) {
@@ -1257,8 +1281,9 @@ class wpdb {
 		$args = func_get_args();
 		array_shift( $args );
 		// If args were passed as an array (as in vsprintf), move them up
-		if ( isset( $args[0] ) && is_array($args[0]) )
-			$args = $args[0];
+		if ( isset( $args[0] ) && is_array($args[0]) ) {
+					$args = $args[0];
+		}
 		$query = str_replace( "'%s'", '%s', $query ); // in case someone mistakenly already singlequoted it
 		$query = str_replace( '"%s"', '%s', $query ); // doublequote unquoting
 		$query = preg_replace( '|(?<!%)%f|' , '%F', $query ); // Force floats to be locale unaware
@@ -1312,21 +1337,24 @@ class wpdb {
 			}
 		}
 
-		if ( $this->suppress_errors )
-			return false;
+		if ( $this->suppress_errors ) {
+					return false;
+		}
 
 		wp_load_translations_early();
 
-		if ( $caller = $this->get_caller() )
-			$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s made by %3$s' ), $str, $this->last_query, $caller );
-		else
-			$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s' ), $str, $this->last_query );
+		if ( $caller = $this->get_caller() ) {
+					$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s made by %3$s' ), $str, $this->last_query, $caller );
+		} else {
+					$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s' ), $str, $this->last_query );
+		}
 
 		error_log( $error_str );
 
 		// Are we showing errors?
-		if ( ! $this->show_errors )
-			return false;
+		if ( ! $this->show_errors ) {
+					return false;
+		}
 
 		// If there is an error then take note of it
 		if ( is_multisite() ) {
@@ -1760,8 +1788,9 @@ class wpdb {
 
 		if ( $this->last_error ) {
 			// Clear insert_id on a subsequent failed insert.
-			if ( $this->insert_id && preg_match( '/^\s*(insert|replace)\s/i', $query ) )
-				$this->insert_id = 0;
+			if ( $this->insert_id && preg_match( '/^\s*(insert|replace)\s/i', $query ) ) {
+							$this->insert_id = 0;
+			}
 
 			$this->print_error();
 			return false;
@@ -2267,8 +2296,9 @@ class wpdb {
 			return null;
 		}
 
-		if ( !isset( $this->last_result[$y] ) )
-			return null;
+		if ( !isset( $this->last_result[$y] ) ) {
+					return null;
+		}
 
 		if ( $output == OBJECT ) {
 			return $this->last_result[$y] ? $this->last_result[$y] : null;
@@ -2352,8 +2382,9 @@ class wpdb {
 			foreach ( $this->last_result as $row ) {
 				$var_by_ref = get_object_vars( $row );
 				$key = array_shift( $var_by_ref );
-				if ( ! isset( $new_array[ $key ] ) )
-					$new_array[ $key ] = $row;
+				if ( ! isset( $new_array[ $key ] ) ) {
+									$new_array[ $key ] = $row;
+				}
 			}
 			return $new_array;
 		} elseif ( $output == ARRAY_A || $output == ARRAY_N ) {
@@ -3030,8 +3061,9 @@ class wpdb {
 	 * @access protected
 	 */
 	protected function load_col_info() {
-		if ( $this->col_info )
-			return;
+		if ( $this->col_info ) {
+					return;
+		}
 
 		if ( $this->use_mysqli ) {
 			$num_fields = mysqli_num_fields( $this->result );
@@ -3180,10 +3212,12 @@ class wpdb {
 	public function get_charset_collate() {
 		$charset_collate = '';
 
-		if ( ! empty( $this->charset ) )
-			$charset_collate = "DEFAULT CHARACTER SET $this->charset";
-		if ( ! empty( $this->collate ) )
-			$charset_collate .= " COLLATE $this->collate";
+		if ( ! empty( $this->charset ) ) {
+					$charset_collate = "DEFAULT CHARACTER SET $this->charset";
+		}
+		if ( ! empty( $this->collate ) ) {
+					$charset_collate .= " COLLATE $this->collate";
+		}
 
 		return $charset_collate;
 	}
