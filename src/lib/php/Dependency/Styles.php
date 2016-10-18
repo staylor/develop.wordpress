@@ -147,8 +147,8 @@ class Styles extends Dependencies {
 
 		if ( $this->do_concat ) {
 			if ( $this->in_default_dir( $obj->src ) &&
-				! isset( $obj->extra['conditional'] ) &&
-				! isset( $obj->extra['alt'] )
+				! isset( $obj->extra[ 'conditional' ] ) &&
+				! isset( $obj->extra[ 'alt' ] )
 			) {
 				$this->concat .= $handle . ',';
 
@@ -158,7 +158,7 @@ class Styles extends Dependencies {
 			}
 		}
 
-		if ( isset($obj->args) ) {
+		if ( isset( $obj->args ) ) {
 			$media = esc_attr( $obj->args );
 		} else {
 			$media = 'all';
@@ -182,8 +182,8 @@ class Styles extends Dependencies {
 			return true;
 		}
 
-		$rel = isset($obj->extra['alt']) && $obj->extra['alt'] ? 'alternate stylesheet' : 'stylesheet';
-		$title = isset($obj->extra['title']) ? "title='" . esc_attr( $obj->extra['title'] ) . "'" : '';
+		$rel = isset( $obj->extra[ 'alt' ] ) && $obj->extra[ 'alt' ] ? 'alternate stylesheet' : 'stylesheet';
+		$title = isset( $obj->extra[ 'title' ] ) ? "title='" . esc_attr( $obj->extra[ 'title' ] ) . "'" : '';
 
 		$style_loader_tag = sprintf(
 			"<link rel='%s' id='%s-css' %s href='%s' type='text/css' media='%s' />\n",
@@ -205,13 +205,13 @@ class Styles extends Dependencies {
 		 * @param string $href   The stylesheet's source URL.
 		 * @param string $media  The stylesheet's media attribute.
 		 */
-		$tag = apply_filters( 'style_loader_tag', $style_loader_tag, $handle, $href, $media);
-		if ( 'rtl' === $this->text_direction && isset($obj->extra['rtl']) && $obj->extra['rtl'] ) {
-			if ( is_bool( $obj->extra['rtl'] ) || 'replace' === $obj->extra['rtl'] ) {
-				$suffix = isset( $obj->extra['suffix'] ) ? $obj->extra['suffix'] : '';
-				$rtl_href = str_replace( $suffix . '.css', '-rtl' . $suffix . '.css', $this->_css_href( $obj->src , $ver, $handle . '-rtl' ));
+		$tag = apply_filters( 'style_loader_tag', $style_loader_tag, $handle, $href, $media );
+		if ( 'rtl' === $this->text_direction && isset( $obj->extra[ 'rtl' ] ) && $obj->extra[ 'rtl' ] ) {
+			if ( is_bool( $obj->extra[ 'rtl' ] ) || 'replace' === $obj->extra[ 'rtl' ] ) {
+				$suffix = isset( $obj->extra[ 'suffix' ] ) ? $obj->extra[ 'suffix' ] : '';
+				$rtl_href = str_replace( $suffix . '.css', '-rtl' . $suffix . '.css', $this->_css_href( $obj->src, $ver, $handle . '-rtl' ) );
 			} else {
-				$rtl_href = $this->_css_href( $obj->extra['rtl'], $ver, $handle . '-rtl' );
+				$rtl_href = $this->_css_href( $obj->extra[ 'rtl' ], $ver, $handle . '-rtl' );
 			}
 
 			/** This filter is documented in wp-includes/class.wp-styles.php */
@@ -225,7 +225,7 @@ class Styles extends Dependencies {
 			);
 			$rtl_tag = apply_filters( 'style_loader_tag', $style_loader_tag, $handle, $rtl_href, $media );
 
-			if ( $obj->extra['rtl'] === 'replace' ) {
+			if ( $obj->extra[ 'rtl' ] === 'replace' ) {
 				$tag = $rtl_tag;
 			} else {
 				$tag .= $rtl_tag;
@@ -233,8 +233,8 @@ class Styles extends Dependencies {
 		}
 
 		$conditional_pre = $conditional_post = '';
-		if ( isset( $obj->extra['conditional'] ) && $obj->extra['conditional'] ) {
-			$conditional_pre  = '<!--[if ' . $obj->extra['conditional'] . "]>\n";
+		if ( isset( $obj->extra[ 'conditional' ] ) && $obj->extra[ 'conditional' ] ) {
+			$conditional_pre  = '<!--[if ' . $obj->extra[ 'conditional' ] . "]>\n";
 			$conditional_post = "<![endif]-->\n";
 		}
 
@@ -272,10 +272,10 @@ class Styles extends Dependencies {
 
 		$after = $this->get_data( $handle, 'after' );
 		if ( ! $after ) {
-			$after = [];
+			$after = [ ];
 		}
 
-		$after[] = $code;
+		$after[ ] = $code;
 
 		return $this->add_data( $handle, 'after', $after );
 	}
@@ -349,12 +349,12 @@ class Styles extends Dependencies {
 	 * @return string Style's fully-qualified URL.
 	 */
 	public function _css_href( $src, $ver, $handle ) {
-		if ( !is_bool($src) && !preg_match('|^(https?:)?//|', $src) && ! ( $this->content_url && 0 === strpos($src, $this->content_url) ) ) {
+		if ( ! is_bool( $src ) && ! preg_match( '|^(https?:)?//|', $src ) && ! ( $this->content_url && 0 === strpos( $src, $this->content_url ) ) ) {
 			$src = $this->base_url . $src;
 		}
 
-		if ( !empty($ver) ) {
-			$src = add_query_arg('ver', $ver, $src);
+		if ( ! empty( $ver ) ) {
+			$src = add_query_arg( 'ver', $ver, $src );
 		}
 
 		/**
@@ -384,7 +384,7 @@ class Styles extends Dependencies {
 		}
 
 		foreach ( (array) $this->default_dirs as $test ) {
-			if ( 0 === strpos($src, $test) ) {
+			if ( 0 === strpos( $src, $test ) ) {
 				return true;
 			}
 		}
@@ -404,7 +404,7 @@ class Styles extends Dependencies {
 	 * @return array Handles of items that have been processed.
 	 */
 	public function do_footer_items() {
-		$this->do_items(false, 1);
+		$this->do_items( false, 1 );
 		return $this->done;
 	}
 

@@ -618,38 +618,38 @@ class WP_Tax_Query {
 		$resulting_field = sanitize_key( $resulting_field );
 
 		switch ( $query['field'] ) {
-			case 'slug':
-			case 'name':
-				foreach ( $query['terms'] as &$term ) {
-					/*
+		case 'slug':
+		case 'name':
+			foreach ( $query['terms'] as &$term ) {
+				/*
 					 * 0 is the $term_id parameter. We don't have a term ID yet, but it doesn't
 					 * matter because `sanitize_term_field()` ignores the $term_id param when the
 					 * context is 'db'.
 					 */
-					$term = "'" . esc_sql( sanitize_term_field( $query['field'], $term, 0, $query['taxonomy'], 'db' ) ) . "'";
-				}
+				$term = "'" . esc_sql( sanitize_term_field( $query['field'], $term, 0, $query['taxonomy'], 'db' ) ) . "'";
+			}
 
-				$terms = implode( ",", $query['terms'] );
+			$terms = implode( ",", $query['terms'] );
 
-				$terms = $wpdb->get_col( "
+			$terms = $wpdb->get_col( "
 					SELECT {$wpdb->term_taxonomy}.$resulting_field
 					FROM {$wpdb->term_taxonomy}
 					INNER JOIN {$wpdb->terms} USING (term_id)
 					WHERE taxonomy = '{$query['taxonomy']}'
 					AND {$wpdb->terms}.{$query['field']} IN ($terms)
 				" );
-				break;
-			case 'term_taxonomy_id':
-				$terms = implode( ',', array_map( 'intval', $query['terms'] ) );
-				$terms = $wpdb->get_col( "
+			break;
+		case 'term_taxonomy_id':
+			$terms = implode( ',', array_map( 'intval', $query['terms'] ) );
+			$terms = $wpdb->get_col( "
 					SELECT $resulting_field
 					FROM {$wpdb->term_taxonomy}
 					WHERE term_taxonomy_id IN ($terms)
 				" );
-				break;
-			default:
-				$terms = implode( ',', array_map( 'intval', $query['terms'] ) );
-				$terms = $wpdb->get_col( "
+			break;
+		default:
+			$terms = implode( ',', array_map( 'intval', $query['terms'] ) );
+			$terms = $wpdb->get_col( "
 					SELECT $resulting_field
 					FROM {$wpdb->term_taxonomy}
 					WHERE taxonomy = '{$query['taxonomy']}'

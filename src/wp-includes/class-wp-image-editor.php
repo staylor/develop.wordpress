@@ -285,7 +285,7 @@ abstract class WP_Image_Editor {
 			$this->quality = $quality;
 			return true;
 		} else {
-			return new WP_Error( 'invalid_image_quality', __('Attempted to set image quality outside of the range [1,100].') );
+			return new WP_Error( 'invalid_image_quality', __( 'Attempted to set image quality outside of the range [1,100].' ) );
 		}
 	}
 
@@ -397,7 +397,7 @@ abstract class WP_Image_Editor {
 			return false;
 		}
 
-		return "{$this->size['width']}x{$this->size['height']}";
+		return "{$this->size[ 'width' ]}x{$this->size[ 'height' ]}";
 	}
 
 	/**
@@ -463,7 +463,7 @@ abstract class WP_Image_Editor {
 
 		foreach ( $extensions as $_extension ) {
 			if ( preg_match( "/{$extension}/i", $_extension ) ) {
-				return $mime_types[$_extension];
+				return $mime_types[ $_extension ];
 			}
 		}
 

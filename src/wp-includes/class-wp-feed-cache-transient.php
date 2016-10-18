@@ -54,7 +54,7 @@ class WP_Feed_Cache_Transient {
 	 * @param string $filename  Unique identifier for cache object.
 	 * @param string $extension 'spi' or 'spc'.
 	 */
-	public function __construct($location, $filename, $extension) {
+	public function __construct( $location, $filename, $extension ) {
 		$this->name = 'feed_' . $filename;
 		$this->mod_name = 'feed_mod_' . $filename;
 
@@ -67,7 +67,7 @@ class WP_Feed_Cache_Transient {
 		 * @param int    $lifetime Cache duration in seconds. Default is 43200 seconds (12 hours).
 		 * @param string $filename Unique identifier for the cache object.
 		 */
-		$this->lifetime = apply_filters( 'wp_feed_cache_transient_lifetime', $lifetime, $filename);
+		$this->lifetime = apply_filters( 'wp_feed_cache_transient_lifetime', $lifetime, $filename );
 	}
 
 	/**
@@ -79,13 +79,13 @@ class WP_Feed_Cache_Transient {
 	 * @param SimplePie $data Data to save.
 	 * @return true Always true.
 	 */
-	public function save($data) {
+	public function save( $data ) {
 		if ( $data instanceof SimplePie ) {
 			$data = $data->data;
 		}
 
-		set_transient($this->name, $data, $this->lifetime);
-		set_transient($this->mod_name, time(), $this->lifetime);
+		set_transient( $this->name, $data, $this->lifetime );
+		set_transient( $this->mod_name, time(), $this->lifetime );
 		return true;
 	}
 
@@ -98,7 +98,7 @@ class WP_Feed_Cache_Transient {
 	 * @return mixed Transient value.
 	 */
 	public function load() {
-		return get_transient($this->name);
+		return get_transient( $this->name );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class WP_Feed_Cache_Transient {
 	 * @return mixed Transient value.
 	 */
 	public function mtime() {
-		return get_transient($this->mod_name);
+		return get_transient( $this->mod_name );
 	}
 
 	/**
@@ -122,7 +122,7 @@ class WP_Feed_Cache_Transient {
 	 * @return bool False if value was not set and true if value was set.
 	 */
 	public function touch() {
-		return set_transient($this->mod_name, time(), $this->lifetime);
+		return set_transient( $this->mod_name, time(), $this->lifetime );
 	}
 
 	/**
@@ -134,8 +134,8 @@ class WP_Feed_Cache_Transient {
 	 * @return true Always true.
 	 */
 	public function unlink() {
-		delete_transient($this->name);
-		delete_transient($this->mod_name);
+		delete_transient( $this->name );
+		delete_transient( $this->mod_name );
 		return true;
 	}
 }

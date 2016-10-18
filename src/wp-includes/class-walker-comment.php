@@ -56,15 +56,15 @@ class Walker_Comment extends Walker {
 		$GLOBALS['comment_depth'] = $depth + 1;
 
 		switch ( $args['style'] ) {
-			case 'div':
-				break;
-			case 'ol':
-				$output .= '<ol class="children">' . "\n";
-				break;
-			case 'ul':
-			default:
-				$output .= '<ul class="children">' . "\n";
-				break;
+		case 'div':
+			break;
+		case 'ol':
+			$output .= '<ol class="children">' . "\n";
+			break;
+		case 'ul':
+		default:
+			$output .= '<ul class="children">' . "\n";
+			break;
 		}
 	}
 
@@ -86,15 +86,15 @@ class Walker_Comment extends Walker {
 		$GLOBALS['comment_depth'] = $depth + 1;
 
 		switch ( $args['style'] ) {
-			case 'div':
-				break;
-			case 'ol':
-				$output .= "</ol><!-- .children -->\n";
-				break;
-			case 'ul':
-			default:
-				$output .= "</ul><!-- .children -->\n";
-				break;
+		case 'div':
+			break;
+		case 'ol':
+			$output .= "</ol><!-- .children -->\n";
+			break;
+		case 'ul':
+		default:
+			$output .= "</ul><!-- .children -->\n";
+			break;
 		}
 	}
 

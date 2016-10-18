@@ -32,7 +32,7 @@ class Help extends AdminHelp {
 			'content' => $help,
 		] );
 
-		$help  = '<p>' . __( 'The boxes on your Dashboard screen are:' ) . '</p>';
+		$help = '<p>' . __( 'The boxes on your Dashboard screen are:' ) . '</p>';
 		if ( current_user_can( 'edit_posts' ) ) {
 			$help .= '<p>' . __( '<strong>At A Glance</strong> &mdash; Displays a summary of the content on your site and identifies which theme and version of WordPress you are using.' ) . '</p>';
 			$help .= '<p>' . __( '<strong>Activity</strong> &mdash; Shows the upcoming scheduled posts, recently published posts, and the most recent comments on your posts and allows you to moderate them.' ) . '</p>';

@@ -1,7 +1,7 @@
 <?php
 namespace WP\XMLRPC\Provider;
 
-use WP\XMLRPC\{Server,Utils as ServerUtils};
+use WP\XMLRPC\{Server, Utils as ServerUtils};
 
 class WordPress implements ProviderInterface {
 	use ServerUtils;
@@ -48,7 +48,7 @@ class WordPress implements ProviderInterface {
 			'wp.newCategory'		=> [ $this, 'wp_newCategory' ],
 			'wp.deleteCategory'		=> [ $this, 'wp_deleteCategory' ],
 			'wp.suggestCategories'	=> [ $this, 'wp_suggestCategories' ],
-			'wp.deleteFile'			=> [ $this, 'wp_deletePost' ],		// Alias
+			'wp.deleteFile'			=> [ $this, 'wp_deletePost' ], // Alias
 			'wp.getCommentCount'	=> [ $this, 'wp_getCommentCount' ],
 			'wp.getPostStatusList'	=> [ $this, 'wp_getPostStatusList' ],
 			'wp.getPageStatusList'	=> [ $this, 'wp_getPageStatusList' ],

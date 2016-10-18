@@ -7,7 +7,7 @@ class Help extends AdminHelp {
 
 	public function addEditTags( $taxnow ) {
 		if ( 'category' == $taxnow ) {
-			$help = '<p>' . sprintf(__( 'You can use categories to define sections of your site and group related posts. The default category is &#8220;Uncategorized&#8221; until you change it in your <a href="%s">writing settings</a>.' ) , 'options-writing.php' ) . '</p>';
+			$help = '<p>' . sprintf( __( 'You can use categories to define sections of your site and group related posts. The default category is &#8220;Uncategorized&#8221; until you change it in your <a href="%s">writing settings</a>.' ), 'options-writing.php' ) . '</p>';
 		} elseif ( 'link_category' == $taxnow ) {
 			$help = '<p>' . __( 'You can create groups of links by using Link Categories. Link Category names must be unique and Link Categories are separate from the categories you use for posts.' ) . '</p>';
 		} else {
@@ -17,12 +17,12 @@ class Help extends AdminHelp {
 		if ( 'link_category' == $taxnow ) {
 			$help .= '<p>' . __( 'You can delete Link Categories in the Bulk Action pull-down, but that action does not delete the links within the category. Instead, it moves them to the default Link Category.' ) . '</p>';
 		} else {
-			$help .='<p>' . __( 'What&#8217;s the difference between categories and tags? Normally, tags are ad-hoc keywords that identify important information in your post (names, subjects, etc) that may or may not recur in other posts, while categories are pre-determined sections. If you think of your site like a book, the categories are like the Table of Contents and the tags are like the terms in the index.' ) . '</p>';
+			$help .= '<p>' . __( 'What&#8217;s the difference between categories and tags? Normally, tags are ad-hoc keywords that identify important information in your post (names, subjects, etc) that may or may not recur in other posts, while categories are pre-determined sections. If you think of your site like a book, the categories are like the Table of Contents and the tags are like the terms in the index.' ) . '</p>';
 		}
 
 		$this->screen->add_help_tab( [
 			'id'      => 'overview',
-			'title'   => __('Overview'),
+			'title'   => __( 'Overview' ),
 			'content' => $help,
 		] );
 
@@ -61,7 +61,7 @@ class Help extends AdminHelp {
 		} else {
 			$help .= '<p>' . __( '<a href="https://codex.wordpress.org/Posts_Tags_Screen">Documentation on Tags</a>' ) . '</p>';
 		}
-		$help .= '<p>' . __('<a href="https://wordpress.org/support/">Support Forums</a>') . '</p>';
+		$help .= '<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>';
 
 		$this->screen->set_help_sidebar( $help );
 	}

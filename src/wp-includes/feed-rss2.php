@@ -5,10 +5,10 @@
  * @package WordPress
  */
 
-header('Content-Type: ' . feed_content_type('rss2') . '; charset=' . get_option('blog_charset'), true);
+header( 'Content-Type: ' . feed_content_type( 'rss2' ) . '; charset=' . get_option( 'blog_charset' ), true );
 $more = 1;
 
-echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>';
+echo '<?xml version="1.0" encoding="' . get_option( 'blog_charset' ) . '"?' . '>';
 
 /**
  * Fires between the xml and rss tags in a feed.
@@ -40,9 +40,9 @@ do_action( 'rss_tag_pre', 'rss2' );
 <channel>
 	<title><?php wp_title_rss(); ?></title>
 	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
-	<link><?php bloginfo_rss('url') ?></link>
-	<description><?php bloginfo_rss("description") ?></description>
-	<lastBuildDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_lastpostmodified('GMT'), false); ?></lastBuildDate>
+	<link><?php bloginfo_rss( 'url' ) ?></link>
+	<description><?php bloginfo_rss( "description" ) ?></description>
+	<lastBuildDate><?php echo mysql2date( 'D, d M Y H:i:s +0000', get_lastpostmodified( 'GMT' ), false ); ?></lastBuildDate>
 	<language><?php bloginfo_rss( 'language' ); ?></language>
 	<sy:updatePeriod><?php
 		$duration = 'hourly';
@@ -76,9 +76,9 @@ do_action( 'rss_tag_pre', 'rss2' );
 	 *
 	 * @since 2.0.0
 	 */
-	do_action( 'rss2_head');
+	do_action( 'rss2_head' );
 
-	while( have_posts()) : the_post();
+	while ( have_posts() ) : the_post();
 	?>
 	<item>
 		<title><?php the_title_rss() ?></title>
@@ -86,17 +86,17 @@ do_action( 'rss_tag_pre', 'rss2' );
 <?php if ( get_comments_number() || comments_open() ) { ?>
 		<comments><?php comments_link_feed(); ?></comments>
 <?php } ?>
-		<pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_post_time('Y-m-d H:i:s', true), false); ?></pubDate>
+		<pubDate><?php echo mysql2date( 'D, d M Y H:i:s +0000', get_post_time( 'Y-m-d H:i:s', true ), false ); ?></pubDate>
 		<dc:creator><![CDATA[<?php the_author() ?>]]></dc:creator>
-		<?php the_category_rss('rss2') ?>
+		<?php the_category_rss( 'rss2' ) ?>
 
 		<guid isPermaLink="false"><?php the_guid(); ?></guid>
-<?php if (get_option('rss_use_excerpt')) { ?>
+<?php if ( get_option( 'rss_use_excerpt' ) ) { ?>
 		<description><![CDATA[<?php the_excerpt_rss(); ?>]]></description>
 <?php } else { ?>
 		<description><![CDATA[<?php the_excerpt_rss(); ?>]]></description>
 	<?php
-	$content = get_the_content_feed('rss2');
+	$content = get_the_content_feed( 'rss2' );
 
 	if ( strlen( $content ) > 0 ) { ?>
 		<content:encoded><![CDATA[<?php echo $content; ?>]]></content:encoded>
@@ -106,7 +106,7 @@ do_action( 'rss_tag_pre', 'rss2' );
 }
 
 if ( get_comments_number() || comments_open() ) { ?>
-		<wfw:commentRss><?php echo esc_url( get_post_comments_feed_link(null, 'rss2') ); ?></wfw:commentRss>
+		<wfw:commentRss><?php echo esc_url( get_post_comments_feed_link( null, 'rss2' ) ); ?></wfw:commentRss>
 		<slash:comments><?php echo get_comments_number(); ?></slash:comments>
 <?php }
 

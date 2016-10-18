@@ -24,7 +24,7 @@ $_cookie->replace( [] );
 // http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
 if ( $_get->has( 'rsd' ) ) {
 
-	$charset =	get_option( 'blog_charset' );
+	$charset = get_option( 'blog_charset' );
 
 	$response->setCharset( $charset );
 	$response->headers->set( 'Content-Type', 'text/xml', true );

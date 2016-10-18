@@ -75,21 +75,21 @@ class WP_Widget_Archives extends WP_Widget {
 			] );
 
 			switch ( $dropdown_args['type'] ) {
-				case 'yearly':
-					$label = __( 'Select Year' );
-					break;
-				case 'monthly':
-					$label = __( 'Select Month' );
-					break;
-				case 'daily':
-					$label = __( 'Select Day' );
-					break;
-				case 'weekly':
-					$label = __( 'Select Week' );
-					break;
-				default:
-					$label = __( 'Select Post' );
-					break;
+			case 'yearly':
+				$label = __( 'Select Year' );
+				break;
+			case 'monthly':
+				$label = __( 'Select Month' );
+				break;
+			case 'daily':
+				$label = __( 'Select Day' );
+				break;
+			case 'weekly':
+				$label = __( 'Select Week' );
+				break;
+			default:
+				$label = __( 'Select Post' );
+				break;
 			}
 			?>
 

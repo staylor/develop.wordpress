@@ -17,6 +17,7 @@ trait Term {
 	 */
 	abstract public function login( $username, $password );
 	/**
+	 * @param integer $count
 	 * @return bool
 	 */
 	abstract public function minimum_args( $args, $count );

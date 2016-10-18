@@ -1015,17 +1015,17 @@ class Rewrite extends Observable {
 
 			// Set up $ep_mask_specific which is used to match more specific URL types.
 			switch ( $dirs[$j] ) {
-				case '%year%':
-					$ep_mask_specific = EP_YEAR;
-					break;
-				case '%monthnum%':
-					$ep_mask_specific = EP_MONTH;
-					break;
-				case '%day%':
-					$ep_mask_specific = EP_DAY;
-					break;
-				default:
-					$ep_mask_specific = EP_NONE;
+			case '%year%':
+				$ep_mask_specific = EP_YEAR;
+				break;
+			case '%monthnum%':
+				$ep_mask_specific = EP_MONTH;
+				break;
+			case '%day%':
+				$ep_mask_specific = EP_DAY;
+				break;
+			default:
+				$ep_mask_specific = EP_NONE;
 			}
 
 			// Create query for /page/xx.

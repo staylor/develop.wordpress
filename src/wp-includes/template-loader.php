@@ -3,7 +3,7 @@
  * Loads the correct template based on the visitor's url
  * @package WordPress
  */
-if ( defined('WP_USE_THEMES') && WP_USE_THEMES ) {
+if ( defined( 'WP_USE_THEMES' ) && WP_USE_THEMES ) {
 	/**
 	 * Fires before determining which template to load.
 	 *
@@ -22,7 +22,7 @@ if ( defined('WP_USE_THEMES') && WP_USE_THEMES ) {
  *
  * @param bool $exit Whether to exit without generating any content for 'HEAD' requests. Default true.
  */
-if ( 'HEAD' === $app['request.method'] && apply_filters( 'exit_on_http_head', true ) ) {
+if ( 'HEAD' === $app[ 'request.method' ] && apply_filters( 'exit_on_http_head', true ) ) {
 	return;
 }
 
@@ -80,7 +80,7 @@ if ( empty( $template ) && is_attachment() ) {
 	remove_filter( 'the_content', 'prepend_attachment' );
 }
 
-if ( empty( $template ) && is_single()  ) {
+if ( empty( $template ) && is_single() ) {
 	$template = get_single_template();
 }
 
@@ -108,7 +108,7 @@ if ( empty( $template ) && is_date() ) {
 	$template = get_date_template();
 }
 
-if ( empty( $template ) && is_archive()  ) {
+if ( empty( $template ) && is_archive() ) {
 	$template = get_archive_template();
 }
 

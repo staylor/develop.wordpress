@@ -17,10 +17,12 @@ trait User {
 	 */
 	abstract public function login( $username, $password );
 	/**
+	 * @param integer $count
 	 * @return bool
 	 */
 	abstract public function minimum_args( $args, $count );
 	/**
+	 * @param string $date
 	 * @return Date Date object.
 	 */
 	abstract public function _convert_date( $date );

@@ -11,9 +11,9 @@
 
 use function WP\getApp;
 
-ignore_user_abort(true);
+ignore_user_abort( true );
 
-if ( !empty($_POST) || defined('DOING_AJAX') || defined('DOING_CRON') ) {
+if ( ! empty( $_POST ) || defined( 'DOING_AJAX' ) || defined( 'DOING_CRON' ) ) {
 	die();
 }
 
@@ -24,7 +24,7 @@ if ( !empty($_POST) || defined('DOING_AJAX') || defined('DOING_CRON') ) {
  */
 const DOING_CRON = true;
 
-if ( !defined('ABSPATH') ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	/** Set up WordPress environment */
 	require_once( __DIR__ . '/wp-load.php' );
 }
@@ -36,7 +36,7 @@ if ( false === $crons = _get_cron_array() ) {
 $keys = array_keys( $crons );
 $gmt_time = microtime( true );
 
-if ( isset($keys[0]) && $keys[0] > $gmt_time ) {
+if ( isset( $keys[ 0 ] ) && $keys[ 0 ] > $gmt_time ) {
 	die();
 }
 
@@ -75,14 +75,14 @@ foreach ( $crons as $timestamp => $cronhooks ) {
 
 		foreach ( $keys as $k => $v ) {
 
-			$schedule = $v['schedule'];
+			$schedule = $v[ 'schedule' ];
 
 			if ( $schedule != false ) {
-				$new_args = array($timestamp, $schedule, $hook, $v['args']);
-				call_user_func_array('wp_reschedule_event', $new_args);
+				$new_args = array( $timestamp, $schedule, $hook, $v[ 'args' ] );
+				call_user_func_array( 'wp_reschedule_event', $new_args );
 			}
 
-			wp_unschedule_event( $timestamp, $hook, $v['args'] );
+			wp_unschedule_event( $timestamp, $hook, $v[ 'args' ] );
 
 			/**
 			 * Fires scheduled events.
@@ -93,7 +93,7 @@ foreach ( $crons as $timestamp => $cronhooks ) {
 			 * @param string $hook Name of the hook that was scheduled to be fired.
 			 * @param array  $args The arguments to be passed to the hook.
 			 */
- 			do_action_ref_array( $hook, $v['args'] );
+ 			do_action_ref_array( $hook, $v[ 'args' ] );
 
 			// If the hook ran too long and another cron process stole the lock, quit.
 			if ( _get_cron_lock() != $doing_wp_cron ) {

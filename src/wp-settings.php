@@ -317,7 +317,7 @@ if ( is_multisite() ) {
 		require( $file );
 		die();
 	}
-	unset($file);
+	unset( $file );
 }
 
 /**

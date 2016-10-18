@@ -126,18 +126,18 @@ class Factory {
 	 */
 	public function _register_widgets() {
 		$app = getApp();
-		$keys = array_keys($this->widgets);
-		$registered = array_keys( $app->widgets['registered'] );
-		$registered = array_map('_get_widget_id_base', $registered);
+		$keys = array_keys( $this->widgets );
+		$registered = array_keys( $app->widgets[ 'registered' ] );
+		$registered = array_map( '_get_widget_id_base', $registered );
 
 		foreach ( $keys as $key ) {
 			// don't register new widget if old widget with the same id is already registered
-			if ( in_array($this->widgets[$key]->id_base, $registered, true) ) {
-				unset($this->widgets[$key]);
+			if ( in_array( $this->widgets[ $key ]->id_base, $registered, true ) ) {
+				unset( $this->widgets[ $key ] );
 				continue;
 			}
 
-			$this->widgets[$key]->_register();
+			$this->widgets[ $key ]->_register();
 		}
 	}
 }

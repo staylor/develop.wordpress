@@ -64,7 +64,7 @@ class Dependency {
 	 * @since 2.6.0
 	 * @var null
 	 */
-	public $args = null;  // Custom property, such as $in_footer or $media.
+	public $args = null; // Custom property, such as $in_footer or $media.
 
 	/**
 	 * Extra data to supply to the handle.
@@ -98,10 +98,10 @@ class Dependency {
 	 * @return bool False if not scalar, true otherwise.
 	 */
 	public function add_data( $name, $data ) {
-		if ( !is_scalar($name) ) {
+		if ( ! is_scalar( $name ) ) {
 			return false;
 		}
-		$this->extra[$name] = $data;
+		$this->extra[ $name ] = $data;
 		return true;
 	}
 

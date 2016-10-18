@@ -244,14 +244,14 @@ final class WP_Term {
 	 */
 	public function __get( $key ) {
 		switch ( $key ) {
-			case 'data' :
-				$data = new stdClass();
-				$columns = array( 'term_id', 'name', 'slug', 'term_group', 'term_taxonomy_id', 'taxonomy', 'description', 'parent', 'count' );
-				foreach ( $columns as $column ) {
-					$data->{$column} = isset( $this->{$column} ) ? $this->{$column} : null;
-				}
+		case 'data' :
+			$data = new stdClass();
+			$columns = array( 'term_id', 'name', 'slug', 'term_group', 'term_taxonomy_id', 'taxonomy', 'description', 'parent', 'count' );
+			foreach ( $columns as $column ) {
+				$data->{$column} = isset( $this->{$column} ) ? $this->{$column} : null;
+			}
 
-				return sanitize_term( $data, $data->taxonomy, 'raw' );
+			return sanitize_term( $data, $data->taxonomy, 'raw' );
 		}
 	}
 }

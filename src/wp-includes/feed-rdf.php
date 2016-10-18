@@ -5,10 +5,10 @@
  * @package WordPress
  */
 
-header('Content-Type: ' . feed_content_type('rdf') . '; charset=' . get_option('blog_charset'), true);
+header( 'Content-Type: ' . feed_content_type( 'rdf' ) . '; charset=' . get_option( 'blog_charset' ), true );
 $more = 1;
 
-echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>';
+echo '<?xml version="1.0" encoding="' . get_option( 'blog_charset' ) . '"?' . '>';
 
 /** This action is documented in wp-includes/feed-rss2.php */
 do_action( 'rss_tag_pre', 'rdf' );
@@ -29,11 +29,11 @@ do_action( 'rss_tag_pre', 'rdf' );
 	do_action( 'rdf_ns' );
 	?>
 >
-<channel rdf:about="<?php bloginfo_rss("url") ?>">
+<channel rdf:about="<?php bloginfo_rss( "url" ) ?>">
 	<title><?php wp_title_rss(); ?></title>
-	<link><?php bloginfo_rss('url') ?></link>
-	<description><?php bloginfo_rss('description') ?></description>
-	<dc:date><?php echo mysql2date('Y-m-d\TH:i:s\Z', get_lastpostmodified('GMT'), false); ?></dc:date>
+	<link><?php bloginfo_rss( 'url' ) ?></link>
+	<description><?php bloginfo_rss( 'description' ) ?></description>
+	<dc:date><?php echo mysql2date( 'Y-m-d\TH:i:s\Z', get_lastpostmodified( 'GMT' ), false ); ?></dc:date>
 	<sy:updatePeriod><?php
 		/** This filter is documented in wp-includes/feed-rss2.php */
 		echo apply_filters( 'rss_update_period', 'hourly' );
@@ -54,7 +54,7 @@ do_action( 'rss_tag_pre', 'rdf' );
 	<items>
 		<rdf:Seq>
 		<?php
-		while (have_posts()) {
+		while ( have_posts() ) {
 			the_post(); ?>
 			<rdf:li rdf:resource="<?php the_permalink_rss() ?>"/>
 		<?php } ?>
@@ -64,19 +64,19 @@ do_action( 'rss_tag_pre', 'rdf' );
 <?php
 rewind_posts();
 
-while (have_posts()) {
+while ( have_posts() ) {
 	the_post(); ?>
 <item rdf:about="<?php the_permalink_rss() ?>">
 	<title><?php the_title_rss() ?></title>
 	<link><?php the_permalink_rss() ?></link>
-	<dc:date><?php echo mysql2date('Y-m-d\TH:i:s\Z', $post->post_date_gmt, false); ?></dc:date>
+	<dc:date><?php echo mysql2date( 'Y-m-d\TH:i:s\Z', $post->post_date_gmt, false ); ?></dc:date>
 	<dc:creator><![CDATA[<?php the_author() ?>]]></dc:creator>
-	<?php the_category_rss('rdf') ?>
-<?php if (get_option('rss_use_excerpt')) { ?>
+	<?php the_category_rss( 'rdf' ) ?>
+<?php if ( get_option( 'rss_use_excerpt' ) ) { ?>
 	<description><![CDATA[<?php the_excerpt_rss() ?>]]></description>
 <?php } else { ?>
 	<description><![CDATA[<?php the_excerpt_rss() ?>]]></description>
-	<content:encoded><![CDATA[<?php the_content_feed('rdf') ?>]]></content:encoded>
+	<content:encoded><![CDATA[<?php the_content_feed( 'rdf' ) ?>]]></content:encoded>
 <?php }
 
 	/**

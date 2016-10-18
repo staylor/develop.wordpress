@@ -585,33 +585,33 @@ class WP_Term_Query {
 
 		$selects = [];
 		switch ( $args['fields'] ) {
-			case 'all':
-			case 'all_with_object_id' :
-			case 'tt_ids' :
-			case 'slugs' :
-				$selects = array( 't.*', 'tt.*' );
-				if ( 'all_with_object_id' === $args['fields'] && ! empty( $args['object_ids'] ) ) {
-					$selects[] = 'tr.object_id';
-				}
-				break;
-			case 'ids':
-			case 'id=>parent':
-				$selects = array( 't.term_id', 'tt.parent', 'tt.count', 'tt.taxonomy' );
-				break;
-			case 'names':
-				$selects = array( 't.term_id', 'tt.parent', 'tt.count', 't.name', 'tt.taxonomy' );
-				break;
-			case 'count':
-				$orderby = '';
-				$order = '';
-				$selects = array( 'COUNT(*)' );
-				break;
-			case 'id=>name':
-				$selects = array( 't.term_id', 't.name', 'tt.count', 'tt.taxonomy' );
-				break;
-			case 'id=>slug':
-				$selects = array( 't.term_id', 't.slug', 'tt.count', 'tt.taxonomy' );
-				break;
+		case 'all':
+		case 'all_with_object_id' :
+		case 'tt_ids' :
+		case 'slugs' :
+			$selects = array( 't.*', 'tt.*' );
+			if ( 'all_with_object_id' === $args['fields'] && ! empty( $args['object_ids'] ) ) {
+				$selects[] = 'tr.object_id';
+			}
+			break;
+		case 'ids':
+		case 'id=>parent':
+			$selects = array( 't.term_id', 'tt.parent', 'tt.count', 'tt.taxonomy' );
+			break;
+		case 'names':
+			$selects = array( 't.term_id', 'tt.parent', 'tt.count', 't.name', 'tt.taxonomy' );
+			break;
+		case 'count':
+			$orderby = '';
+			$order = '';
+			$selects = array( 'COUNT(*)' );
+			break;
+		case 'id=>name':
+			$selects = array( 't.term_id', 't.name', 'tt.count', 'tt.taxonomy' );
+			break;
+		case 'id=>slug':
+			$selects = array( 't.term_id', 't.slug', 'tt.count', 'tt.taxonomy' );
+			break;
 		}
 
 		$_fields = $args['fields'];
@@ -912,26 +912,26 @@ class WP_Term_Query {
 		}
 
 		switch( $orderby_raw ) {
-			case $primary_meta_key:
-			case 'meta_value':
-				if ( ! empty( $primary_meta_query['type'] ) ) {
-					$orderby = "CAST({$primary_meta_query['alias']}.meta_value AS {$primary_meta_query['cast']})";
-				} else {
-					$orderby = "{$primary_meta_query['alias']}.meta_value";
-				}
-				break;
+		case $primary_meta_key:
+		case 'meta_value':
+			if ( ! empty( $primary_meta_query['type'] ) ) {
+				$orderby = "CAST({$primary_meta_query['alias']}.meta_value AS {$primary_meta_query['cast']})";
+			} else {
+				$orderby = "{$primary_meta_query['alias']}.meta_value";
+			}
+			break;
 
-			case 'meta_value_num':
-				$orderby = "{$primary_meta_query['alias']}.meta_value+0";
-				break;
+		case 'meta_value_num':
+			$orderby = "{$primary_meta_query['alias']}.meta_value+0";
+			break;
 
-			default:
-				if ( array_key_exists( $orderby_raw, $meta_clauses ) ) {
-					// $orderby corresponds to a meta_query clause.
-					$meta_clause = $meta_clauses[ $orderby_raw ];
-					$orderby = "CAST({$meta_clause['alias']}.meta_value AS {$meta_clause['cast']})";
-				}
-				break;
+		default:
+			if ( array_key_exists( $orderby_raw, $meta_clauses ) ) {
+				// $orderby corresponds to a meta_query clause.
+				$meta_clause = $meta_clauses[ $orderby_raw ];
+				$orderby = "CAST({$meta_clause['alias']}.meta_value AS {$meta_clause['cast']})";
+			}
+			break;
 		}
 
 		return $orderby;

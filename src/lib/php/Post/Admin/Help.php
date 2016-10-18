@@ -99,7 +99,7 @@ class Help extends AdminHelp {
 			] );
 
 			$this->screen->set_help_sidebar(
-					'<p>' . sprintf(__( 'You can also create posts with the <a href="%s">Press This bookmarklet</a>.' ), 'tools.php' ) . '</p>' .
+					'<p>' . sprintf( __( 'You can also create posts with the <a href="%s">Press This bookmarklet</a>.' ), 'tools.php' ) . '</p>' .
 					'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
 					'<p>' . __( '<a href="https://codex.wordpress.org/Posts_Add_New_Screen">Documentation on Writing and Editing Posts</a>' ) . '</p>' .
 					'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'

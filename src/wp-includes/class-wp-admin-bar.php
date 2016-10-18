@@ -48,7 +48,7 @@ class WP_Admin_Bar {
 				$this->user->domain = empty( $this->user->active_blog ) ? user_admin_url() : trailingslashit( get_home_url( $this->user->active_blog->blog_id ) );
 				$this->user->account_domain = $this->user->domain;
 			} else {
-				$this->user->active_blog = $this->user->blogs[get_current_blog_id()];
+				$this->user->active_blog = $this->user->blogs[ get_current_blog_id() ];
 				$this->user->domain = trailingslashit( home_url() );
 				$this->user->account_domain = $this->user->domain;
 			}
@@ -64,14 +64,14 @@ class WP_Admin_Bar {
 			 * add_theme_support( 'admin-bar', [ 'callback' => '__return_false' ] );
 			 */
 			$admin_bar_args = get_theme_support( 'admin-bar' );
-			$header_callback = $admin_bar_args[0]['callback'];
+			$header_callback = $admin_bar_args[ 0 ][ 'callback' ];
 		}
 
-		if ( empty($header_callback) ) {
+		if ( empty( $header_callback ) ) {
 			$header_callback = '_admin_bar_bump_cb';
 		}
 
-		add_action('wp_head', $header_callback);
+		add_action( 'wp_head', $header_callback );
 
 		wp_enqueue_script( 'admin-bar' );
 		wp_enqueue_style( 'admin-bar' );
@@ -119,8 +119,8 @@ class WP_Admin_Bar {
 	 */
 	public function add_node( $args ) {
 		// Shim for old method signature: add_node( $parent_id, $menu_obj, $args )
-		if ( func_num_args() >= 3 && is_string( func_get_arg(0) ) ) {
-			$args = array_merge( array( 'parent' => func_get_arg(0) ), func_get_arg(2) );
+		if ( func_num_args() >= 3 && is_string( func_get_arg( 0 ) ) ) {
+			$args = array_merge( array( 'parent' => func_get_arg( 0 ) ), func_get_arg( 2 ) );
 		}
 
 		if ( is_object( $args ) ) {
@@ -128,14 +128,14 @@ class WP_Admin_Bar {
 		}
 
 		// Ensure we have a valid title.
-		if ( empty( $args['id'] ) ) {
-			if ( empty( $args['title'] ) ) {
+		if ( empty( $args[ 'id' ] ) ) {
+			if ( empty( $args[ 'title' ] ) ) {
 				return;
 			}
 
 			_doing_it_wrong( __METHOD__, __( 'The menu ID should not be empty.' ), '3.3.0' );
 			// Deprecated: Generate an ID from the title.
-			$args['id'] = esc_attr( sanitize_title( trim( $args['title'] ) ) );
+			$args[ 'id' ] = esc_attr( sanitize_title( trim( $args[ 'title' ] ) ) );
 		}
 
 		$defaults = array(
@@ -148,26 +148,26 @@ class WP_Admin_Bar {
 		);
 
 		// If the node already exists, keep any data that isn't provided.
-		if ( $maybe_defaults = $this->get_node( $args['id'] ) ) {
+		if ( $maybe_defaults = $this->get_node( $args[ 'id' ] ) ) {
 			$defaults = get_object_vars( $maybe_defaults );
 		}
 
 		// Do the same for 'meta' items.
-		if ( ! empty( $defaults['meta'] ) && ! empty( $args['meta'] ) ) {
-			$args['meta'] = wp_parse_args( $args['meta'], $defaults['meta'] );
+		if ( ! empty( $defaults[ 'meta' ] ) && ! empty( $args[ 'meta' ] ) ) {
+			$args[ 'meta' ] = wp_parse_args( $args[ 'meta' ], $defaults[ 'meta' ] );
 		}
 
 		$args = wp_parse_args( $args, $defaults );
 
 		$back_compat_parents = array(
 			'my-account-with-avatar' => array( 'my-account', '3.3' ),
-			'my-blogs'               => array( 'my-sites',   '3.3' ),
+			'my-blogs'               => array( 'my-sites', '3.3' ),
 		);
 
-		if ( isset( $back_compat_parents[ $args['parent'] ] ) ) {
-			list( $new_parent, $version ) = $back_compat_parents[ $args['parent'] ];
-			_deprecated_argument( __METHOD__, $version, sprintf( 'Use <code>%s</code> as the parent for the <code>%s</code> admin bar node instead of <code>%s</code>.', $new_parent, $args['id'], $args['parent'] ) );
-			$args['parent'] = $new_parent;
+		if ( isset( $back_compat_parents[ $args[ 'parent' ] ] ) ) {
+			list( $new_parent, $version ) = $back_compat_parents[ $args[ 'parent' ] ];
+			_deprecated_argument( __METHOD__, $version, sprintf( 'Use <code>%s</code> as the parent for the <code>%s</code> admin bar node instead of <code>%s</code>.', $new_parent, $args[ 'id' ], $args[ 'parent' ] ) );
+			$args[ 'parent' ] = $new_parent;
 		}
 
 		$this->_set_node( $args );
@@ -177,7 +177,7 @@ class WP_Admin_Bar {
 	 * @param array $args
 	 */
 	final protected function _set_node( $args ) {
-		$this->nodes[ $args['id'] ] = (object) $args;
+		$this->nodes[ $args[ 'id' ] ] = (object) $args;
 	}
 
 	/**
@@ -250,7 +250,7 @@ class WP_Admin_Bar {
 	 * }
 	 */
 	final public function add_group( $args ) {
-		$args['group'] = true;
+		$args[ 'group' ] = true;
 
 		$this->add_node( $args );
 	}
@@ -323,10 +323,10 @@ class WP_Admin_Bar {
 			$group_class = ( $node->parent == 'root' ) ? 'ab-top-menu' : 'ab-submenu';
 
 			if ( $node->type == 'group' ) {
-				if ( empty( $node->meta['class'] ) ) {
-					$node->meta['class'] = $group_class;
+				if ( empty( $node->meta[ 'class' ] ) ) {
+					$node->meta[ 'class' ] = $group_class;
 				} else {
-					$node->meta['class'] .= ' ' . $group_class;
+					$node->meta[ 'class' ] .= ' ' . $group_class;
 				}
 			}
 
@@ -419,12 +419,12 @@ class WP_Admin_Bar {
 		// Add browser classes.
 		// We have to do this here since admin bar shows on the front end.
 		$class = 'nojq nojs';
-		if ( $app['is_IE'] ) {
-			if ( strpos( $app['request.useragent'], 'MSIE 7' ) ) {
+		if ( $app[ 'is_IE' ] ) {
+			if ( strpos( $app[ 'request.useragent' ], 'MSIE 7' ) ) {
 				$class .= ' ie7';
-			} elseif ( strpos( $app['request.useragent'], 'MSIE 8' ) ) {
+			} elseif ( strpos( $app[ 'request.useragent' ], 'MSIE 8' ) ) {
 				$class .= ' ie8';
-			} elseif ( strpos( $app['request.useragent'], 'MSIE 9' ) ) {
+			} elseif ( strpos( $app[ 'request.useragent' ], 'MSIE 9' ) ) {
 				$class .= ' ie9';
 			}
 		} elseif ( wp_is_mobile() ) {
@@ -442,7 +442,7 @@ class WP_Admin_Bar {
 				} ?>
 			</div>
 			<?php if ( is_user_logged_in() ) { ?>
-			<a class="screen-reader-shortcut" href="<?php echo esc_url( wp_logout_url() ); ?>"><?php _e('Log Out'); ?></a>
+			<a class="screen-reader-shortcut" href="<?php echo esc_url( wp_logout_url() ); ?>"><?php _e( 'Log Out' ); ?></a>
 			<?php } ?>
 		</div>
 
@@ -476,8 +476,8 @@ class WP_Admin_Bar {
 			return;
 		}
 
-		if ( ! empty( $node->meta['class'] ) ) {
-			$class = ' class="' . esc_attr( trim( $node->meta['class'] ) ) . '"';
+		if ( ! empty( $node->meta[ 'class' ] ) ) {
+			$class = ' class="' . esc_attr( trim( $node->meta[ 'class' ] ) ) . '"';
 		} else {
 			$class = '';
 		}
@@ -501,7 +501,7 @@ class WP_Admin_Bar {
 		$has_link  = ! empty( $node->href );
 
 		// Allow only numeric values, then casted to integers, and allow a tabindex value of `0` for a11y.
-		$tabindex = ( isset( $node->meta['tabindex'] ) && is_numeric( $node->meta['tabindex'] ) ) ? (int) $node->meta['tabindex'] : '';
+		$tabindex = ( isset( $node->meta[ 'tabindex' ] ) && is_numeric( $node->meta[ 'tabindex' ] ) ) ? (int) $node->meta[ 'tabindex' ] : '';
 		$aria_attributes = ( '' !== $tabindex ) ? ' tabindex="' . $tabindex . '"' : '';
 
 		$menuclass = '';
@@ -511,8 +511,8 @@ class WP_Admin_Bar {
 			$aria_attributes .= ' aria-haspopup="true"';
 		}
 
-		if ( ! empty( $node->meta['class'] ) ) {
-			$menuclass .= $node->meta['class'];
+		if ( ! empty( $node->meta[ 'class' ] ) ) {
+			$menuclass .= $node->meta[ 'class' ];
 		}
 
 		if ( $menuclass ) {
@@ -524,35 +524,35 @@ class WP_Admin_Bar {
 		<li id="<?php echo esc_attr( 'wp-admin-bar-' . $node->id ); ?>"<?php echo $menuclass; ?>><?php
 			if ( $has_link ) {
 				?><a class="ab-item"<?php echo $aria_attributes; ?> href="<?php echo esc_url( $node->href ) ?>"<?php
-					if ( ! empty( $node->meta['onclick'] ) ) {
-						?> onclick="<?php echo esc_js( $node->meta['onclick'] ); ?>"<?php
+					if ( ! empty( $node->meta[ 'onclick' ] ) ) {
+						?> onclick="<?php echo esc_js( $node->meta[ 'onclick' ] ); ?>"<?php
 					}
-				if ( ! empty( $node->meta['target'] ) ) {
-					?> target="<?php echo esc_attr( $node->meta['target'] ); ?>"<?php
+				if ( ! empty( $node->meta[ 'target' ] ) ) {
+					?> target="<?php echo esc_attr( $node->meta[ 'target' ] ); ?>"<?php
 				}
-				if ( ! empty( $node->meta['title'] ) ) {
-					?> title="<?php echo esc_attr( $node->meta['title'] ); ?>"<?php
+				if ( ! empty( $node->meta[ 'title' ] ) ) {
+					?> title="<?php echo esc_attr( $node->meta[ 'title' ] ); ?>"<?php
 				}
-				if ( ! empty( $node->meta['rel'] ) ) {
-					?> rel="<?php echo esc_attr( $node->meta['rel'] ); ?>"<?php
+				if ( ! empty( $node->meta[ 'rel' ] ) ) {
+					?> rel="<?php echo esc_attr( $node->meta[ 'rel' ] ); ?>"<?php
 				}
-				if ( ! empty( $node->meta['lang'] ) ) {
-					?> lang="<?php echo esc_attr( $node->meta['lang'] ); ?>"<?php
+				if ( ! empty( $node->meta[ 'lang' ] ) ) {
+					?> lang="<?php echo esc_attr( $node->meta[ 'lang' ] ); ?>"<?php
 				}
-				if ( ! empty( $node->meta['dir'] ) ) {
-					?> dir="<?php echo esc_attr( $node->meta['dir'] ); ?>"<?php
+				if ( ! empty( $node->meta[ 'dir' ] ) ) {
+					?> dir="<?php echo esc_attr( $node->meta[ 'dir' ] ); ?>"<?php
 				}
 				?>><?php
 			} else {
 				?><div class="ab-item ab-empty-item"<?php echo $aria_attributes;
-				if ( ! empty( $node->meta['title'] ) ) {
-					?> title="<?php echo esc_attr( $node->meta['title'] ); ?>"<?php
+				if ( ! empty( $node->meta[ 'title' ] ) ) {
+					?> title="<?php echo esc_attr( $node->meta[ 'title' ] ); ?>"<?php
 				}
-				if ( ! empty( $node->meta['lang'] ) ) {
-					?> lang="<?php echo esc_attr( $node->meta['lang'] ); ?>"<?php
+				if ( ! empty( $node->meta[ 'lang' ] ) ) {
+					?> lang="<?php echo esc_attr( $node->meta[ 'lang' ] ); ?>"<?php
 				}
-				if ( ! empty( $node->meta['dir'] ) ) {
-					?> dir="<?php echo esc_attr( $node->meta['dir'] ); ?>"<?php
+				if ( ! empty( $node->meta[ 'dir' ] ) ) {
+					?> dir="<?php echo esc_attr( $node->meta[ 'dir' ] ); ?>"<?php
 				}
 				?>><?php
 			}
@@ -573,8 +573,8 @@ class WP_Admin_Bar {
 				?></div><?php
 			}
 
-			if ( ! empty( $node->meta['html'] ) ) {
-				echo $node->meta['html'];
+			if ( ! empty( $node->meta[ 'html' ] ) ) {
+				echo $node->meta[ 'html' ];
 			}
 
 			?>

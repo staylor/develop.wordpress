@@ -33,7 +33,7 @@ class WP_SimplePie_File extends SimplePie_File {
 	 * @param boolean      $force_fsockopen Optional. Whether to force opening internet or unix domain socket
 	 *                                      connection or not. Default false.
 	 */
-	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false) {
+	public function __construct( $url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false ) {
 		$this->url = $url;
 		$this->timeout = $timeout;
 		$this->redirects = $redirects;
@@ -42,24 +42,24 @@ class WP_SimplePie_File extends SimplePie_File {
 
 		$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
 
-		if ( preg_match('/^http(s)?:\/\//i', $url) ) {
+		if ( preg_match( '/^http(s)?:\/\//i', $url ) ) {
 			$args = array(
 				'timeout' => $this->timeout,
 				'redirection' => $this->redirects,
 			);
 
-			if ( !empty($this->headers) ) {
-				$args['headers'] = $this->headers;
+			if ( ! empty( $this->headers ) ) {
+				$args[ 'headers' ] = $this->headers;
 			}
 
 			if ( SIMPLEPIE_USERAGENT != $this->useragent ) {
 				//Use default WP user agent unless custom has been specified
-				$args['user-agent'] = $this->useragent;
+				$args[ 'user-agent' ] = $this->useragent;
 			}
 
-			$res = wp_safe_remote_request($url, $args);
+			$res = wp_safe_remote_request( $url, $args );
 
-			if ( is_wp_error($res) ) {
+			if ( is_wp_error( $res ) ) {
 				$this->error = 'WP HTTP Error: ' . $res->get_error_message();
 				$this->success = false;
 			} else {

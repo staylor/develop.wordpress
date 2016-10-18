@@ -6,17 +6,17 @@ namespace WP\IXR;
  */
 class Error {
 
-    public $code;
-    public $message;
+	public $code;
+	public $message;
 
-    public function __construct( int $code, string $message ) {
-        $this->code = $code;
-        $this->message = htmlspecialchars( $message );
-    }
+	public function __construct( int $code, string $message ) {
+		$this->code = $code;
+		$this->message = htmlspecialchars( $message );
+	}
 
-    public function getXml(): string
-    {
-        $xml = '
+	public function getXml(): string
+	{
+		$xml = '
 <methodResponse>
   <fault>
     <value>
@@ -34,6 +34,6 @@ class Error {
   </fault>
 </methodResponse>
 ';
-        return $xml;
-    }
+		return $xml;
+	}
 }

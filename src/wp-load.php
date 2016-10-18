@@ -33,7 +33,7 @@ error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_W
  *
  * If neither set of conditions is true, initiate loading the setup process.
  */
-if ( file_exists( ABSPATH . 'wp-config.php') ) {
+if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
 
 	/** The config file resides in ABSPATH */
 	require_once( ABSPATH . 'wp-config.php' );
@@ -62,7 +62,7 @@ if ( file_exists( ABSPATH . 'wp-config.php') ) {
 	 * in an infinite loop, that's a silly thing to assume, don't you think? If
 	 * we're traveling in circles, our last-ditch effort is "Need more help?"
 	 */
-	if ( false === strpos( $_SERVER['REQUEST_URI'], 'setup-config' ) ) {
+	if ( false === strpos( $_SERVER[ 'REQUEST_URI' ], 'setup-config' ) ) {
 		header( 'Location: ' . $path );
 		exit;
 	}
@@ -74,7 +74,7 @@ if ( file_exists( ABSPATH . 'wp-config.php') ) {
 	wp_load_translations_early();
 
 	// Die with an error message
-	$die  = sprintf(
+	$die = sprintf(
 		/* translators: %s: wp-config.php */
 		__( "There doesn't seem to be a %s file. I need this before we can get started." ),
 		'<code>wp-config.php</code>'

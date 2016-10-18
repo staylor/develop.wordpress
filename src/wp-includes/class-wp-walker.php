@@ -133,43 +133,43 @@ class Walker {
 			return;
 		}
 
-		$id_field = $this->db_fields['id'];
+		$id_field = $this->db_fields[ 'id' ];
 		$id       = $element->$id_field;
 
 		//display this element
 		$this->has_children = ! empty( $children_elements[ $id ] );
 		if ( isset( $args[0] ) && is_array( $args[0] ) ) {
-			$args[0]['has_children'] = $this->has_children; // Back-compat.
+			$args[0][ 'has_children' ] = $this->has_children; // Back-compat.
 		}
 
-		$cb_args = array_merge( array(&$output, $element, $depth), $args);
-		call_user_func_array(array($this, 'start_el'), $cb_args);
+		$cb_args = array_merge( array( &$output, $element, $depth ), $args );
+		call_user_func_array( array( $this, 'start_el' ), $cb_args );
 
 		// descend only when the depth is right and there are childrens for this element
-		if ( ($max_depth == 0 || $max_depth > $depth+1 ) && isset( $children_elements[$id]) ) {
+		if ( ( $max_depth == 0 || $max_depth > $depth + 1 ) && isset( $children_elements[ $id ] ) ) {
 
-			foreach ( $children_elements[ $id ] as $child ){
+			foreach ( $children_elements[ $id ] as $child ) {
 
-				if ( !isset($newlevel) ) {
+				if ( ! isset( $newlevel ) ) {
 					$newlevel = true;
 					//start the child delimiter
-					$cb_args = array_merge( array(&$output, $depth), $args);
-					call_user_func_array(array($this, 'start_lvl'), $cb_args);
+					$cb_args = array_merge( array( &$output, $depth ), $args );
+					call_user_func_array( array( $this, 'start_lvl' ), $cb_args );
 				}
 				$this->display_element( $child, $children_elements, $max_depth, $depth + 1, $args, $output );
 			}
 			unset( $children_elements[ $id ] );
 		}
 
-		if ( isset($newlevel) && $newlevel ){
+		if ( isset( $newlevel ) && $newlevel ) {
 			//end the child delimiter
-			$cb_args = array_merge( array(&$output, $depth), $args);
-			call_user_func_array(array($this, 'end_lvl'), $cb_args);
+			$cb_args = array_merge( array( &$output, $depth ), $args );
+			call_user_func_array( array( $this, 'end_lvl' ), $cb_args );
 		}
 
 		//end this element
-		$cb_args = array_merge( array(&$output, $element, $depth), $args);
-		call_user_func_array(array($this, 'end_el'), $cb_args);
+		$cb_args = array_merge( array( &$output, $element, $depth ), $args );
+		call_user_func_array( array( $this, 'end_el' ), $cb_args );
 	}
 
 	/**
@@ -188,7 +188,7 @@ class Walker {
 	 * @return string The hierarchical item output.
 	 */
 	public function walk( $elements, $max_depth ) {
-		$args = array_slice(func_get_args(), 2);
+		$args = array_slice( func_get_args(), 2 );
 		$output = '';
 
 		//invalid parameter or nothing to walk
@@ -196,7 +196,7 @@ class Walker {
 			return $output;
 		}
 
-		$parent_field = $this->db_fields['parent'];
+		$parent_field = $this->db_fields[ 'parent' ];
 
 		// flat display
 		if ( -1 == $max_depth ) {
@@ -215,7 +215,7 @@ class Walker {
 		 */
 		$top_level_elements = [];
 		$children_elements  = [];
-		foreach ( $elements as $e) {
+		foreach ( $elements as $e ) {
 			if ( empty( $e->$parent_field ) ) {
 				$top_level_elements[] = $e;
 			} else {
@@ -227,14 +227,14 @@ class Walker {
 		 * When none of the elements is top level.
 		 * Assume the first one must be root of the sub elements.
 		 */
-		if ( empty($top_level_elements) ) {
+		if ( empty( $top_level_elements ) ) {
 
 			$first = array_slice( $elements, 0, 1 );
 			$root = $first[0];
 
 			$top_level_elements = [];
 			$children_elements  = [];
-			foreach ( $elements as $e) {
+			foreach ( $elements as $e ) {
 				if ( $root->$parent_field == $e->$parent_field ) {
 					$top_level_elements[] = $e;
 				} else {
@@ -289,13 +289,13 @@ class Walker {
 		$args = array_slice( func_get_args(), 4 );
 		$output = '';
 
-		$parent_field = $this->db_fields['parent'];
+		$parent_field = $this->db_fields[ 'parent' ];
 
 		$count = -1;
 		if ( -1 == $max_depth ) {
 			$total_top = count( $elements );
 		}
-		if ( $page_num < 1 || $per_page < 0  ) {
+		if ( $page_num < 1 || $per_page < 0 ) {
 			// No paging
 			$paging = false;
 			$start = 0;
@@ -305,16 +305,16 @@ class Walker {
 			$this->max_pages = 1;
 		} else {
 			$paging = true;
-			$start = ( (int)$page_num - 1 ) * (int)$per_page;
+			$start = ( (int) $page_num - 1 ) * (int) $per_page;
 			$end   = $start + $per_page;
 			if ( -1 == $max_depth ) {
-				$this->max_pages = ceil($total_top / $per_page);
+				$this->max_pages = ceil( $total_top / $per_page );
 			}
 		}
 
 		// flat display
 		if ( -1 == $max_depth ) {
-			if ( !empty($args[0]['reverse_top_level']) ) {
+			if ( ! empty( $args[0][ 'reverse_top_level' ] ) ) {
 				$elements = array_reverse( $elements );
 				$oldstart = $start;
 				$start = $total_top - $end;
@@ -342,7 +342,7 @@ class Walker {
 		 */
 		$top_level_elements = [];
 		$children_elements  = [];
-		foreach ( $elements as $e) {
+		foreach ( $elements as $e ) {
 			if ( 0 == $e->$parent_field ) {
 				$top_level_elements[] = $e;
 			} else {
@@ -352,20 +352,20 @@ class Walker {
 
 		$total_top = count( $top_level_elements );
 		if ( $paging ) {
-			$this->max_pages = ceil($total_top / $per_page);
+			$this->max_pages = ceil( $total_top / $per_page );
 		} else {
 			$end = $total_top;
 		}
 
-		if ( !empty($args[0]['reverse_top_level']) ) {
+		if ( ! empty( $args[0][ 'reverse_top_level' ] ) ) {
 			$top_level_elements = array_reverse( $top_level_elements );
 			$oldstart = $start;
 			$start = $total_top - $end;
 			$end = $total_top - $oldstart;
 		}
-		if ( !empty($args[0]['reverse_children']) ) {
+		if ( ! empty( $args[0][ 'reverse_children' ] ) ) {
 			foreach ( $children_elements as $parent => $children ) {
-				$children_elements[$parent] = array_reverse( $children );
+				$children_elements[ $parent ] = array_reverse( $children );
 			}
 		}
 
@@ -409,11 +409,11 @@ class Walker {
 	 * @param array $elements Elements to list.
 	 * @return int Number of root elements.
 	 */
-	public function get_number_of_root_elements( $elements ){
+	public function get_number_of_root_elements( $elements ) {
 		$num = 0;
-		$parent_field = $this->db_fields['parent'];
+		$parent_field = $this->db_fields[ 'parent' ];
 
-		foreach ( $elements as $e) {
+		foreach ( $elements as $e ) {
 			if ( 0 == $e->$parent_field ) {
 				$num++;
 			}
@@ -427,16 +427,16 @@ class Walker {
 	 * @param object $e
 	 * @param array $children_elements
 	 */
-	public function unset_children( $e, &$children_elements ){
+	public function unset_children( $e, &$children_elements ) {
 		if ( ! $e || ! $children_elements ) {
 			return;
 		}
 
-		$id_field = $this->db_fields['id'];
+		$id_field = $this->db_fields[ 'id' ];
 		$id = $e->$id_field;
 
-		if ( !empty($children_elements[$id]) && is_array($children_elements[$id]) ) {
-			foreach ( (array) $children_elements[$id] as $child ) {
+		if ( ! empty( $children_elements[ $id ] ) && is_array( $children_elements[ $id ] ) ) {
+			foreach ( (array) $children_elements[ $id ] as $child ) {
 				$this->unset_children( $child, $children_elements );
 			}
 		}

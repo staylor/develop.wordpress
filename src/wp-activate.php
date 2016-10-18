@@ -13,7 +13,7 @@ require( __DIR__ . '/wp-load.php' );
 
 require( __DIR__ . '/wp-blog-header.php' );
 
-if ( !is_multisite() ) {
+if ( ! is_multisite() ) {
 	wp_redirect( wp_registration_url() );
 	die();
 }
@@ -22,7 +22,7 @@ if ( is_object( $wp_object_cache ) )
 	$wp_object_cache->cache_enabled = false;
 
 // Fix for page title
-$app['wp']->current_query->is_404 = false;
+$app[ 'wp' ]->current_query->is_404 = false;
 
 /**
  * Fires before the Site Activation page is loaded.
@@ -71,16 +71,16 @@ get_header( 'wp-activate' );
 
 <div id="signup-content" class="widecolumn">
 	<div class="wp-activate-container">
-	<?php if ( empty( $_get->get( 'key' ) ) && empty( $_post->get( 'key') ) ) { ?>
+	<?php if ( empty( $_get->get( 'key' ) ) && empty( $_post->get( 'key' ) ) ) { ?>
 
-		<h2><?php _e('Activation Key Required') ?></h2>
-		<form name="activateform" id="activateform" method="post" action="<?php echo network_site_url('wp-activate.php'); ?>">
+		<h2><?php _e( 'Activation Key Required' ) ?></h2>
+		<form name="activateform" id="activateform" method="post" action="<?php echo network_site_url( 'wp-activate.php' ); ?>">
 			<p>
-			    <label for="key"><?php _e('Activation Key:') ?></label>
+			    <label for="key"><?php _e( 'Activation Key:' ) ?></label>
 			    <br /><input type="text" name="key" id="key" value="" size="50" />
 			</p>
 			<p class="submit">
-			    <input id="submit" type="submit" name="Submit" class="submit" value="<?php esc_attr_e('Activate') ?>" />
+			    <input id="submit" type="submit" name="Submit" class="submit" value="<?php esc_attr_e( 'Activate' ) ?>" />
 			</p>
 		</form>
 
@@ -88,11 +88,11 @@ get_header( 'wp-activate' );
 
 		$key = ! empty( $_get->get( 'key' ) ) ? $_get->get( 'key' ) : $_post->get( 'key' );
 		$result = wpmu_activate_signup( $key );
-		if ( is_wp_error($result) ) {
+		if ( is_wp_error( $result ) ) {
 			if ( 'already_active' == $result->get_error_code() || 'blog_taken' == $result->get_error_code() ) {
 				$signup = $result->get_error_data();
 				?>
-				<h2><?php _e('Your account is now active!'); ?></h2>
+				<h2><?php _e( 'Your account is now active!' ); ?></h2>
 				<?php
 				echo '<p class="lead-in">';
 				if ( $signup->domain . $signup->path == '' ) {
@@ -123,18 +123,18 @@ get_header( 'wp-activate' );
 				<?php
 			}
 		} else {
-			$url = isset( $result['blog_id'] ) ? get_home_url( (int) $result['blog_id'] ) : '';
-			$user = get_userdata( (int) $result['user_id'] );
+			$url = isset( $result[ 'blog_id' ] ) ? get_home_url( (int) $result[ 'blog_id' ] ) : '';
+			$user = get_userdata( (int) $result[ 'user_id' ] );
 			?>
-			<h2><?php _e('Your account is now active!'); ?></h2>
+			<h2><?php _e( 'Your account is now active!' ); ?></h2>
 
 			<div id="signup-welcome">
-				<p><span class="h3"><?php _e('Username:'); ?></span> <?php echo $user->user_login ?></p>
-				<p><span class="h3"><?php _e('Password:'); ?></span> <?php echo $result['password']; ?></p>
+				<p><span class="h3"><?php _e( 'Username:' ); ?></span> <?php echo $user->user_login ?></p>
+				<p><span class="h3"><?php _e( 'Password:' ); ?></span> <?php echo $result[ 'password' ]; ?></p>
 			</div>
 
 			<?php if ( $url && $url != network_home_url( '', 'http' ) ) :
-				switch_to_blog( (int) $result['blog_id'] );
+				switch_to_blog( (int) $result[ 'blog_id' ] );
 				$login_url = wp_login_url();
 				restore_current_blog();
 				?>
