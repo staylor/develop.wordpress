@@ -585,17 +585,17 @@ function wp_admin_bar_edit_menu( $wp_admin_bar ) {
 				] );
 			}
 		} elseif ( 'edit' == $current_screen->base
- 			&& ( $post_type_object = get_post_type_object( $current_screen->post_type ) )
- 			&& ( $post_type_object->public )
- 			&& ( $post_type_object->show_in_admin_bar )
- 			&& ( get_post_type_archive_link( $post_type_object->name ) )
+			&& ( $post_type_object = get_post_type_object( $current_screen->post_type ) )
+			&& ( $post_type_object->public )
+			&& ( $post_type_object->show_in_admin_bar )
+			&& ( get_post_type_archive_link( $post_type_object->name ) )
 			&& ! ( 'post' === $post_type_object->name && 'posts' === get_option( 'show_on_front' ) ) )
- 		{
- 			$wp_admin_bar->add_node( [
- 				'id' => 'archive',
- 				'title' => $post_type_object->labels->view_items,
- 				'href' => get_post_type_archive_link( $current_screen->post_type )
- 			] );
+		{
+			$wp_admin_bar->add_node( [
+				'id' => 'archive',
+				'title' => $post_type_object->labels->view_items,
+				'href' => get_post_type_archive_link( $current_screen->post_type )
+			] );
 		} elseif ( 'term' == $current_screen->base
 			&& isset( $tag ) && is_object( $tag ) && ! is_wp_error( $tag )
 			&& ( $tax = get_taxonomy( $tag->taxonomy ) )

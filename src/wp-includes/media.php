@@ -425,7 +425,7 @@ function wp_constrain_dimensions( $current_width, $current_height, $max_width = 
 	$larger_ratio  = max( $width_ratio, $height_ratio );
 
 	if ( (int) round( $current_width * $larger_ratio ) > $max_width || (int) round( $current_height * $larger_ratio ) > $max_height ) {
- 		// The larger ratio is too big. It would result in an overflow.
+		// The larger ratio is too big. It would result in an overflow.
 		$ratio = $smaller_ratio;
 	} else {
 		// The larger ratio fits, and is likely to be a more "snug" fit.
@@ -3509,25 +3509,25 @@ function wp_enqueue_media( $args = [] ) {
 		'videoSelectPosterImageTitle' => __( 'Select Poster Image' ),
 		'videoAddTrackTitle'	=> __( 'Add Subtitles' ),
 
- 		// Playlist
- 		'playlistDragInfo'    => __( 'Drag and drop to reorder tracks.' ),
- 		'createPlaylistTitle' => __( 'Create Audio Playlist' ),
- 		'editPlaylistTitle'   => __( 'Edit Audio Playlist' ),
- 		'cancelPlaylistTitle' => __( '&#8592; Cancel Audio Playlist' ),
- 		'insertPlaylist'      => __( 'Insert audio playlist' ),
- 		'updatePlaylist'      => __( 'Update audio playlist' ),
- 		'addToPlaylist'       => __( 'Add to audio playlist' ),
- 		'addToPlaylistTitle'  => __( 'Add to Audio Playlist' ),
+		// Playlist
+		'playlistDragInfo'    => __( 'Drag and drop to reorder tracks.' ),
+		'createPlaylistTitle' => __( 'Create Audio Playlist' ),
+		'editPlaylistTitle'   => __( 'Edit Audio Playlist' ),
+		'cancelPlaylistTitle' => __( '&#8592; Cancel Audio Playlist' ),
+		'insertPlaylist'      => __( 'Insert audio playlist' ),
+		'updatePlaylist'      => __( 'Update audio playlist' ),
+		'addToPlaylist'       => __( 'Add to audio playlist' ),
+		'addToPlaylistTitle'  => __( 'Add to Audio Playlist' ),
 
- 		// Video Playlist
- 		'videoPlaylistDragInfo'    => __( 'Drag and drop to reorder videos.' ),
- 		'createVideoPlaylistTitle' => __( 'Create Video Playlist' ),
- 		'editVideoPlaylistTitle'   => __( 'Edit Video Playlist' ),
- 		'cancelVideoPlaylistTitle' => __( '&#8592; Cancel Video Playlist' ),
- 		'insertVideoPlaylist'      => __( 'Insert video playlist' ),
- 		'updateVideoPlaylist'      => __( 'Update video playlist' ),
- 		'addToVideoPlaylist'       => __( 'Add to video playlist' ),
- 		'addToVideoPlaylistTitle'  => __( 'Add to Video Playlist' ),
+		// Video Playlist
+		'videoPlaylistDragInfo'    => __( 'Drag and drop to reorder videos.' ),
+		'createVideoPlaylistTitle' => __( 'Create Video Playlist' ),
+		'editVideoPlaylistTitle'   => __( 'Edit Video Playlist' ),
+		'cancelVideoPlaylistTitle' => __( '&#8592; Cancel Video Playlist' ),
+		'insertVideoPlaylist'      => __( 'Insert video playlist' ),
+		'updateVideoPlaylist'      => __( 'Update video playlist' ),
+		'addToVideoPlaylist'       => __( 'Add to video playlist' ),
+		'addToVideoPlaylistTitle'  => __( 'Add to Video Playlist' ),
 	);
 
 	/**
@@ -3857,9 +3857,9 @@ function attachment_url_to_postid( $url ) {
  */
 function wpview_media_sandbox_styles() {
 	$app = getApp();
- 	$version = 'ver=' . $app['wp_version'];
- 	$mediaelement = includes_url( "js/mediaelement/mediaelementplayer.min.css?$version" );
- 	$wpmediaelement = includes_url( "js/mediaelement/wp-mediaelement.css?$version" );
+	$version = 'ver=' . $app['wp_version'];
+	$mediaelement = includes_url( "js/mediaelement/mediaelementplayer.min.css?$version" );
+	$wpmediaelement = includes_url( "js/mediaelement/wp-mediaelement.css?$version" );
 
 	return array( $mediaelement, $wpmediaelement );
 }

@@ -1494,10 +1494,10 @@ class wpdb {
 				$this->dbh = null;
 
 				/* It's possible ext/mysqli is misconfigured. Fall back to ext/mysql if:
-		 		 *  - We haven't previously connected, and
-		 		 *  - WP_USE_EXT_MYSQL isn't set to false, and
-		 		 *  - ext/mysql is loaded.
-		 		 */
+				 *  - We haven't previously connected, and
+				 *  - WP_USE_EXT_MYSQL isn't set to false, and
+				 *  - ext/mysql is loaded.
+				 */
 				$attempt_fallback = true;
 
 				if ( $this->has_connected ) {

@@ -445,11 +445,11 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
  * @return string Content with placeholders removed.
  */
 function unescape_invalid_shortcodes( $content ) {
-        // Clean up entire string, avoids re-parsing HTML.
-        $trans = [ '&#91;' => '[', '&#93;' => ']' ];
-        $content = strtr( $content, $trans );
+		// Clean up entire string, avoids re-parsing HTML.
+		$trans = [ '&#91;' => '[', '&#93;' => ']' ];
+		$content = strtr( $content, $trans );
 
-        return $content;
+		return $content;
 }
 
 /**

@@ -490,7 +490,7 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 		 * @param WP_Error $error A WP_Error object with the phpmailerException code, message, and an array
 		 *                        containing the mail recipient, subject, message, headers, and attachments.
 		 */
- 		do_action( 'wp_mail_failed', new WP_Error( $e->getCode(), $e->getMessage(), $mail_error_data ) );
+		do_action( 'wp_mail_failed', new WP_Error( $e->getCode(), $e->getMessage(), $mail_error_data ) );
 
 		return false;
 	}
@@ -766,7 +766,7 @@ function wp_parse_auth_cookie($cookie = '', $scheme = '') {
 					$cookie_name = AUTH_COOKIE;
 					$scheme = 'auth';
 				}
-	    }
+		}
 
 		if ( empty($_COOKIE[$cookie_name]) ) {
 					return false;
@@ -1632,7 +1632,7 @@ function wp_notify_moderator($comment_id) {
 	$notify_message .= sprintf( __( 'Spam it: %s' ), admin_url( "comment.php?action=spam&c={$comment_id}#wpbody-content" ) ) . "\r\n";
 
 	$notify_message .= sprintf( _n('Currently %s comment is waiting for approval. Please visit the moderation panel:',
- 		'Currently %s comments are waiting for approval. Please visit the moderation panel:', $comments_waiting), number_format_i18n($comments_waiting) ) . "\r\n";
+		'Currently %s comments are waiting for approval. Please visit the moderation panel:', $comments_waiting), number_format_i18n($comments_waiting) ) . "\r\n";
 	$notify_message .= admin_url( "edit-comments.php?comment_status=moderated#wpbody-content" ) . "\r\n";
 
 	$subject = sprintf( __('[%1$s] Please moderate: "%2$s"'), $blogname, $post->post_title );

@@ -432,7 +432,7 @@ function wpmu_validate_user_signup($user_name, $user_email) {
 	$user_email = sanitize_email( $user_email );
 
 	if ( empty( $user_name ) ) {
-		   	$errors->add('user_name', __( 'Please enter a username.' ) );
+			$errors->add('user_name', __( 'Please enter a username.' ) );
 	}
 
 	$illegal_names = get_site_option( 'illegal_names' );
@@ -1409,12 +1409,12 @@ function install_blog( $blog_id, $blog_title = '' ) {
 
 	if ( ! is_subdomain_install() ) {
 
- 		if ( 'https' === parse_url( get_site_option( 'siteurl' ), PHP_URL_SCHEME ) ) {
- 			$siteurl = set_url_scheme( $siteurl, 'https' );
- 		}
- 		if ( 'https' === parse_url( get_home_url( $current_site->blog_id ), PHP_URL_SCHEME ) ) {
- 			$home = set_url_scheme( $home, 'https' );
- 		}
+		if ( 'https' === parse_url( get_site_option( 'siteurl' ), PHP_URL_SCHEME ) ) {
+			$siteurl = set_url_scheme( $siteurl, 'https' );
+		}
+		if ( 'https' === parse_url( get_home_url( $current_site->blog_id ), PHP_URL_SCHEME ) ) {
+			$home = set_url_scheme( $home, 'https' );
+		}
 
 	}
 
@@ -1586,7 +1586,7 @@ function wpmu_welcome_user_notification( $user_id, $password, $meta = [] ) {
 	$current_site = get_current_site();
 
 	/**
- 	 * Filters whether to bypass the welcome email after user activation.
+	 * Filters whether to bypass the welcome email after user activation.
 	 *
 	 * Returning false disables the welcome email.
 	 *
@@ -2126,7 +2126,7 @@ function fix_phpmailer_messageid( $phpmailer ) {
  * @return bool
  */
 function is_user_spammy( $user = null ) {
-    if ( ! ( $user instanceof User ) ) {
+	if ( ! ( $user instanceof User ) ) {
 		if ( $user ) {
 			$user = get_user_by( 'login', $user );
 		} else {

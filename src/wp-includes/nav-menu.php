@@ -239,7 +239,7 @@ function wp_delete_nav_menu( $menu ) {
 	set_theme_mod( 'nav_menu_locations', $locations );
 
 	if ( $result && !is_wp_error($result) ) {
-	
+
 		/**
 		 * Fires after a navigation menu has been successfully deleted.
 		 *

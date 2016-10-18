@@ -321,7 +321,7 @@ function get_the_content( $more_link_text = null, $strip_teaser = false ) {
 			$output .= '<span id="more-' . $post->ID . '"></span>' . $content[1];
 		} else {
 			if ( ! empty( $more_link_text ) ) {
-			
+
 				/**
 				 * Filters the Read More link text.
 				 *
@@ -1134,7 +1134,7 @@ function wp_dropdown_pages( $args = '' ) {
 	 * @param string $output HTML output for drop down list of pages.
 	 * @param array  $r      The parsed arguments array.
 	 * @param array  $pages  List of WP_Post objects returned by `get_pages()`
- 	 */
+	 */
 	$html = apply_filters( 'wp_dropdown_pages', $output, $r, $pages );
 
 	if ( $r['echo'] ) {

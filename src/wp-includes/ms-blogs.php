@@ -1026,7 +1026,7 @@ function update_blog_status( $blog_id, $pref, $value, $deprecated = null ) {
 		 *
 		 * @param int    $blog_id Blog ID.
 		 * @param string $value   The value of blog status.
- 		 */
+		 */
 		do_action( 'update_blog_public', $blog_id, $value ); // Moved here from update_blog_public().
 	}
 

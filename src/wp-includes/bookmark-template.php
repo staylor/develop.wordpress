@@ -74,7 +74,7 @@ function _walk_bookmarks( $bookmarks, $args = '' ) {
 		}
 		$desc = esc_attr( sanitize_bookmark_field( 'link_description', $bookmark->link_description, $bookmark->link_id, 'display' ) );
 		$name = esc_attr( sanitize_bookmark_field( 'link_name', $bookmark->link_name, $bookmark->link_id, 'display' ) );
- 		$title = $desc;
+		$title = $desc;
 
 		if ( $r['show_updated'] ) {
 			if ( '00' != substr( $bookmark->link_updated_f, 0, 2 ) ) {
@@ -217,8 +217,8 @@ function wp_list_bookmarks( $args = '' ) {
 	if ( ! is_array( $r['class'] ) ) {
 		$r['class'] = explode( ' ', $r['class'] );
 	}
- 	$r['class'] = array_map( 'sanitize_html_class', $r['class'] );
- 	$r['class'] = trim( join( ' ', $r['class'] ) );
+	$r['class'] = array_map( 'sanitize_html_class', $r['class'] );
+	$r['class'] = trim( join( ' ', $r['class'] ) );
 
 	if ( $r['categorize'] ) {
 		$cats = get_terms( 'link_category', array(

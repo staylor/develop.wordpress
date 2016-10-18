@@ -80,13 +80,13 @@ function wp_signon( $credentials = [], $secure_cookie = '' ) {
 	 *
 	 * @param bool  $secure_cookie Whether to use a secure sign-on cookie.
 	 * @param array $credentials {
- 	 *     Array of entered sign-on data.
- 	 *
- 	 *     @type string $user_login    Username.
- 	 *     @type string $user_password Password entered.
+	 *     Array of entered sign-on data.
+	 *
+	 *     @type string $user_login    Username.
+	 *     @type string $user_password Password entered.
 	 *     @type bool   $remember      Whether to 'remember' the user. Increases the time
 	 *                                 that the cookie will be kept. Default false.
- 	 * }
+	 * }
 	 */
 	$secure_cookie = apply_filters( 'secure_signon_cookie', $secure_cookie, $credentials );
 
@@ -1231,7 +1231,7 @@ function sanitize_user_field($field, $value, $user_id, $context) {
 			 *
 			 * The dynamic portion of the hook name, `$field`, refers to the prefixed user
 			 * field being filtered, such as 'user_login', 'user_email', 'first_name', etc.
- 			 *
+			 *
 			 * @since 2.9.0
 			 *
 			 * @param mixed $value Value of the prefixed user field.
@@ -1678,16 +1678,16 @@ function wp_insert_user( $userdata ) {
 	$user = new User( $user_id );
 
 	/**
- 	 * Filters a user's meta values and keys before the user is created or updated.
- 	 *
- 	 * Does not include contact methods. These are added using `wp_get_user_contact_methods( $user )`.
- 	 *
- 	 * @since 4.4.0
- 	 *
- 	 * @param array $meta {
- 	 *     Default meta values and keys for the user.
- 	 *
- 	 *     @type string   $nickname             The user's nickname. Default is the user's username.
+	 * Filters a user's meta values and keys before the user is created or updated.
+	 *
+	 * Does not include contact methods. These are added using `wp_get_user_contact_methods( $user )`.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param array $meta {
+	 *     Default meta values and keys for the user.
+	 *
+	 *     @type string   $nickname             The user's nickname. Default is the user's username.
 	 *     @type string   $first_name           The user's first name.
 	 *     @type string   $last_name            The user's last name.
 	 *     @type string   $description          The user's description.
@@ -1698,10 +1698,10 @@ function wp_insert_user( $userdata ) {
 	 *                                          not forced.
 	 *     @type bool     $show_admin_bar_front Whether to show the admin bar on the front end for the user.
 	 *                                          Default true.
- 	 * }
+	 * }
 	 * @param User $user   User object.
 	 * @param bool $update Whether the user is being updated rather than created.
- 	 */
+	 */
 	$meta = apply_filters( 'insert_user_meta', $meta, $user, $update );
 
 	// Update user meta.
@@ -2036,7 +2036,7 @@ function wp_get_user_contact_methods( $user = null ) {
 	 * @since 2.9.0
 	 *
 	 * @param array  $methods Array of contact methods and their labels.
- 	 * @param User   $user    User object.
+	 * @param User   $user    User object.
 	 */
 	return apply_filters( 'user_contactmethods', $methods, $user );
 }

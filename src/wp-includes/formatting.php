@@ -799,7 +799,7 @@ function shortcode_unautop( $pee ) {
 		.     '\\['                          // Opening bracket
 		.     "($tagregexp)"                 // 2: Shortcode name
 		.     '(?![\\w-])'                   // Not followed by word character or hyphen
-		                                     // Unroll the loop: Inside the opening shortcode tag
+											 // Unroll the loop: Inside the opening shortcode tag
 		.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash
 		.     '(?:'
 		.         '\\/(?!\\])'               // A forward slash not followed by a closing bracket
@@ -1722,7 +1722,7 @@ function remove_accents( $string ) {
 			$chars[ 'ß' ] = 'ss';
 		} elseif ( 'da_DK' === $locale ) {
 			$chars[ 'Æ' ] = 'Ae';
- 			$chars[ 'æ' ] = 'ae';
+			$chars[ 'æ' ] = 'ae';
 			$chars[ 'Ø' ] = 'Oe';
 			$chars[ 'ø' ] = 'oe';
 			$chars[ 'Å' ] = 'Aa';
@@ -2662,7 +2662,7 @@ function make_clickable( $text ) {
 				)
 				(\)?)                                                  # 3: Trailing closing parenthesis (for parethesis balancing post processing)
 			~xS'; // The regex is a non-anchored pattern and does not have a single fixed starting character.
-			      // Tell PCRE to spend more time optimizing since, when used on a page load, it will probably be used several times.
+				  // Tell PCRE to spend more time optimizing since, when used on a page load, it will probably be used several times.
 
 			$ret = preg_replace_callback( $url_clickable, '_make_url_clickable_cb', $ret );
 
@@ -2766,7 +2766,7 @@ function wp_rel_nofollow_callback( $matches ) {
 	$rel  = 'nofollow';
 
 	if ( preg_match( '%href=["\'](' . preg_quote( set_url_scheme( home_url(), 'http' ) ) . ')%i', $text ) ||
-	     preg_match( '%href=["\'](' . preg_quote( set_url_scheme( home_url(), 'https' ) ) . ')%i', $text )
+		 preg_match( '%href=["\'](' . preg_quote( set_url_scheme( home_url(), 'https' ) ) . ')%i', $text )
 	) {
 		return "<a $text>";
 	}
@@ -3942,7 +3942,7 @@ function esc_js( $text ) {
 	 * @since 2.0.6
 	 *
 	 * @param string $safe_text The text after it has been escaped.
- 	 * @param string $text      The text prior to being escaped.
+	 * @param string $text      The text prior to being escaped.
 	 */
 	return apply_filters( 'js_escape', $safe_text, $text );
 }
@@ -3967,7 +3967,7 @@ function esc_html( $text ) {
 	 * @since 2.8.0
 	 *
 	 * @param string $safe_text The text after it has been escaped.
- 	 * @param string $text      The text prior to being escaped.
+	 * @param string $text      The text prior to being escaped.
 	 */
 	return apply_filters( 'esc_html', $safe_text, $text );
 }
@@ -3992,7 +3992,7 @@ function esc_attr( $text ) {
 	 * @since 2.0.6
 	 *
 	 * @param string $safe_text The text after it has been escaped.
- 	 * @param string $text      The text prior to being escaped.
+	 * @param string $text      The text prior to being escaped.
 	 */
 	return apply_filters( 'attribute_escape', $safe_text, $text );
 }
@@ -4013,7 +4013,7 @@ function esc_textarea( $text ) {
 	 * @since 3.1.0
 	 *
 	 * @param string $safe_text The text after it has been escaped.
- 	 * @param string $text      The text prior to being escaped.
+	 * @param string $text      The text prior to being escaped.
 	 */
 	return apply_filters( 'esc_textarea', $safe_text, $text );
 }
@@ -4034,7 +4034,7 @@ function tag_escape( $tag_name ) {
 	 * @since 2.8.0
 	 *
 	 * @param string $safe_tag The tag name after it has been escaped.
- 	 * @param string $tag_name The text before it was escaped.
+	 * @param string $tag_name The text before it was escaped.
 	 */
 	return apply_filters( 'tag_escape', $safe_tag, $tag_name );
 }
@@ -5050,8 +5050,8 @@ function _print_emoji_detection_script() {
 function wp_encode_emoji( $content ) {
 	if ( function_exists( 'mb_convert_encoding' ) ) {
 		$regex = '/(
-		     \x23\xE2\x83\xA3               # Digits
-		     [\x30-\x39]\xE2\x83\xA3
+			 \x23\xE2\x83\xA3               # Digits
+			 [\x30-\x39]\xE2\x83\xA3
 		   | \xF0\x9F[\x85-\x88][\xA6-\xBF] # Enclosed characters
 		   | \xF0\x9F[\x8C-\x97][\x80-\xBF] # Misc
 		   | \xF0\x9F\x98[\x80-\xBF]        # Smilies

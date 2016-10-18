@@ -639,11 +639,11 @@ function _wp_preview_post_thumbnail_filter( $value, $post_id, $meta_key ) {
 	$_request = $app['request']->attributes;
 
 	if ( empty( $_request->get( '_thumbnail_id' ) ) ||
-	     empty( $_request->get( 'preview_id' ) ) ||
-	     $post->ID != $post_id ||
-	     '_thumbnail_id' != $meta_key ||
-	     'revision' == $post->post_type ||
-	     $post_id != $_request->get( 'preview_id' )
+		 empty( $_request->get( 'preview_id' ) ) ||
+		 $post->ID != $post_id ||
+		 '_thumbnail_id' != $meta_key ||
+		 'revision' == $post->post_type ||
+		 $post_id != $_request->get( 'preview_id' )
 	) {
 		return $value;
 	}

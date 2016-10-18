@@ -505,7 +505,7 @@ function wp_using_ext_object_cache( $using = null ) {
  */
 function wp_start_object_cache() {
 	$first_init = false;
- 	if ( ! function_exists( 'wp_cache_init' ) ) {
+	if ( ! function_exists( 'wp_cache_init' ) ) {
 		if ( file_exists( WP_CONTENT_DIR . '/object-cache.php' ) ) {
 			require_once ( WP_CONTENT_DIR . '/object-cache.php' );
 			if ( function_exists( 'wp_cache_init' ) ) {
@@ -1055,7 +1055,7 @@ function wp_is_ini_value_changeable( $setting ) {
 		if ( function_exists( 'ini_get_all' ) ) {
 			$ini_all = ini_get_all();
 		}
- 	}
+	}
 
 	// Bit operator to workaround https://bugs.php.net/bug.php?id=44936 which changes access level to 63 in PHP 5.2.6 - 5.2.17.
 	if ( isset( $ini_all[ $setting ]['access'] ) && ( INI_ALL === ( $ini_all[ $setting ]['access'] & 7 ) || INI_USER === ( $ini_all[ $setting ]['access'] & 7 ) ) ) {
