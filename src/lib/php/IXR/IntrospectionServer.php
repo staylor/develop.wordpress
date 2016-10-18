@@ -6,78 +6,78 @@ namespace WP\IXR;
  */
 class IntrospectionServer extends Server {
 
-    private $signatures;
-    private $help;
+	private $signatures;
+	private $help;
 
-    public function __construct() {
-        $this->setCallbacks();
-        $this->setCapabilities();
+	public function __construct() {
+		$this->setCallbacks();
+		$this->setCapabilities();
 
-        $this->capabilities['introspection'] = [
-            'specUrl' => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
-            'specVersion' => 1
-        ];
+		$this->capabilities['introspection'] = [
+			'specUrl' => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
+			'specVersion' => 1
+		];
 
-        $this->addCallback(
-            'system.methodSignature',
-            'this:methodSignature',
-            [ 'array', 'string' ],
-            'Returns an array describing the return type and required parameters of a method'
-        );
+		$this->addCallback(
+			'system.methodSignature',
+			'this:methodSignature',
+			[ 'array', 'string' ],
+			'Returns an array describing the return type and required parameters of a method'
+		);
 
-        $this->addCallback(
-            'system.getCapabilities',
-            'this:getCapabilities',
-            [ 'struct' ],
-            'Returns a struct describing the XML-RPC specifications supported by this server'
-        );
+		$this->addCallback(
+			'system.getCapabilities',
+			'this:getCapabilities',
+			[ 'struct' ],
+			'Returns a struct describing the XML-RPC specifications supported by this server'
+		);
 
-        $this->addCallback(
-            'system.listMethods',
-            'this:listMethods',
-            [ 'array' ],
-            'Returns an array of available methods on this server'
-        );
+		$this->addCallback(
+			'system.listMethods',
+			'this:listMethods',
+			[ 'array' ],
+			'Returns an array of available methods on this server'
+		);
 
-        $this->addCallback(
-            'system.methodHelp',
-            'this:methodHelp',
-            [ 'string', 'string' ],
-            'Returns a documentation string for the specified method'
-        );
-    }
+		$this->addCallback(
+			'system.methodHelp',
+			'this:methodHelp',
+			[ 'string', 'string' ],
+			'Returns a documentation string for the specified method'
+		);
+	}
 
-    public function addCallback( string $method, $callback, array $args, string $help ) {
-        $this->methods[ $method ] = $callback;
-        $this->signatures[ $method ] = $args;
-        $this->help[ $method ] = $help;
-    }
+	public function addCallback( string $method, $callback, array $args, string $help ) {
+		$this->methods[ $method ] = $callback;
+		$this->signatures[ $method ] = $args;
+		$this->help[ $method ] = $help;
+	}
 
-    public function call( string $methodname, $args ) {
-        // Make sure it's in an array
-        if ( $args && ! is_array( $args ) ) {
-            $args = [ $args ];
-        }
+	public function call( string $methodname, $args ) {
+		// Make sure it's in an array
+		if ( $args && ! is_array( $args ) ) {
+			$args = [ $args ];
+		}
 
-        // Over-rides default call method, adds signature check
-        if ( ! $this->hasMethod( $methodname ) ) {
-            return new Error( -32601, 'server error. requested method "' . $this->message->methodName . '" not specified.' );
-        }
+		// Over-rides default call method, adds signature check
+		if ( ! $this->hasMethod( $methodname ) ) {
+			return new Error( -32601, 'server error. requested method "' . $this->message->methodName . '" not specified.' );
+		}
 
-        $signature = $this->signatures[ $methodname ];
+		$signature = $this->signatures[ $methodname ];
 
-        // Check the number of arguments
-        if ( count( $args ) !== count( $signature ) ) {
-            return new Error( -32602, 'server error. wrong number of method parameters' );
-        }
+		// Check the number of arguments
+		if ( count( $args ) !== count( $signature ) ) {
+			return new Error( -32602, 'server error. wrong number of method parameters' );
+		}
 
-        // Check the argument types
-        $ok = true;
-        $argsbackup = $args;
-        for ( $i = 0, $j = count( $args ); $i < $j; $i++ ) {
-            $arg = array_shift( $args );
-            $type = array_shift( $signature );
-            switch ( $type ) {
+		// Check the argument types
+		$ok = true;
+		$argsbackup = $args;
+		for ( $i = 0, $j = count( $args ); $i < $j; $i++ ) {
+			$arg = array_shift( $args );
+			$type = array_shift( $signature );
+			switch ( $type ) {
 			case 'int':
 			case 'i4':
 				if ( is_array( $arg ) || ! is_int( $arg ) ) {
@@ -109,27 +109,27 @@ class IntrospectionServer extends Server {
 					$ok = false;
 				}
 				break;
-            }
+			}
 
-            if ( ! $ok ) {
-                return new Error( -32602, 'server error. invalid method parameters' );
-            }
-        }
-        // It passed the test - run the "real" method call
-        return parent::call( $methodname, $argsbackup );
-    }
+			if ( ! $ok ) {
+				return new Error( -32602, 'server error. invalid method parameters' );
+			}
+		}
+		// It passed the test - run the "real" method call
+		return parent::call( $methodname, $argsbackup );
+	}
 
-    public function methodSignature( string $method ): array
-    {
-        if ( ! $this->hasMethod( $method ) ) {
+	public function methodSignature( string $method ): array
+	{
+		if ( ! $this->hasMethod( $method ) ) {
 			return new Error( -32601, 'server error. requested method "' . $method . '" not specified.' );
-        }
-        // We should be returning an array of types
-        $types = $this->signatures[ $method ];
+		}
+		// We should be returning an array of types
+		$types = $this->signatures[ $method ];
 
-        $return = [];
-        foreach ( $types as $type ) {
-            switch ( $type ) {
+		$return = [];
+		foreach ( $types as $type ) {
+			switch ( $type ) {
 			case 'string':
 				$return[] = 'string';
 				break;
@@ -162,14 +162,14 @@ class IntrospectionServer extends Server {
 			case 'struct':
 				$return[] = [ 'struct' => 'struct' ];
 				break;
-            }
-        }
+			}
+		}
 
-        return $return;
-    }
+		return $return;
+	}
 
-    public function methodHelp( string $method ): string
-    {
-        return $this->help[ $method ];
-    }
+	public function methodHelp( string $method ): string
+	{
+		return $this->help[ $method ];
+	}
 }
