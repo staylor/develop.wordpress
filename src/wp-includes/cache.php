@@ -81,7 +81,7 @@ function wp_cache_decr( $key, $offset = 1, $group = '' ) {
 function wp_cache_delete( $key, $group = '' ) {
 	global $wp_object_cache;
 
-	return $wp_object_cache->delete($key, $group);
+	return $wp_object_cache->delete( $key, $group );
 }
 
 /**
@@ -150,7 +150,7 @@ function wp_cache_incr( $key, $offset = 1, $group = '' ) {
  * @global WP_Object_Cache $wp_object_cache
  */
 function wp_cache_init() {
-	$GLOBALS['wp_object_cache'] = new WP_Object_Cache();
+	$GLOBALS[ 'wp_object_cache' ] = new WP_Object_Cache();
 }
 
 /**
@@ -512,7 +512,7 @@ class WP_Object_Cache {
 			return false;
 		}
 
-		unset( $this->cache[$group][$key] );
+		unset( $this->cache[ $group ][ $key ] );
 		return true;
 	}
 
@@ -562,10 +562,10 @@ class WP_Object_Cache {
 		if ( $this->_exists( $key, $group ) ) {
 			$found = true;
 			$this->cache_hits += 1;
-			if ( is_object($this->cache[$group][$key]) ) {
-				return clone $this->cache[$group][$key];
+			if ( is_object( $this->cache[ $group ][ $key ] ) ) {
+				return clone $this->cache[ $group ][ $key ];
 			} else {
-				return $this->cache[$group][$key];
+				return $this->cache[ $group ][ $key ];
 			}
 		}
 
@@ -698,7 +698,7 @@ class WP_Object_Cache {
 			$data = clone $data;
 		}
 
-		$this->cache[$group][$key] = $data;
+		$this->cache[ $group ][ $key ] = $data;
 		return true;
 	}
 
@@ -717,7 +717,7 @@ class WP_Object_Cache {
 		echo "<strong>Cache Misses:</strong> {$this->cache_misses}<br />";
 		echo "</p>";
 		echo '<ul>';
-		foreach ($this->cache as $group => $cache) {
+		foreach ( $this->cache as $group => $cache ) {
 			echo "<li><strong>Group:</strong> $group - ( " . number_format( strlen( serialize( $cache ) ) / KB_IN_BYTES, 2 ) . 'k )</li>';
 		}
 		echo '</ul>';
@@ -759,7 +759,7 @@ class WP_Object_Cache {
 	 */
 	public function __construct() {
 		$this->multisite = is_multisite();
-		$this->blog_prefix =  $this->multisite ? get_current_blog_id() . ':' : '';
+		$this->blog_prefix = $this->multisite ? get_current_blog_id() . ':' : '';
 	}
 
 	/**

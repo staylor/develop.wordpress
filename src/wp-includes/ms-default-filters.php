@@ -56,10 +56,12 @@ add_action( 'transition_post_status', '_update_posts_count_on_transition_post_st
 // Counts
 add_action( 'admin_init', 'wp_schedule_update_network_counts');
 add_action( 'update_network_counts', 'wp_update_network_counts');
-foreach ( array( 'user_register', 'deleted_user', 'wpmu_new_user', 'make_spam_user', 'make_ham_user' ) as $action )
+foreach ( array( 'user_register', 'deleted_user', 'wpmu_new_user', 'make_spam_user', 'make_ham_user' ) as $action ) {
 	add_action( $action, 'wp_maybe_update_network_user_counts' );
-foreach ( array( 'make_spam_blog', 'make_ham_blog', 'archive_blog', 'unarchive_blog', 'make_delete_blog', 'make_undelete_blog' ) as $action )
+}
+foreach ( array( 'make_spam_blog', 'make_ham_blog', 'archive_blog', 'unarchive_blog', 'make_delete_blog', 'make_undelete_blog' ) as $action ) {
 	add_action( $action, 'wp_maybe_update_network_site_counts' );
+}
 unset( $action );
 
 // Files
@@ -74,10 +76,14 @@ add_action( 'phpmailer_init', 'fix_phpmailer_messageid' );
 
 // Disable somethings by default for multisite
 add_filter( 'enable_update_services_configuration', '__return_false' );
-if ( ! defined('POST_BY_EMAIL') || ! POST_BY_EMAIL ) // back compat constant.
+if ( ! defined('POST_BY_EMAIL') || ! POST_BY_EMAIL ) {
+	// back compat constant.
 	add_filter( 'enable_post_by_email_configuration', '__return_false' );
-if ( ! defined('EDIT_ANY_USER') || ! EDIT_ANY_USER ) // back compat constant.
+}
+if ( ! defined('EDIT_ANY_USER') || ! EDIT_ANY_USER ) {
+	// back compat constant.
 	add_filter( 'enable_edit_any_user_configuration', '__return_false' );
+}
 add_filter( 'force_filtered_html_on_import', '__return_true' );
 
 // WP_HOME and WP_SITEURL should not have any effect in MS

@@ -27,10 +27,11 @@ function get_comment_author( $comment_ID = 0 ) {
 	$comment = get_comment( $comment_ID );
 
 	if ( empty( $comment->comment_author ) ) {
-		if ( $comment->user_id && $user = get_userdata( $comment->user_id ) )
+		if ( $comment->user_id && $user = get_userdata( $comment->user_id ) ) {
 			$author = $user->display_name;
-		else
+		} else {
 			$author = __('Anonymous');
+		}
 	} else {
 		$author = $comment->comment_author;
 	}
@@ -220,10 +221,11 @@ function get_comment_author_link( $comment_ID = 0 ) {
 	$url     = get_comment_author_url( $comment );
 	$author  = get_comment_author( $comment );
 
-	if ( empty( $url ) || 'http://' == $url )
+	if ( empty( $url ) || 'http://' == $url ) {
 		$return = $author;
-	else
+	} else {
 		$return = "<a href='$url' rel='external nofollow' class='url'>$author</a>";
+	}
 
 	/**
 	 * Filters the comment author's link for display.
@@ -430,10 +432,11 @@ function comment_author_url_link( $linktext = '', $before = '', $after = '', $co
 function comment_class( $class = '', $comment = null, $post_id = null, $echo = true ) {
 	// Separates classes with a single space, collates classes for comment DIV
 	$class = 'class="' . join( ' ', get_comment_class( $class, $comment, $post_id ) ) . '"';
-	if ( $echo)
+	if ( $echo) {
 		echo $class;
-	else
+	} else {
 		return $class;
+	}
 }
 
 /**
@@ -476,12 +479,15 @@ function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
 		}
 	}
 
-	if ( empty($comment_alt) )
+	if ( empty($comment_alt) ) {
 		$comment_alt = 0;
-	if ( empty($comment_depth) )
+	}
+	if ( empty($comment_depth) ) {
 		$comment_depth = 1;
-	if ( empty($comment_thread_alt) )
+	}
+	if ( empty($comment_thread_alt) ) {
 		$comment_thread_alt = 0;
+	}
 
 	if ( $comment_alt % 2 ) {
 		$classes[] = 'odd';
@@ -506,8 +512,9 @@ function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
 	$classes[] = "depth-$comment_depth";
 
 	if ( !empty($class) ) {
-		if ( !is_array( $class ) )
+		if ( !is_array( $class ) ) {
 			$class = preg_split('#\s+#', $class);
+		}
 		$classes = array_merge($classes, $class);
 	}
 
@@ -540,10 +547,11 @@ function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
  */
 function get_comment_date( $d = '', $comment_ID = 0 ) {
 	$comment = get_comment( $comment_ID );
-	if ( '' == $d )
+	if ( '' == $d ) {
 		$date = mysql2date(get_option('date_format'), $comment->comment_date);
-	else
+	} else {
 		$date = mysql2date($d, $comment->comment_date);
+	}
 	/**
 	 * Filters the returned comment date.
 	 *
@@ -823,10 +831,12 @@ function get_comments_link( $post_id = 0 ) {
  * @param string $deprecated_2 Not Used.
  */
 function comments_link( $deprecated = '', $deprecated_2 = '' ) {
-	if ( !empty( $deprecated ) )
+	if ( !empty( $deprecated ) ) {
 		_deprecated_argument( __FUNCTION__, '0.72' );
-	if ( !empty( $deprecated_2 ) )
+	}
+	if ( !empty( $deprecated_2 ) ) {
 		_deprecated_argument( __FUNCTION__, '1.3.0' );
+	}
 	echo esc_url( get_comments_link() );
 }
 
@@ -1011,10 +1021,11 @@ function get_comment_time( $d = '', $gmt = false, $translate = true ) {
 	$comment = get_comment();
 
 	$comment_date = $gmt ? $comment->comment_date_gmt : $comment->comment_date;
-	if ( '' == $d )
+	if ( '' == $d ) {
 		$date = mysql2date(get_option('time_format'), $comment_date, $translate);
-	else
+	} else {
 		$date = mysql2date($d, $comment_date, $translate);
+	}
 
 	/**
 	 * Filters the returned comment time.
@@ -1053,8 +1064,9 @@ function comment_time( $d = '' ) {
  */
 function get_comment_type( $comment_ID = 0 ) {
 	$comment = get_comment( $comment_ID );
-	if ( '' == $comment->comment_type )
+	if ( '' == $comment->comment_type ) {
 		$comment->comment_type = 'comment';
+	}
 
 	/**
 	 * Filters the returned comment type.
@@ -1079,9 +1091,15 @@ function get_comment_type( $comment_ID = 0 ) {
  * @param string $pingbacktxt  Optional. String to display for pingback type. Default false.
  */
 function comment_type( $commenttxt = false, $trackbacktxt = false, $pingbacktxt = false ) {
-	if ( false === $commenttxt ) $commenttxt = _x( 'Comment', 'noun' );
-	if ( false === $trackbacktxt ) $trackbacktxt = __( 'Trackback' );
-	if ( false === $pingbacktxt ) $pingbacktxt = __( 'Pingback' );
+	if ( false === $commenttxt ) {
+		$commenttxt = _x( 'Comment', 'noun' );
+	}
+	if ( false === $trackbacktxt ) {
+		$trackbacktxt = __( 'Trackback' );
+	}
+	if ( false === $pingbacktxt ) {
+		$pingbacktxt = __( 'Pingback' );
+	}
 	$type = get_comment_type();
 	switch( $type ) {
 		case 'trackback' :
@@ -1107,10 +1125,11 @@ function comment_type( $commenttxt = false, $trackbacktxt = false, $pingbacktxt 
  * @return string The trackback URL after being filtered.
  */
 function get_trackback_url() {
-	if ( '' != get_option('permalink_structure') )
+	if ( '' != get_option('permalink_structure') ) {
 		$tb_url = trailingslashit(get_permalink()) . user_trailingslashit('trackback', 'single_trackback');
-	else
+	} else {
 		$tb_url = get_option('siteurl') . '/wp-trackback.php?p=' . get_the_ID();
+	}
 
 	/**
 	 * Filters the returned trackback URL.
@@ -1291,15 +1310,17 @@ function wp_comment_form_unfiltered_html_nonce() {
 function comments_template( $file = '/comments.php', $separate_comments = false ) {
 	global $withcomments, $post, $wpdb, $id, $comment, $user_login, $user_ID, $user_identity, $overridden_cpage;
 
-	if ( !(is_single() || is_page() || $withcomments) || empty($post) )
+	if ( !(is_single() || is_page() || $withcomments) || empty($post) ) {
 		return;
+	}
 
 	$app = getApp();
 	$wpdb = $app['db'];
 	$wp_query = $app['wp']->current_query;
 
-	if ( empty($file) )
+	if ( empty($file) ) {
 		$file = '/comments.php';
+	}
 
 	$req = get_option('require_name_email');
 
@@ -1457,8 +1478,9 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 		$overridden_cpage = true;
 	}
 
-	if ( !defined('COMMENTS_TEMPLATE') )
+	if ( !defined('COMMENTS_TEMPLATE') ) {
 		define('COMMENTS_TEMPLATE', true);
+	}
 
 	$theme_template = STYLESHEETPATH . $file;
 	/**
@@ -1469,10 +1491,11 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	 * @param string $theme_template The path to the theme template file.
 	 */
 	$include = apply_filters( 'comments_template', $theme_template );
-	if ( file_exists( $include ) )
-		require( $include );
-	elseif ( file_exists( TEMPLATEPATH . $file ) )
+	if ( file_exists( $include ) ) {
+			require( $include );
+	} elseif ( file_exists( TEMPLATEPATH . $file ) ) {
 		require( TEMPLATEPATH . $file );
+	}
 }
 
 /**
@@ -1874,15 +1897,19 @@ function comment_form_title( $noreplytext = false, $replytext = false, $linktopa
 
 	$app = getApp();
 
-	if ( false === $noreplytext ) $noreplytext = __( 'Leave a Reply' );
-	if ( false === $replytext ) $replytext = __( 'Leave a Reply to %s' );
+	if ( false === $noreplytext ) {
+		$noreplytext = __( 'Leave a Reply' );
+	}
+	if ( false === $replytext ) {
+		$replytext = __( 'Leave a Reply to %s' );
+	}
 
 	$replytocom = $app['request']->query->get( 'replytocom' );
 	$replytoid = $replytocom ? (int) $replytocom : 0;
 
-	if ( 0 == $replytoid )
+	if ( 0 == $replytoid ) {
 		echo $noreplytext;
-	else {
+	} else {
 		// Sets the global so that template tags can be used in the comment form.
 		$comment = get_comment($replytoid);
 		$author = ( $linktoparent ) ? '<a href="#comment-' . get_comment_ID() . '">' . get_comment_author( $comment ) . '</a>' : get_comment_author( $comment );
@@ -1971,12 +1998,14 @@ function wp_list_comments( $args = [], $comments = null ) {
 	// Figure out what comments we'll be looping through ($_comments)
 	if ( null !== $comments ) {
 		$comments = (array) $comments;
-		if ( empty($comments) )
+		if ( empty($comments) ) {
 			return;
+		}
 		if ( 'all' != $r['type'] ) {
 			$comments_by_type = separate_comments($comments);
-			if ( empty($comments_by_type[$r['type']]) )
-				return;
+			if ( empty($comments_by_type[$r['type']]) ) {
+							return;
+			}
 			$_comments = $comments_by_type[$r['type']];
 		} else {
 			$_comments = $comments;
@@ -2026,13 +2055,16 @@ function wp_list_comments( $args = [], $comments = null ) {
 
 		// Otherwise, fall back on the comments from `$wp_query->comments`.
 		} else {
-			if ( empty($wp_query->comments) )
+			if ( empty($wp_query->comments) ) {
 				return;
+			}
 			if ( 'all' != $r['type'] ) {
-				if ( empty($wp_query->comments_by_type) )
-					$wp_query->comments_by_type = separate_comments($wp_query->comments);
-				if ( empty($wp_query->comments_by_type[$r['type']]) )
+				if ( empty($wp_query->comments_by_type) ) {
+									$wp_query->comments_by_type = separate_comments($wp_query->comments);
+				}
+				if ( empty($wp_query->comments_by_type[$r['type']]) ) {
 					return;
+				}
 				$_comments = $wp_query->comments_by_type[$r['type']];
 			} else {
 				$_comments = $wp_query->comments;
@@ -2070,10 +2102,11 @@ function wp_list_comments( $args = [], $comments = null ) {
 	}
 
 	if ( '' === $r['max_depth'] ) {
-		if ( get_option('thread_comments') )
+		if ( get_option('thread_comments') ) {
 			$r['max_depth'] = get_option('thread_comments_depth');
-		else
+		} else {
 			$r['max_depth'] = -1;
+		}
 	}
 
 	if ( '' === $r['page'] ) {
@@ -2087,11 +2120,13 @@ function wp_list_comments( $args = [], $comments = null ) {
 	}
 	// Validation check
 	$r['page'] = intval($r['page']);
-	if ( 0 == $r['page'] && 0 != $r['per_page'] )
+	if ( 0 == $r['page'] && 0 != $r['per_page'] ) {
 		$r['page'] = 1;
+	}
 
-	if ( null === $r['reverse_top_level'] )
+	if ( null === $r['reverse_top_level'] ) {
 		$r['reverse_top_level'] = ( 'desc' == get_option('comment_order') );
+	}
 
 	wp_queue_comments_for_comment_meta_lazyload( $_comments );
 
@@ -2175,16 +2210,18 @@ function wp_list_comments( $args = [], $comments = null ) {
  * @param int|WP_Post $post_id Post ID or WP_Post object to generate the form for. Default current post.
  */
 function comment_form( $args = [], $post_id = null ) {
-	if ( null === $post_id )
+	if ( null === $post_id ) {
 		$post_id = get_the_ID();
+	}
 
 	$commenter = wp_get_current_commenter();
 	$user = wp_get_current_user();
 	$user_identity = $user->exists() ? $user->display_name : '';
 
 	$args = wp_parse_args( $args );
-	if ( ! isset( $args['format'] ) )
+	if ( ! isset( $args['format'] ) ) {
 		$args['format'] = current_theme_supports( 'html5', 'comment-form' ) ? 'html5' : 'xhtml';
+	}
 
 	$req      = get_option( 'require_name_email' );
 	$aria_req = ( $req ? " aria-required='true'" : '' );
@@ -2294,8 +2331,9 @@ function comment_form( $args = [], $post_id = null ) {
 				 * @since 3.0.0
 				 */
 				do_action( 'comment_form_must_log_in_after' );
-			else : ?>
-				<form action="<?php echo esc_url( $args['action'] ); ?>" method="post" id="<?php echo esc_attr( $args['id_form'] ); ?>" class="<?php echo esc_attr( $args['class_form'] ); ?>"<?php echo $html5 ? ' novalidate' : ''; ?>>
+			else: ?>
+				<form action="<?php echo esc_url( $args['action'] );
+			?>" method="post" id="<?php echo esc_attr( $args['id_form'] ); ?>" class="<?php echo esc_attr( $args['class_form'] ); ?>"<?php echo $html5 ? ' novalidate' : ''; ?>>
 					<?php
 					/**
 					 * Fires at the top of the comment form, inside the form tag.
@@ -2330,7 +2368,7 @@ function comment_form( $args = [], $post_id = null ) {
 						 */
 						do_action( 'comment_form_logged_in_after', $commenter, $user_identity );
 
-					else :
+					else:
 
 						echo $args['comment_notes_before'];
 
@@ -2460,7 +2498,7 @@ function comment_form( $args = [], $post_id = null ) {
 		 * @since 3.0.0
 		 */
 		do_action( 'comment_form_after' );
-	else :
+	else:
 		/**
 		 * Fires after the comment form if comments are closed.
 		 *

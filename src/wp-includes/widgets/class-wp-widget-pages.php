@@ -57,8 +57,9 @@ class WP_Widget_Pages extends WP_Widget {
 		$sortby = empty( $instance['sortby'] ) ? 'menu_order' : $instance['sortby'];
 		$exclude = empty( $instance['exclude'] ) ? '' : $instance['exclude'];
 
-		if ( $sortby == 'menu_order' )
+		if ( $sortby == 'menu_order' ) {
 			$sortby = 'menu_order, post_title';
+		}
 
 		/**
 		 * Filters the arguments for the Pages widget.

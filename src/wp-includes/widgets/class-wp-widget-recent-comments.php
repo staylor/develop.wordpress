@@ -52,8 +52,9 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 		 * @param string $id_base The widget ID.
 		 */
 		if ( ! current_theme_supports( 'widgets' ) // Temp hack #14876
-			|| ! apply_filters( 'show_recent_comments_widget_style', true, $this->id_base ) )
+			|| ! apply_filters( 'show_recent_comments_widget_style', true, $this->id_base ) ) {
 			return;
+		}
 		?>
 		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
 		<?php
@@ -70,8 +71,9 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 	 * @param array $instance Settings for the current Recent Comments widget instance.
 	 */
 	public function widget( $args, $instance ) {
-		if ( ! isset( $args['widget_id'] ) )
+		if ( ! isset( $args['widget_id'] ) ) {
 			$args['widget_id'] = $this->id;
+		}
 
 		$output = '';
 
@@ -81,8 +83,9 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
-		if ( ! $number )
+		if ( ! $number ) {
 			$number = 5;
+		}
 
 		/**
 		 * Filters the arguments for the Recent Comments widget.

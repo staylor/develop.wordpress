@@ -83,8 +83,9 @@ function update_post_thumbnail_cache( $wp_query = null ) {
 
 	$thumb_ids = [];
 	foreach ( $wp_query->posts as $post ) {
-		if ( $id = get_post_thumbnail_id( $post->ID ) )
-			$thumb_ids[] = $id;
+		if ( $id = get_post_thumbnail_id( $post->ID ) ) {
+					$thumb_ids[] = $id;
+		}
 	}
 
 	if ( ! empty ( $thumb_ids ) ) {
@@ -146,8 +147,9 @@ function get_the_post_thumbnail( $post = null, $size = 'post-thumbnail', $attr =
 		 *                                        and height values (in that order). Default 'post-thumbnail'.
 		 */
 		do_action( 'begin_fetch_post_thumbnail_html', $post->ID, $post_thumbnail_id, $size );
-		if ( in_the_loop() )
-			update_post_thumbnail_cache();
+		if ( in_the_loop() ) {
+					update_post_thumbnail_cache();
+		}
 		$html = wp_get_attachment_image( $post_thumbnail_id, $size, false, $attr );
 
 		/**

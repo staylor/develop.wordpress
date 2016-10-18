@@ -18,8 +18,9 @@ use function WP\getApp;
  * @return bool True if subdomain configuration is enabled, false otherwise.
  */
 function is_subdomain_install() {
-	if ( defined('SUBDOMAIN_INSTALL') )
-		return SUBDOMAIN_INSTALL;
+	if ( defined('SUBDOMAIN_INSTALL') ) {
+			return SUBDOMAIN_INSTALL;
+	}
 
 	return ( defined( 'VHOST' ) && VHOST == 'yes' );
 }
@@ -37,8 +38,9 @@ function is_subdomain_install() {
  */
 function wp_get_active_network_plugins() {
 	$active_plugins = (array) get_site_option( 'active_sitewide_plugins', [] );
-	if ( empty( $active_plugins ) )
-		return [];
+	if ( empty( $active_plugins ) ) {
+			return [];
+	}
 
 	$plugins = [];
 	$active_plugins = array_keys( $active_plugins );
@@ -48,8 +50,9 @@ function wp_get_active_network_plugins() {
 		if ( ! validate_file( $plugin ) // $plugin must validate as file
 			&& '.php' == substr( $plugin, -4 ) // $plugin must end with '.php'
 			&& file_exists( WP_PLUGIN_DIR . '/' . $plugin ) // $plugin must exist
-			)
-		$plugins[] = WP_PLUGIN_DIR . '/' . $plugin;
+			) {
+				$plugins[] = WP_PLUGIN_DIR . '/' . $plugin;
+		}
 	}
 	return $plugins;
 }
@@ -79,20 +82,23 @@ function ms_site_check() {
 	 * @param bool null Whether to skip the blog status check. Default null.
 	*/
 	$check = apply_filters( 'ms_site_check', null );
-	if ( null !== $check )
-		return true;
+	if ( null !== $check ) {
+			return true;
+	}
 
 	// Allow super admins to see blocked sites
-	if ( is_super_admin() )
-		return true;
+	if ( is_super_admin() ) {
+			return true;
+	}
 
 	$blog = get_blog_details();
 
 	if ( '1' == $blog->deleted ) {
-		if ( file_exists( WP_CONTENT_DIR . '/blog-deleted.php' ) )
-			return WP_CONTENT_DIR . '/blog-deleted.php';
-		else
-			wp_die( __( 'This site is no longer available.' ), '', array( 'response' => 410 ) );
+		if ( file_exists( WP_CONTENT_DIR . '/blog-deleted.php' ) ) {
+					return WP_CONTENT_DIR . '/blog-deleted.php';
+		} else {
+					wp_die( __( 'This site is no longer available.' ), '', array( 'response' => 410 ) );
+		}
 	}
 
 	if ( '2' == $blog->deleted ) {
@@ -110,10 +116,11 @@ function ms_site_check() {
 	}
 
 	if ( $blog->archived == '1' || $blog->spam == '1' ) {
-		if ( file_exists( WP_CONTENT_DIR . '/blog-suspended.php' ) )
-			return WP_CONTENT_DIR . '/blog-suspended.php';
-		else
-			wp_die( __( 'This site has been archived or suspended.' ), '', array( 'response' => 410 ) );
+		if ( file_exists( WP_CONTENT_DIR . '/blog-suspended.php' ) ) {
+					return WP_CONTENT_DIR . '/blog-suspended.php';
+		} else {
+					wp_die( __( 'This site has been archived or suspended.' ), '', array( 'response' => 410 ) );
+		}
 	}
 
 	return true;
@@ -489,8 +496,9 @@ function ms_not_installed( $domain, $path ) {
 	);
 	$msg .= ' ' . __( 'If you&#8217;re still stuck with this message, then check that your database contains the following tables:' ) . '</p><ul>';
 	foreach ( $wpdb->tables('global') as $t => $table ) {
-		if ( 'sitecategories' == $t )
-			continue;
+		if ( 'sitecategories' == $t ) {
+					continue;
+		}
 		$msg .= '<li>' . $table . '</li>';
 	}
 	$msg .= '</ul>';

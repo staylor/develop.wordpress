@@ -58,14 +58,16 @@ $title     = wp_unslash( $_post->get( 'title', '' ) );
 $excerpt   = wp_unslash( $_post->get( 'excerpt', '' ) );
 $blog_name = wp_unslash( $_post->get( 'blog_name', '' ) );
 
-if ($charset)
+if ($charset) {
 	$charset = str_replace( array(',', ' '), '', strtoupper( trim($charset) ) );
-else
+} else {
 	$charset = 'ASCII, UTF-8, ISO-8859-1, JIS, EUC-JP, SJIS';
+}
 
 // No valid uses for UTF-7.
-if ( false !== strpos($charset, 'UTF-7') )
+if ( false !== strpos($charset, 'UTF-7') ) {
 	die;
+}
 
 // For international trackbacks.
 if ( function_exists('mb_convert_encoding') ) {
@@ -79,11 +81,13 @@ $title     = wp_slash($title);
 $excerpt   = wp_slash($excerpt);
 $blog_name = wp_slash($blog_name);
 
-if ( is_single() || is_page() )
+if ( is_single() || is_page() ) {
 	$tb_id = $posts[0]->ID;
+}
 
-if ( !isset($tb_id) || !intval( $tb_id ) )
+if ( !isset($tb_id) || !intval( $tb_id ) ) {
 	trackback_response( 1, __( 'I really need an ID for this to work.' ) );
+}
 
 if (empty($title) && empty($tb_url) && empty($blog_name)) {
 	// If it doesn't look like a trackback at all.
@@ -108,8 +112,9 @@ if ( !empty($tb_url) && !empty($title) ) {
 
 	header('Content-Type: text/xml; charset=' . get_option('blog_charset') );
 
-	if ( !pings_open($tb_id) )
-		trackback_response( 1, __( 'Sorry, trackbacks are closed for this item.' ) );
+	if ( !pings_open($tb_id) ) {
+			trackback_response( 1, __( 'Sorry, trackbacks are closed for this item.' ) );
+	}
 
 	$title =  wp_html_excerpt( $title, 250, '&#8230;' );
 	$excerpt = wp_html_excerpt( $excerpt, 252, '&#8230;' );

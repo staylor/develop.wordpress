@@ -24,8 +24,9 @@ class WP_Ajax_Response {
 	 * @param string|array $args Optional. Will be passed to add() method.
 	 */
 	public function __construct( $args = '' ) {
-		if ( !empty($args) )
+		if ( !empty($args) ) {
 			$this->add($args);
+		}
 	}
 
 	/**
@@ -148,12 +149,14 @@ class WP_Ajax_Response {
 	public function send() {
 		header( 'Content-Type: text/xml; charset=' . get_option( 'blog_charset' ) );
 		echo "<?xml version='1.0' encoding='" . get_option( 'blog_charset' ) . "' standalone='yes'?><wp_ajax>";
-		foreach ( (array) $this->responses as $response )
+		foreach ( (array) $this->responses as $response ) {
 			echo $response;
+		}
 		echo '</wp_ajax>';
-		if ( wp_doing_ajax() )
+		if ( wp_doing_ajax() ) {
 			wp_die();
-		else
+		} else {
 			die();
+		}
 	}
 }

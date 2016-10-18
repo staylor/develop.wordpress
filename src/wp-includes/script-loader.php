@@ -754,11 +754,13 @@ function wp_default_scripts( &$scripts ) {
 function wp_default_styles( &$styles ) {
 	$app = getApp();
 
-	if ( ! defined( 'SCRIPT_DEBUG' ) )
+	if ( ! defined( 'SCRIPT_DEBUG' ) ) {
 		define( 'SCRIPT_DEBUG', false !== strpos( $app['wp_version'], '-src' ) );
+	}
 
-	if ( ! $guessurl = site_url() )
+	if ( ! $guessurl = site_url() ) {
 		$guessurl = wp_guess_url();
+	}
 
 	$styles->base_url = $guessurl;
 	$styles->content_url = defined( 'WP_CONTENT_URL' ) ? WP_CONTENT_URL : '';
@@ -884,14 +886,17 @@ function wp_default_styles( &$styles ) {
  * @return array Reordered array, if needed.
  */
 function wp_prototype_before_jquery( $js_array ) {
-	if ( false === $prototype = array_search( 'prototype', $js_array, true ) )
+	if ( false === $prototype = array_search( 'prototype', $js_array, true ) ) {
 		return $js_array;
+	}
 
-	if ( false === $jquery = array_search( 'jquery', $js_array, true ) )
+	if ( false === $jquery = array_search( 'jquery', $js_array, true ) ) {
 		return $js_array;
+	}
 
-	if ( $prototype < $jquery )
+	if ( $prototype < $jquery ) {
 		return $js_array;
+	}
 
 	unset($js_array[$prototype]);
 
@@ -986,14 +991,16 @@ function wp_localize_jquery_ui_datepicker() {
 function wp_style_loader_src( $src, $handle ) {
 	global $_wp_admin_css_colors;
 
-	if ( wp_installing() )
+	if ( wp_installing() ) {
 		return preg_replace( '#^wp-admin/#', './', $src );
+	}
 
 	if ( 'colors' == $handle ) {
 		$color = get_user_option('admin_color' );
 
-		if ( empty($color) || !isset($_wp_admin_css_colors[$color]) )
+		if ( empty($color) || !isset($_wp_admin_css_colors[$color]) ) {
 			$color = 'fresh';
+		}
 
 		$color = $_wp_admin_css_colors[$color];
 		$url = $color->url;
@@ -1092,8 +1099,9 @@ function _print_scripts() {
 	$wp_scripts = $app['scripts.global'];
 
 	$zip = $app['scripts.compress'] ? 1 : 0;
-	if ( $zip && defined( 'ENFORCE_GZIP' ) && ENFORCE_GZIP )
+	if ( $zip && defined( 'ENFORCE_GZIP' ) && ENFORCE_GZIP ) {
 		$zip = 'gzip';
+	}
 
 	if ( $concat = trim( $wp_scripts->concat, ', ' ) ) {
 
@@ -1112,8 +1120,9 @@ function _print_scripts() {
 		echo "<script type='text/javascript' src='" . esc_attr($src) . "'></script>\n";
 	}
 
-	if ( !empty($wp_scripts->print_html) )
+	if ( !empty($wp_scripts->print_html) ) {
 		echo $wp_scripts->print_html;
+	}
 }
 
 /**
@@ -1243,8 +1252,9 @@ function _print_styles() {
 	$wp_styles = $app['styles.global'];
 
 	$zip = $app['styles.compress'] ? 1 : 0;
-	if ( $zip && defined('ENFORCE_GZIP' ) && ENFORCE_GZIP )
+	if ( $zip && defined('ENFORCE_GZIP' ) && ENFORCE_GZIP ) {
 		$zip = 'gzip';
+	}
 
 	if ( $concat = trim( $wp_styles->concat, ', ' ) ) {
 		$dir = $wp_styles->text_direction;
@@ -1263,6 +1273,7 @@ function _print_styles() {
 		}
 	}
 
-	if ( !empty($wp_styles->print_html) )
+	if ( !empty($wp_styles->print_html) ) {
 		echo $wp_styles->print_html;
+	}
 }

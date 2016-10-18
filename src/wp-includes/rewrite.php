@@ -154,8 +154,9 @@ function add_rewrite_rule( $regex, $query, $after = 'bottom' ) {
  */
 function add_rewrite_tag( $tag, $regex, $query = '' ) {
 	// validate the tag's name
-	if ( strlen( $tag ) < 3 || $tag[0] != '%' || $tag[ strlen($tag) - 1 ] != '%' )
+	if ( strlen( $tag ) < 3 || $tag[0] != '%' || $tag[ strlen($tag) - 1 ] != '%' ) {
 		return;
+	}
 
 	$app = getApp();
 
@@ -194,10 +195,12 @@ function remove_rewrite_tag( $tag ) {
  */
 function add_permastruct( $name, $struct, $args = [] ) {
 	// Back-compat for the old parameters: $with_front and $ep_mask.
-	if ( ! is_array( $args ) )
+	if ( ! is_array( $args ) ) {
 		$args = [ 'with_front' => $args ];
-	if ( func_num_args() == 4 )
+	}
+	if ( func_num_args() == 4 ) {
 		$args['ep_mask'] = func_get_arg( 3 );
+	}
 
 	$app = getApp();
 	$app['rewrite']->add_permastruct( $name, $struct, $args );
@@ -453,8 +456,9 @@ function url_to_postid( $url ) {
 	// First, check to see if there is a 'p=N' or 'page_id=N' to match against
 	if ( preg_match('#[?&](p|page_id|attachment_id)=(\d+)#', $url, $values) )	{
 		$id = absint($values[2]);
-		if ( $id )
+		if ( $id ) {
 			return $id;
+		}
 	}
 
 	// Get rid of the #anchor
@@ -470,12 +474,14 @@ function url_to_postid( $url ) {
 	$url = set_url_scheme( $url, $scheme );
 
 	// Add 'www.' if it is absent and should be there
-	if ( false !== strpos(home_url(), '://www.') && false === strpos($url, '://www.') )
+	if ( false !== strpos(home_url(), '://www.') && false === strpos($url, '://www.') ) {
 		$url = str_replace('://', '://www.', $url);
+	}
 
 	// Strip 'www.' if it is present and shouldn't be
-	if ( false === strpos(home_url(), '://www.') )
+	if ( false === strpos(home_url(), '://www.') ) {
 		$url = str_replace('://www.', '://', $url);
+	}
 
 	if ( trim( $url, '/' ) === home_url() && 'page' == get_option( 'show_on_front' ) ) {
 		$page_on_front = get_option( 'page_on_front' );
@@ -490,8 +496,9 @@ function url_to_postid( $url ) {
 	$rewrite = $app['rewrite']->wp_rewrite_rules();
 
 	// Not using rewrite rules, and 'p=N' and 'page_id=N' methods failed, so we're out of options
-	if ( empty($rewrite) )
+	if ( empty($rewrite) ) {
 		return 0;
+	}
 
 	// Strip 'index.php/' if we're not using path info permalinks
 	if ( ! $app['rewrite']->using_index_permalinks() ) {
@@ -515,8 +522,9 @@ function url_to_postid( $url ) {
 	$post_type_query_vars = [];
 
 	foreach ( get_post_types( [] , 'objects' ) as $post_type => $t ) {
-		if ( ! empty( $t->query_var ) )
+		if ( ! empty( $t->query_var ) ) {
 			$post_type_query_vars[ $t->query_var ] = $post_type;
+		}
 	}
 
 	// Look for matches.
@@ -525,8 +533,9 @@ function url_to_postid( $url ) {
 
 		// If the requesting file is the anchor of the match, prepend it
 		// to the path info.
-		if ( !empty($url) && ($url != $request) && (strpos($match, $url) === 0) )
+		if ( !empty($url) && ($url != $request) && (strpos($match, $url) === 0) ) {
 			$request_match = $url . '/' . $request;
+		}
 
 		if ( preg_match("#^$match#", $request_match, $matches) ) {
 
@@ -569,10 +578,11 @@ function url_to_postid( $url ) {
 
 			// Do the query
 			$query = new WP_Query( $query );
-			if ( ! empty( $query->posts ) && $query->is_singular )
+			if ( ! empty( $query->posts ) && $query->is_singular ) {
 				return $query->post->ID;
-			else
+			} else {
 				return 0;
+			}
 		}
 	}
 	return 0;

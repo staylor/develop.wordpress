@@ -30,11 +30,13 @@ if ( $wp_filter ) {
 	$wp_filter = [];
 }
 
-if ( ! isset( $wp_actions ) )
+if ( ! isset( $wp_actions ) ) {
 	$wp_actions = [];
+}
 
-if ( ! isset( $wp_current_filter ) )
+if ( ! isset( $wp_current_filter ) ) {
 	$wp_current_filter = [];
+}
 
 /**
  * Hook a function or method to a specific filter action.
@@ -183,16 +185,19 @@ function apply_filters( $tag, $value ) {
 	}
 
 	if ( !isset($wp_filter[$tag]) ) {
-		if ( isset($wp_filter['all']) )
-			array_pop($wp_current_filter);
+		if ( isset($wp_filter['all']) ) {
+					array_pop($wp_current_filter);
+		}
 		return $value;
 	}
 
-	if ( !isset($wp_filter['all']) )
-		$wp_current_filter[] = $tag;
+	if ( !isset($wp_filter['all']) ) {
+			$wp_current_filter[] = $tag;
+	}
 
-	if ( empty($args) )
-		$args = func_get_args();
+	if ( empty($args) ) {
+			$args = func_get_args();
+	}
 
 	// don't pass the tag name to WP_Hook
 	array_shift( $args );
@@ -230,13 +235,15 @@ function apply_filters_ref_array($tag, $args) {
 	}
 
 	if ( !isset($wp_filter[$tag]) ) {
-		if ( isset($wp_filter['all']) )
-			array_pop($wp_current_filter);
+		if ( isset($wp_filter['all']) ) {
+					array_pop($wp_current_filter);
+		}
 		return $args[0];
 	}
 
-	if ( !isset($wp_filter['all']) )
-		$wp_current_filter[] = $tag;
+	if ( !isset($wp_filter['all']) ) {
+			$wp_current_filter[] = $tag;
+	}
 
 	$filtered = $wp_filter[ $tag ]->apply_filters( $args[0], $args );
 
@@ -418,10 +425,11 @@ function add_action($tag, $function_to_add, $priority = 10, $accepted_args = 1) 
 function do_action($tag, $arg = '') {
 	global $wp_filter, $wp_actions, $wp_current_filter;
 
-	if ( ! isset($wp_actions[$tag]) )
-		$wp_actions[$tag] = 1;
-	else
-		++$wp_actions[$tag];
+	if ( ! isset($wp_actions[$tag]) ) {
+			$wp_actions[$tag] = 1;
+	} else {
+			++$wp_actions[$tag];
+	}
 
 	// Do 'all' actions first
 	if ( isset($wp_filter['all']) ) {
@@ -431,21 +439,26 @@ function do_action($tag, $arg = '') {
 	}
 
 	if ( !isset($wp_filter[$tag]) ) {
-		if ( isset($wp_filter['all']) )
-			array_pop($wp_current_filter);
+		if ( isset($wp_filter['all']) ) {
+					array_pop($wp_current_filter);
+		}
 		return;
 	}
 
-	if ( !isset($wp_filter['all']) )
-		$wp_current_filter[] = $tag;
+	if ( !isset($wp_filter['all']) ) {
+			$wp_current_filter[] = $tag;
+	}
 
 	$args = [];
-	if ( is_array($arg) && 1 == count($arg) && isset($arg[0]) && is_object($arg[0]) ) // array(&$this)
+	if ( is_array($arg) && 1 == count($arg) && isset($arg[0]) && is_object($arg[0]) ) {
+		// array(&$this)
 		$args[] =& $arg[0];
-	else
-		$args[] = $arg;
-	for ( $a = 2, $num = func_num_args(); $a < $num; $a++ )
-		$args[] = func_get_arg($a);
+	} else {
+			$args[] = $arg;
+	}
+	for ( $a = 2, $num = func_num_args(); $a < $num; $a++ ) {
+			$args[] = func_get_arg($a);
+	}
 
 	$wp_filter[ $tag ]->do_action( $args );
 
@@ -465,8 +478,9 @@ function do_action($tag, $arg = '') {
 function did_action($tag) {
 	global $wp_actions;
 
-	if ( ! isset( $wp_actions[ $tag ] ) )
-		return 0;
+	if ( ! isset( $wp_actions[ $tag ] ) ) {
+			return 0;
+	}
 
 	return $wp_actions[$tag];
 }
@@ -488,10 +502,11 @@ function did_action($tag) {
 function do_action_ref_array($tag, $args) {
 	global $wp_filter, $wp_actions, $wp_current_filter;
 
-	if ( ! isset($wp_actions[$tag]) )
-		$wp_actions[$tag] = 1;
-	else
-		++$wp_actions[$tag];
+	if ( ! isset($wp_actions[$tag]) ) {
+			$wp_actions[$tag] = 1;
+	} else {
+			++$wp_actions[$tag];
+	}
 
 	// Do 'all' actions first
 	if ( isset($wp_filter['all']) ) {
@@ -501,13 +516,15 @@ function do_action_ref_array($tag, $args) {
 	}
 
 	if ( !isset($wp_filter[$tag]) ) {
-		if ( isset($wp_filter['all']) )
-			array_pop($wp_current_filter);
+		if ( isset($wp_filter['all']) ) {
+					array_pop($wp_current_filter);
+		}
 		return;
 	}
 
-	if ( !isset($wp_filter['all']) )
-		$wp_current_filter[] = $tag;
+	if ( !isset($wp_filter['all']) ) {
+			$wp_current_filter[] = $tag;
+	}
 
 	$wp_filter[ $tag ]->do_action( $args );
 
@@ -872,8 +889,9 @@ function _wp_filter_build_unique_id($tag, $function, $priority) {
 	global $wp_filter;
 	static $filter_id_count = 0;
 
-	if ( is_string($function) )
-		return $function;
+	if ( is_string($function) ) {
+			return $function;
+	}
 
 	if ( is_object($function) ) {
 		// Closures are currently implemented as objects
@@ -889,8 +907,9 @@ function _wp_filter_build_unique_id($tag, $function, $priority) {
 		} else {
 			$obj_idx = get_class($function[0]).$function[1];
 			if ( !isset($function[0]->wp_filter_id) ) {
-				if ( false === $priority )
-					return false;
+				if ( false === $priority ) {
+									return false;
+				}
 				$obj_idx .= isset($wp_filter[$tag][$priority]) ? count((array)$wp_filter[$tag][$priority]) : $filter_id_count;
 				$function[0]->wp_filter_id = $filter_id_count;
 				++$filter_id_count;

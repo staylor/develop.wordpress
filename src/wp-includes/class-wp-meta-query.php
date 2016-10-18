@@ -294,16 +294,19 @@ class WP_Meta_Query {
 	 * @return string MySQL type.
 	 */
 	public function get_cast_for_type( $type = '' ) {
-		if ( empty( $type ) )
+		if ( empty( $type ) ) {
 			return 'CHAR';
+		}
 
 		$meta_type = strtoupper( $type );
 
-		if ( ! preg_match( '/^(?:BINARY|CHAR|DATE|DATETIME|SIGNED|UNSIGNED|TIME|NUMERIC(?:\(\d+(?:,\s?\d+)?\))?|DECIMAL(?:\(\d+(?:,\s?\d+)?\))?)$/', $meta_type ) )
+		if ( ! preg_match( '/^(?:BINARY|CHAR|DATE|DATETIME|SIGNED|UNSIGNED|TIME|NUMERIC(?:\(\d+(?:,\s?\d+)?\))?|DECIMAL(?:\(\d+(?:,\s?\d+)?\))?)$/', $meta_type ) ) {
 			return 'CHAR';
+		}
 
-		if ( 'NUMERIC' == $meta_type )
+		if ( 'NUMERIC' == $meta_type ) {
 			$meta_type = 'SIGNED';
+		}
 
 		return $meta_type;
 	}

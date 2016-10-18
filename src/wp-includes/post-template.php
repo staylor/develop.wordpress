@@ -44,16 +44,18 @@ function get_the_ID() {
 function the_title( $before = '', $after = '', $echo = true ) {
 	$title = get_the_title();
 
-	if ( strlen($title) == 0 )
-		return;
+	if ( strlen($title) == 0 ) {
+			return;
+	}
 
 	$title = $before . $title . $after;
 
-	if ( $echo )
-		echo $title;
-	else
-		return $title;
-}
+	if ( $echo ) {
+			echo $title;
+	} else {
+			return $title;
+	}
+	}
 
 /**
  * Sanitize the current title when retrieving or displaying.
@@ -280,30 +282,37 @@ function get_the_content( $more_link_text = null, $strip_teaser = false ) {
 	$has_teaser = false;
 
 	// If post password required and it doesn't match the cookie.
-	if ( post_password_required( $post ) )
-		return get_the_password_form( $post );
+	if ( post_password_required( $post ) ) {
+			return get_the_password_form( $post );
+	}
 
-	if ( $page > count( $pages ) ) // if the requested page doesn't exist
-		$page = count( $pages ); // give them the highest numbered page that DOES exist
+	if ( $page > count( $pages ) ) {
+		// if the requested page doesn't exist
+		$page = count( $pages );
+	}
+	// give them the highest numbered page that DOES exist
 
 	$content = $pages[$page - 1];
 	if ( preg_match( '/<!--more(.*?)?-->/', $content, $matches ) ) {
 		$content = explode( $matches[0], $content, 2 );
-		if ( ! empty( $matches[1] ) && ! empty( $more_link_text ) )
-			$more_link_text = strip_tags( wp_kses_no_null( trim( $matches[1] ) ) );
+		if ( ! empty( $matches[1] ) && ! empty( $more_link_text ) ) {
+					$more_link_text = strip_tags( wp_kses_no_null( trim( $matches[1] ) ) );
+		}
 
 		$has_teaser = true;
 	} else {
 		$content = array( $content );
 	}
 
-	if ( false !== strpos( $post->post_content, '<!--noteaser-->' ) && ( ! $multipage || $page == 1 ) )
-		$strip_teaser = true;
+	if ( false !== strpos( $post->post_content, '<!--noteaser-->' ) && ( ! $multipage || $page == 1 ) ) {
+			$strip_teaser = true;
+	}
 
 	$teaser = $content[0];
 
-	if ( $more && $strip_teaser && $has_teaser )
-		$teaser = '';
+	if ( $more && $strip_teaser && $has_teaser ) {
+			$teaser = '';
+	}
 
 	$output .= $teaser;
 
@@ -311,8 +320,8 @@ function get_the_content( $more_link_text = null, $strip_teaser = false ) {
 		if ( $more ) {
 			$output .= '<span id="more-' . $post->ID . '"></span>' . $content[1];
 		} else {
-			if ( ! empty( $more_link_text ) )
-
+			if ( ! empty( $more_link_text ) ) {
+			
 				/**
 				 * Filters the Read More link text.
 				 *
@@ -322,6 +331,7 @@ function get_the_content( $more_link_text = null, $strip_teaser = false ) {
 				 * @param string $more_link_text    Read More text.
 				 */
 				$output .= apply_filters( 'the_content_more_link', ' <a href="' . get_permalink() . "#more-{$post->ID}\" class=\"more-link\">$more_link_text</a>", $more_link_text );
+			}
 			$output = force_balance_tags( $output );
 		}
 	}
@@ -456,8 +466,9 @@ function get_post_class( $class = '', $post_id = null ) {
 	}
 
 	$classes[] = 'post-' . $post->ID;
-	if ( ! is_admin() )
-		$classes[] = $post->post_type;
+	if ( ! is_admin() ) {
+			$classes[] = $post->post_type;
+	}
 	$classes[] = 'type-' . $post->post_type;
 	$classes[] = 'status-' . $post->post_status;
 
@@ -465,10 +476,11 @@ function get_post_class( $class = '', $post_id = null ) {
 	if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
 		$post_format = get_post_format( $post->ID );
 
-		if ( $post_format && !is_wp_error($post_format) )
-			$classes[] = 'format-' . sanitize_html_class( $post_format );
-		else
-			$classes[] = 'format-standard';
+		if ( $post_format && !is_wp_error($post_format) ) {
+					$classes[] = 'format-' . sanitize_html_class( $post_format );
+		} else {
+					$classes[] = 'format-standard';
+		}
 	}
 
 	$post_password_required = post_password_required( $post->ID );
@@ -563,27 +575,35 @@ function get_body_class( $class = '' ) {
 
 	$classes = [];
 
-	if ( is_rtl() )
-		$classes[] = 'rtl';
+	if ( is_rtl() ) {
+			$classes[] = 'rtl';
+	}
 
-	if ( is_front_page() )
-		$classes[] = 'home';
-	if ( is_home() )
-		$classes[] = 'blog';
-	if ( is_archive() )
-		$classes[] = 'archive';
-	if ( is_date() )
-		$classes[] = 'date';
+	if ( is_front_page() ) {
+			$classes[] = 'home';
+	}
+	if ( is_home() ) {
+			$classes[] = 'blog';
+	}
+	if ( is_archive() ) {
+			$classes[] = 'archive';
+	}
+	if ( is_date() ) {
+			$classes[] = 'date';
+	}
 	if ( is_search() ) {
 		$classes[] = 'search';
 		$classes[] = $wp_query->posts ? 'search-results' : 'search-no-results';
 	}
-	if ( is_paged() )
-		$classes[] = 'paged';
-	if ( is_attachment() )
-		$classes[] = 'attachment';
-	if ( is_404() )
-		$classes[] = 'error404';
+	if ( is_paged() ) {
+			$classes[] = 'paged';
+	}
+	if ( is_attachment() ) {
+			$classes[] = 'attachment';
+	}
+	if ( is_404() ) {
+			$classes[] = 'error404';
+	}
 
 	if ( is_single() ) {
 		$post_id = $wp_query->get_queried_object_id();
@@ -598,10 +618,11 @@ function get_body_class( $class = '' ) {
 			if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
 				$post_format = get_post_format( $post->ID );
 
-				if ( $post_format && !is_wp_error($post_format) )
-					$classes[] = 'single-format-' . sanitize_html_class( $post_format );
-				else
-					$classes[] = 'single-format-standard';
+				if ( $post_format && !is_wp_error($post_format) ) {
+									$classes[] = 'single-format-' . sanitize_html_class( $post_format );
+				} else {
+									$classes[] = 'single-format-standard';
+				}
 			}
 		}
 
@@ -615,8 +636,9 @@ function get_body_class( $class = '' ) {
 		if ( is_post_type_archive() ) {
 			$classes[] = 'post-type-archive';
 			$post_type = get_query_var( 'post_type' );
-			if ( is_array( $post_type ) )
-				$post_type = reset( $post_type );
+			if ( is_array( $post_type ) ) {
+							$post_type = reset( $post_type );
+			}
 			$classes[] = 'post-type-archive-' . sanitize_html_class( $post_type );
 		} elseif ( is_author() ) {
 			$author = $wp_query->get_queried_object();
@@ -694,16 +716,18 @@ function get_body_class( $class = '' ) {
 		}
 	}
 
-	if ( is_user_logged_in() )
-		$classes[] = 'logged-in';
+	if ( is_user_logged_in() ) {
+			$classes[] = 'logged-in';
+	}
 
 	if ( is_admin_bar_showing() ) {
 		$classes[] = 'admin-bar';
 		$classes[] = 'no-customize-support';
 	}
 
-	if ( get_background_color() !== get_theme_support( 'custom-background', 'default-color' ) || get_background_image() )
-		$classes[] = 'custom-background';
+	if ( get_background_color() !== get_theme_support( 'custom-background', 'default-color' ) || get_background_image() ) {
+			$classes[] = 'custom-background';
+	}
 
 	if ( has_custom_logo() ) {
 		$classes[] = 'wp-custom-logo';
@@ -711,33 +735,36 @@ function get_body_class( $class = '' ) {
 
 	$page = $wp_query->get( 'page' );
 
-	if ( ! $page || $page < 2 )
-		$page = $wp_query->get( 'paged' );
+	if ( ! $page || $page < 2 ) {
+			$page = $wp_query->get( 'paged' );
+	}
 
 	if ( $page && $page > 1 && ! is_404() ) {
 		$classes[] = 'paged-' . $page;
 
-		if ( is_single() )
-			$classes[] = 'single-paged-' . $page;
-		elseif ( is_page() )
-			$classes[] = 'page-paged-' . $page;
-		elseif ( is_category() )
-			$classes[] = 'category-paged-' . $page;
-		elseif ( is_tag() )
-			$classes[] = 'tag-paged-' . $page;
-		elseif ( is_date() )
-			$classes[] = 'date-paged-' . $page;
-		elseif ( is_author() )
-			$classes[] = 'author-paged-' . $page;
-		elseif ( is_search() )
-			$classes[] = 'search-paged-' . $page;
-		elseif ( is_post_type_archive() )
-			$classes[] = 'post-type-paged-' . $page;
+		if ( is_single() ) {
+					$classes[] = 'single-paged-' . $page;
+		} elseif ( is_page() ) {
+					$classes[] = 'page-paged-' . $page;
+		} elseif ( is_category() ) {
+					$classes[] = 'category-paged-' . $page;
+		} elseif ( is_tag() ) {
+					$classes[] = 'tag-paged-' . $page;
+		} elseif ( is_date() ) {
+					$classes[] = 'date-paged-' . $page;
+		} elseif ( is_author() ) {
+					$classes[] = 'author-paged-' . $page;
+		} elseif ( is_search() ) {
+					$classes[] = 'search-paged-' . $page;
+		} elseif ( is_post_type_archive() ) {
+					$classes[] = 'post-type-paged-' . $page;
+		}
 	}
 
 	if ( ! empty( $class ) ) {
-		if ( !is_array( $class ) )
-			$class = preg_split( '#\s+#', $class );
+		if ( !is_array( $class ) ) {
+					$class = preg_split( '#\s+#', $class );
+		}
 		$classes = array_merge( $classes, $class );
 	} else {
 		// Ensure that we always coerce class to being an array.
@@ -947,12 +974,13 @@ function _wp_link_page( $i ) {
 	if ( 1 == $i ) {
 		$url = get_permalink();
 	} else {
-		if ( '' == get_option('permalink_structure') || in_array($post->post_status, array('draft', 'pending')) )
-			$url = add_query_arg( 'page', $i, get_permalink() );
-		elseif ( 'page' == get_option('show_on_front') && get_option('page_on_front') == $post->ID )
-			$url = trailingslashit(get_permalink()) . user_trailingslashit("{$app['rewrite']->pagination_base}/" . $i, 'single_paged');
-		else
-			$url = trailingslashit(get_permalink()) . user_trailingslashit($i, 'single_paged');
+		if ( '' == get_option('permalink_structure') || in_array($post->post_status, array('draft', 'pending')) ) {
+					$url = add_query_arg( 'page', $i, get_permalink() );
+		} elseif ( 'page' == get_option('show_on_front') && get_option('page_on_front') == $post->ID ) {
+					$url = trailingslashit(get_permalink()) . user_trailingslashit("{$app['rewrite']->pagination_base}/" . $i, 'single_paged');
+		} else {
+					$url = trailingslashit(get_permalink()) . user_trailingslashit($i, 'single_paged');
+		}
 	}
 
 	if ( is_preview() ) {
@@ -985,13 +1013,14 @@ function _wp_link_page( $i ) {
 function post_custom( $key = '' ) {
 	$custom = get_post_custom();
 
-	if ( !isset( $custom[$key] ) )
-		return false;
-	elseif ( 1 == count($custom[$key]) )
-		return $custom[$key][0];
-	else
-		return $custom[$key];
-}
+	if ( !isset( $custom[$key] ) ) {
+			return false;
+	} elseif ( 1 == count($custom[$key]) ) {
+			return $custom[$key][0];
+	} else {
+			return $custom[$key];
+	}
+	}
 
 /**
  * Display list of post custom fields.
@@ -1006,8 +1035,9 @@ function the_meta() {
 		echo "<ul class='post-meta'>\n";
 		foreach ( (array) $keys as $key ) {
 			$keyt = trim($key);
-			if ( is_protected_meta( $keyt, 'post' ) )
-				continue;
+			if ( is_protected_meta( $keyt, 'post' ) ) {
+							continue;
+			}
 			$values = array_map('trim', get_post_custom_values($key));
 			$value = implode($values,', ');
 
@@ -1314,13 +1344,15 @@ function wp_page_menu( $args = [] ) {
 
 	// Show Home in the menu
 	if ( ! empty($args['show_home']) ) {
-		if ( true === $args['show_home'] || '1' === $args['show_home'] || 1 === $args['show_home'] )
-			$text = __('Home');
-		else
-			$text = $args['show_home'];
+		if ( true === $args['show_home'] || '1' === $args['show_home'] || 1 === $args['show_home'] ) {
+					$text = __('Home');
+		} else {
+					$text = $args['show_home'];
+		}
 		$class = '';
-		if ( is_front_page() && !is_paged() )
-			$class = 'class="current_page_item"';
+		if ( is_front_page() && !is_paged() ) {
+					$class = 'class="current_page_item"';
+		}
 		$menu .= '<li ' . $class . '><a href="' . home_url( '/' ) . '">' . $args['link_before'] . $text . $args['link_after'] . '</a></li>';
 		// If the front page is a page, add it to the exclude list
 		if (get_option('show_on_front') == 'page') {
@@ -1379,11 +1411,12 @@ function wp_page_menu( $args = [] ) {
 	 * @param array  $args An array of arguments.
 	 */
 	$menu = apply_filters( 'wp_page_menu', $menu, $args );
-	if ( $args['echo'] )
-		echo $menu;
-	else
-		return $menu;
-}
+	if ( $args['echo'] ) {
+			echo $menu;
+	} else {
+			return $menu;
+	}
+	}
 
 //
 // Page helpers
@@ -1402,14 +1435,16 @@ function wp_page_menu( $args = [] ) {
  * @return string
  */
 function walk_page_tree( $pages, $depth, $current_page, $r ) {
-	if ( empty($r['walker']) )
-		$walker = new Walker_Page;
-	else
-		$walker = $r['walker'];
+	if ( empty($r['walker']) ) {
+			$walker = new Walker_Page;
+	} else {
+			$walker = $r['walker'];
+	}
 
 	foreach ( (array) $pages as $page ) {
-		if ( $page->post_parent )
-			$r['pages_with_children'][ $page->post_parent ] = true;
+		if ( $page->post_parent ) {
+					$r['pages_with_children'][ $page->post_parent ] = true;
+		}
 	}
 
 	$args = array($pages, $depth, $r, $current_page);
@@ -1427,10 +1462,12 @@ function walk_page_tree( $pages, $depth, $current_page, $r ) {
  */
 function walk_page_dropdown_tree() {
 	$args = func_get_args();
-	if ( empty($args[2]['walker']) ) // the user's options are the third parameter
+	if ( empty($args[2]['walker']) ) {
+		// the user's options are the third parameter
 		$walker = new Walker_PageDropdown;
-	else
-		$walker = $args[2]['walker'];
+	} else {
+			$walker = $args[2]['walker'];
+	}
 
 	return call_user_func_array(array($walker, 'walk'), $args);
 }
@@ -1450,14 +1487,16 @@ function walk_page_dropdown_tree() {
  * @param bool        $permalink    Optional, default is false. Whether to include permalink.
  */
 function the_attachment_link( $id = 0, $fullsize = false, $deprecated = false, $permalink = false ) {
-	if ( !empty( $deprecated ) )
-		_deprecated_argument( __FUNCTION__, '2.5.0' );
+	if ( !empty( $deprecated ) ) {
+			_deprecated_argument( __FUNCTION__, '2.5.0' );
+	}
 
-	if ( $fullsize )
-		echo wp_get_attachment_link($id, 'full', $permalink);
-	else
-		echo wp_get_attachment_link($id, 'thumbnail', $permalink);
-}
+	if ( $fullsize ) {
+			echo wp_get_attachment_link($id, 'full', $permalink);
+	} else {
+			echo wp_get_attachment_link($id, 'thumbnail', $permalink);
+	}
+	}
 
 /**
  * Retrieve an attachment page link using an image or icon, if possible.
@@ -1529,8 +1568,9 @@ function wp_get_attachment_link( $id = 0, $size = 'thumbnail', $permalink = fals
 function prepend_attachment($content) {
 	$post = get_post();
 
-	if ( empty($post->post_type) || $post->post_type != 'attachment' )
-		return $content;
+	if ( empty($post->post_type) || $post->post_type != 'attachment' ) {
+			return $content;
+	}
 
 	if ( wp_attachment_is( 'video', $post ) ) {
 		$meta = wp_get_attachment_metadata( get_the_ID() );
@@ -1614,16 +1654,19 @@ function get_the_password_form( $post = 0 ) {
  * @return bool True on success, false on failure.
  */
 function is_page_template( $template = '' ) {
-	if ( ! is_page() )
-		return false;
+	if ( ! is_page() ) {
+			return false;
+	}
 
 	$page_template = get_page_template_slug( get_queried_object_id() );
 
-	if ( empty( $template ) )
-		return (bool) $page_template;
+	if ( empty( $template ) ) {
+			return (bool) $page_template;
+	}
 
-	if ( $template == $page_template )
-		return true;
+	if ( $template == $page_template ) {
+			return true;
+	}
 
 	if ( is_array( $template ) ) {
 		if ( ( in_array( 'default', $template, true ) && ! $page_template )
@@ -1647,11 +1690,13 @@ function is_page_template( $template = '' ) {
  */
 function get_page_template_slug( $post_id = null ) {
 	$post = get_post( $post_id );
-	if ( ! $post || 'page' != $post->post_type )
-		return false;
+	if ( ! $post || 'page' != $post->post_type ) {
+			return false;
+	}
 	$template = get_post_meta( $post->ID, '_wp_page_template', true );
-	if ( ! $template || 'default' == $template )
-		return '';
+	if ( ! $template || 'default' == $template ) {
+			return '';
+	}
 	return $template;
 }
 
@@ -1665,11 +1710,13 @@ function get_page_template_slug( $post_id = null ) {
  * @return string|false i18n formatted datetimestamp or localized 'Current Revision'.
  */
 function wp_post_revision_title( $revision, $link = true ) {
-	if ( !$revision = get_post( $revision ) )
-		return $revision;
+	if ( !$revision = get_post( $revision ) ) {
+			return $revision;
+	}
 
-	if ( !in_array( $revision->post_type, array( 'post', 'page', 'revision' ) ) )
-		return false;
+	if ( !in_array( $revision->post_type, array( 'post', 'page', 'revision' ) ) ) {
+			return false;
+	}
 
 	/* translators: revision date format, see https://secure.php.net/date */
 	$datef = _x( 'F j, Y @ H:i:s', 'revision date format' );
@@ -1679,13 +1726,15 @@ function wp_post_revision_title( $revision, $link = true ) {
 	$currentf  = __( '%s [Current Revision]' );
 
 	$date = date_i18n( $datef, strtotime( $revision->post_modified ) );
-	if ( $link && current_user_can( 'edit_post', $revision->ID ) && $link = get_edit_post_link( $revision->ID ) )
-		$date = "<a href='$link'>$date</a>";
+	if ( $link && current_user_can( 'edit_post', $revision->ID ) && $link = get_edit_post_link( $revision->ID ) ) {
+			$date = "<a href='$link'>$date</a>";
+	}
 
-	if ( !wp_is_post_revision( $revision ) )
-		$date = sprintf( $currentf, $date );
-	elseif ( wp_is_post_autosave( $revision ) )
-		$date = sprintf( $autosavef, $date );
+	if ( !wp_is_post_revision( $revision ) ) {
+			$date = sprintf( $currentf, $date );
+	} elseif ( wp_is_post_autosave( $revision ) ) {
+			$date = sprintf( $autosavef, $date );
+	}
 
 	return $date;
 }
@@ -1700,11 +1749,13 @@ function wp_post_revision_title( $revision, $link = true ) {
  * @return string|false gravatar, user, i18n formatted datetimestamp or localized 'Current Revision'.
  */
 function wp_post_revision_title_expanded( $revision, $link = true ) {
-	if ( !$revision = get_post( $revision ) )
-		return $revision;
+	if ( !$revision = get_post( $revision ) ) {
+			return $revision;
+	}
 
-	if ( !in_array( $revision->post_type, array( 'post', 'page', 'revision' ) ) )
-		return false;
+	if ( !in_array( $revision->post_type, array( 'post', 'page', 'revision' ) ) ) {
+			return false;
+	}
 
 	$author = get_the_author_meta( 'display_name', $revision->post_author );
 	/* translators: revision date format, see https://secure.php.net/date */
@@ -1713,8 +1764,9 @@ function wp_post_revision_title_expanded( $revision, $link = true ) {
 	$gravatar = get_avatar( $revision->post_author, 24 );
 
 	$date = date_i18n( $datef, strtotime( $revision->post_modified ) );
-	if ( $link && current_user_can( 'edit_post', $revision->ID ) && $link = get_edit_post_link( $revision->ID ) )
-		$date = "<a href='$link'>$date</a>";
+	if ( $link && current_user_can( 'edit_post', $revision->ID ) && $link = get_edit_post_link( $revision->ID ) ) {
+			$date = "<a href='$link'>$date</a>";
+	}
 
 	$revision_date_author = sprintf(
 		/* translators: post revision title: 1: author avatar, 2: author name, 3: time ago, 4: date */
@@ -1730,10 +1782,11 @@ function wp_post_revision_title_expanded( $revision, $link = true ) {
 	/* translators: %s: revision date with author avatar */
 	$currentf  = __( '%s [Current Revision]' );
 
-	if ( !wp_is_post_revision( $revision ) )
-		$revision_date_author = sprintf( $currentf, $revision_date_author );
-	elseif ( wp_is_post_autosave( $revision ) )
-		$revision_date_author = sprintf( $autosavef, $revision_date_author );
+	if ( !wp_is_post_revision( $revision ) ) {
+			$revision_date_author = sprintf( $currentf, $revision_date_author );
+	} elseif ( wp_is_post_autosave( $revision ) ) {
+			$revision_date_author = sprintf( $autosavef, $revision_date_author );
+	}
 
 	/**
 	 * Filters the formatted author and date for a revision.
@@ -1760,8 +1813,9 @@ function wp_post_revision_title_expanded( $revision, $link = true ) {
  * @param string      $type    'all' (default), 'revision' or 'autosave'
  */
 function wp_list_post_revisions( $post_id = 0, $type = 'all' ) {
-	if ( ! $post = get_post( $post_id ) )
-		return;
+	if ( ! $post = get_post( $post_id ) ) {
+			return;
+	}
 
 	// $args array with (parent, format, right, left, type) deprecated since 3.6
 	if ( is_array( $type ) ) {
@@ -1769,17 +1823,20 @@ function wp_list_post_revisions( $post_id = 0, $type = 'all' ) {
 		_deprecated_argument( __FUNCTION__, '3.6.0' );
 	}
 
-	if ( ! $revisions = wp_get_post_revisions( $post->ID ) )
-		return;
+	if ( ! $revisions = wp_get_post_revisions( $post->ID ) ) {
+			return;
+	}
 
 	$rows = '';
 	foreach ( $revisions as $revision ) {
-		if ( ! current_user_can( 'read_post', $revision->ID ) )
-			continue;
+		if ( ! current_user_can( 'read_post', $revision->ID ) ) {
+					continue;
+		}
 
 		$is_autosave = wp_is_post_autosave( $revision );
-		if ( ( 'revision' === $type && $is_autosave ) || ( 'autosave' === $type && ! $is_autosave ) )
-			continue;
+		if ( ( 'revision' === $type && $is_autosave ) || ( 'autosave' === $type && ! $is_autosave ) ) {
+					continue;
+		}
 
 		$rows .= "\t<li>" . wp_post_revision_title_expanded( $revision ) . "</li>\n";
 	}

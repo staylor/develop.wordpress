@@ -67,8 +67,9 @@ class WP_Admin_Bar {
 			$header_callback = $admin_bar_args[0]['callback'];
 		}
 
-		if ( empty($header_callback) )
+		if ( empty($header_callback) ) {
 			$header_callback = '_admin_bar_bump_cb';
+		}
 
 		add_action('wp_head', $header_callback);
 
@@ -118,16 +119,19 @@ class WP_Admin_Bar {
 	 */
 	public function add_node( $args ) {
 		// Shim for old method signature: add_node( $parent_id, $menu_obj, $args )
-		if ( func_num_args() >= 3 && is_string( func_get_arg(0) ) )
+		if ( func_num_args() >= 3 && is_string( func_get_arg(0) ) ) {
 			$args = array_merge( array( 'parent' => func_get_arg(0) ), func_get_arg(2) );
+		}
 
-		if ( is_object( $args ) )
+		if ( is_object( $args ) ) {
 			$args = get_object_vars( $args );
+		}
 
 		// Ensure we have a valid title.
 		if ( empty( $args['id'] ) ) {
-			if ( empty( $args['title'] ) )
+			if ( empty( $args['title'] ) ) {
 				return;
+			}
 
 			_doing_it_wrong( __METHOD__, __( 'The menu ID should not be empty.' ), '3.3.0' );
 			// Deprecated: Generate an ID from the title.
@@ -144,12 +148,14 @@ class WP_Admin_Bar {
 		);
 
 		// If the node already exists, keep any data that isn't provided.
-		if ( $maybe_defaults = $this->get_node( $args['id'] ) )
+		if ( $maybe_defaults = $this->get_node( $args['id'] ) ) {
 			$defaults = get_object_vars( $maybe_defaults );
+		}
 
 		// Do the same for 'meta' items.
-		if ( ! empty( $defaults['meta'] ) && ! empty( $args['meta'] ) )
+		if ( ! empty( $defaults['meta'] ) && ! empty( $args['meta'] ) ) {
 			$args['meta'] = wp_parse_args( $args['meta'], $defaults['meta'] );
+		}
 
 		$args = wp_parse_args( $args, $defaults );
 
@@ -181,8 +187,9 @@ class WP_Admin_Bar {
 	 * @return object Node.
 	 */
 	final public function get_node( $id ) {
-		if ( $node = $this->_get_node( $id ) )
+		if ( $node = $this->_get_node( $id ) ) {
 			return clone $node;
+		}
 	}
 
 	/**
@@ -190,22 +197,26 @@ class WP_Admin_Bar {
 	 * @return object|void
 	 */
 	final protected function _get_node( $id ) {
-		if ( $this->bound )
+		if ( $this->bound ) {
 			return;
+		}
 
-		if ( empty( $id ) )
+		if ( empty( $id ) ) {
 			$id = 'root';
+		}
 
-		if ( isset( $this->nodes[ $id ] ) )
+		if ( isset( $this->nodes[ $id ] ) ) {
 			return $this->nodes[ $id ];
+		}
 	}
 
 	/**
 	 * @return array|void
 	 */
 	final public function get_nodes() {
-		if ( ! $nodes = $this->_get_nodes() )
-			return;
+		if ( ! $nodes = $this->_get_nodes() ) {
+					return;
+		}
 
 		foreach ( $nodes as &$node ) {
 			$node = clone $node;
@@ -217,8 +228,9 @@ class WP_Admin_Bar {
 	 * @return array|void
 	 */
 	final protected function _get_nodes() {
-		if ( $this->bound )
+		if ( $this->bound ) {
 			return;
+		}
 
 		return $this->nodes;
 	}
@@ -264,16 +276,18 @@ class WP_Admin_Bar {
 	 */
 	public function render() {
 		$root = $this->_bind();
-		if ( $root )
+		if ( $root ) {
 			$this->_render( $root );
+		}
 	}
 
 	/**
 	 * @return object|void
 	 */
 	final protected function _bind() {
-		if ( $this->bound )
+		if ( $this->bound ) {
 			return;
+		}
 
 		// Add the root node.
 		// Clear it first, just in case. Don't mess with The Root.
@@ -290,13 +304,15 @@ class WP_Admin_Bar {
 			unset( $node->group );
 
 			// The Root wants your orphans. No lonely items allowed.
-			if ( ! $node->parent )
+			if ( ! $node->parent ) {
 				$node->parent = 'root';
+			}
 		}
 
 		foreach ( $this->_get_nodes() as $node ) {
-			if ( 'root' == $node->id )
+			if ( 'root' == $node->id ) {
 				continue;
+			}
 
 			// Fetch the parent node. If it isn't registered, ignore the node.
 			if ( ! $parent = $this->_get_node( $node->parent ) ) {
@@ -307,10 +323,11 @@ class WP_Admin_Bar {
 			$group_class = ( $node->parent == 'root' ) ? 'ab-top-menu' : 'ab-submenu';
 
 			if ( $node->type == 'group' ) {
-				if ( empty( $node->meta['class'] ) )
+				if ( empty( $node->meta['class'] ) ) {
 					$node->meta['class'] = $group_class;
-				else
+				} else {
 					$node->meta['class'] .= ' ' . $group_class;
+				}
 			}
 
 			// Items in items aren't allowed. Wrap nested items in 'default' groups.
@@ -368,10 +385,11 @@ class WP_Admin_Bar {
 						$container->parent = $grandparent->id;
 
 						$index = array_search( $parent, $grandparent->children, true );
-						if ( $index === false )
+						if ( $index === false ) {
 							$grandparent->children[] = $container;
-						else
+						} else {
 							array_splice( $grandparent->children, $index, 1, array( $container ) );
+						}
 					}
 
 					$parent->parent = $container->id;
@@ -435,8 +453,9 @@ class WP_Admin_Bar {
 	 * @param object $node
 	 */
 	final protected function _render_container( $node ) {
-		if ( $node->type != 'container' || empty( $node->children ) )
+		if ( $node->type != 'container' || empty( $node->children ) ) {
 			return;
+		}
 
 		?><div id="<?php echo esc_attr( 'wp-admin-bar-' . $node->id ); ?>" class="ab-group-container"><?php
 			foreach ( $node->children as $group ) {
@@ -453,13 +472,15 @@ class WP_Admin_Bar {
 			$this->_render_container( $node );
 			return;
 		}
-		if ( $node->type != 'group' || empty( $node->children ) )
+		if ( $node->type != 'group' || empty( $node->children ) ) {
 			return;
+		}
 
-		if ( ! empty( $node->meta['class'] ) )
+		if ( ! empty( $node->meta['class'] ) ) {
 			$class = ' class="' . esc_attr( trim( $node->meta['class'] ) ) . '"';
-		else
+		} else {
 			$class = '';
+		}
 
 		?><ul id="<?php echo esc_attr( 'wp-admin-bar-' . $node->id ); ?>"<?php echo $class; ?>><?php
 			foreach ( $node->children as $item ) {
@@ -472,8 +493,9 @@ class WP_Admin_Bar {
 	 * @param object $node
 	 */
 	final protected function _render_item( $node ) {
-		if ( $node->type != 'item' )
+		if ( $node->type != 'item' ) {
 			return;
+		}
 
 		$is_parent = ! empty( $node->children );
 		$has_link  = ! empty( $node->href );
@@ -489,11 +511,13 @@ class WP_Admin_Bar {
 			$aria_attributes .= ' aria-haspopup="true"';
 		}
 
-		if ( ! empty( $node->meta['class'] ) )
+		if ( ! empty( $node->meta['class'] ) ) {
 			$menuclass .= $node->meta['class'];
+		}
 
-		if ( $menuclass )
+		if ( $menuclass ) {
 			$menuclass = ' class="' . esc_attr( trim( $menuclass ) ) . '"';
+		}
 
 		?>
 
@@ -549,8 +573,9 @@ class WP_Admin_Bar {
 				?></div><?php
 			endif;
 
-			if ( ! empty( $node->meta['html'] ) )
+			if ( ! empty( $node->meta['html'] ) ) {
 				echo $node->meta['html'];
+			}
 
 			?>
 		</li><?php

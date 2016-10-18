@@ -256,8 +256,9 @@ class WP_User_Query {
 			$this->query_fields = "{$wpdb->users}.ID";
 		}
 
-		if ( isset( $qv['count_total'] ) && $qv['count_total'] )
-			$this->query_fields = 'SQL_CALC_FOUND_ROWS ' . $this->query_fields;
+		if ( isset( $qv['count_total'] ) && $qv['count_total'] ) {
+					$this->query_fields = 'SQL_CALC_FOUND_ROWS ' . $this->query_fields;
+		}
 
 		$this->query_from = "FROM {$wpdb->users}";
 		$this->query_where = "WHERE 1=1";
@@ -539,35 +540,40 @@ class WP_User_Query {
 		}
 
 		$search = '';
-		if ( isset( $qv['search'] ) )
-			$search = trim( $qv['search'] );
+		if ( isset( $qv['search'] ) ) {
+					$search = trim( $qv['search'] );
+		}
 
 		if ( $search ) {
 			$leading_wild = ( ltrim($search, '*') != $search );
 			$trailing_wild = ( rtrim($search, '*') != $search );
-			if ( $leading_wild && $trailing_wild )
-				$wild = 'both';
-			elseif ( $leading_wild )
-				$wild = 'leading';
-			elseif ( $trailing_wild )
-				$wild = 'trailing';
-			else
-				$wild = false;
-			if ( $wild )
-				$search = trim($search, '*');
+			if ( $leading_wild && $trailing_wild ) {
+							$wild = 'both';
+			} elseif ( $leading_wild ) {
+							$wild = 'leading';
+			} elseif ( $trailing_wild ) {
+							$wild = 'trailing';
+			} else {
+							$wild = false;
+			}
+			if ( $wild ) {
+							$search = trim($search, '*');
+			}
 
 			$search_columns = [];
-			if ( $qv['search_columns'] )
-				$search_columns = array_intersect( $qv['search_columns'], array( 'ID', 'user_login', 'user_email', 'user_url', 'user_nicename' ) );
+			if ( $qv['search_columns'] ) {
+							$search_columns = array_intersect( $qv['search_columns'], array( 'ID', 'user_login', 'user_email', 'user_url', 'user_nicename' ) );
+			}
 			if ( ! $search_columns ) {
-				if ( false !== strpos( $search, '@') )
-					$search_columns = array('user_email');
-				elseif ( is_numeric($search) )
-					$search_columns = array('user_login', 'ID');
-				elseif ( preg_match('|^https?://|', $search) && ! ( is_multisite() && wp_is_large_network( 'users' ) ) )
-					$search_columns = array('user_url');
-				else
-					$search_columns = array('user_login', 'user_url', 'user_email', 'user_nicename', 'display_name');
+				if ( false !== strpos( $search, '@') ) {
+									$search_columns = array('user_email');
+				} elseif ( is_numeric($search) ) {
+									$search_columns = array('user_login', 'ID');
+				} elseif ( preg_match('|^https?://|', $search) && ! ( is_multisite() && wp_is_large_network( 'users' ) ) ) {
+									$search_columns = array('user_url');
+				} else {
+									$search_columns = array('user_login', 'user_url', 'user_email', 'user_nicename', 'display_name');
+				}
 			}
 
 			/**
@@ -655,8 +661,9 @@ class WP_User_Query {
 			cache_users( $this->results );
 
 			$r = [];
-			foreach ( $this->results as $userid )
-				$r[ $userid ] = new User( $userid, '', $qv['blog_id'] );
+			foreach ( $this->results as $userid ) {
+							$r[ $userid ] = new User( $userid, '', $qv['blog_id'] );
+			}
 
 			$this->results = $r;
 		} elseif ( 'all' == $qv['fields'] ) {
@@ -676,8 +683,9 @@ class WP_User_Query {
 	 * @return mixed
 	 */
 	public function get( $query_var ) {
-		if ( isset( $this->query_vars[$query_var] ) )
-			return $this->query_vars[$query_var];
+		if ( isset( $this->query_vars[$query_var] ) ) {
+					return $this->query_vars[$query_var];
+		}
 
 		return null;
 	}

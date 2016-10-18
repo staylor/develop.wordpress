@@ -61,11 +61,13 @@ function get_blogaddress_by_id( $blog_id ) {
  */
 function get_blogaddress_by_name( $blogname ) {
 	if ( is_subdomain_install() ) {
-		if ( $blogname == 'main' )
-			$blogname = 'www';
+		if ( $blogname == 'main' ) {
+					$blogname = 'www';
+		}
 		$url = rtrim( network_home_url(), '/' );
-		if ( !empty( $blogname ) )
-			$url = preg_replace( '|^([^\.]+://)|', "\${1}" . $blogname . '.', $url );
+		if ( !empty( $blogname ) ) {
+					$url = preg_replace( '|^([^\.]+://)|', "\${1}" . $blogname . '.', $url );
+		}
 	} else {
 		$url = network_home_url( $blogname );
 	}
@@ -128,8 +130,9 @@ function get_blog_details( $fields = null, $get_all = true ) {
 		} elseif ( isset($fields['domain']) && isset($fields['path']) ) {
 			$key = md5( $fields['domain'] . $fields['path'] );
 			$blog = wp_cache_get($key, 'blog-lookup');
-			if ( false !== $blog )
-				return $blog;
+			if ( false !== $blog ) {
+							return $blog;
+			}
 			if ( substr( $fields['domain'], 0, 4 ) == 'www.' ) {
 				$nowww = substr( $fields['domain'], 4 );
 				$blog = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->blogs WHERE domain IN (%s,%s) AND path = %s ORDER BY CHAR_LENGTH(domain) DESC", $nowww, $fields['domain'], $fields['path'] ) );
@@ -145,8 +148,9 @@ function get_blog_details( $fields = null, $get_all = true ) {
 		} elseif ( isset($fields['domain']) && is_subdomain_install() ) {
 			$key = md5( $fields['domain'] );
 			$blog = wp_cache_get($key, 'blog-lookup');
-			if ( false !== $blog )
-				return $blog;
+			if ( false !== $blog ) {
+							return $blog;
+			}
 			if ( substr( $fields['domain'], 0, 4 ) == 'www.' ) {
 				$nowww = substr( $fields['domain'], 4 );
 				$blog = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->blogs WHERE domain IN (%s,%s) ORDER BY CHAR_LENGTH(domain) DESC", $nowww, $fields['domain'] ) );
@@ -163,12 +167,13 @@ function get_blog_details( $fields = null, $get_all = true ) {
 			return false;
 		}
 	} else {
-		if ( ! $fields )
-			$blog_id = get_current_blog_id();
-		elseif ( ! is_numeric( $fields ) )
-			$blog_id = get_id_from_blogname( $fields );
-		else
-			$blog_id = $fields;
+		if ( ! $fields ) {
+					$blog_id = get_current_blog_id();
+		} elseif ( ! is_numeric( $fields ) ) {
+					$blog_id = get_id_from_blogname( $fields );
+		} else {
+					$blog_id = $fields;
+		}
 	}
 
 	$blog_id = (int) $blog_id;
@@ -303,15 +308,18 @@ function update_blog_details( $blog_id, $details = [] ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( empty($details) )
-		return false;
+	if ( empty($details) ) {
+			return false;
+	}
 
-	if ( is_object($details) )
-		$details = get_object_vars($details);
+	if ( is_object($details) ) {
+			$details = get_object_vars($details);
+	}
 
 	$current_details = get_blog_details($blog_id, false);
-	if ( empty($current_details) )
-		return false;
+	if ( empty($current_details) ) {
+			return false;
+	}
 
 	$current_details = get_object_vars($current_details);
 
@@ -330,8 +338,9 @@ function update_blog_details( $blog_id, $details = [] ) {
 
 	$result = $wpdb->update( $wpdb->blogs, $update_details, array('blog_id' => $blog_id) );
 
-	if ( false === $result )
-		return false;
+	if ( false === $result ) {
+			return false;
+	}
 
 	// If spam status changed, issue actions.
 	if ( $details['spam'] != $current_details['spam'] ) {
@@ -627,11 +636,13 @@ function get_sites( $args = [] ) {
 function get_blog_option( $id, $option, $default = false ) {
 	$id = (int) $id;
 
-	if ( empty( $id ) )
-		$id = get_current_blog_id();
+	if ( empty( $id ) ) {
+			$id = get_current_blog_id();
+	}
 
-	if ( get_current_blog_id() == $id )
-		return get_option( $option, $default );
+	if ( get_current_blog_id() == $id ) {
+			return get_option( $option, $default );
+	}
 
 	switch_to_blog( $id );
 	$value = get_option( $option, $default );
@@ -672,11 +683,13 @@ function get_blog_option( $id, $option, $default = false ) {
 function add_blog_option( $id, $option, $value ) {
 	$id = (int) $id;
 
-	if ( empty( $id ) )
-		$id = get_current_blog_id();
+	if ( empty( $id ) ) {
+			$id = get_current_blog_id();
+	}
 
-	if ( get_current_blog_id() == $id )
-		return add_option( $option, $value );
+	if ( get_current_blog_id() == $id ) {
+			return add_option( $option, $value );
+	}
 
 	switch_to_blog( $id );
 	$return = add_option( $option, $value );
@@ -697,11 +710,13 @@ function add_blog_option( $id, $option, $value ) {
 function delete_blog_option( $id, $option ) {
 	$id = (int) $id;
 
-	if ( empty( $id ) )
-		$id = get_current_blog_id();
+	if ( empty( $id ) ) {
+			$id = get_current_blog_id();
+	}
 
-	if ( get_current_blog_id() == $id )
-		return delete_option( $option );
+	if ( get_current_blog_id() == $id ) {
+			return delete_option( $option );
+	}
 
 	switch_to_blog( $id );
 	$return = delete_option( $option );
@@ -724,11 +739,13 @@ function delete_blog_option( $id, $option ) {
 function update_blog_option( $id, $option, $value, $deprecated = null ) {
 	$id = (int) $id;
 
-	if ( null !== $deprecated  )
-		_deprecated_argument( __FUNCTION__, '3.1.0' );
+	if ( null !== $deprecated  ) {
+			_deprecated_argument( __FUNCTION__, '3.1.0' );
+	}
 
-	if ( get_current_blog_id() == $id )
-		return update_option( $option, $value );
+	if ( get_current_blog_id() == $id ) {
+			return update_option( $option, $value );
+	}
 
 	switch_to_blog( $id );
 	$return = update_option( $option, $value );
@@ -953,16 +970,19 @@ function update_blog_status( $blog_id, $pref, $value, $deprecated = null ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( null !== $deprecated  )
-		_deprecated_argument( __FUNCTION__, '3.1.0' );
+	if ( null !== $deprecated  ) {
+			_deprecated_argument( __FUNCTION__, '3.1.0' );
+	}
 
-	if ( ! in_array( $pref, array( 'site_id', 'domain', 'path', 'registered', 'last_updated', 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id') ) )
-		return $value;
+	if ( ! in_array( $pref, array( 'site_id', 'domain', 'path', 'registered', 'last_updated', 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id') ) ) {
+			return $value;
+	}
 
 	$result = $wpdb->update( $wpdb->blogs, array($pref => $value, 'last_updated' => current_time('mysql', true)), array('blog_id' => $blog_id) );
 
-	if ( false === $result )
-		return false;
+	if ( false === $result ) {
+			return false;
+	}
 
 	refresh_blog_details( $blog_id );
 
@@ -1027,8 +1047,9 @@ function get_blog_status( $id, $pref ) {
 	$wpdb = $app['db'];
 
 	$details = get_blog_details( $id, false );
-	if ( $details )
-		return $details->$pref;
+	if ( $details ) {
+			return $details->$pref;
+	}
 
 	return $wpdb->get_var( $wpdb->prepare("SELECT %s FROM {$wpdb->blogs} WHERE blog_id = %d", $pref, $id) );
 }
@@ -1047,8 +1068,10 @@ function get_last_updated( $deprecated = '', $start = 0, $quantity = 40 ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( ! empty( $deprecated ) )
-		_deprecated_argument( __FUNCTION__, 'MU' ); // never used
+	if ( ! empty( $deprecated ) ) {
+			_deprecated_argument( __FUNCTION__, 'MU' );
+	}
+	// never used
 
 	return $wpdb->get_results( $wpdb->prepare("SELECT blog_id, domain, path FROM $wpdb->blogs WHERE site_id = %d AND public = '1' AND archived = '0' AND mature = '0' AND spam = '0' AND deleted = '0' AND last_updated != '0000-00-00 00:00:00' ORDER BY last_updated DESC limit %d, %d", $wpdb->siteid, $start, $quantity ) , ARRAY_A );
 }

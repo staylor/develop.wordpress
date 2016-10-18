@@ -10,11 +10,13 @@ $basepath = __DIR__;
 
 function get_file($path) {
 
-	if ( function_exists('realpath') )
-		$path = realpath($path);
+	if ( function_exists('realpath') ) {
+			$path = realpath($path);
+	}
 
-	if ( ! $path || ! @is_file($path) )
-		return false;
+	if ( ! $path || ! @is_file($path) ) {
+			return false;
+	}
 
 	return @file_get_contents($path);
 }

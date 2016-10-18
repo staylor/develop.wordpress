@@ -255,13 +255,15 @@ endif;
 function _hash_hmac($algo, $data, $key, $raw_output = false) {
 	$packs = array('md5' => 'H32', 'sha1' => 'H40');
 
-	if ( !isset($packs[$algo]) )
-		return false;
+	if ( !isset($packs[$algo]) ) {
+			return false;
+	}
 
 	$pack = $packs[$algo];
 
-	if (strlen($key) > 64)
-		$key = pack($pack, $algo($key));
+	if (strlen($key) > 64) {
+			$key = pack($pack, $algo($key));
+	}
 
 	$key = str_pad($key, 64, chr(0));
 
@@ -270,8 +272,9 @@ function _hash_hmac($algo, $data, $key, $raw_output = false) {
 
 	$hmac = $algo($opad . pack($pack, $algo($ipad . $data)));
 
-	if ( $raw_output )
-		return pack( $pack, $hmac );
+	if ( $raw_output ) {
+			return pack( $pack, $hmac );
+	}
 	return $hmac;
 }
 

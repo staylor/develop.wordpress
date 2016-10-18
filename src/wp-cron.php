@@ -13,8 +13,9 @@ use function WP\getApp;
 
 ignore_user_abort(true);
 
-if ( !empty($_POST) || defined('DOING_AJAX') || defined('DOING_CRON') )
+if ( !empty($_POST) || defined('DOING_AJAX') || defined('DOING_CRON') ) {
 	die();
+}
 
 /**
  * Tell WordPress we are doing the CRON task.
@@ -28,14 +29,16 @@ if ( !defined('ABSPATH') ) {
 	require_once( __DIR__ . '/wp-load.php' );
 }
 
-if ( false === $crons = _get_cron_array() )
+if ( false === $crons = _get_cron_array() ) {
 	die();
+}
 
 $keys = array_keys( $crons );
 $gmt_time = microtime( true );
 
-if ( isset($keys[0]) && $keys[0] > $gmt_time )
+if ( isset($keys[0]) && $keys[0] > $gmt_time ) {
 	die();
+}
 
 
 // The cron lock: a unix timestamp from when the cron was spawned.
@@ -59,12 +62,14 @@ if ( empty( $doing_wp_cron ) ) {
  * The cron lock (a unix timestamp set when the cron was spawned),
  * must match $doing_wp_cron (the "key").
  */
-if ( $doing_cron_transient != $doing_wp_cron )
+if ( $doing_cron_transient != $doing_wp_cron ) {
 	return;
+}
 
 foreach ( $crons as $timestamp => $cronhooks ) {
-	if ( $timestamp > $gmt_time )
+	if ( $timestamp > $gmt_time ) {
 		break;
+	}
 
 	foreach ( $cronhooks as $hook => $keys ) {
 
@@ -91,13 +96,15 @@ foreach ( $crons as $timestamp => $cronhooks ) {
  			do_action_ref_array( $hook, $v['args'] );
 
 			// If the hook ran too long and another cron process stole the lock, quit.
-			if ( _get_cron_lock() != $doing_wp_cron )
+			if ( _get_cron_lock() != $doing_wp_cron ) {
 				return;
+			}
 		}
 	}
 }
 
-if ( _get_cron_lock() == $doing_wp_cron )
+if ( _get_cron_lock() == $doing_wp_cron ) {
 	delete_transient( 'doing_cron' );
+}
 
 die();

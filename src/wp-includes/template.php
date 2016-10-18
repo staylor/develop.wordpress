@@ -26,8 +26,9 @@ use function WP\getApp;
 function get_query_template( $type, $templates = [] ) {
 	$type = preg_replace( '|[^a-z0-9-]+|', '', $type );
 
-	if ( empty( $templates ) )
+	if ( empty( $templates ) ) {
 		$templates = [ "{$type}.php" ];
+	}
 
 	/**
 	 * Filters the list of template filenames that are searched for when retrieving a template to use.
@@ -134,12 +135,14 @@ function get_archive_template() {
  */
 function get_post_type_archive_template() {
 	$post_type = get_query_var( 'post_type' );
-	if ( is_array( $post_type ) )
+	if ( is_array( $post_type ) ) {
 		$post_type = reset( $post_type );
+	}
 
 	$obj = get_post_type_object( $post_type );
-	if ( ! $obj->has_archive )
+	if ( ! $obj->has_archive ) {
 		return '';
+	}
 
 	return get_archive_template();
 }
@@ -409,13 +412,15 @@ function get_page_template() {
 	if ( ! $pagename && $id ) {
 		// If a static page is set as the front page, $pagename will not be set. Retrieve it from the queried object
 		$post = get_queried_object();
-		if ( $post )
+		if ( $post ) {
 			$pagename = $post->post_name;
+		}
 	}
 
 	$templates = [];
-	if ( $template && 0 === validate_file( $template ) )
+	if ( $template && 0 === validate_file( $template ) ) {
 		$templates[] = $template;
+	}
 	if ( $pagename ) {
 		$pagename_decoded = urldecode( $pagename );
 		if ( $pagename_decoded !== $pagename ) {
@@ -423,8 +428,9 @@ function get_page_template() {
 		}
 		$templates[] = "page-$pagename.php";
 	}
-	if ( $id )
+	if ( $id ) {
 		$templates[] = "page-$id.php";
+	}
 	$templates[] = 'page.php';
 
 	return get_query_template( 'page', $templates );
@@ -619,8 +625,9 @@ function get_attachment_template() {
 function locate_template($template_names, $load = false, $require_once = true ) {
 	$located = '';
 	foreach ( (array) $template_names as $template_name ) {
-		if ( !$template_name )
+		if ( !$template_name ) {
 			continue;
+		}
 		if ( file_exists(STYLESHEETPATH . '/' . $template_name)) {
 			$located = STYLESHEETPATH . '/' . $template_name;
 			break;
@@ -633,8 +640,9 @@ function locate_template($template_names, $load = false, $require_once = true ) 
 		}
 	}
 
-	if ( $load && '' != $located )
+	if ( $load && '' != $located ) {
 		load_template( $located, $require_once );
+	}
 
 	return $located;
 }

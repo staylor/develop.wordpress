@@ -205,11 +205,13 @@ class Scripts extends Dependencies {
 	 * @return bool|string|void Void if no data exists, extra scripts if `$echo` is true, true otherwise.
 	 */
 	public function print_extra_script( $handle, $echo = true ) {
-		if ( !$output = $this->get_data( $handle, 'data' ) )
+		if ( !$output = $this->get_data( $handle, 'data' ) ) {
 			return;
+		}
 
-		if ( !$echo )
+		if ( !$echo ) {
 			return $output;
+		}
 
 		echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5
 		echo "/* <![CDATA[ */\n";
@@ -234,16 +236,18 @@ class Scripts extends Dependencies {
 	 * @return bool True on success, false on failure.
 	 */
 	public function do_item( $handle, $group = false ) {
-		if ( !parent::do_item($handle) )
+		if ( !parent::do_item($handle) ) {
 			return false;
+		}
 
 		if ( 0 === $group && $this->groups[$handle] > 0 ) {
 			$this->in_footer[] = $handle;
 			return false;
 		}
 
-		if ( false === $group && in_array($handle, $this->in_footer, true) )
+		if ( false === $group && in_array($handle, $this->in_footer, true) ) {
 			$this->in_footer = array_diff( $this->in_footer, (array) $handle );
+		}
 
 		$obj = $this->registered[$handle];
 
@@ -253,8 +257,9 @@ class Scripts extends Dependencies {
 			$ver = $obj->ver ? $obj->ver : $this->default_version;
 		}
 
-		if ( isset($this->args[$handle]) )
+		if ( isset($this->args[$handle]) ) {
 			$ver = $ver ? $ver . '&amp;' . $this->args[$handle] : $this->args[$handle];
+		}
 
 		$src = $obj->src;
 		$cond_before = $cond_after = '';
@@ -324,14 +329,16 @@ class Scripts extends Dependencies {
 			$src = $this->base_url . $src;
 		}
 
-		if ( ! empty( $ver ) )
+		if ( ! empty( $ver ) ) {
 			$src = add_query_arg( 'ver', $ver, $src );
+		}
 
 		/** This filter is documented in wp-includes/class.wp-scripts.php */
 		$src = esc_url( apply_filters( 'script_loader_src', $src, $handle ) );
 
-		if ( ! $src )
+		if ( ! $src ) {
 			return true;
+		}
 
 		$tag = sprintf(
 			'%s%s<script type="text/javascript" src="%s"></script>%s%s',
@@ -430,8 +437,9 @@ class Scripts extends Dependencies {
 	 * @return bool
 	 */
 	public function localize( $handle, $object_name, $l10n ) {
-		if ( $handle === 'jquery' )
+		if ( $handle === 'jquery' ) {
 			$handle = 'jquery-core';
+		}
 
 		if ( is_array($l10n) && isset($l10n['l10n_print_after']) ) { // back compat, preserve the code in 'l10n_print_after' if present
 			$after = $l10n['l10n_print_after'];
@@ -472,13 +480,15 @@ class Scripts extends Dependencies {
 	 * @return bool Not already in the group or a lower group
 	 */
 	public function set_group( $handle, $recursion, $group = false ) {
-		if ( isset( $this->registered[$handle]->args ) && $this->registered[$handle]->args === 1 )
+		if ( isset( $this->registered[$handle]->args ) && $this->registered[$handle]->args === 1 ) {
 			$grp = 1;
-		else
+		} else {
 			$grp = (int) $this->get_data( $handle, 'group' );
+		}
 
-		if ( false !== $group && $grp > $group )
+		if ( false !== $group && $grp > $group ) {
 			$grp = $group;
+		}
 
 		return parent::set_group( $handle, $recursion, $grp );
 	}

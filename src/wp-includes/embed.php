@@ -61,11 +61,13 @@ function wp_embed_unregister_handler( $id, $priority = 10 ) {
  * @return array Default embed parameters.
  */
 function wp_embed_defaults( $url = '' ) {
-	if ( ! empty( $GLOBALS['content_width'] ) )
-		$width = (int) $GLOBALS['content_width'];
+	if ( ! empty( $GLOBALS['content_width'] ) ) {
+			$width = (int) $GLOBALS['content_width'];
+	}
 
-	if ( empty( $width ) )
-		$width = 500;
+	if ( empty( $width ) ) {
+			$width = 500;
+	}
 
 	$height = min( ceil( $width * 1.5 ), 1000 );
 

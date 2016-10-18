@@ -53,8 +53,9 @@ class Walker_Category extends Walker {
 	 *                       value is 'list'. See wp_list_categories(). Default empty array.
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = [] ) {
-		if ( 'list' != $args['style'] )
+		if ( 'list' != $args['style'] ) {
 			return;
+		}
 
 		$indent = str_repeat("\t", $depth);
 		$output .= "$indent<ul class='children'>\n";
@@ -74,8 +75,9 @@ class Walker_Category extends Walker {
 	 *                       value is 'list'. See wp_list_categories(). Default empty array.
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = [] ) {
-		if ( 'list' != $args['style'] )
+		if ( 'list' != $args['style'] ) {
 			return;
+		}
 
 		$indent = str_repeat("\t", $depth);
 		$output .= "$indent</ul>\n";
@@ -226,8 +228,9 @@ class Walker_Category extends Walker {
 	 *                       to output. See wp_list_categories(). Default empty array.
 	 */
 	public function end_el( &$output, $page, $depth = 0, $args = [] ) {
-		if ( 'list' != $args['style'] )
+		if ( 'list' != $args['style'] ) {
 			return;
+		}
 
 		$output .= "</li>\n";
 	}

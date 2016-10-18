@@ -31,19 +31,22 @@ function wp_get_server_protocol() {
  * @access private
  */
 function wp_unregister_GLOBALS() {
-	if ( !ini_get( 'register_globals' ) )
-		return;
+	if ( !ini_get( 'register_globals' ) ) {
+			return;
+	}
 
-	if ( isset( $_REQUEST['GLOBALS'] ) )
-		die( 'GLOBALS overwrite attempt detected' );
+	if ( isset( $_REQUEST['GLOBALS'] ) ) {
+			die( 'GLOBALS overwrite attempt detected' );
+	}
 
 	// Variables that shouldn't be unset
 	$no_unset = array( 'GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES', 'table_prefix' );
 
 	$input = array_merge( $_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset( $_SESSION ) && is_array( $_SESSION ) ? $_SESSION : [] );
-	foreach ( $input as $k => $v )
-		if ( !in_array( $k, $no_unset ) && isset( $GLOBALS[$k] ) ) {
+	foreach ( $input as $k => $v ) {
+			if ( !in_array( $k, $no_unset ) && isset( $GLOBALS[$k] ) ) {
 			unset( $GLOBALS[$k] );
+	}
 		}
 }
 
@@ -78,15 +81,17 @@ function wp_fix_server_vars() {
 			$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
 		} else {
 			// Use ORIG_PATH_INFO if there is no PATH_INFO
-			if ( !isset( $_SERVER['PATH_INFO'] ) && isset( $_SERVER['ORIG_PATH_INFO'] ) )
-				$_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
+			if ( !isset( $_SERVER['PATH_INFO'] ) && isset( $_SERVER['ORIG_PATH_INFO'] ) ) {
+							$_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
+			}
 
 			// Some IIS + PHP configurations puts the script-name in the path-info (No need to append it twice)
 			if ( isset( $_SERVER['PATH_INFO'] ) ) {
-				if ( $_SERVER['PATH_INFO'] == $_SERVER['SCRIPT_NAME'] )
-					$_SERVER['REQUEST_URI'] = $_SERVER['PATH_INFO'];
-				else
-					$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
+				if ( $_SERVER['PATH_INFO'] == $_SERVER['SCRIPT_NAME'] ) {
+									$_SERVER['REQUEST_URI'] = $_SERVER['PATH_INFO'];
+				} else {
+									$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
+				}
 			}
 
 			// Append the query string if it exists and isn't null
@@ -97,18 +102,21 @@ function wp_fix_server_vars() {
 	}
 
 	// Fix for PHP as CGI hosts that set SCRIPT_FILENAME to something ending in php.cgi for all requests
-	if ( isset( $_SERVER['SCRIPT_FILENAME'] ) && ( strpos( $_SERVER['SCRIPT_FILENAME'], 'php.cgi' ) == strlen( $_SERVER['SCRIPT_FILENAME'] ) - 7 ) )
-		$_SERVER['SCRIPT_FILENAME'] = $_SERVER['PATH_TRANSLATED'];
+	if ( isset( $_SERVER['SCRIPT_FILENAME'] ) && ( strpos( $_SERVER['SCRIPT_FILENAME'], 'php.cgi' ) == strlen( $_SERVER['SCRIPT_FILENAME'] ) - 7 ) ) {
+			$_SERVER['SCRIPT_FILENAME'] = $_SERVER['PATH_TRANSLATED'];
+	}
 
 	// Fix for Dreamhost and other PHP as CGI hosts
-	if ( strpos( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) !== false )
-		unset( $_SERVER['PATH_INFO'] );
+	if ( strpos( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) !== false ) {
+			unset( $_SERVER['PATH_INFO'] );
+	}
 
 	// Fix empty PHP_SELF
 	$PHP_SELF = $_SERVER['PHP_SELF'];
-	if ( empty( $PHP_SELF ) )
-		$_SERVER['PHP_SELF'] = $PHP_SELF = preg_replace( '/(\?.*)?$/', '', $_SERVER["REQUEST_URI"] );
-}
+	if ( empty( $PHP_SELF ) ) {
+			$_SERVER['PHP_SELF'] = $PHP_SELF = preg_replace( '/(\?.*)?$/', '', $_SERVER["REQUEST_URI"] );
+	}
+	}
 
 /**
  * Check for the required PHP version, and the MySQL extension or
@@ -181,15 +189,17 @@ function wp_favicon_request() {
  * @global int $upgrading the unix timestamp marking when upgrading WordPress began.
  */
 function wp_maintenance() {
-	if ( ! file_exists( ABSPATH . '.maintenance' ) || wp_installing() )
-		return;
+	if ( ! file_exists( ABSPATH . '.maintenance' ) || wp_installing() ) {
+			return;
+	}
 
 	global $upgrading;
 
 	include( ABSPATH . '.maintenance' );
 	// If the $upgrading timestamp is older than 10 minutes, don't die.
-	if ( ( time() - $upgrading ) >= 600 )
-		return;
+	if ( ( time() - $upgrading ) >= 600 ) {
+			return;
+	}
 
 	/**
 	 * Filters whether to enable maintenance mode.
@@ -221,7 +231,10 @@ function wp_maintenance() {
 	header( 'Retry-After: 600' );
 ?>
 	<!DOCTYPE html>
-	<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) echo ' dir="rtl"'; ?>>
+	<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) {
+	echo ' dir="rtl"';
+}
+?>>
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php _e( 'Maintenance' ); ?></title>
@@ -272,8 +285,9 @@ function timer_stop( $display = 0, $precision = 3 ) {
 	$timeend = microtime( true );
 	$timetotal = $timeend - $timestart;
 	$r = ( function_exists( 'number_format_i18n' ) ) ? number_format_i18n( $timetotal, $precision ) : number_format( $timetotal, $precision );
-	if ( $display )
-		echo $r;
+	if ( $display ) {
+			echo $r;
+	}
 	return $r;
 }
 
@@ -328,10 +342,11 @@ function wp_debug_mode() {
 	if ( WP_DEBUG ) {
 		error_reporting( E_ALL );
 
-		if ( WP_DEBUG_DISPLAY )
-			ini_set( 'display_errors', 1 );
-		elseif ( null !== WP_DEBUG_DISPLAY )
-			ini_set( 'display_errors', 0 );
+		if ( WP_DEBUG_DISPLAY ) {
+					ini_set( 'display_errors', 1 );
+		} elseif ( null !== WP_DEBUG_DISPLAY ) {
+					ini_set( 'display_errors', 0 );
+		}
 
 		if ( WP_DEBUG_LOG ) {
 			ini_set( 'log_errors', 1 );
@@ -433,8 +448,9 @@ function wp_set_wpdb_vars() {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( !empty( $wpdb->error ) )
-		dead_db();
+	if ( !empty( $wpdb->error ) ) {
+			dead_db();
+	}
 
 	$wpdb->field_types = array( 'post_author' => '%d', 'post_parent' => '%d', 'menu_order' => '%d', 'term_id' => '%d', 'term_group' => '%d', 'term_taxonomy_id' => '%d',
 		'parent' => '%d', 'count' => '%d','object_id' => '%d', 'term_order' => '%d', 'ID' => '%d', 'comment_ID' => '%d', 'comment_post_ID' => '%d', 'comment_parent' => '%d',
@@ -472,8 +488,9 @@ function wp_set_wpdb_vars() {
 function wp_using_ext_object_cache( $using = null ) {
 	global $_wp_using_ext_object_cache;
 	$current_using = $_wp_using_ext_object_cache;
-	if ( null !== $using )
-		$_wp_using_ext_object_cache = $using;
+	if ( null !== $using ) {
+			$_wp_using_ext_object_cache = $using;
+	}
 	return $current_using;
 }
 
@@ -571,13 +588,16 @@ function wp_not_installed() {
  */
 function wp_get_mu_plugins() {
 	$mu_plugins = [];
-	if ( !is_dir( WPMU_PLUGIN_DIR ) )
-		return $mu_plugins;
-	if ( ! $dh = opendir( WPMU_PLUGIN_DIR ) )
-		return $mu_plugins;
+	if ( !is_dir( WPMU_PLUGIN_DIR ) ) {
+			return $mu_plugins;
+	}
+	if ( ! $dh = opendir( WPMU_PLUGIN_DIR ) ) {
+			return $mu_plugins;
+	}
 	while ( ( $plugin = readdir( $dh ) ) !== false ) {
-		if ( substr( $plugin, -4 ) == '.php' )
-			$mu_plugins[] = WPMU_PLUGIN_DIR . '/' . $plugin;
+		if ( substr( $plugin, -4 ) == '.php' ) {
+					$mu_plugins[] = WPMU_PLUGIN_DIR . '/' . $plugin;
+		}
 	}
 	closedir( $dh );
 	sort( $mu_plugins );
@@ -609,8 +629,9 @@ function wp_get_active_and_valid_plugins() {
 		array_unshift( $plugins, ABSPATH . 'my-hacks.php' );
 	}
 
-	if ( empty( $active_plugins ) || wp_installing() )
-		return $plugins;
+	if ( empty( $active_plugins ) || wp_installing() ) {
+			return $plugins;
+	}
 
 	$network_plugins = is_multisite() ? wp_get_active_network_plugins() : false;
 
@@ -620,8 +641,9 @@ function wp_get_active_and_valid_plugins() {
 			&& file_exists( WP_PLUGIN_DIR . '/' . $plugin ) // $plugin must exist
 			// not already included as a network plugin
 			&& ( ! $network_plugins || ! in_array( WP_PLUGIN_DIR . '/' . $plugin, $network_plugins ) )
-			)
-		$plugins[] = WP_PLUGIN_DIR . '/' . $plugin;
+			) {
+				$plugins[] = WP_PLUGIN_DIR . '/' . $plugin;
+		}
 	}
 	return $plugins;
 }
@@ -638,8 +660,9 @@ function wp_get_active_and_valid_plugins() {
 function wp_set_internal_encoding() {
 	if ( function_exists( 'mb_internal_encoding' ) ) {
 		$charset = get_option( 'blog_charset' );
-		if ( ! $charset || ! @mb_internal_encoding( $charset ) )
-			mb_internal_encoding( 'UTF-8' );
+		if ( ! $charset || ! @mb_internal_encoding( $charset ) ) {
+					mb_internal_encoding( 'UTF-8' );
+		}
 	}
 }
 
@@ -714,10 +737,11 @@ function wp_clone( $object ) {
 function is_admin() {
 	$app = getApp();
 
-	if ( isset( $app->current_screen ) )
-		return $app->current_screen->in_admin();
-	elseif ( defined( 'WP_ADMIN' ) )
-		return WP_ADMIN;
+	if ( isset( $app->current_screen ) ) {
+			return $app->current_screen->in_admin();
+	} elseif ( defined( 'WP_ADMIN' ) ) {
+			return WP_ADMIN;
+	}
 
 	return false;
 }
@@ -737,10 +761,11 @@ function is_admin() {
 function is_blog_admin() {
 	$app = getApp();
 
-	if ( isset( $app->current_screen ) )
-		return $app->current_screen->in_admin( 'site' );
-	elseif ( defined( 'WP_BLOG_ADMIN' ) )
-		return WP_BLOG_ADMIN;
+	if ( isset( $app->current_screen ) ) {
+			return $app->current_screen->in_admin( 'site' );
+	} elseif ( defined( 'WP_BLOG_ADMIN' ) ) {
+			return WP_BLOG_ADMIN;
+	}
 
 	return false;
 }
@@ -760,10 +785,11 @@ function is_blog_admin() {
 function is_network_admin() {
 	$app = getApp();
 
-	if ( isset( $app->current_screen ) )
-		return $app->current_screen->in_admin( 'network' );
-	elseif ( defined( 'WP_NETWORK_ADMIN' ) )
-		return WP_NETWORK_ADMIN;
+	if ( isset( $app->current_screen ) ) {
+			return $app->current_screen->in_admin( 'network' );
+	} elseif ( defined( 'WP_NETWORK_ADMIN' ) ) {
+			return WP_NETWORK_ADMIN;
+	}
 
 	return false;
 }
@@ -784,10 +810,11 @@ function is_network_admin() {
 function is_user_admin() {
 	$app = getApp();
 
-	if ( isset( $app->current_screen ) )
-		return $app->current_screen->in_admin( 'user' );
-	elseif ( defined( 'WP_USER_ADMIN' ) )
-		return WP_USER_ADMIN;
+	if ( isset( $app->current_screen ) ) {
+			return $app->current_screen->in_admin( 'user' );
+	} elseif ( defined( 'WP_USER_ADMIN' ) ) {
+			return WP_USER_ADMIN;
+	}
 
 	return false;
 }
@@ -860,12 +887,14 @@ function wp_load_translations_early() {
 	$app = getApp();
 
 	static $loaded = false;
-	if ( $loaded )
-		return;
+	if ( $loaded ) {
+			return;
+	}
 	$loaded = true;
 
-	if ( function_exists( 'did_action' ) && did_action( 'init' ) )
-		return;
+	if ( function_exists( 'did_action' ) && did_action( 'init' ) ) {
+			return;
+	}
 
 	require_once ABSPATH . WPINC . '/l10n.php';
 
@@ -873,8 +902,9 @@ function wp_load_translations_early() {
 
 	while ( true ) {
 		if ( defined( 'WPLANG' ) ) {
-			if ( '' == WPLANG )
-				break;
+			if ( '' == WPLANG ) {
+							break;
+			}
 			$locales[] = WPLANG;
 		}
 
@@ -882,23 +912,29 @@ function wp_load_translations_early() {
 			$locales[] = $app['wp_local_package'];
 		}
 
-		if ( ! $locales )
-			break;
+		if ( ! $locales ) {
+					break;
+		}
 
-		if ( defined( 'WP_LANG_DIR' ) && @is_dir( WP_LANG_DIR ) )
-			$locations[] = WP_LANG_DIR;
+		if ( defined( 'WP_LANG_DIR' ) && @is_dir( WP_LANG_DIR ) ) {
+					$locations[] = WP_LANG_DIR;
+		}
 
-		if ( defined( 'WP_CONTENT_DIR' ) && @is_dir( WP_CONTENT_DIR . '/languages' ) )
-			$locations[] = WP_CONTENT_DIR . '/languages';
+		if ( defined( 'WP_CONTENT_DIR' ) && @is_dir( WP_CONTENT_DIR . '/languages' ) ) {
+					$locations[] = WP_CONTENT_DIR . '/languages';
+		}
 
-		if ( @is_dir( ABSPATH . 'wp-content/languages' ) )
-			$locations[] = ABSPATH . 'wp-content/languages';
+		if ( @is_dir( ABSPATH . 'wp-content/languages' ) ) {
+					$locations[] = ABSPATH . 'wp-content/languages';
+		}
 
-		if ( @is_dir( ABSPATH . WPINC . '/languages' ) )
-			$locations[] = ABSPATH . WPINC . '/languages';
+		if ( @is_dir( ABSPATH . WPINC . '/languages' ) ) {
+					$locations[] = ABSPATH . WPINC . '/languages';
+		}
 
-		if ( ! $locations )
-			break;
+		if ( ! $locations ) {
+					break;
+		}
 
 		$locations = array_unique( $locations );
 
@@ -906,8 +942,9 @@ function wp_load_translations_early() {
 			foreach ( $locations as $location ) {
 				if ( file_exists( $location . '/' . $locale . '.mo' ) ) {
 					load_textdomain( 'default', $location . '/' . $locale . '.mo' );
-					if ( defined( 'WP_SETUP_CONFIG' ) && file_exists( $location . '/admin-' . $locale . '.mo' ) )
-						load_textdomain( 'default', $location . '/admin-' . $locale . '.mo' );
+					if ( defined( 'WP_SETUP_CONFIG' ) && file_exists( $location . '/admin-' . $locale . '.mo' ) ) {
+											load_textdomain( 'default', $location . '/admin-' . $locale . '.mo' );
+					}
 					break 2;
 				}
 			}

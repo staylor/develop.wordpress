@@ -53,8 +53,9 @@ class WP_Widget_Recent_Posts extends WP_Widget {
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
-		if ( ! $number )
+		if ( ! $number ) {
 			$number = 5;
+		}
 		$show_date = isset( $instance['show_date'] ) ? $instance['show_date'] : false;
 
 		/**

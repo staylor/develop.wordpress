@@ -225,8 +225,9 @@ function get_attached_file( $attachment_id, $unfiltered = false ) {
  * @return bool True on success, false on failure.
  */
 function update_attached_file( $attachment_id, $file ) {
-	if ( !get_post( $attachment_id ) )
-		return false;
+	if ( !get_post( $attachment_id ) ) {
+			return false;
+	}
 
 	/**
 	 * Filters the path to the attached file to update.
@@ -238,11 +239,12 @@ function update_attached_file( $attachment_id, $file ) {
 	 */
 	$file = apply_filters( 'update_attached_file', $file, $attachment_id );
 
-	if ( $file = _wp_relative_upload_path( $file ) )
-		return update_post_meta( $attachment_id, '_wp_attached_file', $file );
-	else
-		return delete_post_meta( $attachment_id, '_wp_attached_file' );
-}
+	if ( $file = _wp_relative_upload_path( $file ) ) {
+			return update_post_meta( $attachment_id, '_wp_attached_file', $file );
+	} else {
+			return delete_post_meta( $attachment_id, '_wp_attached_file' );
+	}
+	}
 
 /**
  * Return relative path to an uploaded file.
@@ -348,16 +350,19 @@ function get_children( $args = '', $output = OBJECT ) {
 
 	$children = get_posts( $r );
 
-	if ( ! $children )
-		return $kids;
+	if ( ! $children ) {
+			return $kids;
+	}
 
-	if ( ! empty( $r['fields'] ) )
-		return $children;
+	if ( ! empty( $r['fields'] ) ) {
+			return $children;
+	}
 
 	update_post_cache($children);
 
-	foreach ( $children as $key => $child )
-		$kids[$child->ID] = $children[$key];
+	foreach ( $children as $key => $child ) {
+			$kids[$child->ID] = $children[$key];
+	}
 
 	if ( $output == OBJECT ) {
 		return $kids;
@@ -432,8 +437,9 @@ function get_extended( $post ) {
  *                            When $output is OBJECT, a `WP_Post` instance is returned.
  */
 function get_post( $post = null, $output = OBJECT, $filter = 'raw' ) {
-	if ( empty( $post ) && isset( $GLOBALS['post'] ) )
-		$post = $GLOBALS['post'];
+	if ( empty( $post ) && isset( $GLOBALS['post'] ) ) {
+			$post = $GLOBALS['post'];
+	}
 
 	if ( $post instanceof WP_Post ) {
 		$_post = $post;
@@ -450,15 +456,17 @@ function get_post( $post = null, $output = OBJECT, $filter = 'raw' ) {
 		$_post = WP_Post::get_instance( $post );
 	}
 
-	if ( ! $_post )
-		return null;
+	if ( ! $_post ) {
+			return null;
+	}
 
 	$_post = $_post->filter( $filter );
 
-	if ( $output == ARRAY_A )
-		return $_post->to_array();
-	elseif ( $output == ARRAY_N )
-		return array_values( $_post->to_array() );
+	if ( $output == ARRAY_A ) {
+			return $_post->to_array();
+	} elseif ( $output == ARRAY_N ) {
+			return array_values( $_post->to_array() );
+	}
 
 	return $_post;
 }
@@ -474,8 +482,9 @@ function get_post( $post = null, $output = OBJECT, $filter = 'raw' ) {
 function get_post_ancestors( $post ) {
 	$post = get_post( $post );
 
-	if ( ! $post || empty( $post->post_parent ) || $post->post_parent == $post->ID )
-		return [];
+	if ( ! $post || empty( $post->post_parent ) || $post->post_parent == $post->ID ) {
+			return [];
+	}
 
 	$ancestors = [];
 
@@ -483,8 +492,9 @@ function get_post_ancestors( $post ) {
 
 	while ( $ancestor = get_post( $id ) ) {
 		// Loop detection: If the ancestor has been seen before, break.
-		if ( empty( $ancestor->post_parent ) || ( $ancestor->post_parent == $post->ID ) || in_array( $ancestor->post_parent, $ancestors ) )
-			break;
+		if ( empty( $ancestor->post_parent ) || ( $ancestor->post_parent == $post->ID ) || in_array( $ancestor->post_parent, $ancestors ) ) {
+					break;
+		}
 
 		$id = $ancestors[] = $ancestor->post_parent;
 	}
@@ -515,11 +525,13 @@ function get_post_ancestors( $post ) {
 function get_post_field( $field, $post = null, $context = 'display' ) {
 	$post = get_post( $post );
 
-	if ( !$post )
-		return '';
+	if ( !$post ) {
+			return '';
+	}
 
-	if ( !isset($post->$field) )
-		return '';
+	if ( !isset($post->$field) ) {
+			return '';
+	}
 
 	return sanitize_post_field($field, $post->$field, $post->ID, $context);
 }
@@ -538,8 +550,9 @@ function get_post_field( $field, $post = null, $context = 'display' ) {
 function get_post_mime_type( $ID = '' ) {
 	$post = get_post($ID);
 
-	if ( is_object($post) )
-		return $post->post_mime_type;
+	if ( is_object($post) ) {
+			return $post->post_mime_type;
+	}
 
 	return false;
 }
@@ -558,16 +571,19 @@ function get_post_mime_type( $ID = '' ) {
 function get_post_status( $ID = '' ) {
 	$post = get_post($ID);
 
-	if ( !is_object($post) )
-		return false;
+	if ( !is_object($post) ) {
+			return false;
+	}
 
 	if ( 'attachment' == $post->post_type ) {
-		if ( 'private' == $post->post_status )
-			return 'private';
+		if ( 'private' == $post->post_status ) {
+					return 'private';
+		}
 
 		// Unattached attachments are assumed to be published.
-		if ( ( 'inherit' == $post->post_status ) && ( 0 == $post->post_parent) )
-			return 'publish';
+		if ( ( 'inherit' == $post->post_status ) && ( 0 == $post->post_parent) ) {
+					return 'publish';
+		}
 
 		// Inherit status from the parent.
 		if ( $post->post_parent && ( $post->ID != $post->post_parent ) ) {
@@ -699,38 +715,49 @@ function register_post_status( $post_status, $args = [] ) {
 	$args->name = $post_status;
 
 	// Set various defaults.
-	if ( null === $args->public && null === $args->internal && null === $args->protected && null === $args->private )
-		$args->internal = true;
+	if ( null === $args->public && null === $args->internal && null === $args->protected && null === $args->private ) {
+			$args->internal = true;
+	}
 
-	if ( null === $args->public  )
-		$args->public = false;
+	if ( null === $args->public  ) {
+			$args->public = false;
+	}
 
-	if ( null === $args->private  )
-		$args->private = false;
+	if ( null === $args->private  ) {
+			$args->private = false;
+	}
 
-	if ( null === $args->protected  )
-		$args->protected = false;
+	if ( null === $args->protected  ) {
+			$args->protected = false;
+	}
 
-	if ( null === $args->internal  )
-		$args->internal = false;
+	if ( null === $args->internal  ) {
+			$args->internal = false;
+	}
 
-	if ( null === $args->publicly_queryable )
-		$args->publicly_queryable = $args->public;
+	if ( null === $args->publicly_queryable ) {
+			$args->publicly_queryable = $args->public;
+	}
 
-	if ( null === $args->exclude_from_search )
-		$args->exclude_from_search = $args->internal;
+	if ( null === $args->exclude_from_search ) {
+			$args->exclude_from_search = $args->internal;
+	}
 
-	if ( null === $args->show_in_admin_all_list )
-		$args->show_in_admin_all_list = !$args->internal;
+	if ( null === $args->show_in_admin_all_list ) {
+			$args->show_in_admin_all_list = !$args->internal;
+	}
 
-	if ( null === $args->show_in_admin_status_list )
-		$args->show_in_admin_status_list = !$args->internal;
+	if ( null === $args->show_in_admin_status_list ) {
+			$args->show_in_admin_status_list = !$args->internal;
+	}
 
-	if ( false === $args->label )
-		$args->label = $post_status;
+	if ( false === $args->label ) {
+			$args->label = $post_status;
+	}
 
-	if ( false === $args->label_count )
-		$args->label_count = array( $args->label, $args->label );
+	if ( false === $args->label_count ) {
+			$args->label_count = array( $args->label, $args->label );
+	}
 
 	$app->post_statuses[ $post_status ] = $args;
 
@@ -793,8 +820,9 @@ function get_post_stati( $args = [], $output = 'names', $operator = 'and' ) {
  * @return bool Whether post type is hierarchical.
  */
 function is_post_type_hierarchical( $post_type ) {
-	if ( ! post_type_exists( $post_type ) )
-		return false;
+	if ( ! post_type_exists( $post_type ) ) {
+			return false;
+	}
 
 	$post_type = get_post_type_object( $post_type );
 	return $post_type->hierarchical;
@@ -823,8 +851,9 @@ function post_type_exists( $post_type ) {
  * @return string|false          Post type on success, false on failure.
  */
 function get_post_type( $post = null ) {
-	if ( $post = get_post( $post ) )
-		return $post->post_type;
+	if ( $post = get_post( $post ) ) {
+			return $post->post_type;
+	}
 
 	return false;
 }
@@ -1118,8 +1147,9 @@ function unregister_post_type( $post_type ) {
  * @return object object with all the capabilities as member variables.
  */
 function get_post_type_capabilities( $args ) {
-	if ( ! is_array( $args->capability_type ) )
-		$args->capability_type = array( $args->capability_type, $args->capability_type . 's' );
+	if ( ! is_array( $args->capability_type ) ) {
+			$args->capability_type = array( $args->capability_type, $args->capability_type . 's' );
+	}
 
 	// Singular base for meta capabilities, plural base for primitive capabilities.
 	list( $singular_base, $plural_base ) = $args->capability_type;
@@ -1153,12 +1183,14 @@ function get_post_type_capabilities( $args ) {
 	$capabilities = array_merge( $default_capabilities, $args->capabilities );
 
 	// Post creation capability simply maps to edit_posts by default:
-	if ( ! isset( $capabilities['create_posts'] ) )
-		$capabilities['create_posts'] = $capabilities['edit_posts'];
+	if ( ! isset( $capabilities['create_posts'] ) ) {
+			$capabilities['create_posts'] = $capabilities['edit_posts'];
+	}
 
 	// Remember meta capabilities for future reference.
-	if ( $args->map_meta_cap )
-		_post_type_meta_capabilities( $capabilities );
+	if ( $args->map_meta_cap ) {
+			_post_type_meta_capabilities( $capabilities );
+	}
 
 	return (object) $capabilities;
 }
@@ -1303,20 +1335,25 @@ function get_post_type_labels( $post_type_object ) {
 function _get_custom_object_labels( $object, $nohier_vs_hier_defaults ) {
 	$object->labels = (array) $object->labels;
 
-	if ( isset( $object->label ) && empty( $object->labels['name'] ) )
-		$object->labels['name'] = $object->label;
+	if ( isset( $object->label ) && empty( $object->labels['name'] ) ) {
+			$object->labels['name'] = $object->label;
+	}
 
-	if ( !isset( $object->labels['singular_name'] ) && isset( $object->labels['name'] ) )
-		$object->labels['singular_name'] = $object->labels['name'];
+	if ( !isset( $object->labels['singular_name'] ) && isset( $object->labels['name'] ) ) {
+			$object->labels['singular_name'] = $object->labels['name'];
+	}
 
-	if ( ! isset( $object->labels['name_admin_bar'] ) )
-		$object->labels['name_admin_bar'] = isset( $object->labels['singular_name'] ) ? $object->labels['singular_name'] : $object->name;
+	if ( ! isset( $object->labels['name_admin_bar'] ) ) {
+			$object->labels['name_admin_bar'] = isset( $object->labels['singular_name'] ) ? $object->labels['singular_name'] : $object->name;
+	}
 
-	if ( !isset( $object->labels['menu_name'] ) && isset( $object->labels['name'] ) )
-		$object->labels['menu_name'] = $object->labels['name'];
+	if ( !isset( $object->labels['menu_name'] ) && isset( $object->labels['name'] ) ) {
+			$object->labels['menu_name'] = $object->labels['name'];
+	}
 
-	if ( !isset( $object->labels['all_items'] ) && isset( $object->labels['menu_name'] ) )
-		$object->labels['all_items'] = $object->labels['menu_name'];
+	if ( !isset( $object->labels['all_items'] ) && isset( $object->labels['menu_name'] ) ) {
+			$object->labels['all_items'] = $object->labels['menu_name'];
+	}
 
 	if ( !isset( $object->labels['archives'] ) && isset( $object->labels['all_items'] ) ) {
 		$object->labels['archives'] = $object->labels['all_items'];
@@ -1342,8 +1379,9 @@ function _add_post_type_submenus() {
 	foreach ( get_post_types( array( 'show_ui' => true ) ) as $ptype ) {
 		$ptype_obj = get_post_type_object( $ptype );
 		// Sub-menus only.
-		if ( ! $ptype_obj->show_in_menu || $ptype_obj->show_in_menu === true )
-			continue;
+		if ( ! $ptype_obj->show_in_menu || $ptype_obj->show_in_menu === true ) {
+					continue;
+		}
 		add_submenu_page( $ptype_obj->show_in_menu, $ptype_obj->labels->name, $ptype_obj->labels->all_items, $ptype_obj->cap->edit_posts, "edit.php?post_type=$ptype" );
 	}
 }
@@ -1525,18 +1563,22 @@ function get_posts( $args = null ) {
 	);
 
 	$r = wp_parse_args( $args, $defaults );
-	if ( empty( $r['post_status'] ) )
-		$r['post_status'] = ( 'attachment' == $r['post_type'] ) ? 'inherit' : 'publish';
-	if ( ! empty($r['numberposts']) && empty($r['posts_per_page']) )
-		$r['posts_per_page'] = $r['numberposts'];
-	if ( ! empty($r['category']) )
-		$r['cat'] = $r['category'];
+	if ( empty( $r['post_status'] ) ) {
+			$r['post_status'] = ( 'attachment' == $r['post_type'] ) ? 'inherit' : 'publish';
+	}
+	if ( ! empty($r['numberposts']) && empty($r['posts_per_page']) ) {
+			$r['posts_per_page'] = $r['numberposts'];
+	}
+	if ( ! empty($r['category']) ) {
+			$r['cat'] = $r['category'];
+	}
 	if ( ! empty($r['include']) ) {
 		$incposts = wp_parse_id_list( $r['include'] );
 		$r['posts_per_page'] = count($incposts);  // only the number of posts included
 		$r['post__in'] = $incposts;
-	} elseif ( ! empty($r['exclude']) )
-		$r['post__not_in'] = wp_parse_id_list( $r['exclude'] );
+	} elseif ( ! empty($r['exclude']) ) {
+			$r['post__not_in'] = wp_parse_id_list( $r['exclude'] );
+	}
 
 	$r['ignore_sticky_posts'] = true;
 	$r['no_found_rows'] = true;
@@ -1566,8 +1608,9 @@ function get_posts( $args = null ) {
  */
 function add_post_meta( $post_id, $meta_key, $meta_value, $unique = false ) {
 	// Make sure meta is added to the post, not a revision.
-	if ( $the_post = wp_is_post_revision($post_id) )
-		$post_id = $the_post;
+	if ( $the_post = wp_is_post_revision($post_id) ) {
+			$post_id = $the_post;
+	}
 
 	return add_metadata('post', $post_id, $meta_key, $meta_value, $unique);
 }
@@ -1589,8 +1632,9 @@ function add_post_meta( $post_id, $meta_key, $meta_value, $unique = false ) {
  */
 function delete_post_meta( $post_id, $meta_key, $meta_value = '' ) {
 	// Make sure meta is added to the post, not a revision.
-	if ( $the_post = wp_is_post_revision($post_id) )
-		$post_id = $the_post;
+	if ( $the_post = wp_is_post_revision($post_id) ) {
+			$post_id = $the_post;
+	}
 
 	return delete_metadata('post', $post_id, $meta_key, $meta_value);
 }
@@ -1631,8 +1675,9 @@ function get_post_meta( $post_id, $key = '', $single = false ) {
  */
 function update_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' ) {
 	// Make sure meta is added to the post, not a revision.
-	if ( $the_post = wp_is_post_revision($post_id) )
-		$post_id = $the_post;
+	if ( $the_post = wp_is_post_revision($post_id) ) {
+			$post_id = $the_post;
+	}
 
 	return update_metadata('post', $post_id, $meta_key, $meta_value, $prev_value);
 }
@@ -1662,8 +1707,9 @@ function delete_post_meta_by_key( $post_meta_key ) {
  */
 function get_post_custom( $post_id = 0 ) {
 	$post_id = absint( $post_id );
-	if ( ! $post_id )
-		$post_id = get_the_ID();
+	if ( ! $post_id ) {
+			$post_id = get_the_ID();
+	}
 
 	return get_post_meta( $post_id );
 }
@@ -1681,12 +1727,14 @@ function get_post_custom( $post_id = 0 ) {
 function get_post_custom_keys( $post_id = 0 ) {
 	$custom = get_post_custom( $post_id );
 
-	if ( !is_array($custom) )
-		return;
+	if ( !is_array($custom) ) {
+			return;
+	}
 
-	if ( $keys = array_keys($custom) )
-		return $keys;
-}
+	if ( $keys = array_keys($custom) ) {
+			return $keys;
+	}
+	}
 
 /**
  * Retrieve values for a custom post field.
@@ -1701,8 +1749,9 @@ function get_post_custom_keys( $post_id = 0 ) {
  * @return array|null Meta field values.
  */
 function get_post_custom_values( $key = '', $post_id = 0 ) {
-	if ( !$key )
-		return null;
+	if ( !$key ) {
+			return null;
+	}
 
 	$custom = get_post_custom($post_id);
 
@@ -1754,21 +1803,27 @@ function is_sticky( $post_id = 0 ) {
 function sanitize_post( $post, $context = 'display' ) {
 	if ( is_object($post) ) {
 		// Check if post already filtered for this context.
-		if ( isset($post->filter) && $context == $post->filter )
-			return $post;
-		if ( !isset($post->ID) )
-			$post->ID = 0;
-		foreach ( array_keys(get_object_vars($post)) as $field )
-			$post->$field = sanitize_post_field($field, $post->$field, $post->ID, $context);
+		if ( isset($post->filter) && $context == $post->filter ) {
+					return $post;
+		}
+		if ( !isset($post->ID) ) {
+					$post->ID = 0;
+		}
+		foreach ( array_keys(get_object_vars($post)) as $field ) {
+					$post->$field = sanitize_post_field($field, $post->$field, $post->ID, $context);
+		}
 		$post->filter = $context;
 	} elseif ( is_array( $post ) ) {
 		// Check if post already filtered for this context.
-		if ( isset($post['filter']) && $context == $post['filter'] )
-			return $post;
-		if ( !isset($post['ID']) )
-			$post['ID'] = 0;
-		foreach ( array_keys($post) as $field )
-			$post[$field] = sanitize_post_field($field, $post[$field], $post['ID'], $context);
+		if ( isset($post['filter']) && $context == $post['filter'] ) {
+					return $post;
+		}
+		if ( !isset($post['ID']) ) {
+					$post['ID'] = 0;
+		}
+		foreach ( array_keys($post) as $field ) {
+					$post[$field] = sanitize_post_field($field, $post[$field], $post['ID'], $context);
+		}
 		$post['filter'] = $context;
 	}
 	return $post;
@@ -1793,8 +1848,9 @@ function sanitize_post( $post, $context = 'display' ) {
  */
 function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 	$int_fields = array('ID', 'post_parent', 'menu_order');
-	if ( in_array($field, $int_fields) )
-		$value = (int) $value;
+	if ( in_array($field, $int_fields) ) {
+			$value = (int) $value;
+	}
 
 	// Fields which contain arrays of integers.
 	$array_int_fields = array( 'ancestors' );
@@ -1803,8 +1859,9 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 		return $value;
 	}
 
-	if ( 'raw' == $context )
-		return $value;
+	if ( 'raw' == $context ) {
+			return $value;
+	}
 
 	$prefixed = false;
 	if ( false !== strpos($field, 'post_') ) {
@@ -1847,10 +1904,11 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 		}
 
 		if ( in_array($field, $format_to_edit) ) {
-			if ( 'post_content' == $field )
-				$value = format_to_edit($value, user_can_richedit());
-			else
-				$value = format_to_edit($value);
+			if ( 'post_content' == $field ) {
+							$value = format_to_edit($value, user_can_richedit());
+			} else {
+							$value = format_to_edit($value);
+			}
 		} else {
 			$value = esc_attr($value);
 		}
@@ -1941,11 +1999,13 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 function stick_post( $post_id ) {
 	$stickies = get_option('sticky_posts');
 
-	if ( !is_array($stickies) )
-		$stickies = array($post_id);
+	if ( !is_array($stickies) ) {
+			$stickies = array($post_id);
+	}
 
-	if ( ! in_array($post_id, $stickies) )
-		$stickies[] = $post_id;
+	if ( ! in_array($post_id, $stickies) ) {
+			$stickies[] = $post_id;
+	}
 
 	$updated = update_option( 'sticky_posts', $stickies );
 
@@ -1973,15 +2033,18 @@ function stick_post( $post_id ) {
 function unstick_post( $post_id ) {
 	$stickies = get_option('sticky_posts');
 
-	if ( !is_array($stickies) )
-		return;
+	if ( !is_array($stickies) ) {
+			return;
+	}
 
-	if ( ! in_array($post_id, $stickies) )
-		return;
+	if ( ! in_array($post_id, $stickies) ) {
+			return;
+	}
 
 	$offset = array_search($post_id, $stickies);
-	if ( false === $offset )
-		return;
+	if ( false === $offset ) {
+			return;
+	}
 
 	array_splice($stickies, $offset, 1);
 
@@ -2040,8 +2103,9 @@ function wp_count_posts( $type = 'post', $perm = '' ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( ! post_type_exists( $type ) )
-		return new stdClass;
+	if ( ! post_type_exists( $type ) ) {
+			return new stdClass;
+	}
 
 	$cache_key = _count_posts_cache_key( $type, $perm );
 
@@ -2215,8 +2279,9 @@ function wp_match_mime_types( $wildcard_mime_types, $real_mime_types ) {
 function wp_post_mime_type_where( $post_mime_types, $table_alias = '' ) {
 	$where = '';
 	$wildcards = array('', '%', '%/%');
-	if ( is_string($post_mime_types) )
-		$post_mime_types = array_map('trim', explode(',', $post_mime_types));
+	if ( is_string($post_mime_types) ) {
+			$post_mime_types = array_map('trim', explode(',', $post_mime_types));
+	}
 
 	$wheres = [];
 
@@ -2226,29 +2291,34 @@ function wp_post_mime_type_where( $post_mime_types, $table_alias = '' ) {
 		if ( false !== $slashpos ) {
 			$mime_group = preg_replace('/[^-*.a-zA-Z0-9]/', '', substr($mime_type, 0, $slashpos));
 			$mime_subgroup = preg_replace('/[^-*.+a-zA-Z0-9]/', '', substr($mime_type, $slashpos + 1));
-			if ( empty($mime_subgroup) )
-				$mime_subgroup = '*';
-			else
-				$mime_subgroup = str_replace('/', '', $mime_subgroup);
+			if ( empty($mime_subgroup) ) {
+							$mime_subgroup = '*';
+			} else {
+							$mime_subgroup = str_replace('/', '', $mime_subgroup);
+			}
 			$mime_pattern = "$mime_group/$mime_subgroup";
 		} else {
 			$mime_pattern = preg_replace('/[^-*.a-zA-Z0-9]/', '', $mime_type);
-			if ( false === strpos($mime_pattern, '*') )
-				$mime_pattern .= '/*';
+			if ( false === strpos($mime_pattern, '*') ) {
+							$mime_pattern .= '/*';
+			}
 		}
 
 		$mime_pattern = preg_replace('/\*+/', '%', $mime_pattern);
 
-		if ( in_array( $mime_type, $wildcards ) )
-			return '';
+		if ( in_array( $mime_type, $wildcards ) ) {
+					return '';
+		}
 
-		if ( false !== strpos($mime_pattern, '%') )
-			$wheres[] = empty($table_alias) ? "post_mime_type LIKE '$mime_pattern'" : "$table_alias.post_mime_type LIKE '$mime_pattern'";
-		else
-			$wheres[] = empty($table_alias) ? "post_mime_type = '$mime_pattern'" : "$table_alias.post_mime_type = '$mime_pattern'";
+		if ( false !== strpos($mime_pattern, '%') ) {
+					$wheres[] = empty($table_alias) ? "post_mime_type LIKE '$mime_pattern'" : "$table_alias.post_mime_type LIKE '$mime_pattern'";
+		} else {
+					$wheres[] = empty($table_alias) ? "post_mime_type = '$mime_pattern'" : "$table_alias.post_mime_type = '$mime_pattern'";
+		}
 	}
-	if ( !empty($wheres) )
-		$where = ' AND (' . join(' OR ', $wheres) . ') ';
+	if ( !empty($wheres) ) {
+			$where = ' AND (' . join(' OR ', $wheres) . ') ';
+	}
 	return $where;
 }
 
@@ -2276,14 +2346,17 @@ function wp_delete_post( $postid = 0, $force_delete = false ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( !$post = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE ID = %d", $postid)) )
-		return $post;
+	if ( !$post = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE ID = %d", $postid)) ) {
+			return $post;
+	}
 
-	if ( !$force_delete && ( $post->post_type == 'post' || $post->post_type == 'page') && get_post_status( $postid ) != 'trash' && EMPTY_TRASH_DAYS )
-		return wp_trash_post( $postid );
+	if ( !$force_delete && ( $post->post_type == 'post' || $post->post_type == 'page') && get_post_status( $postid ) != 'trash' && EMPTY_TRASH_DAYS ) {
+			return wp_trash_post( $postid );
+	}
 
-	if ( $post->post_type == 'attachment' )
-		return wp_delete_attachment( $postid, $force_delete );
+	if ( $post->post_type == 'attachment' ) {
+			return wp_delete_attachment( $postid, $force_delete );
+	}
 
 	/**
 	 * Filters whether a post deletion should take place.
@@ -2330,8 +2403,9 @@ function wp_delete_post( $postid = 0, $force_delete = false ) {
 	// Do raw query. wp_get_post_revisions() is filtered.
 	$revision_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_parent = %d AND post_type = 'revision'", $postid ) );
 	// Use wp_delete_post (via wp_delete_post_revision) again. Ensures any meta/misplaced data gets cleaned up.
-	foreach ( $revision_ids as $revision_id )
-		wp_delete_post_revision( $revision_id );
+	foreach ( $revision_ids as $revision_id ) {
+			wp_delete_post_revision( $revision_id );
+	}
 
 	// Point all attachments to this post up one level.
 	$wpdb->update( $wpdb->posts, $parent_data, $parent_where + array( 'post_type' => 'attachment' ) );
@@ -2346,8 +2420,9 @@ function wp_delete_post( $postid = 0, $force_delete = false ) {
 	wp_defer_comment_counting( false );
 
 	$post_meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d ", $postid ));
-	foreach ( $post_meta_ids as $mid )
-		delete_metadata_by_mid( 'post', $mid );
+	foreach ( $post_meta_ids as $mid ) {
+			delete_metadata_by_mid( 'post', $mid );
+	}
 
 	/**
 	 * Fires immediately before a post is deleted from the database.
@@ -2374,8 +2449,9 @@ function wp_delete_post( $postid = 0, $force_delete = false ) {
 	clean_post_cache( $post );
 
 	if ( is_post_type_hierarchical( $post->post_type ) && $children ) {
-		foreach ( $children as $child )
-			clean_post_cache( $child );
+		foreach ( $children as $child ) {
+					clean_post_cache( $child );
+		}
 	}
 
 	wp_clear_scheduled_hook('publish_future_post', array( $postid ) );
@@ -2437,14 +2513,17 @@ function _reset_front_page_settings_for_post( $post_id ) {
  * @return false|array|WP_Post|null Post data array, otherwise false.
  */
 function wp_trash_post( $post_id = 0 ) {
-	if ( !EMPTY_TRASH_DAYS )
-		return wp_delete_post($post_id, true);
+	if ( !EMPTY_TRASH_DAYS ) {
+			return wp_delete_post($post_id, true);
+	}
 
-	if ( !$post = get_post($post_id, ARRAY_A) )
-		return $post;
+	if ( !$post = get_post($post_id, ARRAY_A) ) {
+			return $post;
+	}
 
-	if ( $post['post_status'] == 'trash' )
-		return false;
+	if ( $post['post_status'] == 'trash' ) {
+			return false;
+	}
 
 	/**
 	 * Fires before a post is sent to the trash.
@@ -2484,11 +2563,13 @@ function wp_trash_post( $post_id = 0 ) {
  * @return WP_Post|false WP_Post object. False on failure.
  */
 function wp_untrash_post( $post_id = 0 ) {
-	if ( !$post = get_post($post_id, ARRAY_A) )
-		return $post;
+	if ( !$post = get_post($post_id, ARRAY_A) ) {
+			return $post;
+	}
 
-	if ( $post['post_status'] != 'trash' )
-		return false;
+	if ( $post['post_status'] != 'trash' ) {
+			return false;
+	}
 
 	/**
 	 * Fires before a post is restored from the trash.
@@ -2535,8 +2616,9 @@ function wp_trash_post_comments( $post = null ) {
 	$wpdb = $app['db'];
 
 	$post = get_post($post);
-	if ( empty($post) )
-		return;
+	if ( empty($post) ) {
+			return;
+	}
 
 	$post_id = $post->ID;
 
@@ -2550,13 +2632,15 @@ function wp_trash_post_comments( $post = null ) {
 	do_action( 'trash_post_comments', $post_id );
 
 	$comments = $wpdb->get_results( $wpdb->prepare("SELECT comment_ID, comment_approved FROM $wpdb->comments WHERE comment_post_ID = %d", $post_id) );
-	if ( empty($comments) )
-		return;
+	if ( empty($comments) ) {
+			return;
+	}
 
 	// Cache current status for each comment.
 	$statuses = [];
-	foreach ( $comments as $comment )
-		$statuses[$comment->comment_ID] = $comment->comment_approved;
+	foreach ( $comments as $comment ) {
+			$statuses[$comment->comment_ID] = $comment->comment_approved;
+	}
 	add_post_meta($post_id, '_wp_trash_meta_comments_status', $statuses);
 
 	// Set status for all comments to post-trashed.
@@ -2590,15 +2674,17 @@ function wp_untrash_post_comments( $post = null ) {
 	$wpdb = $app['db'];
 
 	$post = get_post($post);
-	if ( empty($post) )
-		return;
+	if ( empty($post) ) {
+			return;
+	}
 
 	$post_id = $post->ID;
 
 	$statuses = get_post_meta($post_id, '_wp_trash_meta_comments_status', true);
 
-	if ( empty($statuses) )
-		return true;
+	if ( empty($statuses) ) {
+			return true;
+	}
 
 	/**
 	 * Fires before comments are restored for a post from the trash.
@@ -2611,8 +2697,9 @@ function wp_untrash_post_comments( $post = null ) {
 
 	// Restore each comment to its original status.
 	$group_by_status = [];
-	foreach ( $statuses as $comment_id => $comment_status )
-		$group_by_status[$comment_status][] = $comment_id;
+	foreach ( $statuses as $comment_id => $comment_status ) {
+			$group_by_status[$comment_status][] = $comment_id;
+	}
 
 	foreach ( $group_by_status as $status => $comments ) {
 		// Sanity check. This shouldn't happen.
@@ -3389,8 +3476,9 @@ function wp_update_post( $postarr = [], $wp_error = false ) {
 	$post = get_post($postarr['ID'], ARRAY_A);
 
 	if ( is_null( $post ) ) {
-		if ( $wp_error )
-			return new WP_Error( 'invalid_post', __( 'Invalid post ID.' ) );
+		if ( $wp_error ) {
+					return new WP_Error( 'invalid_post', __( 'Invalid post ID.' ) );
+		}
 		return 0;
 	}
 
@@ -3399,17 +3487,19 @@ function wp_update_post( $postarr = [], $wp_error = false ) {
 
 	// Passed post category list overwrites existing category list if not empty.
 	if ( isset($postarr['post_category']) && is_array($postarr['post_category'])
-			 && 0 != count($postarr['post_category']) )
-		$post_cats = $postarr['post_category'];
-	else
-		$post_cats = $post['post_category'];
+			 && 0 != count($postarr['post_category']) ) {
+			$post_cats = $postarr['post_category'];
+	} else {
+			$post_cats = $post['post_category'];
+	}
 
 	// Drafts shouldn't be assigned a date unless explicitly done so by the user.
 	if ( isset( $post['post_status'] ) && in_array($post['post_status'], array('draft', 'pending', 'auto-draft')) && empty($postarr['edit_date']) &&
-			 ('0000-00-00 00:00:00' == $post['post_date_gmt']) )
-		$clear_date = true;
-	else
-		$clear_date = false;
+			 ('0000-00-00 00:00:00' == $post['post_date_gmt']) ) {
+			$clear_date = true;
+	} else {
+			$clear_date = false;
+	}
 
 	// Merge old and new fields with new fields overwriting old ones.
 	$postarr = array_merge($post, $postarr);
@@ -3419,8 +3509,9 @@ function wp_update_post( $postarr = [], $wp_error = false ) {
 		$postarr['post_date_gmt'] = '';
 	}
 
-	if ($postarr['post_type'] == 'attachment')
-		return wp_insert_attachment($postarr);
+	if ($postarr['post_type'] == 'attachment') {
+			return wp_insert_attachment($postarr);
+	}
 
 	return wp_insert_post( $postarr, $wp_error );
 }
@@ -3436,11 +3527,13 @@ function wp_publish_post( $post ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( ! $post = get_post( $post ) )
-		return;
+	if ( ! $post = get_post( $post ) ) {
+			return;
+	}
 
-	if ( 'publish' == $post->post_status )
-		return;
+	if ( 'publish' == $post->post_status ) {
+			return;
+	}
 
 	$wpdb->update( $wpdb->posts, array( 'post_status' => 'publish' ), array( 'ID' => $post->ID ) );
 
@@ -3476,11 +3569,13 @@ function wp_publish_post( $post ) {
 function check_and_publish_future_post( $post_id ) {
 	$post = get_post($post_id);
 
-	if ( empty($post) )
-		return;
+	if ( empty($post) ) {
+			return;
+	}
 
-	if ( 'future' != $post->post_status )
-		return;
+	if ( 'future' != $post->post_status ) {
+			return;
+	}
 
 	$time = strtotime( $post->post_date_gmt . ' GMT' );
 
@@ -3508,8 +3603,9 @@ function check_and_publish_future_post( $post_id ) {
  * @return string Unique slug for the post, based on $post_name (with a -1, -2, etc. suffix)
  */
 function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_parent ) {
-	if ( in_array( $post_status, array( 'draft', 'pending', 'auto-draft' ) ) || ( 'inherit' == $post_status && 'revision' == $post_type ) )
-		return $slug;
+	if ( in_array( $post_status, array( 'draft', 'pending', 'auto-draft' ) ) || ( 'inherit' == $post_status && 'revision' == $post_type ) ) {
+			return $slug;
+	}
 
 	$app = getApp();
 	$wpdb = $app['db'];
@@ -3519,8 +3615,9 @@ function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_p
 	$original_slug = $slug;
 
 	$feeds = $app['rewrite']->feeds;
-	if ( ! is_array( $feeds ) )
-		$feeds = [];
+	if ( ! is_array( $feeds ) ) {
+			$feeds = [];
+	}
 
 	if ( 'attachment' == $post_type ) {
 		// Attachment slugs must be unique across all types.
@@ -3545,8 +3642,9 @@ function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_p
 			$slug = $alt_post_name;
 		}
 	} elseif ( is_post_type_hierarchical( $post_type ) ) {
-		if ( 'nav_menu_item' == $post_type )
-			return $slug;
+		if ( 'nav_menu_item' == $post_type ) {
+					return $slug;
+		}
 
 		/*
 		 * Page slugs must be unique within their own trees. Pages are in a separate
@@ -3651,10 +3749,11 @@ function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_p
 function _truncate_post_slug( $slug, $length = 200 ) {
 	if ( strlen( $slug ) > $length ) {
 		$decoded_slug = urldecode( $slug );
-		if ( $decoded_slug === $slug )
-			$slug = substr( $slug, 0, $length );
-		else
-			$slug = utf8_uri_encode( $decoded_slug, $length );
+		if ( $decoded_slug === $slug ) {
+					$slug = substr( $slug, 0, $length );
+		} else {
+					$slug = utf8_uri_encode( $decoded_slug, $length );
+		}
 	}
 
 	return rtrim( $slug, '-' );
@@ -3712,16 +3811,19 @@ function wp_set_post_tags( $post_id = 0, $tags = '', $append = false ) {
 function wp_set_post_terms( $post_id = 0, $tags = '', $taxonomy = 'post_tag', $append = false ) {
 	$post_id = (int) $post_id;
 
-	if ( !$post_id )
-		return false;
+	if ( !$post_id ) {
+			return false;
+	}
 
-	if ( empty($tags) )
-		$tags = [];
+	if ( empty($tags) ) {
+			$tags = [];
+	}
 
 	if ( ! is_array( $tags ) ) {
 		$comma = _x( ',', 'tag delimiter' );
-		if ( ',' !== $comma )
-			$tags = str_replace( $comma, ',', $tags );
+		if ( ',' !== $comma ) {
+					$tags = str_replace( $comma, ',', $tags );
+		}
 		$tags = explode( ',', trim( $tags, " \n\t\r\0\x0B," ) );
 	}
 
@@ -3886,12 +3988,14 @@ function add_ping( $post_id, $uri ) {
 function get_enclosed( $post_id ) {
 	$custom_fields = get_post_custom( $post_id );
 	$pung = [];
-	if ( !is_array( $custom_fields ) )
-		return $pung;
+	if ( !is_array( $custom_fields ) ) {
+			return $pung;
+	}
 
 	foreach ( $custom_fields as $key => $val ) {
-		if ( 'enclosure' != $key || !is_array( $val ) )
-			continue;
+		if ( 'enclosure' != $key || !is_array( $val ) ) {
+					continue;
+		}
 		foreach ( $val as $enc ) {
 			$enclosure = explode( "\n", $enc );
 			$pung[] = trim( $enclosure[ 0 ] );
@@ -4104,15 +4208,17 @@ function get_page_by_path( $page_path, $output = OBJECT, $post_type = 'page' ) {
 			while ( $p->post_parent != 0 && isset( $pages[ $p->post_parent ] ) ) {
 				$count++;
 				$parent = $pages[ $p->post_parent ];
-				if ( ! isset( $revparts[ $count ] ) || $parent->post_name != $revparts[ $count ] )
-					break;
+				if ( ! isset( $revparts[ $count ] ) || $parent->post_name != $revparts[ $count ] ) {
+									break;
+				}
 				$p = $parent;
 			}
 
 			if ( $p->post_parent == 0 && $count+1 == count( $revparts ) && $p->post_name == $revparts[ $count ] ) {
 				$foundid = $page->ID;
-				if ( $page->post_type == $post_type )
-					break;
+				if ( $page->post_type == $post_type ) {
+									break;
+				}
 			}
 		}
 	}
@@ -4272,8 +4378,9 @@ function get_page_uri( $page = 0 ) {
 		$page = get_post( $page );
 	}
 
-	if ( ! $page )
-		return false;
+	if ( ! $page ) {
+			return false;
+	}
 
 	$uri = $page->post_name;
 
@@ -4602,14 +4709,17 @@ function get_pages( $args = [] ) {
  * @return bool True on success, false on failure.
  */
 function is_local_attachment($url) {
-	if (strpos($url, home_url()) === false)
-		return false;
-	if (strpos($url, home_url('/?attachment_id=')) !== false)
-		return true;
+	if (strpos($url, home_url()) === false) {
+			return false;
+	}
+	if (strpos($url, home_url('/?attachment_id=')) !== false) {
+			return true;
+	}
 	if ( $id = url_to_postid($url) ) {
 		$post = get_post($id);
-		if ( 'attachment' == $post->post_type )
-			return true;
+		if ( 'attachment' == $post->post_type ) {
+					return true;
+		}
 	}
 	return false;
 }
@@ -4677,14 +4787,17 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( !$post = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $wpdb->posts WHERE ID = %d", $post_id) ) )
-		return $post;
+	if ( !$post = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $wpdb->posts WHERE ID = %d", $post_id) ) ) {
+			return $post;
+	}
 
-	if ( 'attachment' != $post->post_type )
-		return false;
+	if ( 'attachment' != $post->post_type ) {
+			return false;
+	}
 
-	if ( !$force_delete && EMPTY_TRASH_DAYS && MEDIA_TRASH && 'trash' != $post->post_status )
-		return wp_trash_post( $post_id );
+	if ( !$force_delete && EMPTY_TRASH_DAYS && MEDIA_TRASH && 'trash' != $post->post_status ) {
+			return wp_trash_post( $post_id );
+	}
 
 	delete_post_meta($post_id, '_wp_trash_meta_status');
 	delete_post_meta($post_id, '_wp_trash_meta_time');
@@ -4693,8 +4806,9 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 	$backup_sizes = get_post_meta( $post->ID, '_wp_attachment_backup_sizes', true );
 	$file = get_attached_file( $post_id );
 
-	if ( is_multisite() )
-		delete_transient( 'dirsize_cache' );
+	if ( is_multisite() ) {
+			delete_transient( 'dirsize_cache' );
+	}
 
 	/**
 	 * Fires before an attachment is deleted, at the start of wp_delete_attachment().
@@ -4721,8 +4835,9 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 	wp_defer_comment_counting( false );
 
 	$post_meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d ", $post_id ));
-	foreach ( $post_meta_ids as $mid )
-		delete_metadata_by_mid( 'post', $mid );
+	foreach ( $post_meta_ids as $mid ) {
+			delete_metadata_by_mid( 'post', $mid );
+	}
 
 	/** This action is documented in wp-includes/post.php */
 	do_action( 'delete_post', $post_id );
@@ -4782,13 +4897,15 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
  */
 function wp_get_attachment_metadata( $post_id = 0, $unfiltered = false ) {
 	$post_id = (int) $post_id;
-	if ( !$post = get_post( $post_id ) )
-		return false;
+	if ( !$post = get_post( $post_id ) ) {
+			return false;
+	}
 
 	$data = get_post_meta( $post->ID, '_wp_attachment_metadata', true );
 
-	if ( $unfiltered )
-		return $data;
+	if ( $unfiltered ) {
+			return $data;
+	}
 
 	/**
 	 * Filters the attachment meta data.
@@ -4813,8 +4930,9 @@ function wp_get_attachment_metadata( $post_id = 0, $unfiltered = false ) {
  */
 function wp_update_attachment_metadata( $post_id, $data ) {
 	$post_id = (int) $post_id;
-	if ( !$post = get_post( $post_id ) )
-		return false;
+	if ( !$post = get_post( $post_id ) ) {
+			return false;
+	}
 
 	/**
 	 * Filters the updated attachment meta data.
@@ -4824,11 +4942,12 @@ function wp_update_attachment_metadata( $post_id, $data ) {
 	 * @param array $data    Array of updated attachment meta data.
 	 * @param int   $post_id Attachment ID.
 	 */
-	if ( $data = apply_filters( 'wp_update_attachment_metadata', $data, $post->ID ) )
-		return update_post_meta( $post->ID, '_wp_attachment_metadata', $data );
-	else
-		return delete_post_meta( $post->ID, '_wp_attachment_metadata' );
-}
+	if ( $data = apply_filters( 'wp_update_attachment_metadata', $data, $post->ID ) ) {
+			return update_post_meta( $post->ID, '_wp_attachment_metadata', $data );
+	} else {
+			return delete_post_meta( $post->ID, '_wp_attachment_metadata' );
+	}
+	}
 
 /**
  * Retrieve the URL for an attachment.
@@ -4842,11 +4961,13 @@ function wp_get_attachment_url( $post_id = 0 ) {
 	$app = getApp();
 
 	$post_id = (int) $post_id;
-	if ( !$post = get_post( $post_id ) )
-		return false;
+	if ( !$post = get_post( $post_id ) ) {
+			return false;
+	}
 
-	if ( 'attachment' != $post->post_type )
-		return false;
+	if ( 'attachment' != $post->post_type ) {
+			return false;
+	}
 
 	$url = '';
 	// Get attached file.
@@ -4890,8 +5011,9 @@ function wp_get_attachment_url( $post_id = 0 ) {
 	 */
 	$url = apply_filters( 'wp_get_attachment_url', $url, $post->ID );
 
-	if ( empty( $url ) )
-		return false;
+	if ( empty( $url ) ) {
+			return false;
+	}
 
 	return $url;
 }
@@ -4937,10 +5059,12 @@ function wp_get_attachment_caption( $post_id = 0 ) {
  */
 function wp_get_attachment_thumb_file( $post_id = 0 ) {
 	$post_id = (int) $post_id;
-	if ( !$post = get_post( $post_id ) )
-		return false;
-	if ( !is_array( $imagedata = wp_get_attachment_metadata( $post->ID ) ) )
-		return false;
+	if ( !$post = get_post( $post_id ) ) {
+			return false;
+	}
+	if ( !is_array( $imagedata = wp_get_attachment_metadata( $post->ID ) ) ) {
+			return false;
+	}
 
 	$file = get_attached_file( $post->ID );
 
@@ -4968,17 +5092,21 @@ function wp_get_attachment_thumb_file( $post_id = 0 ) {
  */
 function wp_get_attachment_thumb_url( $post_id = 0 ) {
 	$post_id = (int) $post_id;
-	if ( !$post = get_post( $post_id ) )
-		return false;
-	if ( !$url = wp_get_attachment_url( $post->ID ) )
-		return false;
+	if ( !$post = get_post( $post_id ) ) {
+			return false;
+	}
+	if ( !$url = wp_get_attachment_url( $post->ID ) ) {
+			return false;
+	}
 
 	$sized = image_downsize( $post_id, 'thumbnail' );
-	if ( $sized )
-		return $sized[0];
+	if ( $sized ) {
+			return $sized[0];
+	}
 
-	if ( !$thumb = wp_get_attachment_thumb_file( $post->ID ) )
-		return false;
+	if ( !$thumb = wp_get_attachment_thumb_file( $post->ID ) ) {
+			return false;
+	}
 
 	$url = str_replace(basename($url), basename($thumb), $url);
 
@@ -5065,8 +5193,9 @@ function wp_attachment_is_image( $post = null ) {
  * @return string|false Icon, false otherwise.
  */
 function wp_mime_type_icon( $mime = 0 ) {
-	if ( !is_numeric($mime) )
-		$icon = wp_cache_get("mime_type_icon_$mime");
+	if ( !is_numeric($mime) ) {
+			$icon = wp_cache_get("mime_type_icon_$mime");
+	}
 
 	$post_id = 0;
 	if ( empty($icon) ) {
@@ -5079,8 +5208,9 @@ function wp_mime_type_icon( $mime = 0 ) {
 				$ext = preg_replace('/^.+?\.([^.]+)$/', '$1', $file);
 				if ( !empty($ext) ) {
 					$post_mimes[] = $ext;
-					if ( $ext_type = wp_ext2type( $ext ) )
-						$post_mimes[] = $ext_type;
+					if ( $ext_type = wp_ext2type( $ext ) ) {
+											$post_mimes[] = $ext_type;
+					}
 				}
 				$mime = $post->post_mime_type;
 			} else {
@@ -5127,11 +5257,13 @@ function wp_mime_type_icon( $mime = 0 ) {
 				if ( $dh = opendir($dir) ) {
 					while ( false !== $file = readdir($dh) ) {
 						$file = basename($file);
-						if ( substr($file, 0, 1) == '.' )
-							continue;
+						if ( substr($file, 0, 1) == '.' ) {
+													continue;
+						}
 						if ( !in_array(strtolower(substr($file, -4)), array('.png', '.gif', '.jpg') ) ) {
-							if ( is_dir("$dir/$file") )
-								$dirs["$dir/$file"] = "$uri/$file";
+							if ( is_dir("$dir/$file") ) {
+															$dirs["$dir/$file"] = "$uri/$file";
+							}
 							continue;
 						}
 						$icon_files["$dir/$file"] = "$uri/$file";
@@ -5144,8 +5276,9 @@ function wp_mime_type_icon( $mime = 0 ) {
 
 		$types = [];
 		// Icon basename - extension = MIME wildcard.
-		foreach ( $icon_files as $file => $uri )
-			$types[ preg_replace('/^([^.]*).*$/', '$1', basename($file)) ] =& $icon_files[$file];
+		foreach ( $icon_files as $file => $uri ) {
+					$types[ preg_replace('/^([^.]*).*$/', '$1', basename($file)) ] =& $icon_files[$file];
+		}
 
 		if ( ! empty($mime) ) {
 			$post_mimes[] = substr($mime, 0, strpos($mime, '/'));
@@ -5479,12 +5612,14 @@ function _get_last_post_time( $timezone, $field, $post_type = 'any' ) {
  * @param array $posts Array of post objects, passed by reference.
  */
 function update_post_cache( &$posts ) {
-	if ( ! $posts )
-		return;
+	if ( ! $posts ) {
+			return;
+	}
 
-	foreach ( $posts as $post )
-		wp_cache_add( $post->ID, $post, 'posts' );
-}
+	foreach ( $posts as $post ) {
+			wp_cache_add( $post->ID, $post, 'posts' );
+	}
+	}
 
 /**
  * Will clean the post in the cache.
@@ -5556,17 +5691,20 @@ function clean_post_cache( $post ) {
  */
 function update_post_caches( &$posts, $post_type = 'post', $update_term_cache = true, $update_meta_cache = true ) {
 	// No point in doing all this work if we didn't match any posts.
-	if ( !$posts )
-		return;
+	if ( !$posts ) {
+			return;
+	}
 
 	update_post_cache($posts);
 
 	$post_ids = [];
-	foreach ( $posts as $post )
-		$post_ids[] = $post->ID;
+	foreach ( $posts as $post ) {
+			$post_ids[] = $post->ID;
+	}
 
-	if ( ! $post_type )
-		$post_type = 'any';
+	if ( ! $post_type ) {
+			$post_type = 'any';
+	}
 
 	if ( $update_term_cache ) {
 		if ( is_array($post_type) ) {
@@ -5582,13 +5720,15 @@ function update_post_caches( &$posts, $post_type = 'post', $update_term_cache = 
 			$ptypes = array($post_type);
 		}
 
-		if ( ! empty($ptypes) )
-			update_object_term_cache($post_ids, $ptypes);
+		if ( ! empty($ptypes) ) {
+					update_object_term_cache($post_ids, $ptypes);
+		}
 	}
 
-	if ( $update_meta_cache )
-		update_postmeta_cache($post_ids);
-}
+	if ( $update_meta_cache ) {
+			update_postmeta_cache($post_ids);
+	}
+	}
 
 /**
  * Updates metadata cache for list of post IDs.
@@ -5632,8 +5772,9 @@ function clean_attachment_cache( $id, $clean_terms = false ) {
 	wp_cache_delete($id, 'posts');
 	wp_cache_delete($id, 'post_meta');
 
-	if ( $clean_terms )
-		clean_object_term_cache($id, 'attachment');
+	if ( $clean_terms ) {
+			clean_object_term_cache($id, 'attachment');
+	}
 
 	/**
 	 * Fires after the given attachment's cache is cleaned.
@@ -5667,8 +5808,9 @@ function _transition_post_status( $new_status, $old_status, $post ) {
 
 	if ( $old_status != 'publish' && $new_status == 'publish' ) {
 		// Reset GUID if transitioning to publish and it is empty.
-		if ( '' == get_the_guid($post->ID) )
-			$wpdb->update( $wpdb->posts, array( 'guid' => get_permalink( $post->ID ) ), array( 'ID' => $post->ID ) );
+		if ( '' == get_the_guid($post->ID) ) {
+					$wpdb->update( $wpdb->posts, array( 'guid' => get_permalink( $post->ID ) ), array( 'ID' => $post->ID ) );
+		}
 
 		/**
 		 * Fires when a post's status is transitioned from private to published.
@@ -5739,11 +5881,13 @@ function _publish_post_hook( $post_id ) {
 		do_action( 'xmlrpc_publish_post', $post_id );
 	}
 
-	if ( defined('WP_IMPORTING') )
-		return;
+	if ( defined('WP_IMPORTING') ) {
+			return;
+	}
 
-	if ( get_option('default_pingback_flag') )
-		add_post_meta( $post_id, '_pingme', '1' );
+	if ( get_option('default_pingback_flag') ) {
+			add_post_meta( $post_id, '_pingme', '1' );
+	}
 	add_post_meta( $post_id, '_encloseme', '1' );
 
 	wp_schedule_single_event(time(), 'do_pings');
@@ -5760,8 +5904,9 @@ function _publish_post_hook( $post_id ) {
  */
 function wp_get_post_parent_id( $post_ID ) {
 	$post = get_post( $post_ID );
-	if ( !$post || is_wp_error( $post ) )
-		return false;
+	if ( !$post || is_wp_error( $post ) ) {
+			return false;
+	}
 	return (int) $post->post_parent;
 }
 
@@ -5781,28 +5926,35 @@ function wp_get_post_parent_id( $post_ID ) {
  */
 function wp_check_post_hierarchy_for_loops( $post_parent, $post_ID ) {
 	// Nothing fancy here - bail.
-	if ( !$post_parent )
-		return 0;
+	if ( !$post_parent ) {
+			return 0;
+	}
 
 	// New post can't cause a loop.
-	if ( empty( $post_ID ) )
-		return $post_parent;
+	if ( empty( $post_ID ) ) {
+			return $post_parent;
+	}
 
 	// Can't be its own parent.
-	if ( $post_parent == $post_ID )
-		return 0;
+	if ( $post_parent == $post_ID ) {
+			return 0;
+	}
 
 	// Now look for larger loops.
-	if ( !$loop = wp_find_hierarchy_loop( 'wp_get_post_parent_id', $post_ID, $post_parent ) )
-		return $post_parent; // No loop
+	if ( !$loop = wp_find_hierarchy_loop( 'wp_get_post_parent_id', $post_ID, $post_parent ) ) {
+			return $post_parent;
+	}
+	// No loop
 
 	// Setting $post_parent to the given value causes a loop.
-	if ( isset( $loop[$post_ID] ) )
-		return 0;
+	if ( isset( $loop[$post_ID] ) ) {
+			return 0;
+	}
 
 	// There's a loop, but it doesn't contain $post_ID. Break the loop.
-	foreach ( array_keys( $loop ) as $loop_member )
-		wp_update_post( array( 'ID' => $loop_member, 'post_parent' => 0 ) );
+	foreach ( array_keys( $loop ) as $loop_member ) {
+			wp_update_post( array( 'ID' => $loop_member, 'post_parent' => 0 ) );
+	}
 
 	return $post_parent;
 }
@@ -5820,10 +5972,11 @@ function set_post_thumbnail( $post, $thumbnail_id ) {
 	$post = get_post( $post );
 	$thumbnail_id = absint( $thumbnail_id );
 	if ( $post && $thumbnail_id && get_post( $thumbnail_id ) ) {
-		if ( wp_get_attachment_image( $thumbnail_id, 'thumbnail' ) )
-			return update_post_meta( $post->ID, '_thumbnail_id', $thumbnail_id );
-		else
-			return delete_post_meta( $post->ID, '_thumbnail_id' );
+		if ( wp_get_attachment_image( $thumbnail_id, 'thumbnail' ) ) {
+					return update_post_meta( $post->ID, '_thumbnail_id', $thumbnail_id );
+		} else {
+					return delete_post_meta( $post->ID, '_thumbnail_id' );
+		}
 	}
 	return false;
 }
@@ -5838,8 +5991,9 @@ function set_post_thumbnail( $post, $thumbnail_id ) {
  */
 function delete_post_thumbnail( $post ) {
 	$post = get_post( $post );
-	if ( $post )
-		return delete_post_meta( $post->ID, '_thumbnail_id' );
+	if ( $post ) {
+			return delete_post_meta( $post->ID, '_thumbnail_id' );
+	}
 	return false;
 }
 

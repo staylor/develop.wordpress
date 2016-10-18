@@ -750,8 +750,9 @@ class WP_Customize_Setting {
 		 */
 		$value = apply_filters( "customize_sanitize_js_{$this->id}", $this->value(), $this );
 
-		if ( is_string( $value ) )
+		if ( is_string( $value ) ) {
 			return html_entity_decode( $value, ENT_QUOTES, 'UTF-8');
+		}
 
 		return $value;
 	}
@@ -798,21 +799,25 @@ class WP_Customize_Setting {
 	 * @return array|void Keys are 'root', 'node', and 'key'.
 	 */
 	final protected function multidimensional( &$root, $keys, $create = false ) {
-		if ( $create && empty( $root ) )
+		if ( $create && empty( $root ) ) {
 			$root = [];
+		}
 
-		if ( ! isset( $root ) || empty( $keys ) )
+		if ( ! isset( $root ) || empty( $keys ) ) {
 			return;
+		}
 
 		$last = array_pop( $keys );
 		$node = &$root;
 
 		foreach ( $keys as $key ) {
-			if ( $create && ! isset( $node[ $key ] ) )
+			if ( $create && ! isset( $node[ $key ] ) ) {
 				$node[ $key ] = [];
+			}
 
-			if ( ! is_array( $node ) || ! isset( $node[ $key ] ) )
+			if ( ! is_array( $node ) || ! isset( $node[ $key ] ) ) {
 				return;
+			}
 
 			$node = &$node[ $key ];
 		}
@@ -827,8 +832,9 @@ class WP_Customize_Setting {
 			}
 		}
 
-		if ( ! isset( $node[ $last ] ) )
+		if ( ! isset( $node[ $last ] ) ) {
 			return;
+		}
 
 		return array(
 			'root' => &$root,
@@ -848,15 +854,18 @@ class WP_Customize_Setting {
 	 * @return mixed
 	 */
 	final protected function multidimensional_replace( $root, $keys, $value ) {
-		if ( ! isset( $value ) )
+		if ( ! isset( $value ) ) {
 			return $root;
-		elseif ( empty( $keys ) ) // If there are no keys, we're replacing the root.
+		} elseif ( empty( $keys ) ) {
+			// If there are no keys, we're replacing the root.
 			return $value;
+		}
 
 		$result = $this->multidimensional( $root, $keys, true );
 
-		if ( isset( $result ) )
+		if ( isset( $result ) ) {
 			$result['node'][ $result['key'] ] = $value;
+		}
 
 		return $root;
 	}
@@ -872,8 +881,10 @@ class WP_Customize_Setting {
 	 * @return mixed The requested value or the default value.
 	 */
 	final protected function multidimensional_get( $root, $keys, $default = null ) {
-		if ( empty( $keys ) ) // If there are no keys, test the root.
+		if ( empty( $keys ) ) {
+			// If there are no keys, test the root.
 			return isset( $root ) ? $root : $default;
+		}
 
 		$result = $this->multidimensional( $root, $keys );
 		return isset( $result ) ? $result['node'][ $result['key'] ] : $default;

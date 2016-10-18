@@ -57,8 +57,9 @@ function wp_schedule_single_event( $timestamp, $hook, $args = []) {
 	$event = apply_filters( 'schedule_event', $event );
 
 	// A plugin disallowed this event
-	if ( ! $event )
-		return false;
+	if ( ! $event ) {
+			return false;
+	}
 
 	$key = md5(serialize($event->args));
 
@@ -96,16 +97,18 @@ function wp_schedule_event( $timestamp, $recurrence, $hook, $args = []) {
 	$crons = _get_cron_array();
 	$schedules = wp_get_schedules();
 
-	if ( !isset( $schedules[$recurrence] ) )
-		return false;
+	if ( !isset( $schedules[$recurrence] ) ) {
+			return false;
+	}
 
 	$event = (object) array( 'hook' => $hook, 'timestamp' => $timestamp, 'schedule' => $recurrence, 'args' => $args, 'interval' => $schedules[$recurrence]['interval'] );
 	/** This filter is documented in wp-includes/cron.php */
 	$event = apply_filters( 'schedule_event', $event );
 
 	// A plugin disallowed this event
-	if ( ! $event )
-		return false;
+	if ( ! $event ) {
+			return false;
+	}
 
 	$key = md5(serialize($event->args));
 
@@ -185,10 +188,12 @@ function wp_unschedule_event( $timestamp, $hook, $args = [] ) {
 	$crons = _get_cron_array();
 	$key = md5(serialize($args));
 	unset( $crons[$timestamp][$hook][$key] );
-	if ( empty($crons[$timestamp][$hook]) )
-		unset( $crons[$timestamp][$hook] );
-	if ( empty($crons[$timestamp]) )
-		unset( $crons[$timestamp] );
+	if ( empty($crons[$timestamp][$hook]) ) {
+			unset( $crons[$timestamp][$hook] );
+	}
+	if ( empty($crons[$timestamp]) ) {
+			unset( $crons[$timestamp] );
+	}
 	_set_cron_array( $crons );
 }
 
@@ -212,8 +217,9 @@ function wp_clear_scheduled_hook( $hook, $args = [] ) {
 	// It's required due to a scenario where wp_unschedule_event() fails due to update_option() failing,
 	// and, wp_next_scheduled() returns the same schedule in an infinite loop.
 	$crons = _get_cron_array();
-	if ( empty( $crons ) )
-		return;
+	if ( empty( $crons ) ) {
+			return;
+	}
 
 	$key = md5( serialize( $args ) );
 	foreach ( $crons as $timestamp => $cron ) {
@@ -235,11 +241,13 @@ function wp_clear_scheduled_hook( $hook, $args = [] ) {
 function wp_next_scheduled( $hook, $args = [] ) {
 	$crons = _get_cron_array();
 	$key = md5(serialize($args));
-	if ( empty($crons) )
-		return false;
+	if ( empty($crons) ) {
+			return false;
+	}
 	foreach ( $crons as $timestamp => $cron ) {
-		if ( isset( $cron[$hook][$key] ) )
-			return $timestamp;
+		if ( isset( $cron[$hook][$key] ) ) {
+					return $timestamp;
+		}
 	}
 	return false;
 }
@@ -270,21 +278,25 @@ function spawn_cron( $gmt_time = 0 ) {
 	 */
 	$lock = get_transient('doing_cron');
 
-	if ( $lock > $gmt_time + 10 * MINUTE_IN_SECONDS )
-		$lock = 0;
+	if ( $lock > $gmt_time + 10 * MINUTE_IN_SECONDS ) {
+			$lock = 0;
+	}
 
 	// don't run if another process is currently running it or more than once every 60 sec.
-	if ( $lock + WP_CRON_LOCK_TIMEOUT > $gmt_time )
-		return;
+	if ( $lock + WP_CRON_LOCK_TIMEOUT > $gmt_time ) {
+			return;
+	}
 
 	//sanity check
 	$crons = _get_cron_array();
-	if ( !is_array($crons) )
-		return;
+	if ( !is_array($crons) ) {
+			return;
+	}
 
 	$keys = array_keys( $crons );
-	if ( isset($keys[0]) && $keys[0] > $gmt_time )
-		return;
+	if ( isset($keys[0]) && $keys[0] > $gmt_time ) {
+			return;
+	}
 
 	if ( defined( 'ALTERNATE_WP_CRON' ) && ALTERNATE_WP_CRON ) {
 		$app = getApp();
@@ -354,23 +366,29 @@ function spawn_cron( $gmt_time = 0 ) {
 function wp_cron() {
 	$app = getApp();
 	// Prevent infinite loops caused by lack of wp-cron.php
-	if ( strpos( $app['request.uri'], '/wp-cron.php') !== false || ( defined('DISABLE_WP_CRON') && DISABLE_WP_CRON ) )
-		return;
+	if ( strpos( $app['request.uri'], '/wp-cron.php') !== false || ( defined('DISABLE_WP_CRON') && DISABLE_WP_CRON ) ) {
+			return;
+	}
 
-	if ( false === $crons = _get_cron_array() )
-		return;
+	if ( false === $crons = _get_cron_array() ) {
+			return;
+	}
 
 	$gmt_time = microtime( true );
 	$keys = array_keys( $crons );
-	if ( isset($keys[0]) && $keys[0] > $gmt_time )
-		return;
+	if ( isset($keys[0]) && $keys[0] > $gmt_time ) {
+			return;
+	}
 
 	$schedules = wp_get_schedules();
 	foreach ( $crons as $timestamp => $cronhooks ) {
-		if ( $timestamp > $gmt_time ) break;
+		if ( $timestamp > $gmt_time ) {
+			break;
+		}
 		foreach ( (array) $cronhooks as $hook => $args ) {
-			if ( isset($schedules[$hook]['callback']) && !call_user_func( $schedules[$hook]['callback'] ) )
-				continue;
+			if ( isset($schedules[$hook]['callback']) && !call_user_func( $schedules[$hook]['callback'] ) ) {
+							continue;
+			}
 			spawn_cron( $gmt_time );
 			break 2;
 		}
@@ -437,11 +455,13 @@ function wp_get_schedules() {
 function wp_get_schedule($hook, $args = []) {
 	$crons = _get_cron_array();
 	$key = md5(serialize($args));
-	if ( empty($crons) )
-		return false;
+	if ( empty($crons) ) {
+			return false;
+	}
 	foreach ( $crons as $timestamp => $cron ) {
-		if ( isset( $cron[$hook][$key] ) )
-			return $cron[$hook][$key]['schedule'];
+		if ( isset( $cron[$hook][$key] ) ) {
+					return $cron[$hook][$key]['schedule'];
+		}
 	}
 	return false;
 }
@@ -473,8 +493,9 @@ function _get_cron_lock() {
 		$value = wp_cache_get( 'doing_cron', 'transient', true );
 	} else {
 		$row = $wpdb->get_row( $wpdb->prepare( "SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1", '_transient_doing_cron' ) );
-		if ( is_object( $row ) )
-			$value = $row->option_value;
+		if ( is_object( $row ) ) {
+					$value = $row->option_value;
+		}
 	}
 
 	return $value;
@@ -490,11 +511,13 @@ function _get_cron_lock() {
  */
 function _get_cron_array()  {
 	$cron = get_option('cron');
-	if ( ! is_array($cron) )
-		return false;
+	if ( ! is_array($cron) ) {
+			return false;
+	}
 
-	if ( !isset($cron['version']) )
-		$cron = _upgrade_cron_array($cron);
+	if ( !isset($cron['version']) ) {
+			$cron = _upgrade_cron_array($cron);
+	}
 
 	unset($cron['version']);
 
@@ -526,8 +549,9 @@ function _set_cron_array($cron) {
  * @return array An upgraded Cron info array.
  */
 function _upgrade_cron_array($cron) {
-	if ( isset($cron['version']) && 2 == $cron['version'])
-		return $cron;
+	if ( isset($cron['version']) && 2 == $cron['version']) {
+			return $cron;
+	}
 
 	$new_cron = [];
 

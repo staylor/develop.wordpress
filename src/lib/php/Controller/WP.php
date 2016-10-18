@@ -106,8 +106,9 @@ class WP extends Observer {
 	 * @param string $qv Query variable name.
 	 */
 	public function add_query_var($qv) {
-		if ( !in_array($qv, $this->public_query_vars) )
+		if ( !in_array($qv, $this->public_query_vars) ) {
 			$this->public_query_vars[] = $qv;
+		}
 	}
 
 	/**
@@ -208,8 +209,9 @@ class WP extends Observer {
 				$requested_path = $pathinfo;
 			} else {
 				// If the request uri is the index, blank it out so that we don't try to match it against a rule.
-				if ( $req_uri == $app['rewrite']->index )
+				if ( $req_uri == $app['rewrite']->index ) {
 					$req_uri = '';
+				}
 				$requested_path = $req_uri;
 			}
 			$requested_file = $req_uri;
@@ -228,8 +230,9 @@ class WP extends Observer {
 			} else {
 				foreach ( (array) $rewrite as $match => $query ) {
 					// If the requested file is the anchor of the match, prepend it to the path info.
-					if ( ! empty($requested_file) && strpos($match, $requested_file) === 0 && $requested_file != $requested_path )
+					if ( ! empty($requested_file) && strpos($match, $requested_file) === 0 && $requested_file != $requested_path ) {
 						$request_match = $requested_file . '/' . $requested_path;
+					}
 
 					$pattern = sprintf( '#^%s#', $match );
 					if ( preg_match( $pattern, $request_match, $matches ) ||
@@ -269,16 +272,18 @@ class WP extends Observer {
 				parse_str($query, $perma_query_vars);
 
 				// If we're processing a 404 request, clear the error var since we found something.
-				if ( '404' == $error )
+				if ( '404' == $error ) {
 					unset( $error, $_GET['error'] );
+				}
 			}
 
 			// If req_uri is empty or if it is a request for ourself, unset error.
 			if ( empty($requested_path) || $requested_file == $self || strpos($app['request.php_self'], 'wp-admin/') !== false ) {
 				unset( $error, $_GET['error'] );
 
-				if ( isset($perma_query_vars) && strpos($app['request.php_self'], 'wp-admin/') !== false )
+				if ( isset($perma_query_vars) && strpos($app['request.php_self'], 'wp-admin/') !== false ) {
 					unset( $perma_query_vars );
+				}
 
 				$this->did_permalink = false;
 			}
@@ -304,14 +309,15 @@ class WP extends Observer {
 		}
 
 		foreach ( $this->public_query_vars as $wpvar ) {
-			if ( isset( $this->extra_query_vars[$wpvar] ) )
+			if ( isset( $this->extra_query_vars[$wpvar] ) ) {
 				$this->query_vars[$wpvar] = $this->extra_query_vars[$wpvar];
-			elseif ( isset( $_POST[$wpvar] ) )
+			} elseif ( isset( $_POST[$wpvar] ) ) {
 				$this->query_vars[$wpvar] = $_POST[$wpvar];
-			elseif ( isset( $_GET[$wpvar] ) )
+			} elseif ( isset( $_GET[$wpvar] ) ) {
 				$this->query_vars[$wpvar] = $_GET[$wpvar];
-			elseif ( isset( $perma_query_vars[$wpvar] ) )
+			} elseif ( isset( $perma_query_vars[$wpvar] ) ) {
 				$this->query_vars[$wpvar] = $perma_query_vars[$wpvar];
+			}
 
 			if ( !empty( $this->query_vars[$wpvar] ) ) {
 				if ( ! is_array( $this->query_vars[$wpvar] ) ) {
@@ -332,9 +338,11 @@ class WP extends Observer {
 		}
 
 		// Convert urldecoded spaces back into +
-		foreach ( get_taxonomies( [] , 'objects' ) as $taxonomy => $t )
-			if ( $t->query_var && isset( $this->query_vars[$t->query_var] ) )
+		foreach ( get_taxonomies( [] , 'objects' ) as $taxonomy => $t ) {
+			if ( $t->query_var && isset( $this->query_vars[$t->query_var] ) ) {
 				$this->query_vars[$t->query_var] = str_replace( ' ', '+', $this->query_vars[$t->query_var] );
+			}
+		}
 
 		// Don't allow non-publicly queryable taxonomies to be queried from the front end.
 		if ( ! is_admin() ) {
@@ -353,8 +361,9 @@ class WP extends Observer {
 		if ( isset( $this->query_vars['post_type']) ) {
 			$queryable_post_types = get_post_types( [ 'publicly_queryable' => true ] );
 			if ( ! is_array( $this->query_vars['post_type'] ) ) {
-				if ( ! in_array( $this->query_vars['post_type'], $queryable_post_types ) )
+				if ( ! in_array( $this->query_vars['post_type'], $queryable_post_types ) ) {
 					unset( $this->query_vars['post_type'] );
+				}
 			} else {
 				$this->query_vars['post_type'] = array_intersect( $this->query_vars['post_type'], $queryable_post_types );
 			}
@@ -364,12 +373,14 @@ class WP extends Observer {
 		$this->query_vars = wp_resolve_numeric_slug_conflicts( $this->query_vars );
 
 		foreach ( (array) $this->private_query_vars as $var) {
-			if ( isset($this->extra_query_vars[$var]) )
+			if ( isset($this->extra_query_vars[$var]) ) {
 				$this->query_vars[$var] = $this->extra_query_vars[$var];
+			}
 		}
 
-		if ( isset($error) )
+		if ( isset($error) ) {
 			$this->query_vars['error'] = $error;
+		}
 
 		/**
 		 * Filters the array of parsed query variables.
@@ -404,13 +415,15 @@ class WP extends Observer {
 		$status = null;
 		$exit_required = false;
 
-		if ( is_user_logged_in() )
+		if ( is_user_logged_in() ) {
 			$headers = array_merge($headers, wp_get_nocache_headers());
+		}
 		if ( ! empty( $this->query_vars['error'] ) ) {
 			$status = (int) $this->query_vars['error'];
 			if ( 404 === $status ) {
-				if ( ! is_user_logged_in() )
+				if ( ! is_user_logged_in() ) {
 					$headers = array_merge($headers, wp_get_nocache_headers());
+				}
 				$headers['Content-Type'] = get_option('html_type') . '; charset=' . get_option('blog_charset');
 			} elseif ( in_array( $status, [ 403, 500, 502, 503 ] ) ) {
 				$exit_required = true;
@@ -437,18 +450,21 @@ class WP extends Observer {
 						|| !empty($this->query_vars['attachment_id'])
 					)
 				)
-			)
+			) {
 				$wp_last_modified = mysql2date('D, d M Y H:i:s', get_lastcommentmodified('GMT'), 0).' GMT';
-			else
+			} else {
 				$wp_last_modified = mysql2date('D, d M Y H:i:s', get_lastpostmodified('GMT'), 0).' GMT';
+			}
 			$wp_etag = '"' . md5($wp_last_modified) . '"';
 			$headers['Last-Modified'] = $wp_last_modified;
 			$headers['ETag'] = $wp_etag;
 
 			// Support for Conditional GET
-			if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+			if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
 				$client_etag = wp_unslash( $_SERVER['HTTP_IF_NONE_MATCH'] );
-			else $client_etag = false;
+			} else {
+				$client_etag = false;
+			}
 
 			$client_last_modified = empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? '' : trim($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 			// If string is empty, return 0. If not, attempt to parse into a timestamp
@@ -475,8 +491,9 @@ class WP extends Observer {
 		 */
 		$headers = apply_filters( 'wp_headers', $headers, $this );
 
-		if ( ! empty( $status ) )
+		if ( ! empty( $status ) ) {
 			status_header( $status );
+		}
 
 		// If Last-Modified is set to false, it should not be sent (no-cache situation).
 		if ( isset( $headers['Last-Modified'] ) && false === $headers['Last-Modified'] ) {
@@ -518,8 +535,10 @@ class WP extends Observer {
 		foreach ( (array) array_keys($this->query_vars) as $wpvar) {
 			if ( '' != $this->query_vars[$wpvar] ) {
 				$this->query_string .= (strlen($this->query_string) < 1) ? '' : '&';
-				if ( !is_scalar($this->query_vars[$wpvar]) ) // Discard non-scalars.
+				if ( !is_scalar($this->query_vars[$wpvar]) ) {
+					// Discard non-scalars.
 					continue;
+				}
 				$this->query_string .= $wpvar . '=' . rawurlencode($this->query_vars[$wpvar]);
 			}
 		}

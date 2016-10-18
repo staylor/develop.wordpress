@@ -537,8 +537,9 @@ class Rewrite extends Observable {
 	 * @return string|false False on no permalink structure. Date permalink structure.
 	 */
 	public function get_date_permastruct() {
-		if ( isset($this->date_structure) )
+		if ( isset($this->date_structure) ) {
 			return $this->date_structure;
+		}
 
 		if ( empty($this->permalink_structure) ) {
 			$this->date_structure = '';
@@ -558,8 +559,9 @@ class Rewrite extends Observable {
 			}
 		}
 
-		if ( empty($date_endian) )
+		if ( empty($date_endian) ) {
 			$date_endian = '%year%/%monthnum%/%day%';
+		}
 
 		/*
 		 * Do not allow the date tags and %post_id% to overlap in the permalink
@@ -595,8 +597,9 @@ class Rewrite extends Observable {
 	public function get_year_permastruct() {
 		$structure = $this->get_date_permastruct();
 
-		if ( empty($structure) )
+		if ( empty($structure) ) {
 			return false;
+		}
 
 		$structure = str_replace('%monthnum%', '', $structure);
 		$structure = str_replace('%day%', '', $structure);
@@ -619,8 +622,9 @@ class Rewrite extends Observable {
 	public function get_month_permastruct() {
 		$structure = $this->get_date_permastruct();
 
-		if ( empty($structure) )
+		if ( empty($structure) ) {
 			return false;
+		}
 
 		$structure = str_replace('%day%', '', $structure);
 		$structure = preg_replace('#/+#', '/', $structure);
@@ -686,11 +690,13 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_extra_permastruct($name) {
-		if ( empty($this->permalink_structure) )
+		if ( empty($this->permalink_structure) ) {
 			return false;
+		}
 
-		if ( isset($this->extra_permastructs[$name]) )
+		if ( isset($this->extra_permastructs[$name]) ) {
 			return $this->extra_permastructs[$name]['struct'];
+		}
 
 		return false;
 	}
@@ -708,8 +714,9 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_author_permastruct() {
-		if ( isset($this->author_structure) )
+		if ( isset($this->author_structure) ) {
 			return $this->author_structure;
+		}
 
 		if ( empty($this->permalink_structure) ) {
 			$this->author_structure = '';
@@ -734,8 +741,9 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_search_permastruct() {
-		if ( isset($this->search_structure) )
+		if ( isset($this->search_structure) ) {
 			return $this->search_structure;
+		}
 
 		if ( empty($this->permalink_structure) ) {
 			$this->search_structure = '';
@@ -760,8 +768,9 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_page_permastruct() {
-		if ( isset($this->page_structure) )
+		if ( isset($this->page_structure) ) {
 			return $this->page_structure;
+		}
 
 		if (empty($this->permalink_structure)) {
 			$this->page_structure = '';
@@ -786,8 +795,9 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_feed_permastruct() {
-		if ( isset($this->feed_structure) )
+		if ( isset($this->feed_structure) ) {
 			return $this->feed_structure;
+		}
 
 		if ( empty($this->permalink_structure) ) {
 			$this->feed_structure = '';
@@ -812,8 +822,9 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_comment_feed_permastruct() {
-		if ( isset($this->comment_feed_structure) )
+		if ( isset($this->comment_feed_structure) ) {
 			return $this->comment_feed_structure;
+		}
 
 		if (empty($this->permalink_structure)) {
 			$this->comment_feed_structure = '';
@@ -907,8 +918,9 @@ class Rewrite extends Observable {
 	public function generate_rewrite_rules($permalink_structure, $ep_mask = EP_NONE, $paged = true, $feed = true, $forcomments = false, $walk_dirs = true, $endpoints = true) {
 		// Build a regex to match the feed section of URLs, something like (feed|atom|rss|rss2)/?
 		$feedregex2 = '';
-		foreach ( (array) $this->feeds as $feed_name)
+		foreach ( (array) $this->feeds as $feed_name) {
 			$feedregex2 .= $feed_name . '|';
+		}
 		$feedregex2 = '(' . trim($feedregex2, '|') . ')/?$';
 
 		/*
@@ -956,10 +968,11 @@ class Rewrite extends Observable {
 		 */
 		$queries = [];
 		for ( $i = 0; $i < $num_tokens; ++$i ) {
-			if ( 0 < $i )
+			if ( 0 < $i ) {
 				$queries[$i] = $queries[$i - 1] . '&';
-			else
+			} else {
 				$queries[$i] = '';
+			}
 
 			$query_token = str_replace($this->rewritecode, $this->queryreplace, $tokens[0][$i]) . $this->preg_index($i+1);
 			$queries[$i] .= $query_token;
@@ -967,8 +980,9 @@ class Rewrite extends Observable {
 
 		// Get the structure, minus any cruft (stuff that isn't tags) at the front.
 		$structure = $permalink_structure;
-		if ( $front != '/' )
+		if ( $front != '/' ) {
 			$structure = str_replace($front, '', $structure);
+		}
 
 		/*
 		 * Create a list of dirs to walk over, making rewrite rules for each level
@@ -1071,8 +1085,9 @@ class Rewrite extends Observable {
 			if ( $endpoints ) {
 				foreach ( (array) $ep_query_append as $regex => $ep) {
 					// Add the endpoints on if the mask fits.
-					if ( $ep[0] & $ep_mask || $ep[0] & $ep_mask_specific )
+					if ( $ep[0] & $ep_mask || $ep[0] & $ep_mask_specific ) {
 						$rewrite[$match . $regex] = $index . '?' . $query . $ep[1] . $this->preg_index($num_toks + 2);
+					}
 				}
 			}
 
@@ -1093,8 +1108,9 @@ class Rewrite extends Observable {
 						|| (strpos($struct, '%year%') !== false && strpos($struct, '%monthnum%') !== false && strpos($struct, '%day%') !== false && strpos($struct, '%hour%') !== false && strpos($struct, '%minute%') !== false && strpos($struct, '%second%') !== false)
 						) {
 					$post = true;
-					if ( strpos($struct, '%pagename%') !== false )
+					if ( strpos($struct, '%pagename%') !== false ) {
 						$page = true;
+					}
 				}
 
 				if ( ! $post ) {
@@ -1290,8 +1306,9 @@ class Rewrite extends Observable {
 	public function rewrite_rules() {
 		$rewrite = [];
 
-		if ( empty($this->permalink_structure) )
+		if ( empty($this->permalink_structure) ) {
 			return $rewrite;
+		}
 
 		// robots.txt -only if installed at the root
 		$home_path = parse_url( home_url() );
@@ -1416,10 +1433,11 @@ class Rewrite extends Observable {
 		// Extra permastructs.
 		foreach ( $this->extra_permastructs as $permastructname => $struct ) {
 			if ( is_array( $struct ) ) {
-				if ( count( $struct ) == 2 )
+				if ( count( $struct ) == 2 ) {
 					$rules = $this->generate_rewrite_rules( $struct[0], $struct[1] );
-				else
+				} else {
 					$rules = $this->generate_rewrite_rules( $struct['struct'], $struct['ep_mask'], $struct['paged'], $struct['feed'], $struct['forcomments'], $struct['walk_dirs'], $struct['endpoints'] );
+				}
 			} else {
 				$rules = $this->generate_rewrite_rules( $struct );
 			}
@@ -1453,10 +1471,11 @@ class Rewrite extends Observable {
 		}
 
 		// Put them together.
-		if ( $this->use_verbose_page_rules )
+		if ( $this->use_verbose_page_rules ) {
 			$this->rules = array_merge($this->extra_rules_top, $robots_rewrite, $deprecated_files, $registration_pages, $root_rewrite, $comments_rewrite, $search_rewrite,  $author_rewrite, $date_rewrite, $page_rewrite, $post_rewrite, $this->extra_rules);
-		else
+		} else {
 			$this->rules = array_merge($this->extra_rules_top, $robots_rewrite, $deprecated_files, $registration_pages, $root_rewrite, $comments_rewrite, $search_rewrite,  $author_rewrite, $date_rewrite, $post_rewrite, $page_rewrite, $this->extra_rules);
+		}
 
 		/**
 		 * Fires after the rewrite rules are generated.
@@ -1522,18 +1541,21 @@ class Rewrite extends Observable {
 	 * @return string
 	 */
 	public function mod_rewrite_rules() {
-		if ( ! $this->using_permalinks() )
+		if ( ! $this->using_permalinks() ) {
 			return '';
+		}
 
 		$site_root = parse_url( site_url() );
-		if ( isset( $site_root['path'] ) )
+		if ( isset( $site_root['path'] ) ) {
 			$site_root = trailingslashit($site_root['path']);
+		}
 
 		$home_root = parse_url(home_url());
-		if ( isset( $home_root['path'] ) )
+		if ( isset( $home_root['path'] ) ) {
 			$home_root = trailingslashit($home_root['path']);
-		else
+		} else {
 			$home_root = '/';
+		}
 
 		$rules = "<IfModule mod_rewrite.c>\n";
 		$rules .= "RewriteEngine On\n";
@@ -1562,10 +1584,11 @@ class Rewrite extends Observable {
 				// Apache 1.3 does not support the reluctant (non-greedy) modifier.
 				$match = str_replace('.+?', '.+', $match);
 
-				if ( strpos($query, $this->index) !== false )
+				if ( strpos($query, $this->index) !== false ) {
 					$rules .= 'RewriteRule ^' . $match . ' ' . $home_root . $query . " [QSA,L]\n";
-				else
+				} else {
 					$rules .= 'RewriteRule ^' . $match . ' ' . $site_root . $query . " [QSA,L]\n";
+				}
 			}
 		} else {
 			$rules .= "RewriteCond %{REQUEST_FILENAME} !-f\n" .
@@ -1609,8 +1632,9 @@ class Rewrite extends Observable {
 	 * @return string IIS7 URL rewrite rule sets.
 	 */
 	public function iis7_url_rewrite_rules( $add_parent_tags = false ) {
-		if ( ! $this->using_permalinks() )
+		if ( ! $this->using_permalinks() ) {
 			return '';
+		}
 		$rules = '';
 		if ( $add_parent_tags ) {
 			$rules .= '<configuration>
@@ -1857,10 +1881,12 @@ class Rewrite extends Observable {
 		if ( ! $hard || ! apply_filters( 'flush_rewrite_rules_hard', true ) ) {
 			return;
 		}
-		if ( function_exists( 'save_mod_rewrite_rules' ) )
+		if ( function_exists( 'save_mod_rewrite_rules' ) ) {
 			save_mod_rewrite_rules();
-		if ( function_exists( 'iis7_save_url_rewrite_rules' ) )
+		}
+		if ( function_exists( 'iis7_save_url_rewrite_rules' ) ) {
 			iis7_save_url_rewrite_rules();
+		}
 	}
 
 	/**
@@ -1879,8 +1905,9 @@ class Rewrite extends Observable {
 		$this->front = substr($this->permalink_structure, 0, strpos($this->permalink_structure, '%'));
 		$this->root = '';
 
-		if ( $this->using_index_permalinks() )
+		if ( $this->using_index_permalinks() ) {
 			$this->root = $this->index . '/';
+		}
 
 		unset($this->author_structure);
 		unset($this->date_structure);

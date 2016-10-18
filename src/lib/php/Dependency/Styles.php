@@ -158,10 +158,11 @@ class Styles extends Dependencies {
 			}
 		}
 
-		if ( isset($obj->args) )
+		if ( isset($obj->args) ) {
 			$media = esc_attr( $obj->args );
-		else
+		} else {
 			$media = 'all';
+		}
 
 		// A single item may alias a set of items, by having dependencies, but no source.
 		if ( ! $obj->src ) {
@@ -352,8 +353,9 @@ class Styles extends Dependencies {
 			$src = $this->base_url . $src;
 		}
 
-		if ( !empty($ver) )
+		if ( !empty($ver) ) {
 			$src = add_query_arg('ver', $ver, $src);
+		}
 
 		/**
 		 * Filters an enqueued style's fully-qualified URL.
@@ -382,8 +384,9 @@ class Styles extends Dependencies {
 		}
 
 		foreach ( (array) $this->default_dirs as $test ) {
-			if ( 0 === strpos($src, $test) )
+			if ( 0 === strpos($src, $test) ) {
 				return true;
+			}
 		}
 		return false;
 	}

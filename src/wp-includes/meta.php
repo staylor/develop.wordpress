@@ -69,13 +69,15 @@ function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = 
 	 *                              for the object. Optional. Default false.
 	 */
 	$check = apply_filters( "add_{$meta_type}_metadata", null, $object_id, $meta_key, $meta_value, $unique );
-	if ( null !== $check )
-		return $check;
+	if ( null !== $check ) {
+			return $check;
+	}
 
 	if ( $unique && $wpdb->get_var( $wpdb->prepare(
 		"SELECT COUNT(*) FROM $table WHERE meta_key = %s AND $column = %d",
-		$meta_key, $object_id ) ) )
-		return false;
+		$meta_key, $object_id ) ) ) {
+			return false;
+	}
 
 	$_meta_value = $meta_value;
 	$meta_value = maybe_serialize( $meta_value );
@@ -100,8 +102,9 @@ function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = 
 		'meta_value' => $meta_value
 	) );
 
-	if ( ! $result )
-		return false;
+	if ( ! $result ) {
+			return false;
+	}
 
 	$mid = (int) $wpdb->insert_id;
 
@@ -185,15 +188,17 @@ function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_v
 	 *                              Otherwise, update all entries.
 	 */
 	$check = apply_filters( "update_{$meta_type}_metadata", null, $object_id, $meta_key, $meta_value, $prev_value );
-	if ( null !== $check )
-		return (bool) $check;
+	if ( null !== $check ) {
+			return (bool) $check;
+	}
 
 	// Compare existing value to new value if no prev value given and the key exists only once.
 	if ( empty($prev_value) ) {
 		$old_value = get_metadata($meta_type, $object_id, $meta_key);
 		if ( count($old_value) == 1 ) {
-			if ( $old_value[0] === $meta_value )
-				return false;
+			if ( $old_value[0] === $meta_value ) {
+							return false;
+			}
 		}
 	}
 
@@ -245,8 +250,9 @@ function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_v
 	}
 
 	$result = $wpdb->update( $table, $data, $where );
-	if ( ! $result )
-		return false;
+	if ( ! $result ) {
+			return false;
+	}
 
 	wp_cache_delete($object_id, $meta_type . '_meta');
 
@@ -344,23 +350,27 @@ function delete_metadata($meta_type, $object_id, $meta_key, $meta_value = '', $d
 	 *                              Default false.
 	 */
 	$check = apply_filters( "delete_{$meta_type}_metadata", null, $object_id, $meta_key, $meta_value, $delete_all );
-	if ( null !== $check )
-		return (bool) $check;
+	if ( null !== $check ) {
+			return (bool) $check;
+	}
 
 	$_meta_value = $meta_value;
 	$meta_value = maybe_serialize( $meta_value );
 
 	$query = $wpdb->prepare( "SELECT $id_column FROM $table WHERE meta_key = %s", $meta_key );
 
-	if ( !$delete_all )
-		$query .= $wpdb->prepare(" AND $type_column = %d", $object_id );
+	if ( !$delete_all ) {
+			$query .= $wpdb->prepare(" AND $type_column = %d", $object_id );
+	}
 
-	if ( '' !== $meta_value && null !== $meta_value && false !== $meta_value )
-		$query .= $wpdb->prepare(" AND meta_value = %s", $meta_value );
+	if ( '' !== $meta_value && null !== $meta_value && false !== $meta_value ) {
+			$query .= $wpdb->prepare(" AND meta_value = %s", $meta_value );
+	}
 
 	$meta_ids = $wpdb->get_col( $query );
-	if ( !count( $meta_ids ) )
-		return false;
+	if ( !count( $meta_ids ) ) {
+			return false;
+	}
 
 	if ( $delete_all ) {
 		$value_clause = '';
@@ -402,8 +412,9 @@ function delete_metadata($meta_type, $object_id, $meta_key, $meta_value = '', $d
 
 	$count = $wpdb->query($query);
 
-	if ( !$count )
-		return false;
+	if ( !$count ) {
+			return false;
+	}
 
 	if ( $delete_all ) {
 		foreach ( (array) $object_ids as $o_id ) {
@@ -484,10 +495,11 @@ function get_metadata($meta_type, $object_id, $meta_key = '', $single = false) {
 	 */
 	$check = apply_filters( "get_{$meta_type}_metadata", null, $object_id, $meta_key, $single );
 	if ( null !== $check ) {
-		if ( $single && is_array( $check ) )
-			return $check[0];
-		else
-			return $check;
+		if ( $single && is_array( $check ) ) {
+					return $check[0];
+		} else {
+					return $check;
+		}
 	}
 
 	$meta_cache = wp_cache_get($object_id, $meta_type . '_meta');
@@ -502,17 +514,19 @@ function get_metadata($meta_type, $object_id, $meta_key = '', $single = false) {
 	}
 
 	if ( isset($meta_cache[$meta_key]) ) {
-		if ( $single )
-			return maybe_unserialize( $meta_cache[$meta_key][0] );
-		else
-			return array_map('maybe_unserialize', $meta_cache[$meta_key]);
+		if ( $single ) {
+					return maybe_unserialize( $meta_cache[$meta_key][0] );
+		} else {
+					return array_map('maybe_unserialize', $meta_cache[$meta_key]);
+		}
 	}
 
-	if ($single)
-		return '';
-	else
-		return [];
-}
+	if ($single) {
+			return '';
+	} else {
+			return [];
+	}
+	}
 
 /**
  * Determine if a meta key is set for a given object
@@ -536,8 +550,9 @@ function metadata_exists( $meta_type, $object_id, $meta_key ) {
 
 	/** This filter is documented in wp-includes/meta.php */
 	$check = apply_filters( "get_{$meta_type}_metadata", null, $object_id, $meta_key, true );
-	if ( null !== $check )
-		return (bool) $check;
+	if ( null !== $check ) {
+			return (bool) $check;
+	}
 
 	$meta_cache = wp_cache_get( $object_id, $meta_type . '_meta' );
 
@@ -580,11 +595,13 @@ function get_metadata_by_mid( $meta_type, $meta_id ) {
 
 	$meta = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE $id_column = %d", $meta_id ) );
 
-	if ( empty( $meta ) )
-		return false;
+	if ( empty( $meta ) ) {
+			return false;
+	}
 
-	if ( isset( $meta->meta_value ) )
-		$meta->meta_value = maybe_unserialize( $meta->meta_value );
+	if ( isset( $meta->meta_value ) ) {
+			$meta->meta_value = maybe_unserialize( $meta->meta_value );
+	}
 
 	return $meta;
 }
@@ -660,8 +677,9 @@ function update_metadata_by_mid( $meta_type, $meta_id, $meta_value, $meta_key = 
 
 		// Run the update query, all fields in $data are %s, $where is a %d.
 		$result = $wpdb->update( $table, $data, $where, '%s', '%d' );
-		if ( ! $result )
-			return false;
+		if ( ! $result ) {
+					return false;
+		}
 
 		// Clear the caches.
 		wp_cache_delete($object_id, $meta_type . '_meta');
@@ -803,14 +821,16 @@ function update_meta_cache($meta_type, $object_ids) {
 	$cache = [];
 	foreach ( $object_ids as $id ) {
 		$cached_object = wp_cache_get( $id, $cache_key );
-		if ( false === $cached_object )
-			$ids[] = $id;
-		else
-			$cache[$id] = $cached_object;
+		if ( false === $cached_object ) {
+					$ids[] = $id;
+		} else {
+					$cache[$id] = $cached_object;
+		}
 	}
 
-	if ( empty( $ids ) )
-		return $cache;
+	if ( empty( $ids ) ) {
+			return $cache;
+	}
 
 	// Get meta info
 	$id_list = join( ',', $ids );
@@ -824,10 +844,12 @@ function update_meta_cache($meta_type, $object_ids) {
 			$mval = $metarow['meta_value'];
 
 			// Force subkeys to be array type:
-			if ( !isset($cache[$mpid]) || !is_array($cache[$mpid]) )
-				$cache[$mpid] = [];
-			if ( !isset($cache[$mpid][$mkey]) || !is_array($cache[$mpid][$mkey]) )
-				$cache[$mpid][$mkey] = [];
+			if ( !isset($cache[$mpid]) || !is_array($cache[$mpid]) ) {
+							$cache[$mpid] = [];
+			}
+			if ( !isset($cache[$mpid][$mkey]) || !is_array($cache[$mpid][$mkey]) ) {
+							$cache[$mpid][$mkey] = [];
+			}
 
 			// Add a value to the current pid/key:
 			$cache[$mpid][$mkey][] = $mval;
@@ -835,8 +857,9 @@ function update_meta_cache($meta_type, $object_ids) {
 	}
 
 	foreach ( $ids as $id ) {
-		if ( ! isset($cache[$id]) )
-			$cache[$id] = [];
+		if ( ! isset($cache[$id]) ) {
+					$cache[$id] = [];
+		}
 		wp_cache_add( $id, $cache[$id], $cache_key );
 	}
 
@@ -893,8 +916,9 @@ function _get_meta_table($type) {
 
 	$table_name = $type . 'meta';
 
-	if ( empty($wpdb->$table_name) )
-		return false;
+	if ( empty($wpdb->$table_name) ) {
+			return false;
+	}
 
 	return $wpdb->$table_name;
 }

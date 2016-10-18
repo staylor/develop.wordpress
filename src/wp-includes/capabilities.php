@@ -321,7 +321,7 @@ function map_meta_cap( $cap, $user_id ) {
 		}
 		break;
 	case 'unfiltered_upload':
-		if ( defined('ALLOW_UNFILTERED_UPLOADS') && ALLOW_UNFILTERED_UPLOADS && ( !is_multisite() || is_super_admin( $user_id ) )  ) {
+		if ( defined( 'ALLOW_UNFILTERED_UPLOADS' ) && ALLOW_UNFILTERED_UPLOADS && ( ! is_multisite() || is_super_admin( $user_id ) ) ) {
 			$caps[] = $cap;
 		} else {
 			$caps[] = 'do_not_allow';
@@ -379,7 +379,7 @@ function map_meta_cap( $cap, $user_id ) {
 		if ( is_multisite() ) {
 			// update_, install_, and delete_ are handled above with is_super_admin().
 			$menu_perms = get_site_option( 'menu_items', [] );
-			if ( empty( $menu_perms['plugins'] ) ) {
+			if ( empty( $menu_perms[ 'plugins' ] ) ) {
 				$caps[] = 'manage_network_plugins';
 			}
 		}
@@ -395,7 +395,7 @@ function map_meta_cap( $cap, $user_id ) {
 		// delete_user maps to delete_users.
 		break;
 	case 'create_users':
-		if ( !is_multisite() ) {
+		if ( ! is_multisite() ) {
 			$caps[] = $cap;
 		} elseif ( is_super_admin( $user_id ) || get_site_option( 'add_new_users' ) ) {
 			$caps[] = $cap;
@@ -565,7 +565,7 @@ function current_user_can_for_blog( $blog_id, $capability ) {
  * @return bool
  */
 function author_can( $post, $capability ) {
-	if ( !$post = get_post($post) ) {
+	if ( ! $post = get_post( $post ) ) {
 		return false;
 	}
 
@@ -660,7 +660,7 @@ function remove_role( $role ) {
 function get_super_admins() {
 	global $super_admins;
 
-	if ( isset($super_admins) ) {
+	if ( isset( $super_admins ) ) {
 		return $super_admins;
 	} else {
 		return get_site_option( 'site_admins', [ 'admin' ] );
@@ -692,7 +692,7 @@ function is_super_admin( $user_id = false ) {
 			return true;
 		}
 	} else {
-		if ( $user->has_cap('delete_users') ) {
+		if ( $user->has_cap( 'delete_users' ) ) {
 			return true;
 		}
 	}
@@ -713,7 +713,7 @@ function is_super_admin( $user_id = false ) {
  */
 function grant_super_admin( $user_id ) {
 	// If global super_admins override is defined, there is nothing to do here.
-	if ( isset( $GLOBALS['super_admins'] ) || ! is_multisite() ) {
+	if ( isset( $GLOBALS[ 'super_admins' ] ) || ! is_multisite() ) {
 		return false;
 	}
 
@@ -732,7 +732,7 @@ function grant_super_admin( $user_id ) {
 	$user = get_userdata( $user_id );
 	if ( $user && ! in_array( $user->user_login, $super_admins ) ) {
 		$super_admins[] = $user->user_login;
-		update_site_option( 'site_admins' , $super_admins );
+		update_site_option( 'site_admins', $super_admins );
 
 		/**
 		 * Fires after the user is granted Super Admin privileges.
@@ -760,7 +760,7 @@ function grant_super_admin( $user_id ) {
  */
 function revoke_super_admin( $user_id ) {
 	// If global super_admins override is defined, there is nothing to do here.
-	if ( isset( $GLOBALS['super_admins'] ) || ! is_multisite() ) {
+	if ( isset( $GLOBALS[ 'super_admins' ] ) || ! is_multisite() ) {
 		return false;
 	}
 
@@ -779,7 +779,7 @@ function revoke_super_admin( $user_id ) {
 	$user = get_userdata( $user_id );
 	if ( $user && 0 !== strcasecmp( $user->user_email, get_site_option( 'admin_email' ) ) ) {
 		if ( false !== ( $key = array_search( $user->user_login, $super_admins ) ) ) {
-			unset( $super_admins[$key] );
+			unset( $super_admins[ $key ] );
 			update_site_option( 'site_admins', $super_admins );
 
 			/**

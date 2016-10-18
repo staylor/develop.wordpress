@@ -131,8 +131,9 @@ class Walker_Comment extends Walker {
 	 * @param string     $output            Used to append additional content. Passed by reference.
 	 */
 	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-		if ( !$element )
+		if ( !$element ) {
 			return;
+		}
 
 		$id_field = $this->db_fields['id'];
 		$id = $element->$id_field;
@@ -145,8 +146,9 @@ class Walker_Comment extends Walker {
 		 * of the list.
 		 */
 		if ( $max_depth <= $depth + 1 && isset( $children_elements[$id]) ) {
-			foreach ( $children_elements[ $id ] as $child )
+			foreach ( $children_elements[ $id ] as $child ) {
 				$this->display_element( $child, $children_elements, $max_depth, $depth, $args, $output );
+			}
 
 			unset( $children_elements[ $id ] );
 		}
@@ -218,10 +220,11 @@ class Walker_Comment extends Walker {
 			$output .= ob_get_clean();
 			return;
 		}
-		if ( 'div' == $args['style'] )
+		if ( 'div' == $args['style'] ) {
 			$output .= "</div><!-- #comment-## -->\n";
-		else
+		} else {
 			$output .= "</li><!-- #comment-## -->\n";
+		}
 	}
 
 	/**
@@ -272,8 +275,11 @@ class Walker_Comment extends Walker {
 		<div id="div-comment-<?php comment_ID(); ?>" class="comment-body">
 		<?php endif; ?>
 		<div class="comment-author vcard">
-			<?php if ( 0 != $args['avatar_size'] ) echo get_avatar( $comment, $args['avatar_size'] ); ?>
 			<?php
+				if ( 0 != $args['avatar_size'] ) {
+					echo get_avatar( $comment, $args['avatar_size'] );
+				}
+
 				/* translators: %s: comment author link */
 				printf( __( '%s <span class="says">says:</span>' ),
 					sprintf( '<cite class="fn">%s</cite>', get_comment_author_link( $comment ) )
@@ -329,8 +335,11 @@ class Walker_Comment extends Walker {
 			<article id="div-comment-<?php comment_ID(); ?>" class="comment-body">
 				<footer class="comment-meta">
 					<div class="comment-author vcard">
-						<?php if ( 0 != $args['avatar_size'] ) echo get_avatar( $comment, $args['avatar_size'] ); ?>
 						<?php
+							if ( 0 != $args['avatar_size'] ) {
+								echo get_avatar( $comment, $args['avatar_size'] );
+							}
+
 							/* translators: %s: comment author link */
 							printf( __( '%s <span class="says">says:</span>' ),
 								sprintf( '<b class="fn">%s</b>', get_comment_author_link( $comment ) )

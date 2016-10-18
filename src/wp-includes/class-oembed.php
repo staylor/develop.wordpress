@@ -239,8 +239,9 @@ class WP_oEmbed {
 
 		$provider = false;
 
-		if ( !isset($args['discover']) )
+		if ( !isset($args['discover']) ) {
 			$args['discover'] = true;
+		}
 
 		foreach ( $this->providers as $matchmask => $data ) {
 			list( $providerurl, $regex ) = $data;
@@ -257,8 +258,9 @@ class WP_oEmbed {
 			}
 		}
 
-		if ( !$provider && $args['discover'] )
+		if ( !$provider && $args['discover'] ) {
 			$provider = $this->discover( $url );
+		}
 
 		return $provider;
 	}
@@ -439,20 +441,22 @@ class WP_oEmbed {
 						$providers[$linktypes[$atts['type']]] = htmlspecialchars_decode( $atts['href'] );
 
 						// Stop here if it's JSON (that's all we need)
-						if ( 'json' == $linktypes[$atts['type']] )
+						if ( 'json' == $linktypes[$atts['type']] ) {
 							break;
+						}
 					}
 				}
 			}
 		}
 
 		// JSON is preferred to XML
-		if ( !empty($providers['json']) )
+		if ( !empty($providers['json']) ) {
 			return $providers['json'];
-		elseif ( !empty($providers['xml']) )
+		} elseif ( !empty($providers['xml']) ) {
 			return $providers['xml'];
-		else
+		} else {
 			return false;
+		}
 	}
 
 	/**
@@ -486,8 +490,9 @@ class WP_oEmbed {
 
 		foreach ( [ 'json', 'xml' ] as $format ) {
 			$result = $this->_fetch_with_format( $provider, $format );
-			if ( is_wp_error( $result ) && 'not-implemented' == $result->get_error_code() )
+			if ( is_wp_error( $result ) && 'not-implemented' == $result->get_error_code() ) {
 				continue;
+			}
 			return ( $result && ! is_wp_error( $result ) ) ? $result : false;
 		}
 		return false;
@@ -510,10 +515,12 @@ class WP_oEmbed {
 		$args = apply_filters( 'oembed_remote_get_args', [], $provider_url_with_args );
 
 		$response = wp_safe_remote_get( $provider_url_with_args, $args );
-		if ( 501 == wp_remote_retrieve_response_code( $response ) )
+		if ( 501 == wp_remote_retrieve_response_code( $response ) ) {
 			return new WP_Error( 'not-implemented' );
-		if ( ! $body = wp_remote_retrieve_body( $response ) )
+		}
+		if ( ! $body = wp_remote_retrieve_body( $response ) ) {
 			return false;
+		}
 		$parse_method = "_parse_$format";
 		return $this->$parse_method( $body );
 	}
@@ -542,8 +549,9 @@ class WP_oEmbed {
 	 * @return object|false
 	 */
 	private function _parse_xml( $response_body ) {
-		if ( ! function_exists( 'libxml_disable_entity_loader' ) )
+		if ( ! function_exists( 'libxml_disable_entity_loader' ) ) {
 			return false;
+		}
 
 		$loader = libxml_disable_entity_loader( true );
 		$errors = libxml_use_internal_errors( true );
@@ -566,25 +574,30 @@ class WP_oEmbed {
 	 * @return stdClass|false
 	 */
 	private function _parse_xml_body( $response_body ) {
-		if ( ! function_exists( 'simplexml_import_dom' ) || ! class_exists( 'DOMDocument', false ) )
+		if ( ! function_exists( 'simplexml_import_dom' ) || ! class_exists( 'DOMDocument', false ) ) {
 			return false;
+		}
 
 		$dom = new DOMDocument;
 		$success = $dom->loadXML( $response_body );
-		if ( ! $success )
+		if ( ! $success ) {
 			return false;
+		}
 
-		if ( isset( $dom->doctype ) )
+		if ( isset( $dom->doctype ) ) {
 			return false;
+		}
 
 		foreach ( $dom->childNodes as $child ) {
-			if ( XML_DOCUMENT_TYPE_NODE === $child->nodeType )
+			if ( XML_DOCUMENT_TYPE_NODE === $child->nodeType ) {
 				return false;
+			}
 		}
 
 		$xml = simplexml_import_dom( $dom );
-		if ( ! $xml )
+		if ( ! $xml ) {
 			return false;
+		}
 
 		$return = new stdClass;
 		foreach ( $xml as $key => $value ) {
@@ -605,17 +618,20 @@ class WP_oEmbed {
 	 * @return false|string False on error, otherwise the HTML needed to embed.
 	 */
 	public function data2html( $data, $url ) {
-		if ( ! is_object( $data ) || empty( $data->type ) )
-			return false;
+		if ( ! is_object( $data ) || empty( $data->type ) ) {
+					return false;
+		}
 
 		$return = false;
 
 		switch ( $data->type ) {
 			case 'photo':
-				if ( empty( $data->url ) || empty( $data->width ) || empty( $data->height ) )
+				if ( empty( $data->url ) || empty( $data->width ) || empty( $data->height ) ) {
 					break;
-				if ( ! is_string( $data->url ) || ! is_numeric( $data->width ) || ! is_numeric( $data->height ) )
+				}
+				if ( ! is_string( $data->url ) || ! is_numeric( $data->width ) || ! is_numeric( $data->height ) ) {
 					break;
+				}
 
 				$title = ! empty( $data->title ) && is_string( $data->title ) ? $data->title : '';
 				$return = '<a href="' . esc_url( $url ) . '"><img src="' . esc_url( $data->url ) . '" alt="' . esc_attr($title) . '" width="' . esc_attr($data->width) . '" height="' . esc_attr($data->height) . '" /></a>';
@@ -623,13 +639,15 @@ class WP_oEmbed {
 
 			case 'video':
 			case 'rich':
-				if ( ! empty( $data->html ) && is_string( $data->html ) )
+				if ( ! empty( $data->html ) && is_string( $data->html ) ) {
 					$return = $data->html;
+				}
 				break;
 
 			case 'link':
-				if ( ! empty( $data->title ) && is_string( $data->title ) )
+				if ( ! empty( $data->title ) && is_string( $data->title ) ) {
 					$return = '<a href="' . esc_url( $url ) . '">' . esc_html( $data->title ) . '</a>';
+				}
 				break;
 
 			default:

@@ -24,8 +24,9 @@ function get_the_author($deprecated = '') {
 	$app = getApp();
 	$authordata = $app['wp']->current_query->authordata;
 
-	if ( !empty( $deprecated ) )
+	if ( !empty( $deprecated ) ) {
 		_deprecated_argument( __FUNCTION__, '2.1.0' );
+	}
 
 	/**
 	 * Filters the display name of the current post's author.
@@ -131,8 +132,9 @@ function get_the_author_meta( $field = '', $user_id = false ) {
 		$authordata = get_userdata( $user_id );
 	}
 
-	if ( in_array( $field, array( 'login', 'pass', 'nicename', 'email', 'url', 'registered', 'activation_key', 'status' ) ) )
+	if ( in_array( $field, array( 'login', 'pass', 'nicename', 'email', 'url', 'registered', 'activation_key', 'status' ) ) ) {
 		$field = 'user_' . $field;
+	}
 
 	$value = isset( $authordata->$field ) ? $authordata->$field : '';
 
@@ -306,8 +308,9 @@ function get_author_posts_url( $author_id, $author_nicename = '' ) {
 	} else {
 		if ( '' == $author_nicename ) {
 			$user = get_userdata($author_id);
-			if ( !empty($user->user_nicename) )
+			if ( !empty($user->user_nicename) ) {
 				$author_nicename = $user->user_nicename;
+			}
 		}
 		$link = str_replace('%author%', $author_nicename, $link);
 		$link = home_url( user_trailingslashit( $link ) );

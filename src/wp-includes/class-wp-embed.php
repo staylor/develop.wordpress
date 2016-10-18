@@ -170,7 +170,7 @@ class WP_Embed {
 		foreach ( $this->handlers as $priority => $handlers ) {
 			foreach ( $handlers as $id => $handler ) {
 				if ( preg_match( $handler['regex'], $url, $matches ) && is_callable( $handler['callback'] ) ) {
-					if ( false !== $return = call_user_func( $handler['callback'], $matches, $attr, $url, $rawattr ) )
+					if ( false !== $return = call_user_func( $handler['callback'], $matches, $attr, $url, $rawattr ) ) {
 						/**
 						 * Filters the returned embed handler.
 						 *
@@ -183,13 +183,16 @@ class WP_Embed {
 						 * @param array  $attr   An array of shortcode attributes.
 						 */
 						return apply_filters( 'embed_handler_html', $return, $url, $attr );
+					}
 				}
 			}
 		}
 
 		$post_ID = ( ! empty( $post->ID ) ) ? $post->ID : null;
-		if ( ! empty( $this->post_ID ) ) // Potentially set by WP_Embed::cache_oembed()
+		if ( ! empty( $this->post_ID ) ) {
+			// Potentially set by WP_Embed::cache_oembed()
 			$post_ID = $this->post_ID;
+		}
 
 		// Unknown URL format. Let oEmbed have a go.
 		if ( $post_ID ) {
@@ -222,8 +225,9 @@ class WP_Embed {
 
 			if ( $this->usecache || $cached_recently ) {
 				// Failures are cached. Serve one if we're using the cache.
-				if ( '{{unknown}}' === $cache )
+				if ( '{{unknown}}' === $cache ) {
 					return $this->maybe_make_link( $url );
+				}
 
 				if ( ! empty( $cache ) ) {
 					/**
@@ -283,12 +287,14 @@ class WP_Embed {
 	 */
 	public function delete_oembed_caches( $post_ID ) {
 		$post_metas = get_post_custom_keys( $post_ID );
-		if ( empty($post_metas) )
+		if ( empty($post_metas) ) {
 			return;
+		}
 
 		foreach ( $post_metas as $post_meta_key ) {
-			if ( '_oembed_' == substr( $post_meta_key, 0, 8 ) )
+			if ( '_oembed_' == substr( $post_meta_key, 0, 8 ) ) {
 				delete_post_meta( $post_ID, $post_meta_key );
+			}
 		}
 	}
 

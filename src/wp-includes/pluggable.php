@@ -101,8 +101,9 @@ if ( !function_exists('get_user_by') ) :
 function get_user_by( $field, $value ) {
 	$userdata = User::get_data_by( $field, $value );
 
-	if ( !$userdata )
-		return false;
+	if ( !$userdata ) {
+			return false;
+	}
 
 	$user = new User;
 	$user->init( $userdata );
@@ -125,8 +126,9 @@ function cache_users( $user_ids ) {
 
 	$clean = _get_non_cached_ids( $user_ids, 'users' );
 
-	if ( empty( $clean ) )
-		return;
+	if ( empty( $clean ) ) {
+			return;
+	}
 
 	$list = implode( ',', $clean );
 
@@ -312,8 +314,9 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 
 	// From email and name
 	// If we don't have a name from the input headers
-	if ( !isset( $from_name ) )
-		$from_name = 'WordPress';
+	if ( !isset( $from_name ) ) {
+			$from_name = 'WordPress';
+	}
 
 	/* If we don't have an email from the input headers default to wordpress@$sitename
 	 * Some hosts will block outgoing mail from this address if it doesn't exist but
@@ -353,8 +356,9 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 	$phpmailer->setFrom( $from_email, $from_name, false );
 
 	// Set destination addresses
-	if ( !is_array( $to ) )
-		$to = explode( ',', $to );
+	if ( !is_array( $to ) ) {
+			$to = explode( ',', $to );
+	}
 
 	// Set mail's subject and body
 	$phpmailer->Subject = $subject;
@@ -405,8 +409,9 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 
 	// Set Content-Type and charset
 	// If we don't have a content-type from the input headers
-	if ( !isset( $content_type ) )
-		$content_type = 'text/plain';
+	if ( !isset( $content_type ) ) {
+			$content_type = 'text/plain';
+	}
 
 	/**
 	 * Filters the wp_mail() content type.
@@ -420,12 +425,14 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 	$phpmailer->ContentType = $content_type;
 
 	// Set whether it's plaintext, depending on $content_type
-	if ( 'text/html' == $content_type )
-		$phpmailer->IsHTML( true );
+	if ( 'text/html' == $content_type ) {
+			$phpmailer->IsHTML( true );
+	}
 
 	// If we don't have a charset from the input headers
-	if ( !isset( $charset ) )
-		$charset = get_bloginfo( 'charset' );
+	if ( !isset( $charset ) ) {
+			$charset = get_bloginfo( 'charset' );
+	}
 
 	// Set the content-type and charset
 
@@ -444,8 +451,9 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 			$phpmailer->AddCustomHeader( sprintf( '%1$s: %2$s', $name, $content ) );
 		}
 
-		if ( false !== stripos( $content_type, 'multipart' ) && ! empty($boundary) )
-			$phpmailer->AddCustomHeader( sprintf( "Content-Type: %s;\n\t boundary=\"%s\"", $content_type, $boundary ) );
+		if ( false !== stripos( $content_type, 'multipart' ) && ! empty($boundary) ) {
+					$phpmailer->AddCustomHeader( sprintf( "Content-Type: %s;\n\t boundary=\"%s\"", $content_type, $boundary ) );
+		}
 	}
 
 	if ( !empty( $attachments ) ) {
@@ -760,8 +768,9 @@ function wp_parse_auth_cookie($cookie = '', $scheme = '') {
 				}
 	    }
 
-		if ( empty($_COOKIE[$cookie_name]) )
-			return false;
+		if ( empty($_COOKIE[$cookie_name]) ) {
+					return false;
+		}
 		$cookie = $_COOKIE[$cookie_name];
 	}
 
@@ -894,9 +903,10 @@ function wp_set_auth_cookie( $user_id, $remember = false, $secure = '', $token =
 	setcookie($auth_cookie_name, $auth_cookie, $expire, PLUGINS_COOKIE_PATH, COOKIE_DOMAIN, $secure, true);
 	setcookie($auth_cookie_name, $auth_cookie, $expire, ADMIN_COOKIE_PATH, COOKIE_DOMAIN, $secure, true);
 	setcookie(LOGGED_IN_COOKIE, $logged_in_cookie, $expire, COOKIEPATH, COOKIE_DOMAIN, $secure_logged_in_cookie, true);
-	if ( COOKIEPATH != SITECOOKIEPATH )
-		setcookie(LOGGED_IN_COOKIE, $logged_in_cookie, $expire, SITECOOKIEPATH, COOKIE_DOMAIN, $secure_logged_in_cookie, true);
-}
+	if ( COOKIEPATH != SITECOOKIEPATH ) {
+			setcookie(LOGGED_IN_COOKIE, $logged_in_cookie, $expire, SITECOOKIEPATH, COOKIE_DOMAIN, $secure_logged_in_cookie, true);
+	}
+	}
 endif;
 
 if ( !function_exists('wp_clear_auth_cookie') ) :
@@ -1178,8 +1188,9 @@ function wp_redirect( $location, $status = 302 ) {
 	 */
 	$status = apply_filters( 'wp_redirect_status', $status, $location );
 
-	if ( ! $location )
-		return false;
+	if ( ! $location ) {
+			return false;
+	}
 
 	$location = wp_sanitize_redirect($location);
 
@@ -1281,8 +1292,9 @@ if ( !function_exists('wp_validate_redirect') ) :
 function wp_validate_redirect($location, $default = '') {
 	$location = trim( $location );
 	// browsers will assume 'http' is your protocol, and will obey a redirect to a URL starting with '//'
-	if ( substr($location, 0, 2) == '//' )
-		$location = 'http:' . $location;
+	if ( substr($location, 0, 2) == '//' ) {
+			$location = 'http:' . $location;
+	}
 
 	// In php 5 parse_url may fail if the URL query part contains http://, bug #38143
 	$test = ( $cut = strpos($location, '?') ) ? substr( $location, 0, $cut ) : $location;
@@ -1291,12 +1303,14 @@ function wp_validate_redirect($location, $default = '') {
 	$lp = @parse_url($test);
 
 	// Give up if malformed URL
-	if ( false === $lp )
-		return $default;
+	if ( false === $lp ) {
+			return $default;
+	}
 
 	// Allow only http and https schemes. No data:, etc.
-	if ( isset($lp['scheme']) && !('http' == $lp['scheme'] || 'https' == $lp['scheme']) )
-		return $default;
+	if ( isset($lp['scheme']) && !('http' == $lp['scheme'] || 'https' == $lp['scheme']) ) {
+			return $default;
+	}
 
 	// Reject if certain components are set but host is not. This catches urls like https:host.com for which parse_url does not set the host field.
 	if ( ! isset( $lp['host'] ) && ( isset( $lp['scheme'] ) || isset( $lp['user'] ) || isset( $lp['pass'] ) || isset( $lp['port'] ) ) ) {
@@ -1322,8 +1336,9 @@ function wp_validate_redirect($location, $default = '') {
 	 */
 	$allowed_hosts = (array) apply_filters( 'allowed_redirect_hosts', array($wpp['host']), isset($lp['host']) ? $lp['host'] : '' );
 
-	if ( isset($lp['host']) && ( !in_array($lp['host'], $allowed_hosts) && $lp['host'] != strtolower($wpp['host'])) )
-		$location = $default;
+	if ( isset($lp['host']) && ( !in_array($lp['host'], $allowed_hosts) && $lp['host'] != strtolower($wpp['host'])) ) {
+			$location = $default;
+	}
 
 	return $location;
 }
@@ -1345,8 +1360,9 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 	}
 
 	$comment = get_comment( $comment_id );
-	if ( empty( $comment ) || empty( $comment->comment_post_ID ) )
-		return false;
+	if ( empty( $comment ) || empty( $comment->comment_post_ID ) ) {
+			return false;
+	}
 
 	$post    = get_post( $comment->comment_post_ID );
 	$author  = get_userdata( $post->post_author );
@@ -1472,19 +1488,22 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 
 	if ( '' == $comment->comment_author ) {
 		$from = "From: \"$blogname\" <$wp_email>";
-		if ( '' != $comment->comment_author_email )
-			$reply_to = "Reply-To: $comment->comment_author_email";
+		if ( '' != $comment->comment_author_email ) {
+					$reply_to = "Reply-To: $comment->comment_author_email";
+		}
 	} else {
 		$from = "From: \"$comment->comment_author\" <$wp_email>";
-		if ( '' != $comment->comment_author_email )
-			$reply_to = "Reply-To: \"$comment->comment_author_email\" <$comment->comment_author_email>";
+		if ( '' != $comment->comment_author_email ) {
+					$reply_to = "Reply-To: \"$comment->comment_author_email\" <$comment->comment_author_email>";
+		}
 	}
 
 	$message_headers = "$from\n"
 		. "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 
-	if ( isset($reply_to) )
-		$message_headers .= $reply_to . "\n";
+	if ( isset($reply_to) ) {
+			$message_headers .= $reply_to . "\n";
+	}
 
 	/**
 	 * Filters the comment notification email text.
@@ -1562,8 +1581,9 @@ function wp_notify_moderator($comment_id) {
 	// Send to the administration and to the post author if the author can modify the comment.
 	$emails = array( get_option( 'admin_email' ) );
 	if ( $user && user_can( $user->ID, 'edit_comment', $comment_id ) && ! empty( $user->user_email ) ) {
-		if ( 0 !== strcasecmp( $user->user_email, get_option( 'admin_email' ) ) )
-			$emails[] = $user->user_email;
+		if ( 0 !== strcasecmp( $user->user_email, get_option( 'admin_email' ) ) ) {
+					$emails[] = $user->user_email;
+		}
 	}
 
 	$comment_author_domain = @gethostbyaddr($comment->comment_author_IP);
@@ -1603,10 +1623,11 @@ function wp_notify_moderator($comment_id) {
 
 	$notify_message .= sprintf( __( 'Approve it: %s' ), admin_url( "comment.php?action=approve&c={$comment_id}#wpbody-content" ) ) . "\r\n";
 
-	if ( EMPTY_TRASH_DAYS )
-		$notify_message .= sprintf( __( 'Trash it: %s' ), admin_url( "comment.php?action=trash&c={$comment_id}#wpbody-content" ) ) . "\r\n";
-	else
-		$notify_message .= sprintf( __( 'Delete it: %s' ), admin_url( "comment.php?action=delete&c={$comment_id}#wpbody-content" ) ) . "\r\n";
+	if ( EMPTY_TRASH_DAYS ) {
+			$notify_message .= sprintf( __( 'Trash it: %s' ), admin_url( "comment.php?action=trash&c={$comment_id}#wpbody-content" ) ) . "\r\n";
+	} else {
+			$notify_message .= sprintf( __( 'Delete it: %s' ), admin_url( "comment.php?action=delete&c={$comment_id}#wpbody-content" ) ) . "\r\n";
+	}
 
 	$notify_message .= sprintf( __( 'Spam it: %s' ), admin_url( "comment.php?action=spam&c={$comment_id}#wpbody-content" ) ) . "\r\n";
 
@@ -2081,10 +2102,12 @@ if ( !function_exists('wp_generate_password') ) :
  */
 function wp_generate_password( $length = 12, $special_chars = true, $extra_special_chars = false ) {
 	$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	if ( $special_chars )
-		$chars .= '!@#$%^&*()';
-	if ( $extra_special_chars )
-		$chars .= '-_ []{}<>~`+=,.;:/?|';
+	if ( $special_chars ) {
+			$chars .= '!@#$%^&*()';
+	}
+	if ( $extra_special_chars ) {
+			$chars .= '-_ []{}<>~`+=,.;:/?|';
+	}
 
 	$password = '';
 	for ( $i = 0; $i < $length; $i++ ) {
@@ -2151,10 +2174,11 @@ function wp_rand( $min = 0, $max = 0 ) {
 	// Reset $rnd_value after 14 uses
 	// 32(md5) + 40(sha1) + 40(sha1) / 8 = 14 random numbers from $rnd_value
 	if ( strlen($rnd_value) < 8 ) {
-		if ( defined( 'WP_SETUP_CONFIG' ) )
-			static $seed = '';
-		else
-			$seed = get_transient('random_seed');
+		if ( defined( 'WP_SETUP_CONFIG' ) ) {
+					static $seed = '';
+		} else {
+					$seed = get_transient('random_seed');
+		}
 		$rnd_value = md5( uniqid(microtime() . mt_rand(), true ) . $seed );
 		$rnd_value .= sha1($rnd_value);
 		$rnd_value .= sha1($rnd_value . $seed);
@@ -2173,8 +2197,9 @@ function wp_rand( $min = 0, $max = 0 ) {
 	$value = abs(hexdec($value));
 
 	// Reduce the value to be within the min - max range
-	if ( $max != 0 )
-		$value = $min + ( $max - $min + 1 ) * $value / ( $max_random_number + 1 );
+	if ( $max != 0 ) {
+			$value = $min + ( $max - $min + 1 ) * $value / ( $max_random_number + 1 );
+	}
 
 	return abs(intval($value));
 }
@@ -2388,8 +2413,9 @@ function wp_text_diff( $left_string, $right_string, $args = null ) {
 	$defaults = array( 'title' => '', 'title_left' => '', 'title_right' => '' );
 	$args = wp_parse_args( $args, $defaults );
 
-	if ( ! class_exists( 'WP_Text_Diff_Renderer_Table', false ) )
-		require( ABSPATH . WPINC . '/wp-diff.php' );
+	if ( ! class_exists( 'WP_Text_Diff_Renderer_Table', false ) ) {
+			require( ABSPATH . WPINC . '/wp-diff.php' );
+	}
 
 	$left_string  = normalize_whitespace($left_string);
 	$right_string = normalize_whitespace($right_string);
@@ -2400,8 +2426,9 @@ function wp_text_diff( $left_string, $right_string, $args = null ) {
 	$renderer  = new WP_Text_Diff_Renderer_Table( $args );
 	$diff = $renderer->render($text_diff);
 
-	if ( !$diff )
-		return '';
+	if ( !$diff ) {
+			return '';
+	}
 
 	$r  = "<table class='diff'>\n";
 
@@ -2411,18 +2438,21 @@ function wp_text_diff( $left_string, $right_string, $args = null ) {
 		$r .= "<col class='content' />";
 	}
 
-	if ( $args['title'] || $args['title_left'] || $args['title_right'] )
-		$r .= "<thead>";
-	if ( $args['title'] )
-		$r .= "<tr class='diff-title'><th colspan='4'>$args[title]</th></tr>\n";
+	if ( $args['title'] || $args['title_left'] || $args['title_right'] ) {
+			$r .= "<thead>";
+	}
+	if ( $args['title'] ) {
+			$r .= "<tr class='diff-title'><th colspan='4'>$args[title]</th></tr>\n";
+	}
 	if ( $args['title_left'] || $args['title_right'] ) {
 		$r .= "<tr class='diff-sub-title'>\n";
 		$r .= "\t<td></td><th>$args[title_left]</th>\n";
 		$r .= "\t<td></td><th>$args[title_right]</th>\n";
 		$r .= "</tr>\n";
 	}
-	if ( $args['title'] || $args['title_left'] || $args['title_right'] )
-		$r .= "</thead>\n";
+	if ( $args['title'] || $args['title_left'] || $args['title_right'] ) {
+			$r .= "</thead>\n";
+	}
 
 	$r .= "<tbody>\n$diff\n</tbody>\n";
 	$r .= "</table>";

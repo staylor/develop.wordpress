@@ -503,14 +503,16 @@ function _nx_noop( $singular, $plural, $context, $domain = null ) {
  * @return string Either $single or $plural translated text.
  */
 function translate_nooped_plural( $nooped_plural, $count, $domain = 'default' ) {
-	if ( $nooped_plural['domain'] )
-		$domain = $nooped_plural['domain'];
+	if ( $nooped_plural['domain'] ) {
+			$domain = $nooped_plural['domain'];
+	}
 
-	if ( $nooped_plural['context'] )
-		return _nx( $nooped_plural['singular'], $nooped_plural['plural'], $count, $nooped_plural['context'], $domain );
-	else
-		return _n( $nooped_plural['singular'], $nooped_plural['plural'], $count, $domain );
-}
+	if ( $nooped_plural['context'] ) {
+			return _nx( $nooped_plural['singular'], $nooped_plural['plural'], $count, $nooped_plural['context'], $domain );
+	} else {
+			return _n( $nooped_plural['singular'], $nooped_plural['plural'], $count, $domain );
+	}
+	}
 
 /**
  * Load a .mo file into the text domain $domain.
@@ -566,13 +568,18 @@ function load_textdomain( $domain, $mofile ) {
 	 */
 	$mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain );
 
-	if ( !is_readable( $mofile ) ) return false;
+	if ( !is_readable( $mofile ) ) {
+		return false;
+	}
 
 	$mo = new MO();
-	if ( !$mo->import_from_file( $mofile ) ) return false;
+	if ( !$mo->import_from_file( $mofile ) ) {
+		return false;
+	}
 
-	if ( isset( $app->l10n[$domain] ) )
-		$mo->merge_with( $app->l10n[$domain] );
+	if ( isset( $app->l10n[$domain] ) ) {
+			$mo->merge_with( $app->l10n[$domain] );
+	}
 
 	unset( $app->l10n_unloaded[ $domain ] );
 
@@ -659,8 +666,9 @@ function load_default_textdomain( $locale = null ) {
 		load_textdomain( 'default', WP_LANG_DIR . "/admin-$locale.mo" );
 	}
 
-	if ( is_network_admin() || ( defined( 'WP_INSTALLING_NETWORK' ) && WP_INSTALLING_NETWORK ) )
-		load_textdomain( 'default', WP_LANG_DIR . "/admin-network-$locale.mo" );
+	if ( is_network_admin() || ( defined( 'WP_INSTALLING_NETWORK' ) && WP_INSTALLING_NETWORK ) ) {
+			load_textdomain( 'default', WP_LANG_DIR . "/admin-network-$locale.mo" );
+	}
 
 	return $return;
 }
@@ -795,8 +803,9 @@ function load_theme_textdomain( $domain, $path = false ) {
  * @return bool True when the theme textdomain is successfully loaded, false otherwise.
  */
 function load_child_theme_textdomain( $domain, $path = false ) {
-	if ( ! $path )
-		$path = get_stylesheet_directory();
+	if ( ! $path ) {
+			$path = get_stylesheet_directory();
+	}
 	return load_theme_textdomain( $domain, $path );
 }
 
@@ -954,20 +963,24 @@ function get_available_languages( $dir = null ) {
  * @return array Array of language data.
  */
 function wp_get_installed_translations( $type ) {
-	if ( $type !== 'themes' && $type !== 'plugins' && $type !== 'core' )
-		return [];
+	if ( $type !== 'themes' && $type !== 'plugins' && $type !== 'core' ) {
+			return [];
+	}
 
 	$dir = 'core' === $type ? '' : "/$type";
 
-	if ( ! is_dir( WP_LANG_DIR ) )
-		return [];
+	if ( ! is_dir( WP_LANG_DIR ) ) {
+			return [];
+	}
 
-	if ( $dir && ! is_dir( WP_LANG_DIR . $dir ) )
-		return [];
+	if ( $dir && ! is_dir( WP_LANG_DIR . $dir ) ) {
+			return [];
+	}
 
 	$files = scandir( WP_LANG_DIR . $dir );
-	if ( ! $files )
-		return [];
+	if ( ! $files ) {
+			return [];
+	}
 
 	$language_data = [];
 

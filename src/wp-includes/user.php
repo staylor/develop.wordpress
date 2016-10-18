@@ -48,10 +48,11 @@ function wp_signon( $credentials = [], $secure_cookie = '' ) {
 		}
 	}
 
-	if ( !empty($credentials['remember']) )
+	if ( !empty($credentials['remember']) ) {
 		$credentials['remember'] = true;
-	else
+	} else {
 		$credentials['remember'] = false;
+	}
 
 	/**
 	 * Fires before the user is authenticated.
@@ -68,8 +69,9 @@ function wp_signon( $credentials = [], $secure_cookie = '' ) {
 	 */
 	do_action_ref_array( 'wp_authenticate', [ &$credentials['user_login'], &$credentials['user_password'] ] );
 
-	if ( '' === $secure_cookie )
+	if ( '' === $secure_cookie ) {
 		$secure_cookie = is_ssl();
+	}
 
 	/**
 	 * Filters whether to use a secure sign-on cookie.
@@ -132,16 +134,19 @@ function wp_authenticate_username_password($user, $username, $password) {
 	}
 
 	if ( empty($username) || empty($password) ) {
-		if ( is_wp_error( $user ) )
+		if ( is_wp_error( $user ) ) {
 			return $user;
+		}
 
 		$error = new WP_Error();
 
-		if ( empty($username) )
+		if ( empty($username) ) {
 			$error->add('empty_username', __('<strong>ERROR</strong>: The username field is empty.'));
+		}
 
-		if ( empty($password) )
+		if ( empty($password) ) {
 			$error->add('empty_password', __('<strong>ERROR</strong>: The password field is empty.'));
+		}
 
 		return $error;
 	}
@@ -167,8 +172,9 @@ function wp_authenticate_username_password($user, $username, $password) {
 	 * @param string        $password Password to check against the user.
 	 */
 	$user = apply_filters( 'wp_authenticate_user', $user, $password );
-	if ( is_wp_error($user) )
+	if ( is_wp_error($user) ) {
 		return $user;
+	}
 
 	if ( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
 		return new WP_Error( 'incorrect_password',
@@ -277,18 +283,21 @@ function wp_authenticate_cookie($user, $username, $password) {
 
 	if ( empty($username) && empty($password) ) {
 		$user_id = wp_validate_auth_cookie();
-		if ( $user_id )
+		if ( $user_id ) {
 			return new User($user_id);
+		}
 
 		global $auth_secure_cookie;
 
-		if ( $auth_secure_cookie )
+		if ( $auth_secure_cookie ) {
 			$auth_cookie = SECURE_AUTH_COOKIE;
-		else
+		} else {
 			$auth_cookie = AUTH_COOKIE;
+		}
 
-		if ( !empty($_COOKIE[$auth_cookie]) )
+		if ( !empty($_COOKIE[$auth_cookie]) ) {
 			return new WP_Error('expired_session', __('Please log in again.'));
+		}
 
 		// If the cookie is not set, be silent.
 	}
@@ -317,8 +326,9 @@ function wp_authenticate_spam_check( $user ) {
 		 */
 		$spammed = apply_filters( 'check_is_user_spammed', is_user_spammy( $user ), $user );
 
-		if ( $spammed )
+		if ( $spammed ) {
 			return new WP_Error( 'spammer_account', __( '<strong>ERROR</strong>: Your account has been marked as a spammer.' ) );
+		}
 	}
 	return $user;
 }
@@ -401,8 +411,9 @@ function count_many_users_posts( $users, $post_type = 'post', $public_only = fal
 	$wpdb = $app['db'];
 
 	$count = [];
-	if ( empty( $users ) || ! is_array( $users ) )
+	if ( empty( $users ) || ! is_array( $users ) ) {
 		return $count;
+	}
 
 	$userlist = implode( ',', array_map( 'absint', $users ) );
 	$where = get_posts_by_author_sql( $post_type, true, null, $public_only );
@@ -413,8 +424,9 @@ function count_many_users_posts( $users, $post_type = 'post', $public_only = fal
 	}
 
 	foreach ( $users as $id ) {
-		if ( ! isset( $count[ $id ] ) )
+		if ( ! isset( $count[ $id ] ) ) {
 			$count[ $id ] = 0;
+		}
 	}
 
 	return $count;
@@ -432,8 +444,9 @@ function count_many_users_posts( $users, $post_type = 'post', $public_only = fal
  * @return int The current user's ID
  */
 function get_current_user_id() {
-	if ( ! function_exists( 'wp_get_current_user' ) )
+	if ( ! function_exists( 'wp_get_current_user' ) ) {
 		return 0;
+	}
 	$user = wp_get_current_user();
 	return ( isset( $user->ID ) ? (int) $user->ID : 0 );
 }
@@ -459,22 +472,28 @@ function get_user_option( $option, $user = 0, $deprecated = '' ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( !empty( $deprecated ) )
+	if ( !empty( $deprecated ) ) {
 		_deprecated_argument( __FUNCTION__, '3.0.0' );
+	}
 
-	if ( empty( $user ) )
+	if ( empty( $user ) ) {
 		$user = get_current_user_id();
+	}
 
-	if ( ! $user = get_userdata( $user ) )
+	if ( ! $user = get_userdata( $user ) ) {
 		return false;
+	}
 
 	$prefix = $wpdb->get_blog_prefix();
-	if ( $user->has_prop( $prefix . $option ) ) // Blog specific
+	if ( $user->has_prop( $prefix . $option ) ) {
+		// Blog specific
 		$result = $user->get( $prefix . $option );
-	elseif ( $user->has_prop( $option ) ) // User specific and cross-blog
+	} elseif ( $user->has_prop( $option ) ) {
+		// User specific and cross-blog
 		$result = $user->get( $option );
-	else
+	} else {
 		$result = false;
+	}
 
 	/**
 	 * Filters a specific user option value.
@@ -513,8 +532,9 @@ function update_user_option( $user_id, $option_name, $newvalue, $global = false 
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( !$global )
+	if ( !$global ) {
 		$option_name = $wpdb->get_blog_prefix() . $option_name;
+	}
 
 	return update_user_meta( $user_id, $option_name, $newvalue );
 }
@@ -538,8 +558,9 @@ function delete_user_option( $user_id, $option_name, $global = false ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( !$global )
+	if ( !$global ) {
 		$option_name = $wpdb->get_blog_prefix() . $option_name;
+	}
 	return delete_user_meta( $user_id, $option_name );
 }
 
@@ -583,8 +604,9 @@ function get_blogs_of_user( $user_id, $all = false ) {
 	$user_id = (int) $user_id;
 
 	// Logged out users can't have sites
-	if ( empty( $user_id ) )
+	if ( empty( $user_id ) ) {
 		return [];
+	}
 
 	/**
 	 * Filters the list of a user's sites before it is populated.
@@ -606,8 +628,9 @@ function get_blogs_of_user( $user_id, $all = false ) {
 	}
 
 	$keys = get_user_meta( $user_id );
-	if ( empty( $keys ) )
+	if ( empty( $keys ) ) {
 		return [];
+	}
 
 	if ( ! is_multisite() ) {
 		$site_id = get_current_blog_id();
@@ -634,13 +657,16 @@ function get_blogs_of_user( $user_id, $all = false ) {
 	$keys = array_keys( $keys );
 
 	foreach ( $keys as $key ) {
-		if ( 'capabilities' !== substr( $key, -12 ) )
+		if ( 'capabilities' !== substr( $key, -12 ) ) {
 			continue;
-		if ( $wpdb->base_prefix && 0 !== strpos( $key, $wpdb->base_prefix ) )
+		}
+		if ( $wpdb->base_prefix && 0 !== strpos( $key, $wpdb->base_prefix ) ) {
 			continue;
+		}
 		$site_id = str_replace( [ $wpdb->base_prefix, '_capabilities' ], '', $key );
-		if ( ! is_numeric( $site_id ) )
+		if ( ! is_numeric( $site_id ) ) {
 			continue;
+		}
 
 		$site_ids[] = (int) $site_id;
 	}
@@ -886,8 +912,9 @@ function count_users($strategy = 'time') {
 
 		foreach ( $users_of_blog as $caps_meta ) {
 			$b_roles = maybe_unserialize($caps_meta);
-			if ( ! is_array( $b_roles ) )
+			if ( ! is_array( $b_roles ) ) {
 				continue;
+			}
 			if ( empty( $b_roles ) ) {
 				$avail_roles['none']++;
 			}
@@ -935,8 +962,9 @@ function count_users($strategy = 'time') {
 function setup_userdata($for_user_id = '') {
 	global $user_login, $userdata, $user_level, $user_ID, $user_email, $user_url, $user_identity;
 
-	if ( '' == $for_user_id )
+	if ( '' == $for_user_id ) {
 		$for_user_id = get_current_user_id();
+	}
 	$user = get_userdata( $for_user_id );
 
 	if ( ! $user ) {
@@ -1150,14 +1178,17 @@ function wp_dropdown_users( $args = '' ) {
  */
 function sanitize_user_field($field, $value, $user_id, $context) {
 	$int_fields = ['ID'];
-	if ( in_array($field, $int_fields) )
+	if ( in_array($field, $int_fields) ) {
 		$value = (int) $value;
+	}
 
-	if ( 'raw' == $context )
+	if ( 'raw' == $context ) {
 		return $value;
+	}
 
-	if ( !is_string($value) && !is_numeric($value) )
+	if ( !is_string($value) && !is_numeric($value) ) {
 		return $value;
+	}
 
 	$prefixed = false !== strpos( $field, 'user_' );
 
@@ -1182,10 +1213,13 @@ function sanitize_user_field($field, $value, $user_id, $context) {
 			$value = apply_filters( "edit_user_{$field}", $value, $user_id );
 		}
 
-		if ( 'description' == $field )
-			$value = esc_html( $value ); // textarea_escaped?
-		else
+		if ( 'description' == $field ) {
+			$value = esc_html( $value );
+		}
+		// textarea_escaped?
+		else {
 			$value = esc_attr($value);
+		}
 	} elseif ( 'db' == $context ) {
 		if ( $prefixed ) {
 			/** This filter is documented in wp-includes/post.php */
@@ -1228,8 +1262,9 @@ function sanitize_user_field($field, $value, $user_id, $context) {
 		}
 	}
 
-	if ( 'user_url' == $field )
+	if ( 'user_url' == $field ) {
 		$value = esc_url($value);
+	}
 
 	if ( 'attribute' == $context ) {
 		$value = esc_attr( $value );
@@ -1271,11 +1306,13 @@ function update_user_caches( $user ) {
  * @param User|int $user User object or ID to be cleaned from the cache
  */
 function clean_user_cache( $user ) {
-	if ( is_numeric( $user ) )
+	if ( is_numeric( $user ) ) {
 		$user = new User( $user );
+	}
 
-	if ( ! $user->exists() )
+	if ( ! $user->exists() ) {
 		return;
+	}
 
 	wp_cache_delete( $user->ID, 'users' );
 	wp_cache_delete( $user->user_login, 'userlogins' );
@@ -2140,15 +2177,18 @@ function check_password_reset_key($key, $login) {
 
 	$key = preg_replace('/[^a-z0-9]/i', '', $key);
 
-	if ( empty( $key ) || !is_string( $key ) )
+	if ( empty( $key ) || !is_string( $key ) ) {
 		return new WP_Error('invalid_key', __('Invalid key'));
+	}
 
-	if ( empty($login) || !is_string($login) )
+	if ( empty($login) || !is_string($login) ) {
 		return new WP_Error('invalid_key', __('Invalid key'));
+	}
 
 	$row = $wpdb->get_row( $wpdb->prepare( "SELECT ID, user_activation_key FROM $wpdb->users WHERE user_login = %s", $login ) );
-	if ( ! $row )
+	if ( ! $row ) {
 		return new WP_Error('invalid_key', __('Invalid key'));
+	}
 
 	$wp_hasher = $app['password.hasher'];
 
@@ -2316,8 +2356,9 @@ function register_new_user( $user_login, $user_email ) {
 	 */
 	$errors = apply_filters( 'registration_errors', $errors, $sanitized_user_login, $user_email );
 
-	if ( $errors->get_error_code() )
+	if ( $errors->get_error_code() ) {
 		return $errors;
+	}
 
 	$user_pass = wp_generate_password( 12, false );
 	$user_id = wp_create_user( $sanitized_user_login, $user_pass, $user_email );

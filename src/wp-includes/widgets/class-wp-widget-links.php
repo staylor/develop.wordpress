@@ -97,13 +97,15 @@ class WP_Widget_Links extends WP_Widget {
 		$new_instance = (array) $new_instance;
 		$instance = [ 'images' => 0, 'name' => 0, 'description' => 0, 'rating' => 0 ];
 		foreach ( $instance as $field => $val ) {
-			if ( isset($new_instance[$field]) )
+			if ( isset($new_instance[$field]) ) {
 				$instance[$field] = 1;
+			}
 		}
 
 		$instance['orderby'] = 'name';
-		if ( in_array( $new_instance['orderby'], [ 'name', 'rating', 'id', 'rand' ] ) )
+		if ( in_array( $new_instance['orderby'], [ 'name', 'rating', 'id', 'rand' ] ) ) {
 			$instance['orderby'] = $new_instance['orderby'];
+		}
 
 		$instance['category'] = intval( $new_instance['category'] );
 		$instance['limit'] = ! empty( $new_instance['limit'] ) ? intval( $new_instance['limit'] ) : -1;
@@ -124,8 +126,9 @@ class WP_Widget_Links extends WP_Widget {
 		//Defaults
 		$instance = wp_parse_args( (array) $instance, [ 'images' => true, 'name' => true, 'description' => false, 'rating' => false, 'category' => false, 'orderby' => 'name', 'limit' => -1 ] );
 		$link_cats = get_terms( 'link_category' );
-		if ( ! $limit = intval( $instance['limit'] ) )
+		if ( ! $limit = intval( $instance['limit'] ) ) {
 			$limit = -1;
+		}
 			?>
 		<p>
 		<label for="<?php echo $this->get_field_id('category'); ?>"><?php _e( 'Select Link Category:' ); ?></label>

@@ -15,16 +15,19 @@
  * @return string|false The format if successful. False otherwise.
  */
 function get_post_format( $post = null ) {
-	if ( ! $post = get_post( $post ) )
-		return false;
+	if ( ! $post = get_post( $post ) ) {
+			return false;
+	}
 
-	if ( ! post_type_supports( $post->post_type, 'post-formats' ) )
-		return false;
+	if ( ! post_type_supports( $post->post_type, 'post-formats' ) ) {
+			return false;
+	}
 
 	$_format = get_the_terms( $post->ID, 'post_format' );
 
-	if ( empty( $_format ) )
-		return false;
+	if ( empty( $_format ) ) {
+			return false;
+	}
 
 	$format = reset( $_format );
 
@@ -64,15 +67,17 @@ function has_post_format( $format = [], $post = null ) {
 function set_post_format( $post, $format ) {
 	$post = get_post( $post );
 
-	if ( empty( $post ) )
-		return new WP_Error( 'invalid_post', __( 'Invalid post.' ) );
+	if ( empty( $post ) ) {
+			return new WP_Error( 'invalid_post', __( 'Invalid post.' ) );
+	}
 
 	if ( ! empty( $format ) ) {
 		$format = sanitize_key( $format );
-		if ( 'standard' === $format || ! in_array( $format, get_post_format_slugs() ) )
-			$format = '';
-		else
-			$format = 'post-format-' . $format;
+		if ( 'standard' === $format || ! in_array( $format, get_post_format_slugs() ) ) {
+					$format = '';
+		} else {
+					$format = 'post-format-' . $format;
+		}
 	}
 
 	return wp_set_post_terms( $post->ID, $format, 'post_format' );
@@ -123,11 +128,12 @@ function get_post_format_slugs() {
  */
 function get_post_format_string( $slug ) {
 	$strings = get_post_format_strings();
-	if ( !$slug )
-		return $strings['standard'];
-	else
-		return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
-}
+	if ( !$slug ) {
+			return $strings['standard'];
+	} else {
+			return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
+	}
+	}
 
 /**
  * Returns a link to a post format index.
@@ -139,8 +145,9 @@ function get_post_format_string( $slug ) {
  */
 function get_post_format_link( $format ) {
 	$term = get_term_by('slug', 'post-format-' . $format, 'post_format' );
-	if ( ! $term || is_wp_error( $term ) )
-		return false;
+	if ( ! $term || is_wp_error( $term ) ) {
+			return false;
+	}
 	return get_term_link( $term );
 }
 
@@ -154,14 +161,17 @@ function get_post_format_link( $format ) {
  * @return array
  */
 function _post_format_request( $qvs ) {
-	if ( ! isset( $qvs['post_format'] ) )
-		return $qvs;
+	if ( ! isset( $qvs['post_format'] ) ) {
+			return $qvs;
+	}
 	$slugs = get_post_format_slugs();
-	if ( isset( $slugs[ $qvs['post_format'] ] ) )
-		$qvs['post_format'] = 'post-format-' . $slugs[ $qvs['post_format'] ];
+	if ( isset( $slugs[ $qvs['post_format'] ] ) ) {
+			$qvs['post_format'] = 'post-format-' . $slugs[ $qvs['post_format'] ];
+	}
 	$tax = get_taxonomy( 'post_format' );
-	if ( ! is_admin() )
-		$qvs['post_type'] = $tax->object_type;
+	if ( ! is_admin() ) {
+			$qvs['post_type'] = $tax->object_type;
+	}
 	return $qvs;
 }
 

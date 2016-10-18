@@ -23,10 +23,11 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
 	$wpdb = $app['db'];
 
 	if ( empty($bookmark) ) {
-		if ( isset($GLOBALS['link']) )
+		if ( isset($GLOBALS['link']) ) {
 			$_bookmark = & $GLOBALS['link'];
-		else
+		} else {
 			$_bookmark = null;
+		}
 	} elseif ( is_object($bookmark) ) {
 		wp_cache_add($bookmark->link_id, $bookmark, 'bookmark');
 		$_bookmark = $bookmark;
@@ -42,8 +43,9 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
 		}
 	}
 
-	if ( ! $_bookmark )
+	if ( ! $_bookmark ) {
 		return $_bookmark;
+	}
 
 	$_bookmark = sanitize_bookmark($_bookmark, $filter);
 
@@ -72,14 +74,17 @@ function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
 	$bookmark = (int) $bookmark;
 	$bookmark = get_bookmark( $bookmark );
 
-	if ( is_wp_error($bookmark) )
+	if ( is_wp_error($bookmark) ) {
 		return $bookmark;
+	}
 
-	if ( !is_object($bookmark) )
+	if ( !is_object($bookmark) ) {
 		return '';
+	}
 
-	if ( !isset($bookmark->$field) )
+	if ( !isset($bookmark->$field) ) {
 		return '';
+	}
 
 	return sanitize_bookmark_field($field, $bookmark->$field, $bookmark->link_id, $context);
 }
@@ -320,11 +325,13 @@ function sanitize_bookmark($bookmark, $context = 'display') {
 
 	foreach ( $fields as $field ) {
 		if ( $do_object ) {
-			if ( isset($bookmark->$field) )
+			if ( isset($bookmark->$field) ) {
 				$bookmark->$field = sanitize_bookmark_field($field, $bookmark->$field, $link_id, $context);
+			}
 		} else {
-			if ( isset($bookmark[$field]) )
+			if ( isset($bookmark[$field]) ) {
 				$bookmark[$field] = sanitize_bookmark_field($field, $bookmark[$field], $link_id, $context);
+			}
 		}
 	}
 
@@ -372,13 +379,15 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 		break;
 	case 'link_target' : // "enum"
 		$targets = array('_top', '_blank');
-		if ( ! in_array($value, $targets) )
+		if ( ! in_array($value, $targets) ) {
 			$value = '';
+		}
 		break;
 	}
 
-	if ( 'raw' == $context )
+	if ( 'raw' == $context ) {
 		return $value;
+	}
 
 	if ( 'edit' == $context ) {
 		/** This filter is documented in wp-includes/post.php */
