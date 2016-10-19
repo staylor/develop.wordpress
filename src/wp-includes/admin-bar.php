@@ -363,21 +363,18 @@ function wp_admin_bar_customize_menu( $wp_admin_bar ) {
 		return;
 	}
 
-<<<<<<< HEAD
 	$app = getApp();
-	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $app['request.host'] . $app['request.uri'];
-=======
+
 	// Don't show if the user cannot edit a given customize_changeset post currently being previewed.
 	if ( is_customize_preview() && $wp_customize->changeset_post_id() && ! current_user_can( get_post_type_object( 'customize_changeset' )->cap->edit_post, $wp_customize->changeset_post_id() ) ) {
 		return;
 	}
 
-	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $app['request.host'] . $app['request.uri'];
 	if ( is_customize_preview() && $wp_customize->changeset_uuid() ) {
 		$current_url = remove_query_arg( 'customize_changeset_uuid', $current_url );
 	}
 
->>>>>>> aaronjorbin/master
 	$customize_url = add_query_arg( 'url', urlencode( $current_url ), wp_customize_url() );
 	if ( is_customize_preview() ) {
 		$customize_url = add_query_arg( array( 'changeset_uuid' => $wp_customize->changeset_uuid() ), $customize_url );
