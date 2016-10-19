@@ -21,7 +21,7 @@ use function WP\getApp;
  * @param string $function Function name.
  */
 function _wp_scripts_maybe_doing_it_wrong( $function ) {
-	if ( did_action( 'init' ) ) {
+	if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
 		return;
 	}
 

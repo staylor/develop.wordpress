@@ -20,9 +20,38 @@ if ( ! current_user_can( 'customize' ) ) {
 	);
 }
 
+<<<<<<< HEAD
 $wp_customize = $app['customize'];
 
 wp_reset_vars( [ 'url', 'return', 'autofocus' ] );
+=======
+/**
+ * @global WP_Scripts           $wp_scripts
+ * @global WP_Customize_Manager $wp_customize
+ */
+global $wp_scripts, $wp_customize;
+
+if ( $wp_customize->changeset_post_id() ) {
+	if ( ! current_user_can( get_post_type_object( 'customize_changeset' )->cap->edit_post, $wp_customize->changeset_post_id() ) ) {
+		wp_die(
+			'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+			'<p>' . __( 'Sorry, you are not allowed to edit this changeset.' ) . '</p>',
+			403
+		);
+	}
+	if ( in_array( get_post_status( $wp_customize->changeset_post_id() ), array( 'publish', 'trash' ), true ) ) {
+		wp_die(
+			'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+			'<p>' . __( 'This changeset has already been published and cannot be further modified.' ) . '</p>' .
+			'<p><a href="' . esc_url( remove_query_arg( 'changeset_uuid' ) ) . '">' . __( 'Customize New Changes' ) . '</a></p>',
+			403
+		);
+	}
+}
+
+
+wp_reset_vars( array( 'url', 'return', 'autofocus' ) );
+>>>>>>> aaronjorbin/master
 if ( ! empty( $url ) ) {
 	$wp_customize->set_preview_url( wp_unslash( $url ) );
 }
@@ -33,10 +62,16 @@ if ( ! empty( $autofocus ) && is_array( $autofocus ) ) {
 	$wp_customize->set_autofocus( wp_unslash( $autofocus ) );
 }
 
+<<<<<<< HEAD
 $registered = $app['scripts.global']->registered;
 unset( $app['scripts.global'] );
 $app['scripts.global'] = $app['scripts.factory'];
 $app['scripts.global']->registered = $registered;
+=======
+$registered = $wp_scripts->registered;
+$wp_scripts = new WP_Scripts;
+$wp_scripts->registered = $registered;
+>>>>>>> aaronjorbin/master
 
 add_action( 'customize_controls_print_scripts',        'print_head_scripts', 20 );
 add_action( 'customize_controls_print_footer_scripts', '_wp_footer_scripts'     );
@@ -87,7 +122,8 @@ $admin_title = sprintf( $wp_customize->get_document_title_template(), __( 'Loadi
 ?><title><?php echo $admin_title; ?></title>
 
 <script type="text/javascript">
-var ajaxurl = <?php echo wp_json_encode( admin_url( 'admin-ajax.php', 'relative' ) ); ?>;
+var ajaxurl = <?php echo wp_json_encode( admin_url( 'admin-ajax.php', 'relative' ) ); ?>,
+    pagenow = 'customize';
 </script>
 
 <?php
@@ -112,7 +148,11 @@ do_action( 'customize_controls_print_scripts' );
 		<div id="customize-header-actions" class="wp-full-overlay-header">
 			<?php
 			$save_text = $wp_customize->is_theme_active() ? __( 'Save &amp; Publish' ) : __( 'Save &amp; Activate' );
-			submit_button( $save_text, 'primary save', 'save', false );
+			$save_attrs = array();
+			if ( ! current_user_can( get_post_type_object( 'customize_changeset' )->cap->publish_posts ) ) {
+				$save_attrs['style'] = 'display: none';
+			}
+			submit_button( $save_text, 'primary save', 'save', false, $save_attrs );
 			?>
 			<span class="spinner"></span>
 			<button type="button" class="customize-controls-preview-toggle">
