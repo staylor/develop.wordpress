@@ -1136,7 +1136,7 @@ function wp_ajax_replyto_comment( $action ) {
 		if ( 'single' === $_request->get( 'mode' ) ) {
 			$wp_list_table = _get_list_table( 'WP_Post_Comments_List_Table', array( 'screen' => 'edit-comments' ) );
 		} else {
-			$wp_list_table = _get_list_table( 'WP_Comments_List_Table', array( 'screen' => 'edit-comments' ) );
+			$wp_list_table = _get_list_table( \WP\Comment\Admin\ListTable::class, array( 'screen' => 'edit-comments' ) );
 		}
 		$wp_list_table->single_row( $comment );
 	}

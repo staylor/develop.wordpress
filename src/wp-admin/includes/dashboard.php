@@ -598,13 +598,12 @@ function wp_dashboard_recent_drafts( $drafts = false ) {
  * @access private
  * @since 2.7.0
  *
- * @global WP_Comment $comment
- *
  * @param WP_Comment $comment   The current comment.
  * @param bool       $show_date Optional. Whether to display the date.
  */
 function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
-	$GLOBALS['comment'] = clone $comment;
+	$app = getApp();
+	$app->set( 'comment', clone $comment );
 
 	if ( $comment->comment_post_ID > 0 ) {
 

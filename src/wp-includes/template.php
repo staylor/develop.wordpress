@@ -664,14 +664,13 @@ function locate_template($template_names, $load = false, $require_once = true ) 
  * @global string     $wp_version
  * @global WP         $wp
  * @global int        $id
- * @global WP_Comment $comment
  * @global int        $user_ID
  *
  * @param string $_template_file Path to template file.
  * @param bool   $require_once   Whether to require_once or require. Default true.
  */
 function load_template( $_template_file, $require_once = true ) {
-	global $posts, $post, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+	global $posts, $post, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $user_ID;
 
 	$app = getApp();
 	$wp_version = $app['wp_version'];
@@ -680,6 +679,7 @@ function load_template( $_template_file, $require_once = true ) {
 	$wp = $app['wp'];
 	$wp_query = $app['wp']->current_query;
 	$posts = $app['wp']->current_query->posts;
+	$comment = $app->get( 'comment' );
 
 	if ( is_array( $wp_query->query_vars ) ) {
 		extract( $wp_query->query_vars, EXTR_SKIP );

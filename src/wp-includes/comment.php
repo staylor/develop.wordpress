@@ -184,15 +184,14 @@ function get_approved_comments( $post_id, $args = [] ) {
  *
  * @since 2.0.0
  *
- * @global WP_Comment $comment
- *
  * @param WP_Comment|string|int $comment Comment to retrieve.
  * @param string $output Optional. OBJECT or ARRAY_A or ARRAY_N constants.
  * @return WP_Comment|array|null Depends on $output value.
  */
 function get_comment( &$comment = null, $output = OBJECT ) {
-	if ( empty( $comment ) && isset( $GLOBALS['comment'] ) ) {
-		$comment = $GLOBALS['comment'];
+	$app = getApp();
+	if ( empty( $comment ) && $app->get( 'comment' ) ) {
+		$comment = $app->get( 'comment' );
 	}
 
 	if ( $comment instanceof WP_Comment ) {

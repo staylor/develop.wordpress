@@ -3262,12 +3262,12 @@ class WP_Query {
 	 *
 	 * @since 2.2.0
 	 * @access public
-	 * @global WP_Comment $comment Current comment.
 	 */
 	public function the_comment() {
-		global $comment;
+		$app = getApp();
 
 		$comment = $this->next_comment();
+		$app->set( 'comment', $comment );
 
 		if ( $this->current_comment == 0 ) {
 			/**

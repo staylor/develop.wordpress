@@ -6,6 +6,7 @@
  * @subpackage Administration
  */
 
+use WP\Comment\Admin\ListTable;
 use WP\Admin\View\Comment as CommentView;
 
 /** WordPress Administration Bootstrap */
@@ -20,7 +21,7 @@ if ( ! current_user_can( 'edit_posts' ) ) {
 
 $view = new CommentView( $app );
 
-$wp_list_table = _get_list_table( 'WP_Comments_List_Table' );
+$wp_list_table = _get_list_table( ListTable::class );
 $pagenum = $wp_list_table->get_pagenum();
 
 $doaction = $wp_list_table->current_action();

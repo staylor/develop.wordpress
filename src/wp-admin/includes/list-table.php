@@ -30,6 +30,7 @@ function _get_list_table( $class, $args = [] ) {
 		'WP_Terms_List_Table' => 'terms',
 		'WP_Users_List_Table' => 'users',
 		'WP_Comments_List_Table' => 'comments',
+		\WP\Comment\Admin\ListTable::class => 'comments',
 		'WP_Post_Comments_List_Table' => array( 'comments', 'post-comments' ),
 		'WP_Links_List_Table' => 'links',
 		'WP_Plugin_Install_List_Table' => 'plugin-install',

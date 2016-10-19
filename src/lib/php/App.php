@@ -77,6 +77,10 @@ class App extends Container {
 		$this->globals[ $name ] = $value;
 	}
 
+	public function remove( string $name ) {
+		unset( $this->globals[ $name ] );
+	}
+
 	// wrap callables that produce output
 	public function mute( callable $callback ) {
 		return function () use ( $callback ) {

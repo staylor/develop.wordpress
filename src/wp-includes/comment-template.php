@@ -446,7 +446,6 @@ function comment_class( $class = '', $comment = null, $post_id = null, $echo = t
  * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
  *
  * @global int $comment_alt
- * @global int $comment_depth
  * @global int $comment_thread_alt
  *
  * @param string|array   $class      Optional. One or more classes to add to the class list. Default empty.
@@ -455,8 +454,9 @@ function comment_class( $class = '', $comment = null, $post_id = null, $echo = t
  * @return array An array of classes.
  */
 function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
-	global $comment_alt, $comment_depth, $comment_thread_alt;
+	global $comment_alt, $comment_thread_alt;
 
+	$app = getApp();
 	$classes = [];
 
 	$comment = get_comment( $comment_id );
@@ -482,8 +482,8 @@ function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
 	if ( empty($comment_alt) ) {
 		$comment_alt = 0;
 	}
-	if ( empty($comment_depth) ) {
-		$comment_depth = 1;
+	if ( empty( $app->get( 'comment_depth' ) ) ) {
+		$app->set( 'comment_depth', 1 );
 	}
 	if ( empty($comment_thread_alt) ) {
 		$comment_thread_alt = 0;
@@ -499,7 +499,7 @@ function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
 	$comment_alt++;
 
 	// Alt for top-level comments
-	if ( 1 == $comment_depth ) {
+	if ( 1 === $app->get( 'comment_depth' ) ) {
 		if ( $comment_thread_alt % 2 ) {
 			$classes[] = 'thread-odd';
 			$classes[] = 'thread-alt';
@@ -509,7 +509,7 @@ function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
 		$comment_thread_alt++;
 	}
 
-	$classes[] = "depth-$comment_depth";
+	$classes[] = 'depth-' . $app->get( 'comment_depth' );
 
 	if ( !empty($class) ) {
 		if ( !is_array( $class ) ) {
@@ -1296,7 +1296,6 @@ function wp_comment_form_unfiltered_html_nonce() {
  *
  * @global WP_Post    $post
  * @global int        $id
- * @global WP_Comment $comment
  * @global string     $user_login
  * @global int        $user_ID
  * @global string     $user_identity
@@ -1308,7 +1307,7 @@ function wp_comment_form_unfiltered_html_nonce() {
  *                                  Default false.
  */
 function comments_template( $file = '/comments.php', $separate_comments = false ) {
-	global $withcomments, $post, $wpdb, $id, $comment, $user_login, $user_ID, $user_identity, $overridden_cpage;
+	global $withcomments, $post, $wpdb, $id, $user_login, $user_ID, $user_identity, $overridden_cpage;
 
 	if ( !(is_single() || is_page() || $withcomments) || empty($post) ) {
 		return;
@@ -1317,6 +1316,7 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	$app = getApp();
 	$wpdb = $app['db'];
 	$wp_query = $app['wp']->current_query;
+	$comment = $app->get( 'comment' );
 
 	if ( empty($file) ) {
 		$file = '/comments.php';
@@ -1492,7 +1492,7 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	 */
 	$include = apply_filters( 'comments_template', $theme_template );
 	if ( file_exists( $include ) ) {
-			require( $include );
+		require( $include );
 	} elseif ( file_exists( TEMPLATEPATH . $file ) ) {
 		require( TEMPLATEPATH . $file );
 	}
@@ -1882,8 +1882,6 @@ function comment_id_fields( $id = 0 ) {
  *
  * @since 2.7.0
  *
- * @global WP_Comment $comment Current comment.
- *
  * @param string $noreplytext  Optional. Text to display when not replying to a comment.
  *                             Default false.
  * @param string $replytext    Optional. Text to display when replying to a comment.
@@ -1893,9 +1891,8 @@ function comment_id_fields( $id = 0 ) {
  *                             to their comment. Default true.
  */
 function comment_form_title( $noreplytext = false, $replytext = false, $linktoparent = true ) {
-	global $comment;
-
 	$app = getApp();
+	$comment = $app->get( 'comment' );
 
 	if ( false === $noreplytext ) {
 		$noreplytext = __( 'Leave a Reply' );
@@ -1912,6 +1909,7 @@ function comment_form_title( $noreplytext = false, $replytext = false, $linktopa
 	} else {
 		// Sets the global so that template tags can be used in the comment form.
 		$comment = get_comment($replytoid);
+		$app->set( 'comment', $comment );
 		$author = ( $linktoparent ) ? '<a href="#comment-' . get_comment_ID() . '">' . get_comment_author( $comment ) . '</a>' : get_comment_author( $comment );
 		printf( $replytext, $author );
 	}
@@ -1927,7 +1925,6 @@ function comment_form_title( $noreplytext = false, $replytext = false, $linktopa
  * @see WP_Query->comments
  *
  * @global int      $comment_alt
- * @global int      $comment_depth
  * @global int      $comment_thread_alt
  * @global bool     $overridden_cpage
  * @global bool     $in_comment_loop
@@ -1955,7 +1952,7 @@ function comment_form_title( $noreplytext = false, $replytext = false, $linktopa
  * @param array $comments Optional. Array of WP_Comment objects.
  */
 function wp_list_comments( $args = [], $comments = null ) {
-	global $comment_alt, $comment_depth, $comment_thread_alt, $overridden_cpage, $in_comment_loop;
+	global $comment_alt, $comment_thread_alt, $overridden_cpage, $in_comment_loop;
 
 	$app = getApp();
 	$wp_query = $app['wp']->current_query;
@@ -1963,7 +1960,7 @@ function wp_list_comments( $args = [], $comments = null ) {
 	$in_comment_loop = true;
 
 	$comment_alt = $comment_thread_alt = 0;
-	$comment_depth = 1;
+	$app->set( 'comment_depth', 1 );
 
 	$defaults = array(
 		'walker'            => null,
