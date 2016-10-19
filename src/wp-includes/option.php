@@ -1111,8 +1111,8 @@ function get_network_option( $network_id, $option, $default = false ) {
 	$network_id = (int) $network_id;
 
 	// Fallback to the current network if a network ID is not specified.
-	if ( ! $network_id && is_multisite() ) {
-		$network_id = $current_site->id;
+	if ( ! $network_id ) {
+		$network_id = get_current_network_id();
 	}
 
 	/**
@@ -1125,12 +1125,14 @@ function get_network_option( $network_id, $option, $default = false ) {
 	 *
 	 * @since 2.9.0 As 'pre_site_option_' . $key
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added
+	 * @since 4.4.0 The `$option` parameter was added.
+	 * @since 4.7.0 The `$network_id` parameter was added.
 	 *
 	 * @param mixed  $pre_option The default value to return if the option does not exist.
 	 * @param string $option     Option name.
+	 * @param int    $network_id ID of the network.
 	 */
-	$pre = apply_filters( "pre_site_option_{$option}", false, $option );
+	$pre = apply_filters( "pre_site_option_{$option}", false, $option, $network_id );
 
 	if ( false !== $pre ) {
 		return $pre;
@@ -1149,17 +1151,19 @@ function get_network_option( $network_id, $option, $default = false ) {
 		 *
 		 * @since 3.4.0
 		 * @since 4.4.0 The `$option` parameter was added.
+		 * @since 4.7.0 The `$network_id` parameter was added.
 		 *
-		 * @param mixed  $default The value to return if the site option does not exist
-		 *                        in the database.
-		 * @param string $option  Option name.
+		 * @param mixed  $default    The value to return if the site option does not exist
+		 *                           in the database.
+		 * @param string $option     Option name.
+		 * @param int    $network_id ID of the network.
 		 */
-		return apply_filters( "default_site_option_{$option}", $default, $option );
+		return apply_filters( "default_site_option_{$option}", $default, $option, $network_id );
 	}
 
 	if ( ! is_multisite() ) {
 		/** This filter is documented in wp-includes/option.php */
-		$default = apply_filters( 'default_site_option_' . $option, $default, $option );
+		$default = apply_filters( 'default_site_option_' . $option, $default, $option, $network_id );
 		$value = get_option( $option, $default );
 	} else {
 		$cache_key = "$network_id:$option";
@@ -1181,7 +1185,7 @@ function get_network_option( $network_id, $option, $default = false ) {
 				wp_cache_set( $notoptions_key, $notoptions, 'site-options' );
 
 				/** This filter is documented in wp-includes/option.php */
-				$value = apply_filters( 'default_site_option_' . $option, $default, $option );
+				$value = apply_filters( 'default_site_option_' . $option, $default, $option, $network_id );
 			}
 		}
 	}
@@ -1193,12 +1197,14 @@ function get_network_option( $network_id, $option, $default = false ) {
 	 *
 	 * @since 2.9.0 As 'site_option_' . $key
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added
+	 * @since 4.4.0 The `$option` parameter was added.
+	 * @since 4.7.0 The `$network_id` parameter was added.
 	 *
-	 * @param mixed  $value  Value of network option.
-	 * @param string $option Option name.
+	 * @param mixed  $value      Value of network option.
+	 * @param string $option     Option name.
+	 * @param int    $network_id ID of the network.
 	 */
-	return apply_filters( "site_option_{$option}", $value, $option );
+	return apply_filters( "site_option_{$option}", $value, $option, $network_id );
 }
 
 /**
@@ -1229,8 +1235,8 @@ function add_network_option( $network_id, $option, $value ) {
 	$network_id = (int) $network_id;
 
 	// Fallback to the current network if a network ID is not specified.
-	if ( ! $network_id && is_multisite() ) {
-		$network_id = $current_site->id;
+	if ( ! $network_id ) {
+		$network_id = get_current_network_id();
 	}
 
 	wp_protect_special_option( $option );
@@ -1242,12 +1248,14 @@ function add_network_option( $network_id, $option, $value ) {
 	 *
 	 * @since 2.9.0 As 'pre_add_site_option_' . $key
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added
+	 * @since 4.4.0 The `$option` parameter was added.
+	 * @since 4.7.0 The `$network_id` parameter was added.
 	 *
-	 * @param mixed  $value  Value of network option.
-	 * @param string $option Option name.
+	 * @param mixed  $value      Value of network option.
+	 * @param string $option     Option name.
+	 * @param int    $network_id ID of the network.
 	 */
-	$value = apply_filters( "pre_add_site_option_{$option}", $value, $option );
+	$value = apply_filters( "pre_add_site_option_{$option}", $value, $option, $network_id );
 
 	$notoptions_key = "$network_id:notoptions";
 
@@ -1292,21 +1300,25 @@ function add_network_option( $network_id, $option, $value ) {
 		 *
 		 * @since 2.9.0 As "add_site_option_{$key}"
 		 * @since 3.0.0
+		 * @since 4.7.0 The `$network_id` parameter was added.
 		 *
-		 * @param string $option Name of the network option.
-		 * @param mixed  $value  Value of the network option.
+		 * @param string $option     Name of the network option.
+		 * @param mixed  $value      Value of the network option.
+		 * @param int    $network_id ID of the network.
 		 */
-		do_action( "add_site_option_{$option}", $option, $value );
+		do_action( "add_site_option_{$option}", $option, $value, $network_id );
 
 		/**
 		 * Fires after a network option has been successfully added.
 		 *
 		 * @since 3.0.0
+		 * @since 4.7.0 The `$network_id` parameter was added.
 		 *
-		 * @param string $option Name of the network option.
-		 * @param mixed  $value  Value of the network option.
+		 * @param string $option     Name of the network option.
+		 * @param mixed  $value      Value of the network option.
+		 * @param int    $network_id ID of the network.
 		 */
-		do_action( 'add_site_option', $option, $value );
+		do_action( 'add_site_option', $option, $value, $network_id );
 
 		return true;
 	}
@@ -1339,8 +1351,8 @@ function delete_network_option( $network_id, $option ) {
 	$network_id = (int) $network_id;
 
 	// Fallback to the current network if a network ID is not specified.
-	if ( ! $network_id && is_multisite() ) {
-		$network_id = $current_site->id;
+	if ( ! $network_id ) {
+		$network_id = get_current_network_id();
 	}
 
 	/**
@@ -1349,11 +1361,13 @@ function delete_network_option( $network_id, $option ) {
 	 * The dynamic portion of the hook name, `$option`, refers to the option name.
 	 *
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added
+	 * @since 4.4.0 The `$option` parameter was added.
+	 * @since 4.7.0 The `$network_id` parameter was added.
 	 *
-	 * @param string $option Option name.
+	 * @param string $option     Option name.
+	 * @param int    $network_id ID of the network.
 	 */
-	do_action( "pre_delete_site_option_{$option}", $option );
+	do_action( "pre_delete_site_option_{$option}", $option, $network_id );
 
 	if ( ! is_multisite() ) {
 		$result = delete_option( $option );
@@ -1377,19 +1391,23 @@ function delete_network_option( $network_id, $option ) {
 		 *
 		 * @since 2.9.0 As "delete_site_option_{$key}"
 		 * @since 3.0.0
+		 * @since 4.7.0 The `$network_id` parameter was added.
 		 *
-		 * @param string $option Name of the network option.
+		 * @param string $option     Name of the network option.
+		 * @param int    $network_id ID of the network.
 		 */
-		do_action( "delete_site_option_{$option}", $option );
+		do_action( "delete_site_option_{$option}", $option, $network_id );
 
 		/**
 		 * Fires after a network option has been deleted.
 		 *
 		 * @since 3.0.0
+		 * @since 4.7.0 The `$network_id` parameter was added.
 		 *
-		 * @param string $option Name of the network option.
+		 * @param string $option     Name of the network option.
+		 * @param int    $network_id ID of the network.
 		 */
-		do_action( 'delete_site_option', $option );
+		do_action( 'delete_site_option', $option, $network_id );
 
 		return true;
 	}
@@ -1423,8 +1441,8 @@ function update_network_option( $network_id, $option, $value ) {
 	$network_id = (int) $network_id;
 
 	// Fallback to the current network if a network ID is not specified.
-	if ( ! $network_id && is_multisite() ) {
-		$network_id = $current_site->id;
+	if ( ! $network_id ) {
+		$network_id = get_current_network_id();
 	}
 
 	wp_protect_special_option( $option );
@@ -1438,13 +1456,15 @@ function update_network_option( $network_id, $option, $value ) {
 	 *
 	 * @since 2.9.0 As 'pre_update_site_option_' . $key
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added
+	 * @since 4.4.0 The `$option` parameter was added.
+	 * @since 4.7.0 The `$network_id` parameter was added.
 	 *
-	 * @param mixed  $value     New value of the network option.
-	 * @param mixed  $old_value Old value of the network option.
-	 * @param string $option    Option name.
+	 * @param mixed  $value      New value of the network option.
+	 * @param mixed  $old_value  Old value of the network option.
+	 * @param string $option     Option name.
+	 * @param int    $network_id ID of the network.
 	 */
-	$value = apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option );
+	$value = apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
 
 	if ( $value === $old_value ) {
 		return false;
@@ -1484,23 +1504,27 @@ function update_network_option( $network_id, $option, $value ) {
 		 *
 		 * @since 2.9.0 As "update_site_option_{$key}"
 		 * @since 3.0.0
+		 * @since 4.7.0 The `$network_id` parameter was added.
 		 *
-		 * @param string $option    Name of the network option.
-		 * @param mixed  $value     Current value of the network option.
-		 * @param mixed  $old_value Old value of the network option.
+		 * @param string $option     Name of the network option.
+		 * @param mixed  $value      Current value of the network option.
+		 * @param mixed  $old_value  Old value of the network option.
+		 * @param int    $network_id ID of the network.
 		 */
-		do_action( "update_site_option_{$option}", $option, $value, $old_value );
+		do_action( "update_site_option_{$option}", $option, $value, $old_value, $network_id );
 
 		/**
 		 * Fires after the value of a network option has been successfully updated.
 		 *
 		 * @since 3.0.0
+		 * @since 4.7.0 The `$network_id` parameter was added.
 		 *
-		 * @param string $option    Name of the network option.
-		 * @param mixed  $value     Current value of the network option.
-		 * @param mixed  $old_value Old value of the network option.
+		 * @param string $option     Name of the network option.
+		 * @param mixed  $value      Current value of the network option.
+		 * @param mixed  $old_value  Old value of the network option.
+		 * @param int    $network_id ID of the network.
 		 */
-		do_action( 'update_site_option', $option, $value, $old_value );
+		do_action( 'update_site_option', $option, $value, $old_value, $network_id );
 
 		return true;
 	}

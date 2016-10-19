@@ -20,16 +20,7 @@ if ( ! current_user_can( 'customize' ) ) {
 	);
 }
 
-<<<<<<< HEAD
 $wp_customize = $app['customize'];
-
-wp_reset_vars( [ 'url', 'return', 'autofocus' ] );
-=======
-/**
- * @global WP_Scripts           $wp_scripts
- * @global WP_Customize_Manager $wp_customize
- */
-global $wp_scripts, $wp_customize;
 
 if ( $wp_customize->changeset_post_id() ) {
 	if ( ! current_user_can( get_post_type_object( 'customize_changeset' )->cap->edit_post, $wp_customize->changeset_post_id() ) ) {
@@ -49,9 +40,8 @@ if ( $wp_customize->changeset_post_id() ) {
 	}
 }
 
+wp_reset_vars( [ 'url', 'return', 'autofocus' ] );
 
-wp_reset_vars( array( 'url', 'return', 'autofocus' ) );
->>>>>>> aaronjorbin/master
 if ( ! empty( $url ) ) {
 	$wp_customize->set_preview_url( wp_unslash( $url ) );
 }
@@ -62,16 +52,10 @@ if ( ! empty( $autofocus ) && is_array( $autofocus ) ) {
 	$wp_customize->set_autofocus( wp_unslash( $autofocus ) );
 }
 
-<<<<<<< HEAD
 $registered = $app['scripts.global']->registered;
 unset( $app['scripts.global'] );
 $app['scripts.global'] = $app['scripts.factory'];
 $app['scripts.global']->registered = $registered;
-=======
-$registered = $wp_scripts->registered;
-$wp_scripts = new WP_Scripts;
-$wp_scripts->registered = $registered;
->>>>>>> aaronjorbin/master
 
 add_action( 'customize_controls_print_scripts',        'print_head_scripts', 20 );
 add_action( 'customize_controls_print_footer_scripts', '_wp_footer_scripts'     );

@@ -632,18 +632,14 @@ function allowed_http_request_hosts( $is_external, $host ) {
  * @return bool
  */
 function ms_allowed_http_request_hosts( $is_external, $host ) {
-	$app = getApp();
-	$wpdb = $app['db'];
-	static $queried = [];
-	if ( $is_external ) {
-			return $is_external;
-	}
-	if ( $host === get_current_site()->domain ) {
-			return true;
-	}
-	if ( isset( $queried[ $host ] ) ) {
-			return $queried[ $host ];
-	}
+	global $wpdb;
+	static $queried = array();
+	if ( $is_external )
+		return $is_external;
+	if ( $host === get_network()->domain )
+		return true;
+	if ( isset( $queried[ $host ] ) )
+		return $queried[ $host ];
 	$queried[ $host ] = (bool) $wpdb->get_var( $wpdb->prepare( "SELECT domain FROM $wpdb->blogs WHERE domain = %s LIMIT 1", $host ) );
 	return $queried[ $host ];
 }

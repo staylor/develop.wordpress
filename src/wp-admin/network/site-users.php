@@ -32,7 +32,7 @@ $id = $_request->getInt( 'id', 0 );
 if ( ! $id )
 	wp_die( __('Invalid site ID.') );
 
-$details = get_blog_details( $id );
+$details = get_site( $id );
 if ( ! $details ) {
 	wp_die( __( 'The requested site does not exist.' ) );
 }

@@ -106,22 +106,11 @@ final class WP_Customize_Widgets {
 			return;
 		}
 
-<<<<<<< HEAD
-		add_filter( 'customize_dynamic_setting_args', array( $this, 'filter_customize_dynamic_setting_args' ), 10, 2 );
-		add_action( 'widgets_init', array( $this, 'register_settings' ), 95 );
-		add_action( 'wp_loaded', array( $this, 'override_sidebars_widgets_for_theme_switch' ) );
-		add_action( 'customize_controls_init', array( $this, 'customize_controls_init' ) );
-		add_action( 'customize_register', array( $this, 'schedule_customize_register' ), 1 );
-		add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'customize_controls_print_styles', array( $this, 'print_styles' ) );
-		add_action( 'customize_controls_print_scripts', array( $this, 'print_scripts' ) );
-=======
 		add_action( 'wp_loaded',                               array( $this, 'override_sidebars_widgets_for_theme_switch' ) );
 		add_action( 'customize_controls_init',                 array( $this, 'customize_controls_init' ) );
 		add_action( 'customize_controls_enqueue_scripts',      array( $this, 'enqueue_scripts' ) );
 		add_action( 'customize_controls_print_styles',         array( $this, 'print_styles' ) );
 		add_action( 'customize_controls_print_scripts',        array( $this, 'print_scripts' ) );
->>>>>>> aaronjorbin/master
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_footer_scripts' ) );
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'output_widget_control_templates' ) );
 		add_action( 'customize_preview_init', array( $this, 'customize_preview_init' ) );

@@ -64,11 +64,11 @@ if ( $_get->get( 'action' ) ) {
 			header( 'Content-Type: text/html; charset=utf-8' );
 		}
 
-		if ( $current_site->blog_id == $id ) {
+		if ( get_network()->site_id == $id ) {
 			wp_die( __( 'Sorry, you are not allowed to change the current site.' ) );
 		}
 
-		$site_details = get_blog_details( $id );
+		$site_details = get_site( $id );
 		$site_address = untrailingslashit( $site_details->domain . $site_details->path );
 
 		require_once( ABSPATH . 'wp-admin/admin-header.php' );

@@ -2861,6 +2861,8 @@ function wp_resource_hints() {
 	$hints['dns-prefetch'][] = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2.2.1/svg/' );
 
 	foreach ( $hints as $relation_type => $urls ) {
+		$unique_urls = array();
+
 		/**
 		 * Filters domains and URLs for resource hints of relation type.
 		 *
@@ -2872,16 +2874,31 @@ function wp_resource_hints() {
 		$urls = apply_filters( 'wp_resource_hints', $urls, $relation_type );
 
 		foreach ( $urls as $key => $url ) {
-			$url = esc_url( $url, array('http', 'https') );
+			$atts = array();
+
+			if ( is_array( $url ) ) {
+				if ( isset( $url['href'] ) ) {
+					$atts = $url;
+					$url  = $url['href'];
+				} else {
+					continue;
+				}
+			}
+
+			$url = esc_url( $url, array( 'http', 'https' ) );
+
 			if ( ! $url ) {
-				unset( $urls[ $key ] );
+				continue;
+			}
+
+			if ( isset( $unique_urls[ $url ] ) ) {
 				continue;
 			}
 
 			if ( in_array( $relation_type, array('preconnect', 'dns-prefetch') ) ) {
 				$parsed = wp_parse_url( $url );
+
 				if ( empty( $parsed['host'] ) ) {
-					unset( $urls[ $key ] );
 					continue;
 				}
 
@@ -2893,13 +2910,34 @@ function wp_resource_hints() {
 				}
 			}
 
-			$urls[ $key ] = $url;
+			$atts['rel'] = $relation_type;
+			$atts['href'] = $url;
+
+			$unique_urls[ $url ] = $atts;
 		}
 
-		$urls = array_unique( $urls );
+		foreach ( $unique_urls as $atts ) {
+			$html = '';
 
-		foreach ( $urls as $url ) {
-			printf( "<link rel='%s' href='%s' />\n", $relation_type, $url );
+			foreach ( $atts as $attr => $value ) {
+				if ( ! is_scalar( $value ) ||
+				     ( ! in_array( $attr, array( 'as', 'crossorigin', 'href', 'pr', 'rel', 'type' ), true ) && ! is_numeric( $attr ))
+				) {
+					continue;
+				}
+
+				$value = ( 'href' === $attr ) ? esc_url( $value ) : esc_attr( $value );
+
+				if ( ! is_string( $attr ) ) {
+					$html .= " $value";
+				} else {
+					$html .= " $attr='$value'";
+				}
+			}
+
+			$html = trim( $html );
+
+			echo "<link $html />\n";
 		}
 	}
 }

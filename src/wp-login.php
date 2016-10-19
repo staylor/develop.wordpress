@@ -105,7 +105,7 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 
 	if ( is_multisite() ) {
 		$login_header_url   = network_home_url();
-		$login_header_title = get_current_site()->site_name;
+		$login_header_title = get_network()->site_name;
 	} else {
 		$login_header_url   = __( 'https://wordpress.org/' );
 		$login_header_title = __( 'Powered by WordPress' );
@@ -351,7 +351,7 @@ function retrieve_password() {
 	$message .= '<' . network_site_url( $url, 'login' ) . ">\r\n";
 
 	if ( is_multisite() ) {
-		$blogname = get_current_site()->site_name;
+		$blogname = get_network()->site_name;
 	} else {
 		/*
 		 * The blogname option is escaped with esc_html on the way into the database

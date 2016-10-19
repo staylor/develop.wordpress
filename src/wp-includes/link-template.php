@@ -3323,13 +3323,12 @@ function network_site_url( $path = '', $scheme = null ) {
 			return site_url($path, $scheme);
 	}
 
-	$current_site = get_current_site();
+	$current_network = get_network();
 
-	if ( 'relative' == $scheme ) {
-			$url = $current_site->path;
-	} else {
-			$url = set_url_scheme( 'http://' . $current_site->domain . $current_site->path, $scheme );
-	}
+	if ( 'relative' == $scheme )
+		$url = $current_network->path;
+	else
+		$url = set_url_scheme( 'http://' . $current_network->domain . $current_network->path, $scheme );
 
 	if ( $path && is_string( $path ) ) {
 			$url .= ltrim( $path, '/' );
@@ -3368,18 +3367,17 @@ function network_home_url( $path = '', $scheme = null ) {
 			return home_url($path, $scheme);
 	}
 
-	$current_site = get_current_site();
+	$current_network = get_network();
 	$orig_scheme = $scheme;
 
 	if ( ! in_array( $scheme, array( 'http', 'https', 'relative' ) ) ) {
 			$scheme = is_ssl() && ! is_admin() ? 'https' : 'http';
 	}
 
-	if ( 'relative' == $scheme ) {
-			$url = $current_site->path;
-	} else {
-			$url = set_url_scheme( 'http://' . $current_site->domain . $current_site->path, $scheme );
-	}
+	if ( 'relative' == $scheme )
+		$url = $current_network->path;
+	else
+		$url = set_url_scheme( 'http://' . $current_network->domain . $current_network->path, $scheme );
 
 	if ( $path && is_string( $path ) ) {
 			$url .= ltrim( $path, '/' );

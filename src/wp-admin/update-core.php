@@ -89,6 +89,11 @@ if ( 'upgrade-core' == $action ) {
 	 */
 	do_action( 'core_upgrade_preamble' );
 	echo '</div>';
+
+	wp_localize_script( 'updates', '_wpUpdatesItemCounts', array(
+		'totals'  => wp_get_update_data(),
+	) );
+
 	include(ABSPATH . 'wp-admin/admin-footer.php');
 
 } elseif ( 'do-core-upgrade' == $action || 'do-core-reinstall' == $action ) {
@@ -112,6 +117,10 @@ if ( 'upgrade-core' == $action ) {
 
 	if ( $_post->get( 'upgrade' ) )
 		do_core_upgrade($reinstall);
+
+	wp_localize_script( 'updates', '_wpUpdatesItemCounts', array(
+		'totals'  => wp_get_update_data(),
+	) );
 
 	include(ABSPATH . 'wp-admin/admin-footer.php');
 
@@ -141,6 +150,11 @@ if ( 'upgrade-core' == $action ) {
 	echo '<h1>' . __( 'Update Plugins' ) . '</h1>';
 	echo '<iframe src="', $url, '" style="width: 100%; height: 100%; min-height: 750px;" frameborder="0" title="' . esc_attr__( 'Update progress' ) . '"></iframe>';
 	echo '</div>';
+
+	wp_localize_script( 'updates', '_wpUpdatesItemCounts', array(
+		'totals'  => wp_get_update_data(),
+	) );
+
 	include(ABSPATH . 'wp-admin/admin-footer.php');
 
 } elseif ( 'do-theme-upgrade' == $action ) {
@@ -171,6 +185,11 @@ if ( 'upgrade-core' == $action ) {
 		<iframe src="<?php echo $url ?>" style="width: 100%; height: 100%; min-height: 750px;" frameborder="0" title="<?php esc_attr_e( 'Update progress' ); ?>"></iframe>
 	</div>
 	<?php
+
+	wp_localize_script( 'updates', '_wpUpdatesItemCounts', array(
+		'totals'  => wp_get_update_data(),
+	) );
+
 	include(ABSPATH . 'wp-admin/admin-footer.php');
 
 } elseif ( 'do-translation-upgrade' == $action ) {
@@ -189,6 +208,10 @@ if ( 'upgrade-core' == $action ) {
 
 	$upgrader = new Language_Pack_Upgrader( new Language_Pack_Upgrader_Skin( compact( 'url', 'nonce', 'title', 'context' ) ) );
 	$result = $upgrader->bulk_upgrade();
+
+	wp_localize_script( 'updates', '_wpUpdatesItemCounts', array(
+		'totals'  => wp_get_update_data(),
+	) );
 
 	require_once( ABSPATH . 'wp-admin/admin-footer.php' );
 
