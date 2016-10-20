@@ -8,10 +8,6 @@ namespace WP\Customize;
  * @since 3.4.0
  */
 
-use \WP_Customize_Setting;
-use \WP_Customize_Panel;
-use \WP_Customize_Section;
-use \WP_Customize_Control;
 use function WP\getApp;
 
 /**
@@ -83,7 +79,7 @@ class Manager {
 	public $selective_refresh;
 
 	/**
-	 * Registered instances of WP_Customize_Setting.
+	 * Registered instances of \WP_Customize_Setting.
 	 *
 	 * @since 3.4.0
 	 * @access protected
@@ -92,7 +88,7 @@ class Manager {
 	protected $settings = [];
 
 	/**
-	 * Sorted top-level instances of WP_Customize_Panel and WP_Customize_Section.
+	 * Sorted top-level instances of \WP_Customize_Panel and \WP_Customize_Section.
 	 *
 	 * @since 4.0.0
 	 * @access protected
@@ -101,7 +97,7 @@ class Manager {
 	protected $containers = [];
 
 	/**
-	 * Registered instances of WP_Customize_Panel.
+	 * Registered instances of \WP_Customize_Panel.
 	 *
 	 * @since 4.0.0
 	 * @access protected
@@ -119,7 +115,7 @@ class Manager {
 	protected $components = array( 'widgets', 'nav_menus' );
 
 	/**
-	 * Registered instances of WP_Customize_Section.
+	 * Registered instances of \WP_Customize_Section.
 	 *
 	 * @since 3.4.0
 	 * @access protected
@@ -128,7 +124,7 @@ class Manager {
 	protected $sections = [];
 
 	/**
-	 * Registered instances of WP_Customize_Control.
+	 * Registered instances of \WP_Customize_Control.
 	 *
 	 * @since 3.4.0
 	 * @access protected
@@ -630,7 +626,7 @@ class Manager {
 	 * @see WP_Rest_Request::sanitize_params()
 	 * @see WP_Rest_Request::has_valid_params()
 	 *
-	 * @param WP_Customize_Setting $setting A WP_Customize_Setting derived object.
+	 * @param \WP_Customize_Setting $setting A \WP_Customize_Setting derived object.
 	 * @param mixed                $default Value returned $setting has no post value (added in 4.2.0)
 	 *                                      or the post value is invalid (added in 4.6.0).
 	 * @return string|mixed $post_value Sanitized value or the $default provided.
@@ -658,7 +654,7 @@ class Manager {
 	 * @since 4.2.0
 	 * @access public
 	 *
-	 * @param string $setting_id ID for the WP_Customize_Setting instance.
+	 * @param string $setting_id ID for the \WP_Customize_Setting instance.
 	 * @param mixed  $value      Post value.
 	 */
 	public function set_post_value( $setting_id, $value ) {
@@ -960,7 +956,7 @@ class Manager {
 	 * @access public
 	 *
 	 * @see WP_REST_Request::has_valid_params()
-	 * @see WP_Customize_Setting::validate()
+	 * @see \WP_Customize_Setting::validate()
 	 *
 	 * @param array $setting_values Mapping of setting IDs to values to validate and sanitize.
 	 * @return array Mapping of setting IDs to return value of validate method calls, either `true` or `WP_Error`.
@@ -1142,13 +1138,13 @@ class Manager {
 	 * Add a customize setting.
 	 *
 	 * @since 3.4.0
-	 * @since 4.5.0 Return added WP_Customize_Setting instance.
+	 * @since 4.5.0 Return added \WP_Customize_Setting instance.
 	 * @access public
 	 *
-	 * @param WP_Customize_Setting|string $id   Customize Setting object, or ID.
-	 * @param array                       $args Setting arguments; passed to WP_Customize_Setting
+	 * @param \WP_Customize_Setting|string $id   Customize Setting object, or ID.
+	 * @param array                       $args Setting arguments; passed to \WP_Customize_Setting
 	 *                                          constructor.
-	 * @return WP_Customize_Setting             The instance of the setting that was added.
+	 * @return \WP_Customize_Setting             The instance of the setting that was added.
 	 */
 	public function add_setting( $id, $args = [] ) {
 		if ( $id instanceof \WP_Customize_Setting ) {
@@ -1182,7 +1178,7 @@ class Manager {
 	 * @access public
 	 *
 	 * @param array $setting_ids The setting IDs to add.
-	 * @return array The WP_Customize_Setting objects added.
+	 * @return array The \WP_Customize_Setting objects added.
 	 */
 	public function add_dynamic_settings( $setting_ids ) {
 		$new_settings = [];
@@ -1200,11 +1196,11 @@ class Manager {
 			 *
 			 * For a dynamic setting to be registered, this filter must be employed
 			 * to override the default false value with an array of args to pass to
-			 * the WP_Customize_Setting constructor.
+			 * the \WP_Customize_Setting constructor.
 			 *
 			 * @since 4.2.0
 			 *
-			 * @param false|array $setting_args The arguments to the WP_Customize_Setting constructor.
+			 * @param false|array $setting_args The arguments to the \WP_Customize_Setting constructor.
 			 * @param string      $setting_id   ID for dynamic setting, usually coming from `$_POST['customized']`.
 			 */
 			$setting_args = apply_filters( 'customize_dynamic_setting_args', $setting_args, $setting_id );
@@ -1213,13 +1209,13 @@ class Manager {
 			}
 
 			/**
-			 * Allow non-statically created settings to be constructed with custom WP_Customize_Setting subclass.
+			 * Allow non-statically created settings to be constructed with custom \WP_Customize_Setting subclass.
 			 *
 			 * @since 4.2.0
 			 *
-			 * @param string $setting_class WP_Customize_Setting or a subclass.
+			 * @param string $setting_class \WP_Customize_Setting or a subclass.
 			 * @param string $setting_id    ID for dynamic setting, usually coming from `$_POST['customized']`.
-			 * @param array  $setting_args  WP_Customize_Setting or a subclass.
+			 * @param array  $setting_args  \WP_Customize_Setting or a subclass.
 			 */
 			$setting_class = apply_filters( 'customize_dynamic_setting_class', $setting_class, $setting_id, $setting_args );
 
@@ -1237,7 +1233,7 @@ class Manager {
 	 * @since 3.4.0
 	 *
 	 * @param string $id Customize Setting ID.
-	 * @return WP_Customize_Setting|void The setting, if set.
+	 * @return \WP_Customize_Setting|void The setting, if set.
 	 */
 	public function get_setting( $id ) {
 		if ( isset( $this->settings[ $id ] ) ) {
@@ -1260,13 +1256,13 @@ class Manager {
 	 * Add a customize panel.
 	 *
 	 * @since 4.0.0
-	 * @since 4.5.0 Return added WP_Customize_Panel instance.
+	 * @since 4.5.0 Return added \WP_Customize_Panel instance.
 	 * @access public
 	 *
-	 * @param WP_Customize_Panel|string $id   Customize Panel object, or Panel ID.
+	 * @param \WP_Customize_Panel|string $id   Customize Panel object, or Panel ID.
 	 * @param array                     $args Optional. Panel arguments. Default empty array.
 	 *
-	 * @return WP_Customize_Panel             The instance of the panel that was added.
+	 * @return \WP_Customize_Panel             The instance of the panel that was added.
 	 */
 	public function add_panel( $id, $args = [] ) {
 		if ( $id instanceof \WP_Customize_Panel ) {
@@ -1286,7 +1282,7 @@ class Manager {
 	 * @access public
 	 *
 	 * @param string $id Panel ID to get.
-	 * @return WP_Customize_Panel|void Requested panel instance, if set.
+	 * @return \WP_Customize_Panel|void Requested panel instance, if set.
 	 */
 	public function get_panel( $id ) {
 		if ( isset( $this->panels[ $id ] ) ) {
@@ -1324,9 +1320,9 @@ class Manager {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @see WP_Customize_Panel
+	 * @see \WP_Customize_Panel
 	 *
-	 * @param string $panel Name of a custom panel which is a subclass of WP_Customize_Panel.
+	 * @param string $panel Name of a custom panel which is a subclass of \WP_Customize_Panel.
 	 */
 	public function register_panel_type( $panel ) {
 		$this->registered_panel_types[] = $panel;
@@ -1349,13 +1345,13 @@ class Manager {
 	 * Add a customize section.
 	 *
 	 * @since 3.4.0
-	 * @since 4.5.0 Return added WP_Customize_Section instance.
+	 * @since 4.5.0 Return added \WP_Customize_Section instance.
 	 * @access public
 	 *
-	 * @param WP_Customize_Section|string $id   Customize Section object, or Section ID.
+	 * @param \WP_Customize_Section|string $id   Customize Section object, or Section ID.
 	 * @param array                       $args Section arguments.
 	 *
-	 * @return WP_Customize_Section             The instance of the section that was added.
+	 * @return \WP_Customize_Section             The instance of the section that was added.
 	 */
 	public function add_section( $id, $args = [] ) {
 		if ( $id instanceof \WP_Customize_Section ) {
@@ -1374,7 +1370,7 @@ class Manager {
 	 * @since 3.4.0
 	 *
 	 * @param string $id Section ID.
-	 * @return WP_Customize_Section|void The section, if set.
+	 * @return \WP_Customize_Section|void The section, if set.
 	 */
 	public function get_section( $id ) {
 		if ( isset( $this->sections[ $id ] ) ) {
@@ -1401,9 +1397,9 @@ class Manager {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @see WP_Customize_Section
+	 * @see \WP_Customize_Section
 	 *
-	 * @param string $section Name of a custom section which is a subclass of WP_Customize_Section.
+	 * @param string $section Name of a custom section which is a subclass of \WP_Customize_Section.
 	 */
 	public function register_section_type( $section ) {
 		$this->registered_section_types[] = $section;
@@ -1426,13 +1422,13 @@ class Manager {
 	 * Add a customize control.
 	 *
 	 * @since 3.4.0
-	 * @since 4.5.0 Return added WP_Customize_Control instance.
+	 * @since 4.5.0 Return added \WP_Customize_Control instance.
 	 * @access public
 	 *
-	 * @param WP_Customize_Control|string $id   Customize Control object, or ID.
-	 * @param array                       $args Control arguments; passed to WP_Customize_Control
+	 * @param \WP_Customize_Control|string $id   Customize Control object, or ID.
+	 * @param array                       $args Control arguments; passed to \WP_Customize_Control
 	 *                                          constructor.
-	 * @return WP_Customize_Control             The instance of the control that was added.
+	 * @return \WP_Customize_Control             The instance of the control that was added.
 	 */
 	public function add_control( $id, $args = [] ) {
 		if ( $id instanceof \WP_Customize_Control ) {
@@ -1451,7 +1447,7 @@ class Manager {
 	 * @since 3.4.0
 	 *
 	 * @param string $id ID of the control.
-	 * @return WP_Customize_Control|void The control object, if set.
+	 * @return \WP_Customize_Control|void The control object, if set.
 	 */
 	public function get_control( $id ) {
 		if ( isset( $this->controls[ $id ] ) ) {
@@ -1479,7 +1475,7 @@ class Manager {
 	 * @access public
 	 *
 	 * @param string $control Name of a custom control which is a subclass of
-	 *                        WP_Customize_Control.
+	 *                        \WP_Customize_Control.
 	 */
 	public function register_control_type( $control ) {
 		$this->registered_control_types[] = $control;
@@ -1514,8 +1510,8 @@ class Manager {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Customize_Panel|WP_Customize_Section|WP_Customize_Control $a Object A.
-	 * @param WP_Customize_Panel|WP_Customize_Section|WP_Customize_Control $b Object B.
+	 * @param \WP_Customize_Panel|\WP_Customize_Section|\WP_Customize_Control $a Object A.
+	 * @param \WP_Customize_Panel|\WP_Customize_Section|\WP_Customize_Control $b Object B.
 	 * @return int
 	 */
 	protected function _cmp_priority( $a, $b ) {
@@ -2152,7 +2148,7 @@ class Manager {
 			'theme_supports' => 'custom-header',
 		) ) );
 
-		$this->add_control( new \WP_Customize_Header_Image_Control( $this ) );
+		$this->add_control( new Control\HeaderImage( $this ) );
 
 		/* Custom Background */
 
