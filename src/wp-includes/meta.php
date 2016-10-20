@@ -871,13 +871,13 @@ function update_meta_cache($meta_type, $object_ids) {
  *
  * @since 4.5.0
  *
- * @return WP_Metadata_Lazyloader $lazyloader Metadata lazyloader queue.
+ * @return \WP\Meta\Lazyloader $lazyloader Metadata lazyloader queue.
  */
 function wp_metadata_lazyloader() {
 	static $wp_metadata_lazyloader;
 
 	if ( null === $wp_metadata_lazyloader ) {
-		$wp_metadata_lazyloader = new WP_Metadata_Lazyloader();
+		$wp_metadata_lazyloader = new \WP\Meta\Lazyloader();
 	}
 
 	return $wp_metadata_lazyloader;
