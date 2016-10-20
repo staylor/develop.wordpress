@@ -66,16 +66,11 @@ function create_initial_taxonomies() {
 			'edit_terms'   => 'edit_categories',
 			'delete_terms' => 'delete_categories',
 			'assign_terms' => 'assign_categories',
-<<<<<<< HEAD
 		],
-	] );
-=======
-		),
 		'show_in_rest' => true,
 		'rest_base' => 'categories',
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
-	) );
->>>>>>> aaronjorbin/master
+	] );
 
 	register_taxonomy( 'post_tag', 'post', [
 		'hierarchical' => false,
@@ -90,16 +85,11 @@ function create_initial_taxonomies() {
 			'edit_terms'   => 'edit_post_tags',
 			'delete_terms' => 'delete_post_tags',
 			'assign_terms' => 'assign_post_tags',
-<<<<<<< HEAD
 		],
-	] );
-=======
-		),
 		'show_in_rest' => true,
 		'rest_base' => 'tags',
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
-	) );
->>>>>>> aaronjorbin/master
+	] );
 
 	register_taxonomy( 'nav_menu', 'nav_menu_item', [
 		'public' => false,
