@@ -8,7 +8,6 @@ namespace WP\Customize\HeaderImage;
  * @since 4.4.0
  */
 
-use WP\Mustache;
 use WP\Customize\Manager;
 use WP\Customize\Image\Control as ImageControl;
 use function WP\getApp;
@@ -19,8 +18,6 @@ use function WP\getApp;
  * @since 3.4.0
  */
 class Control extends ImageControl {
-	use Mustache;
-
 	public $type = 'header';
 	public $uploaded_headers;
 	public $default_headers;
@@ -92,8 +89,10 @@ class Control extends ImageControl {
 	 * @access public
 	 */
 	public function print_header_image_template() {
+		$app = getApp();
+
 		$path = 'customize/control/header-image/template/';
-		echo $this->render( $path . 'choice', [
+		echo $app['mustache']->render( $path . 'choice', [
 			'l10n' => [
 				'remove_image' => __( 'Remove image' ),
 				'set_image' => __( 'Set image' ),
@@ -102,7 +101,7 @@ class Control extends ImageControl {
 			]
 		] );
 
-		echo $this->render( $path . 'current', [
+		echo $app['mustache']->render( $path . 'current', [
 			'l10n' => [
 				'no_image_set' => __( 'No image set.' ),
 				'randomizing_uploaded_headers' => __( 'Randomizing uploaded headers' ),
@@ -126,6 +125,7 @@ class Control extends ImageControl {
 	 * @access public
 	 */
 	public function render_content() {
+		$app = getApp();
 		$this->print_header_image_template();
 		$visibility = $this->get_current_image_src() ? '' : ' style="display:none" ';
 		$width = absint( get_theme_support( 'custom-header', 'width' ) );
@@ -148,7 +148,7 @@ class Control extends ImageControl {
 			);
 		}
 
-		echo $this->render( 'customize/control/header-image/content', [
+		echo $app['mustache']->render( 'customize/control/header-image/content', [
 			'intro' => $intro,
 			'visibility' => $visibility,
 			'l10n' => [

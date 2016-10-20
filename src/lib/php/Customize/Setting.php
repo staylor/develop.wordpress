@@ -290,7 +290,7 @@ class Setting {
 		 * then the preview short-circuits because there is nothing that needs
 		 * to be previewed.
 		 */
-		$undefined = \new stdClass();
+		$undefined = new \stdClass();
 		$needs_preview = ( $undefined !== $this->post_value( $undefined ) );
 
 		// Since no post value was defined, check if we have an initial value set.

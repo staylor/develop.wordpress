@@ -10,6 +10,7 @@ function getApp( App $app = null ) {
 	if ( ! $store ) {
 		$store = new App();
 		$store->register( new Provider() );
+		$store->register( new Template\Provider() );
 		$store->register( new Symfony\Provider() );
 		$store->register( new Dependency\Provider() );
 	}

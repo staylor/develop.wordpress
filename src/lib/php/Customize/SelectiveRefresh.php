@@ -101,7 +101,7 @@ class SelectiveRefresh {
 		if ( $id instanceof Partial ) {
 			$partial = $id;
 		} else {
-			$class = 'Partial';
+			$class = Partial::class;
 
 			/** This filter (will be) documented in wp-includes/class-wp-customize-manager.php */
 			$args = apply_filters( 'customize_dynamic_partial_args', $args, $id );

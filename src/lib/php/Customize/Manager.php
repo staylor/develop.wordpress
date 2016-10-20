@@ -8,6 +8,7 @@ namespace WP\Customize;
  * @since 3.4.0
  */
 
+use WP_Query;
 use WP\Error;
 use function WP\getApp;
 
@@ -197,14 +198,48 @@ class Manager {
 	protected $autofocus = [];
 
 	/**
+	 * Messenger channel.
+	 *
+	 * @since 4.7.0
+	 * @access protected
+	 * @var string
+	 */
+	protected $messenger_channel;
+	/**
 	 * Unsanitized values for Customize Settings parsed from $_POST['customized'].
 	 *
 	 * @var array
 	 */
 	private $_post_values;
-
+	/**
+	 * Changeset UUID.
+	 *
+	 * @since 4.7.0
+	 * @access private
+	 * @var string
+	 */
+	private $_changeset_uuid;
+	/**
+	 * Changeset post ID.
+	 *
+	 * @since 4.7.0
+	 * @access private
+	 * @var int|false
+	 */
+	private $_changeset_post_id;
+	/**
+	 * Changeset data loaded from a customize_changeset post.
+	 *
+	 * @since 4.7.0
+	 * @access private
+	 * @var array
+	 */
+	private $_changeset_data;
 	/**
 	 * Constructor.
+	 *
+	 * @since 3.4.0
+	 * @since 4.7.0 Added $args param.
 	 *
 	 * @since 3.4.0
 	 */
@@ -470,6 +505,18 @@ class Manager {
 	}
 
 	/**
+	 * Get the changeset UUID.
+	 *
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @return string UUID.
+	 */
+	public function changeset_uuid() {
+		return $this->_changeset_uuid;
+	}
+
+	/**
 	 * Get the theme being customized.
 	 *
 	 * @since 3.4.0
@@ -591,28 +638,189 @@ class Manager {
 	}
 
 	/**
-	 * Parse the incoming $_POST['customized'] JSON data and store the unsanitized
-	 * settings for subsequent post_value() lookups.
+	 * Find the changeset post ID for a given changeset UUID.
+	 *
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @param string $uuid Changeset UUID.
+	 * @return int|null Returns post ID on success and null on failure.
+	 */
+	public function find_changeset_post_id( $uuid ) {
+		$cache_group = 'customize_changeset_post';
+		$changeset_post_id = wp_cache_get( $uuid, $cache_group );
+		if ( $changeset_post_id && 'customize_changeset' === get_post_type( $changeset_post_id ) ) {
+			return $changeset_post_id;
+		}
+		$changeset_post_query = new WP_Query( array(
+			'post_type' => 'customize_changeset',
+			'post_status' => get_post_stati(),
+			'name' => $uuid,
+			'number' => 1,
+			'no_found_rows' => true,
+			'cache_results' => true,
+			'update_post_meta_cache' => false,
+			'update_term_meta_cache' => false,
+		) );
+		if ( ! empty( $changeset_post_query->posts ) ) {
+			// Note: 'fields'=>'ids' is not being used in order to cache the post object as it will be needed.
+			$changeset_post_id = $changeset_post_query->posts[0]->ID;
+			wp_cache_set( $this->_changeset_uuid, $changeset_post_id, $cache_group );
+			return $changeset_post_id;
+		}
+		return null;
+	}
+	/**
+	 * Get the changeset post id for the loaded changeset.
+	 *
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @return int|null Post ID on success or null if there is no post yet saved.
+	 */
+	public function changeset_post_id() {
+		if ( ! isset( $this->_changeset_post_id ) ) {
+			$post_id = $this->find_changeset_post_id( $this->_changeset_uuid );
+			if ( ! $post_id ) {
+				$post_id = false;
+			}
+			$this->_changeset_post_id = $post_id;
+		}
+		if ( false === $this->_changeset_post_id ) {
+			return null;
+		}
+		return $this->_changeset_post_id;
+	}
+	/**
+	 * Get the data stored in a changeset post.
+	 *
+	 * @since 4.7.0
+	 * @access protected
+	 *
+	 * @param int $post_id Changeset post ID.
+	 * @return array|WP_Error Changeset data or WP_Error on error.
+	 */
+	protected function get_changeset_post_data( $post_id ) {
+		if ( ! $post_id ) {
+			return new WP_Error( 'empty_post_id' );
+		}
+		$changeset_post = get_post( $post_id );
+		if ( ! $changeset_post ) {
+			return new WP_Error( 'missing_post' );
+		}
+		if ( 'customize_changeset' !== $changeset_post->post_type ) {
+			return new WP_Error( 'wrong_post_type' );
+		}
+		$changeset_data = json_decode( $changeset_post->post_content, true );
+		if ( function_exists( 'json_last_error' ) && json_last_error() ) {
+			return new WP_Error( 'json_parse_error', '', json_last_error() );
+		}
+		if ( ! is_array( $changeset_data ) ) {
+			return new WP_Error( 'expected_array' );
+		}
+		return $changeset_data;
+	}
+	/**
+	 * Get changeset data.
+	 *
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @return array Changeset data.
+	 */
+	public function changeset_data() {
+		if ( isset( $this->_changeset_data ) ) {
+			return $this->_changeset_data;
+		}
+		$changeset_post_id = $this->changeset_post_id();
+		if ( ! $changeset_post_id ) {
+			$this->_changeset_data = array();
+		} else {
+			$data = $this->get_changeset_post_data( $changeset_post_id );
+			if ( ! is_wp_error( $data ) ) {
+				$this->_changeset_data = $data;
+			} else {
+				$this->_changeset_data = array();
+			}
+		}
+		return $this->_changeset_data;
+	}
+	/**
+	 * Get dirty pre-sanitized setting values in the current customized state.
+	 *
+	 * The returned array consists of a merge of three sources:
+	 * 1. If the theme is not currently active, then the base array is any stashed
+	 *    theme mods that were modified previously but never published.
+	 * 2. The values from the current changeset, if it exists.
+	 * 3. If the user can customize, the values parsed from the incoming
+	 *    `$_POST['customized']` JSON data.
+	 * 4. Any programmatically-set post values via `WP_Customize_Manager::set_post_value()`.
+	 *
+	 * The name "unsanitized_post_values" is a carry-over from when the customized
+	 * state was exclusively sourced from `$_POST['customized']`. Nevertheless,
+	 * the value returned will come from the current changeset post and from the
+	 * incoming post data.
 	 *
 	 * @since 4.1.1
+	 * @since 4.7.0 Added $args param and merging with changeset values and stashed theme mods.
 	 *
+	 * @param array $args {
+	 *     Args.
+	 *
+	 *     @type bool $exclude_changeset Whether the changeset values should also be excluded. Defaults to false.
+	 *     @type bool $exclude_post_data Whether the post input values should also be excluded. Defaults to false when lacking the customize capability.
+	 * }
 	 * @return array
 	 */
-	public function unsanitized_post_values() {
-		if ( ! isset( $this->_post_values ) ) {
-			if ( isset( $_POST['customized'] ) ) {
-				$value = wp_unslash( $_POST['customized'] );
-				$this->_post_values = json_decode( $value, true );
-			}
-			if ( empty( $this->_post_values ) ) { // if not isset or if JSON error
-				$this->_post_values = [];
+	public function unsanitized_post_values( $args = array() ) {
+		$args = array_merge(
+			array(
+				'exclude_changeset' => false,
+				'exclude_post_data' => ! current_user_can( 'customize' ),
+			),
+			$args
+		);
+		$values = array();
+		// Let default values be from the stashed theme mods if doing a theme switch and if no changeset is present.
+		if ( ! $this->is_theme_active() ) {
+			$stashed_theme_mods = get_option( 'customize_stashed_theme_mods' );
+			$stylesheet = $this->get_stylesheet();
+			if ( isset( $stashed_theme_mods[ $stylesheet ] ) ) {
+				$values = array_merge( $values, wp_list_pluck( $stashed_theme_mods[ $stylesheet ], 'value' ) );
 			}
 		}
-		if ( empty( $this->_post_values ) ) {
-			return [];
-		} else {
-			return $this->_post_values;
+		if ( ! $args['exclude_changeset'] ) {
+			foreach ( $this->changeset_data() as $setting_id => $setting_params ) {
+				if ( ! array_key_exists( 'value', $setting_params ) ) {
+					continue;
+				}
+				if ( isset( $setting_params['type'] ) && 'theme_mod' === $setting_params['type'] ) {
+					// Ensure that theme mods values are only used if they were saved under the current theme.
+					$namespace_pattern = '/^(?P<stylesheet>.+?)::(?P<setting_id>.+)$/';
+					if ( preg_match( $namespace_pattern, $setting_id, $matches ) && $this->get_stylesheet() === $matches['stylesheet'] ) {
+						$values[ $matches['setting_id'] ] = $setting_params['value'];
+					}
+				} else {
+					$values[ $setting_id ] = $setting_params['value'];
+				}
+			}
 		}
+		if ( ! $args['exclude_post_data'] ) {
+			if ( ! isset( $this->_post_values ) ) {
+				if ( isset( $_POST['customized'] ) ) {
+					$post_values = json_decode( wp_unslash( $_POST['customized'] ), true );
+				} else {
+					$post_values = array();
+				}
+				if ( is_array( $post_values ) ) {
+					$this->_post_values = $post_values;
+				} else {
+					$this->_post_values = array();
+				}
+			}
+			$values = array_merge( $values, $this->_post_values );
+		}
+		return $values;
 	}
 
 	/**
@@ -2142,7 +2350,7 @@ class Manager {
 			'theme_supports' => 'custom-header',
 		) ) );
 
-		$this->add_setting( new HeaderImageSetting( $this, 'header_image_data', array(
+		$this->add_setting( new HeaderImage\Setting( $this, 'header_image_data', array(
 			'theme_supports' => 'custom-header',
 		) ) );
 
@@ -2161,7 +2369,7 @@ class Manager {
 			'theme_supports' => 'custom-background',
 		) );
 
-		$this->add_setting( new BackgroundImageSetting( $this, 'background_image_thumb', array(
+		$this->add_setting( new BackgroundImage\Setting( $this, 'background_image_thumb', array(
 			'theme_supports' => 'custom-background',
 		) ) );
 
