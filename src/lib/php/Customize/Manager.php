@@ -8,6 +8,7 @@ namespace WP\Customize;
  * @since 3.4.0
  */
 
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -473,7 +474,7 @@ class Manager {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return WP_Theme
+	 * @return \WP_Theme
 	 */
 	public function theme() {
 		if ( ! $this->theme ) {
@@ -622,9 +623,9 @@ class Manager {
 	 * @since 4.6.0 `$default` is now returned early when the setting post value is invalid.
 	 * @access public
 	 *
-	 * @see WP_REST_Server::dispatch()
-	 * @see WP_Rest_Request::sanitize_params()
-	 * @see WP_Rest_Request::has_valid_params()
+	 * @see \WP_REST_Server::dispatch()
+	 * @see \WP_Rest_Request::sanitize_params()
+	 * @see \WP_Rest_Request::has_valid_params()
 	 *
 	 * @param Setting $setting A Setting derived object.
 	 * @param mixed   $default Value returned $setting has no post value (added in 4.2.0)
@@ -949,17 +950,17 @@ class Manager {
 	 *
 	 * Validation is skipped for unregistered settings or for values that are
 	 * already null since they will be skipped anyway. Sanitization is applied
-	 * to values that pass validation, and values that become null or `WP_Error`
+	 * to values that pass validation, and values that become null or `Error`
 	 * after sanitizing are marked invalid.
 	 *
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @see WP_REST_Request::has_valid_params()
+	 * @see \WP_REST_Request::has_valid_params()
 	 * @see Setting::validate()
 	 *
 	 * @param array $setting_values Mapping of setting IDs to values to validate and sanitize.
-	 * @return array Mapping of setting IDs to return value of validate method calls, either `true` or `WP_Error`.
+	 * @return array Mapping of setting IDs to return value of validate method calls, either `true` or `Error`.
 	 */
 	public function validate_setting_values( $setting_values ) {
 		$validities = [];
@@ -973,7 +974,7 @@ class Manager {
 				/** This filter is documented in wp-includes/class-wp-customize-setting.php */
 				$late_validity = apply_filters(
 					'customize_validate_' . $setting->id,
-					new \WP_Error(),
+					new Error(),
 					$unsanitized_value,
 					$setting
 				);
@@ -990,7 +991,7 @@ class Manager {
 				}
 			}
 			if ( false === $validity ) {
-				$validity = new \WP_Error( 'invalid_value', __( 'Invalid value.' ) );
+				$validity = new Error( 'invalid_value', __( 'Invalid value.' ) );
 			}
 			$validities[ $setting_id ] = $validity;
 		}
@@ -1000,14 +1001,14 @@ class Manager {
 	/**
 	 * Prepares setting validity for exporting to the client (JS).
 	 *
-	 * Converts `WP_Error` instance into array suitable for passing into the
+	 * Converts `Error` instance into array suitable for passing into the
 	 * `wp.customize.Notification` JS model.
 	 *
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @param true|WP_Error $validity Setting validity.
-	 * @return true|array If `$validity` was a WP_Error, the error codes will be array-mapped
+	 * @param true|Error $validity Setting validity.
+	 * @return true|array If `$validity` was a Error, the error codes will be array-mapped
 	 *                    to their respective `message` and `data` to pass into the
 	 *                    `wp.customize.Notification` JS model.
 	 */

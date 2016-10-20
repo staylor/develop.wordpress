@@ -9,6 +9,8 @@ namespace WP\Customize\NavMenu;
  */
 
 use WP\Customize\Manager as CustomizeManager;
+use WP\Error;
+use WP_Query;
 use function WP\getApp;
 
 /**
@@ -132,7 +134,7 @@ class Manager {
 	 *                         'post_type' and 'taxonomy'. Default is 'post_type'.
 	 * @param string $object Optional. Accepts any registered taxonomy or post type name. Default is 'page'.
 	 * @param int    $page   Optional. The page number used to generate the query offset. Default is '0'.
-	 * @return WP_Error|array Returns either a WP_Error object or an array of menu items.
+	 * @return Error|array Returns either a Error object or an array of menu items.
 	 */
 	public function load_available_items_query( $type = 'post_type', $object = 'page', $page = 0 ) {
 		$items = [];
@@ -140,7 +142,7 @@ class Manager {
 		if ( 'post_type' === $type ) {
 			$post_type = get_post_type_object( $object );
 			if ( ! $post_type ) {
-				return new WP_Error( 'nav_menus_invalid_post_type' );
+				return new Error( 'nav_menus_invalid_post_type' );
 			}
 
 			if ( 0 === $page && 'page' === $object ) {
@@ -272,7 +274,7 @@ class Manager {
 	/**
 	 * Performs post queries for available-item searching.
 	 *
-	 * Based on WP_Editor::wp_link_query().
+	 * Based on \WP_Editor::wp_link_query().
 	 *
 	 * @since 4.3.0
 	 * @access public
@@ -748,11 +750,11 @@ class Manager {
 	 *     @var string $post_title Post title.
 	 *     @var string $post_type  Post type.
 	 * }
-	 * @return WP_Post|WP_Error Inserted auto-draft post object or error.
+	 * @return \WP_Post|Error Inserted auto-draft post object or error.
 	 */
 	public function insert_auto_draft_post( $postarr ) {
 		if ( ! isset( $postarr['post_type'] ) || ! post_type_exists( $postarr['post_type'] )  ) {
-			return new WP_Error( 'unknown_post_type', __( 'Unknown post type' ) );
+			return new Error( 'unknown_post_type', __( 'Unknown post type' ) );
 		}
 		if ( ! isset( $postarr['post_title'] ) ) {
 			$postarr['post_title'] = '';

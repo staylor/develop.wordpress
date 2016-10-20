@@ -148,7 +148,7 @@ class Panel {
 	 * @param string               $id      An specific ID for the panel.
 	 * @param array                $args    Panel arguments.
 	 */
-	public function __construct( $manager, $id, $args = [] ) {
+	public function __construct( Manager $manager, $id, $args = [] ) {
 		$keys = array_keys( get_object_vars( $this ) );
 		foreach ( $keys as $key ) {
 			if ( isset( $args[ $key ] ) ) {

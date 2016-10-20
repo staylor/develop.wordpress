@@ -8,7 +8,8 @@ namespace WP\Customize\NavMenu;
  * @since 4.4.0
  */
 
-use WP\Customize\{Manager, Setting as BaseSetting};
+use WP\Error;
+use WP\Customize\{Manager as CustomizeManager, Setting as BaseSetting};
 
 /**
  * Customize Setting to represent a nav_menu.
@@ -121,7 +122,7 @@ class Setting extends BaseSetting {
 	 *
 	 * @since 4.3.0
 	 * @access public
-	 * @var WP_Error
+	 * @var Error
 	 *
 	 * @see Setting::update()
 	 * @see Setting::amend_customize_save_response()
@@ -136,20 +137,20 @@ class Setting extends BaseSetting {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @param Manager $manager Bootstrap Customizer instance.
+	 * @param CustomizeManager     $manager Bootstrap Customizer instance.
 	 * @param string               $id      An specific ID of the setting. Can be a
 	 *                                      theme mod or option name.
 	 * @param array                $args    Optional. Setting arguments.
 	 *
 	 * @throws Exception If $id is not valid for this setting type.
 	 */
-	public function __construct( Manager $manager, $id, array $args = [] ) {
+	public function __construct( CustomizeManager $manager, $id, array $args = [] ) {
 		if ( empty( $manager->nav_menus ) ) {
-			throw new Exception( 'Expected Manager::$nav_menus to be set.' );
+			throw new \Exception( 'Expected CustomizeManager::$nav_menus to be set.' );
 		}
 
 		if ( ! preg_match( self::ID_PATTERN, $id, $matches ) ) {
-			throw new Exception( "Illegal widget setting ID: $id" );
+			throw new \Exception( "Illegal widget setting ID: $id" );
 		}
 
 		$this->term_id = intval( $matches['id'] );
@@ -169,7 +170,7 @@ class Setting extends BaseSetting {
 	 */
 	public function value() {
 		if ( $this->is_previewed && $this->_previewed_blog_id === get_current_blog_id() ) {
-			$undefined  = new stdClass(); // Symbol.
+			$undefined  = new \stdClass(); // Symbol.
 			$post_value = $this->post_value( $undefined );
 
 			if ( $undefined === $post_value ) {
@@ -210,7 +211,7 @@ class Setting extends BaseSetting {
 	 * @since 4.4.0 Added boolean return value
 	 * @access public
 	 *
-	 * @see Manager::post_value()
+	 * @see CustomizeManager::post_value()
 	 *
 	 * @return bool False if method short-circuited due to no-op.
 	 */
@@ -219,7 +220,7 @@ class Setting extends BaseSetting {
 			return false;
 		}
 
-		$undefined = new stdClass();
+		$undefined = new \stdClass();
 		$is_placeholder = ( $this->term_id < 0 );
 		$is_dirty = ( $undefined !== $this->post_value( $undefined ) );
 		if ( ! $is_placeholder && ! $is_dirty ) {

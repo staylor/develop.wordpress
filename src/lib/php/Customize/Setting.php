@@ -7,7 +7,7 @@ namespace WP\Customize;
  * @subpackage Customize
  * @since 3.4.0
  */
-
+use WP\Error;
 /**
  * Customize Setting class.
  *
@@ -123,7 +123,7 @@ class Setting {
 	 *                                      theme mod or option name.
 	 * @param array                $args    Setting arguments.
 	 */
-	public function __construct( $manager, $id, $args = [] ) {
+	public function __construct( Manager $manager, $id, $args = [] ) {
 		$keys = array_keys( get_object_vars( $this ) );
 		foreach ( $keys as $key ) {
 			if ( isset( $args[ $key ] ) ) {
@@ -290,7 +290,7 @@ class Setting {
 		 * then the preview short-circuits because there is nothing that needs
 		 * to be previewed.
 		 */
-		$undefined = new stdClass();
+		$undefined = \new stdClass();
 		$needs_preview = ( $undefined !== $this->post_value( $undefined ) );
 
 		// Since no post value was defined, check if we have an initial value set.
@@ -404,7 +404,7 @@ class Setting {
 			return $original;
 		}
 
-		$undefined = new stdClass(); // Symbol hack.
+		$undefined = new \stdClass(); // Symbol hack.
 		$post_value = $this->post_value( $undefined );
 		if ( $undefined !== $post_value ) {
 			$value = $post_value;
@@ -515,7 +515,7 @@ class Setting {
 	 * @since 3.4.0
 	 *
 	 * @param string|array $value    The value to sanitize.
-	 * @return string|array|null|WP_Error Sanitized value, or `null`/`WP_Error` if invalid.
+	 * @return string|array|null|Error Sanitized value, or `null`/`Error` if invalid.
 	 */
 	public function sanitize( $value ) {
 
@@ -536,32 +536,32 @@ class Setting {
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @see WP_REST_Request::has_valid_params()
+	 * @see \WP_REST_Request::has_valid_params()
 	 *
 	 * @param mixed $value Value to validate.
-	 * @return true|WP_Error True if the input was validated, otherwise WP_Error.
+	 * @return true|Error True if the input was validated, otherwise Error.
 	 */
 	public function validate( $value ) {
 		if ( is_wp_error( $value ) ) {
 			return $value;
 		}
 		if ( is_null( $value ) ) {
-			return new WP_Error( 'invalid_value', __( 'Invalid value.' ) );
+			return new Error( 'invalid_value', __( 'Invalid value.' ) );
 		}
 
-		$validity = new WP_Error();
+		$validity = new Error();
 
 		/**
 		 * Validates a Customize setting value.
 		 *
-		 * Plugins should amend the `$validity` object via its `WP_Error::add()` method.
+		 * Plugins should amend the `$validity` object via its `Error::add()` method.
 		 *
 		 * The dynamic portion of the hook name, `$this->ID`, refers to the setting ID.
 		 *
 		 * @since 4.6.0
 		 *
-		 * @param WP_Error             $validity Filtered from `true` to `WP_Error` when invalid.
-		 * @param mixed                $value    Value of the setting.
+		 * @param Error             $validity Filtered from `true` to `Error` when invalid.
+		 * @param mixed             $value    Value of the setting.
 		 * @param Setting $this     Setting instance.
 		 */
 		$validity = apply_filters( "customize_validate_{$this->id}", $validity, $value, $this );

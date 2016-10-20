@@ -169,7 +169,7 @@ class Section {
 	 * @param string               $id      An specific ID of the section.
 	 * @param array                $args    Section arguments.
 	 */
-	public function __construct( $manager, $id, $args = [] ) {
+	public function __construct( Manager $manager, $id, $args = [] ) {
 		$keys = array_keys( get_object_vars( $this ) );
 		foreach ( $keys as $key ) {
 			if ( isset( $args[ $key ] ) ) {

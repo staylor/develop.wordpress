@@ -8,7 +8,9 @@ namespace WP\Customize\NavMenu;
  * @since 4.4.0
  */
 
-use WP\Customize\{Manager, Setting as BaseSetting};
+use WP_Post;
+use WP\Error;
+use WP\Customize\{Manager as CustomizeManager, Setting as BaseSetting};
 
 /**
  * Customize Setting to represent a nav_menu.
@@ -152,7 +154,7 @@ class ItemSetting extends BaseSetting {
 	 *
 	 * @since 4.3.0
 	 * @access public
-	 * @var \WP_Error
+	 * @var Error
 	 *
 	 * @see ItemSetting::update()
 	 * @see ItemSetting::amend_customize_save_response()
@@ -167,20 +169,20 @@ class ItemSetting extends BaseSetting {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @param Manager $manager Bootstrap Customizer instance.
+	 * @param CustomizeManager     $manager Bootstrap Customizer instance.
 	 * @param string               $id      An specific ID of the setting. Can be a
 	 *                                      theme mod or option name.
 	 * @param array                $args    Optional. Setting arguments.
 	 *
 	 * @throws Exception If $id is not valid for this setting type.
 	 */
-	public function __construct( Manager $manager, $id, array $args = [] ) {
+	public function __construct( CustomizeManager $manager, $id, array $args = [] ) {
 		if ( empty( $manager->nav_menus ) ) {
-			throw new Exception( 'Expected Manager::$nav_menus to be set.' );
+			throw new \Exception( 'Expected CustomizeManager::$nav_menus to be set.' );
 		}
 
 		if ( ! preg_match( self::ID_PATTERN, $id, $matches ) ) {
-			throw new Exception( "Illegal widget setting ID: $id" );
+			throw new \Exception( "Illegal widget setting ID: $id" );
 		}
 
 		$this->post_id = intval( $matches['id'] );
@@ -192,7 +194,7 @@ class ItemSetting extends BaseSetting {
 		if ( isset( $this->value ) ) {
 			$this->populate_value();
 			foreach ( array_diff( array_keys( $this->default ), array_keys( $this->value ) ) as $missing ) {
-				throw new Exception( "Supplied nav_menu_item value missing property: $missing" );
+				throw new \Exception( "Supplied nav_menu_item value missing property: $missing" );
 			}
 		}
 
@@ -226,7 +228,7 @@ class ItemSetting extends BaseSetting {
 	 */
 	public function value() {
 		if ( $this->is_previewed && $this->_previewed_blog_id === get_current_blog_id() ) {
-			$undefined  = new stdClass(); // Symbol.
+			$undefined  = new \stdClass(); // Symbol.
 			$post_value = $this->post_value( $undefined );
 
 			if ( $undefined === $post_value ) {
@@ -290,7 +292,7 @@ class ItemSetting extends BaseSetting {
 			}
 		} elseif ( 'taxonomy' === $item->type ) {
 			$original_term_title = get_term_field( 'name', $item->object_id, $item->object, 'raw' );
-			if ( ! is_\WP_Error( $original_term_title ) ) {
+			if ( ! is_wp_error( $original_term_title ) ) {
 				$original_title = $original_term_title;
 			}
 		}
@@ -402,7 +404,7 @@ class ItemSetting extends BaseSetting {
 	 * @since 4.4.0 Added boolean return value.
 	 * @access public
 	 *
-	 * @see Manager::post_value()
+	 * @see CustomizeManager::post_value()
 	 *
 	 * @return bool False if method short-circuited due to no-op.
 	 */
@@ -411,7 +413,7 @@ class ItemSetting extends BaseSetting {
 			return false;
 		}
 
-		$undefined = new stdClass();
+		$undefined = new \stdClass();
 		$is_placeholder = ( $this->post_id < 0 );
 		$is_dirty = ( $undefined !== $this->post_value( $undefined ) );
 		if ( ! $is_placeholder && ! $is_dirty ) {
@@ -736,7 +738,7 @@ class ItemSetting extends BaseSetting {
 				$r = wp_delete_post( $this->post_id, true );
 
 				if ( false === $r ) {
-					$this->update_error  = new \WP_Error( 'delete_failure' );
+					$this->update_error  = new Error( 'delete_failure' );
 					$this->update_status = 'error';
 				} else {
 					$this->update_status = 'deleted';
@@ -752,19 +754,19 @@ class ItemSetting extends BaseSetting {
 
 				if ( ! $nav_menu_setting || ! ( $nav_menu_setting instanceof Setting ) ) {
 					$this->update_status = 'error';
-					$this->update_error  = new \WP_Error( 'unexpected_nav_menu_setting' );
+					$this->update_error  = new Error( 'unexpected_nav_menu_setting' );
 					return;
 				}
 
 				if ( false === $nav_menu_setting->save() ) {
 					$this->update_status = 'error';
-					$this->update_error  = new \WP_Error( 'nav_menu_setting_failure' );
+					$this->update_error  = new Error( 'nav_menu_setting_failure' );
 					return;
 				}
 
 				if ( $nav_menu_setting->previous_term_id !== intval( $value['nav_menu_term_id'] ) ) {
 					$this->update_status = 'error';
-					$this->update_error  = new \WP_Error( 'unexpected_previous_term_id' );
+					$this->update_error  = new Error( 'unexpected_previous_term_id' );
 					return;
 				}
 
@@ -778,19 +780,19 @@ class ItemSetting extends BaseSetting {
 
 				if ( ! $parent_nav_menu_item_setting || ! ( $parent_nav_menu_item_setting instanceof ItemSetting ) ) {
 					$this->update_status = 'error';
-					$this->update_error  = new \WP_Error( 'unexpected_nav_menu_item_setting' );
+					$this->update_error  = new Error( 'unexpected_nav_menu_item_setting' );
 					return;
 				}
 
 				if ( false === $parent_nav_menu_item_setting->save() ) {
 					$this->update_status = 'error';
-					$this->update_error  = new \WP_Error( 'nav_menu_item_setting_failure' );
+					$this->update_error  = new Error( 'nav_menu_item_setting_failure' );
 					return;
 				}
 
 				if ( $parent_nav_menu_item_setting->previous_post_id !== intval( $value['menu_item_parent'] ) ) {
 					$this->update_status = 'error';
-					$this->update_error  = new \WP_Error( 'unexpected_previous_post_id' );
+					$this->update_error  = new Error( 'unexpected_previous_post_id' );
 					return;
 				}
 
@@ -820,7 +822,7 @@ class ItemSetting extends BaseSetting {
 				wp_slash( $menu_item_data )
 			);
 
-			if ( is_\WP_Error( $r ) ) {
+			if ( is_wp_error( $r ) ) {
 				$this->update_status = 'error';
 				$this->update_error = $r;
 			} else {

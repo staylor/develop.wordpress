@@ -29,7 +29,7 @@ class Control extends BaseControl {
 	 *
 	 * @since 4.2.0
 	 * @access public
-	 * @var WP_Theme
+	 * @var \WP_Theme
 	 */
 	public $theme;
 

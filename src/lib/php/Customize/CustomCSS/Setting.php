@@ -10,6 +10,8 @@ namespace WP\Customize\CustomCSS;
  * @since 4.7.0
  */
 use WP\Customize\{Manager,Setting as BaseSetting};
+use WP\Error;
+use WP_Query;
 /**
  * Custom Setting to handle WP Custom CSS.
  *
@@ -70,7 +72,7 @@ class Setting extends BaseSetting {
 	 *                                      theme mod or option name.
 	 * @param array   $args    Setting arguments.
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	public function __construct( Manager $manager, $id, $args = array() ) {
 		parent::__construct( $manager, $id, $args );
 		if ( 'custom_css' !== $this->id_data['base'] ) {
 			throw new Exception( 'Expected custom_css id_base.' );
@@ -142,10 +144,10 @@ class Setting extends BaseSetting {
 	 * @access public
 	 *
 	 * @param string $css The input string.
-	 * @return true|WP_Error True if the input was validated, otherwise WP_Error.
+	 * @return true|Error True if the input was validated, otherwise Error.
 	 */
 	public function validate( $css ) {
-		$validity = new WP_Error();
+		$validity = new Error();
 
 		if ( preg_match( '#</?\w+#', $css ) ) {
 			$validity->add( 'illegal_markup', __( 'Markup is not allowed in CSS.' ) );

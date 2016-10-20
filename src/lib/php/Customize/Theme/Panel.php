@@ -1,7 +1,7 @@
 <?php
 namespace WP\Customize\Theme;
 /**
- * Customize API: WP_Customize_Themes_Panel class
+ * Customize API: Panel class
  *
  * @package WordPress
  * @subpackage Customize
