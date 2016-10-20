@@ -1,0 +1,25 @@
+<script type="text/template" id="tmpl-header-choice">
+	<# if (data.random) { #>
+	<button type="button" class="button display-options random">
+		<span class="dashicons dashicons-randomize dice"></span>
+		<# if ( data.type === 'uploaded' ) { #>
+			{{ l10n.randomize_uploaded_headers }}
+		<# } else if ( data.type === 'default' ) { #>
+			{{ l10n.randomize_suggested_headers }}
+		<# } #>
+	</button>
+
+	<# } else { #>
+
+	<# if (data.type === 'uploaded') { #>
+		<button type="button" class="dashicons dashicons-no close"><span class="screen-reader-text">{{ l10n.remove_image }}</span></button>
+	<# } #>
+
+	<button type="button" {{=<% %>=}}class="choice thumbnail"data-customize-image-value="{{{data.header.url}}}"
+		data-customize-header-image-data="{{JSON.stringify(data.header)}}">
+		<span class="screen-reader-text">{{={{ }}=}}{{ l10n.set_image }}{{=<% %>=}}</span>
+		<img src="{{{data.header.thumbnail_url}}}" alt="{{{data.header.alt_text || data.header.description}}}">
+	</button>
+
+	<# } #>
+</script>

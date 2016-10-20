@@ -1,0 +1,29 @@
+<div class="customize-control-content">
+	<p class="customizer-section-intro">{{{ intro }}}</p>
+	<div class="current">
+		<label for="header_image-button">
+			<span class="customize-control-title">{{ l10n.current_header }}</span>
+		</label>
+		<div class="container">
+		</div>
+	</div>
+	<div class="actions">
+		{{# caps.upload_files }}
+		<button type="button"{{{ visibility }}} class="button remove" aria-label="{{ l10n.hide_header_image }}">{{ l10n.hide_image }}</button>
+		<button type="button" class="button new" id="header_image-button"  aria-label="{{ l10n.add_new_header_image }}">{{ l10n.add_new_image }}</button>
+		<div style="clear:both"></div>
+		{{/ caps.upload_files }}
+	</div>
+	<div class="choices">
+		<span class="customize-control-title header-previously-uploaded">{{ l10n.previously_updated }}</span>
+		<div class="uploaded">
+			<div class="list">
+			</div>
+		</div>
+		<span class="customize-control-title header-default">{{ l10n.suggested }}</span>
+		<div class="default">
+			<div class="list">
+			</div>
+		</div>
+	</div>
+</div>
