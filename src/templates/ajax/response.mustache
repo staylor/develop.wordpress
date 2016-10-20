@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="{{ charset }}" standalone="yes"?>
+<wp_ajax>
+{{# responses }}
+<response action="{{ action }}_{{ id }}">
+	<{{ what }} id="{{ id }}"{{# old_id }} old_id="{{ . }}"{{/ old_id }} position="{{ position }}">
+	{{# errors }}
+		<wp_error code="{{ code }}"><![CDATA[{{ message }}]]></wp_error>
+		{{# data? }}
+		<wp_error_data code="{{ code }}"{{# class }}class="{{ . }}"{{/ class }}>
+		{{# data }}
+			{{# key }}<{{ . }}><![CDATA[{{ value }}]]></{{ . }}>{{/ key }}
+			{{^ key }}<![CDATA[{{ value }}]]>{{/ key }}
+		{{/ data }}
+		</wp_error_data>
+		{{/ data? }}
+	{{/ errors }}
+	{{^ errors }}
+		<response_data><![CDATA[{{{ response }}}]]></response_data>
+	{{/ errors }}
+	{{# supplemental? }}
+		<supplemental>
+		{{# supplemental }}
+			<{{ key }}><![CDATA[{{ value }}]]></{{ key }}>
+		{{/ supplemental }}
+		</supplemental>
+	{{/ supplemental? }}
+	</{{ what }}>
+</response>
+{{/ responses }}
+</wp_ajax>

@@ -365,12 +365,10 @@ class ListTable extends \WP_List_Table {
 
 	/**
 	 *
-	 * @global int $post_id
-	 *
 	 * @return array
 	 */
 	public function get_columns() {
-		global $post_id;
+		$post_id = $this->app->get( 'post_id' );
 
 		$columns = [];
 
@@ -418,7 +416,7 @@ class ListTable extends \WP_List_Table {
 	 * @access public
 	 */
 	public function display() {
-		wp_nonce_field( "fetch-list-" . get_class( $this ), '_ajax_fetch_list_nonce' );
+		wp_nonce_field( 'fetch-list-' . get_class( $this ), '_ajax_fetch_list_nonce' );
 
 		$this->display_tablenav( 'top' );
 

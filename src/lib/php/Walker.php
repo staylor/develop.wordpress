@@ -56,13 +56,12 @@ abstract class Walker {
 	 * class methods. This method is called at the start of the output list.
 	 *
 	 * @since 2.1.0
-	 * @abstract
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param int    $depth  Depth of the item.
 	 * @param array  $args   An array of additional arguments.
 	 */
-	abstract public function start_lvl( &$output, $depth = 0, $args = [] );
+	public function start_lvl( &$output, $depth = 0, $args = [] ) {}
 
 	/**
 	 * Ends the list of after the elements are added.
@@ -71,13 +70,12 @@ abstract class Walker {
 	 * class methods. This method finishes the list at the end of output of the elements.
 	 *
 	 * @since 2.1.0
-	 * @abstract
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param int    $depth  Depth of the item.
 	 * @param array  $args   An array of additional arguments.
 	 */
-	abstract public function end_lvl( &$output, $depth = 0, $args = [] );
+	public function end_lvl( &$output, $depth = 0, $args = [] ) {}
 
 	/**
 	 * Start the element output.
@@ -86,7 +84,6 @@ abstract class Walker {
 	 * class methods. Includes the element output also.
 	 *
 	 * @since 2.1.0
-	 * @abstract
 	 *
 	 * @param string $output            Passed by reference. Used to append additional content.
 	 * @param object $object            The data object.
@@ -94,7 +91,7 @@ abstract class Walker {
 	 * @param array  $args              An array of additional arguments.
 	 * @param int    $current_object_id ID of the current item.
 	 */
-	abstract public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 );
+	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {}
 
 	/**
 	 * Ends the element output, if needed.
@@ -102,14 +99,13 @@ abstract class Walker {
 	 * The $args parameter holds additional values that may be used with the child class methods.
 	 *
 	 * @since 2.1.0
-	 * @abstract
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param object $object The data object.
 	 * @param int    $depth  Depth of the item.
 	 * @param array  $args   An array of additional arguments.
 	 */
-	abstract public function end_el( &$output, $object, $depth = 0, $args = [] );
+	public function end_el( &$output, $object, $depth = 0, $args = [] ) {}
 
 	/**
 	 * Traverse elements to create list from elements.

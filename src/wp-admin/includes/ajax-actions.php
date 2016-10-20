@@ -393,7 +393,7 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 
 		$counts = wp_count_comments();
 
-		$x = new WP_Ajax_Response( array(
+		$x = new \WP\Ajax\Response( array(
 			'what' => 'comment',
 			// Here for completeness - not used.
 			'id' => $comment_id,
@@ -452,7 +452,7 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 	$time = time();
 	$comment = get_comment( $comment_id );
 
-	$x = new WP_Ajax_Response( array(
+	$x = new \WP\Ajax\Response( array(
 		'what' => 'comment',
 		// Here for completeness - not used.
 		'id' => $comment_id,
@@ -572,7 +572,7 @@ function _wp_ajax_add_hierarchical_term() {
 
 	$add['supplemental'] = array( 'newcat_parent' => $sup );
 
-	$x = new WP_Ajax_Response( $add );
+	$x = new \WP\Ajax\Response( $add );
 	$x->send();
 }
 
@@ -810,7 +810,7 @@ function wp_ajax_dim_comment() {
 	$id = $_post->getInt( 'id', 0 );
 
 	if ( !$comment = get_comment( $id ) ) {
-		$x = new WP_Ajax_Response( array(
+		$x = new \WP\Ajax\Response( array(
 			'what' => 'comment',
 			'id' => new WP_Error('invalid_comment', sprintf(__('Comment %d does not exist'), $id))
 		) );
@@ -832,7 +832,7 @@ function wp_ajax_dim_comment() {
 	}
 
 	if ( is_wp_error($result) ) {
-		$x = new WP_Ajax_Response( array(
+		$x = new \WP\Ajax\Response( array(
 			'what' => 'comment',
 			'id' => $result
 		) );
@@ -863,7 +863,7 @@ function wp_ajax_add_link_category( $action ) {
 	$app = getApp();
 	$_post = $app['request']->request;
 	$names = explode(',', wp_unslash( $_post->get( 'newcat' ) ) );
-	$x = new WP_Ajax_Response();
+	$x = new \WP\Ajax\Response();
 	foreach ( $names as $cat_name ) {
 		$cat_name = trim($cat_name);
 		$slug = sanitize_title($cat_name);
@@ -903,7 +903,7 @@ function wp_ajax_add_tag() {
 	if ( !current_user_can( $tax->cap->edit_terms ) )
 		wp_die( -1 );
 
-	$x = new WP_Ajax_Response();
+	$x = new \WP\Ajax\Response();
 
 	$tag = wp_insert_term( $_post->get( 'tag-name' ), $taxonomy, $_post->all() );
 
@@ -1002,7 +1002,6 @@ function wp_ajax_get_tagcloud() {
  * @param string $action Action to perform.
  */
 function wp_ajax_get_comments( $action ) {
-	global $post_id;
 	if ( empty( $action ) ) {
 		$action = 'get-comments';
 	}
@@ -1010,6 +1009,8 @@ function wp_ajax_get_comments( $action ) {
 
 	$app = getApp();
 	$_request = $app['request']->attributes;
+	$post_id = $app->get( 'post_id' );
+
 	if ( empty( $post_id ) && ! empty( $_request->get( 'p' ) ) ) {
 		$id = $_request->getInt( 'p' );
 		if ( ! empty( $id ) ) {
@@ -1021,7 +1022,9 @@ function wp_ajax_get_comments( $action ) {
 		wp_die( -1 );
 	}
 
-	$wp_list_table = _get_list_table( 'WP_Post_Comments_List_Table', array( 'screen' => 'edit-comments' ) );
+	$wp_list_table = _get_list_table( \WP\Comment\Admin\PostListTable::class, [
+		'screen' => 'edit-comments'
+	] );
 
 	if ( ! current_user_can( 'edit_post', $post_id ) ) {
 		wp_die( -1 );
@@ -1033,20 +1036,21 @@ function wp_ajax_get_comments( $action ) {
 		wp_die( 1 );
 	}
 
-	$x = new WP_Ajax_Response();
+	$x = new \WP\Ajax\Response();
 	ob_start();
 	foreach ( $wp_list_table->items as $comment ) {
-		if ( ! current_user_can( 'edit_comment', $comment->comment_ID ) && 0 === $comment->comment_approved )
+		if ( ! current_user_can( 'edit_comment', $comment->comment_ID ) && 0 === $comment->comment_approved ) {
 			continue;
+		}
 		get_comment( $comment );
 		$wp_list_table->single_row( $comment );
 	}
 	$comment_list_item = ob_get_clean();
 
-	$x->add( array(
+	$x->add( [
 		'what' => 'comments',
 		'data' => $comment_list_item
-	) );
+	] );
 	$x->send();
 }
 
@@ -1134,7 +1138,7 @@ function wp_ajax_replyto_comment( $action ) {
 		_wp_dashboard_recent_comments_row( $comment );
 	} else {
 		if ( 'single' === $_request->get( 'mode' ) ) {
-			$wp_list_table = _get_list_table( 'WP_Post_Comments_List_Table', array( 'screen' => 'edit-comments' ) );
+			$wp_list_table = _get_list_table( \WP\Comment\Admin\PostListTable::class, array( 'screen' => 'edit-comments' ) );
 		} else {
 			$wp_list_table = _get_list_table( \WP\Comment\Admin\ListTable::class, array( 'screen' => 'edit-comments' ) );
 		}
@@ -1167,7 +1171,7 @@ function wp_ajax_replyto_comment( $action ) {
 		$response['supplemental']['parent_post_id'] = $parent->comment_post_ID;
 	}
 
-	$x = new WP_Ajax_Response();
+	$x = new \WP\Ajax\Response();
 	$x->add( $response );
 	$x->send();
 }
@@ -1195,7 +1199,11 @@ function wp_ajax_edit_comment() {
 
 	$position = $_post->getInt( 'position', '-1' );
 	$checkbox = true == $_post->get( 'checkbox' ) ? 1 : 0;
-	$wp_list_table = _get_list_table( $checkbox ? 'WP_Comments_List_Table' : 'WP_Post_Comments_List_Table', array( 'screen' => 'edit-comments' ) );
+	$wp_list_table = _get_list_table( $checkbox ?
+		\WP\Comment\Admin\ListTable::class :
+		\WP\Comment\Admin\PostListTable::class,
+		array( 'screen' => 'edit-comments' )
+	);
 
 	$comment = get_comment( $comment_id );
 	if ( empty( $comment->comment_ID ) )
@@ -1205,7 +1213,7 @@ function wp_ajax_edit_comment() {
 	$wp_list_table->single_row( $comment );
 	$comment_list_item = ob_get_clean();
 
-	$x = new WP_Ajax_Response();
+	$x = new \WP\Ajax\Response();
 
 	$x->add( array(
 		'what' => 'edit_comment',
@@ -1335,7 +1343,7 @@ function wp_ajax_add_meta() {
 			$pid = edit_post( $post_data );
 			if ( $pid ) {
 				if ( is_wp_error( $pid ) ) {
-					$x = new WP_Ajax_Response( array(
+					$x = new \WP\Ajax\Response( array(
 						'what' => 'meta',
 						'data' => $pid
 					) );
@@ -1354,7 +1362,7 @@ function wp_ajax_add_meta() {
 		$meta = get_metadata_by_mid( 'post', $mid );
 		$pid = (int) $meta->post_id;
 		$meta = get_object_vars( $meta );
-		$x = new WP_Ajax_Response( array(
+		$x = new \WP\Ajax\Response( array(
 			'what' => 'meta',
 			'id' => $mid,
 			'data' => _list_meta_row( $meta, $c ),
@@ -1381,7 +1389,7 @@ function wp_ajax_add_meta() {
 				wp_die( 0 ); // We know meta exists; we also know it's unchanged (or DB error, in which case there are bigger problems).
 		}
 
-		$x = new WP_Ajax_Response( array(
+		$x = new \WP\Ajax\Response( array(
 			'what' => 'meta',
 			'id' => $mid, 'old_id' => $mid,
 			'data' => _list_meta_row( array(
@@ -1414,7 +1422,7 @@ function wp_ajax_add_user( $action ) {
 	if ( ! $user_id = edit_user() ) {
 		wp_die( 0 );
 	} elseif ( is_wp_error( $user_id ) ) {
-		$x = new WP_Ajax_Response( array(
+		$x = new \WP\Ajax\Response( array(
 			'what' => 'user',
 			'id' => $user_id
 		) );
@@ -1426,7 +1434,7 @@ function wp_ajax_add_user( $action ) {
 
 	$role = current( $user_object->roles );
 
-	$x = new WP_Ajax_Response( array(
+	$x = new \WP\Ajax\Response( array(
 		'what' => 'user',
 		'id' => $user_id,
 		'data' => $wp_list_table->single_row( $user_object, '', $role ),

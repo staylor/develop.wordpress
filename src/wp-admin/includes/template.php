@@ -376,7 +376,7 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 
 	if ( ! $wp_list_table ) {
 		if ( $mode == 'single' ) {
-			$wp_list_table = _get_list_table('WP_Post_Comments_List_Table');
+			$wp_list_table = _get_list_table( \WP\Comment\Admin\PostListTable::class );
 		} else {
 			$wp_list_table = _get_list_table( \WP\Comment\Admin\ListTable::class );
 		}
