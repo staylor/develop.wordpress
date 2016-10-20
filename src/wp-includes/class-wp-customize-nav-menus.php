@@ -444,12 +444,12 @@ final class WP_Customize_Nav_Menus {
 	 *
 	 * For a dynamic setting to be registered, this filter must be employed
 	 * to override the default false value with an array of args to pass to
-	 * the WP_Customize_Setting constructor.
+	 * the \WP\Customize\Setting constructor.
 	 *
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @param false|array $setting_args The arguments to the WP_Customize_Setting constructor.
+	 * @param false|array $setting_args The arguments to the \WP\Customize\Setting constructor.
 	 * @param string      $setting_id   ID for dynamic setting, usually coming from `$_POST['customized']`.
 	 * @return array|false
 	 */
@@ -469,14 +469,14 @@ final class WP_Customize_Nav_Menus {
 	}
 
 	/**
-	 * Allow non-statically created settings to be constructed with custom WP_Customize_Setting subclass.
+	 * Allow non-statically created settings to be constructed with custom \WP\Customize\Setting subclass.
 	 *
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @param string $setting_class WP_Customize_Setting or a subclass.
+	 * @param string $setting_class \WP\Customize\Setting or a subclass.
 	 * @param string $setting_id    ID for dynamic setting, usually coming from `$_POST['customized']`.
-	 * @param array  $setting_args  WP_Customize_Setting or a subclass.
+	 * @param array  $setting_args  \WP\Customize\Setting or a subclass.
 	 * @return string
 	 */
 	public function filter_dynamic_setting_class( $setting_class, $setting_id, $setting_args ) {
@@ -516,11 +516,11 @@ final class WP_Customize_Nav_Menus {
 		}
 
 		// Require JS-rendered control types.
-		$this->manager->register_panel_type( 'WP_Customize_Nav_Menus_Panel' );
-		$this->manager->register_control_type( 'WP_Customize_Nav_Menu_Control' );
-		$this->manager->register_control_type( 'WP_Customize_Nav_Menu_Name_Control' );
-		$this->manager->register_control_type( 'WP_Customize_Nav_Menu_Auto_Add_Control' );
-		$this->manager->register_control_type( 'WP_Customize_Nav_Menu_Item_Control' );
+		$this->manager->register_panel_type( \WP\Customize\NavMenu\Panel::class );
+		$this->manager->register_control_type( \WP\Customize\NavMenu\Control::class );
+		$this->manager->register_control_type( \WP\Customize\NavMenu\NameControl::class );
+		$this->manager->register_control_type( \WP\Customize\NavMenu\AutoAddControl::class );
+		$this->manager->register_control_type( \WP\Customize\NavMenu\ItemControl::class );
 
 		// Create a panel for Menus.
 		$description = '<p>' . __( 'This panel is used for managing navigation menus for content you have already published on your site. You can create menus and add items for existing content such as pages, posts, categories, tags, formats, or custom links.' ) . '</p>';
@@ -530,7 +530,7 @@ final class WP_Customize_Nav_Menus {
 		} else {
 			$description .= '<p>' . __( 'Menus can be displayed in locations defined by your theme.' ) . '</p>';
 		}
-		$this->manager->add_panel( new WP_Customize_Nav_Menus_Panel( $this->manager, 'nav_menus', array(
+		$this->manager->add_panel( new \WP\Customize\NavMenu\Panel( $this->manager, 'nav_menus', array(
 			'title'       => __( 'Menus' ),
 			'description' => $description,
 			'priority'    => 100,
@@ -582,7 +582,7 @@ final class WP_Customize_Nav_Menus {
 				) );
 			}
 
-			$this->manager->add_control( new WP_Customize_Nav_Menu_Location_Control( $this->manager, $setting_id, array(
+			$this->manager->add_control( new \WP\Customize\NavMenu\LocationControl( $this->manager, $setting_id, array(
 				'label'       => $description,
 				'location_id' => $location,
 				'section'     => 'menu_locations',
@@ -596,7 +596,7 @@ final class WP_Customize_Nav_Menus {
 
 			// Create a section for each menu.
 			$section_id = 'nav_menu[' . $menu_id . ']';
-			$this->manager->add_section( new WP_Customize_Nav_Menu_Section( $this->manager, $section_id, array(
+			$this->manager->add_section( new \WP\Customize\NavMenu\Section( $this->manager, $section_id, array(
 				'title'     => html_entity_decode( $menu->name, ENT_QUOTES, get_bloginfo( 'charset' ) ),
 				'priority'  => 10,
 				'panel'     => 'nav_menus',
@@ -627,7 +627,7 @@ final class WP_Customize_Nav_Menus {
 				) ) );
 
 				// Create a control for each menu item.
-				$this->manager->add_control( new WP_Customize_Nav_Menu_Item_Control( $this->manager, $menu_item_setting_id, array(
+				$this->manager->add_control( new \WP\Customize\NavMenu\ItemControl( $this->manager, $menu_item_setting_id, array(
 					'label'    => $item->title,
 					'section'  => $section_id,
 					'priority' => 10 + $i,
@@ -638,7 +638,7 @@ final class WP_Customize_Nav_Menus {
 		}
 
 		// Add the add-new-menu section and controls.
-		$this->manager->add_section( new WP_Customize_New_Menu_Section( $this->manager, 'add_menu', array(
+		$this->manager->add_section( new \WP\Customize\NavMenu\NewMenuSection( $this->manager, 'add_menu', array(
 			'title'    => __( 'Add a Menu' ),
 			'panel'    => 'nav_menus',
 			'priority' => 999,
@@ -655,12 +655,12 @@ final class WP_Customize_Nav_Menus {
 			),
 		) );
 
-		$this->manager->add_control( new WP_Customize_New_Menu_Control( $this->manager, 'create_new_menu', array(
+		$this->manager->add_control( new \WP\Customize\NavMenu\NewMenuControl( $this->manager, 'create_new_menu', array(
 			'section'  => 'add_menu',
 			'settings' => [],
 		) ) );
 
-		$this->manager->add_setting( new WP_Customize_Filter_Setting( $this->manager, 'nav_menus_created_posts', array(
+		$this->manager->add_setting( new \WP\Customize\FilterSetting( $this->manager, 'nav_menus_created_posts', array(
 			'transport' => 'postMessage',
 			'default' => [],
 			'sanitize_callback' => array( $this, 'sanitize_nav_menus_created_posts' ),
@@ -1143,7 +1143,7 @@ final class WP_Customize_Nav_Menus {
 	 * @since 4.7.0
 	 * @access public
 	 *
-	 * @param WP_Customize_Setting $setting Customizer setting object.
+	 * @param \WP\Customize\Setting $setting Customizer setting object.
 	 */
 	public function save_nav_menus_created_posts( $setting ) {
 		$post_ids = $setting->post_value();

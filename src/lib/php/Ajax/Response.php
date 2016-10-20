@@ -67,9 +67,9 @@ class Response {
 	 *     @type array           $supplemental An array of extra strings that will be output within a `<supplemental>`
 	 *                                         element as CDATA. Default empty array.
 	 * }
-	 * @return string XML response.
+	 * @return array
 	 */
-	public function add( $args = [] ) {
+	public function add( array $args = [] ) {
 		$defaults = [
 			'what' => 'object',
 			'action' => false,

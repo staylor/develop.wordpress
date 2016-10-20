@@ -231,7 +231,7 @@ final class WP_Customize_Widgets {
 	 * @since 4.2.0
 	 * @access public
 	 *
-	 * @param false|array $args       The arguments to the WP_Customize_Setting constructor.
+	 * @param false|array $args       The arguments to the \WP\Customize\Setting constructor.
 	 * @param string      $setting_id ID for dynamic setting, usually coming from `$_POST['customized']`.
 	 * @return false|array Setting arguments, false otherwise.
 	 */
@@ -469,10 +469,10 @@ final class WP_Customize_Widgets {
 					 */
 					$section_args = apply_filters( 'customizer_widgets_section_args', $section_args, $section_id, $sidebar_id );
 
-					$section = new WP_Customize_Sidebar_Section( $this->manager, $section_id, $section_args );
+					$section = new \WP\Customize\Widget\SidebarSection( $this->manager, $section_id, $section_args );
 					$this->manager->add_section( $section );
 
-					$control = new WP_Widget_Area_Customize_Control( $this->manager, $setting_id, array(
+					$control = new \WP\Customize\Widget\AreaControl( $this->manager, $setting_id, array(
 						'section'    => $section_id,
 						'sidebar_id' => $sidebar_id,
 						'priority'   => count( $sidebar_widget_ids ), // place 'Add Widget' and 'Reorder' buttons at end.
@@ -495,7 +495,7 @@ final class WP_Customize_Widgets {
 				$setting_id        = $this->get_setting_id( $widget_id );
 				$id_base           = $app->widgets['controls'][ $widget_id ]['id_base'];
 
-				$control = new WP_Widget_Form_Customize_Control( $this->manager, $setting_id, array(
+				$control = new \WP\Customize\Widget\FormControl( $this->manager, $setting_id, array(
 					'label'          => $registered_widget['name'],
 					'section'        => $section_id,
 					'sidebar_id'     => $sidebar_id,
@@ -523,7 +523,7 @@ final class WP_Customize_Widgets {
 	 * @since 4.4.0
 	 * @access public
 	 *
-	 * @see WP_Customize_Panel::$active_callback
+	 * @see \WP\Customize\Panel::$active_callback
 	 *
 	 * @return bool Active.
 	 */
@@ -845,7 +845,7 @@ final class WP_Customize_Widgets {
 		 *
 		 * @since 3.9.0
 		 *
-		 * @see WP_Customize_Setting
+		 * @see \WP\Customize\Setting
 		 *
 		 * @param array  $args Array of Customizer setting arguments.
 		 * @param string $id   Widget setting ID.
@@ -1434,7 +1434,7 @@ final class WP_Customize_Widgets {
 		/*
 		 * Override the incoming $_POST['customized'] for a newly-created widget's
 		 * setting with the new $instance so that the preview filter currently
-		 * in place from WP_Customize_Setting::preview() will use this value
+		 * in place from \WP\Customize\Setting::preview() will use this value
 		 * instead of the default widget instance value (an empty array).
 		 */
 		$this->manager->set_post_value( $setting_id, $this->sanitize_widget_js_instance( $instance ) );

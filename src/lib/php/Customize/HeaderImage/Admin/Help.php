@@ -1,5 +1,5 @@
 <?php
-namespace WP\Customize\Header\Admin;
+namespace WP\Customize\HeaderImage\Admin;
 
 use WP\Admin\Help as AdminHelp;
 

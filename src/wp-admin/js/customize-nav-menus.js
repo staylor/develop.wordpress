@@ -1067,7 +1067,7 @@
 	 * wp.customize.Menus.MenuLocationControl
 	 *
 	 * Customizer control for menu locations (rendered as a <select>).
-	 * Note that 'nav_menu_location' must match the WP_Customize_Nav_Menu_Location_Control::$type.
+	 * Note that 'nav_menu_location' must match the \WP\Customize\NavMenu\LocationControl::$type.
 	 *
 	 * @constructor
 	 * @augments wp.customize.Control
@@ -1144,7 +1144,7 @@
 	 * wp.customize.Menus.MenuItemControl
 	 *
 	 * Customizer control for menu items.
-	 * Note that 'menu_item' must match the WP_Customize_Menu_Item_Control::$type.
+	 * Note that 'menu_item' must match the \WP\Customize\NavMenu\ItemControl::$type.
 	 *
 	 * @constructor
 	 * @augments wp.customize.Control
@@ -2014,7 +2014,7 @@
 	 * wp.customize.Menus.MenuControl
 	 *
 	 * Customizer control for menus.
-	 * Note that 'nav_menu' must match the WP_Menu_Customize_Control::$type
+	 * Note that 'nav_menu' must match the WP\Customize\NavMenu\Control::$type
 	 *
 	 * @constructor
 	 * @augments wp.customize.Control
@@ -2577,7 +2577,7 @@
 	 * wp.customize.Menus.NewMenuControl
 	 *
 	 * Customizer control for creating new menus and handling deletion of existing menus.
-	 * Note that 'new_menu' must match the WP_Customize_New_Menu_Control::$type.
+	 * Note that 'new_menu' must match the \WP\Customize\NavMenu\NewMenuControl::$type.
 	 *
 	 * @constructor
 	 * @augments wp.customize.Control

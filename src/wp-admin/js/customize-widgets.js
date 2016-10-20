@@ -447,7 +447,7 @@
 	 * wp.customize.Widgets.WidgetControl
 	 *
 	 * Customizer control for widgets.
-	 * Note that 'widget_form' must match the WP_Widget_Form_Customize_Control::$type
+	 * Note that 'widget_form' must match the \WP\Customize\Widget\FormControl::$type
 	 *
 	 * @constructor
 	 * @augments wp.customize.Control
@@ -1657,7 +1657,7 @@
 	 * wp.customize.Widgets.SidebarControl
 	 *
 	 * Customizer control for widgets.
-	 * Note that 'sidebar_widgets' must match the WP_Widget_Area_Customize_Control::$type
+	 * Note that 'sidebar_widgets' must match the \WP\Customize\Widget\AreaControl::$type
 	 *
 	 * @since 3.9.0
 	 *

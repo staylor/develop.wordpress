@@ -79,7 +79,7 @@ class Manager {
 	public $selective_refresh;
 
 	/**
-	 * Registered instances of \WP_Customize_Setting.
+	 * Registered instances of Setting.
 	 *
 	 * @since 3.4.0
 	 * @access protected
@@ -88,7 +88,7 @@ class Manager {
 	protected $settings = [];
 
 	/**
-	 * Sorted top-level instances of \WP_Customize_Panel and \WP_Customize_Section.
+	 * Sorted top-level instances of Panel and \WP_Customize_Section.
 	 *
 	 * @since 4.0.0
 	 * @access protected
@@ -97,7 +97,7 @@ class Manager {
 	protected $containers = [];
 
 	/**
-	 * Registered instances of \WP_Customize_Panel.
+	 * Registered instances of Panel.
 	 *
 	 * @since 4.0.0
 	 * @access protected
@@ -124,7 +124,7 @@ class Manager {
 	protected $sections = [];
 
 	/**
-	 * Registered instances of \WP_Customize_Control.
+	 * Registered instances of Control.
 	 *
 	 * @since 3.4.0
 	 * @access protected
@@ -626,9 +626,9 @@ class Manager {
 	 * @see WP_Rest_Request::sanitize_params()
 	 * @see WP_Rest_Request::has_valid_params()
 	 *
-	 * @param \WP_Customize_Setting $setting A \WP_Customize_Setting derived object.
-	 * @param mixed                $default Value returned $setting has no post value (added in 4.2.0)
-	 *                                      or the post value is invalid (added in 4.6.0).
+	 * @param Setting $setting A Setting derived object.
+	 * @param mixed   $default Value returned $setting has no post value (added in 4.2.0)
+	 *                         or the post value is invalid (added in 4.6.0).
 	 * @return string|mixed $post_value Sanitized value or the $default provided.
 	 */
 	public function post_value( $setting, $default = null ) {
@@ -654,7 +654,7 @@ class Manager {
 	 * @since 4.2.0
 	 * @access public
 	 *
-	 * @param string $setting_id ID for the \WP_Customize_Setting instance.
+	 * @param string $setting_id ID for the Setting instance.
 	 * @param mixed  $value      Post value.
 	 */
 	public function set_post_value( $setting_id, $value ) {
@@ -680,7 +680,7 @@ class Manager {
 		 *
 		 * Fires when the Manager::set_post_value() method is called.
 		 *
-		 * This is useful for `WP_Customize_Setting` instances to watch
+		 * This is useful for `Setting` instances to watch
 		 * in order to update a cached previewed value.
 		 *
 		 * @since 4.4.0
@@ -956,7 +956,7 @@ class Manager {
 	 * @access public
 	 *
 	 * @see WP_REST_Request::has_valid_params()
-	 * @see \WP_Customize_Setting::validate()
+	 * @see Setting::validate()
 	 *
 	 * @param array $setting_values Mapping of setting IDs to values to validate and sanitize.
 	 * @return array Mapping of setting IDs to return value of validate method calls, either `true` or `WP_Error`.
@@ -1138,19 +1138,19 @@ class Manager {
 	 * Add a customize setting.
 	 *
 	 * @since 3.4.0
-	 * @since 4.5.0 Return added \WP_Customize_Setting instance.
+	 * @since 4.5.0 Return added Setting instance.
 	 * @access public
 	 *
-	 * @param \WP_Customize_Setting|string $id   Customize Setting object, or ID.
-	 * @param array                       $args Setting arguments; passed to \WP_Customize_Setting
+	 * @param Setting|string $id   Customize Setting object, or ID.
+	 * @param array                       $args Setting arguments; passed to Setting
 	 *                                          constructor.
-	 * @return \WP_Customize_Setting             The instance of the setting that was added.
+	 * @return Setting             The instance of the setting that was added.
 	 */
 	public function add_setting( $id, $args = [] ) {
-		if ( $id instanceof \WP_Customize_Setting ) {
+		if ( $id instanceof Setting ) {
 			$setting = $id;
 		} else {
-			$class = 'WP_Customize_Setting';
+			$class = Setting::class;
 
 			/** This filter is documented in wp-includes/class-wp-customize-manager.php */
 			$args = apply_filters( 'customize_dynamic_setting_args', $args, $id );
@@ -1178,7 +1178,7 @@ class Manager {
 	 * @access public
 	 *
 	 * @param array $setting_ids The setting IDs to add.
-	 * @return array The \WP_Customize_Setting objects added.
+	 * @return array The Setting objects added.
 	 */
 	public function add_dynamic_settings( $setting_ids ) {
 		$new_settings = [];
@@ -1189,18 +1189,18 @@ class Manager {
 			}
 
 			$setting_args = false;
-			$setting_class = 'WP_Customize_Setting';
+			$setting_class = 'Setting';
 
 			/**
 			 * Filters a dynamic setting's constructor args.
 			 *
 			 * For a dynamic setting to be registered, this filter must be employed
 			 * to override the default false value with an array of args to pass to
-			 * the \WP_Customize_Setting constructor.
+			 * the Setting constructor.
 			 *
 			 * @since 4.2.0
 			 *
-			 * @param false|array $setting_args The arguments to the \WP_Customize_Setting constructor.
+			 * @param false|array $setting_args The arguments to the Setting constructor.
 			 * @param string      $setting_id   ID for dynamic setting, usually coming from `$_POST['customized']`.
 			 */
 			$setting_args = apply_filters( 'customize_dynamic_setting_args', $setting_args, $setting_id );
@@ -1209,13 +1209,13 @@ class Manager {
 			}
 
 			/**
-			 * Allow non-statically created settings to be constructed with custom \WP_Customize_Setting subclass.
+			 * Allow non-statically created settings to be constructed with custom Setting subclass.
 			 *
 			 * @since 4.2.0
 			 *
-			 * @param string $setting_class \WP_Customize_Setting or a subclass.
+			 * @param string $setting_class Setting or a subclass.
 			 * @param string $setting_id    ID for dynamic setting, usually coming from `$_POST['customized']`.
-			 * @param array  $setting_args  \WP_Customize_Setting or a subclass.
+			 * @param array  $setting_args  Setting or a subclass.
 			 */
 			$setting_class = apply_filters( 'customize_dynamic_setting_class', $setting_class, $setting_id, $setting_args );
 
@@ -1233,7 +1233,7 @@ class Manager {
 	 * @since 3.4.0
 	 *
 	 * @param string $id Customize Setting ID.
-	 * @return \WP_Customize_Setting|void The setting, if set.
+	 * @return Setting|void The setting, if set.
 	 */
 	public function get_setting( $id ) {
 		if ( isset( $this->settings[ $id ] ) ) {
@@ -1256,19 +1256,19 @@ class Manager {
 	 * Add a customize panel.
 	 *
 	 * @since 4.0.0
-	 * @since 4.5.0 Return added \WP_Customize_Panel instance.
+	 * @since 4.5.0 Return added Panel instance.
 	 * @access public
 	 *
-	 * @param \WP_Customize_Panel|string $id   Customize Panel object, or Panel ID.
-	 * @param array                     $args Optional. Panel arguments. Default empty array.
+	 * @param Panel|string $id   Customize Panel object, or Panel ID.
+	 * @param array        $args Optional. Panel arguments. Default empty array.
 	 *
-	 * @return \WP_Customize_Panel             The instance of the panel that was added.
+	 * @return Panel The instance of the panel that was added.
 	 */
 	public function add_panel( $id, $args = [] ) {
-		if ( $id instanceof \WP_Customize_Panel ) {
+		if ( $id instanceof Panel ) {
 			$panel = $id;
 		} else {
-			$panel = new \WP_Customize_Panel( $this, $id, $args );
+			$panel = new Panel( $this, $id, $args );
 		}
 
 		$this->panels[ $panel->id ] = $panel;
@@ -1282,7 +1282,7 @@ class Manager {
 	 * @access public
 	 *
 	 * @param string $id Panel ID to get.
-	 * @return \WP_Customize_Panel|void Requested panel instance, if set.
+	 * @return Panel|void Requested panel instance, if set.
 	 */
 	public function get_panel( $id ) {
 		if ( isset( $this->panels[ $id ] ) ) {
@@ -1320,9 +1320,9 @@ class Manager {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @see \WP_Customize_Panel
+	 * @see Panel
 	 *
-	 * @param string $panel Name of a custom panel which is a subclass of \WP_Customize_Panel.
+	 * @param string $panel Name of a custom panel which is a subclass of Panel.
 	 */
 	public function register_panel_type( $panel ) {
 		$this->registered_panel_types[] = $panel;
@@ -1422,19 +1422,19 @@ class Manager {
 	 * Add a customize control.
 	 *
 	 * @since 3.4.0
-	 * @since 4.5.0 Return added \WP_Customize_Control instance.
+	 * @since 4.5.0 Return added Control instance.
 	 * @access public
 	 *
-	 * @param \WP_Customize_Control|string $id   Customize Control object, or ID.
-	 * @param array                       $args Control arguments; passed to \WP_Customize_Control
-	 *                                          constructor.
-	 * @return \WP_Customize_Control             The instance of the control that was added.
+	 * @param Control|string $id   Customize Control object, or ID.
+	 * @param array          $args Control arguments; passed to Control
+	 *                             constructor.
+	 * @return Control             The instance of the control that was added.
 	 */
 	public function add_control( $id, $args = [] ) {
-		if ( $id instanceof \WP_Customize_Control ) {
+		if ( $id instanceof Control ) {
 			$control = $id;
 		} else {
-			$control = new \WP_Customize_Control( $this, $id, $args );
+			$control = new Control( $this, $id, $args );
 		}
 
 		$this->controls[ $control->id ] = $control;
@@ -1447,7 +1447,7 @@ class Manager {
 	 * @since 3.4.0
 	 *
 	 * @param string $id ID of the control.
-	 * @return \WP_Customize_Control|void The control object, if set.
+	 * @return Control|void The control object, if set.
 	 */
 	public function get_control( $id ) {
 		if ( isset( $this->controls[ $id ] ) ) {
@@ -1474,8 +1474,7 @@ class Manager {
 	 * @since 4.1.0
 	 * @access public
 	 *
-	 * @param string $control Name of a custom control which is a subclass of
-	 *                        \WP_Customize_Control.
+	 * @param string $control Name of a custom control which is a subclass of Control.
 	 */
 	public function register_control_type( $control ) {
 		$this->registered_control_types[] = $control;
@@ -1510,8 +1509,8 @@ class Manager {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param \WP_Customize_Panel|\WP_Customize_Section|\WP_Customize_Control $a Object A.
-	 * @param \WP_Customize_Panel|\WP_Customize_Section|\WP_Customize_Control $b Object B.
+	 * @param Panel|\WP_Customize_Section|Control $a Object A.
+	 * @param Panel|\WP_Customize_Section|Control $b Object B.
 	 * @return int
 	 */
 	protected function _cmp_priority( $a, $b ) {
@@ -1935,26 +1934,26 @@ class Manager {
 		/* Panel, Section, and Control Types */
 		$this->register_panel_type( 'WP_Customize_Panel' );
 		$this->register_section_type( 'WP_Customize_Section' );
-		$this->register_section_type( 'WP_Customize_Sidebar_Section' );
-		$this->register_control_type( 'WP_Customize_Color_Control' );
-		$this->register_control_type( 'WP_Customize_Media_Control' );
-		$this->register_control_type( 'WP_Customize_Upload_Control' );
-		$this->register_control_type( 'WP_Customize_Image_Control' );
-		$this->register_control_type( 'WP_Customize_Background_Image_Control' );
-		$this->register_control_type( 'WP_Customize_Cropped_Image_Control' );
-		$this->register_control_type( 'WP_Customize_Site_Icon_Control' );
-		$this->register_control_type( 'WP_Customize_Theme_Control' );
+		$this->register_section_type( Widget\SidebarSection::class );
+		$this->register_control_type( Color\Control::class );
+		$this->register_control_type( Media\Control::class );
+		$this->register_control_type( Upload\Control::class );
+		$this->register_control_type( Image\Control::class );
+		$this->register_control_type( BackgroundImage\Control::class );
+		$this->register_control_type( CroppedImage\Control::class );
+		$this->register_control_type( SiteIcon\Control::class );
+		$this->register_control_type( Theme\Control::class );
 
 		/* Themes */
 
-		$this->add_section( new \WP_Customize_Themes_Section( $this, 'themes', array(
+		$this->add_section( new Theme\Section( $this, 'themes', array(
 			'title'      => $this->theme()->display( 'Name' ),
 			'capability' => 'switch_themes',
 			'priority'   => 0,
 		) ) );
 
 		// Themes Setting (unused - the theme is considerably more fundamental to the Customizer experience).
-		$this->add_setting( new \WP_Customize_Filter_Setting( $this, 'active_theme', array(
+		$this->add_setting( new FilterSetting( $this, 'active_theme', array(
 			'capability' => 'switch_themes',
 		) ) );
 
@@ -1967,7 +1966,7 @@ class Manager {
 			$themes = wp_prepare_themes_for_js( array( wp_get_theme( $this->original_stylesheet ) ) );
 			$active_theme = current( $themes );
 			$active_theme['isActiveTheme'] = true;
-			$this->add_control( new \WP_Customize_Theme_Control( $this, $active_theme['id'], array(
+			$this->add_control( new Theme\Control( $this, $active_theme['id'], array(
 				'theme'    => $active_theme,
 				'section'  => 'themes',
 				'settings' => 'active_theme',
@@ -1982,7 +1981,7 @@ class Manager {
 
 			$theme_id = 'theme_' . $theme['id'];
 			$theme['isActiveTheme'] = false;
-			$this->add_control( new \WP_Customize_Theme_Control( $this, $theme_id, array(
+			$this->add_control( new Theme\Control( $this, $theme_id, array(
 				'theme'    => $theme,
 				'section'  => 'themes',
 				'settings' => 'active_theme',
@@ -2040,7 +2039,7 @@ class Manager {
 			'transport'  => 'postMessage', // Previewed with JS in the Customizer controls window.
 		) );
 
-		$this->add_control( new \WP_Customize_Site_Icon_Control( $this, 'site_icon', array(
+		$this->add_control( new SiteIcon\Control( $this, 'site_icon', array(
 			'label'       => __( 'Site Icon' ),
 			'description' => sprintf(
 				/* translators: %s: site icon size in pixels */
@@ -2059,7 +2058,7 @@ class Manager {
 		) );
 
 		$custom_logo_args = get_theme_support( 'custom-logo' );
-		$this->add_control( new \WP_Customize_Cropped_Image_Control( $this, 'custom_logo', array(
+		$this->add_control( new BackgroundImage\Control( $this, 'custom_logo', array(
 			'label'         => __( 'Logo' ),
 			'section'       => 'title_tagline',
 			'priority'      => 8,
@@ -2110,7 +2109,7 @@ class Manager {
 			'priority' => 40,
 		) );
 
-		$this->add_control( new \WP_Customize_Color_Control( $this, 'header_textcolor', array(
+		$this->add_control( new Color\Control( $this, 'header_textcolor', array(
 			'label'   => __( 'Header Text Color' ),
 			'section' => 'colors',
 		) ) );
@@ -2125,7 +2124,7 @@ class Manager {
 			'sanitize_js_callback' => 'maybe_hash_hex_color',
 		) );
 
-		$this->add_control( new \WP_Customize_Color_Control( $this, 'background_color', array(
+		$this->add_control( new Color\Control( $this, 'background_color', array(
 			'label'   => __( 'Background Color' ),
 			'section' => 'colors',
 		) ) );
@@ -2139,16 +2138,16 @@ class Manager {
 			'priority'       => 60,
 		) );
 
-		$this->add_setting( new \WP_Customize_Filter_Setting( $this, 'header_image', array(
+		$this->add_setting( new FilterSetting( $this, 'header_image', array(
 			'default'        => get_theme_support( 'custom-header', 'default-image' ),
 			'theme_supports' => 'custom-header',
 		) ) );
 
-		$this->add_setting( new \WP_Customize_Header_Image_Setting( $this, 'header_image_data', array(
+		$this->add_setting( new HeaderImageSetting( $this, 'header_image_data', array(
 			'theme_supports' => 'custom-header',
 		) ) );
 
-		$this->add_control( new Control\HeaderImage( $this ) );
+		$this->add_control( new HeaderImage\Control( $this ) );
 
 		/* Custom Background */
 
@@ -2163,11 +2162,11 @@ class Manager {
 			'theme_supports' => 'custom-background',
 		) );
 
-		$this->add_setting( new \WP_Customize_Background_Image_Setting( $this, 'background_image_thumb', array(
+		$this->add_setting( new BackgroundImageSetting( $this, 'background_image_thumb', array(
 			'theme_supports' => 'custom-background',
 		) ) );
 
-		$this->add_control( new \WP_Customize_Background_Image_Control( $this ) );
+		$this->add_control( new BackgroundImage\Control( $this ) );
 
 		$this->add_setting( 'background_repeat', array(
 			'default'        => get_theme_support( 'custom-background', 'default-repeat' ),

@@ -1,5 +1,5 @@
 <?php
-namespace WP\Customize\Background\Admin;
+namespace WP\Customize\BackgroundImage\Admin;
 
 use WP\Admin\Help as AdminHelp;
 

@@ -1,5 +1,5 @@
 <?php
-namespace WP\Customize\Control;
+namespace WP\Customize\HeaderImage;
 /**
  * Customize API: HeaderImage class
  *
@@ -10,16 +10,15 @@ namespace WP\Customize\Control;
 
 use WP\Mustache;
 use WP\Customize\Manager;
+use WP\Customize\Image\Control as ImageControl;
 use function WP\getApp;
 
 /**
  * Customize Header Image Control class.
  *
  * @since 3.4.0
- *
- * @see WP_Customize_Image_Control
  */
-class HeaderImage extends \WP_Customize_Image_Control {
+class Control extends ImageControl {
 	use Mustache;
 
 	public $type = 'header';

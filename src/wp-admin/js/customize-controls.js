@@ -8,7 +8,7 @@
 	 * A setting is WordPress data (theme mod, option, menu, etc.) that the user can
 	 * draft changes to in the Customizer.
 	 *
-	 * @see PHP class WP_Customize_Setting.
+	 * @see PHP class \WP\Customize\Setting.
 	 *
 	 * @class
 	 * @augments wp.customize.Value
@@ -2337,7 +2337,7 @@
 	 *
 	 * A control provides a UI element that allows a user to modify a Customizer Setting.
 	 *
-	 * @see PHP class WP_Customize_Control.
+	 * @see PHP class \WP\Customize\Control.
 	 *
 	 * @class
 	 * @augments wp.customize.Class
@@ -4531,7 +4531,7 @@
 			if ( 'themes' === panel.id ) {
 				return; // Don't reflow theme sections, as doing so moves them after the themes container.
 			}
-			
+
 			var sections = panel.sections(),
 				sectionHeadContainers = _.pluck( sections, 'headContainer' );
 			rootNodes.push( panel );

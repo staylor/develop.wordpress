@@ -21,7 +21,7 @@ class PostListTable extends ListTable {
 	 * @return array
 	 */
 	protected function get_column_info() {
-		return array(
+		return [
 			[
 				'author'   => __( 'Author' ),
 				'comment'  => _x( 'Comment', 'column name' ),
@@ -29,12 +29,12 @@ class PostListTable extends ListTable {
 			[],
 			[],
 			'comment',
-		);
+		];
 	}
 
 	/**
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	protected function get_table_classes() {
 		$classes = parent::get_table_classes();
@@ -44,13 +44,12 @@ class PostListTable extends ListTable {
 	}
 
 	/**
-	 *
 	 * @param bool $output_empty
 	 */
 	public function display( $output_empty = false ) {
 		$singular = $this->_args['singular'];
 
-		wp_nonce_field( "fetch-list-" . get_class( $this ), '_ajax_fetch_list_nonce' );
+		wp_nonce_field( 'fetch-list-' . get_class( $this ), '_ajax_fetch_list_nonce' );
 ?>
 <table class="<?php echo implode( ' ', $this->get_table_classes() ); ?>" style="display:none;">
 	<tbody id="the-comment-list"<?php
@@ -66,7 +65,6 @@ class PostListTable extends ListTable {
 	}
 
 	/**
-	 *
 	 * @param bool $comment_status
 	 * @return int
 	 */
