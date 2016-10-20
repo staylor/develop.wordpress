@@ -1,7 +1,7 @@
 <?php
 namespace WP\Customize\NavMenu;
 /**
- * Customize API: WP_Customize_Nav_Menu_Item_Control class
+ * Customize API: ItemControl class
  *
  * @package WordPress
  * @subpackage Customize
@@ -29,7 +29,7 @@ class ItemControl extends BaseControl {
 	 *
 	 * @since 4.3.0
 	 * @access public
-	 * @var WP_Customize_Nav_Menu_Item_Setting
+	 * @var ItemSetting
 	 */
 	public $setting;
 

@@ -1,7 +1,7 @@
 <?php
 namespace WP\Customize\NavMenu;
 /**
- * Customize API: WP_Customize_Nav_Menu_Location_Control class
+ * Customize API: LocationControl class
  *
  * @package WordPress
  * @subpackage Customize

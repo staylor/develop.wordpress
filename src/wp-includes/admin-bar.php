@@ -353,7 +353,7 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
  * @since 4.3.0
  *
  * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
- * @global WP_Customize_Manager $wp_customize
+ * @global \WP\Customize\Manager $wp_customize
  */
 function wp_admin_bar_customize_menu( $wp_admin_bar ) {
 	global $wp_customize;

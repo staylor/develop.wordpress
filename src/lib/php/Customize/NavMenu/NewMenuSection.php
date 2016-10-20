@@ -1,13 +1,13 @@
 <?php
 namespace WP\Customize\NavMenu;
 /**
- * Customize API: WP_Customize_New_Menu_Section class
+ * Customize API: NewMenuSection class
  *
  * @package WordPress
  * @subpackage Customize
  * @since 4.4.0
  */
-
+use WP\Customize\Section as BaseSection;
 /**
  * Customize Menu Section Class
  *
@@ -15,7 +15,7 @@ namespace WP\Customize\NavMenu;
  *
  * @since 4.3.0
  */
-class NewMenuSection extends \WP_Customize_Section {
+class NewMenuSection extends BaseSection {
 
 	/**
 	 * Control type.

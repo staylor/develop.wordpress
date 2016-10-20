@@ -1,7 +1,7 @@
 <?php
 namespace WP\Customize\NavMenu;
 /**
- * Customize API: WP_Customize_Nav_Menus_Panel class
+ * Customize API: Panel class
  *
  * @package WordPress
  * @subpackage Customize
@@ -62,12 +62,12 @@ class Panel extends BasePanel {
 	 * An Underscore (JS) template for this panel's content (but not its container).
 	 *
 	 * Class variables for this panel class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Panel::json().
+	 * export custom variables by overriding BasePanel::json().
 	 *
 	 * @since 4.3.0
 	 * @access protected
 	 *
-	 * @see WP_Customize_Panel::print_template()
+	 * @see BasePanel::print_template()
 	 */
 	protected function content_template() {
 		?>

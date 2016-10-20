@@ -245,7 +245,7 @@ class Control {
 	}
 
 	/**
-	 * Default callback used when invoking WP_Customize_Control::active().
+	 * Default callback used when invoking \WP\Customize\Control::active().
 	 *
 	 * Subclasses can override this with their specific logic, or they may
 	 * provide an 'active_callback' argument to the constructor.
@@ -442,7 +442,7 @@ class Control {
 	 * Supports basic input types `text`, `checkbox`, `textarea`, `radio`, `select` and `dropdown-pages`.
 	 * Additional input types such as `email`, `url`, `number`, `hidden` and `date` are supported implicitly.
 	 *
-	 * Control content can alternately be rendered in JS. See WP_Customize_Control::print_template().
+	 * Control content can alternately be rendered in JS. See \WP\Customize\Control::print_template().
 	 *
 	 * @since 3.4.0
 	 */
@@ -594,7 +594,7 @@ class Control {
 	 * An Underscore (JS) template for this control's content (but not its container).
 	 *
 	 * Class variables for this control class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Control::to_json().
+	 * export custom variables by overriding \WP\Customize\Control::to_json().
 	 *
 	 * @since 4.1.0
 	 */

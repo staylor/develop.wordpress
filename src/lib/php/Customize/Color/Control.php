@@ -15,7 +15,7 @@ use WP\Customize\{Manager,Control as BaseControl};
  *
  * @since 3.4.0
  *
- * @see WP_Customize_Control
+ * @see \WP\Customize\Control
  */
 class Control extends BaseControl {
 	/**

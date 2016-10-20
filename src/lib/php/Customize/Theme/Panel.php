@@ -29,7 +29,7 @@ class Panel extends BasePanel {
 	 *
 	 * The themes panel renders a custom panel heading with the current theme and a switch themes button.
 	 *
-	 * @see \WP\Customize\Panel::print_template()
+	 * @see BasePanel::print_template()
 	 *
 	 * @since 4.7.0
 	 * @access protected
@@ -60,7 +60,7 @@ class Panel extends BasePanel {
 	 * An Underscore (JS) template for this panel's content (but not its container).
 	 *
 	 * Class variables for this panel class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Panel::json().
+	 * export custom variables by overriding BasePanel::json().
 	 *
 	 * @since 4.7.0
 	 * @access protected

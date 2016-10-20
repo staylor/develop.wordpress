@@ -2251,8 +2251,7 @@ function _wp_customize_include() {
 		$messenger_channel = sanitize_key( $input_vars['customize_messenger_channel'] );
 	}
 
-	require_once ABSPATH . WPINC . '/class-wp-customize-manager.php';
-	$GLOBALS['wp_customize'] = new WP_Customize_Manager( compact( 'changeset_uuid', 'theme', 'messenger_channel' ) );
+	$GLOBALS['wp_customize'] = new \WP\Customize\Manager( compact( 'changeset_uuid', 'theme', 'messenger_channel' ) );
 }
 
 /**

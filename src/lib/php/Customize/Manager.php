@@ -56,7 +56,7 @@ class Manager {
 	 *
 	 * @since 3.9.0
 	 * @access public
-	 * @var \WP_Customize_Widgets
+	 * @var Widget\Manager
 	 */
 	public $widgets;
 
@@ -65,7 +65,7 @@ class Manager {
 	 *
 	 * @since 4.3.0
 	 * @access public
-	 * @var \WP_Customize_Nav_Menus
+	 * @var NavMenu\Manager
 	 */
 	public $nav_menus;
 
@@ -74,7 +74,7 @@ class Manager {
 	 *
 	 * @since 4.5.0
 	 * @access public
-	 * @var \WP_Customize_Selective_Refresh
+	 * @var SelectiveRefresh
 	 */
 	public $selective_refresh;
 
@@ -88,7 +88,7 @@ class Manager {
 	protected $settings = [];
 
 	/**
-	 * Sorted top-level instances of Panel and \WP_Customize_Section.
+	 * Sorted top-level instances of Panel and Section.
 	 *
 	 * @since 4.0.0
 	 * @access protected
@@ -115,7 +115,7 @@ class Manager {
 	protected $components = array( 'widgets', 'nav_menus' );
 
 	/**
-	 * Registered instances of \WP_Customize_Section.
+	 * Registered instances of Section.
 	 *
 	 * @since 3.4.0
 	 * @access protected
@@ -223,14 +223,14 @@ class Manager {
 		 */
 		$components = apply_filters( 'customize_loaded_components', $this->components, $this );
 
-		$this->selective_refresh = new \WP_Customize_Selective_Refresh( $this );
+		$this->selective_refresh = new SelectiveRefresh( $this );
 
 		if ( in_array( 'widgets', $components, true ) ) {
-			$this->widgets = new \WP_Customize_Widgets( $this );
+			$this->widgets = new Widget\Manager( $this );
 		}
 
 		if ( in_array( 'nav_menus', $components, true ) ) {
-			$this->nav_menus = new \WP_Customize_Nav_Menus( $this );
+			$this->nav_menus = new NavMenu\Manager( $this );
 		}
 
 		add_filter( 'wp_die_handler', [ $this, 'wp_die_handler' ] );
@@ -1345,19 +1345,19 @@ class Manager {
 	 * Add a customize section.
 	 *
 	 * @since 3.4.0
-	 * @since 4.5.0 Return added \WP_Customize_Section instance.
+	 * @since 4.5.0 Return added Section instance.
 	 * @access public
 	 *
-	 * @param \WP_Customize_Section|string $id   Customize Section object, or Section ID.
-	 * @param array                       $args Section arguments.
+	 * @param Section|string $id   Customize Section object, or Section ID.
+	 * @param array          $args Section arguments.
 	 *
-	 * @return \WP_Customize_Section             The instance of the section that was added.
+	 * @return Section             The instance of the section that was added.
 	 */
 	public function add_section( $id, $args = [] ) {
-		if ( $id instanceof \WP_Customize_Section ) {
+		if ( $id instanceof Section ) {
 			$section = $id;
 		} else {
-			$section = new \WP_Customize_Section( $this, $id, $args );
+			$section = new Section( $this, $id, $args );
 		}
 
 		$this->sections[ $section->id ] = $section;
@@ -1370,7 +1370,7 @@ class Manager {
 	 * @since 3.4.0
 	 *
 	 * @param string $id Section ID.
-	 * @return \WP_Customize_Section|void The section, if set.
+	 * @return Section|void The section, if set.
 	 */
 	public function get_section( $id ) {
 		if ( isset( $this->sections[ $id ] ) ) {
@@ -1397,9 +1397,7 @@ class Manager {
 	 * @since 4.3.0
 	 * @access public
 	 *
-	 * @see \WP_Customize_Section
-	 *
-	 * @param string $section Name of a custom section which is a subclass of \WP_Customize_Section.
+	 * @param string $section Name of a custom section which is a subclass of Section.
 	 */
 	public function register_section_type( $section ) {
 		$this->registered_section_types[] = $section;
@@ -1509,8 +1507,8 @@ class Manager {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param Panel|\WP_Customize_Section|Control $a Object A.
-	 * @param Panel|\WP_Customize_Section|Control $b Object B.
+	 * @param Panel|Section|Control $a Object A.
+	 * @param Panel|Section|Control $b Object B.
 	 * @return int
 	 */
 	protected function _cmp_priority( $a, $b ) {
@@ -1932,8 +1930,8 @@ class Manager {
 	public function register_controls() {
 
 		/* Panel, Section, and Control Types */
-		$this->register_panel_type( 'WP_Customize_Panel' );
-		$this->register_section_type( 'WP_Customize_Section' );
+		$this->register_panel_type( Panel::class );
+		$this->register_section_type( Section::class );
 		$this->register_section_type( Widget\SidebarSection::class );
 		$this->register_control_type( Color\Control::class );
 		$this->register_control_type( Media\Control::class );

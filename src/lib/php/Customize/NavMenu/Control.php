@@ -29,7 +29,7 @@ class Control extends BaseControl {
 	 *
 	 * @since 4.3.0
 	 * @access public
-	 * @var WP_Customize_Nav_Menu_Setting
+	 * @var Setting
 	 */
 	public $setting;
 

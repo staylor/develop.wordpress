@@ -1,2 +1,2 @@
 <?php
-class WP_Customize_Nav_Menu_Control extends \WP_Customize_Control {}
+class WP_Customize_Nav_Menu_Control extends \WP\Customize\NavMenu\Control {}

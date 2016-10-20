@@ -23,7 +23,7 @@ wp.customize.selectiveRefresh = ( function( $, api ) {
 	 *
 	 * A partial provides a rendering of one or more settings according to a template.
 	 *
-	 * @see PHP class WP_Customize_Partial.
+	 * @see PHP class \WP\Customize\Partial.
 	 *
 	 * @class
 	 * @augments wp.customize.Class

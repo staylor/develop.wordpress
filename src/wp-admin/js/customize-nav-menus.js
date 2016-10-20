@@ -44,7 +44,7 @@
 	/**
 	 * wp.customize.Menus.AvailableItemModel
 	 *
-	 * A single available menu item model. See PHP's WP_Customize_Nav_Menu_Item_Setting class.
+	 * A single available menu item model. See PHP's \WP\Customize\NavMenu\ItemSetting class.
 	 *
 	 * @constructor
 	 * @augments Backbone.Model
@@ -665,7 +665,7 @@
 	 * wp.customize.Menus.MenusPanel
 	 *
 	 * Customizer panel for menus. This is used only for screen options management.
-	 * Note that 'menus' must match the WP_Customize_Menu_Panel::$type.
+	 * Note that 'menus' must match the \WP\Customize\NavMenu\Panel::$type.
 	 *
 	 * @constructor
 	 * @augments wp.customize.Panel
@@ -787,7 +787,7 @@
 	 * wp.customize.Menus.MenuSection
 	 *
 	 * Customizer section for menus. This is used only for lazy-loading child controls.
-	 * Note that 'nav_menu' must match the WP_Customize_Menu_Section::$type.
+	 * Note that 'nav_menu' must match the \WP\Customize\NavMenu\Section::$type.
 	 *
 	 * @constructor
 	 * @augments wp.customize.Section
@@ -1002,7 +1002,7 @@
 	 * wp.customize.Menus.NewMenuSection
 	 *
 	 * Customizer section for new menus.
-	 * Note that 'new_menu' must match the WP_Customize_New_Menu_Section::$type.
+	 * Note that 'new_menu' must match the \WP\Customize\NavMenu\NewMenuSection::$type.
 	 *
 	 * @constructor
 	 * @augments wp.customize.Section
@@ -2835,7 +2835,7 @@
 					var wasSaved = api.state( 'saved' ).get();
 					if ( /^nav_menu_locations\[/.test( setting.id ) && setting.get() === update.previous_term_id ) {
 						setting.set( update.term_id );
-						setting._dirty = false; // Not dirty because this is has also just been done on server in WP_Customize_Nav_Menu_Setting::update().
+						setting._dirty = false; // Not dirty because this is has also just been done on server in \WP\Customize\NavMenu\Setting::update().
 						api.state( 'saved' ).set( wasSaved );
 						setting.preview();
 					}

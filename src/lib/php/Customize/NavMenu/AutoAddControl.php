@@ -1,7 +1,7 @@
 <?php
 namespace WP\Customize\NavMenu;
 /**
- * Customize API: WP_Customize_Nav_Menu_Auto_Add_Control class
+ * Customize API: AutoAddControl class
  *
  * @package WordPress
  * @subpackage Customize

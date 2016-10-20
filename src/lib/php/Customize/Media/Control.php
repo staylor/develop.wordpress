@@ -85,8 +85,6 @@ class Control extends BaseControl {
 	 *
 	 * @since 3.4.0
 	 * @since 4.2.0 Moved from \WP\Customize\Upload\Control.
-	 *
-	 * @see WP_Customize_Control::to_json()
 	 */
 	public function to_json() {
 		parent::to_json();

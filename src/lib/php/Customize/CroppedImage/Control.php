@@ -79,8 +79,6 @@ class Control extends ImageControl {
 	 *
 	 * @since 4.3.0
 	 * @access public
-	 *
-	 * @see WP_Customize_Control::to_json()
 	 */
 	public function to_json() {
 		parent::to_json();

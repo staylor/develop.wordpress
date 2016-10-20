@@ -1,7 +1,7 @@
 <?php
 namespace WP\Customize\CustomCSS;
 /**
- * Customize API: WP_Customize_Custom_CSS_Setting class
+ * Customize API: Setting class
  *
  * This handles validation, sanitization and saving of the value.
  *
@@ -9,7 +9,7 @@ namespace WP\Customize\CustomCSS;
  * @subpackage Customize
  * @since 4.7.0
  */
-use WP\Customize\Setting as BaseSetting;
+use WP\Customize\{Manager,Setting as BaseSetting};
 /**
  * Custom Setting to handle WP Custom CSS.
  *
@@ -58,17 +58,17 @@ class Setting extends BaseSetting {
 	public $stylesheet = '';
 
 	/**
-	 * WP_Customize_Custom_CSS_Setting constructor.
+	 * Setting constructor.
 	 *
 	 * @since 4.7.0
 	 * @access public
 	 *
 	 * @throws Exception If the setting ID does not match the pattern `custom_css[$stylesheet]`.
 	 *
-	 * @param WP_Customize_Manager $manager The Customize Manager class.
-	 * @param string               $id      An specific ID of the setting. Can be a
+	 * @param Manager $manager The Customize Manager class.
+	 * @param string  $id      An specific ID of the setting. Can be a
 	 *                                      theme mod or option name.
-	 * @param array                $args    Setting arguments.
+	 * @param array   $args    Setting arguments.
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
 		parent::__construct( $manager, $id, $args );

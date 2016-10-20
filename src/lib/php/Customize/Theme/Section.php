@@ -1,7 +1,7 @@
 <?php
 namespace WP\Customize\Theme;
 /**
- * Customize API: WP_Customize_Themes_Section class
+ * Customize API: Section class
  *
  * @package WordPress
  * @subpackage Customize

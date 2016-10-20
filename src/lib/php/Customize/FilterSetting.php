@@ -1,7 +1,7 @@
 <?php
 namespace WP\Customize;
 /**
- * Customize API: WP_Customize_Filter_Setting class
+ * Customize API: FilterSetting class
  *
  * @package WordPress
  * @subpackage Customize
