@@ -29,7 +29,7 @@ function ms_upload_constants() {
 	}
 
 	// Base uploads dir relative to ABSPATH
-	if ( !defined( 'UPLOADBLOGSDIR' ) ) {
+	if ( ! defined( 'UPLOADBLOGSDIR' ) ) {
 			define( 'UPLOADBLOGSDIR', 'wp-content/blogs.dir' );
 	}
 
@@ -56,19 +56,19 @@ function ms_cookie_constants(  ) {
 	/**
 	 * @since 1.2.0
 	 */
-	if ( !defined( 'COOKIEPATH' ) )
+	if ( ! defined( 'COOKIEPATH' ) ) {
 		define( 'COOKIEPATH', $current_network->path );
-
+	}
 	/**
 	 * @since 1.5.0
 	 */
-	if ( !defined( 'SITECOOKIEPATH' ) )
+	if ( ! defined( 'SITECOOKIEPATH' ) ) {
 		define( 'SITECOOKIEPATH', $current_network->path );
-
+	}
 	/**
 	 * @since 2.6.0
 	 */
-	if ( !defined( 'ADMIN_COOKIE_PATH' ) ) {
+	if ( ! defined( 'ADMIN_COOKIE_PATH' ) ) {
 		if ( ! is_subdomain_install() || trim( parse_url( get_option( 'siteurl' ), PHP_URL_PATH ), '/' ) ) {
 			define( 'ADMIN_COOKIE_PATH', SITECOOKIEPATH );
 		} else {
@@ -79,11 +79,12 @@ function ms_cookie_constants(  ) {
 	/**
 	 * @since 2.0.0
 	 */
-	if ( !defined('COOKIE_DOMAIN') && is_subdomain_install() ) {
-		if ( !empty( $current_network->cookie_domain ) )
-			define('COOKIE_DOMAIN', '.' . $current_network->cookie_domain);
-		else
-			define('COOKIE_DOMAIN', '.' . $current_network->domain);
+	if ( ! defined( 'COOKIE_DOMAIN') && is_subdomain_install() ) {
+		if ( ! empty( $current_network->cookie_domain ) ) {
+			define( 'COOKIE_DOMAIN', '.' . $current_network->cookie_domain );
+		} else {
+			define( 'COOKIE_DOMAIN', '.' . $current_network->domain );
+		}
 	}
 }
 
@@ -100,18 +101,18 @@ function ms_file_constants() {
 	 * Optional support for X-Sendfile header
 	 * @since 3.0.0
 	 */
-	if ( !defined( 'WPMU_SENDFILE' ) ) {
-			define( 'WPMU_SENDFILE', false );
+	if ( ! defined( 'WPMU_SENDFILE' ) ) {
+		define( 'WPMU_SENDFILE', false );
 	}
 
 	/**
 	 * Optional support for X-Accel-Redirect header
 	 * @since 3.0.0
 	 */
-	if ( !defined( 'WPMU_ACCEL_REDIRECT' ) ) {
-			define( 'WPMU_ACCEL_REDIRECT', false );
+	if ( ! defined( 'WPMU_ACCEL_REDIRECT' ) ) {
+		define( 'WPMU_ACCEL_REDIRECT', false );
 	}
-	}
+}
 
 /**
  * Defines Multisite subdomain constants and handles warnings and notices.

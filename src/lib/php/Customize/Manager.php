@@ -2343,8 +2343,9 @@ class Manager {
 	 * @return Section|void The section, if set.
 	 */
 	public function get_section( $id ) {
-		if ( isset( $this->sections[ $id ] ) )
+		if ( isset( $this->sections[ $id ] ) ) {
 			return $this->sections[ $id ];
+		}
 	}
 
 	/**
@@ -2419,8 +2420,9 @@ class Manager {
 	 * @return Control|void The control object, if set.
 	 */
 	public function get_control( $id ) {
-		if ( isset( $this->controls[ $id ] ) )
+		if ( isset( $this->controls[ $id ] ) ) {
 			return $this->controls[ $id ];
+		}
 	}
 
 	/**

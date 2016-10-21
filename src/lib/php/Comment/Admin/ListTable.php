@@ -372,9 +372,9 @@ class ListTable extends \WP_List_Table {
 
 		$columns = [];
 
-		if ( $this->checkbox )
+		if ( $this->checkbox ) {
 			$columns['cb'] = '<input type="checkbox" />';
-
+		}
 		$columns['author'] = __( 'Author' );
 		$columns['comment'] = _x( 'Comment', 'column name' );
 
@@ -485,24 +485,24 @@ class ListTable extends \WP_List_Table {
 		$app->remove( 'post' );
 	}
 
- 	/**
- 	 * Generate and display row actions links.
- 	 *
- 	 * @since 4.3.0
- 	 * @access protected
- 	 *
- 	 * @param Comment $comment     The comment object.
- 	 * @param string     $column_name Current column name.
- 	 * @param string     $primary     Primary column name.
- 	 * @return string|void Comment row actions output.
- 	 */
- 	protected function handle_row_actions( $comment, $column_name, $primary ) {
+	/**
+	 * Generate and display row actions links.
+	 *
+	 * @since 4.3.0
+	 * @access protected
+	 *
+	 * @param Comment $comment     The comment object.
+	 * @param string     $column_name Current column name.
+	 * @param string     $primary     Primary column name.
+	 * @return string|void Comment row actions output.
+	 */
+	protected function handle_row_actions( $comment, $column_name, $primary ) {
 		if ( $primary !== $column_name ) {
 			return '';
 		}
 
- 		if ( ! $this->user_can ) {
- 			return;
+		if ( ! $this->user_can ) {
+			return;
 		}
 
 		$the_comment_status = wp_get_comment_status( $comment );
@@ -581,13 +581,14 @@ class ListTable extends \WP_List_Table {
 			( ( ( 'approve' === $action || 'unapprove' === $action ) && 2 === $i ) || 1 === $i ) ? $sep = '' : $sep = ' | ';
 
 			// Reply and quickedit need a hide-if-no-js span when not added with ajax
-			if ( ( 'reply' === $action || 'quickedit' === $action ) && ! wp_doing_ajax() )
+			if ( ( 'reply' === $action || 'quickedit' === $action ) && ! wp_doing_ajax() ) {
 				$action .= ' hide-if-no-js';
-			elseif ( ( $action === 'untrash' && $the_comment_status === 'trash' ) || ( $action === 'unspam' && $the_comment_status === 'spam' ) ) {
-				if ( '1' == get_comment_meta( $comment->comment_ID, '_wp_trash_meta_status', true ) )
+			} elseif ( ( $action === 'untrash' && $the_comment_status === 'trash' ) || ( $action === 'unspam' && $the_comment_status === 'spam' ) ) {
+				if ( '1' == get_comment_meta( $comment->comment_ID, '_wp_trash_meta_status', true ) ) {
 					$action .= ' approve';
-				else
+				} else {
 					$action .= ' unapprove';
+				}
 			}
 
 			$out .= "<span class='$action'>$sep$link</span>";

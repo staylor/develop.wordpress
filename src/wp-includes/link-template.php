@@ -3320,18 +3320,19 @@ function plugins_url( $path = '', $plugin = '' ) {
  */
 function network_site_url( $path = '', $scheme = null ) {
 	if ( ! is_multisite() ) {
-			return site_url($path, $scheme);
+		return site_url($path, $scheme);
 	}
 
 	$current_network = get_network();
 
-	if ( 'relative' == $scheme )
+	if ( 'relative' == $scheme ) {
 		$url = $current_network->path;
-	else
+	} else {
 		$url = set_url_scheme( 'http://' . $current_network->domain . $current_network->path, $scheme );
+	}
 
 	if ( $path && is_string( $path ) ) {
-			$url .= ltrim( $path, '/' );
+		$url .= ltrim( $path, '/' );
 	}
 
 	/**
@@ -3364,23 +3365,24 @@ function network_site_url( $path = '', $scheme = null ) {
  */
 function network_home_url( $path = '', $scheme = null ) {
 	if ( ! is_multisite() ) {
-			return home_url($path, $scheme);
+		return home_url($path, $scheme);
 	}
 
 	$current_network = get_network();
 	$orig_scheme = $scheme;
 
 	if ( ! in_array( $scheme, array( 'http', 'https', 'relative' ) ) ) {
-			$scheme = is_ssl() && ! is_admin() ? 'https' : 'http';
+		$scheme = is_ssl() && ! is_admin() ? 'https' : 'http';
 	}
 
-	if ( 'relative' == $scheme )
+	if ( 'relative' == $scheme ) {
 		$url = $current_network->path;
-	else
+	} else {
 		$url = set_url_scheme( 'http://' . $current_network->domain . $current_network->path, $scheme );
+	}
 
 	if ( $path && is_string( $path ) ) {
-			$url .= ltrim( $path, '/' );
+		$url .= ltrim( $path, '/' );
 	}
 
 	/**

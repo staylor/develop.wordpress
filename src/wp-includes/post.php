@@ -4053,8 +4053,7 @@ function add_ping( $post_id, $uri ) {
 
 	if ( is_array( $uri ) ) {
 		$pung = array_merge( $pung, $uri );
-	}
-	else {
+	} else {
 		$pung[] = $uri;
 	}
 

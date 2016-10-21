@@ -4448,11 +4448,12 @@ function wp_suspend_cache_invalidation( $suspend = true ) {
  *              running Multisite.
  */
 function is_main_site( $site_id = null ) {
-	if ( ! is_multisite() )
+	if ( ! is_multisite() ) {
 		return true;
+	}
 
 	if ( ! $site_id ) {
-			$site_id = get_current_blog_id();
+		$site_id = get_current_blog_id();
 	}
 
 	return (int) $site_id === (int) get_network()->site_id;
