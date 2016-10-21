@@ -65,10 +65,6 @@ class Provider implements ServiceProviderInterface {
 			return new Controller\WP();
 		};
 
-		$app['customize'] = function () {
-			return new Customize\Manager();
-		};
-
 		$app['rest.server'] = function () {
 			$wp_rest_server_class = apply_filters( 'wp_rest_server_class', '\WP_REST_Server' );
 			$wp_rest_server = new $wp_rest_server_class;

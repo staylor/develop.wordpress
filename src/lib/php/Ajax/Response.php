@@ -1,7 +1,6 @@
 <?php
 namespace WP\Ajax;
 
-use WP\Mustache;
 use function WP\getApp;
 /**
  * Send XML response back to Ajax request.
@@ -10,8 +9,6 @@ use function WP\getApp;
  * @since 2.1.0
  */
 class Response {
-	use Mustache;
-
 	/**
 	 * Store XML responses to send.
 	 *
@@ -174,7 +171,7 @@ class Response {
 		$response->setCharset( $charset );
 		$response->headers->set( 'Content-Type', 'text/xml; charset=' . $charset );
 
-		$xml = $this->render( 'ajax/response', [
+		$xml = $app['mustache']->render( 'ajax/response', [
 			'charset' => $charset,
 			'responses' => $this->responses,
 		] );

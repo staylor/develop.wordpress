@@ -353,17 +353,15 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
  * @since 4.3.0
  *
  * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
- * @global \WP\Customize\Manager $wp_customize
  */
 function wp_admin_bar_customize_menu( $wp_admin_bar ) {
-	global $wp_customize;
-
 	// Don't show for users who can't access the customizer or when in the admin.
 	if ( ! current_user_can( 'customize' ) || is_admin() ) {
 		return;
 	}
 
 	$app = getApp();
+	$wp_customize = $app->get( 'customize' );
 
 	// Don't show if the user cannot edit a given customize_changeset post currently being previewed.
 	if ( is_customize_preview() && $wp_customize->changeset_post_id() && ! current_user_can( get_post_type_object( 'customize_changeset' )->cap->edit_post, $wp_customize->changeset_post_id() ) ) {

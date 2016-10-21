@@ -2091,7 +2091,7 @@ function wp_ajax_save_widget() {
  */
 function wp_ajax_update_widget() {
 	$app = getApp();
-	$app['customize']->widgets->wp_ajax_update_widget();
+	$app->get( 'customize' )->widgets->wp_ajax_update_widget();
 }
 
 /**

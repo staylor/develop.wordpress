@@ -20,7 +20,7 @@ if ( ! current_user_can( 'customize' ) ) {
 	);
 }
 
-$wp_customize = $app['customize'];
+$wp_customize = $app->get( 'customize' );
 
 if ( $wp_customize->changeset_post_id() ) {
 	if ( ! current_user_can( get_post_type_object( 'customize_changeset' )->cap->edit_post, $wp_customize->changeset_post_id() ) ) {

@@ -118,6 +118,7 @@ class WP_Nav_Menu_Widget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$app = getApp();
+		$wp_customize = $app->get( 'customize' );
 		$title = isset( $instance['title'] ) ? $instance['title'] : '';
 		$nav_menu = isset( $instance['nav_menu'] ) ? $instance['nav_menu'] : '';
 
@@ -128,7 +129,7 @@ class WP_Nav_Menu_Widget extends WP_Widget {
 		?>
 		<p class="nav-menu-widget-no-menus-message" <?php if ( ! empty( $menus ) ) { echo ' style="display:none" '; } ?>>
 			<?php
-			if ( $app['customize'] instanceof Manager ) {
+			if ( $wp_customize instanceof Manager ) {
 				$url = 'javascript: wp.customize.panel( "nav_menus" ).focus();';
 			} else {
 				$url = admin_url( 'nav-menus.php' );
@@ -152,7 +153,7 @@ class WP_Nav_Menu_Widget extends WP_Widget {
 					<?php endforeach; ?>
 				</select>
 			</p>
-			<?php if ( $app['customize'] instanceof Manager ) : ?>
+			<?php if ( $wp_customize instanceof Manager ) : ?>
 				<p class="edit-selected-nav-menu" style="<?php if ( ! $nav_menu ) { echo 'display: none;'; } ?>">
 					<button type="button" class="button"><?php _e( 'Edit Menu' ) ?></button>
 				</p>

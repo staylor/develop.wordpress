@@ -690,11 +690,12 @@ function locale_stylesheet() {
  */
 function switch_theme( $stylesheet ) {
 	$app = getApp();
+	$wp_customize = $app->get( 'customize' );
 	$sidebars_widgets = $app->sidebars['widgets'];
 
 	$_sidebars_widgets = null;
 	if ( 'wp_ajax_customize_save' === current_action() ) {
-		$_sidebars_widgets = $app['customize']->post_value( $app['customize']->get_setting( 'old_sidebars_widgets_data' ) );
+		$_sidebars_widgets = $wp_customize->post_value( $wp_customize->get_setting( 'old_sidebars_widgets_data' ) );
 	} elseif ( is_array( $sidebars_widgets ) ) {
 		$_sidebars_widgets = $sidebars_widgets;
 	}
@@ -1481,7 +1482,7 @@ function wp_get_custom_css( $stylesheet = '' ) {
 		$post_id = get_theme_mod( 'custom_css_post_id' );
 		if ( ! $post_id ) {
 			$query = new WP_Query( $custom_css_query_vars );
-			$post = $query->post;
+			$post = reset( $query->posts );
 
 			/*
 			 * Cache the lookup. See WP_Customize_Custom_CSS_Setting::update().
@@ -1493,7 +1494,7 @@ function wp_get_custom_css( $stylesheet = '' ) {
 		}
 	} else {
 		$query = new WP_Query( $custom_css_query_vars );
-		$post = $query->post;
+		$post = reset( $query->posts );
 	}
 
 	if ( $post ) {
@@ -2206,14 +2207,14 @@ function check_theme_switched() {
  * @since 3.4.0
  */
 function _wp_customize_include() {
+	$app = getApp();
+	$_request = $app['request']->attributes;
 
-	$is_customize_admin_page = ( is_admin() && 'customize.php' == basename( $_SERVER['PHP_SELF'] ) );
+	$is_customize_admin_page = ( is_admin() && 'customize.php' == basename( $app['request.php_self'] ) );
 	$should_include = (
 		$is_customize_admin_page
-		||
-		( isset( $_REQUEST['wp_customize'] ) && 'on' == $_REQUEST['wp_customize'] )
-		||
-		( ! empty( $_GET['customize_changeset_uuid'] ) || ! empty( $_POST['customize_changeset_uuid'] ) )
+		|| 'on' === $_request->get( 'wp_customize' )
+		|| ! empty( $_request->get( 'customize_changeset_uuid' ) )
 	);
 
 	if ( ! $should_include ) {
@@ -2226,10 +2227,7 @@ function _wp_customize_include() {
 	 * the values should contain any characters needing slashes anyway.
 	 */
 	$keys = array( 'changeset_uuid', 'customize_changeset_uuid', 'customize_theme', 'theme', 'customize_messenger_channel' );
-	$input_vars = array_merge(
-		wp_array_slice_assoc( $_GET, $keys ),
-		wp_array_slice_assoc( $_POST, $keys )
-	);
+	$input_vars = wp_array_slice_assoc( $app['request']->attributes->all(), $keys );
 
 	$theme = null;
 	$changeset_uuid = null;
@@ -2251,7 +2249,8 @@ function _wp_customize_include() {
 		$messenger_channel = sanitize_key( $input_vars['customize_messenger_channel'] );
 	}
 
-	$GLOBALS['wp_customize'] = new \WP\Customize\Manager( compact( 'changeset_uuid', 'theme', 'messenger_channel' ) );
+	$manager = new Manager( compact( 'changeset_uuid', 'theme', 'messenger_channel' ) );
+	$app->set( 'customize', $manager );
 }
 
 /**
@@ -2262,8 +2261,6 @@ function _wp_customize_include() {
  * @param WP_Post $changeset_post Changeset post object.
  */
 function _wp_customize_publish_changeset( $new_status, $old_status, $changeset_post ) {
-	global $wp_customize;
-
 	$is_publishing_changeset = (
 		'customize_changeset' === $changeset_post->post_type
 		&&
@@ -2275,9 +2272,11 @@ function _wp_customize_publish_changeset( $new_status, $old_status, $changeset_p
 		return;
 	}
 
+	$app = getApp();
+	$wp_customize = $app->get( 'customize' );
 	if ( empty( $wp_customize ) ) {
-		require_once ABSPATH . WPINC . '/class-wp-customize-manager.php';
-		$wp_customize = new WP_Customize_Manager( $changeset_post->post_name );
+		$wp_customize = new Manager( $changeset_post->post_name );
+		$app->set( 'customize', $wp_customize );
 	}
 
 	if ( ! did_action( 'customize_register' ) ) {
@@ -2452,5 +2451,6 @@ function wp_customize_support_script() {
  */
 function is_customize_preview() {
 	$app = getApp();
-	return ( $app['customize'] instanceof Manager ) && $app['customize']->is_preview();
+	$wp_customize = $app->get( 'customize' );
+	return $wp_customize instanceof Manager && $wp_customize->is_preview();
 }
