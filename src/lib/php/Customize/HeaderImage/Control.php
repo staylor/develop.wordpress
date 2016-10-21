@@ -89,10 +89,8 @@ class Control extends ImageControl {
 	 * @access public
 	 */
 	public function print_header_image_template() {
-		$app = getApp();
-
 		$path = 'customize/control/header-image/template/';
-		echo $app['mustache']->render( $path . 'choice', [
+		echo $this->manager->app['mustache']->render( $path . 'choice', [
 			'l10n' => [
 				'remove_image' => __( 'Remove image' ),
 				'set_image' => __( 'Set image' ),
@@ -101,7 +99,7 @@ class Control extends ImageControl {
 			]
 		] );
 
-		echo $app['mustache']->render( $path . 'current', [
+		echo $this->manager->app['mustache']->render( $path . 'current', [
 			'l10n' => [
 				'no_image_set' => __( 'No image set.' ),
 				'randomizing_uploaded_headers' => __( 'Randomizing uploaded headers' ),
@@ -125,7 +123,6 @@ class Control extends ImageControl {
 	 * @access public
 	 */
 	public function render_content() {
-		$app = getApp();
 		$this->print_header_image_template();
 		$visibility = $this->get_current_image_src() ? '' : ' style="display:none" ';
 		$width = absint( get_theme_support( 'custom-header', 'width' ) );
@@ -148,7 +145,7 @@ class Control extends ImageControl {
 			);
 		}
 
-		echo $app['mustache']->render( 'customize/control/header-image/content', [
+		echo $this->manager->app['mustache']->render( 'customize/control/header-image/content', [
 			'intro' => $intro,
 			'visibility' => $visibility,
 			'l10n' => [

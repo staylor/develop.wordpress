@@ -78,27 +78,10 @@ class Control extends BaseControl {
 	 * @since 4.1.0
 	 */
 	public function content_template() {
-		?>
-		<# var defaultValue = '';
-		if ( data.defaultValue ) {
-			if ( '#' !== data.defaultValue.substring( 0, 1 ) ) {
-				defaultValue = '#' + data.defaultValue;
-			} else {
-				defaultValue = data.defaultValue;
-			}
-			defaultValue = ' data-default-color=' + defaultValue; // Quotes added automatically.
-		} #>
-		<label>
-			<# if ( data.label ) { #>
-				<span class="customize-control-title">{{{ data.label }}}</span>
-			<# } #>
-			<# if ( data.description ) { #>
-				<span class="description customize-control-description">{{{ data.description }}}</span>
-			<# } #>
-			<div class="customize-control-content">
-				<input class="color-picker-hex" type="text" maxlength="7" placeholder="<?php esc_attr_e( 'Hex Value' ); ?>" {{ defaultValue }} />
-			</div>
-		</label>
-		<?php
+		echo $this->manager->app['mustache']->render( 'customize/control/color/content', [
+			'l10n' => [
+				'hex_value' => __( 'Hex Value' ),
+			]
+		] );
 	}
 }

@@ -39,12 +39,11 @@ class AutoAddControl extends BaseControl {
 	 * @access protected
 	 */
 	protected function content_template() {
-		?>
-		<span class="customize-control-title"><?php _e( 'Menu Options' ); ?></span>
-		<label>
-			<input type="checkbox" class="auto_add" />
-			<?php _e( 'Automatically add new top-level pages to this menu' ); ?>
-		</label>
-		<?php
+		echo $this->manager->app['mustache']->render( 'customize/control/nav-menu/auto-add-content', [
+			'l10n' => [
+				'menu_options' => __( 'Menu Options' ),
+				'automatically_add' => __( 'Automatically add new top-level pages to this menu' ),
+			]
+		] );
 	}
 }

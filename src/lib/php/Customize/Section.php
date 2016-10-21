@@ -352,40 +352,12 @@ class Section {
 	 * @see Section::print_template()
 	 */
 	protected function render_template() {
-		?>
-		<li id="accordion-section-{{ data.id }}" class="accordion-section control-section control-section-{{ data.type }}">
-			<h3 class="accordion-section-title" tabindex="0">
-				{{ data.title }}
-				<span class="screen-reader-text"><?php _e( 'Press return or enter to open this section' ); ?></span>
-			</h3>
-			<ul class="accordion-section-content">
-				<li class="customize-section-description-container section-meta <# if ( data.description_hidden ) { #>customize-info<# } #>">
-					<div class="customize-section-title">
-						<button class="customize-section-back" tabindex="-1">
-							<span class="screen-reader-text"><?php _e( 'Back' ); ?></span>
-						</button>
-						<h3>
-							<span class="customize-action">
-								{{{ data.customizeAction }}}
-							</span>
-							{{ data.title }}
-						</h3>
-						<# if ( data.description && data.description_hidden ) { #>
-							<button type="button" class="customize-help-toggle dashicons dashicons-editor-help" aria-expanded="false"><span class="screen-reader-text"><?php _e( 'Help' ); ?></span></button>
-							<div class="description customize-section-description">
-								{{{ data.description }}}
-							</div>
-						<# } #>
-					</div>
-
-					<# if ( data.description && ! data.description_hidden ) { #>
-						<div class="description customize-section-description">
-							{{{ data.description }}}
-						</div>
-					<# } #>
-				</li>
-			</ul>
-		</li>
-		<?php
+		echo $this->manager->app['mustache']->render( 'customize/section/template', [
+			'l10n' => [
+				'press_return' => __( 'Press return or enter to open this section' ),
+				'back' => __( 'Back' ),
+				'help' => __( 'Help' ),
+			]
+		] );
 	}
 }

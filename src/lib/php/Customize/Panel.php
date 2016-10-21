@@ -337,15 +337,11 @@ class Panel {
 	 * @access protected
 	 */
 	protected function render_template() {
-		?>
-		<li id="accordion-panel-{{ data.id }}" class="accordion-section control-section control-panel control-panel-{{ data.type }}">
-			<h3 class="accordion-section-title" tabindex="0">
-				{{ data.title }}
-				<span class="screen-reader-text"><?php _e( 'Press return or enter to open this panel' ); ?></span>
-			</h3>
-			<ul class="accordion-sub-container control-panel-content"></ul>
-		</li>
-		<?php
+		echo $this->manager->app['mustache']->render( 'customize/panel/container', [
+			'l10n' => [
+				'press_return' => __( 'Press return or enter to open this panel' ),
+			]
+		] );
 	}
 
 	/**
@@ -360,24 +356,17 @@ class Panel {
 	 * @access protected
 	 */
 	protected function content_template() {
-		?>
-		<li class="panel-meta customize-info accordion-section <# if ( ! data.description ) { #> cannot-expand<# } #>">
-			<button class="customize-panel-back" tabindex="-1"><span class="screen-reader-text"><?php _e( 'Back' ); ?></span></button>
-			<div class="accordion-section-title">
-				<span class="preview-notice"><?php
-					/* translators: %s: the site/panel title in the Customizer */
-					echo sprintf( __( 'You are customizing %s' ), '<strong class="panel-title">{{ data.title }}</strong>' );
-				?></span>
-				<# if ( data.description ) { #>
-					<button class="customize-help-toggle dashicons dashicons-editor-help" tabindex="0" aria-expanded="false"><span class="screen-reader-text"><?php _e( 'Help' ); ?></span></button>
-				<# } #>
-			</div>
-			<# if ( data.description ) { #>
-				<div class="description customize-panel-description">
-					{{{ data.description }}}
-				</div>
-			<# } #>
-		</li>
-		<?php
+		echo $this->manager->app['mustache']->render( 'customize/panel/content', [
+
+			/* translators: %s: the site/panel title in the Customizer */
+			'preview_notice' => sprintf(
+				__( 'You are customizing %s' ),
+				'<strong class="panel-title">{{ data.title }}</strong>'
+			),
+			'l10n' => [
+				'back' => __( 'Back' ),
+				'help' => __( 'Help' ),
+			]
+		] );
 	}
 }

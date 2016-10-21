@@ -239,7 +239,7 @@ class Manager {
 	 */
 	private $_changeset_data;
 
-	protected $app;
+	public $app;
 	/**
 	 * Constructor.
 	 *
