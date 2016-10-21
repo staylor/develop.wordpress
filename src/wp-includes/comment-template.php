@@ -20,7 +20,7 @@ use function WP\getApp;
  * @since 1.5.0
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to retrieve the author.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to retrieve the author.
  *							      Default current comment.
  * @return string The comment author
  */
@@ -56,7 +56,7 @@ function get_comment_author( $comment_ID = null ) {
  * @since 0.71
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to print the author.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to print the author.
  *									 Default current comment.
  */
 function comment_author( $comment_ID = null ) {
@@ -81,7 +81,7 @@ function comment_author( $comment_ID = null ) {
  * @since 1.5.0
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to get the author's email.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to get the author's email.
  *									 Default current comment.
  * @return string The current comment author's email
  */
@@ -113,7 +113,7 @@ function get_comment_author_email( $comment_ID = null ) {
  * @since 0.71
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to print the author's email.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to print the author's email.
  *									 Default current comment.
  */
 function comment_author_email( $comment_ID = null ) {
@@ -213,7 +213,7 @@ function get_comment_author_email_link( $linktext = '', $before = '', $after = '
  * @since 1.5.0
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to get the author's link.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to get the author's link.
  *									 Default current comment.
  * @return string The comment author name or HTML link for author's URL.
  */
@@ -248,7 +248,7 @@ function get_comment_author_link( $comment_ID = null ) {
  * @since 0.71
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to print the author's link.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to print the author's link.
  *							      Default current comment.
  */
 function comment_author_link( $comment_ID = null ) {
@@ -261,7 +261,7 @@ function comment_author_link( $comment_ID = null ) {
  * @since 1.5.0
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to get the author's IP address.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to get the author's IP address.
  *							      Default current comment.
  * @return string Comment author's IP address.
  */
@@ -287,7 +287,7 @@ function get_comment_author_IP( $comment_ID = null ) {
  * @since 0.71
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to print the author's IP address.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to print the author's IP address.
  *									 Default current comment.
  */
 function comment_author_IP( $comment_ID = null ) {
@@ -300,7 +300,7 @@ function comment_author_IP( $comment_ID = null ) {
  * @since 1.5.0
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to get the author's URL.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to get the author's URL.
  *									 Default current comment.
  * @return string Comment author URL.
  */
@@ -333,7 +333,7 @@ function get_comment_author_url( $comment_ID = null ) {
  * @since 0.71
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to print the author's URL.
+ * @param int|Comment|null $comment_ID Optional. Comment or the ID of the comment for which to print the author's URL.
  *									 Default current comment.
  */
 function comment_author_url( $comment_ID = null ) {
@@ -450,7 +450,7 @@ function comment_class( $class = '', $comment = null, $post_id = null, $echo = t
  * @global int $comment_thread_alt
  *
  * @param string|array   $class      Optional. One or more classes to add to the class list. Default empty.
- * @param int|Comment $comment_id Comment ID or Comment object. Default current comment.
+ * @param int|Comment|null $comment_ID Comment ID or Comment object. Default current comment.
  * @param int|WP_Post    $post_id    Post ID or WP_Post object. Default current post.
  * @return array An array of classes.
  */
@@ -572,7 +572,7 @@ function get_comment_date( $d = '', $comment_ID = null ) {
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
  * @param string         $d          Optional. The format of the date. Default user's settings.
- * @param int|Comment $comment_ID Comment or ID of the comment for which to print the date.
+ * @param int|Comment|null $comment_ID Comment or ID of the comment for which to print the date.
  *                                   Default current comment.
  */
 function comment_date( $d = '', $comment_ID = null ) {
@@ -589,7 +589,7 @@ function comment_date( $d = '', $comment_ID = null ) {
  * @since 1.5.0
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID  Comment or ID of the comment for which to get the excerpt.
+ * @param int|Comment|null $comment_ID  Comment or ID of the comment for which to get the excerpt.
  *                                    Default current comment.
  * @return string The maybe truncated comment with 20 words or less.
  */
@@ -635,7 +635,7 @@ function get_comment_excerpt( $comment_ID = null ) {
  * @since 1.2.0
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID  Comment or ID of the comment for which to print the excerpt.
+ * @param int|Comment|null $comment_ID  Comment or ID of the comment for which to print the excerpt.
  *                                    Default current comment.
  */
 function comment_excerpt( $comment_ID = null ) {
@@ -1059,7 +1059,7 @@ function comment_time( $d = '' ) {
  * @since 1.5.0
  * @since 4.4.0 Added the ability for `$comment_ID` to also accept a Comment object.
  *
- * @param int|Comment $comment_ID Optional. Comment or ID of the comment for which to get the type.
+ * @param int|Comment|null $comment_ID Optional. Comment or ID of the comment for which to get the type.
  *                                   Default current comment.
  * @return string The comment type.
  */
