@@ -116,7 +116,7 @@ function get_comment_author_email( $comment_ID = null ) {
  * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to print the author's email.
  *									 Default current comment.
  */
-function comment_author_email( $comment_ID = 0 ) {
+function comment_author_email( $comment_ID = null ) {
 	$comment      = get_comment( $comment_ID );
 	$author_email = get_comment_author_email( $comment );
 
@@ -217,7 +217,7 @@ function get_comment_author_email_link( $linktext = '', $before = '', $after = '
  *									 Default current comment.
  * @return string The comment author name or HTML link for author's URL.
  */
-function get_comment_author_link( $comment_ID = 0 ) {
+function get_comment_author_link( $comment_ID = null ) {
 	$comment = get_comment( $comment_ID );
 	$url     = get_comment_author_url( $comment );
 	$author  = get_comment_author( $comment );
@@ -251,7 +251,7 @@ function get_comment_author_link( $comment_ID = 0 ) {
  * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to print the author's link.
  *							      Default current comment.
  */
-function comment_author_link( $comment_ID = 0 ) {
+function comment_author_link( $comment_ID = null ) {
 	echo get_comment_author_link( $comment_ID );
 }
 
@@ -265,7 +265,7 @@ function comment_author_link( $comment_ID = 0 ) {
  *							      Default current comment.
  * @return string Comment author's IP address.
  */
-function get_comment_author_IP( $comment_ID = 0 ) {
+function get_comment_author_IP( $comment_ID = null ) {
 	$comment = get_comment( $comment_ID );
 
 	/**
@@ -290,7 +290,7 @@ function get_comment_author_IP( $comment_ID = 0 ) {
  * @param int|Comment $comment_ID Optional. Comment or the ID of the comment for which to print the author's IP address.
  *									 Default current comment.
  */
-function comment_author_IP( $comment_ID = 0 ) {
+function comment_author_IP( $comment_ID = null ) {
 	echo esc_html( get_comment_author_IP( $comment_ID ) );
 }
 
@@ -304,7 +304,7 @@ function comment_author_IP( $comment_ID = 0 ) {
  *									 Default current comment.
  * @return string Comment author URL.
  */
-function get_comment_author_url( $comment_ID = 0 ) {
+function get_comment_author_url( $comment_ID = null ) {
 	$comment = get_comment( $comment_ID );
 	$url = '';
 	$id = 0;
@@ -375,7 +375,7 @@ function comment_author_url( $comment_ID = null ) {
  *                                 Default is the current comment.
  * @return string The HTML link between the $before and $after parameters.
  */
-function get_comment_author_url_link( $linktext = '', $before = '', $after = '', $comment = 0 ) {
+function get_comment_author_url_link( $linktext = '', $before = '', $after = '', $comment = null ) {
 	$url = get_comment_author_url( $comment );
 	$display = ($linktext != '') ? $linktext : $url;
 	$display = str_replace( 'http://www.', '', $display );
@@ -412,7 +412,7 @@ function get_comment_author_url_link( $linktext = '', $before = '', $after = '',
  * @param int|Comment $comment  Optional. Comment ID or Comment object.
  *                                 Default is the current comment.
  */
-function comment_author_url_link( $linktext = '', $before = '', $after = '', $comment = 0 ) {
+function comment_author_url_link( $linktext = '', $before = '', $after = '', $comment = null ) {
 	echo get_comment_author_url_link( $linktext, $before, $after, $comment );
 }
 
@@ -546,7 +546,7 @@ function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
  *                                    Default current comment.
  * @return string The comment's date.
  */
-function get_comment_date( $d = '', $comment_ID = 0 ) {
+function get_comment_date( $d = '', $comment_ID = null ) {
 	$comment = get_comment( $comment_ID );
 	if ( '' == $d ) {
 		$date = mysql2date(get_option('date_format'), $comment->comment_date);
@@ -575,7 +575,7 @@ function get_comment_date( $d = '', $comment_ID = 0 ) {
  * @param int|Comment $comment_ID Comment or ID of the comment for which to print the date.
  *                                   Default current comment.
  */
-function comment_date( $d = '', $comment_ID = 0 ) {
+function comment_date( $d = '', $comment_ID = null ) {
 	echo get_comment_date( $d, $comment_ID );
 }
 
@@ -593,7 +593,7 @@ function comment_date( $d = '', $comment_ID = 0 ) {
  *                                    Default current comment.
  * @return string The maybe truncated comment with 20 words or less.
  */
-function get_comment_excerpt( $comment_ID = 0 ) {
+function get_comment_excerpt( $comment_ID = null ) {
 	$comment = get_comment( $comment_ID );
 	$comment_text = strip_tags( str_replace( array( "\n", "\r" ), ' ', $comment->comment_content ) );
 	$words = explode( ' ', $comment_text );
@@ -638,7 +638,7 @@ function get_comment_excerpt( $comment_ID = 0 ) {
  * @param int|Comment $comment_ID  Comment or ID of the comment for which to print the excerpt.
  *                                    Default current comment.
  */
-function comment_excerpt( $comment_ID = 0 ) {
+function comment_excerpt( $comment_ID = null ) {
 	$comment         = get_comment( $comment_ID );
 	$comment_excerpt = get_comment_excerpt( $comment );
 
@@ -808,7 +808,7 @@ function get_comment_link( $comment = null, $args = [] ) {
  * @param int|WP_Post $post_id Optional. Post ID or WP_Post object. Default is global $post.
  * @return string The link to the comments.
  */
-function get_comments_link( $post_id = 0 ) {
+function get_comments_link( $post_id = null ) {
 	$hash = get_comments_number( $post_id ) ? '#comments' : '#respond';
 	$comments_link = get_permalink( $post_id ) . $hash;
 
@@ -849,7 +849,7 @@ function comments_link( $deprecated = '', $deprecated_2 = '' ) {
  * @param int|WP_Post $post_id Optional. Post ID or WP_Post object. Default is global $post.
  * @return int The number of comments a post has.
  */
-function get_comments_number( $post_id = 0 ) {
+function get_comments_number( $post_id = null ) {
 	$post = get_post( $post_id );
 
 	if ( ! $post ) {
@@ -960,7 +960,7 @@ function get_comments_number_text( $zero = false, $one = false, $more = false ) 
  * @param array           $args       Optional. An array of arguments. Default empty.
  * @return string The comment content.
  */
-function get_comment_text( $comment_ID = 0, $args = [] ) {
+function get_comment_text( $comment_ID = null, $args = [] ) {
 	$comment = get_comment( $comment_ID );
 
 	/**
@@ -1063,7 +1063,7 @@ function comment_time( $d = '' ) {
  *                                   Default current comment.
  * @return string The comment type.
  */
-function get_comment_type( $comment_ID = 0 ) {
+function get_comment_type( $comment_ID = null ) {
 	$comment = get_comment( $comment_ID );
 	if ( '' == $comment->comment_type ) {
 		$comment->comment_type = 'comment';
