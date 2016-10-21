@@ -983,25 +983,25 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	protected function handle_status_param( $post_status, $post_type ) {
 
 		switch ( $post_status ) {
-			case 'draft':
-			case 'pending':
-				break;
-			case 'private':
-				if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
-					return new WP_Error( 'rest_cannot_publish', __( 'Sorry, you are not allowed to create private posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
-				}
-				break;
-			case 'publish':
-			case 'future':
-				if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
-					return new WP_Error( 'rest_cannot_publish', __( 'Sorry, you are not allowed to publish posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
-				}
-				break;
-			default:
-				if ( ! get_post_status_object( $post_status ) ) {
-					$post_status = 'draft';
-				}
-				break;
+		case 'draft':
+		case 'pending':
+			break;
+		case 'private':
+			if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
+				return new WP_Error( 'rest_cannot_publish', __( 'Sorry, you are not allowed to create private posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+			}
+			break;
+		case 'publish':
+		case 'future':
+			if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
+				return new WP_Error( 'rest_cannot_publish', __( 'Sorry, you are not allowed to publish posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+			}
+			break;
+		default:
+			if ( ! get_post_status_object( $post_status ) ) {
+				$post_status = 'draft';
+			}
+			break;
 		}
 
 		return $post_status;
@@ -1623,132 +1623,132 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 			switch ( $attribute ) {
 
-				case 'title':
-					$schema['properties']['title'] = array(
-						'description' => __( 'The title for the object.' ),
-						'type'        => 'object',
-						'context'     => array( 'view', 'edit', 'embed' ),
-						'properties'  => array(
-							'raw' => array(
-								'description' => __( 'Title for the object, as it exists in the database.' ),
-								'type'        => 'string',
-								'context'     => array( 'edit' ),
-							),
-							'rendered' => array(
-								'description' => __( 'HTML title for the object, transformed for display.' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit', 'embed' ),
-								'readonly'    => true,
-							),
+			case 'title':
+				$schema['properties']['title'] = array(
+					'description' => __( 'The title for the object.' ),
+					'type'        => 'object',
+					'context'     => array( 'view', 'edit', 'embed' ),
+					'properties'  => array(
+						'raw' => array(
+							'description' => __( 'Title for the object, as it exists in the database.' ),
+							'type'        => 'string',
+							'context'     => array( 'edit' ),
 						),
-					);
-					break;
-
-				case 'editor':
-					$schema['properties']['content'] = array(
-						'description' => __( 'The content for the object.' ),
-						'type'        => 'object',
-						'context'     => array( 'view', 'edit' ),
-						'properties'  => array(
-							'raw' => array(
-								'description' => __( 'Content for the object, as it exists in the database.' ),
-								'type'        => 'string',
-								'context'     => array( 'edit' ),
-							),
-							'rendered' => array(
-								'description' => __( 'HTML content for the object, transformed for display.' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-								'readonly'    => true,
-							),
-							'protected'       => array(
-								'description' => __( 'Whether the content is protected with a password.' ),
-								'type'        => 'boolean',
-								'context'     => array( 'view', 'edit', 'embed' ),
-								'readonly'    => true,
-							),
+						'rendered' => array(
+							'description' => __( 'HTML title for the object, transformed for display.' ),
+							'type'        => 'string',
+							'context'     => array( 'view', 'edit', 'embed' ),
+							'readonly'    => true,
 						),
-					);
-					break;
+					),
+				);
+				break;
 
-				case 'author':
-					$schema['properties']['author'] = array(
-						'description' => __( 'The id for the author of the object.' ),
-						'type'        => 'integer',
-						'context'     => array( 'view', 'edit', 'embed' ),
-					);
-					break;
-
-				case 'excerpt':
-					$schema['properties']['excerpt'] = array(
-						'description' => __( 'The excerpt for the object.' ),
-						'type'        => 'object',
-						'context'     => array( 'view', 'edit', 'embed' ),
-						'properties'  => array(
-							'raw' => array(
-								'description' => __( 'Excerpt for the object, as it exists in the database.' ),
-								'type'        => 'string',
-								'context'     => array( 'edit' ),
-							),
-							'rendered' => array(
-								'description' => __( 'HTML excerpt for the object, transformed for display.' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit', 'embed' ),
-								'readonly'    => true,
-							),
-							'protected'       => array(
-								'description' => __( 'Whether the excerpt is protected with a password.' ),
-								'type'        => 'boolean',
-								'context'     => array( 'view', 'edit', 'embed' ),
-								'readonly'    => true,
-							),
+			case 'editor':
+				$schema['properties']['content'] = array(
+					'description' => __( 'The content for the object.' ),
+					'type'        => 'object',
+					'context'     => array( 'view', 'edit' ),
+					'properties'  => array(
+						'raw' => array(
+							'description' => __( 'Content for the object, as it exists in the database.' ),
+							'type'        => 'string',
+							'context'     => array( 'edit' ),
 						),
-					);
-					break;
+						'rendered' => array(
+							'description' => __( 'HTML content for the object, transformed for display.' ),
+							'type'        => 'string',
+							'context'     => array( 'view', 'edit' ),
+							'readonly'    => true,
+						),
+						'protected'       => array(
+							'description' => __( 'Whether the content is protected with a password.' ),
+							'type'        => 'boolean',
+							'context'     => array( 'view', 'edit', 'embed' ),
+							'readonly'    => true,
+						),
+					),
+				);
+				break;
 
-				case 'thumbnail':
-					$schema['properties']['featured_media'] = array(
-						'description' => __( 'The id of the featured media for the object.' ),
-						'type'        => 'integer',
-						'context'     => array( 'view', 'edit' ),
-					);
-					break;
+			case 'author':
+				$schema['properties']['author'] = array(
+					'description' => __( 'The id for the author of the object.' ),
+					'type'        => 'integer',
+					'context'     => array( 'view', 'edit', 'embed' ),
+				);
+				break;
 
-				case 'comments':
-					$schema['properties']['comment_status'] = array(
-						'description' => __( 'Whether or not comments are open on the object.' ),
-						'type'        => 'string',
-						'enum'        => array( 'open', 'closed' ),
-						'context'     => array( 'view', 'edit' ),
-					);
-					$schema['properties']['ping_status'] = array(
-						'description' => __( 'Whether or not the object can be pinged.' ),
-						'type'        => 'string',
-						'enum'        => array( 'open', 'closed' ),
-						'context'     => array( 'view', 'edit' ),
-					);
-					break;
+			case 'excerpt':
+				$schema['properties']['excerpt'] = array(
+					'description' => __( 'The excerpt for the object.' ),
+					'type'        => 'object',
+					'context'     => array( 'view', 'edit', 'embed' ),
+					'properties'  => array(
+						'raw' => array(
+							'description' => __( 'Excerpt for the object, as it exists in the database.' ),
+							'type'        => 'string',
+							'context'     => array( 'edit' ),
+						),
+						'rendered' => array(
+							'description' => __( 'HTML excerpt for the object, transformed for display.' ),
+							'type'        => 'string',
+							'context'     => array( 'view', 'edit', 'embed' ),
+							'readonly'    => true,
+						),
+						'protected'       => array(
+							'description' => __( 'Whether the excerpt is protected with a password.' ),
+							'type'        => 'boolean',
+							'context'     => array( 'view', 'edit', 'embed' ),
+							'readonly'    => true,
+						),
+					),
+				);
+				break;
 
-				case 'page-attributes':
-					$schema['properties']['menu_order'] = array(
-						'description' => __( 'The order of the object in relation to other object of its type.' ),
-						'type'        => 'integer',
-						'context'     => array( 'view', 'edit' ),
-					);
-					break;
+			case 'thumbnail':
+				$schema['properties']['featured_media'] = array(
+					'description' => __( 'The id of the featured media for the object.' ),
+					'type'        => 'integer',
+					'context'     => array( 'view', 'edit' ),
+				);
+				break;
 
-				case 'post-formats':
-					$schema['properties']['format'] = array(
-						'description' => __( 'The format for the object.' ),
-						'type'        => 'string',
-						'enum'        => array_values( get_post_format_slugs() ),
-						'context'     => array( 'view', 'edit' ),
-					);
-					break;
+			case 'comments':
+				$schema['properties']['comment_status'] = array(
+					'description' => __( 'Whether or not comments are open on the object.' ),
+					'type'        => 'string',
+					'enum'        => array( 'open', 'closed' ),
+					'context'     => array( 'view', 'edit' ),
+				);
+				$schema['properties']['ping_status'] = array(
+					'description' => __( 'Whether or not the object can be pinged.' ),
+					'type'        => 'string',
+					'enum'        => array( 'open', 'closed' ),
+					'context'     => array( 'view', 'edit' ),
+				);
+				break;
 
-				case 'custom-fields':
-					$schema['properties']['meta'] = $this->meta->get_field_schema();
-					break;
+			case 'page-attributes':
+				$schema['properties']['menu_order'] = array(
+					'description' => __( 'The order of the object in relation to other object of its type.' ),
+					'type'        => 'integer',
+					'context'     => array( 'view', 'edit' ),
+				);
+				break;
+
+			case 'post-formats':
+				$schema['properties']['format'] = array(
+					'description' => __( 'The format for the object.' ),
+					'type'        => 'string',
+					'enum'        => array_values( get_post_format_slugs() ),
+					'context'     => array( 'view', 'edit' ),
+				);
+				break;
+
+			case 'custom-fields':
+				$schema['properties']['meta'] = $this->meta->get_field_schema();
+				break;
 
 			}
 		}

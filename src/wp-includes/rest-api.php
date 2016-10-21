@@ -798,22 +798,22 @@ function rest_validate_request_arg( $value, $request, $param ) {
 
 	if ( isset( $args['format'] ) ) {
 		switch ( $args['format'] ) {
-			case 'date-time' :
-				if ( ! rest_parse_date( $value ) ) {
-					return new WP_Error( 'rest_invalid_date', __( 'The date you provided is invalid.' ) );
-				}
-				break;
+		case 'date-time' :
+			if ( ! rest_parse_date( $value ) ) {
+				return new WP_Error( 'rest_invalid_date', __( 'The date you provided is invalid.' ) );
+			}
+			break;
 
-			case 'email' :
-				if ( ! is_email( $value ) ) {
-					return new WP_Error( 'rest_invalid_email', __( 'The email address you provided is invalid.' ) );
-				}
-				break;
-			case 'ipv4' :
-				if ( ! rest_is_ip_address( $value ) ) {
-					return new WP_Error( 'rest_invalid_param', sprintf( __( '%s is not a valid IP address.' ), $value ) );
-				}
-				break;
+		case 'email' :
+			if ( ! is_email( $value ) ) {
+				return new WP_Error( 'rest_invalid_email', __( 'The email address you provided is invalid.' ) );
+			}
+			break;
+		case 'ipv4' :
+			if ( ! rest_is_ip_address( $value ) ) {
+				return new WP_Error( 'rest_invalid_param', sprintf( __( '%s is not a valid IP address.' ), $value ) );
+			}
+			break;
 		}
 	}
 
@@ -881,20 +881,20 @@ function rest_sanitize_request_arg( $value, $request, $param ) {
 
 	if ( isset( $args['format'] ) ) {
 		switch ( $args['format'] ) {
-			case 'date-time' :
-				return sanitize_text_field( $value );
+		case 'date-time' :
+			return sanitize_text_field( $value );
 
-			case 'email' :
-				/*
+		case 'email' :
+			/*
 				 * sanitize_email() validates, which would be unexpected
 				 */
-				return sanitize_text_field( $value );
+			return sanitize_text_field( $value );
 
-			case 'uri' :
-				return esc_url_raw( $value );
+		case 'uri' :
+			return esc_url_raw( $value );
 
-			case 'ipv4' :
-				return sanitize_text_field( $value );
+		case 'ipv4' :
+			return sanitize_text_field( $value );
 		}
 	}
 

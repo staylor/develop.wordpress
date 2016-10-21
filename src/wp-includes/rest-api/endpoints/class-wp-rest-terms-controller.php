@@ -261,16 +261,16 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		 */
 		if ( ! in_array( $prepared_args['orderby'], array( 'name', 'none', 'include' ), true ) ) {
 			switch ( $prepared_args['orderby'] ) {
-				case 'id':
-					$this->sort_column = 'term_id';
-					break;
+			case 'id':
+				$this->sort_column = 'term_id';
+				break;
 
-				case 'slug':
-				case 'term_group':
-				case 'description':
-				case 'count':
-					$this->sort_column = $prepared_args['orderby'];
-					break;
+			case 'slug':
+			case 'term_group':
+			case 'description':
+			case 'count':
+				$this->sort_column = $prepared_args['orderby'];
+				break;
 			}
 			usort( $query_result, array( $this, 'compare_terms' ) );
 		}

@@ -784,21 +784,21 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$prefix = 'comment_';
 
 		switch ( $query_param ) {
-			case 'id':
-				$normalized = $prefix . 'ID';
-				break;
-			case 'post':
-				$normalized = $prefix . 'post_ID';
-				break;
-			case 'parent':
-				$normalized = $prefix . 'parent';
-				break;
-			case 'include':
-				$normalized = 'comment__in';
-				break;
-			default:
-				$normalized = $prefix . $query_param;
-				break;
+		case 'id':
+			$normalized = $prefix . 'ID';
+			break;
+		case 'post':
+			$normalized = $prefix . 'post_ID';
+			break;
+		case 'parent':
+			$normalized = $prefix . 'parent';
+			break;
+		case 'include':
+			$normalized = 'comment__in';
+			break;
+		default:
+			$normalized = $prefix . $query_param;
+			break;
 		}
 
 		return $normalized;
@@ -813,21 +813,21 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	protected function prepare_status_response( $comment_approved ) {
 
 		switch ( $comment_approved ) {
-			case 'hold':
-			case '0':
-				$status = 'hold';
-				break;
+		case 'hold':
+		case '0':
+			$status = 'hold';
+			break;
 
-			case 'approve':
-			case '1':
-				$status = 'approved';
-				break;
+		case 'approve':
+		case '1':
+			$status = 'approved';
+			break;
 
-			case 'spam':
-			case 'trash':
-			default:
-				$status = $comment_approved;
-				break;
+		case 'spam':
+		case 'trash':
+		default:
+			$status = $comment_approved;
+			break;
 		}
 
 		return $status;
@@ -1222,30 +1222,30 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		}
 
 		switch ( $new_status ) {
-			case 'approved' :
-			case 'approve':
-			case '1':
-				$changed = wp_set_comment_status( $comment->comment_ID, 'approve' );
-				break;
-			case 'hold':
-			case '0':
-				$changed = wp_set_comment_status( $comment->comment_ID, 'hold' );
-				break;
-			case 'spam' :
-				$changed = wp_spam_comment( $comment->comment_ID );
-				break;
-			case 'unspam' :
-				$changed = wp_unspam_comment( $comment->comment_ID );
-				break;
-			case 'trash' :
-				$changed = wp_trash_comment( $comment->comment_ID );
-				break;
-			case 'untrash' :
-				$changed = wp_untrash_comment( $comment->comment_ID );
-				break;
-			default :
-				$changed = false;
-				break;
+		case 'approved' :
+		case 'approve':
+		case '1':
+			$changed = wp_set_comment_status( $comment->comment_ID, 'approve' );
+			break;
+		case 'hold':
+		case '0':
+			$changed = wp_set_comment_status( $comment->comment_ID, 'hold' );
+			break;
+		case 'spam' :
+			$changed = wp_spam_comment( $comment->comment_ID );
+			break;
+		case 'unspam' :
+			$changed = wp_unspam_comment( $comment->comment_ID );
+			break;
+		case 'trash' :
+			$changed = wp_trash_comment( $comment->comment_ID );
+			break;
+		case 'untrash' :
+			$changed = wp_untrash_comment( $comment->comment_ID );
+			break;
+		default :
+			$changed = false;
+			break;
 		}
 
 		return $changed;

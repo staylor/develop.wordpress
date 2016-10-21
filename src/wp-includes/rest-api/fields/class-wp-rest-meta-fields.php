@@ -344,15 +344,15 @@ abstract class WP_REST_Meta_Fields {
 		}
 
 		switch ( $type ) {
-			case 'string':
-				$value = (string) $value;
-				break;
-			case 'number':
-				$value = (float) $value;
-				break;
-			case 'boolean':
-				$value = (bool) $value;
-				break;
+		case 'string':
+			$value = (string) $value;
+			break;
+		case 'number':
+			$value = (float) $value;
+			break;
+		case 'boolean':
+			$value = (bool) $value;
+			break;
 		}
 
 		// Don't allow objects to be output.
