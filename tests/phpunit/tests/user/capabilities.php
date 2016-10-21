@@ -469,6 +469,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 		$this->assertFalse( $user->has_cap( 'do_not_allow' ), "User with the {$role} role should not have the do_not_allow capability" );
 		$this->assertFalse( user_can( $user, 'do_not_allow' ), "User with the {$role} role should not have the do_not_allow capability" );
+
+		$this->assertTrue( $user->has_cap( 'exist' ), "User with the {$role} role should have the exist capability" );
+		$this->assertTrue( user_can( $user, 'exist' ), "User with the {$role} role should have the exist capability" );
 	}
 
 	// special case for the link manager
@@ -1336,17 +1339,11 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$this->assertFalse( current_user_can( 'edit_user', $other_user->ID ) );
 	}
 
-	function test_multisite_user_can_edit_self() {
-		if ( ! is_multisite() ) {
-			$this->markTestSkipped( 'Test only runs in multisite' );
-			return;
+	function test_user_can_edit_self() {
+		foreach ( self::$users as $role => $user ) {
+			wp_set_current_user( $user->ID );
+			$this->assertTrue( current_user_can( 'edit_user', $user->ID ), "User with role {$role} should have the capability to edit their own profile" );
 		}
-
-		$user = self::$users['administrator'];
-
-		wp_set_current_user( $user->ID );
-
-		$this->assertTrue( current_user_can( 'edit_user', $user->ID ) );
 	}
 
 	/**

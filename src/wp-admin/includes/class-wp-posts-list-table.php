@@ -472,6 +472,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		<div class="alignleft actions">
 <?php
 		if ( 'top' === $which && !is_singular() ) {
+			ob_start();
 
 			$this->months_dropdown( $this->screen->post_type );
 			$this->categories_dropdown( $this->screen->post_type );
@@ -492,7 +493,12 @@ class WP_Posts_List_Table extends WP_List_Table {
 			 */
 			do_action( 'restrict_manage_posts', $this->screen->post_type, $which );
 
-			submit_button( __( 'Filter' ), '', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
+			$output = ob_get_clean();
+
+			if ( ! empty( $output ) ) {
+				echo $output;
+				submit_button( __( 'Filter' ), '', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
+			}
 		}
 
 		if ( $this->is_trash && current_user_can( get_post_type_object( $this->screen->post_type )->cap->edit_others_posts ) ) {

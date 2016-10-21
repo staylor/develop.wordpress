@@ -3366,7 +3366,7 @@ function paginate_links( $args = '' ) {
 		}
 	}
 
-	if ( $args['prev_next'] && $current && ( $current < $total || -1 == $total ) ) {
+	if ( $args['prev_next'] && $current && $current < $total ) {
 		$link = str_replace( '%_%', $args['format'], $args['base'] );
 		$link = str_replace( '%#%', $current + 1, $link );
 		if ( $add_args ) {

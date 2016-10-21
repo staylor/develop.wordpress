@@ -84,6 +84,7 @@ wp_set_lang_dir();
 
 // Load early WordPress files.
 require( ABSPATH . WPINC . '/compat.php' );
+require( ABSPATH . WPINC . '/class-wp-list-util.php' );
 require( ABSPATH . WPINC . '/functions.php' );
 
 // Include the wpdb class and, if present, a db.php database drop-in.

@@ -535,8 +535,9 @@ class ItemSetting extends BaseSetting {
 		}
 
 		if ( ARRAY_A === $args['output'] ) {
-			$GLOBALS['_menu_item_sort_prop'] = $args['output_key'];
-			usort( $items, '_sort_nav_menu_items' );
+			$items = wp_list_sort( $items, array(
+				$args['output_key'] => 'ASC',
+			) );
 			$i = 1;
 
 			foreach ( $items as $k => $item ) {

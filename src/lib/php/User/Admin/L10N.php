@@ -61,7 +61,8 @@ class L10N {
 			'comment_shortcuts_info' => __( '<a href="https://codex.wordpress.org/Keyboard_Shortcuts" target="_blank">More information</a>' ),
 			'toolbar' => __( 'Toolbar' ),
 			'toolbar_description' => __( 'Show Toolbar when viewing site' ),
-			'site_language' => __( 'Site Language' ),
+			/* translators: The user language selection field label */
+			'language' => __( 'Language' ),
 			'name' => __( 'Name' ),
 			'usernames_cannot_be_changed' => __( 'Usernames cannot be changed.' ),
 			'about_yourself' => __( 'About Yourself' ),
