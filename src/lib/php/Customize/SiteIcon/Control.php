@@ -51,9 +51,13 @@ class Control extends CroppedImageControl {
 	 * @access public
 	 */
 	public function content_template() {
-		echo $this->manager->app['mustache']->render( 'customize/control/color/content', [
+		$app = $this->manager->app;
+		$asset = $app['asset.admin'];
+		$src = $asset->getUrl( 'images/' . ( is_rtl() ? 'browser-rtl.png' : 'browser.png' ) );
+
+		echo $app['mustache']->render( 'customize/control/site-icon/content', [
 			'blogname' => get_bloginfo( 'name' ),
-			'browser_preview_src' => esc_url( admin_url( 'images/' . ( is_rtl() ? 'browser-rtl.png' : 'browser.png' ) ) ),
+			'browser_preview_src' => esc_url( $src ),
 			'button_label' => $this->button_labels,
 			'l10n' => [
 				'preview_as_browser_icon' => __( 'Preview as a browser icon' ),

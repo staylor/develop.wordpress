@@ -3,9 +3,38 @@ namespace WP\Symfony;
 
 use Pimple\{Container,ServiceProviderInterface};
 use Symfony\Component\HttpFoundation\{Request,Response};
+use Symfony\Component\Asset\UrlPackage;
+use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
 
 class Provider implements ServiceProviderInterface {
 	public function register( Container $app ) {
+		$app['asset.version'] = function ( $app ) {
+			return new StaticVersionStrategy(
+				$app['wp_version'],
+				'%s?v=%s'
+			);
+		};
+
+		$app['asset.admin'] = function ( $app ) {
+			return new UrlPackage(
+				[
+					admin_url( '', 'http' ),
+					admin_url( '', 'https' ),
+				],
+				$app['asset.version']
+			);
+		};
+
+		$app['asset.includes'] = function ( $app ) {
+			return new UrlPackage(
+				[
+					includes_url( '', 'http' ),
+					includes_url( '', 'https' ),
+				],
+				$app['asset.version']
+			);
+		};
+
 		$app['response'] = function () {
 			return new Response();
 		};

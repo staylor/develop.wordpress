@@ -65,6 +65,7 @@
 		"pomo/pomo": "^1.2",
 		"rmccue/requests": "^1.6",
 		"simplepie/simplepie": "^1.4",
+		"symfony/asset": "^3.1",
 		"symfony/http-foundation": "^3.1"
 	}
 }

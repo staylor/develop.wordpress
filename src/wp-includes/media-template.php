@@ -138,6 +138,7 @@ function wp_underscore_video_template() {
  */
 function wp_print_media_templates() {
 	$app = getApp();
+	$admin_asset = $app['asset.admin'];
 	$class = 'media-modal wp-core-ui';
 	?>
 	<script type="text/html" id="tmpl-media-frame">
@@ -1228,7 +1229,9 @@ function wp_print_media_templates() {
 		<h2><?php _e( 'Preview' ); ?></h2>
 		<strong aria-hidden="true"><?php _e( 'As a browser icon' ); ?></strong>
 		<div class="favicon-preview">
-			<img src="<?php echo esc_url( admin_url( 'images/' . ( is_rtl() ? 'browser-rtl.png' : 'browser.png' ) ) ); ?>" class="browser-preview" width="182" height="" alt="" />
+			<img src="<?php
+				echo $admin_asset->getUrl( 'images/' . ( is_rtl() ? 'browser-rtl.png' : 'browser.png' ) );
+			?>" class="browser-preview" width="182" height="" alt="" />
 
 			<div class="favicon">
 				<img id="preview-favicon" src="{{ data.url }}" alt="<?php esc_attr_e( 'Preview as a browser icon' ); ?>"/>
