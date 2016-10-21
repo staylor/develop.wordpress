@@ -316,7 +316,7 @@ class Setting {
 		}
 
 		switch ( $this->type ) {
-		case 'theme_mod' :
+		case 'theme_mod':
 			if ( ! $is_multidimensional ) {
 				add_filter( "theme_mod_{$id_base}", array( $this, '_preview_filter' ) );
 			} else {
@@ -327,7 +327,7 @@ class Setting {
 				self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
 			}
 			break;
-		case 'option' :
+		case 'option':
 			if ( ! $is_multidimensional ) {
 				add_filter( "pre_option_{$id_base}", array( $this, '_preview_filter' ) );
 			} else {
@@ -662,26 +662,6 @@ class Setting {
 
 			return has_action( "customize_update_{$this->type}" );
 		}
-	}
-
-	/**
-	 * Deprecated method.
-	 *
-	 * @since 3.4.0
-	 * @deprecated 4.4.0 Deprecated in favor of update() method.
-	 */
-	protected function _update_theme_mod() {
-		_deprecated_function( __METHOD__, '4.4.0', __CLASS__ . '::update()' );
-	}
-
-	/**
-	 * Deprecated method.
-	 *
-	 * @since 3.4.0
-	 * @deprecated 4.4.0 Deprecated in favor of update() method.
-	 */
-	protected function _update_option() {
-		_deprecated_function( __METHOD__, '4.4.0', __CLASS__ . '::update()' );
 	}
 
 	/**

@@ -1,7 +1,7 @@
 <?php
-namespace WP;
+namespace WP\Template;
 
-trait Mustache {
+trait MustacheTrait {
 	protected $templatePath;
 	protected $partialsPath;
 	protected $engine;

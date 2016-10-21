@@ -72,7 +72,7 @@ class SelectiveRefresh {
 	public function __construct( Manager $manager ) {
 		$this->manager = $manager;
 
-		add_action( 'customize_preview_init', array( $this, 'init_preview' ) );
+		add_action( 'customize_preview_init', [ $this, 'init_preview' ] );
 	}
 
 	/**
@@ -152,8 +152,8 @@ class SelectiveRefresh {
 	 * @access public
 	 */
 	public function init_preview() {
-		add_action( 'template_redirect', array( $this, 'handle_render_partials_request' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_preview_scripts' ) );
+		add_action( 'template_redirect', [ $this, 'handle_render_partials_request' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_preview_scripts' ] );
 	}
 
 	/**
@@ -164,7 +164,7 @@ class SelectiveRefresh {
 	 */
 	public function enqueue_preview_scripts() {
 		wp_enqueue_script( 'customize-selective-refresh' );
-		add_action( 'wp_footer', array( $this, 'export_preview_data' ), 1000 );
+		add_action( 'wp_footer', [ $this, 'export_preview_data' ], 1000 );
 	}
 
 	/**
@@ -182,15 +182,15 @@ class SelectiveRefresh {
 			}
 		}
 
-		$exports = array(
+		$exports = [
 			'partials'       => $partials,
 			'renderQueryVar' => self::RENDER_QUERY_VAR,
-			'l10n'           => array(
+			'l10n'           => [
 				'shiftClickToEdit' => __( 'Shift-click to edit this element.' ),
 				/* translators: %s: document.write() */
 				'badDocumentWrite' => sprintf( __( '%s is forbidden' ), 'document.write()' ),
-			),
-		);
+			],
+		];
 
 		// Export data to JS.
 		echo sprintf( '<script>var _customizePartialRefreshExports = %s;</script>', wp_json_encode( $exports ) );
@@ -290,13 +290,13 @@ class SelectiveRefresh {
 	 * @return true Always true.
 	 */
 	public function handle_error( $errno, $errstr, $errfile = null, $errline = null ) {
-		$this->triggered_errors[] = array(
+		$this->triggered_errors[] = [
 			'partial'      => $this->current_partial_id,
 			'error_number' => $errno,
 			'error_string' => $errstr,
 			'error_file'   => $errfile,
 			'error_line'   => $errline,
-		);
+		];
 		return true;
 	}
 
@@ -349,7 +349,7 @@ class SelectiveRefresh {
 		 */
 		do_action( 'customize_render_partials_before', $this, $partials );
 
-		set_error_handler( array( $this, 'handle_error' ), error_reporting() );
+		set_error_handler( [ $this, 'handle_error' ], error_reporting() );
 
 		$contents = [];
 
@@ -398,16 +398,16 @@ class SelectiveRefresh {
 		 */
 		do_action( 'customize_render_partials_after', $this, $partials );
 
-		$response = array(
+		$response = [
 			'contents' => $contents,
-		);
+		];
 
 		if ( defined( 'WP_DEBUG_DISPLAY' ) && WP_DEBUG_DISPLAY ) {
 			$response['errors'] = $this->triggered_errors;
 		}
 
 		$setting_validities = $this->manager->validate_setting_values( $this->manager->unsanitized_post_values() );
-		$exported_setting_validities = array_map( array( $this->manager, 'prepare_setting_validity_for_js' ), $setting_validities );
+		$exported_setting_validities = array_map( [ $this->manager, 'prepare_setting_validity_for_js' ], $setting_validities );
 		$response['setting_validities'] = $exported_setting_validities;
 
 		/**

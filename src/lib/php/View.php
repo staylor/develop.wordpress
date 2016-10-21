@@ -1,14 +1,16 @@
 <?php
 namespace WP;
 
+use WP\Template\MustacheTrait;
+use Symfony\Component\HttpFoundation\ParameterBag;
 /**
- * @property-read Symfony\Component\HttpFoundation\ParameterBag $_get
- * @property-read Symfony\Component\HttpFoundation\ParameterBag $_post
- * @property-read Symfony\Component\HttpFoundation\ParameterBag $_request
- * @property-read Symfony\Component\HttpFoundation\ParameterBag $_server
+ * @property-read ParameterBag $_get
+ * @property-read ParameterBag $_post
+ * @property-read ParameterBag $_request
+ * @property-read ParameterBag $_server
  */
 class View {
-	use Mustache;
+	use MustacheTrait;
 
 	protected $app;
 
@@ -34,7 +36,7 @@ class View {
 
 	/**
 	 * @param string $name
-	 * @return Symfony\Component\HttpFoundation\ParameterBag|void
+	 * @return ParameterBag|void
 	 */
 	public function __get( string $name ) {
 		if ( array_key_exists( $name, $this->data ) ) {

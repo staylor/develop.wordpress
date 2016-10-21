@@ -8,7 +8,7 @@ namespace WP\Admin;
  * @since 4.4.0
  */
 
-use WP\Mustache;
+use WP\Template\MustacheTrait;
 use function WP\getApp;
 
 /**
@@ -17,7 +17,7 @@ use function WP\getApp;
  * @since 3.3.0
  */
 final class Screen {
-	use Mustache;
+	use MustacheTrait;
 
 	protected $app;
 	/**
