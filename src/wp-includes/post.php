@@ -4032,18 +4032,32 @@ function wp_transition_post_status( $new_status, $old_status, $post ) {
  * Add a URL to those already pinged.
  *
  * @since 1.5.0
+ * @since 4.7.0 $post_id can be a WP_Post object.
+ * @since 4.7.0 $uri can be an array of URIs.
  *
- * @param int    $post_id Post ID.
- * @param string $uri     Ping URI.
+ * @param int|WP_Post  $post_id Post object or ID.
+ * @param string|array $uri     Ping URI or array of URIs.
  * @return int|false How many rows were updated.
  */
 function add_ping( $post_id, $uri ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-	$pung = $wpdb->get_var( $wpdb->prepare( "SELECT pinged FROM $wpdb->posts WHERE ID = %d", $post_id ));
-	$pung = trim($pung);
-	$pung = preg_split('/\s/', $pung);
-	$pung[] = $uri;
+
+	$post = get_post( $post_id );
+	if ( ! $post ) {
+		return false;
+	}
+
+	$pung = trim( $post->pinged );
+	$pung = preg_split( '/\s/', $pung );
+
+	if ( is_array( $uri ) ) {
+		$pung = array_merge( $pung, $uri );
+	}
+	else {
+		$pung[] = $uri;
+	}
+
 	$new = implode("\n", $pung);
 
 	/**
@@ -4055,9 +4069,9 @@ function add_ping( $post_id, $uri ) {
 	 */
 	$new = apply_filters( 'add_ping', $new );
 
-	// expected_slashed ($new).
-	$new = wp_unslash($new);
-	return $wpdb->update( $wpdb->posts, array( 'pinged' => $new ), array( 'ID' => $post_id ) );
+	$return = $wpdb->update( $wpdb->posts, array( 'pinged' => $new ), array( 'ID' => $post->ID ) );
+	clean_post_cache( $post->ID );
+	return $return;
 }
 
 /**
@@ -4101,15 +4115,19 @@ function get_enclosed( $post_id ) {
  *
  * @since 1.5.0
  *
- * @param int $post_id Post ID.
+ * @since 4.7.0 $post_id can be a WP_Post object.
+ *
+ * @param int|WP_Post $post_id Post ID or object.
  * @return array
  */
 function get_pung( $post_id ) {
-	$app = getApp();
-	$wpdb = $app['db'];
-	$pung = $wpdb->get_var( $wpdb->prepare( "SELECT pinged FROM $wpdb->posts WHERE ID = %d", $post_id ));
-	$pung = trim($pung);
-	$pung = preg_split('/\s/', $pung);
+	$post = get_post( $post_id );
+	if ( ! $post ) {
+		return false;
+	}
+
+	$pung = trim( $post->pinged );
+	$pung = preg_split( '/\s/', $pung );
 
 	/**
 	 * Filters the list of already-pinged URLs for the given post.
@@ -4125,15 +4143,19 @@ function get_pung( $post_id ) {
  * Retrieve URLs that need to be pinged.
  *
  * @since 1.5.0
+ * @since 4.7.0 $post_id can be a WP_Post object.
  *
- * @param int $post_id Post ID
+ * @param int|WP_Post $post_id Post Object or ID
  * @return array
  */
 function get_to_ping( $post_id ) {
-	$app = getApp();
-	$wpdb = $app['db'];
-	$to_ping = $wpdb->get_var( $wpdb->prepare( "SELECT to_ping FROM $wpdb->posts WHERE ID = %d", $post_id ));
-	$to_ping = sanitize_trackback_urls( $to_ping );
+	$post = get_post( $post_id );
+
+	if ( ! $post ) {
+		return false;
+	}
+
+	$to_ping = sanitize_trackback_urls( $post->to_ping );
 	$to_ping = preg_split('/\s/', $to_ping, -1, PREG_SPLIT_NO_EMPTY);
 
 	/**

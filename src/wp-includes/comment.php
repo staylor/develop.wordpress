@@ -2456,18 +2456,23 @@ function do_all_pings() {
  * Perform trackbacks.
  *
  * @since 1.5.0
+ * @since 4.7.0 $post_id can be a WP_Post object.
  *
- * @param int $post_id Post ID to do trackbacks on.
+ * @param int|WP_Post $post_id Post object or ID to do trackbacks on.
  */
-function do_trackbacks($post_id) {
+function do_trackbacks( $post_id ) {
+	$post = get_post( $post_id );
+	if ( ! $post ) {
+		return false;
+	}
+
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	$post = get_post( $post_id );
-	$to_ping = get_to_ping($post_id);
-	$pinged  = get_pung($post_id);
-	if ( empty($to_ping) ) {
-		$wpdb->update($wpdb->posts, array('to_ping' => ''), array('ID' => $post_id) );
+	$to_ping = get_to_ping( $post );
+	$pinged  = get_pung( $post );
+	if ( empty( $to_ping ) ) {
+		$wpdb->update( $wpdb->posts, [ 'to_ping' => '' ], [ 'ID' => $post->ID ] );
 		return;
 	}
 
@@ -2490,10 +2495,11 @@ function do_trackbacks($post_id) {
 		foreach ( (array) $to_ping as $tb_ping ) {
 			$tb_ping = trim($tb_ping);
 			if ( !in_array($tb_ping, $pinged) ) {
-				trackback($tb_ping, $post_title, $excerpt, $post_id);
+				trackback( $tb_ping, $post_title, $excerpt, $post->ID );
 				$pinged[] = $tb_ping;
 			} else {
-				$wpdb->query( $wpdb->prepare("UPDATE $wpdb->posts SET to_ping = TRIM(REPLACE(to_ping, %s, '')) WHERE ID = %d", $tb_ping, $post_id) );
+				$sql = 'UPDATE ' . $wpdb->posts . ' SET to_ping = TRIM(REPLACE(to_ping, %s, "")) WHERE ID = %d';
+				$wpdb->query( $wpdb->prepare( $sql, $tb_ping, $post->ID ) );
 			}
 		}
 	}
@@ -2525,16 +2531,27 @@ function generic_ping( $post_id = 0 ) {
  * Pings back the links found in a post.
  *
  * @since 0.71
+ * @since 4.7.0 $post_id can be a WP_Post object.
  *
- * @param string $content Post content to check for links.
- * @param int $post_ID Post ID.
+ * @param string $content Post content to check for links. If empty will retrieve from post.
+ * @param int|WP_Post $post_id Post Object or ID.
  */
-function pingback($content, $post_ID) {
+function pingback( $content, $post_id ) {
 	$app = getApp();
+
 	// original code by Mort (http://mort.mine.nu:8080)
 	$post_links = [];
 
-	$pung = get_pung($post_ID);
+	$post = get_post( $post_id );
+	if ( ! $post ) {
+		return;
+	}
+
+	$pung = get_pung( $post );
+
+	if ( empty( $content ) ) {
+		$content = $post->post_content;
+	}
 
 	// Step 1
 	// Parsing the post, external links (if any) are stored in the $post_links array
@@ -2549,18 +2566,18 @@ function pingback($content, $post_ID) {
 	// http://dummy-weblog.org/post.php
 	// We don't wanna ping first and second types, even if they have a valid <link/>
 
-	foreach ( (array) $post_links_temp as $link_test ) :
-		if ( !in_array($link_test, $pung) && (url_to_postid($link_test) != $post_ID) // If we haven't pung it already and it isn't a link to itself
-				&& !is_local_attachment($link_test) ) : // Also, let's never ping local attachments.
+	foreach ( (array) $post_links_temp as $link_test ) {
+		if ( ! in_array( $link_test, $pung ) && ( url_to_postid( $link_test ) != $post->ID ) // If we haven't pung it already and it isn't a link to itself
+				&& !is_local_attachment($link_test) ) { // Also, let's never ping local attachments.
 			if ( $test = @parse_url($link_test) ) {
 				if ( isset($test['query']) ) {
-									$post_links[] = $link_test;
+					$post_links[] = $link_test;
 				} elseif ( isset( $test['path'] ) && ( $test['path'] != '/' ) && ( $test['path'] != '' ) ) {
-									$post_links[] = $link_test;
+					$post_links[] = $link_test;
 				}
 			}
-		endif;
-	endforeach;
+		}
+	}
 
 	$post_links = array_unique( $post_links );
 	/**
@@ -2572,7 +2589,7 @@ function pingback($content, $post_ID) {
 	 * @param array &$pung       Whether a link has already been pinged, passed by reference.
 	 * @param int   $post_ID     The post ID.
 	 */
-	do_action_ref_array( 'pre_ping', array( &$post_links, &$pung, $post_ID ) );
+	do_action_ref_array( 'pre_ping', array( &$post_links, &$pung, $post->ID ) );
 
 	foreach ( (array) $post_links as $pagelinkedto ) {
 		$pingback_server_url = discover_pingback_server_uri( $pagelinkedto );
@@ -2580,7 +2597,7 @@ function pingback($content, $post_ID) {
 		if ( $pingback_server_url ) {
 			@ set_time_limit( 60 );
 			// Now, the RPC call
-			$pagelinkedfrom = get_permalink($post_ID);
+			$pagelinkedfrom = get_permalink( $post );
 
 			// using a timeout of 3 seconds should be enough to cover slow servers
 			$client = new WP_HTTP_IXR_Client($pingback_server_url);
@@ -2603,7 +2620,7 @@ function pingback($content, $post_ID) {
 
 			if ( $client->query('pingback.ping', $pagelinkedfrom, $pagelinkedto) || ( isset($client->error->code) && 48 == $client->error->code ) ) {
 				// Already registered
-				add_ping( $post_ID, $pagelinkedto );
+				add_ping( $post, $pagelinkedto );
 			}
 		}
 	}
