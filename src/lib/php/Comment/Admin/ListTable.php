@@ -9,7 +9,6 @@ namespace WP\Comment\Admin;
  */
 
 use WP\Comment\Comment;
-use function WP\getApp;
 
 /**
  * Core class used to implement displaying comments in a list table.
@@ -17,8 +16,6 @@ use function WP\getApp;
  * @since 3.1.0
  */
 class ListTable extends \WP_List_Table {
-	protected $app;
-
 	public $checkbox = true;
 
 	public $pending_count = [];
@@ -38,7 +35,6 @@ class ListTable extends \WP_List_Table {
 	 * @param array $args An associative array of arguments.
 	 */
 	public function __construct( $args = [] ) {
-		$this->app = getApp();
 		$this->app->set( 'post_id', $this->_request->getInt( 'p', 0 ) );
 
 		if ( get_option( 'show_avatars' ) ) {
@@ -263,7 +259,7 @@ class ListTable extends \WP_List_Table {
 	}
 
 	/**
-	 * @return array
+	 * @return array<string,string>
 	 */
 	protected function get_bulk_actions() {
 		$comment_status = $this->app->get( 'comment_status' );
@@ -365,7 +361,7 @@ class ListTable extends \WP_List_Table {
 
 	/**
 	 *
-	 * @return array
+	 * @return array<string,string>
 	 */
 	public function get_columns() {
 		$post_id = $this->app->get( 'post_id' );
@@ -390,7 +386,7 @@ class ListTable extends \WP_List_Table {
 
 	/**
 	 *
-	 * @return array
+	 * @return array<string,string>
 	 */
 	protected function get_sortable_columns() {
 		return [
@@ -454,18 +450,16 @@ class ListTable extends \WP_List_Table {
 	}
 
 	/**
-	 * @global WP_Post    $post
-	 *
-	 * @param Comment $item
+	 * @param Comment $comment
 	 */
 	public function single_row( $comment ) {
-		global $post;
+		$post = get_post();
 
-		$app = getApp();
-		$app->set( 'comment', $comment );
+		$this->app->set( 'comment', $comment );
+		$this->app->set( 'post', $post );
 
 		$comment_status = wp_get_comment_status( $comment );
-		if ( ! $comment_status ) {
+		if ( false === $comment_status ) {
 			$comment_status = '';
 		}
 		$this->app->set( 'comment_status', $comment_status );
@@ -473,7 +467,7 @@ class ListTable extends \WP_List_Table {
 
 		if ( $comment->comment_post_ID > 0 ) {
 			$post = get_post( $comment->comment_post_ID );
-			$app->set( 'post', $post );
+			$this->app->set( 'post', $post );
 		}
 		$this->user_can = current_user_can( 'edit_comment', $comment->comment_ID );
 
@@ -481,8 +475,8 @@ class ListTable extends \WP_List_Table {
 		$this->single_row_columns( $comment );
 		echo "</tr>\n";
 
-		$app->remove( 'comment' );
-		$app->remove( 'post' );
+		$this->app->remove( 'comment' );
+		$this->app->remove( 'post' );
 	}
 
 	/**
@@ -650,13 +644,10 @@ class ListTable extends \WP_List_Table {
 	}
 
 	/**
-	 *
-	 * @global string $comment_status
-	 *
 	 * @param Comment $comment The comment object.
 	 */
 	public function column_author( $comment ) {
-		global $comment_status;
+		$comment_status = $this->app->get( 'comment_status' );
 
 		$author_url = get_comment_author_url( $comment );
 

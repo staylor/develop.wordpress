@@ -23,7 +23,7 @@ class Response {
 	 * @since 2.1.0
 	 * @see Response::add()
 	 *
-	 * @param string|array $args Optional. Will be passed to add() method.
+	 * @param array $args Optional. Will be passed to add() method.
 	 */
 	public function __construct( $args = [] ) {
 		if ( ! empty( $args ) ) {

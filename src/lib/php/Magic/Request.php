@@ -1,21 +1,27 @@
 <?php
 namespace WP\Magic;
 
+use WP\App;
+use Symfony\Component\HttpFoundation\{ParameterBag,ServerBag};
 use function WP\getApp;
 /**
- * @property-read Symfony\Component\HttpFoundation\ParameterBag $_get
- * @property-read Symfony\Component\HttpFoundation\ParameterBag $_post
- * @property-read Symfony\Component\HttpFoundation\ParameterBag $_request
- * @property-read Symfony\Component\HttpFoundation\ServerBag    $_server
+ * @property-read App $app
+ * @property-read ParameterBag $_get
+ * @property-read ParameterBag $_post
+ * @property-read ParameterBag $_request
+ * @property-read ServerBag    $_server
  */
 trait Request {
 	/**
-	 * @return Symfony\Component\HttpFoundation\ServerBag|void
+	 * @return App|ParameterBag|ServerBag|void
 	 */
 	public function __get( string $name ) {
 		$app = getApp();
 
 		switch ( $name ) {
+		case 'app':
+			return $app;
+
 		case '_get':
 			return $app['request']->query;
 

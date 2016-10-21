@@ -290,9 +290,8 @@ class Setting extends BaseSetting {
 
 		// Make sure the menu objects get re-sorted after an update/insert.
 		if ( ! $is_delete && ! empty( $args['orderby'] ) ) {
-			$menus = wp_list_sort( $menus, array(
-				$args['orderby'] => 'ASC',
-			) );
+			$this->_current_menus_sort_orderby = $args['orderby'];
+			usort( $menus, array( $this, '_sort_menus_by_orderby' ) );
 		}
 		// @todo add support for $args['hide_empty'] === true
 
@@ -310,6 +309,24 @@ class Setting extends BaseSetting {
 	 * @see Setting::_sort_menus_by_orderby()
 	 */
 	protected $_current_menus_sort_orderby;
+
+	/**
+	 * Sort menu objects by the class-supplied orderby property.
+	 *
+	 * This is a workaround for a lack of closures.
+	 *
+	 * @since 4.3.0
+	 * @access protected
+	 * @param object $menu1
+	 * @param object $menu2
+	 * @return int
+	 *
+	 * @see Setting::filter_wp_get_nav_menus()
+	 */
+	protected function _sort_menus_by_orderby( $menu1, $menu2 ) {
+		$key = $this->_current_menus_sort_orderby;
+		return strcmp( $menu1->$key, $menu2->$key );
+	}
 
 	/**
 	 * Filters the wp_get_nav_menu_object() result to supply the previewed menu object.

@@ -7,7 +7,6 @@
  * @since 3.1.0
  */
 
-use function WP\getApp;
 use WP\Magic\Request;
 /**
  * Base class for displaying a list of items in an ajaxified HTML table.
@@ -480,9 +479,8 @@ class WP_List_Table {
 	 * @param string $post_type
 	 */
 	protected function months_dropdown( $post_type ) {
-		$app = getApp();
-		$_get = $app['request']->query;
-		$wpdb = $app['db'];
+		$_get = $this->app['request']->query;
+		$wpdb = $this->app['db'];
 
 		/**
 		 * Filters whether to remove the 'Months' drop-down from the post list table.
@@ -543,7 +541,7 @@ class WP_List_Table {
 				selected( $m, $year . $month, false ),
 				esc_attr( $arc_row->year . $month ),
 				/* translators: 1: month name, 2: 4-digit year */
-				sprintf( __( '%1$s %2$d' ), $app['locale']->get_month( $month ), $year )
+				sprintf( __( '%1$s %2$d' ), $this->app['locale']->get_month( $month ), $year )
 			);
 		}
 ?>
@@ -693,8 +691,6 @@ class WP_List_Table {
 			return;
 		}
 
-		$app = getApp();
-
 		$total_items = $this->_pagination_args['total_items'];
 		$total_pages = $this->_pagination_args['total_pages'];
 		$infinite_scroll = false;
@@ -711,7 +707,7 @@ class WP_List_Table {
 		$current = $this->get_pagenum();
 		$removable_query_args = wp_removable_query_args();
 
-		$current_url = set_url_scheme( 'http://' . $app['request.host'] . $app['request.uri'] );
+		$current_url = set_url_scheme( 'http://' . $this->app['request.host'] . $this->app['request.uri'] );
 
 		$current_url = remove_query_arg( $removable_query_args, $current_url );
 
@@ -996,10 +992,9 @@ class WP_List_Table {
 	public function print_column_headers( $with_id = true ) {
 		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
 
-		$app = getApp();
-		$_get = $app['request']->query;
+		$_get = $this->app['request']->query;
 
-		$current_url = set_url_scheme( 'http://' . $app['request.host'] . $app['request.uri'] );
+		$current_url = set_url_scheme( 'http://' . $this->app['request.host'] . $this->app['request.uri'] );
 		$current_url = remove_query_arg( 'paged', $current_url );
 
 		$current_orderby = $_get->get( 'orderby', '' );
