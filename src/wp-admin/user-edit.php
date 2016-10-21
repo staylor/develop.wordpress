@@ -317,17 +317,18 @@ if ( ! empty( $profileuser->first_name ) && ! empty( $profileuser->last_name ) )
 }
 
 // Only add this if it isn't duplicated elsewhere
-if ( ! in_array( $profileuser->display_name, $opts ) ) {
+if ( ! in_array( $profileuser->display_name, wp_list_pluck( $opts, 'value' ) ) ) {
 	array_unshift( $opts, [
 		'id' => 'display_displayname',
 		'value' => $profileuser->display_name,
 		'selected' => selected( $profileuser->display_name, $profileuser->display_name, false )
 	] );
 }
+
 $data['public_display'] = array_unique( array_map( function ( $opt ) {
 	$opt['value'] = trim( $opt['value'] );
 	return $opt;
-}, $opts ) );
+}, $opts ), SORT_REGULAR );
 
 $new_email = get_user_meta( $current_user->ID, '_new_email', true );
 $data['pending_email'] = $new_email && $new_email['newemail'] != $current_user->user_email && $profileuser->ID == $current_user->ID;

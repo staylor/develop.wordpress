@@ -45,6 +45,7 @@ if ( empty( $view->_request->all() ) ) {
 }
 
 $update = '';
+$errors = [];
 
 switch ( $wp_list_table->current_action() ) {
 
@@ -72,8 +73,6 @@ case 'delete':
 		wp_redirect( $redirect );
 		exit();
 	}
-
-	$errors = [];
 
 	if ( ! current_user_can( 'delete_users' ) ) {
 		$error = new WP_Error( 'edit_users', __( 'You can&#8217;t delete users.' ) );
