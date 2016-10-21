@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+{{# error }}
+	<error>1</error>
+	<message>{{{ . }}}</message>
+{{/ error }}
+{{^ error }}
+	<error>0</error>
+{{/ error }}
+</response>
