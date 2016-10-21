@@ -46,7 +46,6 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 	$wp = $app['wp'];
 	$wp_query = $app['wp']->current_query;
 	$wpdb = $app['db'];
-	$is_IIS = $app['is_IIS'];
 
 	// If we're not in wp-admin and the post has been published and preview nonce
 	// is non-existent or invalid then no need for preview in query
@@ -59,11 +58,11 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		}
 	}
 
-	if ( is_trackback() || is_search() || is_admin() || is_preview() || is_robots() || ( $is_IIS && ! iis7_supports_permalinks() ) ) {
+	if ( is_trackback() || is_search() || is_admin() || is_preview() || is_robots() || ( $app['is_IIS'] && ! iis7_supports_permalinks() ) ) {
 		return;
 	}
 
-	if ( null === $requested_url && $app['request.host'] ) {
+	if ( ! $requested_url && $app['request.host'] ) {
 		// build the URL in the address bar
 		$requested_url  = is_ssl() ? 'https://' : 'http://';
 		$requested_url .= $app['request.host'];
