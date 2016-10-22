@@ -9,6 +9,7 @@
  * @since 0.71
  */
 
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -634,7 +635,7 @@ class wpdb {
 		register_shutdown_function( [ $this, '__destruct' ] );
 
 		if ( WP_DEBUG && WP_DEBUG_DISPLAY ) {
-					$this->show_errors();
+			$this->show_errors();
 		}
 
 		/* Use ext/mysqli if it exists and:
@@ -646,9 +647,10 @@ class wpdb {
 		if ( function_exists( 'mysqli_connect' ) ) {
 			if ( defined( 'WP_USE_EXT_MYSQL' ) ) {
 				$this->use_mysqli = ! WP_USE_EXT_MYSQL;
-			} elseif ( version_compare( phpversion(), '5.5', '>=' ) || ! function_exists( 'mysql_connect' ) ) {
-				$this->use_mysqli = true;
-			} elseif ( false !== strpos( $this->app['wp_version'], '-' ) ) {
+			} elseif (
+				( version_compare( phpversion(), '5.5', '>=' ) || ! function_exists( 'mysql_connect' ) ) ||
+				false !== strpos( $this->app['wp_version'], '-' )
+			) {
 				$this->use_mysqli = true;
 			}
 		}
@@ -928,39 +930,39 @@ class wpdb {
 	 *
 	 * @param string $prefix          Alphanumeric name for the new prefix.
 	 * @param bool   $set_table_names Optional. Whether the table names, e.g. wpdb::$posts, should be updated or not.
-	 * @return string|WP_Error Old prefix or WP_Error on error
+	 * @return string|Error Old prefix or Error on error
 	 */
 	public function set_prefix( $prefix, $set_table_names = true ) {
 
 		if ( preg_match( '|[^a-z0-9_]|i', $prefix ) ) {
-					return new WP_Error('invalid_db_prefix', 'Invalid database prefix' );
+			return new Error('invalid_db_prefix', 'Invalid database prefix' );
 		}
 
 		$old_prefix = is_multisite() ? '' : $prefix;
 
 		if ( isset( $this->base_prefix ) ) {
-					$old_prefix = $this->base_prefix;
+			$old_prefix = $this->base_prefix;
 		}
 
 		$this->base_prefix = $prefix;
 
 		if ( $set_table_names ) {
 			foreach ( $this->tables( 'global' ) as $table => $prefixed_table ) {
-							$this->$table = $prefixed_table;
+				$this->$table = $prefixed_table;
 			}
 
 			if ( is_multisite() && empty( $this->blogid ) ) {
-							return $old_prefix;
+				return $old_prefix;
 			}
 
 			$this->prefix = $this->get_blog_prefix();
 
 			foreach ( $this->tables( 'blog' ) as $table => $prefixed_table ) {
-							$this->$table = $prefixed_table;
+				$this->$table = $prefixed_table;
 			}
 
 			foreach ( $this->tables( 'old' ) as $table => $prefixed_table ) {
-							$this->$table = $prefixed_table;
+				$this->$table = $prefixed_table;
 			}
 		}
 		return $old_prefix;
@@ -978,7 +980,7 @@ class wpdb {
 	 */
 	public function set_blog_id( $blog_id, $site_id = 0 ) {
 		if ( ! empty( $site_id ) ) {
-					$this->siteid = $site_id;
+			$this->siteid = $site_id;
 		}
 
 		$old_blog_id  = $this->blogid;
@@ -987,11 +989,11 @@ class wpdb {
 		$this->prefix = $this->get_blog_prefix();
 
 		foreach ( $this->tables( 'blog' ) as $table => $prefixed_table ) {
-					$this->$table = $prefixed_table;
+			$this->$table = $prefixed_table;
 		}
 
 		foreach ( $this->tables( 'old' ) as $table => $prefixed_table ) {
-					$this->$table = $prefixed_table;
+			$this->$table = $prefixed_table;
 		}
 
 		return $old_blog_id;
@@ -1011,9 +1013,9 @@ class wpdb {
 			}
 			$blog_id = (int) $blog_id;
 			if ( defined( 'MULTISITE' ) && ( 0 == $blog_id || 1 == $blog_id ) ) {
-							return $this->base_prefix;
+				return $this->base_prefix;
 			} else {
-							return $this->base_prefix . $blog_id . '_';
+				return $this->base_prefix . $blog_id . '_';
 			}
 		} else {
 			return $this->base_prefix;
@@ -1051,7 +1053,7 @@ class wpdb {
 		case 'all':
 			$tables = array_merge( $this->global_tables, $this->tables );
 			if ( is_multisite() ) {
-							$tables = array_merge( $tables, $this->ms_global_tables );
+				$tables = array_merge( $tables, $this->ms_global_tables );
 			}
 			break;
 
@@ -1062,7 +1064,7 @@ class wpdb {
 		case 'global':
 			$tables = $this->global_tables;
 			if ( is_multisite() ) {
-							$tables = array_merge( $tables, $this->ms_global_tables );
+				$tables = array_merge( $tables, $this->ms_global_tables );
 			}
 			break;
 
@@ -1076,26 +1078,26 @@ class wpdb {
 
 		if ( $prefix ) {
 			if ( ! $blog_id ) {
-							$blog_id = $this->blogid;
+				$blog_id = $this->blogid;
 			}
 			$blog_prefix = $this->get_blog_prefix( $blog_id );
 			$base_prefix = $this->base_prefix;
 			$global_tables = array_merge( $this->global_tables, $this->ms_global_tables );
 			foreach ( $tables as $k => $table ) {
 				if ( in_array( $table, $global_tables ) ) {
-									$tables[ $table ] = $base_prefix . $table;
+					$tables[ $table ] = $base_prefix . $table;
 				} else {
-									$tables[ $table ] = $blog_prefix . $table;
+					$tables[ $table ] = $blog_prefix . $table;
 				}
 				unset( $tables[ $k ] );
 			}
 
 			if ( isset( $tables['users'] ) && defined( 'CUSTOM_USER_TABLE' ) ) {
-							$tables['users'] = CUSTOM_USER_TABLE;
+				$tables['users'] = CUSTOM_USER_TABLE;
 			}
 
 			if ( isset( $tables['usermeta'] ) && defined( 'CUSTOM_USER_META_TABLE' ) ) {
-							$tables['usermeta'] = CUSTOM_USER_META_TABLE;
+				$tables['usermeta'] = CUSTOM_USER_META_TABLE;
 			}
 		}
 
@@ -1115,7 +1117,7 @@ class wpdb {
 	 */
 	public function select( $db, $dbh = null ) {
 		if ( is_null($dbh) ) {
-					$dbh = $this->dbh;
+			$dbh = $this->dbh;
 		}
 
 		if ( $this->use_mysqli ) {
@@ -1232,7 +1234,7 @@ class wpdb {
 	 */
 	public function escape_by_ref( &$string ) {
 		if ( ! is_float( $string ) ) {
-					$string = $this->_real_escape( $string );
+			$string = $this->_real_escape( $string );
 		}
 	}
 
@@ -1272,7 +1274,7 @@ class wpdb {
 	 */
 	public function prepare( $query, $args ) {
 		if ( is_null( $query ) ) {
-					return;
+			return;
 		}
 
 		// This is not meant to be foolproof -- but it will catch obviously incorrect usage.
@@ -1346,16 +1348,16 @@ class wpdb {
 		wp_load_translations_early();
 
 		if ( $caller = $this->get_caller() ) {
-					$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s made by %3$s' ), $str, $this->last_query, $caller );
+			$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s made by %3$s' ), $str, $this->last_query, $caller );
 		} else {
-					$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s' ), $str, $this->last_query );
+			$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s' ), $str, $this->last_query );
 		}
 
 		error_log( $error_str );
 
 		// Are we showing errors?
 		if ( ! $this->show_errors ) {
-					return false;
+			return false;
 		}
 
 		// If there is an error then take note of it
@@ -1530,11 +1532,11 @@ class wpdb {
 				 */
 				$attempt_fallback = true;
 
-				if ( $this->has_connected ) {
-					$attempt_fallback = false;
-				} elseif ( defined( 'WP_USE_EXT_MYSQL' ) && ! WP_USE_EXT_MYSQL ) {
-					$attempt_fallback = false;
-				} elseif ( ! function_exists( 'mysql_connect' ) ) {
+				if (
+					$this->has_connected ||
+					( defined( 'WP_USE_EXT_MYSQL' ) && ! WP_USE_EXT_MYSQL )	||
+					! function_exists( 'mysql_connect' )
+				) {
 					$attempt_fallback = false;
 				}
 
@@ -2302,13 +2304,11 @@ class wpdb {
 					return null;
 		}
 
-		if ( $output == OBJECT ) {
-			return $this->last_result[$y] ? $this->last_result[$y] : null;
-		} elseif ( $output == ARRAY_A ) {
+		if ( $output == ARRAY_A ) {
 			return $this->last_result[$y] ? get_object_vars( $this->last_result[$y] ) : null;
 		} elseif ( $output == ARRAY_N ) {
 			return $this->last_result[$y] ? array_values( get_object_vars( $this->last_result[$y] ) ) : null;
-		} elseif ( strtoupper( $output ) === OBJECT ) {
+		} elseif ( $output == OBJECT || strtoupper( $output ) === OBJECT ) {
 			// Back compat for OBJECT being previously case insensitive.
 			return $this->last_result[$y] ? $this->last_result[$y] : null;
 		} else {
@@ -2375,7 +2375,8 @@ class wpdb {
 		}
 
 		$new_array = [];
-		if ( $output == OBJECT ) {
+		// Back compat for OBJECT being previously case insensitive.
+		if ( $output == OBJECT || strtoupper( $output ) === OBJECT ) {
 			// Return an integer-keyed array of row objects
 			return $this->last_result;
 		} elseif ( $output == OBJECT_K ) {
@@ -2403,9 +2404,6 @@ class wpdb {
 				}
 			}
 			return $new_array;
-		} elseif ( strtoupper( $output ) === OBJECT ) {
-			// Back compat for OBJECT being previously case insensitive.
-			return $this->last_result;
 		}
 		return null;
 	}
@@ -2417,7 +2415,7 @@ class wpdb {
 	 * @access protected
 	 *
 	 * @param string $table Table name.
-	 * @return string|WP_Error Table character set, WP_Error object if it couldn't be found.
+	 * @return string|Error Table character set, Error object if it couldn't be found.
 	 */
 	protected function get_table_charset( $table ) {
 		$tablekey = strtolower( $table );
@@ -2448,7 +2446,7 @@ class wpdb {
 		$table = '`' . implode( '`.`', $table_parts ) . '`';
 		$results = $this->get_results( "SHOW FULL COLUMNS FROM $table" );
 		if ( ! $results ) {
-			return new WP_Error( 'wpdb_get_table_charset_failure' );
+			return new Error( 'wpdb_get_table_charset_failure' );
 		}
 
 		foreach ( $results as $column ) {
@@ -2519,8 +2517,8 @@ class wpdb {
 	 *
 	 * @param string $table  Table name.
 	 * @param string $column Column name.
-	 * @return string|false|WP_Error Column character set as a string. False if the column has no
-	 *                               character set. WP_Error object if there was an error.
+	 * @return string|false|Error Column character set as a string. False if the column has no
+	 *                               character set. Error object if there was an error.
 	 */
 	public function get_col_charset( $table, $column ) {
 		$tablekey = strtolower( $table );
@@ -2584,9 +2582,9 @@ class wpdb {
 	 *
 	 * @param string $table  Table name.
 	 * @param string $column Column name.
-	 * @return array|false|WP_Error [ 'length' => (int), 'type' => 'byte' | 'char' )
+	 * @return array|false|Error [ 'length' => (int), 'type' => 'byte' | 'char' )
 	 *                              false if the column has no length (for example, numeric column)
-	 *                              WP_Error object if there was an error.
+	 *                              Error object if there was an error.
 	 */
 	public function get_col_length( $table, $column ) {
 		$tablekey = strtolower( $table );
@@ -2757,10 +2755,10 @@ class wpdb {
 	 * @param array $data Array of value arrays. Each value array has the keys
 	 *                    'value' and 'charset'. An optional 'ascii' key can be
 	 *                    set to false to avoid redundant ASCII checks.
-	 * @return array|WP_Error The $data parameter, with invalid characters removed from
+	 * @return array|Error The $data parameter, with invalid characters removed from
 	 *                        each value. This works as a passthrough: any additional keys
 	 *                        such as 'field' are retained in each value array. If we cannot
-	 *                        remove invalid characters, a WP_Error object is returned.
+	 *                        remove invalid characters, a Error object is returned.
 	 */
 	protected function strip_invalid_text( $data ) {
 		$db_check_string = false;
@@ -2895,7 +2893,7 @@ class wpdb {
 			$this->check_current_query = false;
 			$row = $this->get_row( "SELECT " . implode( ', ', $sql ), ARRAY_A );
 			if ( ! $row ) {
-				return new WP_Error( 'wpdb_strip_invalid_text_failure' );
+				return new Error( 'wpdb_strip_invalid_text_failure' );
 			}
 
 			foreach ( array_keys( $data ) as $column ) {
@@ -2915,7 +2913,7 @@ class wpdb {
 	 * @access protected
 	 *
 	 * @param string $query Query to convert.
-	 * @return string|WP_Error The converted query, or a WP_Error object if the conversion fails.
+	 * @return string|Error The converted query, or a Error object if the conversion fails.
 	 */
 	protected function strip_invalid_text_from_query( $query ) {
 		// We don't need to check the collation for queries that don't read data.
@@ -2963,7 +2961,7 @@ class wpdb {
 	 * @param string $table  Table name.
 	 * @param string $column Column name.
 	 * @param string $value  The text to check.
-	 * @return string|WP_Error The converted string, or a WP_Error object if the conversion fails.
+	 * @return string|Error The converted string, or a Error object if the conversion fails.
 	 */
 	public function strip_invalid_text_for_column( $table, $column, $value ) {
 		if ( ! is_string( $value ) ) {
@@ -3144,7 +3142,7 @@ class wpdb {
 	public function bail( $message, $error_code = '500' ) {
 		if ( !$this->show_errors ) {
 			if ( class_exists( 'WP_Error', false ) ) {
-				$this->error = new WP_Error($error_code, $message);
+				$this->error = new Error($error_code, $message);
 			} else {
 				$this->error = $message;
 			}
@@ -3188,12 +3186,12 @@ class wpdb {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return WP_Error|void
+	 * @return Error|void
 	 */
 	public function check_database_version() {
 		// Make sure the server has the required MySQL version
 		if ( version_compare( $this->db_version(), $this->app['required_mysql_version'], '<' ) ) {
-			return new WP_Error(
+			return new Error(
 				'database_version',
 				sprintf(
 					__( '<strong>ERROR</strong>: WordPress %1$s requires MySQL %2$s or higher' ),

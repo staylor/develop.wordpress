@@ -2071,7 +2071,7 @@ function wp_list_comments( $args = [], $comments = null ) {
 			if ( $wp_query->max_num_comment_pages ) {
 				$default_comments_page = get_option( 'default_comments_page' );
 				$cpage = get_query_var( 'cpage' );
-				if ( 'newest' === $default_comments_page ) {
+				if ( 'newest' === $default_comments_page || $cpage != 1 ) {
 					$r['cpage'] = $cpage;
 
 				/*
@@ -2080,8 +2080,6 @@ function wp_list_comments( $args = [], $comments = null ) {
 				 */
 				} elseif ( $cpage == 1 ) {
 					$r['cpage'] = '';
-				} else {
-					$r['cpage'] = $cpage;
 				}
 
 				$r['page'] = 0;

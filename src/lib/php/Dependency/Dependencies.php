@@ -177,18 +177,16 @@ class Dependencies {
 			}
 
 			$keep_going = true;
-			if ( ! isset( $this->registered[ $handle ] ) ) {
+			if (
+				// Item doesn't exist.
+				! isset( $this->registered[ $handle ] ) ||
+				// Item requires dependencies that don't exist.
+				( $this->registered[ $handle ]->deps && array_diff( $this->registered[ $handle ]->deps, array_keys( $this->registered ) ) ) ||
+				// Item requires dependencies that don't exist.
+				( $this->registered[ $handle ]->deps && ! $this->all_deps( $this->registered[ $handle ]->deps, true, $new_group ) )
+			) {
 				$keep_going = false;
 			}
-			// Item doesn't exist.
-			elseif ( $this->registered[ $handle ]->deps && array_diff( $this->registered[ $handle ]->deps, array_keys( $this->registered ) ) ) {
-				$keep_going = false;
-			}
-			// Item requires dependencies that don't exist.
-			elseif ( $this->registered[ $handle ]->deps && ! $this->all_deps( $this->registered[ $handle ]->deps, true, $new_group ) ) {
-				$keep_going = false;
-			}
-			// Item requires dependencies that don't exist.
 
 			if ( ! $keep_going ) { // Either item or its dependencies don't exist.
 				if ( $recursion ) {
@@ -368,9 +366,10 @@ class Dependencies {
 				continue;
 			}
 
-			if ( in_array( $handle, $this->registered[ $queued ]->deps ) ) {
-				return true;
-			} elseif ( $this->recurse_deps( $this->registered[ $queued ]->deps, $handle ) ) {
+			if (
+				in_array( $handle, $this->registered[ $queued ]->deps ) ||
+				$this->recurse_deps( $this->registered[ $queued ]->deps, $handle )
+			) {
 				return true;
 			}
 		}
@@ -427,9 +426,7 @@ class Dependencies {
 	 * @param mixed  $group     Group level.
 	 * @return bool Not already in the group or a lower group
 	 */
-	public function set_group( $handle, $recursion, $group ) {
-		$group = (int) $group;
-
+	public function set_group( $handle, $recursion, int $group ) {
 		if ( isset( $this->groups[ $handle ] ) && $this->groups[ $handle ] <= $group ) {
 			return false;
 		}

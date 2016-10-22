@@ -1527,13 +1527,11 @@ function get_admin_page_parent( $parent = '' ) {
 
 	foreach (array_keys( (array) $app->submenu ) as $parent ) {
 		foreach ( $app->submenu[ $parent ] as $submenu_array ) {
-			if ( ! empty( $typenow ) && ( $submenu_array[2] == "{$pagenow}?post_type={$typenow}" ) ) {
-				$app->set( 'parent_file', $parent );
-				return $parent;
-			} elseif ( $submenu_array[2] === $pagenow && empty( $typenow ) && ( empty( $parent_file ) || false === strpos( $parent_file, '?' ) ) ) {
-				$app->set( 'parent_file', $parent );
-				return $parent;
-			} elseif ( $plugin_page && $plugin_page === $submenu_array[2] ) {
+			if (
+				( ! empty( $typenow ) && ( $submenu_array[2] == "{$pagenow}?post_type={$typenow}" ) ) ||
+				( $submenu_array[2] === $pagenow && empty( $typenow ) && ( empty( $parent_file ) || false === strpos( $parent_file, '?' ) ) ) ||
+				( $plugin_page && $plugin_page === $submenu_array[2] )
+			) {
 				$app->set( 'parent_file', $parent );
 				return $parent;
 			}
@@ -1566,10 +1564,10 @@ function get_admin_page_title() {
 	if ( empty( $parent ) ) {
 		foreach ( (array) $app->menu as $menu_array ) {
 			if ( isset( $menu_array[3] ) ) {
-				if ( $menu_array[2] === $pagenow ) {
-					$app->set( 'title', $menu_array[3] );
-					return $menu_array[3];
-				} elseif ( $plugin_page && ( $plugin_page === $menu_array[2] ) && ( $hook === $menu_array[3] ) ) {
+				if (
+					$menu_array[2] === $pagenow ||
+					( $plugin_page && ( $plugin_page === $menu_array[2] ) && ( $hook === $menu_array[3] ) )
+				) {
 					$app->set( 'title', $menu_array[3] );
 					return $menu_array[3];
 				}
@@ -1727,9 +1725,10 @@ function user_can_access_admin_page() {
 
 	if ( isset( $app->submenu[ $parent ] ) ) {
 		foreach ( $app->submenu[ $parent ] as $submenu_array ) {
-			if ( $plugin_page && ( $submenu_array[2] === $plugin_page ) ) {
-				return current_user_can( $submenu_array[1] );
-			} elseif ( $submenu_array[2] === $pagenow ) {
+			if (
+				( $plugin_page && ( $submenu_array[2] === $plugin_page ) ) ||
+				$submenu_array[2] === $pagenow
+			) {
 				return current_user_can( $submenu_array[1] );
 			}
 		}

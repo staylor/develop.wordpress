@@ -3491,23 +3491,24 @@ function self_admin_url( $path = '', $scheme = 'admin' ) {
 function set_url_scheme( $url, $scheme = null ) {
 	$orig_scheme = $scheme;
 
-	if ( ! $scheme ) {
+	if (
+		! $scheme ||
+		( $scheme !== 'http' && $scheme !== 'https' && $scheme !== 'relative' )
+	) {
 		$scheme = is_ssl() ? 'https' : 'http';
 	} elseif ( $scheme === 'admin' || $scheme === 'login' || $scheme === 'login_post' || $scheme === 'rpc' ) {
 		$scheme = is_ssl() || force_ssl_admin() ? 'https' : 'http';
-	} elseif ( $scheme !== 'http' && $scheme !== 'https' && $scheme !== 'relative' ) {
-		$scheme = is_ssl() ? 'https' : 'http';
 	}
 
 	$url = trim( $url );
 	if ( substr( $url, 0, 2 ) === '//' ) {
-			$url = 'http:' . $url;
+		$url = 'http:' . $url;
 	}
 
 	if ( 'relative' == $scheme ) {
 		$url = ltrim( preg_replace( '#^\w+://[^/]*#', '', $url ) );
 		if ( $url !== '' && $url[0] === '/' ) {
-					$url = '/' . ltrim($url , "/ \t\n\r\0\x0B" );
+			$url = '/' . ltrim($url , "/ \t\n\r\0\x0B" );
 		}
 	} else {
 		$url = preg_replace( '#^\w+://#', $scheme . '://', $url );

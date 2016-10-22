@@ -21,9 +21,10 @@ if ( ! defined( 'IS_PROFILE_PAGE' ) ) {
 
 if ( ! $user_id && IS_PROFILE_PAGE ) {
 	$user_id = $current_user->ID;
-} elseif ( ! $user_id && ! IS_PROFILE_PAGE ) {
-	wp_die( __( 'Invalid user ID.' ) );
-} elseif ( ! get_userdata( $user_id ) ) {
+} elseif (
+	( ! $user_id && ! IS_PROFILE_PAGE ) ||
+	! get_userdata( $user_id )
+) {
 	wp_die( __( 'Invalid user ID.' ) );
 }
 
@@ -247,9 +248,7 @@ if ( $languages ) {
 	] );
 }
 
-if ( IS_PROFILE_PAGE ) {
-
-} else {
+if ( ! IS_PROFILE_PAGE ) {
 	$title_link = null;
 
 	if ( current_user_can( 'create_users' ) ) {

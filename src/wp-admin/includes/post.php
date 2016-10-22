@@ -1244,16 +1244,15 @@ function postbox_classes( $id, $page ) {
 	$app = getApp();
 	$_get = $app['request']->query;
 
-	if ( $_get->get( 'edit' ) == $id ) {
-		$classes = array( '' );
-	} elseif ( $closed = get_user_option('closedpostboxes_'.$page ) ) {
+	$closed = get_user_option('closedpostboxes_' . $page );
+	if ( $_get->get( 'edit' ) == $id || ! $closed ) {
+		$classes = [ '' ];
+	} elseif ( $closed ) {
 		if ( !is_array( $closed ) ) {
-			$classes = array( '' );
+			$classes = [ '' ];
 		} else {
-			$classes = in_array( $id, $closed ) ? array( 'closed' ) : array( '' );
+			$classes = in_array( $id, $closed ) ? [ 'closed' ] : [ '' ];
 		}
-	} else {
-		$classes = array( '' );
 	}
 
 	/**

@@ -219,13 +219,11 @@ function validate_file_to_edit( $file, $allowed_files = '' ) {
 
 	switch ( $code ) {
 	case 1 :
+	case 3 :
 		wp_die( __( 'Sorry, that file cannot be edited.' ) );
 
 	// case 2 :
 	// wp_die( __('Sorry, can&#8217;t call files with their real path.' ));
-
-	case 3 :
-		wp_die( __( 'Sorry, that file cannot be edited.' ) );
 	}
 }
 

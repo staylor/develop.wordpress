@@ -1327,37 +1327,38 @@ function upgrade_330() {
 	switch ( $sidebars_widgets['array_version'] ) {
 	case 1 :
 		foreach ( (array) $sidebars_widgets as $index => $sidebar )
-		if ( is_array($sidebar) )
-		foreach ( (array) $sidebar as $i => $name ) {
-			$id = strtolower($name);
-			if ( isset( $app->widgets['registered'][ $id ] ) ) {
-				$_sidebars_widgets[$index][$i] = $id;
-				continue;
-			}
-			$id = sanitize_title($name);
-			if ( isset( $app->widgets['registered'][ $id ] ) ) {
-				$_sidebars_widgets[$index][$i] = $id;
-				continue;
-			}
-
-			$found = false;
-
-			foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
-				if ( strtolower($widget['name']) == strtolower($name) ) {
-					$_sidebars_widgets[$index][$i] = $widget['id'];
-					$found = true;
-					break;
-				} elseif ( sanitize_title($widget['name']) == sanitize_title($name) ) {
-					$_sidebars_widgets[$index][$i] = $widget['id'];
-					$found = true;
-					break;
+		if ( is_array( $sidebar ) ) {
+			foreach ( (array) $sidebar as $i => $name ) {
+				$id = strtolower($name);
+				if ( isset( $app->widgets['registered'][ $id ] ) ) {
+					$_sidebars_widgets[$index][$i] = $id;
+					continue;
 				}
+				$id = sanitize_title($name);
+				if ( isset( $app->widgets['registered'][ $id ] ) ) {
+					$_sidebars_widgets[$index][$i] = $id;
+					continue;
+				}
+
+				$found = false;
+
+				foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
+					if (
+						strtolower( $widget['name'] ) === strtolower( $name ) ||
+						sanitize_title( $widget['name'] ) == sanitize_title( $name )
+					) {
+						$_sidebars_widgets[$index][$i] = $widget['id'];
+						$found = true;
+						break;
+					}
+				}
+
+				if ( $found ) {
+					continue;
+				}
+
+				unset($_sidebars_widgets[$index][$i]);
 			}
-
-			if ( $found )
-				continue;
-
-			unset($_sidebars_widgets[$index][$i]);
 		}
 		$_sidebars_widgets['array_version'] = 2;
 		$sidebars_widgets = $_sidebars_widgets;
@@ -2112,9 +2113,10 @@ function dbDelta( $queries = '', $execute = true ) {
 			$for_update[$matches[1]] = 'Created table '.$matches[1];
 		} elseif ( preg_match( "|CREATE DATABASE ([^ ]*)|", $qry, $matches ) ) {
 			array_unshift( $cqueries, $qry );
-		} elseif ( preg_match( "|INSERT INTO ([^ ]*)|", $qry, $matches ) ) {
-			$iqueries[] = $qry;
-		} elseif ( preg_match( "|UPDATE ([^ ]*)|", $qry, $matches ) ) {
+		} elseif (
+			preg_match( "|INSERT INTO ([^ ]*)|", $qry, $matches ) ||
+			preg_match( "|UPDATE ([^ ]*)|", $qry, $matches )
+		) {
 			$iqueries[] = $qry;
 		} else {
 			// Unrecognized query type

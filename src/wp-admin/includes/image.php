@@ -465,9 +465,10 @@ function file_is_displayable_image($path) {
 	$displayable_image_types = array( IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP );
 
 	$info = @getimagesize( $path );
-	if ( empty( $info ) ) {
-		$result = false;
-	} elseif ( ! in_array( $info[2], $displayable_image_types ) ) {
+	if (
+		empty( $info ) ||
+		! in_array( $info[2], $displayable_image_types )
+	) {
 		$result = false;
 	} else {
 		$result = true;

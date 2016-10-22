@@ -340,9 +340,10 @@ function wp_delete_user( $id, $reassign = null ) {
 	if ( null === $reassign ) {
 		$post_types_to_delete = [];
 		foreach ( get_post_types( [], 'objects' ) as $post_type ) {
-			if ( $post_type->delete_with_user ) {
-				$post_types_to_delete[] = $post_type->name;
-			} elseif ( null === $post_type->delete_with_user && post_type_supports( $post_type->name, 'author' ) ) {
+			if (
+				$post_type->delete_with_user ||
+				( null === $post_type->delete_with_user && post_type_supports( $post_type->name, 'author' ) )
+			) {
 				$post_types_to_delete[] = $post_type->name;
 			}
 		}

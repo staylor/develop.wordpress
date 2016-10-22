@@ -152,14 +152,14 @@ class WP_Http_Encoding {
 		$type = [];
 		$compression_enabled = self::is_available();
 
-		if ( ! $args['decompress'] ) {
+		if (
 			// Decompression specifically disabled.
-			$compression_enabled = false;
-		} elseif ( $args['stream'] ) {
+			! $args['decompress'] ||
 			// Disable when streaming to file.
-			$compression_enabled = false;
-		} elseif ( isset( $args['limit_response_size'] ) ) {
+			$args['stream']	||
 			// If only partial content is being requested, we won't be able to decompress it.
+			isset( $args['limit_response_size'] )
+		) {
 			$compression_enabled = false;
 		}
 
@@ -189,7 +189,7 @@ class WP_Http_Encoding {
 		 */
 		$type = apply_filters( 'wp_http_accept_encoding', $type, $url, $args );
 
-		return implode(', ', $type);
+		return implode( ', ', $type );
 	}
 
 	/**

@@ -758,12 +758,11 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 								<?php
 								if ( ! isset( $auto_add ) ) {
 									$auto_add = get_option( 'nav_menu_options' );
-									if ( ! isset( $auto_add['auto_add'] ) )
-										$auto_add = false;
-									elseif ( false !== array_search( $nav_menu_selected_id, $auto_add['auto_add'] ) )
+									if ( isset( $auto_add['auto_add'] ) && false !== array_search( $nav_menu_selected_id, $auto_add['auto_add'] ) ) {
 										$auto_add = true;
-									else
+									} else {
 										$auto_add = false;
+									}
 								} ?>
 
 								<dl class="auto-add-pages">

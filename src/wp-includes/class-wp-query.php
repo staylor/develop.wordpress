@@ -816,13 +816,13 @@ class WP_Query {
 		if ( ( '' != $qv['attachment'] ) || ! empty( $qv['attachment_id'] ) ) {
 			$this->is_single = true;
 			$this->is_attachment = true;
-		} elseif ( '' != $qv['name'] ) {
-			$this->is_single = true;
-		} elseif ( $qv['p'] ) {
-			$this->is_single = true;
-		} elseif ( ( '' !== $qv['hour'] ) && ( '' !== $qv['minute'] ) && ( '' !== $qv['second'] ) && ( '' != $qv['year'] ) && ( '' != $qv['monthnum'] ) && ( '' != $qv['day'] ) ) {
+		} elseif (
+			'' != $qv['name'] ||
+			$qv['p'] ||
 			// If year, month, day, hour, minute, and second are set, a single
 			// post is being queried.
+			( ( '' !== $qv['hour'] ) && ( '' !== $qv['minute'] ) && ( '' !== $qv['second'] ) && ( '' != $qv['year'] ) && ( '' != $qv['monthnum'] ) && ( '' != $qv['day'] ) )
+		) {
 			$this->is_single = true;
 		} elseif ( '' != $qv['static'] || '' != $qv['pagename'] || ! empty( $qv['page_id'] ) ) {
 			$this->is_page = true;
@@ -3497,11 +3497,11 @@ class WP_Query {
 
 		$post_obj = $this->get_queried_object();
 
-		if ( in_array( (string) $post_obj->ID, $attachment ) ) {
-			return true;
-		} elseif ( in_array( $post_obj->post_title, $attachment ) ) {
-			return true;
-		} elseif ( in_array( $post_obj->post_name, $attachment ) ) {
+		if (
+			in_array( (string) $post_obj->ID, $attachment ) ||
+			in_array( $post_obj->post_title, $attachment ) ||
+			in_array( $post_obj->post_name, $attachment )
+		) {
 			return true;
 		}
 		return false;
@@ -3531,11 +3531,11 @@ class WP_Query {
 
 		$author = array_map( 'strval', (array) $author );
 
-		if ( in_array( (string) $author_obj->ID, $author ) ) {
-			return true;
-		} elseif ( in_array( $author_obj->nickname, $author ) ) {
-			return true;
-		} elseif ( in_array( $author_obj->user_nicename, $author ) ) {
+		if (
+			in_array( (string) $author_obj->ID, $author ) ||
+			in_array( $author_obj->nickname, $author ) ||
+			in_array( $author_obj->user_nicename, $author )
+		) {
 			return true;
 		}
 
@@ -3566,11 +3566,11 @@ class WP_Query {
 
 		$category = array_map( 'strval', (array) $category );
 
-		if ( in_array( (string) $cat_obj->term_id, $category ) ) {
-			return true;
-		} elseif ( in_array( $cat_obj->name, $category ) ) {
-			return true;
-		} elseif ( in_array( $cat_obj->slug, $category ) ) {
+		if (
+			in_array( (string) $cat_obj->term_id, $category ) ||
+			in_array( $cat_obj->name, $category ) ||
+			in_array( $cat_obj->slug, $category )
+		) {
 			return true;
 		}
 
@@ -3601,11 +3601,11 @@ class WP_Query {
 
 		$tag = array_map( 'strval', (array) $tag );
 
-		if ( in_array( (string) $tag_obj->term_id, $tag ) ) {
-			return true;
-		} elseif ( in_array( $tag_obj->name, $tag ) ) {
-			return true;
-		} elseif ( in_array( $tag_obj->slug, $tag ) ) {
+		if (
+			in_array( (string) $tag_obj->term_id, $tag ) ||
+			in_array( $tag_obj->name, $tag ) ||
+			in_array( $tag_obj->slug, $tag )
+		) {
 			return true;
 		}
 
@@ -3734,13 +3734,14 @@ class WP_Query {
 	 */
 	public function is_front_page() {
 		// most likely case
-		if ( 'posts' === get_option( 'show_on_front' ) && $this->is_home() ) {
+		if (
+			( 'posts' === get_option( 'show_on_front' ) && $this->is_home() ) ||
+			( 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) && $this->is_page( get_option( 'page_on_front' ) ) )
+		) {
 			return true;
-		} elseif ( 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) && $this->is_page( get_option( 'page_on_front' ) ) ) {
-			return true;
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	/**
@@ -3801,11 +3802,11 @@ class WP_Query {
 
 		$page = array_map( 'strval', (array) $page );
 
-		if ( in_array( (string) $page_obj->ID, $page ) ) {
-			return true;
-		} elseif ( in_array( $page_obj->post_title, $page ) ) {
-			return true;
-		} elseif ( in_array( $page_obj->post_name, $page ) ) {
+		if (
+			in_array( (string) $page_obj->ID, $page ) ||
+			( in_array( $page_obj->post_title, $page ) ) ||
+			( in_array( $page_obj->post_name, $page ) )
+		) {
 			return true;
 		} else {
 			foreach ( $page as $pagepath ) {
@@ -3896,11 +3897,11 @@ class WP_Query {
 
 		$post = array_map( 'strval', (array) $post );
 
-		if ( in_array( (string) $post_obj->ID, $post ) ) {
-			return true;
-		} elseif ( in_array( $post_obj->post_title, $post ) ) {
-			return true;
-		} elseif ( in_array( $post_obj->post_name, $post ) ) {
+		if (
+			in_array( (string) $post_obj->ID, $post ) ||
+			in_array( $post_obj->post_title, $post ) ||
+			in_array( $post_obj->post_name, $post )
+		) {
 			return true;
 		} else {
 			foreach ( $post as $postpath ) {
@@ -4054,9 +4055,10 @@ class WP_Query {
 		 * Force full post content when viewing the permalink for the $post,
 		 * or when on an RSS feed. Otherwise respect the 'more' tag.
 		 */
-		if ( $post->ID === get_queried_object_id() && ( $this->is_page() || $this->is_single() ) ) {
-			$more = 1;
-		} elseif ( $this->is_feed() ) {
+		if (
+			( $post->ID === get_queried_object_id() && ( $this->is_page() || $this->is_single() ) ) ||
+			$this->is_feed()
+		) {
 			$more = 1;
 		} else {
 			$more = 0;

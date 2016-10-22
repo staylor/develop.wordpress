@@ -86,7 +86,7 @@ class MetaWeblog implements ProviderInterface {
 		do_action( 'xmlrpc_call', 'metaWeblog.newPost' );
 
 		$page_template = '';
-		if ( empty( $content_struct['post_type'] ) ) {
+		if ( empty( $content_struct['post_type'] ) || 'post' === $content_struct['post_type'] ) {
 			if ( $publish ) {
 				$cap  = 'publish_posts';
 			} elseif ( isset( $content_struct['post_status'] ) && 'publish' === $content_struct['post_status'] ) {
@@ -109,16 +109,6 @@ class MetaWeblog implements ProviderInterface {
 			if ( ! empty( $content_struct['wp_page_template'] ) ) {
 				$page_template = $content_struct['wp_page_template'];
 			}
-		} elseif ( 'post' === $content_struct['post_type'] ) {
-			if ( $publish ) {
-				$cap  = 'publish_posts';
-			} elseif ( isset( $content_struct['post_status'] ) && 'publish' === $content_struct['post_status'] ) {
-				$cap  = 'publish_posts';
-			} else {
-				$cap = 'edit_posts';
-			}
-			$error_message = __( 'Sorry, you are not allowed to publish posts on this site.' );
-			$post_type = 'post';
 		} else {
 			// No other post_type values are allowed here
 			return new Error( 401, __( 'Invalid post type.' ) );

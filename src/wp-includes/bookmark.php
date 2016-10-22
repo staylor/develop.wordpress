@@ -49,15 +49,12 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
 
 	$_bookmark = sanitize_bookmark($_bookmark, $filter);
 
-	if ( $output == OBJECT ) {
-		return $_bookmark;
-	} elseif ( $output == ARRAY_A ) {
+	if ( $output == ARRAY_A ) {
 		return get_object_vars($_bookmark);
 	} elseif ( $output == ARRAY_N ) {
 		return array_values(get_object_vars($_bookmark));
-	} else {
-		return $_bookmark;
 	}
+	return $_bookmark;
 }
 
 /**

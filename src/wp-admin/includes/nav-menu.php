@@ -871,12 +871,6 @@ function _wp_nav_menu_meta_box_object( $object = null ) {
 				'post_status' => 'publish',
 			);
 
-		// Posts should show only published items.
-		} elseif ( 'post' == $object->name ) {
-			$object->_default_query = array(
-				'post_status' => 'publish',
-			);
-
 		// Categories should be in reverse chronological order.
 		} elseif ( 'category' == $object->name ) {
 			$object->_default_query = array(
@@ -884,6 +878,7 @@ function _wp_nav_menu_meta_box_object( $object = null ) {
 				'order' => 'DESC',
 			);
 
+		// Posts should show only published items.
 		// Custom post types should show only published items.
 		} else {
 			$object->_default_query = array(

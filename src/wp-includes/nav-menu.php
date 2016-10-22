@@ -896,7 +896,7 @@ function wp_setup_nav_menu_item( $menu_item ) {
  * @param string $taxonomy    If $object_type is "taxonomy", $taxonomy is the name of the tax that $object_id belongs to
  * @return array The array of menu item IDs; empty array if none;
  */
-function wp_get_associated_nav_menu_items( int $object_id = 0, $object_type = 'post_type', $taxonomy = '' ) {
+function wp_get_associated_nav_menu_items( int $object_id, $object_type = 'post_type', $taxonomy = '' ) {
 	$menu_item_ids = [];
 
 	$query = new WP_Query;
@@ -913,14 +913,12 @@ function wp_get_associated_nav_menu_items( int $object_id = 0, $object_type = 'p
 		if ( isset( $menu_item->ID ) && is_nav_menu_item( $menu_item->ID ) ) {
 			$menu_item_type = get_post_meta( $menu_item->ID, '_menu_item_type', true );
 			if (
-				'post_type' == $object_type &&
-				'post_type' == $menu_item_type
-			) {
-				$menu_item_ids[] = (int) $menu_item->ID;
-			} elseif (
-				'taxonomy' == $object_type &&
-				'taxonomy' == $menu_item_type &&
-				get_post_meta( $menu_item->ID, '_menu_item_object', true ) == $taxonomy
+				( 'post_type' == $object_type && 'post_type' == $menu_item_type ) ||
+				(
+					'taxonomy' == $object_type &&
+					'taxonomy' == $menu_item_type &&
+					get_post_meta( $menu_item->ID, '_menu_item_object', true ) == $taxonomy
+				)
 			) {
 				$menu_item_ids[] = (int) $menu_item->ID;
 			}
@@ -957,7 +955,7 @@ function _wp_delete_post_menu_item( int $object_id = 0 ) {
  * @param int    $tt_id     Term taxonomy ID. Unused.
  * @param string $taxonomy  Taxonomy slug.
  */
-function _wp_delete_tax_menu_item( int $object_id = 0, $tt_id, $taxonomy ) {
+function _wp_delete_tax_menu_item( int $object_id, $tt_id, $taxonomy ) {
 	$menu_item_ids = wp_get_associated_nav_menu_items( $object_id, 'taxonomy', $taxonomy );
 
 	foreach ( (array) $menu_item_ids as $menu_item_id ) {

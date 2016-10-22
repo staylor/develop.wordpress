@@ -55,13 +55,11 @@ class Menu {
 		$post_type_url = sprintf( '%s?post_type=%s', $pagenow, $typenow );
 		foreach ( (array) $this->app->submenu as $submenu ) {
 			foreach ( $submenu[ $parent ] as $sub ) {
-				if ( ! empty( $typenow ) && $sub[2] === $post_type_url ) {
-					$this->app->set( 'parent_file', $parent );
-					return;
-				} elseif ( $sub[2] === $pagenow && empty( $typenow ) && ( empty( $parent_file ) || false === strpos( $parent_file, '?' ) ) ) {
-					$this->app->set( 'parent_file', $parent );
-					return;
-				} elseif ( $plugin_page && ( $plugin_page === $sub[2] ) ) {
+				if (
+					( ! empty( $typenow ) && $sub[2] === $post_type_url ) ||
+					( $sub[2] === $pagenow && empty( $typenow ) && ( empty( $parent_file ) || false === strpos( $parent_file, '?' ) ) ) ||
+					( $plugin_page && ( $plugin_page === $sub[2] ) )
+				) {
 					$this->app->set( 'parent_file', $parent );
 					return;
 				}

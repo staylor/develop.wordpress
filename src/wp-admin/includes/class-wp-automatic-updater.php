@@ -507,14 +507,15 @@ class WP_Automatic_Updater {
 		// Any of these WP_Error codes are critical failures, as in they occurred after we started to copy core files.
 		// We should not try to perform a background update again until there is a successful one-click update performed by the user.
 		$critical = false;
-		if ( $error_code === 'disk_full' || false !== strpos( $error_code, '__copy_dir' ) ) {
+		if (
+			( $error_code === 'disk_full' || false !== strpos( $error_code, '__copy_dir' ) ) ||
+			false !== strpos( $error_code, 'do_rollback' )
+		) {
 			$critical = true;
 		} elseif ( $error_code === 'rollback_was_required' && is_wp_error( $result->get_error_data()->rollback ) ) {
 			// A rollback is only critical if it failed too.
 			$critical = true;
 			$rollback_result = $result->get_error_data()->rollback;
-		} elseif ( false !== strpos( $error_code, 'do_rollback' ) ) {
-			$critical = true;
 		}
 
 		if ( $critical ) {

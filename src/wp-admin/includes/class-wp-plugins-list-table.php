@@ -558,13 +558,13 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		$screen = $this->screen;
 
 		// Pre-order.
-		$actions = array(
+		$actions = [
 			'deactivate' => '',
 			'activate' => '',
 			'details' => '',
 			'edit' => '',
 			'delete' => '',
-		);
+		];
 
 		// Do not restrict by default
 		$restrict_network_active = false;
@@ -575,12 +575,14 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		} elseif ( 'dropins' === $context ) {
 			$dropins = _get_dropins();
 			$plugin_name = $plugin_file;
-			if ( $plugin_file != $plugin_data['Name'] )
+			if ( $plugin_file !== $plugin_data['Name'] ) {
 				$plugin_name .= '<br/>' . $plugin_data['Name'];
-			if ( true === ( $dropins[ $plugin_file ][1] ) ) { // Doesn't require a constant
-				$is_active = true;
-				$description = '<p><strong>' . $dropins[ $plugin_file ][0] . '</strong></p>';
-			} elseif ( defined( $dropins[ $plugin_file ][1] ) && constant( $dropins[ $plugin_file ][1] ) ) { // Constant is true
+			}
+
+			if (
+				true === ( $dropins[ $plugin_file ][1] ) ||
+				( defined( $dropins[ $plugin_file ][1] ) && constant( $dropins[ $plugin_file ][1] ) )
+			) { // Doesn't require a constant
 				$is_active = true;
 				$description = '<p><strong>' . $dropins[ $plugin_file ][0] . '</strong></p>';
 			} else {
@@ -592,8 +594,11 @@ class WP_Plugins_List_Table extends WP_List_Table {
 						'<code>wp-config.php</code>'
 					) . '</p>';
 			}
-			if ( $plugin_data['Description'] )
+
+			if ( $plugin_data['Description'] ) {
 				$description .= '<p>' . $plugin_data['Description'] . '</p>';
+			}
+
 		} else {
 			if ( $screen->in_admin( 'network' ) ) {
 				$is_active = is_plugin_active_for_network( $plugin_file );

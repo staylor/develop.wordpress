@@ -425,7 +425,7 @@ class WP_List_Table {
 	 * @return string|false The action name or False if no action was selected
 	 */
 	public function current_action() {
-		if ( $this->_request->get( 'filter_action' ) && $this->_request->get( 'filter_action' ) ) {
+		if ( $this->_request->get( 'filter_action' ) ) {
 			return false;
 		}
 

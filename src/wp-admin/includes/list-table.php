@@ -66,7 +66,7 @@ function _get_list_table( $class, $args = [] ) {
  * @see get_column_headers(), print_column_headers(), get_hidden_columns()
  */
 function register_column_headers($screen, $columns) {
-	new _WP_List_Table_Compat( $screen, $columns );
+	return new _WP_List_Table_Compat( $screen, $columns );
 }
 
 /**

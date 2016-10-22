@@ -1615,9 +1615,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			),
 		);
 		foreach ( $post_type_attributes as $attribute ) {
-			if ( isset( $fixed_schemas[ $this->post_type ] ) && ! in_array( $attribute, $fixed_schemas[ $this->post_type ], true ) ) {
-				continue;
-			} elseif ( ! isset( $fixed_schemas[ $this->post_type ] ) && ! post_type_supports( $this->post_type, $attribute ) ) {
+			if (
+				(
+					isset( $fixed_schemas[ $this->post_type ] ) && ! in_array( $attribute, $fixed_schemas[ $this->post_type ], true ) ) ||
+					( ! isset( $fixed_schemas[ $this->post_type ] ) && ! post_type_supports( $this->post_type, $attribute ) )
+				) {
 				continue;
 			}
 

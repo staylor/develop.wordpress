@@ -423,15 +423,13 @@ function is_serialized_string( $data ) {
 		return false;
 	}
 	$data = trim( $data );
-	if ( strlen( $data ) < 4 ) {
-		return false;
-	} elseif ( ':' !== $data[1] ) {
-		return false;
-	} elseif ( ';' !== substr( $data, -1 ) ) {
-		return false;
-	} elseif ( $data[0] !== 's' ) {
-		return false;
-	} elseif ( '"' !== substr( $data, -2, 1 ) ) {
+	if (
+		strlen( $data ) < 4 ||
+		':' !== $data[1] ||
+		';' !== substr( $data, -1 ) ||
+		$data[0] !== 's' ||
+		'"' !== substr( $data, -2, 1 )
+	) {
 		return false;
 	} else {
 		return true;
@@ -590,9 +588,10 @@ function do_enclose( $content, $post_ID ) {
 			if ( false === $test ) {
 				continue;
 			}
-			if ( isset( $test['query'] ) ) {
-				$post_links[] = $link_test;
-			} elseif ( isset( $test['path'] ) && ( $test['path'] != '/' ) && ( $test['path'] != '' ) ) {
+			if (
+				isset( $test['query'] ) ||
+				( isset( $test['path'] ) && $test['path'] !== '/' && $test['path'] !== '' )
+			) {
 				$post_links[] = $link_test;
 			}
 		}
@@ -2758,13 +2757,14 @@ function _default_wp_die_handler( $message, $title = '', $args = [] ) {
 		}
 
 		if ( empty( $title ) ) {
-					$title = $have_gettext ? __( 'WordPress &rsaquo; Error' ) : 'WordPress &rsaquo; Error';
+			$title = $have_gettext ? __( 'WordPress &rsaquo; Error' ) : 'WordPress &rsaquo; Error';
 		}
 
 		$text_direction = 'ltr';
-		if ( isset( $r['text_direction'] ) && 'rtl' == $r['text_direction'] ) {
-			$text_direction = 'rtl';
-		} elseif ( function_exists( 'is_rtl' ) && is_rtl() ) {
+		if (
+			( isset( $r['text_direction'] ) && 'rtl' == $r['text_direction'] ) ||
+			( function_exists( 'is_rtl' ) && is_rtl() )
+		) {
 			$text_direction = 'rtl';
 		}
 		?>

@@ -755,16 +755,20 @@ class WP_Date_Query {
 					$where_parts[] = "YEAR( $column ) $compare $value";
 		}
 
-		if ( isset( $query['month'] ) && $value = $this->build_value( $compare, $query['month'] ) ) {
-			$where_parts[] = "MONTH( $column ) $compare $value";
-		} elseif ( isset( $query['monthnum'] ) && $value = $this->build_value( $compare, $query['monthnum'] ) ) {
+		if (
+			( isset( $query['month'] ) && $value = $this->build_value( $compare, $query['month'] ) ) ||
+			( isset( $query['monthnum'] ) && $value = $this->build_value( $compare, $query['monthnum'] ) )
+		) {
 			$where_parts[] = "MONTH( $column ) $compare $value";
 		}
-		if ( isset( $query['week'] ) && false !== ( $value = $this->build_value( $compare, $query['week'] ) ) ) {
-			$where_parts[] = _wp_mysql_week( $column ) . " $compare $value";
-		} elseif ( isset( $query['w'] ) && false !== ( $value = $this->build_value( $compare, $query['w'] ) ) ) {
+
+		if (
+			( isset( $query['week'] ) && false !== ( $value = $this->build_value( $compare, $query['week'] ) ) ) ||
+			( isset( $query['w'] ) && false !== ( $value = $this->build_value( $compare, $query['w'] ) ) )
+		) {
 			$where_parts[] = _wp_mysql_week( $column ) . " $compare $value";
 		}
+
 		if ( isset( $query['dayofyear'] ) && $value = $this->build_value( $compare, $query['dayofyear'] ) ) {
 			$where_parts[] = "DAYOFYEAR( $column ) $compare $value";
 		}

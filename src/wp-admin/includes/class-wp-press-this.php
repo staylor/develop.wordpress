@@ -357,7 +357,7 @@ class WP_Press_This {
 
 		if ( is_numeric( $value ) || is_bool( $value ) ) {
 			$return = $value;
-		} else if ( is_string( $value ) ) {
+		} elseif ( is_string( $value ) ) {
 			if ( mb_strlen( $value ) > 5000 ) {
 				$return = mb_substr( $value, 0, 5000 );
 			} else {
@@ -423,32 +423,26 @@ class WP_Press_This {
 	private function _limit_img( $src ) {
 		$src = $this->_limit_url( $src );
 
-		if ( preg_match( '!/ad[sx]?/!i', $src ) ) {
+		if (
 			// Ads
-			return '';
-		} else if ( preg_match( '!(/share-?this[^.]+?\.[a-z0-9]{3,4})(\?.*)?$!i', $src ) ) {
+			preg_match( '!/ad[sx]?/!i', $src ) ||
 			// Share-this type button
-			return '';
-		} else if ( preg_match( '!/(spinner|loading|spacer|blank|rss)\.(gif|jpg|png)!i', $src ) ) {
+			preg_match( '!(/share-?this[^.]+?\.[a-z0-9]{3,4})(\?.*)?$!i', $src ) ||
 			// Loaders, spinners, spacers
-			return '';
-		} else if ( preg_match( '!/([^./]+[-_])?(spinner|loading|spacer|blank)s?([-_][^./]+)?\.[a-z0-9]{3,4}!i', $src ) ) {
+			preg_match( '!/(spinner|loading|spacer|blank|rss)\.(gif|jpg|png)!i', $src ) ||
 			// Fancy loaders, spinners, spacers
-			return '';
-		} else if ( preg_match( '!([^./]+[-_])?thumb[^.]*\.(gif|jpg|png)$!i', $src ) ) {
+			preg_match( '!/([^./]+[-_])?(spinner|loading|spacer|blank)s?([-_][^./]+)?\.[a-z0-9]{3,4}!i', $src ) ||
 			// Thumbnails, too small, usually irrelevant to context
-			return '';
-		} else if ( false !== stripos( $src, '/wp-includes/' ) ) {
+			preg_match( '!([^./]+[-_])?thumb[^.]*\.(gif|jpg|png)$!i', $src ) ||
 			// Classic WordPress interface images
-			return '';
-		} else if ( preg_match( '![^\d]\d{1,2}x\d+\.(gif|jpg|png)$!i', $src ) ) {
+			false !== stripos( $src, '/wp-includes/' ) ||
 			// Most often tiny buttons/thumbs (< 100px wide)
-			return '';
-		} else if ( preg_match( '!/pixel\.(mathtag|quantserve)\.com!i', $src ) ) {
+			preg_match( '![^\d]\d{1,2}x\d+\.(gif|jpg|png)$!i', $src ) ||
 			// See mathtag.com and https://www.quantcast.com/how-we-do-it/iab-standard-measurement/how-we-collect-data/
-			return '';
-		} else if ( preg_match( '!/[gb]\.gif(\?.+)?$!i', $src ) ) {
+			preg_match( '!/pixel\.(mathtag|quantserve)\.com!i', $src ) ||
 			// WordPress.com stats gif
+			preg_match( '!/[gb]\.gif(\?.+)?$!i', $src )
+		) {
 			return '';
 		}
 
@@ -476,16 +470,17 @@ class WP_Press_This {
 		if ( preg_match( '!//(m|www)\.youtube\.com/(embed|v)/([^?]+)\?.+$!i', $src, $src_matches ) ) {
 			// Embedded Youtube videos (www or mobile)
 			$src = 'https://www.youtube.com/watch?v=' . $src_matches[3];
-		} else if ( preg_match( '!//player\.vimeo\.com/video/([\d]+)([?/].*)?$!i', $src, $src_matches ) ) {
+		} elseif (
 			// Embedded Vimeo iframe videos
-			$src = 'https://vimeo.com/' . (int) $src_matches[1];
-		} else if ( preg_match( '!//vimeo\.com/moogaloop\.swf\?clip_id=([\d]+)$!i', $src, $src_matches ) ) {
+			preg_match( '!//player\.vimeo\.com/video/([\d]+)([?/].*)?$!i', $src, $src_matches ) ||
 			// Embedded Vimeo Flash videos
+			preg_match( '!//vimeo\.com/moogaloop\.swf\?clip_id=([\d]+)$!i', $src, $src_matches )
+		) {
 			$src = 'https://vimeo.com/' . (int) $src_matches[1];
-		} else if ( preg_match( '!//vine\.co/v/([^/]+)/embed!i', $src, $src_matches ) ) {
+		} elseif ( preg_match( '!//vine\.co/v/([^/]+)/embed!i', $src, $src_matches ) ) {
 			// Embedded Vine videos
 			$src = 'https://vine.co/v/' . $src_matches[1];
-		} else if ( preg_match( '!//(www\.)?dailymotion\.com/embed/video/([^/?]+)([/?].+)?!i', $src, $src_matches ) ) {
+		} elseif ( preg_match( '!//(www\.)?dailymotion\.com/embed/video/([^/?]+)([/?].+)?!i', $src, $src_matches ) ) {
 			// Embedded Daily Motion videos
 			$src = 'https://www.dailymotion.com/video/' . $src_matches[2];
 		} else {
@@ -683,7 +678,7 @@ class WP_Press_This {
 		foreach ( array( 'u', 's', 't', 'v' ) as $key ) {
 			if ( ! empty( $_post->get( $key ) ) ) {
 				$value = wp_unslash( $_post->get( $key ) );
-			} else if ( ! empty( $_get->get( $key ) ) ) {
+			} elseif ( ! empty( $_get->get( $key ) ) ) {
 				$value = wp_unslash( $_get->get( $key ) );
 			} else {
 				continue;
@@ -1048,7 +1043,7 @@ class WP_Press_This {
 		} elseif ( ! empty( $data['_meta'] ) ) {
 			if ( ! empty( $data['_meta']['twitter:url'] ) ) {
 				$link = $data['_meta']['twitter:url'];
-			} else if ( ! empty( $data['_meta']['og:url'] ) ) {
+			} elseif ( ! empty( $data['_meta']['og:url'] ) ) {
 				$link = $data['_meta']['og:url'];
 			}
 		}
@@ -1075,7 +1070,7 @@ class WP_Press_This {
 		if ( ! empty( $data['_meta'] ) ) {
 			if ( ! empty( $data['_meta']['og:site_name'] ) ) {
 				$name = $data['_meta']['og:site_name'];
-			} else if ( ! empty( $data['_meta']['application-name'] ) ) {
+			} elseif ( ! empty( $data['_meta']['application-name'] ) ) {
 				$name = $data['_meta']['application-name'];
 			}
 		}
@@ -1100,9 +1095,9 @@ class WP_Press_This {
 		} elseif ( ! empty( $data['_meta'] ) ) {
 			if ( ! empty( $data['_meta']['twitter:title'] ) ) {
 				$title = $data['_meta']['twitter:title'];
-			} else if ( ! empty( $data['_meta']['og:title'] ) ) {
+			} elseif ( ! empty( $data['_meta']['og:title'] ) ) {
 				$title = $data['_meta']['og:title'];
-			} else if ( ! empty( $data['_meta']['title'] ) ) {
+			} elseif ( ! empty( $data['_meta']['title'] ) ) {
 				$title = $data['_meta']['title'];
 			}
 		}
@@ -1126,12 +1121,12 @@ class WP_Press_This {
 
 		if ( ! empty( $data['s'] ) ) {
 			$text = $data['s'];
-		} else if ( ! empty( $data['_meta'] ) ) {
+		} elseif ( ! empty( $data['_meta'] ) ) {
 			if ( ! empty( $data['_meta']['twitter:description'] ) ) {
 				$text = $data['_meta']['twitter:description'];
-			} else if ( ! empty( $data['_meta']['og:description'] ) ) {
+			} elseif ( ! empty( $data['_meta']['og:description'] ) ) {
 				$text = $data['_meta']['og:description'];
-			} else if ( ! empty( $data['_meta']['description'] ) ) {
+			} elseif ( ! empty( $data['_meta']['description'] ) ) {
 				$text = $data['_meta']['description'];
 			}
 

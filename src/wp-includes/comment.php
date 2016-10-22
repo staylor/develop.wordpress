@@ -284,13 +284,12 @@ function get_default_comment_status( $post_type = 'post', $comment_type = 'comme
 		$option = 'comment';
 	}
 
+	$supports = post_type_supports( $post_type, $supports );
 	// Set the status.
-	if ( 'page' === $post_type ) {
+	if ( 'page' === $post_type || ! $supports ) {
 		$status = 'closed';
-	} elseif ( post_type_supports( $post_type, $supports ) ) {
+	} elseif ( $supports ) {
 		$status = get_option( "default_{$option}_status" );
-	} else {
-		$status = 'closed';
 	}
 
 	/**
@@ -2149,12 +2148,10 @@ function wp_update_comment($commentarr) {
 
 	$data['comment_date_gmt'] = get_gmt_from_date( $data['comment_date'] );
 
-	if ( ! isset( $data['comment_approved'] ) ) {
+	if ( ! isset( $data['comment_approved'] ) || 'approve' == $data['comment_approved'] ) {
 		$data['comment_approved'] = 1;
 	} elseif ( 'hold' == $data['comment_approved'] ) {
 		$data['comment_approved'] = 0;
-	} elseif ( 'approve' == $data['comment_approved'] ) {
-		$data['comment_approved'] = 1;
 	}
 
 	$comment_ID = $data['comment_ID'];
@@ -2567,9 +2564,10 @@ function pingback( $content, $post_id ) {
 		if ( ! in_array( $link_test, $pung ) && ( url_to_postid( $link_test ) != $post->ID ) // If we haven't pung it already and it isn't a link to itself
 				&& !is_local_attachment($link_test) ) { // Also, let's never ping local attachments.
 			if ( $test = @parse_url($link_test) ) {
-				if ( isset($test['query']) ) {
-					$post_links[] = $link_test;
-				} elseif ( isset( $test['path'] ) && ( $test['path'] != '/' ) && ( $test['path'] != '' ) ) {
+				if (
+					isset( $test['query'] ) ||
+					( isset( $test['path'] ) && ( $test['path'] != '/' ) && ( $test['path'] != '' ) )
+				) {
 					$post_links[] = $link_test;
 				}
 			}

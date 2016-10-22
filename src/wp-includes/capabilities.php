@@ -329,9 +329,10 @@ function map_meta_cap( $cap, $user_id ) {
 		break;
 	case 'unfiltered_html' :
 		// Disallow unfiltered_html for all users, even admins and super admins.
-		if ( defined( 'DISALLOW_UNFILTERED_HTML' ) && DISALLOW_UNFILTERED_HTML ) {
-			$caps[] = 'do_not_allow';
-		} elseif ( is_multisite() && ! is_super_admin( $user_id ) ) {
+		if (
+			( defined( 'DISALLOW_UNFILTERED_HTML' ) && DISALLOW_UNFILTERED_HTML ) ||
+			( is_multisite() && ! is_super_admin( $user_id ) )
+		) {
 			$caps[] = 'do_not_allow';
 		} else {
 			$caps[] = $cap;
@@ -344,11 +345,11 @@ function map_meta_cap( $cap, $user_id ) {
 	case 'edit_plugins':
 	case 'edit_themes':
 		// Disallow the file editors.
-		if ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT ) {
-			$caps[] = 'do_not_allow';
-		} elseif ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ) {
-			$caps[] = 'do_not_allow';
-		} elseif ( is_multisite() && ! is_super_admin( $user_id ) ) {
+		if (
+			( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT ) ||
+			( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ) ||
+			( is_multisite() && ! is_super_admin( $user_id ) )
+		) {
 			$caps[] = 'do_not_allow';
 		} else {
 			$caps[] = $cap;
@@ -365,9 +366,10 @@ function map_meta_cap( $cap, $user_id ) {
 	case 'update_core':
 		// Disallow anything that creates, deletes, or updates core, plugin, or theme files.
 		// Files in uploads are excepted.
-		if ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ) {
-			$caps[] = 'do_not_allow';
-		} elseif ( is_multisite() && ! is_super_admin( $user_id ) ) {
+		if (
+			( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ) ||
+			( is_multisite() && ! is_super_admin( $user_id ) )
+		) {
 			$caps[] = 'do_not_allow';
 		} elseif ( 'upload_themes' === $cap ) {
 			$caps[] = 'install_themes';
@@ -398,9 +400,10 @@ function map_meta_cap( $cap, $user_id ) {
 		// delete_user maps to delete_users.
 		break;
 	case 'create_users':
-		if ( ! is_multisite() ) {
-			$caps[] = $cap;
-		} elseif ( is_super_admin( $user_id ) || get_site_option( 'add_new_users' ) ) {
+		if (
+			! is_multisite() ||
+			( is_super_admin( $user_id ) || get_site_option( 'add_new_users' ) )
+		) {
 			$caps[] = $cap;
 		} else {
 			$caps[] = 'do_not_allow';

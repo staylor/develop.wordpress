@@ -7,8 +7,9 @@
  */
 
 // don't load directly
-if ( !defined('ABSPATH') )
-	die('-1');
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
 ?>
 
 <div class="clear"></div></div><!-- wpbody-content -->
@@ -100,10 +101,10 @@ do_action( "admin_footer-{$hook_suffix}" );
 
 // get_site_option() won't exist when auto upgrading from <= 2.7
 if ( function_exists('get_site_option') ) {
-	if ( false === get_site_option('can_compress_scripts') )
+	if ( false === get_site_option( 'can_compress_scripts' ) ) {
 		compression_test();
+	}
 }
-
 ?>
 
 <div class="clear"></div></div><!-- wpwrap -->

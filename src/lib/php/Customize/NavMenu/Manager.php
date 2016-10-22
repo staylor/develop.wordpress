@@ -462,9 +462,9 @@ class Manager {
 				'type'      => Setting::TYPE,
 				'transport' => 'postMessage',
 			);
-		} elseif ( preg_match( Setting::ID_PATTERN, $setting_id ) ) {
+		} elseif ( preg_match( ItemSetting::ID_PATTERN, $setting_id ) ) {
 			$setting_args = array(
-				'type'      => Setting::TYPE,
+				'type'      => ItemSetting::TYPE,
 				'transport' => 'postMessage',
 			);
 		}

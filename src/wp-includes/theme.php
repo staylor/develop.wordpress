@@ -797,11 +797,11 @@ function validate_current_theme() {
 	}
 
 	$valid = true;
-	if ( ! file_exists( get_template_directory() . '/index.php' ) ) {
-		$valid = false;
-	} elseif ( ! file_exists( get_template_directory() . '/style.css' ) ) {
-		$valid = false;
-	} elseif ( is_child_theme() && ! file_exists( get_stylesheet_directory() . '/style.css' ) ) {
+	if (
+		! file_exists( get_template_directory() . '/index.php' ) ||
+		! file_exists( get_template_directory() . '/style.css' ) ||
+		( is_child_theme() && ! file_exists( get_stylesheet_directory() . '/style.css' ) )
+	) {
 		$valid = false;
 	}
 
@@ -1197,9 +1197,10 @@ function is_random_header_image( $type = 'any' ) {
 			return true;
 		}
 	} else {
-		if ( "random-$type-image" == $header_image_mod ) {
-			return true;
-		} elseif ( 'default' == $type && empty( $header_image_mod ) && '' != get_random_header_image() ) {
+		if (
+			"random-$type-image" == $header_image_mod ||
+			( 'default' == $type && empty( $header_image_mod ) && '' != get_random_header_image() )
+		) {
 			return true;
 		}
 	}

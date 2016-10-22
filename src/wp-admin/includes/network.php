@@ -162,9 +162,10 @@ function network_step1( $errors = false ) {
 
 	if ( $_post->get( 'subdomain_install' ) ) {
 		$subdomain_install = (bool) $_post->get( 'subdomain_install' );
-	} elseif ( apache_mod_loaded('mod_rewrite') ) { // assume nothing
-		$subdomain_install = true;
-	} elseif ( !allow_subdirectory_install() ) {
+	} elseif (
+		apache_mod_loaded( 'mod_rewrite' ) ||
+		! allow_subdirectory_install()
+	) { // assume nothing
 		$subdomain_install = true;
 	} else {
 		$subdomain_install = false;

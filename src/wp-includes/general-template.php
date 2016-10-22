@@ -999,7 +999,7 @@ function wp_get_document_title() {
 		$title['title'] = post_type_archive_title( '', false );
 
 	// If on a taxonomy archive, use the term title.
-	} elseif ( is_tax() ) {
+	} elseif ( is_tax() || is_category() || is_tag() ) {
 		$title['title'] = single_term_title( '', false );
 
 	/*
@@ -1008,10 +1008,6 @@ function wp_get_document_title() {
 	 */
 	} elseif ( is_home() || is_singular() ) {
 		$title['title'] = single_post_title( '', false );
-
-	// If on a category or tag archive, use the term title.
-	} elseif ( is_category() || is_tag() ) {
-		$title['title'] = single_term_title( '', false );
 
 	// If on an author archive, use the author's display name.
 	} elseif ( is_author() && $author = get_queried_object() ) {
@@ -2727,12 +2723,6 @@ function feed_links_extra( $args = [] ) {
 	} elseif ( is_search() ) {
 		$title = sprintf( $args['searchtitle'], get_bloginfo( 'name' ), $args['separator'], get_search_query( false ) );
 		$href = get_search_feed_link();
-	} elseif ( is_post_type_archive() ) {
-		$title = sprintf( $args['posttypetitle'], get_bloginfo( 'name' ), $args['separator'], post_type_archive_title( '', false ) );
-		$post_type_obj = get_queried_object();
-		if ( $post_type_obj ) {
-			$href = get_post_type_archive_feed_link( $post_type_obj->name );
-		}
 	}
 
 	if ( isset( $title ) && isset( $href ) ) {

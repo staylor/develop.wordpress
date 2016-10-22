@@ -747,8 +747,8 @@ if ( !function_exists('wp_parse_auth_cookie') ) :
  * @return array|false Authentication cookie components
  */
 function wp_parse_auth_cookie($cookie = '', $scheme = '') {
-	if ( empty($cookie) ) {
-		switch ($scheme){
+	if ( empty( $cookie ) ) {
+		switch ( $scheme ){
 		case 'auth':
 			$cookie_name = AUTH_COOKIE;
 			break;
@@ -768,13 +768,16 @@ function wp_parse_auth_cookie($cookie = '', $scheme = '') {
 			}
 		}
 
-		if ( empty($_COOKIE[$cookie_name]) ) {
-					return false;
+		$app = getApp();
+		$_cookie = $app['request']->cookies;
+
+		if ( empty( $_cookie->get( $cookie_name ) ) ) {
+			return false;
 		}
-		$cookie = $_COOKIE[$cookie_name];
+		$cookie = $_cookie->get( $cookie_name );
 	}
 
-	$cookie_elements = explode('|', $cookie);
+	$cookie_elements = explode( '|', $cookie );
 	if ( count( $cookie_elements ) !== 4 ) {
 		return false;
 	}

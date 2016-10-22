@@ -882,19 +882,15 @@ function rest_sanitize_request_arg( $value, $request, $param ) {
 	if ( isset( $args['format'] ) ) {
 		switch ( $args['format'] ) {
 		case 'date-time' :
-			return sanitize_text_field( $value );
-
+		/*
+		 * sanitize_email() validates, which would be unexpected
+		 */
 		case 'email' :
-			/*
-				 * sanitize_email() validates, which would be unexpected
-				 */
+		case 'ipv4' :
 			return sanitize_text_field( $value );
 
 		case 'uri' :
 			return esc_url_raw( $value );
-
-		case 'ipv4' :
-			return sanitize_text_field( $value );
 		}
 	}
 

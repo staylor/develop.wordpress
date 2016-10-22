@@ -3300,15 +3300,12 @@ function wp_ajax_destroy_sessions() {
 	$_post = $app['request']->request;
 
 	$user = get_userdata( $_post->getInt( 'user_id' ) );
-	if ( $user ) {
-		if ( ! current_user_can( 'edit_user', $user->ID ) ) {
-			$user = false;
-		} elseif ( ! wp_verify_nonce( $_post->get( 'nonce'), 'update-user_' . $user->ID ) ) {
-			$user = false;
-		}
-	}
-
-	if ( ! $user ) {
+	if ( $user &&
+		(
+			! current_user_can( 'edit_user', $user->ID ) ||
+			! wp_verify_nonce( $_post->get( 'nonce'), 'update-user_' . $user->ID )
+		)
+	) {
 		wp_send_json_error( array(
 			'message' => __( 'Could not log out user sessions. Please try again.' ),
 		) );
@@ -3325,7 +3322,7 @@ function wp_ajax_destroy_sessions() {
 		$message = sprintf( __( '%s has been logged out.' ), $user->display_name );
 	}
 
-	wp_send_json_success( array( 'message' => $message ) );
+	wp_send_json_success( [ 'message' => $message ] );
 }
 
 /**

@@ -1207,11 +1207,12 @@ function _redirect_to_about_wordpress( $new_version ) {
 		return;
 
 	// Ensure we only run this on the update-core.php page. The Core_Upgrader may be used in other contexts.
-	if ( 'update-core.php' != $app['pagenow'] )
+	if (
+		'update-core.php' !== $app['pagenow'] ||
+		( 'do-core-upgrade' !== $action && 'do-core-reinstall' !== $action )
+	) {
 		return;
-
- 	if ( 'do-core-upgrade' != $action && 'do-core-reinstall' != $action )
- 		return;
+	}
 
 	// Load the updated default text localization domain for new strings.
 	load_default_textdomain();

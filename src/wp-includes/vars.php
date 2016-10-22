@@ -101,19 +101,12 @@ function wp_is_mobile() {
 	$app = getApp();
 	$ua = $app['request.useragent'];
 
-	if ( empty( $ua ) ) {
-		$is_mobile = false;
-	} elseif ( strpos( $ua, 'Mobile' ) !== false // many mobile devices (all iPhone, iPad, etc.)
+	return ( ! empty( $ua ) &&
+		( strpos( $ua, 'Mobile' ) !== false // many mobile devices (all iPhone, iPad, etc.)
 		|| strpos( $ua, 'Android' ) !== false
 		|| strpos( $ua, 'Silk/' ) !== false
 		|| strpos( $ua, 'Kindle' ) !== false
 		|| strpos( $ua, 'BlackBerry' ) !== false
 		|| strpos( $ua, 'Opera Mini' ) !== false
-		|| strpos( $ua, 'Opera Mobi' ) !== false ) {
-			$is_mobile = true;
-	} else {
-		$is_mobile = false;
-	}
-
-	return $is_mobile;
+		|| strpos( $ua, 'Opera Mobi' ) !== false ) );
 }

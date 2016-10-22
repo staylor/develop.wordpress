@@ -6,7 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
+use function WP\getApp;
 /**
  * Core class used for updating core.
  *
@@ -88,10 +88,12 @@ class Core_Upgrader extends WP_Upgrader {
 		$wp_dir = trailingslashit($wp_filesystem->abspath());
 
 		$partial = true;
-		if ( $parsed_args['do_rollback'] )
+		if (
+			$parsed_args['do_rollback'] ||
+			( $parsed_args['pre_check_md5'] && ! $this->check_files() )
+		) {
 			$partial = false;
-		elseif ( $parsed_args['pre_check_md5'] && ! $this->check_files() )
-			$partial = false;
+		}
 
 		/*
 		 * If partial update is returned from the API, use that, unless we're doing
@@ -157,12 +159,13 @@ class Core_Upgrader extends WP_Upgrader {
 				 * mkdir_failed__copy_dir, copy_failed__copy_dir_retry, and disk_full.
 				 * do_rollback allows for update_core() to trigger a rollback if needed.
 				 */
-				if ( false !== strpos( $error_code, 'do_rollback' ) )
+				if (
+					false !== strpos( $error_code, 'do_rollback' ) ||
+					false !== strpos( $error_code, '__copy_dir' ) ||
+					'disk_full' === $error_code
+				) {
 					$try_rollback = true;
-				elseif ( false !== strpos( $error_code, '__copy_dir' ) )
-					$try_rollback = true;
-				elseif ( 'disk_full' === $error_code )
-					$try_rollback = true;
+				}
 			}
 
 			if ( $try_rollback ) {
@@ -235,9 +238,10 @@ class Core_Upgrader extends WP_Upgrader {
 	 * @return bool True if we should update to the offered version, otherwise false.
 	 */
 	public static function should_update_to_version( $offered_ver ) {
-		$current_branch = implode( '.', array_slice( preg_split( '/[.-]/', $this->app['wp_version']  ), 0, 2 ) ); // x.y
+		$app = getApp();
+		$current_branch = implode( '.', array_slice( preg_split( '/[.-]/', $app['wp_version']  ), 0, 2 ) ); // x.y
 		$new_branch     = implode( '.', array_slice( preg_split( '/[.-]/', $offered_ver ), 0, 2 ) ); // x.y
-		$current_is_development_version = (bool) strpos( $this->app['wp_version'], '-' );
+		$current_is_development_version = (bool) strpos( $app['wp_version'], '-' );
 
 		// Defaults:
 		$upgrade_dev   = true;
@@ -260,11 +264,11 @@ class Core_Upgrader extends WP_Upgrader {
 		}
 
 		// 1: If we're already on that version, not much point in updating?
-		if ( $offered_ver == $this->app['wp_version'] )
+		if ( $offered_ver == $app['wp_version'] )
 			return false;
 
 		// 2: If we're running a newer version, that's a nope
-		if ( version_compare( $this->app['wp_version'], $offered_ver, '>' ) )
+		if ( version_compare( $app['wp_version'], $offered_ver, '>' ) )
 			return false;
 
 		$failure_data = get_site_option( 'auto_core_update_failed' );
@@ -274,13 +278,13 @@ class Core_Upgrader extends WP_Upgrader {
 				return false;
 
 			// Don't claim we can update on update-core.php if we have a non-critical failure logged.
-			if ( $this->app['wp_version'] == $failure_data['current'] && false !== strpos( $offered_ver, '.1.next.minor' ) )
+			if ( $app['wp_version'] == $failure_data['current'] && false !== strpos( $offered_ver, '.1.next.minor' ) )
 				return false;
 
 			// Cannot update if we're retrying the same A to B update that caused a non-critical failure.
 			// Some non-critical failures do allow retries, like download_failed.
 			// 3.7.1 => 3.7.2 resulted in files_not_writable, if we are still on 3.7.1 and still trying to update to 3.7.2.
-			if ( empty( $failure_data['retry'] ) && $this->app['wp_version'] == $failure_data['current'] && $offered_ver == $failure_data['attempted'] )
+			if ( empty( $failure_data['retry'] ) && $app['wp_version'] == $failure_data['current'] && $offered_ver == $failure_data['attempted'] )
 				return false;
 		}
 

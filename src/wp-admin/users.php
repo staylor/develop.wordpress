@@ -91,9 +91,10 @@ case 'delete':
 
 	$users_have_content = false;
 	$wpdb = $app['db'];
-	if ( $wpdb->get_var( "SELECT ID FROM {$wpdb->posts} WHERE post_author IN( " . implode( ',', $userids ) . " ) LIMIT 1" ) ) {
-		$users_have_content = true;
-	} elseif ( $wpdb->get_var( "SELECT link_id FROM {$wpdb->links} WHERE link_owner IN( " . implode( ',', $userids ) . " ) LIMIT 1" ) ) {
+	if (
+		$wpdb->get_var( "SELECT ID FROM {$wpdb->posts} WHERE post_author IN( " . implode( ',', $userids ) . " ) LIMIT 1" ) ||
+		$wpdb->get_var( "SELECT link_id FROM {$wpdb->links} WHERE link_owner IN( " . implode( ',', $userids ) . " ) LIMIT 1" )
+	) {
 		$users_have_content = true;
 	}
 
