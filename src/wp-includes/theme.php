@@ -1510,9 +1510,7 @@ function wp_get_custom_css( $stylesheet = '' ) {
 	 * @param string $css        CSS pulled in from the Custom CSS CPT.
 	 * @param string $stylesheet The theme stylesheet name.
 	 */
-	$css = apply_filters( 'wp_get_custom_css', $css, $stylesheet );
-
-	return $css;
+	return apply_filters( 'wp_get_custom_css', $css, $stylesheet );
 }
 
 /**

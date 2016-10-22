@@ -324,9 +324,7 @@ function get_author_posts_url( int $author_id, $author_nicename = '' ) {
 	 * @param int    $author_id       The author's id.
 	 * @param string $author_nicename The author's nice name.
 	 */
-	$link = apply_filters( 'author_link', $link, $author_id, $author_nicename );
-
-	return $link;
+	return apply_filters( 'author_link', $link, $author_id, $author_nicename );
 }
 
 /**

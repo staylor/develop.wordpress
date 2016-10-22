@@ -2569,8 +2569,8 @@ class wpdb {
 			return false;
 		}
 
-		list( $charset ) = explode( '_', $this->col_meta[ $tablekey ][ $columnkey ]->Collation );
-		return $charset;
+		$collation = explode( '_', $this->col_meta[ $tablekey ][ $columnkey ]->Collation );
+		return $collation[0];
 	}
 
 	/**

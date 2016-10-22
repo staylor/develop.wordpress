@@ -1167,9 +1167,7 @@ function get_registered_metadata( $object_type, $object_id, $meta_key = '' ) {
 		$meta_keys = get_registered_meta_keys( $object_type );
 		$meta_key_data = $meta_keys[ $meta_key ];
 
-		$data = get_metadata( $object_type, $object_id, $meta_key, $meta_key_data['single'] );
-
-		return $data;
+		return get_metadata( $object_type, $object_id, $meta_key, $meta_key_data['single'] );
 	}
 
 	$data = get_metadata( $object_type, $object_id );

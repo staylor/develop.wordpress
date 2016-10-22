@@ -513,9 +513,7 @@ function get_site( $site = null ) {
 	 *
 	 * @param WP_Site $_site Site data.
 	 */
-	$_site = apply_filters( 'get_site', $_site );
-
-	return $_site;
+	return apply_filters( 'get_site', $_site );
 }
 
 /**
@@ -1120,9 +1118,7 @@ function get_network( $network = null ) {
 	 *
 	 * @param WP_Network $_network Network data.
 	 */
-	$_network = apply_filters( 'get_network', $_network );
-
-	return $_network;
+	return apply_filters( 'get_network', $_network );
 }
 
 /**

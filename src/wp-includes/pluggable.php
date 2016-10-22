@@ -2454,9 +2454,8 @@ function wp_text_diff( $left_string, $right_string, $args = null ) {
 	}
 
 	$r .= "<tbody>\n$diff\n</tbody>\n";
-	$r .= "</table>";
 
-	return $r;
+	return $r . '</table>';
 }
 endif;
 

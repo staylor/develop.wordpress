@@ -154,8 +154,7 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
 	 * @param int    $i          Unix timestamp.
 	 * @param bool   $gmt        Whether to convert to GMT for time. Default false.
 	 */
-	$j = apply_filters( 'date_i18n', $j, $req_format, $i, $gmt );
-	return $j;
+	return apply_filters( 'date_i18n', $j, $req_format, $i, $gmt );
 }
 
 /**
@@ -516,8 +515,8 @@ function xmlrpc_getpostcategory( $content ) {
 function xmlrpc_removepostdata( $content ) {
 	$content = preg_replace( '/<title>(.+?)<\/title>/si', '', $content );
 	$content = preg_replace( '/<category>(.+?)<\/category>/si', '', $content );
-	$content = trim( $content );
-	return $content;
+
+	return trim( $content );
 }
 
 /**
@@ -851,8 +850,8 @@ function add_query_arg() {
 	$ret = trim( $ret, '?' );
 	$ret = preg_replace( '#=(&|$)#', '$1', $ret );
 	$ret = $protocol . $base . $ret . $frag;
-	$ret = rtrim( $ret, '?' );
-	return $ret;
+
+	return rtrim( $ret, '?' );
 }
 
 /**

@@ -794,9 +794,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		 *    @param WP_REST_Request $request Request object.
 		 * }
 		 */
-		$valid_vars = apply_filters( 'rest_query_vars', $valid_vars, $request );
-
-		return $valid_vars;
+		return apply_filters( 'rest_query_vars', $valid_vars, $request );
 	}
 
 	/**

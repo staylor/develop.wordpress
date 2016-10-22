@@ -112,10 +112,8 @@ class Control extends ImageControl {
 	 * @return string|void
 	 */
 	public function get_current_image_src() {
-		$src = $this->value();
 		if ( isset( $this->get_url ) ) {
-			$src = call_user_func( $this->get_url, $src );
-			return $src;
+			return call_user_func( $this->get_url, $this->value() );
 		}
 	}
 

@@ -186,8 +186,7 @@ unset( $id, $data, $subs, $first_sub );
  * @return string
  */
 function add_cssclass( $add, $class ) {
-	$classes = empty( $class ) ? $add : $class .= ' ' . $add;
-	return $classes;
+	return empty( $class ) ? $add : $class .= ' ' . $add;
 }
 
 /**

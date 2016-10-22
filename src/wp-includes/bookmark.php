@@ -373,20 +373,23 @@ function sanitize_bookmark($bookmark, $context = 'display') {
  */
 function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 	switch ( $field ) {
-	case 'link_id' : // ints
+	// ints
+	case 'link_id' :
 	case 'link_rating' :
 		$value = (int) $value;
 		break;
-	case 'link_category' : // array( ints )
-		$value = array_map('absint', (array) $value);
+	// array( ints )
+	case 'link_category' :
 		// We return here so that the categories aren't filtered.
 		// The 'link_category' filter is for the name of a link category, not an array of a link's link categories
-		return $value;
+		return array_map( 'absint', (array) $value );
 
-	case 'link_visible' : // bool stored as Y|N
+	// bool stored as Y|N
+	case 'link_visible' :
 		$value = preg_replace('/[^YNyn]/', '', $value);
 		break;
-	case 'link_target' : // "enum"
+	// "enum"
+	case 'link_target' :
 		$targets = array('_top', '_blank');
 		if ( ! in_array($value, $targets) ) {
 			$value = '';

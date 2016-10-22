@@ -371,9 +371,7 @@ class View extends BaseView {
 			$admin_body_class .= ' network-admin';
 		}
 
-		$admin_body_class .= ' no-customize-support no-svg';
-
-		return $admin_body_class;
+		return $admin_body_class . ' no-customize-support no-svg';
 	}
 
 	public function menu() {

@@ -197,8 +197,7 @@ function get_comment_author_email_link( $linktext = '', $before = '', $after = '
 	$display = ($linktext != '') ? $linktext : $email;
 		$return  = $before;
 		$return .= sprintf( '<a href="%1$s">%2$s</a>', esc_url( 'mailto:' . $email ), esc_html( $display ) );
-		$return .= $after;
-		return $return;
+		return $return . $after;
 	} else {
 		return '';
 	}

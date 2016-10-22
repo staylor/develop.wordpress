@@ -153,9 +153,7 @@ function get_image_send_to_editor( $id, $caption, $title, $align, $url = '', $re
 	 *                              (in that order). Default 'medium'.
 	 * @param string       $alt     The image alternative, or alt, text.
 	 */
-	$html = apply_filters( 'image_send_to_editor', $html, $id, $caption, $title, $align, $url, $size, $alt );
-
-	return $html;
+	return apply_filters( 'image_send_to_editor', $html, $id, $caption, $title, $align, $url, $size, $alt );
 }
 
 /**
@@ -901,11 +899,10 @@ function media_sideload_image( $file, $post_id, $desc = null, $return = 'html' )
 		}
 
 		$alt = isset( $desc ) ? esc_attr( $desc ) : '';
-		$html = "<img src='$src' alt='$alt' />";
-		return $html;
-	} else {
-		return new WP_Error( 'image_sideload_failed' );
+		return "<img src='$src' alt='$alt' />";
 	}
+
+	return new WP_Error( 'image_sideload_failed' );
 }
 
 /**
@@ -1311,9 +1308,7 @@ function get_attachment_fields_to_edit($post, $errors = null) {
 	 * @param array   $form_fields An array of attachment form fields.
 	 * @param WP_Post $post        The WP_Post attachment object.
 	 */
-	$form_fields = apply_filters( 'attachment_fields_to_edit', $form_fields, $post );
-
-	return $form_fields;
+	return apply_filters( 'attachment_fields_to_edit', $form_fields, $post );
 }
 
 /**

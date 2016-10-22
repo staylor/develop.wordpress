@@ -917,9 +917,7 @@ function rest_parse_request_arg( $value, $request, $param ) {
 		return $is_valid;
 	}
 
-	$value = rest_sanitize_request_arg( $value, $request, $param );
-
-	return $value;
+	return rest_sanitize_request_arg( $value, $request, $param );
 }
 
 /**

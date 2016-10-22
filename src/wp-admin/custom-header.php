@@ -1157,15 +1157,13 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		$size = @getimagesize( $cropped );
 		$image_type = ( $size ) ? $size['mime'] : 'image/jpeg';
 
-		$object = array(
+		return array(
 			'ID' => $parent_attachment_id,
 			'post_title' => basename($cropped),
 			'post_mime_type' => $image_type,
 			'guid' => $url,
 			'context' => 'custom-header'
 		);
-
-		return $object;
 	}
 
 	/**

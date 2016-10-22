@@ -187,9 +187,7 @@ class Panel {
 		 * @param bool               $active Whether the Customizer panel is active.
 		 * @param Panel $panel  Panel instance.
 		 */
-		$active = apply_filters( 'customize_panel_active', $active, $panel );
-
-		return $active;
+		return apply_filters( 'customize_panel_active', $active, $panel );
 	}
 
 	/**

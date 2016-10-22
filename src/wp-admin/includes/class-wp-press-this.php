@@ -315,9 +315,8 @@ class WP_Press_This {
 		);
 
 		$source_content = wp_remote_retrieve_body( $remote_url );
-		$source_content = wp_kses( $source_content, $allowed_elements );
 
-		return $source_content;
+		return wp_kses( $source_content, $allowed_elements );
 	}
 
 	/**

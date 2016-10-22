@@ -886,13 +886,11 @@ function get_meta_keys() {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	$keys = $wpdb->get_col( "
-			SELECT meta_key
-			FROM $wpdb->postmeta
-			GROUP BY meta_key
-			ORDER BY meta_key" );
-
-	return $keys;
+	return $wpdb->get_col( "
+		SELECT meta_key
+		FROM $wpdb->postmeta
+		GROUP BY meta_key
+		ORDER BY meta_key" );
 }
 
 /**
@@ -1116,8 +1114,7 @@ function get_available_post_mime_types($type = 'attachment') {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	$types = $wpdb->get_col($wpdb->prepare("SELECT DISTINCT post_mime_type FROM $wpdb->posts WHERE post_type = %s", $type));
-	return $types;
+	return $wpdb->get_col($wpdb->prepare("SELECT DISTINCT post_mime_type FROM $wpdb->posts WHERE post_type = %s", $type));
 }
 
 /**
@@ -1426,9 +1423,7 @@ function get_sample_permalink_html( $id, $new_title = null, $new_slug = null ) {
 	 * @param string  $new_slug  New sample permalink slug.
 	 * @param WP_Post $post      Post object.
 	 */
-	$return = apply_filters( 'get_sample_permalink_html', $return, $post->ID, $new_title, $new_slug, $post );
-
-	return $return;
+	return apply_filters( 'get_sample_permalink_html', $return, $post->ID, $new_title, $new_slug, $post );
 }
 
 /**

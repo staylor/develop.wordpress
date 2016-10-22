@@ -509,9 +509,7 @@ abstract class WP_REST_Controller {
 		 * @param WP_Post|null $post_obj  The post object as returned by `get_post()`.
 		 * @param int|WP_Post  $post      The original value used to obtain the post object.
 		 */
-		$post = apply_filters( 'rest_the_post', $post_obj, $post );
-
-		return $post;
+		return apply_filters( 'rest_the_post', $post_obj, $post );
 	}
 
 	/**

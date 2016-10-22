@@ -230,9 +230,7 @@ class Manager {
 		 * @param string $object The object name.
 		 * @param int    $page   The current page number.
 		 */
-		$items = apply_filters( 'customize_nav_menu_available_items', $items, $type, $object, $page );
-
-		return $items;
+		return apply_filters( 'customize_nav_menu_available_items', $items, $type, $object, $page );
 	}
 
 	/**
@@ -356,9 +354,7 @@ class Manager {
 		 * @param array $items The array of menu items.
 		 * @param array $args  Includes 'pagenum' and 's' (search) arguments.
 		 */
-		$items = apply_filters( 'customize_nav_menu_searched_items', $items, $args );
-
-		return $items;
+		return apply_filters( 'customize_nav_menu_searched_items', $items, $args );
 	}
 
 	/**
@@ -733,9 +729,7 @@ class Manager {
 		 *
 		 * @param array $item_types Custom menu item types.
 		 */
-		$item_types = apply_filters( 'customize_nav_menu_available_item_types', $item_types );
-
-		return $item_types;
+		return apply_filters( 'customize_nav_menu_available_item_types', $item_types );
 	}
 
 	/**
@@ -1334,8 +1328,6 @@ class Manager {
 
 		ob_start();
 		wp_nav_menu( $nav_menu_args );
-		$content = ob_get_clean();
-
-		return $content;
+		return ob_get_clean();
 	}
 }

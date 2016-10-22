@@ -268,9 +268,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		}
 
 		$user = $this->prepare_item_for_response( $user, $request );
-		$response = rest_ensure_response( $user );
-
-		return $response;
+		return rest_ensure_response( $user );
 	}
 
 	/**
@@ -477,8 +475,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		$request->set_param( 'context', 'edit' );
 		$response = $this->prepare_item_for_response( $user, $request );
-		$response = rest_ensure_response( $response );
-		return $response;
+		return rest_ensure_response( $response );
 	}
 
 	/**
@@ -656,7 +653,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @return array Links for the given user.
 	 */
 	protected function prepare_links( $user ) {
-		$links = array(
+		return array(
 			'self' => array(
 				'href' => rest_url( sprintf( '%s/%s/%d', $this->namespace, $this->rest_base, $user->ID ) ),
 			),
@@ -664,8 +661,6 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 				'href' => rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ),
 			),
 		);
-
-		return $links;
 	}
 
 	/**

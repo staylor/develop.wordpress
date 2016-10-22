@@ -366,17 +366,15 @@ class Setting extends BaseSetting {
 			return $menu_obj;
 		}
 
-		$menu_obj = (object) array_merge( array(
-				'term_id'          => $this->term_id,
-				'term_taxonomy_id' => $this->term_id,
-				'slug'             => sanitize_title( $setting_value['name'] ),
-				'count'            => 0,
-				'term_group'       => 0,
-				'taxonomy'         => self::TAXONOMY,
-				'filter'           => 'raw',
-			), $setting_value );
-
-		return $menu_obj;
+		return (object) array_merge( array(
+			'term_id'          => $this->term_id,
+			'term_taxonomy_id' => $this->term_id,
+			'slug'             => sanitize_title( $setting_value['name'] ),
+			'count'            => 0,
+			'term_group'       => 0,
+			'taxonomy'         => self::TAXONOMY,
+			'filter'           => 'raw',
+		), $setting_value );
 	}
 
 	/**
@@ -394,13 +392,11 @@ class Setting extends BaseSetting {
 		}
 
 		$menu = $this->value();
-		$nav_menu_options = $this->filter_nav_menu_options_value(
+		return $this->filter_nav_menu_options_value(
 			$nav_menu_options,
 			$this->term_id,
 			false === $menu ? false : $menu['auto_add']
 		);
-
-		return $nav_menu_options;
 	}
 
 	/**

@@ -162,8 +162,7 @@ function get_the_title_rss() {
 	 *
 	 * @param string $title The current post title.
 	 */
-	$title = apply_filters( 'the_title_rss', $title );
-	return $title;
+	return apply_filters( 'the_title_rss', $title );
 }
 
 /**

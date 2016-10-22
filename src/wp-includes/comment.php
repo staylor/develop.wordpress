@@ -253,14 +253,12 @@ function get_comments( $args = '' ) {
  * @return array List of comment statuses.
  */
 function get_comment_statuses() {
-	$status = array(
+	return array(
 		'hold'		=> __( 'Unapproved' ),
 		'approve'	=> _x( 'Approved', 'comment status' ),
 		'spam'		=> _x( 'Spam', 'comment status' ),
 		'trash'		=> _x( 'Trash', 'comment status' ),
 	);
-
-	return $status;
 }
 
 /**
@@ -768,8 +766,7 @@ function wp_allow_comment( $commentdata, $avoid_die = false ) {
 	 * @param bool|string $approved    The approval status. Accepts 1, 0, or 'spam'.
 	 * @param array       $commentdata Comment data.
 	 */
-	$approved = apply_filters( 'pre_comment_approved', $approved, $commentdata );
-	return $approved;
+	return apply_filters( 'pre_comment_approved', $approved, $commentdata );
 }
 
 /**

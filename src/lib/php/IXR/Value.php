@@ -94,8 +94,7 @@ class Value {
 			foreach ( $this->data as $item ) {
 				$return .= '<value>' . $item->getXml() . "</value>\n";
 			}
-			$return .= '</data></array>';
-			return $return;
+			return $return . '</data></array>';
 
 		case 'struct':
 			$return = "<struct>\n";
@@ -104,8 +103,7 @@ class Value {
 				$return .= '<member><name>' . $name . '</name><value>';
 				$return .= $value->getXml() . "</value></member>\n";
 			}
-			$return .= '</struct>';
-			return $return;
+			return $return . '</struct>';
 
 		case 'date':
 		case 'base64':

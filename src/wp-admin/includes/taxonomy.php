@@ -269,9 +269,7 @@ function get_terms_to_edit( $post_id, $taxonomy = 'post_tag' ) {
 	 * @param array  $terms_to_edit An array of terms.
 	 * @param string $taxonomy     The taxonomy for which to retrieve terms. Default 'post_tag'.
 	 */
-	$terms_to_edit = apply_filters( 'terms_to_edit', $terms_to_edit, $taxonomy );
-
-	return $terms_to_edit;
+	return apply_filters( 'terms_to_edit', $terms_to_edit, $taxonomy );
 }
 
 /**

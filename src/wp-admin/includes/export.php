@@ -181,9 +181,7 @@ function export_wp( $args = [] ) {
 			$str = utf8_encode( $str );
 		}
 		// $str = ent2ncr(esc_html($str));
-		$str = '<![CDATA[' . str_replace( ']]>', ']]]]><![CDATA[>', $str ) . ']]>';
-
-		return $str;
+		return '<![CDATA[' . str_replace( ']]>', ']]]]><![CDATA[>', $str ) . ']]>';
 	}
 
 	/**

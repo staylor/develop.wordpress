@@ -765,9 +765,7 @@ function get_author_feed_link( int $author_id, $feed = '' ) {
 	 * @param string $link The author feed link.
 	 * @param string $feed Feed type.
 	 */
-	$link = apply_filters( 'author_feed_link', $link, $feed );
-
-	return $link;
+	return apply_filters( 'author_feed_link', $link, $feed );
 }
 
 /**

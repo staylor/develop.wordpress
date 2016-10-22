@@ -245,9 +245,7 @@ function get_editable_roles() {
 	 *
 	 * @param array $all_roles List of roles.
 	 */
-	$editable_roles = apply_filters( 'editable_roles', $app['roles']->roles );
-
-	return $editable_roles;
+	return apply_filters( 'editable_roles', $app['roles']->roles );
 }
 
 /**

@@ -2601,8 +2601,8 @@ class Manager {
 			/* translators: %s: document title from the preview */
 			$document_title_tmpl = __( 'Live Preview: %s' );
 		}
-		$document_title_tmpl = html_entity_decode( $document_title_tmpl, ENT_QUOTES, 'UTF-8' ); // Because exported to JS and assigned to document.title.
-		return $document_title_tmpl;
+		// Because exported to JS and assigned to document.title.
+		return html_entity_decode( $document_title_tmpl, ENT_QUOTES, 'UTF-8' );
 	}
 
 	/**
@@ -2648,8 +2648,7 @@ class Manager {
 	public function is_cross_domain() {
 		$admin_origin = wp_parse_url( admin_url() );
 		$home_origin = wp_parse_url( home_url() );
-		$cross_domain = ( strtolower( $admin_origin['host'] ) !== strtolower( $home_origin['host'] ) );
-		return $cross_domain;
+		return ( strtolower( $admin_origin['host'] ) !== strtolower( $home_origin['host'] ) );
 	}
 
 	/**
@@ -2681,9 +2680,7 @@ class Manager {
 		 *
 		 * @param array $allowed_urls An array of allowed URLs.
 		 */
-		$allowed_urls = array_unique( apply_filters( 'customize_allowed_urls', $allowed_urls ) );
-
-		return $allowed_urls;
+		return array_unique( apply_filters( 'customize_allowed_urls', $allowed_urls ) );
 	}
 
 	/**
@@ -2797,9 +2794,7 @@ class Manager {
 		 *                                     preview actions.
 		 * @param Manager $this   Manager instance.
 		 */
-		$nonces = apply_filters( 'customize_refresh_nonces', $nonces, $this );
-
-		return $nonces;
+		return apply_filters( 'customize_refresh_nonces', $nonces, $this );
 	}
 
 	/**
@@ -2956,9 +2951,7 @@ class Manager {
 		 *
 		 * @param array $devices List of devices with labels and default setting.
 		 */
-		$devices = apply_filters( 'customize_previewable_devices', $devices );
-
-		return $devices;
+		return apply_filters( 'customize_previewable_devices', $devices );
 	}
 
 	/**

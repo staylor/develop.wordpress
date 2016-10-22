@@ -94,7 +94,7 @@ class WP_Site_Icon {
 		$size       = @getimagesize( $cropped );
 		$image_type = ( $size ) ? $size['mime'] : 'image/jpeg';
 
-		$object = array(
+		return array(
 			'ID'             => $parent_attachment_id,
 			'post_title'     => basename( $cropped ),
 			'post_content'   => $url,
@@ -102,8 +102,6 @@ class WP_Site_Icon {
 			'guid'           => $url,
 			'context'        => 'site-icon'
 		);
-
-		return $object;
 	}
 
 	/**

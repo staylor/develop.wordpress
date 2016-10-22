@@ -239,9 +239,7 @@ class Control {
 		 * @param bool                  $active  Whether the Customizer control is active.
 		 * @param \WP\Customize\Control $control \WP\Customize\Control instance.
 		 */
-		$active = apply_filters( 'customize_control_active', $active, $control );
-
-		return $active;
+		return apply_filters( 'customize_control_active', $active, $control );
 	}
 
 	/**

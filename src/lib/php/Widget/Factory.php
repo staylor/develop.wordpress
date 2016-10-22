@@ -77,8 +77,7 @@ class Factory {
 				$this->hashed_class_counts[ $class_name ] += 1;
 				$widget->_wp_widget_factory_hash_id = $this->hashed_class_counts[ $class_name ];
 			}
-			$hash .= ':' . $widget->_wp_widget_factory_hash_id;
-			return $hash;
+			return $hash . ':' . $widget->_wp_widget_factory_hash_id;
 		}
 	}
 

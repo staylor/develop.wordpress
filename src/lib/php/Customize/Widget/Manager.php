@@ -993,8 +993,7 @@ class Manager {
 		$args[0]['after_widget_content'] = '</div><!-- .widget-content -->';
 		ob_start();
 		call_user_func_array( 'wp_widget_control', $args );
-		$control_tpl = ob_get_clean();
-		return $control_tpl;
+		return ob_get_clean();
 	}
 
 	/**

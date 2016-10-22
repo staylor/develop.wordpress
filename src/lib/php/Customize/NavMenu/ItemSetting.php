@@ -296,8 +296,7 @@ class ItemSetting extends BaseSetting {
 				$original_title = $original_term_title;
 			}
 		}
-		$original_title = html_entity_decode( $original_title, ENT_QUOTES, get_bloginfo( 'charset' ) );
-		return $original_title;
+		return html_entity_decode( $original_title, ENT_QUOTES, get_bloginfo( 'charset' ) );
 	}
 
 	/**
@@ -611,9 +610,7 @@ class ItemSetting extends BaseSetting {
 		$post->description = apply_filters( 'nav_menu_description', wp_trim_words( $post->description, 200 ) );
 
 		/** This filter is documented in wp-includes/nav-menu.php */
-		$post = apply_filters( 'wp_setup_nav_menu_item', $post );
-
-		return $post;
+		return apply_filters( 'wp_setup_nav_menu_item', $post );
 	}
 
 	/**

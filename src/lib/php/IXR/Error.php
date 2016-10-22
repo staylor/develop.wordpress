@@ -16,7 +16,7 @@ class Error {
 
 	public function getXml(): string
 	{
-		$xml = '
+		return '
 <methodResponse>
   <fault>
     <value>
@@ -34,6 +34,5 @@ class Error {
   </fault>
 </methodResponse>
 ';
-		return $xml;
 	}
 }

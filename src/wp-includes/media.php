@@ -640,9 +640,7 @@ function wp_image_matches_ratio( $source_width, $source_height, $target_width, $
 	}
 
 	// If the image dimensions are within 1px of the expected size, we consider it a match.
-	$matched = ( abs( $constrained_size[0] - $expected_size[0] ) <= 1 && abs( $constrained_size[1] - $expected_size[1] ) <= 1 );
-
-	return $matched;
+	return ( abs( $constrained_size[0] - $expected_size[0] ) <= 1 && abs( $constrained_size[1] - $expected_size[1] ) <= 1 );
 }
 
 /**
@@ -1815,10 +1813,7 @@ function gallery_shortcode( $attr ) {
 			<br style='clear: both' />";
 	}
 
-	$output .= "
-		</div>\n";
-
-	return $output;
+	return $output . "</div>\n";
 }
 
 /**

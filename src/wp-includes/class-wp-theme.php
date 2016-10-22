@@ -1283,9 +1283,7 @@ final class WP_Theme implements ArrayAccess {
 		 *
 		 * @param array $allowed_themes An array of theme stylesheet names.
 		 */
-		$allowed_themes = apply_filters( 'allowed_themes', $allowed_themes );
-
-		return $allowed_themes;
+		return apply_filters( 'allowed_themes', $allowed_themes );
 	}
 
 	/**

@@ -693,7 +693,7 @@ function _get_wptexturize_split_regex( $shortcode_regex = '' ) {
 function _get_wptexturize_shortcode_regex( $tagnames ) {
 	$tagregexp = join( '|', array_map( 'preg_quote', $tagnames ) );
 	$tagregexp = "(?:$tagregexp)(?=[\\s\\]\\/])"; // Excerpt of get_shortcode_regex().
-	$regex =
+	return
 		  '\['              // Find start of shortcode.
 		. '[\/\[]?'         // Shortcodes may begin with [/ or [[
 		. $tagregexp        // Only match registered shortcodes, because performance.
@@ -704,8 +704,6 @@ function _get_wptexturize_shortcode_regex( $tagnames ) {
 		. ')*+'             // Possessive critical.
 		. '\]'              // Find end of shortcode.
 		. '\]?'; // Shortcodes may end with ]]
-
-	return $regex;
 }
 
 /**
@@ -2036,9 +2034,7 @@ function sanitize_title_with_dashes( $title, $raw_title = '', $context = 'displa
 	$title = preg_replace( '/[^%a-z0-9 _-]/', '', $title );
 	$title = preg_replace( '/\s+/', '-', $title );
 	$title = preg_replace( '|-+|', '-', $title );
-	$title = trim( $title, '-' );
-
-	return $title;
+	return trim( $title, '-' );
 }
 
 /**
@@ -2321,9 +2317,7 @@ function force_balance_tags( $text ) {
 
 	// WP fix for the bug with HTML comments
 	$newtext = str_replace( '< !--', '<!--', $newtext );
-	$newtext = str_replace( '<    !--', '< !--', $newtext );
-
-	return $newtext;
+	return str_replace( '<    !--', '< !--', $newtext );
 }
 
 /**
@@ -4637,8 +4631,7 @@ function links_add_target( $content, $target = '_blank', $tags = [ 'a' ] ) {
 function normalize_whitespace( $str ) {
 	$str = trim( $str );
 	$str = str_replace( "\r", "\n", $str );
-	$str = preg_replace( [ '/\n+/', '/[ \t]+/' ], [ "\n", ' ' ], $str );
-	return $str;
+	return preg_replace( [ '/\n+/', '/[ \t]+/' ], [ "\n", ' ' ], $str );
 }
 
 /**

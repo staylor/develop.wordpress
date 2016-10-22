@@ -603,9 +603,8 @@ class Rewrite extends Observable {
 
 		$structure = str_replace('%monthnum%', '', $structure);
 		$structure = str_replace('%day%', '', $structure);
-		$structure = preg_replace('#/+#', '/', $structure);
 
-		return $structure;
+		return preg_replace('#/+#', '/', $structure);
 	}
 
 	/**
@@ -627,9 +626,8 @@ class Rewrite extends Observable {
 		}
 
 		$structure = str_replace('%day%', '', $structure);
-		$structure = preg_replace('#/+#', '/', $structure);
 
-		return $structure;
+		return preg_replace('#/+#', '/', $structure);
 	}
 
 	/**

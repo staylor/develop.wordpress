@@ -280,9 +280,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		// Pagination.
 		$this->total_terms = count( $query_result );
-		$query_result = array_slice( $query_result, $prepared_args['offset'], $prepared_args['number'] );
-
-		return $query_result;
+		return array_slice( $query_result, $prepared_args['offset'], $prepared_args['number'] );
 	}
 
 	/**

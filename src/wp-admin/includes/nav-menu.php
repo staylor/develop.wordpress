@@ -951,8 +951,7 @@ function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 
 		$result .= '<ul class="menu" id="menu-to-edit"> ';
 		$result .= walk_nav_menu_tree( array_map('wp_setup_nav_menu_item', $menu_items), 0, (object) array('walker' => $walker ) );
-		$result .= ' </ul> ';
-		return $result;
+		return $result . ' </ul> ';
 	} elseif ( is_wp_error( $menu ) ) {
 		return $menu;
 	}

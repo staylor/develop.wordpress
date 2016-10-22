@@ -179,9 +179,7 @@ class WP_REST_Server {
 			$data['additional_errors'] = $errors;
 		}
 
-		$response = new WP_REST_Response( $data, $status );
-
-		return $response;
+		return new WP_REST_Response( $data, $status );
 	}
 
 	/**

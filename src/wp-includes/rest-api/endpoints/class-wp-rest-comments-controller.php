@@ -300,9 +300,8 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		}
 
 		$data = $this->prepare_item_for_response( $comment, $request );
-		$response = rest_ensure_response( $data );
 
-		return $response;
+		return rest_ensure_response( $data );
 	}
 
 	/**

@@ -399,9 +399,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 
 		/** This filter is documented in wp-admin/edit-tag-form.php */
 		$out .= '<div class="slug">' . apply_filters( 'editable_slug', $qe_data->slug, $qe_data ) . '</div>';
-		$out .= '<div class="parent">' . $qe_data->parent . '</div></div>';
-
-		return $out;
+		return $out . '<div class="parent">' . $qe_data->parent . '</div></div>';
 	}
 
 	/**

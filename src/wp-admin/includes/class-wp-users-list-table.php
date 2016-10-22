@@ -342,12 +342,10 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @return array Array of sortable columns.
 	 */
 	protected function get_sortable_columns() {
-		$c = array(
+		return array(
 			'username' => 'login',
 			'email'    => 'email',
 		);
-
-		return $c;
 	}
 
 	/**
@@ -513,9 +511,8 @@ class WP_Users_List_Table extends WP_List_Table {
 				$r .= "</td>";
 			}
 		}
-		$r .= '</tr>';
 
-		return $r;
+		return $r . '</tr>';
 	}
 
 	/**

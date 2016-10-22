@@ -1398,9 +1398,7 @@ function get_post_type_labels( $post_type_object ) {
 	$labels = apply_filters( "post_type_labels_{$post_type}", $labels );
 
 	// Ensure that the filtered labels contain all required default values.
-	$labels = (object) array_merge( (array) $default_labels, (array) $labels );
-
-	return $labels;
+	return (object) array_merge( (array) $default_labels, (array) $labels );
 }
 
 /**
@@ -1948,8 +1946,7 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 	// Fields which contain arrays of integers.
 	$array_int_fields = [ 'ancestors' ];
 	if ( in_array( $field, $array_int_fields ) ) {
-		$value = array_map( 'absint', $value );
-		return $value;
+		return array_map( 'absint', $value );
 	}
 
 	if ( 'raw' == $context ) {
@@ -4618,8 +4615,7 @@ function get_pages( $args = [] ) {
 		// Convert to WP_Post instances.
 		$pages = array_map( 'get_post', $cache );
 		/** This filter is documented in wp-includes/post.php */
-		$pages = apply_filters( 'get_pages', $pages, $r );
-		return $pages;
+		return apply_filters( 'get_pages', $pages, $r );
 	}
 
 	$inclusions = '';
@@ -4777,8 +4773,7 @@ function get_pages( $args = [] ) {
 
 	if ( empty( $pages ) ) {
 		/** This filter is documented in wp-includes/post.php */
-		$pages = apply_filters( 'get_pages', [], $r );
-		return $pages;
+		return apply_filters( 'get_pages', [], $r );
 	}
 
 	// Sanitize before caching so it'll only get done once.

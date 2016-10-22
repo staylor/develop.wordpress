@@ -354,11 +354,9 @@ function wp_get_post_revision(&$post, $output = OBJECT, $filter = 'raw') {
 	if ( $output == OBJECT ) {
 		return $revision;
 	} elseif ( $output == ARRAY_A ) {
-		$_revision = get_object_vars($revision);
-		return $_revision;
+		return get_object_vars($revision);
 	} elseif ( $output == ARRAY_N ) {
-		$_revision = array_values(get_object_vars($revision));
-		return $_revision;
+		return array_values(get_object_vars($revision));
 	}
 
 	return $revision;

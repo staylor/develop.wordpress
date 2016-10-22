@@ -193,10 +193,7 @@ class WP_REST_Request implements ArrayAccess {
 	 * @return string Canonicalized name.
 	 */
 	public static function canonicalize_header_name( $key ) {
-		$key = strtolower( $key );
-		$key = str_replace( '-', '_', $key );
-
-		return $key;
+		return str_replace( '-', '_', strtolower( $key ) );
 	}
 
 	/**
@@ -336,9 +333,8 @@ class WP_REST_Request implements ArrayAccess {
 		list( $type, $subtype ) = explode( '/', $value, 2 );
 
 		$data = compact( 'value', 'type', 'subtype', 'parameters' );
-		$data = array_map( 'trim', $data );
 
-		return $data;
+		return array_map( 'trim', $data );
 	}
 
 	/**

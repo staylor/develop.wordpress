@@ -208,9 +208,7 @@ class Section {
 		 * @param bool                 $active  Whether the Customizer section is active.
 		 * @param Section $section Section instance.
 		 */
-		$active = apply_filters( 'customize_section_active', $active, $section );
-
-		return $active;
+		return apply_filters( 'customize_section_active', $active, $section );
 	}
 
 	/**

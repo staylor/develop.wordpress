@@ -2094,9 +2094,7 @@ function deslash( $content ) {
 	$content = preg_replace( '/\\\+"/', '"', $content );
 
 	// Replace one or more backslashes with one backslash.
-	$content = preg_replace( "/\\\+/", "\\", $content );
-
-	return $content;
+	return preg_replace( "/\\\+/", "\\", $content );
 }
 
 /**

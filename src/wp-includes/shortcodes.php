@@ -202,9 +202,7 @@ function do_shortcode( $content, $ignore_html = false ) {
 	$content = preg_replace_callback( "/$pattern/", 'do_shortcode_tag', $content );
 
 	// Always restore square braces so we don't break things like <!--[if IE ]>
-	$content = unescape_invalid_shortcodes( $content );
-
-	return $content;
+	return unescape_invalid_shortcodes( $content );
 }
 
 /**
@@ -432,9 +430,7 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 		$element = strtr( $element, $trans );
 	}
 
-	$content = implode( '', $textarr );
-
-	return $content;
+	return implode( '', $textarr );
 }
 
 /**
@@ -448,9 +444,8 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 function unescape_invalid_shortcodes( $content ) {
 		// Clean up entire string, avoids re-parsing HTML.
 		$trans = [ '&#91;' => '[', '&#93;' => ']' ];
-		$content = strtr( $content, $trans );
 
-		return $content;
+		return strtr( $content, $trans );
 }
 
 /**
@@ -600,7 +595,5 @@ function strip_shortcodes( $content ) {
 	}, $content );
 
 	// Always restore square braces so we don't break things like <!--[if IE ]>
-	$content = unescape_invalid_shortcodes( $content );
-
-	return $content;
+	return unescape_invalid_shortcodes( $content );
 }

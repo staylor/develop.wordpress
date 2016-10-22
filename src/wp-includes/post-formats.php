@@ -91,7 +91,7 @@ function set_post_format( $post, $format ) {
  * @return array The array of translated post format names.
  */
 function get_post_format_strings() {
-	$strings = array(
+	return array(
 		'standard' => _x( 'Standard', 'Post format' ), // Special case. any value that evals to false will be considered standard
 		'aside'    => _x( 'Aside',    'Post format' ),
 		'chat'     => _x( 'Chat',     'Post format' ),
@@ -103,7 +103,6 @@ function get_post_format_strings() {
 		'video'    => _x( 'Video',    'Post format' ),
 		'audio'    => _x( 'Audio',    'Post format' ),
 	);
-	return $strings;
 }
 
 /**

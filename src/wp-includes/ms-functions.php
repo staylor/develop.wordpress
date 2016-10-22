@@ -18,12 +18,10 @@ use function WP\getApp;
  * @return array Site and user count for the network.
  */
 function get_sitestats() {
-	$stats = array(
+	return array(
 		'blogs' => get_blog_count(),
 		'users' => get_user_count(),
 	);
-
-	return $stats;
 }
 
 /**

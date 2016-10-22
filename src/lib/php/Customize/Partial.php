@@ -253,9 +253,7 @@ class Partial {
 		 * @param array                $container_context Optional array of context data associated with
 		 *                                                the target container.
 		 */
-		$rendered = apply_filters( "customize_partial_render_{$partial->id}", $rendered, $partial, $container_context );
-
-		return $rendered;
+		return apply_filters( "customize_partial_render_{$partial->id}", $rendered, $partial, $container_context );
 	}
 
 	/**
@@ -291,15 +289,14 @@ class Partial {
 	 * @return array Array of parameters passed to the JavaScript.
 	 */
 	public function json() {
-		$exports = array(
+		return [
 			'settings'           => $this->settings,
 			'primarySetting'     => $this->primary_setting,
 			'selector'           => $this->selector,
 			'type'               => $this->type,
 			'fallbackRefresh'    => $this->fallback_refresh,
 			'containerInclusive' => $this->container_inclusive,
-		);
-		return $exports;
+		];
 	}
 
 	/**

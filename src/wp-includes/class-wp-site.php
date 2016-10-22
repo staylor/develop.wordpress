@@ -351,8 +351,6 @@ final class WP_Site {
 		 *
 		 * @param stdClass $details The site details.
 		 */
-		$details = apply_filters( 'site_details', $details );
-
-		return $details;
+		return apply_filters( 'site_details', $details );
 	}
 }

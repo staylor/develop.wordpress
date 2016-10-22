@@ -205,7 +205,7 @@ function get_cat_ID( $cat_name ) {
 function get_cat_name( int $cat_id ) {
 	$category = get_term( $cat_id, 'category' );
 	if ( ! $category || is_wp_error( $category ) ) {
-			return '';
+		return '';
 	}
 	return $category->name;
 }
@@ -269,8 +269,7 @@ function get_tags( $args = '' ) {
 	$tags = get_terms( 'post_tag', $args );
 
 	if ( empty( $tags ) ) {
-		$return = [];
-		return $return;
+		return [];
 	}
 
 	/**
@@ -281,8 +280,7 @@ function get_tags( $args = '' ) {
 	 * @param array $tags Array of 'post_tag' term objects.
 	 * @param array $args An array of arguments. @see get_terms()
 	 */
-	$tags = apply_filters( 'get_tags', $tags, $args );
-	return $tags;
+	return apply_filters( 'get_tags', $tags, $args );
 }
 
 /**
