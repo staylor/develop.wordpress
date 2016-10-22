@@ -202,8 +202,7 @@ function get_cat_ID( $cat_name ) {
  * @param int $cat_id Category ID
  * @return string Category name, or an empty string if category doesn't exist.
  */
-function get_cat_name( $cat_id ) {
-	$cat_id = (int) $cat_id;
+function get_cat_name( int $cat_id ) {
 	$category = get_term( $cat_id, 'category' );
 	if ( ! $category || is_wp_error( $category ) ) {
 			return '';

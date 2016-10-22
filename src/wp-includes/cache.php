@@ -458,7 +458,7 @@ class WP_Object_Cache {
 	 * @param string     $group  Optional. The group the key is in. Default 'default'.
 	 * @return false|int False on failure, the item's new value on success.
 	 */
-	public function decr( $key, $offset = 1, $group = 'default' ) {
+	public function decr( $key, int $offset = 1, $group = 'default' ) {
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}
@@ -474,8 +474,6 @@ class WP_Object_Cache {
 		if ( ! is_numeric( $this->cache[ $group ][ $key ] ) ) {
 			$this->cache[ $group ][ $key ] = 0;
 		}
-
-		$offset = (int) $offset;
 
 		$this->cache[ $group ][ $key ] -= $offset;
 
@@ -585,7 +583,7 @@ class WP_Object_Cache {
 	 * @param string     $group  Optional. The group the key is in. Default 'default'.
 	 * @return false|int False on failure, the item's new value on success.
 	 */
-	public function incr( $key, $offset = 1, $group = 'default' ) {
+	public function incr( $key, int $offset = 1, $group = 'default' ) {
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}
@@ -601,8 +599,6 @@ class WP_Object_Cache {
 		if ( ! is_numeric( $this->cache[ $group ][ $key ] ) ) {
 			$this->cache[ $group ][ $key ] = 0;
 		}
-
-		$offset = (int) $offset;
 
 		$this->cache[ $group ][ $key ] += $offset;
 
@@ -733,8 +729,7 @@ class WP_Object_Cache {
 	 *
 	 * @param int $blog_id Blog ID.
 	 */
-	public function switch_to_blog( $blog_id ) {
-		$blog_id = (int) $blog_id;
+	public function switch_to_blog( int $blog_id ) {
 		$this->blog_prefix = $this->multisite ? $blog_id . ':' : '';
 	}
 

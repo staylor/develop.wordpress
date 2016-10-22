@@ -154,8 +154,7 @@ function _usort_terms_by_ID( $a, $b ) {
  * @param int $cat_ID Category ID.
  * @return string|WP_Error Category name on success, WP_Error on failure.
  */
-function get_the_category_by_ID( $cat_ID ) {
-	$cat_ID = (int) $cat_ID;
+function get_the_category_by_ID( int $cat_ID ) {
 	$category = get_term( $cat_ID, 'category' );
 
 	if ( is_wp_error( $category ) ) {

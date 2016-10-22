@@ -2843,12 +2843,7 @@ function wp_imagecreatetruecolor($width, $height) {
  * @param int $max_height     The maximum allowed height.
  * @return array The maximum possible width and height based on the example ratio.
  */
-function wp_expand_dimensions( $example_width, $example_height, $max_width, $max_height ) {
-	$example_width  = (int) $example_width;
-	$example_height = (int) $example_height;
-	$max_width      = (int) $max_width;
-	$max_height     = (int) $max_height;
-
+function wp_expand_dimensions( int $example_width, int $example_height, int $max_width, int $max_height ) {
 	return wp_constrain_dimensions( $example_width * 1000000, $example_height * 1000000, $max_width, $max_height );
 }
 

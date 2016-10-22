@@ -356,11 +356,9 @@ function get_lastcommentmodified($timezone = 'server') {
  * @param int $post_id Optional. Comment amount in post if > 0, else total comments blog wide.
  * @return array The amount of spam, approved, awaiting moderation, and total comments.
  */
-function get_comment_count( $post_id = 0 ) {
+function get_comment_count( int $post_id = 0 ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-
-	$post_id = (int) $post_id;
 
 	$where = '';
 	if ( $post_id > 0 ) {
@@ -665,7 +663,7 @@ function wp_allow_comment( $commentdata, $avoid_die = false ) {
 		if ( true === $avoid_die ) {
 			return new WP_Error( 'comment_duplicate', __( 'Duplicate comment detected; it looks as though you&#8217;ve already said that!' ), 409 );
 		}
-		
+
 		if ( wp_doing_ajax() ) {
 			die( __('Duplicate comment detected; it looks as though you&#8217;ve already said that!') );
 		}
@@ -1218,9 +1216,7 @@ function wp_blacklist_check($author, $email, $url, $comment, $user_ip, $user_age
  * @param int $post_id Optional. Post ID.
  * @return object|array Comment stats.
  */
-function wp_count_comments( $post_id = 0 ) {
-	$post_id = (int) $post_id;
-
+function wp_count_comments( int $post_id = 0 ) {
 	/**
 	 * Filters the comments count for a given post.
 	 *
@@ -2282,19 +2278,20 @@ function wp_update_comment_count($post_id, $do_deferred=false) {
  * @param int $post_id Post ID
  * @return bool True on success, false on '0' $post_id or if post with ID does not exist.
  */
-function wp_update_comment_count_now($post_id) {
+function wp_update_comment_count_now( int $post_id ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-	$post_id = (int) $post_id;
-	if ( !$post_id ) {
-			return false;
+
+	if ( ! $post_id ) {
+		return false;
 	}
 
 	wp_cache_delete( 'comments-0', 'counts' );
 	wp_cache_delete( "comments-{$post_id}", 'counts' );
 
-	if ( !$post = get_post($post_id) ) {
-			return false;
+	$post = get_post( $post_id );
+	if ( ! $post ) {
+		return false;
 	}
 
 	$old = (int) $post->comment_count;

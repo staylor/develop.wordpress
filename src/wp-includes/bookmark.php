@@ -70,8 +70,7 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
  * @param string $context Optional. The context of how the field will be used.
  * @return string|WP_Error
  */
-function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
-	$bookmark = (int) $bookmark;
+function get_bookmark_field( $field, int $bookmark, $context = 'display' ) {
 	$bookmark = get_bookmark( $bookmark );
 
 	if ( is_wp_error($bookmark) ) {

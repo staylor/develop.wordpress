@@ -701,10 +701,7 @@ function get_transient( $transient ) {
  * @param int    $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
  * @return bool False if value was not set and true if value was set.
  */
-function set_transient( $transient, $value, $expiration = 0 ) {
-
-	$expiration = (int) $expiration;
-
+function set_transient( $transient, $value, int $expiration = 0 ) {
 	/**
 	 * Filters a specific transient before its value is set.
 	 *
@@ -1099,16 +1096,9 @@ function update_site_option( $option, $value ) {
  * @param mixed    $default    Optional. Value to return if the option doesn't exist. Default false.
  * @return mixed Value set for the option.
  */
-function get_network_option( $network_id, $option, $default = false ) {
-	global $current_site;
+function get_network_option( int $network_id, $option, $default = false ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-
-	if ( $network_id && ! is_numeric( $network_id ) ) {
-		return false;
-	}
-
-	$network_id = (int) $network_id;
 
 	// Fallback to the current network if a network ID is not specified.
 	if ( ! $network_id ) {
@@ -1223,16 +1213,9 @@ function get_network_option( $network_id, $option, $default = false ) {
  * @param mixed  $value      Option value, can be anything. Expected to not be SQL-escaped.
  * @return bool False if option was not added and true if option was added.
  */
-function add_network_option( $network_id, $option, $value ) {
-	global $current_site;
+function add_network_option( int $network_id, $option, $value ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-
-	if ( $network_id && ! is_numeric( $network_id ) ) {
-		return false;
-	}
-
-	$network_id = (int) $network_id;
 
 	// Fallback to the current network if a network ID is not specified.
 	if ( ! $network_id ) {
@@ -1339,16 +1322,10 @@ function add_network_option( $network_id, $option, $value ) {
  * @param string $option     Name of option to remove. Expected to not be SQL-escaped.
  * @return bool True, if succeed. False, if failure.
  */
-function delete_network_option( $network_id, $option ) {
+function delete_network_option( int $network_id, $option ) {
 	global $current_site;
 	$app = getApp();
 	$wpdb = $app['db'];
-
-	if ( $network_id && ! is_numeric( $network_id ) ) {
-		return false;
-	}
-
-	$network_id = (int) $network_id;
 
 	// Fallback to the current network if a network ID is not specified.
 	if ( ! $network_id ) {
@@ -1429,16 +1406,9 @@ function delete_network_option( $network_id, $option ) {
  * @param mixed    $value      Option value. Expected to not be SQL-escaped.
  * @return bool False if value was not updated and true if value was updated.
  */
-function update_network_option( $network_id, $option, $value ) {
-	global $current_site;
+function update_network_option( int $network_id, $option, $value ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-
-	if ( $network_id && ! is_numeric( $network_id ) ) {
-		return false;
-	}
-
-	$network_id = (int) $network_id;
 
 	// Fallback to the current network if a network ID is not specified.
 	if ( ! $network_id ) {
@@ -1666,7 +1636,7 @@ function get_site_transient( $transient ) {
  * @param int    $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
  * @return bool False if value was not set and true if value was set.
  */
-function set_site_transient( $transient, $value, $expiration = 0 ) {
+function set_site_transient( $transient, $value, int $expiration = 0 ) {
 
 	/**
 	 * Filters the value of a specific site transient before it is set.
@@ -1680,8 +1650,6 @@ function set_site_transient( $transient, $value, $expiration = 0 ) {
 	 * @param string $transient Transient name.
 	 */
 	$value = apply_filters( "pre_set_site_transient_{$transient}", $value, $transient );
-
-	$expiration = (int) $expiration;
 
 	/**
 	 * Filters the expiration for a site transient before its value is set.

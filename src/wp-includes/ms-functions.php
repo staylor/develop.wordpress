@@ -207,11 +207,10 @@ function add_user_to_blog( $blog_id, $user_id, $role ) {
  * @param string $reassign Optional. A user to whom to reassign posts.
  * @return true|WP_Error
  */
-function remove_user_from_blog($user_id, $blog_id = '', $reassign = '') {
+function remove_user_from_blog( int $user_id, int $blog_id = 0, $reassign = '') {
 	$app = getApp();
 	$wpdb = $app['db'];
-	switch_to_blog($blog_id);
-	$user_id = (int) $user_id;
+	switch_to_blog( $blog_id );
 	/**
 	 * Fires before a user is removed from a site.
 	 *
@@ -1129,7 +1128,7 @@ function wpmu_create_user( $user_name, $password, $email ) {
  * @param int    $site_id Optional. Only relevant on multi-network installs.
  * @return int|WP_Error Returns WP_Error object on failure, int $blog_id on success
  */
-function wpmu_create_blog( $domain, $path, $title, $user_id, $meta = [], $site_id = 1 ) {
+function wpmu_create_blog( $domain, $path, $title, int $user_id, $meta = [], $site_id = 1 ) {
 	$defaults = array(
 		'public' => 0,
 		'WPLANG' => get_site_option( 'WPLANG' ),
@@ -1139,19 +1138,18 @@ function wpmu_create_blog( $domain, $path, $title, $user_id, $meta = [], $site_i
 	$domain = preg_replace( '/\s+/', '', sanitize_user( $domain, true ) );
 
 	if ( is_subdomain_install() ) {
-			$domain = str_replace( '@', '', $domain );
+		$domain = str_replace( '@', '', $domain );
 	}
 
 	$title = strip_tags( $title );
-	$user_id = (int) $user_id;
 
 	if ( empty($path) ) {
-			$path = '/';
+		$path = '/';
 	}
 
 	// Check if the domain has been used already. We should return an error message.
 	if ( domain_exists($domain, $path, $site_id) ) {
-			return new WP_Error( 'blog_taken', __( 'Sorry, that site already exists!' ) );
+		return new WP_Error( 'blog_taken', __( 'Sorry, that site already exists!' ) );
 	}
 
 	if ( ! wp_installing() ) {
@@ -1159,7 +1157,7 @@ function wpmu_create_blog( $domain, $path, $title, $user_id, $meta = [], $site_i
 	}
 
 	if ( ! $blog_id = insert_blog($domain, $path, $site_id) ) {
-			return new WP_Error('insert_blog', __('Could not create site.'));
+		return new WP_Error('insert_blog', __('Could not create site.'));
 	}
 
 	switch_to_blog($blog_id);
@@ -1346,16 +1344,15 @@ function domain_exists($domain, $path, $site_id = 1) {
  * @param int    $site_id Unless you're running a multi-network install, be sure to set this value to 1.
  * @return int|false The ID of the new row
  */
-function insert_blog($domain, $path, $site_id) {
+function insert_blog( $domain, $path, int $site_id ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	$path = trailingslashit($path);
-	$site_id = (int) $site_id;
+	$path = trailingslashit( $path );
 
 	$result = $wpdb->insert( $wpdb->blogs, array('site_id' => $site_id, 'domain' => $domain, 'path' => $path, 'registered' => current_time('mysql')) );
 	if ( ! $result ) {
-			return false;
+		return false;
 	}
 
 	$blog_id = $wpdb->insert_id;
@@ -1378,12 +1375,9 @@ function insert_blog($domain, $path, $site_id) {
  * @param int    $blog_id    The value returned by insert_blog().
  * @param string $blog_title The title of the new site.
  */
-function install_blog( $blog_id, $blog_title = '' ) {
+function install_blog( int $blog_id, $blog_title = '' ) {
 	$app = WP\getApp();
 	$wpdb = $app['db'];
-
-	// Cast for security
-	$blog_id = (int) $blog_id;
 
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 

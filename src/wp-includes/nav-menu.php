@@ -364,13 +364,10 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = [] ) {
  * @param array $menu_item_data  The menu item's data.
  * @return int|WP_Error The menu item's database ID or WP_Error object on failure.
  */
-function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0, $menu_item_data = [] ) {
-	$menu_id = (int) $menu_id;
-	$menu_item_db_id = (int) $menu_item_db_id;
-
+function wp_update_nav_menu_item( int $menu_id = 0, int $menu_item_db_id = 0, $menu_item_data = [] ) {
 	// make sure that we don't convert non-nav_menu_item objects into nav_menu_item objects
 	if ( ! empty( $menu_item_db_id ) && ! is_nav_menu_item( $menu_item_db_id ) ) {
-			return new WP_Error( 'update_nav_menu_item_failed', __( 'The given object ID is not that of a menu item.' ) );
+		return new WP_Error( 'update_nav_menu_item_failed', __( 'The given object ID is not that of a menu item.' ) );
 	}
 
 	$menu = wp_get_nav_menu_object( $menu_id );
@@ -437,12 +434,12 @@ function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0, $menu_item
 		}
 
 		if ( $args['menu-item-title'] == $original_title ) {
-					$args['menu-item-title'] = '';
+			$args['menu-item-title'] = '';
 		}
 
 		// hack to get wp to create a post object when too many properties are empty
 		if ( '' ==  $args['menu-item-title'] && '' == $args['menu-item-description'] ) {
-					$args['menu-item-description'] = ' ';
+			$args['menu-item-description'] = ' ';
 		}
 	}
 
@@ -465,7 +462,7 @@ function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0, $menu_item
 		$post['post_status'] = 'publish' == $args['menu-item-status'] ? 'publish' : 'draft';
 		$menu_item_db_id = wp_insert_post( $post );
 		if ( ! $menu_item_db_id	|| is_wp_error( $menu_item_db_id ) ) {
-					return $menu_item_db_id;
+			return $menu_item_db_id;
 		}
 
 		/**
@@ -899,8 +896,7 @@ function wp_setup_nav_menu_item( $menu_item ) {
  * @param string $taxonomy    If $object_type is "taxonomy", $taxonomy is the name of the tax that $object_id belongs to
  * @return array The array of menu item IDs; empty array if none;
  */
-function wp_get_associated_nav_menu_items( $object_id = 0, $object_type = 'post_type', $taxonomy = '' ) {
-	$object_id = (int) $object_id;
+function wp_get_associated_nav_menu_items( int $object_id = 0, $object_type = 'post_type', $taxonomy = '' ) {
 	$menu_item_ids = [];
 
 	$query = new WP_Query;
@@ -943,9 +939,7 @@ function wp_get_associated_nav_menu_items( $object_id = 0, $object_type = 'post_
  * @param int $object_id The ID of the original object being trashed.
  *
  */
-function _wp_delete_post_menu_item( $object_id = 0 ) {
-	$object_id = (int) $object_id;
-
+function _wp_delete_post_menu_item( int $object_id = 0 ) {
 	$menu_item_ids = wp_get_associated_nav_menu_items( $object_id, 'post_type' );
 
 	foreach ( (array) $menu_item_ids as $menu_item_id ) {
@@ -963,9 +957,7 @@ function _wp_delete_post_menu_item( $object_id = 0 ) {
  * @param int    $tt_id     Term taxonomy ID. Unused.
  * @param string $taxonomy  Taxonomy slug.
  */
-function _wp_delete_tax_menu_item( $object_id = 0, $tt_id, $taxonomy ) {
-	$object_id = (int) $object_id;
-
+function _wp_delete_tax_menu_item( int $object_id = 0, $tt_id, $taxonomy ) {
 	$menu_item_ids = wp_get_associated_nav_menu_items( $object_id, 'taxonomy', $taxonomy );
 
 	foreach ( (array) $menu_item_ids as $menu_item_id ) {

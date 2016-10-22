@@ -265,8 +265,7 @@ function get_blog_details( $fields = null, $get_all = true ) {
  *
  * @param int $blog_id Optional. Blog ID. Defaults to current blog.
  */
-function refresh_blog_details( $blog_id = 0 ) {
-	$blog_id = (int) $blog_id;
+function refresh_blog_details( int $blog_id = 0 ) {
 	if ( ! $blog_id ) {
 		$blog_id = get_current_blog_id();
 	}
@@ -633,15 +632,13 @@ function get_sites( $args = [] ) {
  * @param mixed  $default Optional. Default value to return if the option does not exist.
  * @return mixed Value set for the option.
  */
-function get_blog_option( $id, $option, $default = false ) {
-	$id = (int) $id;
-
+function get_blog_option( int $id, $option, $default = false ) {
 	if ( empty( $id ) ) {
-			$id = get_current_blog_id();
+		$id = get_current_blog_id();
 	}
 
 	if ( get_current_blog_id() == $id ) {
-			return get_option( $option, $default );
+		return get_option( $option, $default );
 	}
 
 	switch_to_blog( $id );
@@ -680,15 +677,13 @@ function get_blog_option( $id, $option, $default = false ) {
  * @param mixed  $value  Optional. Option value, can be anything. Expected to not be SQL-escaped.
  * @return bool False if option was not added and true if option was added.
  */
-function add_blog_option( $id, $option, $value ) {
-	$id = (int) $id;
-
+function add_blog_option( int $id, $option, $value ) {
 	if ( empty( $id ) ) {
-			$id = get_current_blog_id();
+		$id = get_current_blog_id();
 	}
 
 	if ( get_current_blog_id() == $id ) {
-			return add_option( $option, $value );
+		return add_option( $option, $value );
 	}
 
 	switch_to_blog( $id );
@@ -707,15 +702,13 @@ function add_blog_option( $id, $option, $value ) {
  * @param string $option Name of option to remove. Expected to not be SQL-escaped.
  * @return bool True, if option is successfully deleted. False on failure.
  */
-function delete_blog_option( $id, $option ) {
-	$id = (int) $id;
-
+function delete_blog_option( int $id, $option ) {
 	if ( empty( $id ) ) {
-			$id = get_current_blog_id();
+		$id = get_current_blog_id();
 	}
 
 	if ( get_current_blog_id() == $id ) {
-			return delete_option( $option );
+		return delete_option( $option );
 	}
 
 	switch_to_blog( $id );
@@ -736,15 +729,13 @@ function delete_blog_option( $id, $option ) {
  * @param mixed  $deprecated Not used.
  * @return bool True on success, false on failure.
  */
-function update_blog_option( $id, $option, $value, $deprecated = null ) {
-	$id = (int) $id;
-
+function update_blog_option( int $id, $option, $value, $deprecated = null ) {
 	if ( null !== $deprecated  ) {
-			_deprecated_argument( __FUNCTION__, '3.1.0' );
+		_deprecated_argument( __FUNCTION__, '3.1.0' );
 	}
 
 	if ( get_current_blog_id() == $id ) {
-			return update_option( $option, $value );
+		return update_option( $option, $value );
 	}
 
 	switch_to_blog( $id );

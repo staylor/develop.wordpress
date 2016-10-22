@@ -736,8 +736,7 @@ function post_comments_feed_link( $link_text = '', $post_id = '', $feed = '' ) {
  * @param string $feed      Optional. Feed type. Default empty.
  * @return string Link to the feed for the author specified by $author_id.
  */
-function get_author_feed_link( $author_id, $feed = '' ) {
-	$author_id = (int) $author_id;
+function get_author_feed_link( int $author_id, $feed = '' ) {
 	$permalink_structure = get_option('permalink_structure');
 
 	if ( empty($feed) ) {
@@ -2130,9 +2129,7 @@ function adjacent_post_link( $format, $link, $in_same_term = false, $excluded_te
  * 	                    Otherwise, prepares the URL with esc_url_raw().
  * @return string The link URL for the given page number.
  */
-function get_pagenum_link($pagenum = 1, $escape = true ) {
-	$pagenum = (int) $pagenum;
-
+function get_pagenum_link( int $pagenum = 1, $escape = true ) {
 	$request = remove_query_arg( 'paged' );
 
 	$home_root = parse_url(home_url());
@@ -2675,24 +2672,23 @@ function _navigation_markup( $links, $class = 'posts-navigation', $screen_reader
  * @param int $max_page Optional. The maximum number of comment pages. Default 0.
  * @return string The comments page number link URL.
  */
-function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
-	$pagenum = (int) $pagenum;
+function get_comments_pagenum_link( int $pagenum = 1, $max_page = 0 ) {
 	$app = getApp();
 	$result = get_permalink();
 
 	if ( 'newest' == get_option('default_comments_page') ) {
 		if ( $pagenum != $max_page ) {
 			if ( $app['rewrite']->using_permalinks() ) {
-							$result = user_trailingslashit( trailingslashit($result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged');
+				$result = user_trailingslashit( trailingslashit($result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged');
 			} else {
-							$result = add_query_arg( 'cpage', $pagenum, $result );
+				$result = add_query_arg( 'cpage', $pagenum, $result );
 			}
 		}
 	} elseif ( $pagenum > 1 ) {
 		if ( $app['rewrite']->using_permalinks() ) {
-					$result = user_trailingslashit( trailingslashit($result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged');
+			$result = user_trailingslashit( trailingslashit($result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged');
 		} else {
-					$result = add_query_arg( 'cpage', $pagenum, $result );
+			$result = add_query_arg( 'cpage', $pagenum, $result );
 		}
 	}
 

@@ -122,15 +122,13 @@ final class WP_Term {
 	 *                                there's insufficient data to distinguish which term is intended.
 	 *                                False for other failures.
 	 */
-	public static function get_instance( $term_id, $taxonomy = null ) {
+	public static function get_instance( int $term_id, $taxonomy = null ) {
 		$app = getApp();
 		$wpdb = $app['db'];
 
 		if ( ! is_numeric( $term_id ) || $term_id != floor( $term_id ) || ! $term_id ) {
 			return false;
 		}
-
-		$term_id = (int) $term_id;
 
 		$_term = wp_cache_get( $term_id, 'terms' );
 

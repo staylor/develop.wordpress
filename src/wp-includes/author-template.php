@@ -297,17 +297,16 @@ function the_author_posts_link( $deprecated = '' ) {
  * @param string $author_nicename Optional. The author's nicename (slug). Default empty.
  * @return string The URL to the author's page.
  */
-function get_author_posts_url( $author_id, $author_nicename = '' ) {
+function get_author_posts_url( int $author_id, $author_nicename = '' ) {
 	$app = getApp();
-	$auth_ID = (int) $author_id;
 	$link = $app['rewrite']->get_author_permastruct();
 
 	if ( empty($link) ) {
 		$file = home_url( '/' );
-		$link = $file . '?author=' . $auth_ID;
+		$link = $file . '?author=' . $author_id;
 	} else {
 		if ( '' == $author_nicename ) {
-			$user = get_userdata($author_id);
+			$user = get_userdata( $author_id );
 			if ( !empty($user->user_nicename) ) {
 				$author_nicename = $user->user_nicename;
 			}

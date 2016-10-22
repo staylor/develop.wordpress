@@ -98,11 +98,10 @@ class WP_Network {
 	 * @param int $network_id The ID of the network to retrieve.
 	 * @return WP_Network|bool The network's object if found. False if not.
 	 */
-	public static function get_instance( $network_id ) {
+	public static function get_instance( int $network_id ) {
 		$app = getApp();
 		$wpdb = $app['db'];
 
-		$network_id = (int) $network_id;
 		if ( ! $network_id ) {
 			return false;
 		}

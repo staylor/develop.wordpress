@@ -1007,7 +1007,7 @@ class wpdb {
 	public function get_blog_prefix( $blog_id = null ) {
 		if ( is_multisite() ) {
 			if ( null === $blog_id ) {
-							$blog_id = $this->blogid;
+				$blog_id = $this->blogid;
 			}
 			$blog_id = (int) $blog_id;
 			if ( defined( 'MULTISITE' ) && ( 0 == $blog_id || 1 == $blog_id ) ) {
