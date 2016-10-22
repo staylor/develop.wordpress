@@ -6,8 +6,21 @@
  * @subpackage Administration
  */
 
-if ( ! defined( 'IFRAME_REQUEST' ) && isset( $_GET['action'] ) && in_array( $_GET['action'], array( 'update-selected', 'activate-plugin', 'update-selected-themes' ) ) )
+require_once( dirname( __DIR__ ) . '/vendor/autoload.php' );
+
+$app = \WP\getApp();
+$_get = $app['request']->query;
+
+if (
+	! defined( 'IFRAME_REQUEST' ) &&
+	$_get->get( 'action' ) &&
+	in_array( $_get->get( 'action' ), [
+		'update-selected',
+		'activate-plugin',
+		'update-selected-themes'
+	] ) ) {
 	define( 'IFRAME_REQUEST', true );
+}
 
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );

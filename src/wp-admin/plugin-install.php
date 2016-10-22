@@ -5,11 +5,20 @@
  * @package WordPress
  * @subpackage Administration
  */
-// TODO route this pages via a specific iframe handler instead of the do_action below
-if ( !defined( 'IFRAME_REQUEST' ) && isset( $_GET['tab'] ) && ( 'plugin-information' == $_GET['tab'] ) )
-	define( 'IFRAME_REQUEST', true );
-
+require_once( dirname( __DIR__ ) . '/vendor/autoload.php' );
 use WP\Install\Admin\Help as InstallHelp;
+
+$app = \WP\getApp();
+$_get = $app['request']->query;
+
+// TODO route this pages via a specific iframe handler instead of the do_action below
+if (
+	! defined( 'IFRAME_REQUEST' ) &&
+	$_get->get( 'tab' ) &&
+	'plugin-information' === $_get->get( 'tab' )
+) {
+	define( 'IFRAME_REQUEST', true );
+}
 
 /**
  * WordPress Administration Bootstrap.

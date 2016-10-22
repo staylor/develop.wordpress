@@ -6,6 +6,11 @@
  * @subpackage Administration
  */
 
+require_once( dirname( __DIR__ ) . '/vendor/autoload.php' );
+
+$app = \WP\getApp();
+$_get = $app['request']->query;
+
 /**
  * In WordPress Administration Screens
  *
@@ -25,8 +30,9 @@ if ( ! WP_NETWORK_ADMIN && ! WP_USER_ADMIN ) {
 	define('WP_BLOG_ADMIN', true);
 }
 
-if ( isset($_GET['import']) && !defined('WP_LOAD_IMPORTERS') )
+if ( $_get->get( 'import' ) && ! defined( 'WP_LOAD_IMPORTERS' ) ) {
 	define('WP_LOAD_IMPORTERS', true);
+}
 
 require_once(dirname( __DIR__ ) . '/wp-load.php');
 

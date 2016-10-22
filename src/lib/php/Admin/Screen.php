@@ -1007,8 +1007,9 @@ final class Screen {
 
 		$welcome_checked = false;
 		if ( $show_welcome ) {
-			if ( isset( $_GET['welcome'] ) ) {
-				$welcome_checked = empty( $_GET['welcome'] ) ? 0 : 1;
+			$_get = $this->app['request']->query;
+			if ( $_get->get( 'welcome' ) ) {
+				$welcome_checked = empty( $_get->get( 'welcome' ) ) ? 0 : 1;
 				update_user_meta( get_current_user_id(), 'show_welcome_panel', $welcome_checked );
 			} else {
 				$welcome_checked = get_user_meta( get_current_user_id(), 'show_welcome_panel', true );
