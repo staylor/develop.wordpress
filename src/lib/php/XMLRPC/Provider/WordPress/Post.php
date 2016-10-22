@@ -216,11 +216,12 @@ trait Post {
 			return new Error( 404, __( 'Invalid post ID.' ) );
 		}
 
-		if ( isset( $content_struct['if_not_modified_since'] ) ) {
+		if (
+			isset( $content_struct['if_not_modified_since'] ) &&
 			// If the post has been modified since the date provided, return an error.
-			if ( mysql2date( 'U', $post['post_modified_gmt'] ) > $content_struct['if_not_modified_since']->getTimestamp() ) {
-				return new Error( 409, __( 'There is a revision of this post that is more recent.' ) );
-			}
+			mysql2date( 'U', $post['post_modified_gmt'] ) > $content_struct['if_not_modified_since']->getTimestamp()
+		) {
+			return new Error( 409, __( 'There is a revision of this post that is more recent.' ) );
 		}
 
 		// Convert the date field back to IXR form.
@@ -549,16 +550,19 @@ trait Post {
 		$formats = get_post_format_strings();
 
 		// find out if they want a list of currently supports formats
-		if ( isset( $args[3] ) && is_array( $args[3] ) ) {
-			if ( $args[3]['show-supported'] && current_theme_supports( 'post-formats' ) ) {
-				$supported = get_theme_support( 'post-formats' );
+		if (
+			isset( $args[3] ) &&
+			is_array( $args[3] ) &&
+			$args[3]['show-supported'] &&
+			current_theme_supports( 'post-formats' )
+		) {
+			$supported = get_theme_support( 'post-formats' );
 
-				$data = [];
-				$data['all'] = $formats;
-				$data['supported'] = $supported[0];
+			$data = [];
+			$data['all'] = $formats;
+			$data['supported'] = $supported[0];
 
-				$formats = $data;
-			}
+			$formats = $data;
 		}
 
 		return $formats;

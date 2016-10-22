@@ -8,6 +8,7 @@ namespace WP\Admin;
  * @since 4.4.0
  */
 
+use WP\Magic\Request;
 use WP\Template\MustacheTrait;
 use function WP\getApp;
 
@@ -18,6 +19,7 @@ use function WP\getApp;
  */
 final class Screen {
 	use MustacheTrait;
+	use Request;
 
 	protected $app;
 	/**
@@ -373,8 +375,6 @@ final class Screen {
 	 * @since 3.3.0
 	 */
 	private function __construct() {
-		$this->app = getApp();
-
 		$this->setConfig( [
 			'helpers' => [
 				'l10n' => new L10N()
@@ -1008,9 +1008,8 @@ final class Screen {
 
 		$welcome_checked = false;
 		if ( $show_welcome ) {
-			$_get = $this->app['request']->query;
-			if ( $_get->get( 'welcome' ) ) {
-				$welcome_checked = empty( $_get->get( 'welcome' ) ) ? 0 : 1;
+			if ( $this->_get->get( 'welcome' ) ) {
+				$welcome_checked = empty( $this->_get->get( 'welcome' ) ) ? 0 : 1;
 				update_user_meta( get_current_user_id(), 'show_welcome_panel', $welcome_checked );
 			} else {
 				$welcome_checked = get_user_meta( get_current_user_id(), 'show_welcome_panel', true );
@@ -1194,8 +1193,7 @@ final class Screen {
 			return;
 		}
 
-		$app = getApp();
-		$mode = $app->get( 'mode' );
+		$mode = $this->app->get( 'mode' );
 
 		// This needs a submit button
 		add_filter( 'screen_options_show_submit', '__return_true' );

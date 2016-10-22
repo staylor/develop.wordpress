@@ -10,7 +10,7 @@ class Media extends View {
 		parent::__construct( $app );
 
 		$this->help = new Help();
-		$this->handler = new FormHandler( $app );
+		$this->handler = new FormHandler();
 		$this->setL10n( new L10N() );
 	}
 

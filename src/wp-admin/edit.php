@@ -18,10 +18,8 @@ if ( ! in_array( $typenow, get_post_types( array( 'show_ui' => true ) ) ) ) {
 	wp_die( __( 'Sorry, you are not allowed to edit posts in this post type.' ) );
 }
 
-if ( 'attachment' === $typenow ) {
-	if ( wp_redirect( admin_url( 'upload.php' ) ) ) {
-		exit;
-	}
+if ( 'attachment' === $typenow && wp_redirect( admin_url( 'upload.php' ) ) ) {
+	exit();
 }
 
 $post_type_object = get_post_type_object( $typenow );

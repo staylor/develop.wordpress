@@ -37,6 +37,9 @@ trait Request {
 
 		case '_server':
 			return $app['request']->server;
+
+		default:
+			throw new \LogicException( $name . ' does not exist on ' . static::class );
 		}
 	}
 }

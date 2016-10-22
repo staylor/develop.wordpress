@@ -9,7 +9,7 @@ class Widget extends View {
 	public function __construct( App $app ) {
 		parent::__construct( $app );
 
-		$this->handler = new FormHandler( $app );
+		$this->handler = new FormHandler();
 		$this->help = new Help();
 		$this->setL10n( new L10N() );
 	}

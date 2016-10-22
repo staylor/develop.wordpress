@@ -145,17 +145,17 @@ class Styles extends Dependencies {
 			$ver = $ver ? $ver . '&amp;' . $this->args[ $handle ] : $this->args[ $handle ];
 		}
 
-		if ( $this->do_concat ) {
-			if ( $this->in_default_dir( $obj->src ) &&
-				! isset( $obj->extra[ 'conditional' ] ) &&
-				! isset( $obj->extra[ 'alt' ] )
-			) {
-				$this->concat .= $handle . ',';
+		if (
+			$this->do_concat &&
+			$this->in_default_dir( $obj->src ) &&
+			! isset( $obj->extra[ 'conditional' ] ) &&
+			! isset( $obj->extra[ 'alt' ] )
+		) {
+			$this->concat .= $handle . ',';
 
-				$this->print_code .= $this->print_inline_style( $handle, false );
+			$this->print_code .= $this->print_inline_style( $handle, false );
 
-				return true;
-			}
+			return true;
 		}
 
 		if ( isset( $obj->args ) ) {

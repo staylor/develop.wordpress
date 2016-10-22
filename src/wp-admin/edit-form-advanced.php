@@ -305,20 +305,24 @@ if ( empty( $stati ) ) {
 }
 $stati[] = 'private';
 
-if ( in_array( get_post_status( $post ), $stati ) ) {
+if (
+	in_array( get_post_status( $post ), $stati ) &&
 	// If the post type support comments, or the post has comments, allow the
 	// Comments meta box.
-	if ( comments_open( $post ) || pings_open( $post ) || $post->comment_count > 0 || post_type_supports( $post_type, 'comments' ) ) {
-		add_meta_box( 'commentsdiv', __( 'Comments' ), 'post_comment_meta_box', null, 'normal', 'core' );
-	}
+	( comments_open( $post ) || pings_open( $post ) || $post->comment_count > 0 || post_type_supports( $post_type, 'comments' ) )
+) {
+	add_meta_box( 'commentsdiv', __( 'Comments' ), 'post_comment_meta_box', null, 'normal', 'core' );
 }
 
-if ( ! ( 'pending' == get_post_status( $post ) && ! current_user_can( $post_type_object->cap->publish_posts ) ) )
+if ( ! ( 'pending' == get_post_status( $post ) && ! current_user_can( $post_type_object->cap->publish_posts ) ) ) {
 	add_meta_box('slugdiv', __('Slug'), 'post_slug_meta_box', null, 'normal', 'core');
+}
 
-if ( post_type_supports($post_type, 'author') ) {
-	if ( is_super_admin() || current_user_can( $post_type_object->cap->edit_others_posts ) )
-		add_meta_box('authordiv', __('Author'), 'post_author_meta_box', null, 'normal', 'core');
+if (
+	post_type_supports($post_type, 'author') &&
+	( is_super_admin() || current_user_can( $post_type_object->cap->edit_others_posts ) )
+) {
+	add_meta_box('authordiv', __('Author'), 'post_author_meta_box', null, 'normal', 'core');
 }
 
 /**
