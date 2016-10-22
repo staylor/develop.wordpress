@@ -151,7 +151,8 @@ $whitelist_options = apply_filters( 'whitelist_options', $whitelist_options );
  * If $_GET['action'] == 'update' we are saving settings sent from a settings page
  */
 if ( 'update' == $action ) {
-	if ( 'options' == $option_page && ! $_post->get( 'option_page' ) ) { // This is for back compat and will eventually be removed.
+	// This is for back compat and will eventually be removed.
+	if ( 'options' == $option_page && ! $_post->get( 'option_page' ) ) {
 		$unregistered = true;
 		check_admin_referer( 'update-options' );
 	} else {
@@ -184,7 +185,8 @@ if ( 'update' == $action ) {
 		}
 
 		// Handle translation install.
-		if ( ! empty( $_post->get( 'WPLANG' ) ) && ( ! is_multisite() || is_super_admin() ) ) { // @todo: Skip if already installed
+		// @todo: Skip if already installed
+		if ( ! empty( $_post->get( 'WPLANG' ) ) && ( ! is_multisite() || is_super_admin() ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
 			if ( wp_can_install_language_pack() ) {

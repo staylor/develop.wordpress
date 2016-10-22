@@ -1332,8 +1332,10 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		// Get the default image if there is one.
 		$default = get_theme_support( 'custom-header', 'default-image' );
 
-		if ( ! $default ) { // If not,
-			return $this->default_headers; // easy peasy.
+		// If not,
+		if ( ! $default ) {
+			// easy peasy.
+			return $this->default_headers;
 		}
 
 		$default = sprintf( $default, get_template_directory_uri(), get_stylesheet_directory_uri() );

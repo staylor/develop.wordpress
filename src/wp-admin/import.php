@@ -31,7 +31,8 @@ if ( current_user_can( 'install_plugins' ) ) {
 // Detect and redirect invalid importers like 'movabletype', which is registered as 'mt'
 if ( $_get->get( 'invalid' ) && isset( $popular_importers[ $_get->get( 'invalid' ) ] ) ) {
 	$importer_id = $popular_importers[ $_get->get( 'invalid' ) ]['importer-id'];
-	if ( $importer_id != $_get->get( 'invalid' ) ) { // Prevent redirect loops.
+	// Prevent redirect loops.
+	if ( $importer_id != $_get->get( 'invalid' ) ) {
 		wp_redirect( admin_url( 'admin.php?import=' . $importer_id ) );
 		exit;
 	}

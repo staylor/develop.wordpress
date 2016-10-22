@@ -121,7 +121,8 @@ default :
 	break;
 }
 
-if ( $comment->comment_approved != '0' ) { // if not unapproved
+// if not unapproved
+if ( $comment->comment_approved != '0' ) {
 	$message = '';
 	switch ( $comment->comment_approved ) {
 	case '1' :

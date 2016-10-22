@@ -451,11 +451,15 @@ class WP_Upgrader {
 		$remote_destination = $wp_filesystem->find_folder( $local_destination );
 
 		//Locate which directory to copy to the new folder, This is based on the actual folder holding the files.
-		if ( 1 == count( $source_files ) && $wp_filesystem->is_dir( trailingslashit( $args['source'] ) . $source_files[0] . '/' ) ) { //Only one folder? Then we want its contents.
+		//Only one folder? Then we want its contents.
+		if ( 1 == count( $source_files ) && $wp_filesystem->is_dir( trailingslashit( $args['source'] ) . $source_files[0] . '/' ) ) {
 			$source = trailingslashit( $args['source'] ) . trailingslashit( $source_files[0] );
 		} elseif ( count( $source_files ) == 0 ) {
-			return new WP_Error( 'incompatible_archive_empty', $this->strings['incompatible_archive'], $this->strings['no_files'] ); // There are no files?
-		} else { // It's only a single file, the upgrader will use the folder name of this file as the destination folder. Folder name is based on zip filename.
+			// There are no files?
+			return new WP_Error( 'incompatible_archive_empty', $this->strings['incompatible_archive'], $this->strings['no_files'] );
+
+		// It's only a single file, the upgrader will use the folder name of this file as the destination folder. Folder name is based on zip filename.
+		} else {
 			$source = trailingslashit( $args['source'] );
 		}
 

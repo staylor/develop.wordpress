@@ -585,7 +585,8 @@ function unzip_file($file, $to) {
 	$to = trailingslashit($to);
 
 	// Determine any parent dir's needed (of the upgrade directory)
-	if ( ! $wp_filesystem->is_dir($to) ) { //Only do parents if no children exist
+	// Only do parents if no children exist
+	if ( ! $wp_filesystem->is_dir($to) ) {
 		$path = preg_split('![/\\\]!', untrailingslashit($to));
 		for ( $i = count($path); $i >= 0; $i-- ) {
 			if ( empty($path[$i]) )
@@ -1132,11 +1133,13 @@ function request_filesystem_credentials( $form_post, $type = '', $error = false,
 
 	if ( ( defined( 'FTP_SSH' ) && FTP_SSH ) || ( defined( 'FS_METHOD' ) && 'ssh2' == FS_METHOD ) ) {
 		$credentials['connection_type'] = 'ssh';
-	} elseif ( ( defined( 'FTP_SSL' ) && FTP_SSL ) && 'ftpext' == $type ) { //Only the FTP Extension understands SSL
+	// Only the FTP Extension understands SSL
+	} elseif ( ( defined( 'FTP_SSL' ) && FTP_SSL ) && 'ftpext' == $type ) {
 		$credentials['connection_type'] = 'ftps';
 	} elseif ( $_post->get( 'connection_type' ) ) {
 		$credentials['connection_type'] = wp_unslash( $_post->get( 'connection_type' ) );
-	} elseif ( ! isset( $credentials['connection_type'] ) ) { //All else fails (And it's not defaulted to something else saved), Default to FTP
+	// All else fails (And it's not defaulted to something else saved), Default to FTP
+	} elseif ( ! isset( $credentials['connection_type'] ) ) {
 		$credentials['connection_type'] = 'ftp';
 	}
 	if ( ! $error &&

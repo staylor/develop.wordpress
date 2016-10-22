@@ -3132,7 +3132,8 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 		$check_name = sanitize_title( $post_name, '', 'old-save' );
 		if ( $update && strtolower( urlencode( $post_name ) ) == $check_name && get_post_field( 'post_name', $post_ID ) == $check_name ) {
 			$post_name = $check_name;
-		} else { // new post, or slug has changed.
+		// new post, or slug has changed.
+		} else {
 			$post_name = sanitize_title( $post_name );
 		}
 	}

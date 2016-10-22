@@ -634,7 +634,8 @@ function upgrade_100() {
 		foreach ( $allposts as $post ) {
 			// Check to see if it's already been imported
 			$cat = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->post2cat WHERE post_id = %d AND category_id = %d", $post->ID, $post->post_category) );
-			if ( !$cat && 0 != $post->post_category) { // If there's no result
+			// If there's no result
+			if ( !$cat && 0 != $post->post_category) {
 				$wpdb->insert( $wpdb->post2cat, array( 'post_id' => $post->ID, 'category_id' => $post->post_category) );
 			}
 		}
@@ -796,7 +797,8 @@ function upgrade_130() {
 	// Some versions have multiple duplicate option_name rows with the same values
 	$options = $wpdb->get_results( "SELECT option_name, COUNT(option_name ) AS dupes FROM `$wpdb->options` GROUP BY option_name" );
 	foreach ( $options as $option ) {
-		if ( 1 != $option->dupes ) { // Could this be done in the query?
+		// Could this be done in the query?
+		if ( 1 != $option->dupes ) {
 			$limit = $option->dupes - 1;
 			$dupe_ids = $wpdb->get_col( $wpdb->prepare( "SELECT option_id FROM $wpdb->options WHERE option_name = %s LIMIT %d", $option->option_name, $limit) );
 			if ( $dupe_ids ) {

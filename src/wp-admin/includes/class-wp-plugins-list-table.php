@@ -579,10 +579,11 @@ class WP_Plugins_List_Table extends WP_List_Table {
 				$plugin_name .= '<br/>' . $plugin_data['Name'];
 			}
 
+			// Doesn't require a constant
 			if (
 				true === ( $dropins[ $plugin_file ][1] ) ||
 				( defined( $dropins[ $plugin_file ][1] ) && constant( $dropins[ $plugin_file ][1] ) )
-			) { // Doesn't require a constant
+			) {
 				$is_active = true;
 				$description = '<p><strong>' . $dropins[ $plugin_file ][0] . '</strong></p>';
 			} else {

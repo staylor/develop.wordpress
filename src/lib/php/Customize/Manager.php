@@ -271,7 +271,8 @@ class Manager {
 		if ( ! isset( $args['theme'] ) ) {
 			if ( $this->_request->get( 'customize_theme' ) ) {
 				$args['theme'] = wp_unslash( $this->_request->get( 'customize_theme' ) );
-			} elseif ( $this->_request->get( 'theme' ) ) { // Deprecated.
+			// Deprecated.
+			} elseif ( $this->_request->get( 'theme' ) ) {
 				$args['theme'] = wp_unslash( $this->_request->get( 'theme' ) );
 			}
 		}

@@ -202,7 +202,8 @@ class WP_Filesystem_Base {
 			foreach ( $constant_overrides as $constant => $dir ) {
 				if ( ! defined( $constant ) )
 					continue;
-				if ( 0 === stripos( $folder, $dir ) ) { // $folder starts with $dir
+				// $folder starts with $dir
+				if ( 0 === stripos( $folder, $dir ) ) {
 					$potential_folder = preg_replace( '#^' . preg_quote( $dir, '#' ) . '/#i', trailingslashit( constant( $constant ) ), $folder );
 					$potential_folder = trailingslashit( $potential_folder );
 
@@ -223,7 +224,8 @@ class WP_Filesystem_Base {
 		if ( isset($this->cache[ $folder ] ) )
 			return $this->cache[ $folder ];
 
-		if ( $this->exists($folder) ) { // Folder exists at that absolute path.
+		// Folder exists at that absolute path.
+		if ( $this->exists($folder) ) {
 			$folder = trailingslashit($folder);
 			$this->cache[ $folder ] = $folder;
 			return $folder;

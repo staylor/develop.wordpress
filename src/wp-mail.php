@@ -132,7 +132,8 @@ for ( $i = 1; $i <= $count; $i++ ) {
 				}
 			}
 
-			if ( preg_match( '/Date: /i', $line ) ) { // of the form '20 Mar 2002 20:32:37 +0100'
+			// of the form '20 Mar 2002 20:32:37 +0100'
+			if ( preg_match( '/Date: /i', $line ) ) {
 				$ddate = str_replace( 'Date: ', '', trim( $line ) );
 				$ddate = preg_replace( '!\s*\(.+\)\s*$!', '', $ddate ); // remove parenthesised timezone string if it exists, as this confuses strtotime
 				$ddate_U = strtotime( $ddate );

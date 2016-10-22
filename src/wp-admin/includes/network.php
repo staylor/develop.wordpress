@@ -162,14 +162,17 @@ function network_step1( $errors = false ) {
 
 	if ( $_post->get( 'subdomain_install' ) ) {
 		$subdomain_install = (bool) $_post->get( 'subdomain_install' );
+
+	// assume nothing
 	} elseif (
 		apache_mod_loaded( 'mod_rewrite' ) ||
 		! allow_subdirectory_install()
-	) { // assume nothing
+	) {
 		$subdomain_install = true;
 	} else {
 		$subdomain_install = false;
-		if ( $got_mod_rewrite = got_mod_rewrite() ) { // dangerous assumptions
+		// dangerous assumptions
+		if ( $got_mod_rewrite = got_mod_rewrite() ) {
 			echo '<div class="updated inline"><p><strong>' . __( 'Note:' ) . '</strong> ';
 			/* translators: %s: mod_rewrite */
 			printf( __( 'Please make sure the Apache %s module is installed as it will be used at the end of this installation.' ),
@@ -185,7 +188,8 @@ function network_step1( $errors = false ) {
 			echo '</p>';
 		}
 
-		if ( $got_mod_rewrite || $app['is_apache'] ) { // Protect against mod_rewrite mimicry (but ! Apache)
+		// Protect against mod_rewrite mimicry (but ! Apache)
+		if ( $got_mod_rewrite || $app['is_apache'] ) {
 			echo '<p>';
 			/* translators: 1: mod_rewrite, 2: mod_rewrite documentation URL, 3: Google search for mod_rewrite */
 			printf( __( 'If %1$s is disabled, ask your administrator to enable that module, or look at the <a href="%2$s">Apache documentation</a> or <a href="%3$s">elsewhere</a> for help setting it up.' ),

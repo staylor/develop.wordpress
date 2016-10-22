@@ -414,7 +414,8 @@ nocache_headers();
 
 header('Content-Type: '.get_bloginfo('html_type').'; charset='.get_bloginfo('charset'));
 
-if ( defined( 'RELOCATE' ) && RELOCATE ) { // Move flag is set
+// Move flag is set
+if ( defined( 'RELOCATE' ) && RELOCATE ) {
 	if ( $app['request.path_info'] && ( $app['request.path_info'] !== $app['request.php_self'] ) ) {
 		$app['request.php_self'] = str_replace( $app['request.path_info'], '', $app['request.php_self'] );
 	}

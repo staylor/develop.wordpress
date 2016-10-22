@@ -175,19 +175,25 @@ echo esc_html( $visibility_trans ); ?></span>
 /* translators: Publish box date format, see https://secure.php.net/date */
 $datef = __( 'M j, Y @ H:i' );
 if ( 0 != $post->ID ) {
-	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
+	// scheduled for publishing at a future date
+	if ( 'future' == $post->post_status ) {
 		$stamp = __('Scheduled for: <b>%1$s</b>');
-	} elseif ( 'publish' == $post->post_status || 'private' == $post->post_status ) { // already published
+	// already published
+	} elseif ( 'publish' == $post->post_status || 'private' == $post->post_status ) {
 		$stamp = __('Published on: <b>%1$s</b>');
-	} elseif ( '0000-00-00 00:00:00' == $post->post_date_gmt ) { // draft, 1 or more saves, no date specified
+	// draft, 1 or more saves, no date specified
+	} elseif ( '0000-00-00 00:00:00' == $post->post_date_gmt ) {
 		$stamp = __('Publish <b>immediately</b>');
-	} elseif ( time() < strtotime( $post->post_date_gmt . ' +0000' ) ) { // draft, 1 or more saves, future date specified
+	// draft, 1 or more saves, future date specified
+	} elseif ( time() < strtotime( $post->post_date_gmt . ' +0000' ) ) {
 		$stamp = __('Schedule for: <b>%1$s</b>');
-	} else { // draft, 1 or more saves, date specified
+	// draft, 1 or more saves, date specified
+	} else {
 		$stamp = __('Publish on: <b>%1$s</b>');
 	}
 	$date = date_i18n( $datef, strtotime( $post->post_date ) );
-} else { // draft (no saves, and thus no date specified)
+// draft (no saves, and thus no date specified)
+} else {
 	$stamp = __('Publish <b>immediately</b>');
 	$date = date_i18n( $datef, strtotime( current_time('mysql') ) );
 }

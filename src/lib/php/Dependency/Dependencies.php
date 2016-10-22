@@ -188,7 +188,8 @@ class Dependencies {
 				$keep_going = false;
 			}
 
-			if ( ! $keep_going ) { // Either item or its dependencies don't exist.
+			// Either item or its dependencies don't exist.
+			if ( ! $keep_going ) {
 				if ( $recursion ) {
 					return false;
 				}

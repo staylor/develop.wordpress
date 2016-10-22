@@ -195,7 +195,8 @@ final class Screen {
 		// For those pesky meta boxes.
 		if ( $hook_name && post_type_exists( $hook_name ) ) {
 			$post_type = $id;
-			$id = 'post'; // changes later. ends up being $base.
+			// changes later. ends up being $base.
+			$id = 'post';
 		} else {
 			if ( '.php' == substr( $id, -4 ) ) {
 				$id = substr( $id, 0, -4 );

@@ -84,7 +84,9 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 <?php if ( post_password_required($comment_post) ) { ?>
 		<description><?php echo ent2ncr(__('Protected Comments: Please enter your password to view comments.')); ?></description>
 		<content:encoded><![CDATA[<?php echo get_the_password_form() ?>]]></content:encoded>
-<?php } else { // post pass ?>
+<?php
+	// post pass
+	} else { ?>
 		<description><![CDATA[<?php comment_text_rss() ?>]]></description>
 		<content:encoded><![CDATA[<?php comment_text() ?>]]></content:encoded>
 <?php } // post pass

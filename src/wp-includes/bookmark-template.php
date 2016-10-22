@@ -114,7 +114,8 @@ function _walk_bookmarks( $bookmarks, $args = '' ) {
 					$alt,
 					$title
 				);
-			} else { // If it's a relative path
+			// If it's a relative path
+			} else {
 				$output .= sprintf(
 					'<img src="%s" %s %s />',
 					get_option( 'siteurl' ) . $bookmark->link_image,

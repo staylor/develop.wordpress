@@ -528,9 +528,11 @@ if ( ! current_theme_supports( 'menus' ) && ! $num_locations )
 
 $help = new NavMenuHelp( get_current_screen() );
 
-if ( ! $locations_screen ) { // Main tab
+// Main tab
+if ( ! $locations_screen ) {
 	$help->addMain();
-} else { // Locations Tab.
+// Locations Tab.
+} else {
 	$help->addLocations();
 }
 

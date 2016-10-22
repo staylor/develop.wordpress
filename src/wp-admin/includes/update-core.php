@@ -997,9 +997,12 @@ function update_core($from, $to) {
 		else
 			$lang_dir = WP_CONTENT_DIR . '/languages';
 
-		if ( !@is_dir($lang_dir) && 0 === strpos($lang_dir, ABSPATH) ) { // Check the language directory exists first
-			$wp_filesystem->mkdir($to . str_replace(ABSPATH, '', $lang_dir), FS_CHMOD_DIR); // If it's within the ABSPATH we can handle it here, otherwise they're out of luck.
-			clearstatcache(); // for FTP, Need to clear the stat cache
+		// Check the language directory exists first
+		if ( !@is_dir($lang_dir) && 0 === strpos($lang_dir, ABSPATH) ) {
+			// If it's within the ABSPATH we can handle it here, otherwise they're out of luck.
+			$wp_filesystem->mkdir($to . str_replace(ABSPATH, '', $lang_dir), FS_CHMOD_DIR);
+			// for FTP, Need to clear the stat cache
+			clearstatcache();
 		}
 
 		if ( @is_dir($lang_dir) ) {

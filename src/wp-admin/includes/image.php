@@ -24,7 +24,8 @@
  */
 function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $src_abs = false, $dst_file = false ) {
 	$src_file = $src;
-	if ( is_numeric( $src ) ) { // Handle int as attachment ID
+	// Handle int as attachment ID
+	if ( is_numeric( $src ) ) {
 		$src_file = get_attached_file( $src );
 
 		if ( ! file_exists( $src_file ) ) {
@@ -313,7 +314,8 @@ function wp_read_image_metadata( $file ) {
 				$meta['title'] = trim( $iptc['2#005'][0] );
 			}
 
-			if ( ! empty( $iptc['2#120'][0] ) ) { // description / legacy caption
+			 // description / legacy caption
+			if ( ! empty( $iptc['2#120'][0] ) ) {
 				$caption = trim( $iptc['2#120'][0] );
 
 				mbstring_binary_safe_encoding();
@@ -328,18 +330,26 @@ function wp_read_image_metadata( $file ) {
 				$meta['caption'] = $caption;
 			}
 
-			if ( ! empty( $iptc['2#110'][0] ) ) // credit
+			// credit
+			if ( ! empty( $iptc['2#110'][0] ) ) {
 				$meta['credit'] = trim( $iptc['2#110'][0] );
-			elseif ( ! empty( $iptc['2#080'][0] ) ) // creator / legacy byline
+
+			// creator / legacy byline
+			} elseif ( ! empty( $iptc['2#080'][0] ) ) {
 				$meta['credit'] = trim( $iptc['2#080'][0] );
+			}
 
-			if ( ! empty( $iptc['2#055'][0] ) && ! empty( $iptc['2#060'][0] ) ) // created date and time
+			// created date and time
+			if ( ! empty( $iptc['2#055'][0] ) && ! empty( $iptc['2#060'][0] ) ) {
 				$meta['created_timestamp'] = strtotime( $iptc['2#055'][0] . ' ' . $iptc['2#060'][0] );
+			}
 
-			if ( ! empty( $iptc['2#116'][0] ) ) // copyright
+			// copyright
+			if ( ! empty( $iptc['2#116'][0] ) ) {
 				$meta['copyright'] = trim( $iptc['2#116'][0] );
-
-			if ( ! empty( $iptc['2#025'][0] ) ) { // keywords array
+			}
+			// keywords array
+			if ( ! empty( $iptc['2#025'][0] ) ) {
 				$meta['keywords'] = array_values( $iptc['2#025'] );
 			}
 		 }

@@ -930,7 +930,8 @@ function get_comments_number_text( $zero = false, $one = false, $more = false ) 
 		}
 	} elseif ( $number == 0 ) {
 		$output = ( false === $zero ) ? __( 'No Comments' ) : $zero;
-	} else { // must be one
+	// must be one
+	} else {
 		$output = ( false === $one ) ? __( '1 Comment' ) : $one;
 	}
 	/**

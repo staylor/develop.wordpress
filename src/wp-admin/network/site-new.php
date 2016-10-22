@@ -88,7 +88,8 @@ if ( 'add-site' == $_request->get( 'action' ) ) {
 
 	$credential = 'N/A';
 	$user_id = email_exists($email);
-	if ( !$user_id ) { // Create a new user with a random password
+	// Create a new user with a random password
+	if ( !$user_id ) {
 		/**
 		 * Fires immediately before a new user is created via the network site-new.php page.
 		 *

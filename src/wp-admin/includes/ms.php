@@ -712,11 +712,14 @@ function mu_dropdown_languages( $lang_files = [], $current = '' ) {
 	foreach ( (array) $lang_files as $val ) {
 		$code_lang = basename( $val, '.mo' );
 
-		if ( $code_lang == 'en_US' ) { // American English
+		// American English
+		if ( $code_lang == 'en_US' ) {
 			$flag = true;
 			$ae = __( 'American English' );
 			$output[$ae] = '<option value="' . esc_attr( $code_lang ) . '"' . selected( $current, $code_lang, false ) . '> ' . $ae . '</option>';
-		} elseif ( $code_lang == 'en_GB' ) { // British English
+
+		// British English
+		} elseif ( $code_lang == 'en_GB' ) {
 			$flag = true;
 			$be = __( 'British English' );
 			$output[$be] = '<option value="' . esc_attr( $code_lang ) . '"' . selected( $current, $code_lang, false ) . '> ' . $be . '</option>';

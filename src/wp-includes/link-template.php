@@ -225,7 +225,8 @@ function get_permalink( $post = 0, $leavename = false ) {
 		);
 		$permalink = home_url( str_replace($rewritecode, $rewritereplace, $permalink) );
 		$permalink = user_trailingslashit($permalink, 'single');
-	} else { // if they're not using the fancy permalink option
+	// if they're not using the fancy permalink option
+	} else {
 		$permalink = home_url('?p=' . $post->ID);
 	}
 

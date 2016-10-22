@@ -2398,7 +2398,8 @@ function discover_pingback_server_uri( $url, $deprecated = '' ) {
 		$pingback_server_url = substr($contents, $pingback_href_start, $pingback_server_url_len);
 
 		// We may find rel="pingback" but an incomplete pingback URL
-		if ( $pingback_server_url_len > 0 ) { // We got it!
+		// We got it!
+		if ( $pingback_server_url_len > 0 ) {
 			return $pingback_server_url;
 		}
 	}
@@ -2554,8 +2555,12 @@ function pingback( $content, $post_id ) {
 	// We don't wanna ping first and second types, even if they have a valid <link/>
 
 	foreach ( (array) $post_links_temp as $link_test ) {
-		if ( ! in_array( $link_test, $pung ) && ( url_to_postid( $link_test ) != $post->ID ) // If we haven't pung it already and it isn't a link to itself
-				&& !is_local_attachment($link_test) ) { // Also, let's never ping local attachments.
+		if ( ! in_array( $link_test, $pung ) &&
+			// If we haven't pung it already and it isn't a link to itself
+			( url_to_postid( $link_test ) != $post->ID ) &&
+				// Also, let's never ping local attachments.
+			! is_local_attachment($link_test)
+		) {
 			if ( $test = @parse_url($link_test) ) {
 				if (
 					isset( $test['query'] ) ||

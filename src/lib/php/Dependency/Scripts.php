@@ -441,7 +441,8 @@ class Scripts extends Dependencies {
 			$handle = 'jquery-core';
 		}
 
-		if ( is_array($l10n) && isset($l10n['l10n_print_after']) ) { // back compat, preserve the code in 'l10n_print_after' if present
+		// back compat, preserve the code in 'l10n_print_after' if present
+		if ( is_array($l10n) && isset($l10n['l10n_print_after']) ) {
 			$after = $l10n['l10n_print_after'];
 			unset($l10n['l10n_print_after']);
 		}

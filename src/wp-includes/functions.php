@@ -575,7 +575,8 @@ function do_enclose( $content, $post_ID ) {
 	$post_links_temp = wp_extract_urls( $content );
 
 	foreach ( $pung as $link_test ) {
-		if ( ! in_array( $link_test, $post_links_temp ) ) { // link no longer in post
+		// link no longer in post
+		if ( ! in_array( $link_test, $post_links_temp ) ) {
 			$mids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = 'enclosure' AND meta_value LIKE %s", $post_ID, $wpdb->esc_like( $link_test ) . '%' ) );
 			foreach ( $mids as $mid ) {
 				delete_metadata_by_mid( 'post', $mid );
@@ -584,7 +585,8 @@ function do_enclose( $content, $post_ID ) {
 	}
 
 	foreach ( ( array ) $post_links_temp as $link_test ) {
-		if ( ! in_array( $link_test, $pung ) ) { // If we haven't pung it already
+		// If we haven't pung it already
+		if ( ! in_array( $link_test, $pung ) ) {
 			$test = @parse_url( $link_test );
 			if ( false === $test ) {
 				continue;
@@ -863,7 +865,8 @@ function add_query_arg() {
  * @return string New URL query string.
  */
 function remove_query_arg( $key, $query = false ) {
-	if ( is_array( $key ) ) { // removing multiple keys
+	// removing multiple keys
+	if ( is_array( $key ) ) {
 		foreach ( $key as $k ) {
 			$query = add_query_arg( $k, false, $query );
 		}
@@ -1845,9 +1848,11 @@ function wp_is_writable( $path ) {
  */
 function win_is_writable( $path ) {
 
-	if ( $path[ strlen( $path ) - 1 ] == '/' ) { // if it looks like a directory, check a random file within the directory
+	// if it looks like a directory, check a random file within the directory
+	if ( $path[ strlen( $path ) - 1 ] == '/' ) {
 		return win_is_writable( $path . uniqid( mt_rand() ) . '.tmp' );
-	} elseif ( is_dir( $path ) ) { // If it's a directory (and not a file) check a random file within the directory
+	// If it's a directory (and not a file) check a random file within the directory
+	} elseif ( is_dir( $path ) ) {
 		return win_is_writable( $path . '/' . uniqid( mt_rand() ) . '.tmp' );
 	}
 	// check tmp file for read/write capabilities

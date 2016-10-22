@@ -1964,7 +1964,8 @@ function get_submit_button( $text = '', $type = 'primary large', $name = 'submit
 		foreach ( $other_attributes as $attribute => $value ) {
 			$attributes .= $attribute . '="' . esc_attr( $value ) . '" '; // Trailing space is important
 		}
-	} elseif ( ! empty( $other_attributes ) ) { // Attributes provided as a string
+	// Attributes provided as a string
+	} elseif ( ! empty( $other_attributes ) ) {
 		$attributes = $other_attributes;
 	}
 

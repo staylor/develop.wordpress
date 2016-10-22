@@ -56,7 +56,8 @@ function wp_print_scripts( $handles = false ) {
 	 * @since 2.1.0
 	 */
 	do_action( 'wp_print_scripts' );
-	if ( '' === $handles ) { // for wp_head
+	// for wp_head
+	if ( '' === $handles ) {
 		$handles = false;
 	}
 

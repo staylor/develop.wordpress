@@ -301,7 +301,8 @@ function ms_load_current_site_and_network( $domain, $path, $subdomain = false ) 
 		$current_site->path = PATH_CURRENT_SITE;
 		if ( defined( 'BLOG_ID_CURRENT_SITE' ) ) {
 			$current_site->blog_id = BLOG_ID_CURRENT_SITE;
-		} elseif ( defined( 'BLOGID_CURRENT_SITE' ) ) { // deprecated.
+		 // deprecated.
+		} elseif ( defined( 'BLOGID_CURRENT_SITE' ) ) {
 			$current_site->blog_id = BLOGID_CURRENT_SITE;
 		}
 

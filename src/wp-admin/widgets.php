@@ -70,7 +70,8 @@ foreach ( $sidebars_widgets as $sidebar_id => $widgets ) {
 	}
 
 	if ( ! is_registered_sidebar( $sidebar_id ) ) {
-		if ( ! empty( $widgets ) ) { // register the inactive_widgets area as sidebar
+		// register the inactive_widgets area as sidebar
+		if ( ! empty( $widgets ) ) {
 			register_sidebar( [
 				'name' => __( 'Inactive Sidebar (not used)' ),
 				'id' => $sidebar_id,
@@ -123,7 +124,8 @@ if ( $view->_get->has( 'editwidget' ) ) {
 		$multi_number = $view->_get->getInt( 'num' );
 		$base = $view->_get->get( 'base' );
 
-		if ( $base && $multi_number ) { // multi-widget
+		// multi-widget
+		if ( $base && $multi_number ) {
 			// Copy minimal info from an existing instance of this widget to a new instance
 			foreach ( $app->widgets['controls'] as $control ) {
 				if ( $base === $control['id_base'] ) {

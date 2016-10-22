@@ -202,13 +202,15 @@ function add_menu_classes( $menu ) {
 	foreach ( $menu as $order => $top ) {
 		$i++;
 
-		if ( 0 == $order ) { // dashboard is always shown/single
+		// dashboard is always shown/single
+		if ( 0 == $order ) {
 			$menu[0][4] = add_cssclass( 'menu-top-first', $top[4] );
 			$lastorder = 0;
 			continue;
 		}
 
-		if ( 0 === strpos( $top[2], 'separator') && false !== $lastorder ) { // if separator
+		// if separator
+		if ( 0 === strpos( $top[2], 'separator') && false !== $lastorder ) {
 			$first = true;
 			$c = $menu[ $lastorder][4];
 			$menu[ $lastorder][4] = add_cssclass('menu-top-last', $c);
@@ -221,7 +223,8 @@ function add_menu_classes( $menu ) {
 			$first = false;
 		}
 
-		if ( $mc == $i ) { // last item
+		// last item
+		if ( $mc == $i ) {
 			$c = $menu[ $order][4];
 			$menu[ $order][4] = add_cssclass('menu-top-last', $c);
 		}

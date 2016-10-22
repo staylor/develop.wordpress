@@ -93,7 +93,9 @@ function get_option( $option, $default = false ) {
 				if ( is_object( $row ) ) {
 					$value = $row->option_value;
 					wp_cache_add( $option, $value, 'options' );
-				} else { // option does not exist, so we must cache its non-existence
+
+				// option does not exist, so we must cache its non-existence
+				} else {
 					if ( ! is_array( $notoptions ) ) {
 						 $notoptions = [];
 					}
@@ -949,7 +951,8 @@ function get_all_user_settings() {
 	if ( $_cookie->get( 'wp-settings-' . $user_id ) ) {
 		$cookie = preg_replace( '/[^A-Za-z0-9=&_-]/', '', $_cookie->get( 'wp-settings-' . $user_id ) );
 
-		if ( strpos( $cookie, '=' ) ) { // '=' cannot be 1st char
+		// '=' cannot be 1st char
+		if ( strpos( $cookie, '=' ) ) {
 			parse_str( $cookie, $user_settings );
 		}
 	} else {

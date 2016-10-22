@@ -60,7 +60,8 @@ get_current_screen()->set_screen_reader_content( array(
 
 $location = false;
 $referer = wp_get_referer();
-if ( ! $referer ) { // For POST requests.
+// For POST requests.
+if ( ! $referer ) {
 	$referer = wp_unslash( $app['request.uri'] );
 }
 $referer = remove_query_arg( array( '_wp_http_referer', '_wpnonce', 'error', 'message', 'paged' ), $referer );

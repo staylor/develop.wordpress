@@ -306,11 +306,15 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 				$final_line = '';
 			}
 
-			if ( $orig_rows[$row] < 0 ) { // Orig is blank. This is really an added row.
+			// Orig is blank. This is really an added row.
+			if ( $orig_rows[$row] < 0 ) {
 				$r .= $this->_added( array($final_line), false );
-			} elseif ( $final_rows[$row] < 0 ) { // Final is blank. This is really a deleted row.
+			// Final is blank. This is really a deleted row.
+			} elseif ( $final_rows[$row] < 0 ) {
 				$r .= $this->_deleted( array($orig_line), false );
-			} else { // A true changed row.
+
+			// A true changed row.
+			} else {
 				if ( $this->_show_split_view ) {
 					$r .= '<tr>' . $this->deletedLine( $orig_line ) . $this->emptyLine() . $this->addedLine( $final_line ) . "</tr>\n";
 				} else {
@@ -392,14 +396,17 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 			$final_pos = array_search($orig_matches[$orig_row], $final_rows, true);
 			$orig_pos = (int) array_search($orig_row, $orig_rows, true);
 
-			if ( false === $final_pos ) { // This orig is paired with a blank final.
+			// This orig is paired with a blank final.
+			if ( false === $final_pos ) {
 				array_splice( $final_rows, $orig_pos, 0, -1 );
-			} elseif ( $final_pos < $orig_pos ) { // This orig's match is up a ways. Pad final with blank rows.
+			// This orig's match is up a ways. Pad final with blank rows.
+			} elseif ( $final_pos < $orig_pos ) {
 				$diff_pos = $final_pos - $orig_pos;
 				while ( $diff_pos < 0 ) {
 					array_splice( $final_rows, $orig_pos, 0, $diff_pos++ );
 				}
-			} elseif ( $final_pos > $orig_pos ) { // This orig's match is down a ways. Pad orig with blank rows.
+			// This orig's match is down a ways. Pad orig with blank rows.
+			} elseif ( $final_pos > $orig_pos ) {
 				$diff_pos = $orig_pos - $final_pos;
 				while ( $diff_pos < 0 ) {
 					array_splice( $orig_rows, $orig_pos, 0, $diff_pos++ );

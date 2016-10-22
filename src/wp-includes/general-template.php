@@ -1211,7 +1211,8 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 	$title_array = apply_filters( 'wp_title_parts', explode( $t_sep, $title ) );
 
 	// Determines position of the separator and direction of the breadcrumb
-	if ( 'right' == $seplocation ) { // sep on right, so reverse the order
+	// sep on right, so reverse the order
+	if ( 'right' == $seplocation ) {
 		$title_array = array_reverse( $title_array );
 		$title       = implode( " $sep ", $title_array ) . $prefix;
 	} else {
@@ -2990,7 +2991,8 @@ function user_can_richedit() {
 		$wp_rich_edit = false;
 		$app = getApp();
 
-		if ( get_user_option( 'rich_editing' ) == 'true' || ! is_user_logged_in() ) { // default to 'true' for logged out users
+		// default to 'true' for logged out users
+		if ( get_user_option( 'rich_editing' ) == 'true' || ! is_user_logged_in() ) {
 			if ( $is_safari ) {
 				$app = getApp();
 				$wp_rich_edit = ! wp_is_mobile() || ( preg_match( '!AppleWebKit/(\d+)!', $app['request.useragent'], $match ) && intval( $match[1] ) >= 534 );
@@ -3021,8 +3023,10 @@ function user_can_richedit() {
  * @return string Either 'tinymce', or 'html', or 'test'
  */
 function wp_default_editor() {
-	$r = user_can_richedit() ? 'tinymce' : 'html'; // defaults
-	if ( wp_get_current_user() ) { // look for cookie
+	// defaults
+	$r = user_can_richedit() ? 'tinymce' : 'html';
+	// look for cookie
+	if ( wp_get_current_user() ) {
 		$ed = get_user_setting( 'editor', 'tinymce' );
 		$r = ( in_array( $ed, array('tinymce', 'html', 'test') ) ) ? $ed : $r;
 	}

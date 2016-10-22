@@ -25,7 +25,8 @@ use function WP\getApp;
  * @return array On success, a processed array of Dependencies items; otherwise, an empty array.
  */
 function wp_print_styles( $handles = false ) {
-	if ( '' === $handles ) { // for wp_head
+	// for wp_head
+	if ( '' === $handles ) {
 		$handles = false;
 	}
 	/**

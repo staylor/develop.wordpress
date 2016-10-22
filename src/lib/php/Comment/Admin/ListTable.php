@@ -179,11 +179,12 @@ class ListTable extends \WP_List_Table {
 
 		$stati = [
 			/* translators: %s: all comments count */
+			// singular not used
 			'all' => _nx_noop(
 				'All <span class="count">(%s)</span>',
 				'All <span class="count">(%s)</span>',
 				'comments'
-			), // singular not used
+			),
 
 			/* translators: %s: pending comments count */
 			'moderated' => _nx_noop(

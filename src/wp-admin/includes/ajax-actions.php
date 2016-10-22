@@ -539,11 +539,13 @@ function _wp_ajax_add_hierarchical_term() {
 		);
 	}
 
-	if ( $parent ) { // Foncy - replace the parent and all its children
+	// Foncy - replace the parent and all its children
+	if ( $parent ) {
 		$parent = get_term( $parent, $taxonomy->name );
 		$term_id = $parent->term_id;
 
-		while ( $parent->parent ) { // get the top parent
+		// get the top parent
+		while ( $parent->parent ) {
 			$parent = get_term( $parent->parent, $taxonomy->name );
 			if ( is_wp_error( $parent ) )
 				break;
@@ -1372,7 +1374,8 @@ function wp_ajax_add_meta() {
 			'position' => 1,
 			'supplemental' => array('postid' => $pid)
 		) );
-	} else { // Update?
+	// Update?
+	} else {
 		$m = $_post->get( 'meta' );
 		$mid = (int) key( $m );
 		$key = wp_unslash( $m[ $mid ]['key'] );

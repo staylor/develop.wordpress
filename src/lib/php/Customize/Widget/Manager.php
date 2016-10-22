@@ -895,14 +895,16 @@ class Manager {
 
 		$app = getApp();
 
-		require_once ABSPATH . '/wp-admin/includes/widgets.php'; // for next_widget_id_number()
+		// for next_widget_id_number()
+		require_once ABSPATH . '/wp-admin/includes/widgets.php';
 
 		$sort = $app->widgets['registered'];
 		usort( $sort, array( $this, '_sort_name_callback' ) );
 		$done = [];
 
 		foreach ( $sort as $widget ) {
-			if ( in_array( $widget['callback'], $done, true ) ) { // We already showed this multi-widget
+			// We already showed this multi-widget
+			if ( in_array( $widget['callback'], $done, true ) ) {
 				continue;
 			}
 

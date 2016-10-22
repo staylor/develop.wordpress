@@ -872,7 +872,8 @@ function seems_utf8( $str ) {
 			return false;
 		}
 		// Does not match any model
-		for ( $j = 0; $j < $n; $j++ ) { // n bytes matching 10bbbbbb follow ?
+		// n bytes matching 10bbbbbb follow ?
+		for ( $j = 0; $j < $n; $j++ ) {
 			if ( (++$i == $length) || ( ( ord( $str[ $i ] ) & 0xC0 ) != 0x80 ) ) {
 				return false;
 			}
@@ -2228,7 +2229,8 @@ function force_balance_tags( $text ) {
 		// clear the shifter
 		$tagqueue = '';
 		// Pop or Push
-		if ( isset( $regex[1][0] ) && '/' == $regex[1][0] ) { // End Tag
+		// End Tag
+		if ( isset( $regex[1][0] ) && '/' == $regex[1][0] ) {
 			$tag = strtolower( substr( $regex[1], 1 ) );
 			// if too many closing tags
 			if ( $stacksize <= 0 ) {
@@ -2236,12 +2238,14 @@ function force_balance_tags( $text ) {
 				// or close to be safe $tag = '/' . $tag;
 			}
 			// if stacktop value = tag close value then pop
-			elseif ( $tagstack[ $stacksize - 1 ] == $tag ) { // found closing tag
+			// found closing tag
+			elseif ( $tagstack[ $stacksize - 1 ] == $tag ) {
 				$tag = '</' . $tag . '>'; // Close Tag
 				// Pop
 				array_pop( $tagstack );
 				$stacksize--;
-			} else { // closing tag not at top, search for it
+			// closing tag not at top, search for it
+			} else {
 				for ( $j = $stacksize - 1; $j >= 0; $j-- ) {
 					if ( $tagstack[ $j ] == $tag ) {
 					// add tag to tagqueue
@@ -2254,7 +2258,8 @@ function force_balance_tags( $text ) {
 				}
 				$tag = '';
 			}
-		} else { // Begin Tag
+		// Begin Tag
+		} else {
 			$tag = strtolower( $regex[1] );
 
 			// Tag Cleaning
@@ -2639,15 +2644,18 @@ function make_clickable( $text ) {
 		// Long strings might contain expensive edge cases ...
 		if ( 10000 < strlen( $piece ) ) {
 			// ... break it up
-			foreach ( _split_str_by_whitespace( $piece, 2100 ) as $chunk ) { // 2100: Extra room for scheme and leading and trailing paretheses
+			// 2100: Extra room for scheme and leading and trailing paretheses
+			foreach ( _split_str_by_whitespace( $piece, 2100 ) as $chunk ) {
 				if ( 2101 < strlen( $chunk ) ) {
-					$r .= $chunk; // Too big, no whitespace: bail.
+					// Too big, no whitespace: bail.
+					$r .= $chunk;
 				} else {
 					$r .= make_clickable( $chunk );
 				}
 			}
 		} else {
-			$ret = " $piece "; // Pad with whitespace to simplify the regexes
+			// Pad with whitespace to simplify the regexes
+			$ret = " $piece ";
 
 			$url_clickable = '~
 				([\\s(<.,;:!?])                                        # 1: Leading whitespace, or punctuation
@@ -3106,9 +3114,12 @@ function iso8601_to_datetime( $date_string, $timezone = 'user' ) {
 
 		preg_match( '#([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(Z|[\+|\-][0-9]{2,4}){0,1}#', $date_string, $date_bits );
 
-		if ( ! empty( $date_bits[7] ) ) { // we have a timezone, so let's compute an offset
+		// we have a timezone, so let's compute an offset
+		if ( ! empty( $date_bits[7] ) ) {
 			$offset = iso8601_timezone_to_offset( $date_bits[7] );
-		} else { // we don't have a timezone, so we assume user local timezone (not server's!)
+
+		// we don't have a timezone, so we assume user local timezone (not server's!)
+		} else {
 			$offset = HOUR_IN_SECONDS * get_option( 'gmt_offset' );
 		}
 

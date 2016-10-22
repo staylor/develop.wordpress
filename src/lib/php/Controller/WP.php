@@ -555,7 +555,8 @@ class WP extends Observer {
 			}
 		}
 
-		if ( has_filter( 'query_string' ) ) {  // Don't bother filtering and parsing if no plugins are hooked in.
+		// Don't bother filtering and parsing if no plugins are hooked in.
+		if ( has_filter( 'query_string' ) ) {
 			/**
 			 * Filters the query string before parsing.
 			 *
