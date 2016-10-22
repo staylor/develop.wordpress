@@ -5,6 +5,7 @@
  * @package WordPress
  */
 
+use WP\JSONException;
 use WP\Admin\Screen;
 use WP\User\User;
 use function WP\getApp;
@@ -3022,7 +3023,7 @@ function wp_json_encode( $data, $options = 0, $depth = 512 ) {
 
 	try {
 		$args[0] = _wp_json_sanity_check( $data, $depth );
-	} catch ( Exception $e ) {
+	} catch ( JSONException $e ) {
 		return false;
 	}
 
@@ -3044,7 +3045,7 @@ function wp_json_encode( $data, $options = 0, $depth = 512 ) {
  */
 function _wp_json_sanity_check( $data, $depth ) {
 	if ( $depth < 0 ) {
-		throw new Exception( 'Reached depth limit' );
+		throw new JSONException( 'Reached depth limit' );
 	}
 
 	if ( is_array( $data ) ) {

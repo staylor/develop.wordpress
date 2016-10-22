@@ -129,7 +129,8 @@ case 'auto-draft':
 <?php _e('Visibility:'); ?> <span id="post-visibility-display"><?php
 
 if ( 'private' == $post->post_status ) {
-	$post->post_password = '';
+	$str = '';
+	$post->post_password = $str;
 	$visibility = 'private';
 	$visibility_trans = __('Private');
 } elseif ( !empty( $post->post_password ) ) {

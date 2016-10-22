@@ -10,7 +10,7 @@ namespace WP\Customize\NavMenu;
 
 use WP_Post;
 use WP\Error;
-use WP\Customize\{Exception,Manager as CustomizeManager,Setting as BaseSetting};
+use WP\Customize\{CustomizeException,Manager as CustomizeManager,Setting as BaseSetting};
 
 /**
  * Customize Setting to represent a nav_menu.
@@ -174,15 +174,15 @@ class ItemSetting extends BaseSetting {
 	 *                                      theme mod or option name.
 	 * @param array                $args    Optional. Setting arguments.
 	 *
-	 * @throws Exception If $id is not valid for this setting type.
+	 * @throws CustomizeException If $id is not valid for this setting type.
 	 */
 	public function __construct( CustomizeManager $manager, $id, array $args = [] ) {
 		if ( empty( $manager->nav_menus ) ) {
-			throw new Exception( 'Expected CustomizeManager::$nav_menus to be set.' );
+			throw new CustomizeException( 'Expected CustomizeManager::$nav_menus to be set.' );
 		}
 
 		if ( ! preg_match( self::ID_PATTERN, $id, $matches ) ) {
-			throw new Exception( "Illegal widget setting ID: $id" );
+			throw new CustomizeException( "Illegal widget setting ID: $id" );
 		}
 
 		$this->post_id = intval( $matches['id'] );
@@ -194,7 +194,7 @@ class ItemSetting extends BaseSetting {
 		if ( isset( $this->value ) ) {
 			$this->populate_value();
 			foreach ( array_diff( array_keys( $this->default ), array_keys( $this->value ) ) as $missing ) {
-				throw new Exception( "Supplied nav_menu_item value missing property: $missing" );
+				throw new CustomizeException( "Supplied nav_menu_item value missing property: $missing" );
 			}
 		}
 

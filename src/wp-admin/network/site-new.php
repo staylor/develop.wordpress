@@ -86,7 +86,7 @@ if ( 'add-site' == $_request->get( 'action' ) ) {
 		$path      = get_network()->path . $domain . '/';
 	}
 
-	$password = 'N/A';
+	$credential = 'N/A';
 	$user_id = email_exists($email);
 	if ( !$user_id ) { // Create a new user with a random password
 		/**
@@ -102,8 +102,8 @@ if ( 'add-site' == $_request->get( 'action' ) ) {
 		if ( $user_id ) {
 			wp_die( __( 'The domain or path entered conflicts with an existing username.' ) );
 		}
-		$password = wp_generate_password( 12, false );
-		$user_id = wpmu_create_user( $domain, $password, $email );
+		$credential = wp_generate_password( 12, false );
+		$user_id = wpmu_create_user( $domain, $credential, $email );
 		if ( false === $user_id ) {
 			wp_die( __( 'There was an error creating the user.' ) );
 		}
@@ -149,7 +149,7 @@ Name: %3$s' ),
 				get_site_option( 'admin_email' )
 			)
 		);
-		wpmu_welcome_notification( $id, $user_id, $password, $app->get( 'title' ), array( 'public' => 1 ) );
+		wpmu_welcome_notification( $id, $user_id, $credential, $app->get( 'title' ), array( 'public' => 1 ) );
 		wp_redirect( add_query_arg( array( 'update' => 'added', 'id' => $id ), 'site-new.php' ) );
 		exit;
 	} else {

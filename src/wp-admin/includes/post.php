@@ -633,7 +633,8 @@ function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) 
 		$post->post_author = '';
 		$post->post_date = '';
 		$post->post_date_gmt = '';
-		$post->post_password = '';
+		$str = '';
+		$post->post_password = $str;
 		$post->post_name = '';
 		$post->post_type = $post_type;
 		$post->post_status = 'draft';
