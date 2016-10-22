@@ -50,3 +50,5 @@ wp-tests-config.php
 
 # Ignore other .gitignore files to allow for personal customizations
 .gitignore
+
+.sonar/report-task.txt
