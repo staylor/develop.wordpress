@@ -14,21 +14,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const WPINC = 'wp-includes';
 
-$load = $_GET['load'];
-if ( is_array( $load ) )
-	$load = implode( '', $load );
-
-$load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
-$load = array_unique( explode( ',', $load ) );
-
-if ( empty($load) )
-	exit;
-
 require( ABSPATH . 'vendor/autoload.php' );
 
 $app = WP\getApp();
 $_get = $app['request']->query;
 $_server = $app['request']->server;
+
+$load = $_get->get( 'load' );
+if ( is_array( $load ) ) {
+	$load = implode( '', $load );
+}
+$load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
+$load = array_unique( explode( ',', $load ) );
+
+if ( empty( $load ) ) {
+	exit();
+}
 
 require( ABSPATH . 'wp-admin/includes/noop.php' );
 require( ABSPATH . WPINC . '/script-loader.php' );

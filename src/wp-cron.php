@@ -9,11 +9,14 @@
  * @package WordPress
  */
 
-use function WP\getApp;
+require( __DIR__ . '/vendor/autoload.php' );
+
+$app = WP\getApp();
+$_post = $app['request']->request;
 
 ignore_user_abort( true );
 
-if ( ! empty( $_POST ) || defined( 'DOING_AJAX' ) || defined( 'DOING_CRON' ) ) {
+if ( ! empty( $_post->all() ) || defined( 'DOING_AJAX' ) || defined( 'DOING_CRON' ) ) {
 	die();
 }
 

@@ -299,6 +299,7 @@ function wp_login_viewport_meta() {
 function retrieve_password() {
 	$app = getApp();
 	$_post = $app['request']->request;
+	$_cookie = $app['request']->cookies;
 	$errors = new WP_Error();
 
 	if ( empty( $_post->get( 'user_login' ) ) ) {
@@ -388,7 +389,7 @@ function retrieve_password() {
 	$message = apply_filters( 'retrieve_password_message', $message, $key, $user_login, $user_data );
 
 	if ( $message && !wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
-			wp_die( __('The email could not be sent.') . "<br />\n" . __('Possible reason: your host may have disabled the mail() function.') );
+		wp_die( __('The email could not be sent.') . "<br />\n" . __('Possible reason: your host may have disabled the mail() function.') );
 	}
 
 	return true;
@@ -596,8 +597,8 @@ case 'rp' :
 		exit;
 	}
 
-	if ( isset( $_COOKIE[ $rp_cookie ] ) && 0 < strpos( $_COOKIE[ $rp_cookie ], ':' ) ) {
-		list( $rp_login, $rp_key ) = explode( ':', wp_unslash( $_COOKIE[ $rp_cookie ] ), 2 );
+	if ( $_cookie->get( $rp_cookie ) && 0 < strpos( $_cookie->get( $rp_cookie ), ':' ) ) {
+		list( $rp_login, $rp_key ) = explode( ':', wp_unslash( $_cookie->get( $rp_cookie ) ), 2 );
 		$user = check_password_reset_key( $rp_key, $rp_login );
 		if ( $_post->get( 'pass1' ) && ! hash_equals( $rp_key, $_post->get( 'rp_key' ) ) ) {
 			$user = false;
@@ -609,9 +610,9 @@ case 'rp' :
 	if ( ! $user || is_wp_error( $user ) ) {
 		setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
 		if ( $user && $user->get_error_code() === 'expired_key' ) {
-					wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=expiredkey' ) );
+			wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=expiredkey' ) );
 		} else {
-					wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=invalidkey' ) );
+			wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=invalidkey' ) );
 		}
 		exit;
 	}
@@ -872,12 +873,12 @@ default:
 	$errors = $user;
 	// Clear errors if loggedout is set.
 	if ( $_get->get( 'loggedout' ) || $reauth ) {
-			$errors = new WP_Error();
+		$errors = new WP_Error();
 	}
 
 	if ( $app->get( 'interim_login' ) ) {
 		if ( ! $errors->get_error_code() ) {
-					$errors->add( 'expired', __( 'Your session has expired. Please log in to continue where you left off.' ), 'message' );
+			$errors->add( 'expired', __( 'Your session has expired. Please log in to continue where you left off.' ), 'message' );
 		}
 	} else {
 		// Some parts of this script use the main login form to display a message
@@ -914,7 +915,7 @@ default:
 	login_header(__('Log In'), '', $errors);
 
 	if ( $_post->get( 'log' ) ) {
-			$user_login = ( 'incorrect_password' == $errors->get_error_code() || 'empty_password' == $errors->get_error_code() ) ? esc_attr(wp_unslash($_POST['log'])) : '';
+		$user_login = ( 'incorrect_password' == $errors->get_error_code() || 'empty_password' == $errors->get_error_code() ) ? esc_attr( wp_unslash( $_post->get( 'log' ) ) ) : '';
 	}
 	$rememberme = ! empty( $_post->get( 'rememberme' ) );
 

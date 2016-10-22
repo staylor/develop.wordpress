@@ -9,9 +9,14 @@
  * @subpackage Administration
  */
 
-if ( ! isset( $_GET['inline'] ) )
-	define( 'IFRAME_REQUEST' , true );
+require( ABSPATH . 'vendor/autoload.php' );
 
+$app = WP\getApp();
+$_get = $app['request']->query;
+
+if ( ! $_get->get( 'inline' ) ) {
+	define( 'IFRAME_REQUEST' , true );
+}
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 

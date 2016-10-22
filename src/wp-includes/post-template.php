@@ -576,33 +576,33 @@ function get_body_class( $class = '' ) {
 	$classes = [];
 
 	if ( is_rtl() ) {
-			$classes[] = 'rtl';
+		$classes[] = 'rtl';
 	}
 
 	if ( is_front_page() ) {
-			$classes[] = 'home';
+		$classes[] = 'home';
 	}
 	if ( is_home() ) {
-			$classes[] = 'blog';
+		$classes[] = 'blog';
 	}
 	if ( is_archive() ) {
-			$classes[] = 'archive';
+		$classes[] = 'archive';
 	}
 	if ( is_date() ) {
-			$classes[] = 'date';
+		$classes[] = 'date';
 	}
 	if ( is_search() ) {
 		$classes[] = 'search';
 		$classes[] = $wp_query->posts ? 'search-results' : 'search-no-results';
 	}
 	if ( is_paged() ) {
-			$classes[] = 'paged';
+		$classes[] = 'paged';
 	}
 	if ( is_attachment() ) {
-			$classes[] = 'attachment';
+		$classes[] = 'attachment';
 	}
 	if ( is_404() ) {
-			$classes[] = 'error404';
+		$classes[] = 'error404';
 	}
 
 	if ( is_single() ) {
@@ -619,9 +619,9 @@ function get_body_class( $class = '' ) {
 				$post_format = get_post_format( $post->ID );
 
 				if ( $post_format && !is_wp_error($post_format) ) {
-									$classes[] = 'single-format-' . sanitize_html_class( $post_format );
+					$classes[] = 'single-format-' . sanitize_html_class( $post_format );
 				} else {
-									$classes[] = 'single-format-standard';
+					$classes[] = 'single-format-standard';
 				}
 			}
 		}
@@ -736,34 +736,34 @@ function get_body_class( $class = '' ) {
 	$page = $wp_query->get( 'page' );
 
 	if ( ! $page || $page < 2 ) {
-			$page = $wp_query->get( 'paged' );
+		$page = $wp_query->get( 'paged' );
 	}
 
 	if ( $page && $page > 1 && ! is_404() ) {
 		$classes[] = 'paged-' . $page;
 
 		if ( is_single() ) {
-					$classes[] = 'single-paged-' . $page;
+			$classes[] = 'single-paged-' . $page;
 		} elseif ( is_page() ) {
-					$classes[] = 'page-paged-' . $page;
+			$classes[] = 'page-paged-' . $page;
 		} elseif ( is_category() ) {
-					$classes[] = 'category-paged-' . $page;
+			$classes[] = 'category-paged-' . $page;
 		} elseif ( is_tag() ) {
-					$classes[] = 'tag-paged-' . $page;
+			$classes[] = 'tag-paged-' . $page;
 		} elseif ( is_date() ) {
-					$classes[] = 'date-paged-' . $page;
+			$classes[] = 'date-paged-' . $page;
 		} elseif ( is_author() ) {
-					$classes[] = 'author-paged-' . $page;
+			$classes[] = 'author-paged-' . $page;
 		} elseif ( is_search() ) {
-					$classes[] = 'search-paged-' . $page;
+			$classes[] = 'search-paged-' . $page;
 		} elseif ( is_post_type_archive() ) {
-					$classes[] = 'post-type-paged-' . $page;
+			$classes[] = 'post-type-paged-' . $page;
 		}
 	}
 
 	if ( ! empty( $class ) ) {
 		if ( !is_array( $class ) ) {
-					$class = preg_split( '#\s+#', $class );
+			$class = preg_split( '#\s+#', $class );
 		}
 		$classes = array_merge( $classes, $class );
 	} else {
@@ -803,14 +803,16 @@ function post_password_required( $post = null ) {
 		return apply_filters( 'post_password_required', false, $post );
 	}
 
-	if ( ! isset( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] ) ) {
+	$_cookie = $app['request']->cookies;
+
+	if ( ! $_cookie->get( 'wp-postpass_' . COOKIEHASH ) ) {
 		/** This filter is documented in wp-includes/post.php */
 		return apply_filters( 'post_password_required', true, $post );
 	}
 
 	$hasher = $app['password.hasher'];;
 
-	$hash = wp_unslash( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
+	$hash = wp_unslash( $_cookie->get( 'wp-postpass_' . COOKIEHASH ) );
 	if ( 0 !== strpos( $hash, '$P$B' ) ) {
 		$required = true;
 	} else {

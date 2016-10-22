@@ -26,32 +26,6 @@ function wp_get_server_protocol() {
 }
 
 /**
- * Turn register globals off.
- *
- * @since 2.1.0
- * @access private
- */
-function wp_unregister_GLOBALS() {
-	if ( ! ini_get( 'register_globals' ) ) {
-		return;
-	}
-
-	if ( isset( $_REQUEST['GLOBALS'] ) ) {
-		die( 'GLOBALS overwrite attempt detected' );
-	}
-
-	// Variables that shouldn't be unset
-	$no_unset = array( 'GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES', 'table_prefix' );
-
-	$input = array_merge( $_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset( $_SESSION ) && is_array( $_SESSION ) ? $_SESSION : [] );
-	foreach ( $input as $k => $v ) {
-		if ( !in_array( $k, $no_unset ) && isset( $GLOBALS[$k] ) ) {
-			unset( $GLOBALS[$k] );
-		}
-	}
-}
-
-/**
  * Check for the required PHP version, and the MySQL extension or
  * a database drop-in.
  *
@@ -100,7 +74,7 @@ function wp_check_php_mysql_versions() {
 function wp_favicon_request() {
 	$app = getApp();
 	if ( '/favicon.ico' === $app['request.uri'] ) {
-		header('Content-Type: image/vnd.microsoft.icon');
+		header( 'Content-Type: image/vnd.microsoft.icon' );
 		exit;
 	}
 }
@@ -123,7 +97,7 @@ function wp_favicon_request() {
  */
 function wp_maintenance() {
 	if ( ! file_exists( ABSPATH . '.maintenance' ) || wp_installing() ) {
-			return;
+		return;
 	}
 
 	global $upgrading;
@@ -131,7 +105,7 @@ function wp_maintenance() {
 	include( ABSPATH . '.maintenance' );
 	// If the $upgrading timestamp is older than 10 minutes, don't die.
 	if ( ( time() - $upgrading ) >= 600 ) {
-			return;
+		return;
 	}
 
 	/**
@@ -609,21 +583,28 @@ function wp_set_internal_encoding() {
  * @access private
  */
 function wp_magic_quotes() {
+	$app = getApp();
+	$_get = $app['request']->query;
+	$_post = $app['request']->request;
+	$_cookie = $app['request']->cookies;
+	$_server = $app['request']->server;
+	$_request = $app['request']->attributes;
+
 	// If already slashed, strip.
 	if ( get_magic_quotes_gpc() ) {
-		$_GET    = stripslashes_deep( $_GET    );
-		$_POST   = stripslashes_deep( $_POST   );
-		$_COOKIE = stripslashes_deep( $_COOKIE );
+		$_get->replace( stripslashes_deep( $_get->all() ) );
+		$_post->replace( stripslashes_deep( $_post->all() ) );
+		$_cookie->replace( stripslashes_deep( $_cookie->all() ) );
 	}
 
 	// Escape with wpdb.
-	$_GET    = add_magic_quotes( $_GET    );
-	$_POST   = add_magic_quotes( $_POST   );
-	$_COOKIE = add_magic_quotes( $_COOKIE );
-	$_SERVER = add_magic_quotes( $_SERVER );
+	$_get->replace( add_magic_quotes( $_get->all() ) );
+	$_post->replace( add_magic_quotes( $_post->all() ) );
+	$_cookie->replace( add_magic_quotes( $_cookie->all() ) );
+	$_server->replace( add_magic_quotes( $_server->all ) );
 
 	// Force REQUEST to be GET + POST.
-	$_REQUEST = array_merge( $_GET, $_POST );
+	$_request->replace( array_merge( $_get->all(), $_post->all() ) );
 }
 
 /**

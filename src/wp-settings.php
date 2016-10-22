@@ -45,9 +45,6 @@ ini_set( 'magic_quotes_sybase',  0 );
 // WordPress calculates offsets from UTC.
 date_default_timezone_set( 'UTC' );
 
-// Turn register_globals off.
-wp_unregister_GLOBALS();
-
 // Check if we have received a request due to missing favicon.ico
 wp_favicon_request();
 

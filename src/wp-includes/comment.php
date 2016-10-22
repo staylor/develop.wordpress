@@ -548,7 +548,9 @@ function wp_set_comment_cookies($comment, $user) {
  * @since 2.0.4
  */
 function sanitize_comment_cookies() {
-	if ( isset( $_COOKIE['comment_author_' . COOKIEHASH] ) ) {
+	$app = getApp();
+	$_cookie = $app['request']->cookies;
+	if ( $_cookie->get( 'comment_author_' . COOKIEHASH ) ) {
 		/**
 		 * Filters the comment author's name cookie before it is set.
 		 *
@@ -559,13 +561,13 @@ function sanitize_comment_cookies() {
 		 *
 		 * @param string $author_cookie The comment author name cookie.
 		 */
-		$comment_author = apply_filters( 'pre_comment_author_name', $_COOKIE['comment_author_' . COOKIEHASH] );
+		$comment_author = apply_filters( 'pre_comment_author_name', $_cookie->get( 'comment_author_' . COOKIEHASH ) );
 		$comment_author = wp_unslash($comment_author);
 		$comment_author = esc_attr($comment_author);
-		$_COOKIE['comment_author_' . COOKIEHASH] = $comment_author;
+		$_cookie->set( 'comment_author_' . COOKIEHASH, $comment_author );
 	}
 
-	if ( isset( $_COOKIE['comment_author_email_' . COOKIEHASH] ) ) {
+	if ( $_cookie->get( 'comment_author_email_' . COOKIEHASH ) ) {
 		/**
 		 * Filters the comment author's email cookie before it is set.
 		 *
@@ -576,13 +578,13 @@ function sanitize_comment_cookies() {
 		 *
 		 * @param string $author_email_cookie The comment author email cookie.
 		 */
-		$comment_author_email = apply_filters( 'pre_comment_author_email', $_COOKIE['comment_author_email_' . COOKIEHASH] );
+		$comment_author_email = apply_filters( 'pre_comment_author_email', $_cookie->get( 'comment_author_email_' . COOKIEHASH ) );
 		$comment_author_email = wp_unslash($comment_author_email);
 		$comment_author_email = esc_attr($comment_author_email);
-		$_COOKIE['comment_author_email_'.COOKIEHASH] = $comment_author_email;
+		$_cookie->set( 'comment_author_email_' . COOKIEHASH, $comment_author_email );
 	}
 
-	if ( isset( $_COOKIE['comment_author_url_' . COOKIEHASH] ) ) {
+	if ( $_cookie->get( 'comment_author_url_' . COOKIEHASH ) ) {
 		/**
 		 * Filters the comment author's URL cookie before it is set.
 		 *
@@ -593,9 +595,9 @@ function sanitize_comment_cookies() {
 		 *
 		 * @param string $author_url_cookie The comment author URL cookie.
 		 */
-		$comment_author_url = apply_filters( 'pre_comment_author_url', $_COOKIE['comment_author_url_' . COOKIEHASH] );
+		$comment_author_url = apply_filters( 'pre_comment_author_url', $_cookie->get( 'comment_author_url_' . COOKIEHASH ) );
 		$comment_author_url = wp_unslash($comment_author_url);
-		$_COOKIE['comment_author_url_'.COOKIEHASH] = $comment_author_url;
+		$_cookie->set( 'comment_author_url_' . COOKIEHASH, $comment_author_url );
 	}
 }
 
@@ -1620,22 +1622,13 @@ function wp_transition_comment_status($new_status, $old_status, $comment) {
  * @return array Comment author, email, url respectively.
  */
 function wp_get_current_commenter() {
+	$app = getApp();
+	$_cookie = $app['request']->cookies;
 	// Cookies should already be sanitized.
 
-	$comment_author = '';
-	if ( isset($_COOKIE['comment_author_'.COOKIEHASH]) ) {
-			$comment_author = $_COOKIE['comment_author_'.COOKIEHASH];
-	}
-
-	$comment_author_email = '';
-	if ( isset($_COOKIE['comment_author_email_'.COOKIEHASH]) ) {
-			$comment_author_email = $_COOKIE['comment_author_email_'.COOKIEHASH];
-	}
-
-	$comment_author_url = '';
-	if ( isset($_COOKIE['comment_author_url_'.COOKIEHASH]) ) {
-			$comment_author_url = $_COOKIE['comment_author_url_'.COOKIEHASH];
-	}
+	$comment_author = $_cookie->get( 'comment_author_' . COOKIEHASH, '' );
+	$comment_author_email = $_cookie->get( 'comment_author_email_' . COOKIEHASH, '' );
+	$comment_author_url = $_cookie->get( 'comment_author_url_' . COOKIEHASH, '' );
 
 	/**
 	 * Filters the current commenter's name, email, and URL.
@@ -1650,7 +1643,7 @@ function wp_get_current_commenter() {
 	 *     @type string $comment_author_url   The URL address of the `$comment_author`. Default empty.
 	 * }
 	 */
-	return apply_filters( 'wp_get_current_commenter', compact('comment_author', 'comment_author_email', 'comment_author_url') );
+	return apply_filters( 'wp_get_current_commenter', compact( 'comment_author', 'comment_author_email', 'comment_author_url' ) );
 }
 
 /**

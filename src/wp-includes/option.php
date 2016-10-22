@@ -817,18 +817,20 @@ function wp_user_settings() {
 		return;
 	}
 
+	$app = getApp();
 	$settings = (string) get_user_option( 'user-settings', $user_id );
+	$_cookie = $app['request']->cookies;
 
-	if ( isset( $_COOKIE['wp-settings-' . $user_id] ) ) {
-		$cookie = preg_replace( '/[^A-Za-z0-9=&_]/', '', $_COOKIE['wp-settings-' . $user_id] );
+	if ( $_cookie->get( 'wp-settings-' . $user_id ) ) {
+		$cookie = preg_replace( '/[^A-Za-z0-9=&_]/', '', $_cookie->get( 'wp-settings-' . $user_id ) );
 
 		// No change or both empty
 		if ( $cookie == $settings ) {
-					return;
+			return;
 		}
 
 		$last_saved = (int) get_user_option( 'user-settings-time', $user_id );
-		$current = isset( $_COOKIE['wp-settings-time-' . $user_id]) ? preg_replace( '/[^0-9]/', '', $_COOKIE['wp-settings-time-' . $user_id] ) : 0;
+		$current = $_cookie->get( 'wp-settings-time-' . $user_id ) ? preg_replace( '/[^0-9]/', '', $_cookie->get( 'wp-settings-time-' . $user_id ) ) : 0;
 
 		// The cookie is newer than the saved value. Update the user_option and leave the cookie as-is
 		if ( $current > $last_saved ) {
@@ -842,7 +844,7 @@ function wp_user_settings() {
 	$secure = ( 'https' === parse_url( admin_url(), PHP_URL_SCHEME ) );
 	setcookie( 'wp-settings-' . $user_id, $settings, time() + YEAR_IN_SECONDS, SITECOOKIEPATH, null, $secure );
 	setcookie( 'wp-settings-time-' . $user_id, time(), time() + YEAR_IN_SECONDS, SITECOOKIEPATH, null, $secure );
-	$_COOKIE['wp-settings-' . $user_id] = $settings;
+	$_cookie->set( 'wp-settings-' . $user_id, $settings );
 }
 
 /**
@@ -941,8 +943,11 @@ function get_all_user_settings() {
 
 	$user_settings = [];
 
-	if ( isset( $_COOKIE['wp-settings-' . $user_id] ) ) {
-		$cookie = preg_replace( '/[^A-Za-z0-9=&_-]/', '', $_COOKIE['wp-settings-' . $user_id] );
+	$app = getApp();
+	$_cookie = $app['request']->cookies;
+
+	if ( $_cookie->get( 'wp-settings-' . $user_id ) ) {
+		$cookie = preg_replace( '/[^A-Za-z0-9=&_-]/', '', $_cookie->get( 'wp-settings-' . $user_id ) );
 
 		if ( strpos( $cookie, '=' ) ) { // '=' cannot be 1st char
 			parse_str( $cookie, $user_settings );
