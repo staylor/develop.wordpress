@@ -909,7 +909,7 @@ default:
 
 	// Clear any stale cookies.
 	if ( $reauth ) {
-			wp_clear_auth_cookie();
+		wp_clear_auth_cookie();
 	}
 
 	login_header(__('Log In'), '', $errors);

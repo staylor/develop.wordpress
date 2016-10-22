@@ -1589,7 +1589,7 @@ function wp_get_raw_referer() {
 
 	if ( ! empty( $_request_referer ) ) {
 		return wp_unslash( $_request_referer );
-	} else if ( ! empty( $_server_referer ) ) {
+	} elseif ( ! empty( $_server_referer ) ) {
 		return wp_unslash( $_server_referer );
 	}
 

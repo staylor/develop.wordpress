@@ -194,8 +194,8 @@ class Control {
 		if ( empty( $this->active_callback ) ) {
 			$this->active_callback = array( $this, 'active_callback' );
 		}
-		self::$instance_count++;
-		$this->instance_number = self::$instance_count;
+		static::$instance_count++;
+		$this->instance_number = static::$instance_count;
 
 		// Process settings.
 		if ( ! isset( $this->settings ) ) {
@@ -207,7 +207,7 @@ class Control {
 			foreach ( $this->settings as $key => $setting ) {
 				$settings[ $key ] = $this->manager->get_setting( $setting );
 			}
-		} else if ( is_string( $this->settings ) ) {
+		} elseif ( is_string( $this->settings ) ) {
 			$this->setting = $this->manager->get_setting( $this->settings );
 			$settings['default'] = $this->setting;
 		}

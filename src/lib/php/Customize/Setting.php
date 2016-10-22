@@ -160,7 +160,7 @@ class Setting {
 
 			// Allow option settings to indicate whether they should be autoloaded.
 			if ( 'option' === $this->type && isset( $args['autoload'] ) ) {
-				self::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['autoload'] = $args['autoload'];
+				static::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['autoload'] = $args['autoload'];
 			}
 		}
 	}
@@ -193,11 +193,11 @@ class Setting {
 	 */
 	protected function aggregate_multidimensional() {
 		$id_base = $this->id_data['base'];
-		if ( ! isset( self::$aggregated_multidimensionals[ $this->type ] ) ) {
-			self::$aggregated_multidimensionals[ $this->type ] = [];
+		if ( ! isset( static::$aggregated_multidimensionals[ $this->type ] ) ) {
+			static::$aggregated_multidimensionals[ $this->type ] = [];
 		}
-		if ( ! isset( self::$aggregated_multidimensionals[ $this->type ][ $id_base ] ) ) {
-			self::$aggregated_multidimensionals[ $this->type ][ $id_base ] = array(
+		if ( ! isset( static::$aggregated_multidimensionals[ $this->type ][ $id_base ] ) ) {
+			static::$aggregated_multidimensionals[ $this->type ][ $id_base ] = array(
 				'previewed_instances'       => [], // Calling preview() will add the $setting to the array.
 				'preview_applied_instances' => [], // Flags for which settings have had their values applied.
 				'root_value'                => $this->get_root_value( [] ), // Root value for initial state, manipulated by preview and update calls.
@@ -221,7 +221,7 @@ class Setting {
 	 * @ignore
 	 */
 	static public function reset_aggregated_multidimensionals() {
-		self::$aggregated_multidimensionals = [];
+		static::$aggregated_multidimensionals = [];
 	}
 
 	/**
@@ -296,7 +296,7 @@ class Setting {
 		// Since no post value was defined, check if we have an initial value set.
 		if ( ! $needs_preview ) {
 			if ( $this->is_multidimensional_aggregated ) {
-				$root = self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
+				$root = static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
 				$value = $this->multidimensional_get( $root, $this->id_data['keys'], $undefined );
 			} else {
 				$default = $this->default;
@@ -320,23 +320,23 @@ class Setting {
 			if ( ! $is_multidimensional ) {
 				add_filter( "theme_mod_{$id_base}", array( $this, '_preview_filter' ) );
 			} else {
-				if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
+				if ( empty( static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
 					// Only add this filter once for this ID base.
 					add_filter( "theme_mod_{$id_base}", $multidimensional_filter );
 				}
-				self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
+				static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
 			}
 			break;
 		case 'option':
 			if ( ! $is_multidimensional ) {
 				add_filter( "pre_option_{$id_base}", array( $this, '_preview_filter' ) );
 			} else {
-				if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
+				if ( empty( static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
 					// Only add these filters once for this ID base.
 					add_filter( "option_{$id_base}", $multidimensional_filter );
 					add_filter( "default_option_{$id_base}", $multidimensional_filter );
 				}
-				self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
+				static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
 			}
 			break;
 		default :
@@ -384,7 +384,7 @@ class Setting {
 	 * @see Setting::_multidimensional_preview_filter()
 	 */
 	final public function _clear_aggregated_multidimensional_preview_applied_flag() {
-		unset( self::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['preview_applied_instances'][ $this->id ] );
+		unset( static::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['preview_applied_instances'][ $this->id ] );
 	}
 
 	/**
@@ -440,27 +440,27 @@ class Setting {
 		$id_base = $this->id_data['base'];
 
 		// If no settings have been previewed yet (which should not be the case, since $this is), just pass through the original value.
-		if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
+		if ( empty( static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
 			return $original;
 		}
 
-		foreach ( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] as $previewed_setting ) {
+		foreach ( static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] as $previewed_setting ) {
 			// Skip applying previewed value for any settings that have already been applied.
-			if ( ! empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['preview_applied_instances'][ $previewed_setting->id ] ) ) {
+			if ( ! empty( static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['preview_applied_instances'][ $previewed_setting->id ] ) ) {
 				continue;
 			}
 
 			// Do the replacements of the posted/default sub value into the root value.
 			$value = $previewed_setting->post_value( $previewed_setting->default );
-			$root = self::$aggregated_multidimensionals[ $previewed_setting->type ][ $id_base ]['root_value'];
+			$root = static::$aggregated_multidimensionals[ $previewed_setting->type ][ $id_base ]['root_value'];
 			$root = $previewed_setting->multidimensional_replace( $root, $previewed_setting->id_data['keys'], $value );
-			self::$aggregated_multidimensionals[ $previewed_setting->type ][ $id_base ]['root_value'] = $root;
+			static::$aggregated_multidimensionals[ $previewed_setting->type ][ $id_base ]['root_value'] = $root;
 
 			// Mark this setting having been applied so that it will be skipped when the filter is called again.
-			self::$aggregated_multidimensionals[ $previewed_setting->type ][ $id_base ]['preview_applied_instances'][ $previewed_setting->id ] = true;
+			static::$aggregated_multidimensionals[ $previewed_setting->type ][ $id_base ]['preview_applied_instances'][ $previewed_setting->id ] = true;
 		}
 
-		return self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
+		return static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
 	}
 
 	/**
@@ -585,7 +585,7 @@ class Setting {
 		$id_base = $this->id_data['base'];
 		if ( 'option' === $this->type ) {
 			return get_option( $id_base, $default );
-		} else if ( 'theme_mod' ) {
+		} elseif ( 'theme_mod' ) {
 			return get_theme_mod( $id_base, $default );
 		} else {
 			/*
@@ -610,11 +610,11 @@ class Setting {
 		$id_base = $this->id_data['base'];
 		if ( 'option' === $this->type ) {
 			$autoload = true;
-			if ( isset( self::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['autoload'] ) ) {
-				$autoload = self::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['autoload'];
+			if ( isset( static::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['autoload'] ) ) {
+				$autoload = static::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['autoload'];
 			}
 			return update_option( $id_base, $value, $autoload );
-		} else if ( 'theme_mod' ) {
+		} elseif ( 'theme_mod' ) {
 			set_theme_mod( $id_base, $value );
 			return true;
 		} else {
@@ -641,9 +641,9 @@ class Setting {
 			if ( ! $this->is_multidimensional_aggregated ) {
 				return $this->set_root_value( $value );
 			} else {
-				$root = self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
+				$root = static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
 				$root = $this->multidimensional_replace( $root, $this->id_data['keys'], $value );
-				self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'] = $root;
+				static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'] = $root;
 				return $this->set_root_value( $root );
 			}
 		} else {
@@ -695,7 +695,7 @@ class Setting {
 			 */
 			$value = apply_filters( "customize_value_{$id_base}", $value, $this );
 		} elseif ( $this->is_multidimensional_aggregated ) {
-			$root_value = self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
+			$root_value = static::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
 			$value = $this->multidimensional_get( $root_value, $this->id_data['keys'], $this->default );
 
 			// Ensure that the post value is used if the setting is previewed, since preview filters aren't applying on cached $root_value.

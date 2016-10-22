@@ -55,7 +55,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 
 		if ( wp_is_large_network( 'users' ) ) {
 			$args['search'] = ltrim( $args['search'], '*' );
-		} else if ( '' !== $args['search'] ) {
+		} elseif ( '' !== $args['search'] ) {
 			$args['search'] = trim( $args['search'], '*' );
 			$args['search'] = '*' . $args['search'] . '*';
 		}

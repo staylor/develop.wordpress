@@ -1611,7 +1611,7 @@ class Manager {
 		);
 		if ( isset( $this->context_sidebar_instance_number ) ) {
 			$context['sidebar_instance_number'] = $this->context_sidebar_instance_number;
-		} else if ( isset( $sidebar_args['id'] ) && isset( $this->sidebar_instance_count[ $sidebar_args['id'] ] ) ) {
+		} elseif ( isset( $sidebar_args['id'] ) && isset( $this->sidebar_instance_count[ $sidebar_args['id'] ] ) ) {
 			$context['sidebar_instance_number'] = $this->sidebar_instance_count[ $sidebar_args['id'] ];
 		}
 

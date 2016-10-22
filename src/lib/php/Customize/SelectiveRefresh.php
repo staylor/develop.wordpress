@@ -322,7 +322,7 @@ class SelectiveRefresh {
 		$partials = $app['request']->request->get( 'partials' );
 		if ( ! is_customize_preview() ) {
 			wp_send_json_error( 'expected_customize_preview', 403 );
-		} else if ( ! $partials ) {
+		} elseif ( ! $partials ) {
 			wp_send_json_error( 'missing_partials', 400 );
 		}
 

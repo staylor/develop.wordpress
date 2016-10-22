@@ -162,7 +162,7 @@ function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_
 
 	if ( is_null( $callback_args ) ) {
 		$callback_args = $private_callback_args;
-	} else if ( is_array( $callback_args ) ) {
+	} elseif ( is_array( $callback_args ) ) {
 		$callback_args = array_merge( $callback_args, $private_callback_args );
 	}
 

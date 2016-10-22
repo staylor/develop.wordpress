@@ -584,7 +584,7 @@ function get_oembed_response_data_rich( $data, $post, $width, $height ) {
 	if ( 'attachment' === get_post_type( $post ) ) {
 		if ( wp_attachment_is_image( $post ) ) {
 			$thumbnail_id = $post->ID;
-		} else if ( wp_attachment_is( 'video', $post ) ) {
+		} elseif ( wp_attachment_is( 'video', $post ) ) {
 			$thumbnail_id = get_post_thumbnail_id( $post );
 			$data['type'] = 'video';
 		}

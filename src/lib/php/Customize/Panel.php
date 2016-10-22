@@ -161,8 +161,8 @@ class Panel {
 		if ( empty( $this->active_callback ) ) {
 			$this->active_callback = array( $this, 'active_callback' );
 		}
-		self::$instance_count++;
-		$this->instance_number = self::$instance_count;
+		static::$instance_count++;
+		$this->instance_number = static::$instance_count;
 
 		$this->sections = []; // Users cannot customize the $sections array.
 	}

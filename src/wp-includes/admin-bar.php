@@ -333,7 +333,7 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 			] );
 		}
 
-	} else if ( current_user_can( 'read' ) ) {
+	} elseif ( current_user_can( 'read' ) ) {
 		// We're on the front end, link to the Dashboard.
 		$wp_admin_bar->add_menu( [
 			'parent' => 'site-name',

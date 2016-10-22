@@ -41,7 +41,7 @@ function register_rest_route( $namespace, $route, $args = [], $override = false 
 		 */
 		_doing_it_wrong( 'register_rest_route', __( 'Routes must be namespaced with plugin or theme name and version.' ), '4.4.0' );
 		return false;
-	} else if ( empty( $route ) ) {
+	} elseif ( empty( $route ) ) {
 		_doing_it_wrong( 'register_rest_route', __( 'Route must be specified.' ), '4.4.0' );
 		return false;
 	}

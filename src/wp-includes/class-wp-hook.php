@@ -254,7 +254,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 
 		if ( false === $priority ) {
 			$this->callbacks = [];
-		} else if ( isset( $this->callbacks[ $priority ] ) ) {
+		} elseif ( isset( $this->callbacks[ $priority ] ) ) {
 			unset( $this->callbacks[ $priority ] );
 		}
 
