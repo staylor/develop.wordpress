@@ -3225,10 +3225,12 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 		$menu_order = 0;
 	}
 
-	$post_password = isset( $postarr['post_password'] ) ? $postarr['post_password'] : '';
-	if ( 'private' == $post_status ) {
-		$post_password = '';
+	$post_pw = isset( $postarr['post_password'] ) ? $postarr['post_password'] : '';
+	if ( 'private' === $post_status ) {
+		$post_pw = '';
 	}
+
+	$post_password = $post_pw;
 
 	if ( isset( $postarr['post_parent'] ) ) {
 		$post_parent = (int) $postarr['post_parent'];

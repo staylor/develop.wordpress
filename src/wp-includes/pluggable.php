@@ -2106,15 +2106,15 @@ if ( !function_exists('wp_generate_password') ) :
 function wp_generate_password( $length = 12, $special_chars = true, $extra_special_chars = false ) {
 	$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 	if ( $special_chars ) {
-			$chars .= '!@#$%^&*()';
+		$chars .= '!@#$%^&*()';
 	}
 	if ( $extra_special_chars ) {
-			$chars .= '-_ []{}<>~`+=,.;:/?|';
+		$chars .= '-_ []{}<>~`+=,.;:/?|';
 	}
 
-	$password = '';
+	$generated = '';
 	for ( $i = 0; $i < $length; $i++ ) {
-		$password .= substr($chars, wp_rand(0, strlen($chars) - 1), 1);
+		$generated .= substr( $chars, wp_rand( 0, strlen( $chars ) - 1 ), 1 );
 	}
 
 	/**
@@ -2122,9 +2122,9 @@ function wp_generate_password( $length = 12, $special_chars = true, $extra_speci
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $password The generated password.
+	 * @param string $generated The generated password.
 	 */
-	return apply_filters( 'random_password', $password );
+	return apply_filters( 'random_password', $generated );
 }
 endif;
 

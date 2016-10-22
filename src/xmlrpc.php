@@ -6,7 +6,7 @@
  */
 
 use WP\View;
-use WP\XMLRPC\{Server,ServerInterface,Exception};
+use WP\XMLRPC\{Server,ServerInterface,ServerException};
 
 /**
  * Whether this is an XML-RPC Request
@@ -61,7 +61,7 @@ $app->set( 'post_default_title', '' );
 $wp_xmlrpc_server_class = apply_filters( 'wp_xmlrpc_server_class', Server::class );
 $wp_xmlrpc_server = new $wp_xmlrpc_server_class;
 if ( ! ( $wp_xmlrpc_server instanceof ServerInterface ) ) {
-	throw new Exception( 'XMLRPC Server must implement ' . ServerInterface::class );
+	throw new ServerException( 'XMLRPC Server must implement ' . ServerInterface::class );
 }
 
 // Fire off the request
