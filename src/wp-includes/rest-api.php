@@ -656,8 +656,8 @@ function rest_cookie_check_errors( $result ) {
 	$_request = $app['request']->attributes;
 	if ( $_request->has( '_wpnonce' ) ) {
 		$nonce = $_request->get( '_wpnonce' );
-	} elseif ( isset( $_SERVER['HTTP_X_WP_NONCE'] ) ) {
-		$nonce = $_SERVER['HTTP_X_WP_NONCE'];
+	} elseif ( $app['request']->server->get( 'HTTP_X_WP_NONCE' ) ) {
+		$nonce = $app['request']->server->get( 'HTTP_X_WP_NONCE' );
 	}
 
 	if ( null === $nonce ) {

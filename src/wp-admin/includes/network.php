@@ -339,7 +339,7 @@ function network_step2( $errors = false ) {
 	$hostname          = get_clean_basedomain();
 	$slashed_home      = trailingslashit( get_option( 'home' ) );
 	$base              = parse_url( $slashed_home, PHP_URL_PATH );
-	$document_root_fix = str_replace( '\\', '/', realpath( $_SERVER['DOCUMENT_ROOT'] ) );
+	$document_root_fix = str_replace( '\\', '/', realpath( $app['request']->server->get( 'DOCUMENT_ROOT' ) ) );
 	$abspath_fix       = str_replace( '\\', '/', ABSPATH );
 	$home_path         = 0 === strpos( $abspath_fix, $document_root_fix ) ? $document_root_fix . $base : get_home_path();
 	$wp_siteurl_subdir = preg_replace( '#^' . preg_quote( $home_path, '#' ) . '#', '', $abspath_fix );

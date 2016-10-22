@@ -9,6 +9,7 @@ use function WP\getApp;
  * @property-read ParameterBag $_get
  * @property-read ParameterBag $_post
  * @property-read ParameterBag $_request
+ * @property-read ParameterBag $_cookie
  * @property-read ServerBag    $_server
  */
 trait Request {
@@ -30,6 +31,9 @@ trait Request {
 
 		case '_request':
 			return $app['request']->attributes;
+
+		case '_cookie':
+			return $app['request']->cookies;
 
 		case '_server':
 			return $app['request']->server;

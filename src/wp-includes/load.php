@@ -17,7 +17,8 @@ use function WP\getApp;
  * @return string The HTTP protocol. Default: HTTP/1.0.
  */
 function wp_get_server_protocol() {
-	$protocol = $_SERVER['SERVER_PROTOCOL'];
+	$app = getApp();
+	$protocol = $app['request']->server->get( 'SERVER_PROTOCOL' );
 	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0' ) ) ) {
 		$protocol = 'HTTP/1.0';
 	}
@@ -31,12 +32,12 @@ function wp_get_server_protocol() {
  * @access private
  */
 function wp_unregister_GLOBALS() {
-	if ( !ini_get( 'register_globals' ) ) {
-			return;
+	if ( ! ini_get( 'register_globals' ) ) {
+		return;
 	}
 
 	if ( isset( $_REQUEST['GLOBALS'] ) ) {
-			die( 'GLOBALS overwrite attempt detected' );
+		die( 'GLOBALS overwrite attempt detected' );
 	}
 
 	// Variables that shouldn't be unset
@@ -44,79 +45,11 @@ function wp_unregister_GLOBALS() {
 
 	$input = array_merge( $_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset( $_SESSION ) && is_array( $_SESSION ) ? $_SESSION : [] );
 	foreach ( $input as $k => $v ) {
-			if ( !in_array( $k, $no_unset ) && isset( $GLOBALS[$k] ) ) {
+		if ( !in_array( $k, $no_unset ) && isset( $GLOBALS[$k] ) ) {
 			unset( $GLOBALS[$k] );
-	}
 		}
+	}
 }
-
-/**
- * Fix `$_SERVER` variables for various setups.
- *
- * @since 3.0.0
- * @access private
- *
- * @global string $PHP_SELF The filename of the currently executing script,
- *                          relative to the document root.
- */
-function wp_fix_server_vars() {
-	global $PHP_SELF;
-
-	$default_server_values = array(
-		'SERVER_SOFTWARE' => '',
-		'REQUEST_URI' => '',
-	);
-
-	$_SERVER = array_merge( $default_server_values, $_SERVER );
-
-	// Fix for IIS when running with PHP ISAPI
-	if ( empty( $_SERVER['REQUEST_URI'] ) || ( PHP_SAPI != 'cgi-fcgi' && preg_match( '/^Microsoft-IIS\//', $_SERVER['SERVER_SOFTWARE'] ) ) ) {
-
-		// IIS Mod-Rewrite
-		if ( isset( $_SERVER['HTTP_X_ORIGINAL_URL'] ) ) {
-			$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
-		}
-		// IIS Isapi_Rewrite
-		elseif ( isset( $_SERVER['HTTP_X_REWRITE_URL'] ) ) {
-			$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
-		} else {
-			// Use ORIG_PATH_INFO if there is no PATH_INFO
-			if ( !isset( $_SERVER['PATH_INFO'] ) && isset( $_SERVER['ORIG_PATH_INFO'] ) ) {
-							$_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
-			}
-
-			// Some IIS + PHP configurations puts the script-name in the path-info (No need to append it twice)
-			if ( isset( $_SERVER['PATH_INFO'] ) ) {
-				if ( $_SERVER['PATH_INFO'] == $_SERVER['SCRIPT_NAME'] ) {
-									$_SERVER['REQUEST_URI'] = $_SERVER['PATH_INFO'];
-				} else {
-									$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
-				}
-			}
-
-			// Append the query string if it exists and isn't null
-			if ( ! empty( $_SERVER['QUERY_STRING'] ) ) {
-				$_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
-			}
-		}
-	}
-
-	// Fix for PHP as CGI hosts that set SCRIPT_FILENAME to something ending in php.cgi for all requests
-	if ( isset( $_SERVER['SCRIPT_FILENAME'] ) && ( strpos( $_SERVER['SCRIPT_FILENAME'], 'php.cgi' ) == strlen( $_SERVER['SCRIPT_FILENAME'] ) - 7 ) ) {
-			$_SERVER['SCRIPT_FILENAME'] = $_SERVER['PATH_TRANSLATED'];
-	}
-
-	// Fix for Dreamhost and other PHP as CGI hosts
-	if ( strpos( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) !== false ) {
-			unset( $_SERVER['PATH_INFO'] );
-	}
-
-	// Fix empty PHP_SELF
-	$PHP_SELF = $_SERVER['PHP_SELF'];
-	if ( empty( $PHP_SELF ) ) {
-			$_SERVER['PHP_SELF'] = $PHP_SELF = preg_replace( '/(\?.*)?$/', '', $_SERVER["REQUEST_URI"] );
-	}
-	}
 
 /**
  * Check for the required PHP version, and the MySQL extension or
@@ -992,18 +925,8 @@ function wp_installing( $is_installing = null ) {
  * @return bool True if SSL, otherwise false.
  */
 function is_ssl() {
-	if ( isset( $_SERVER['HTTPS'] ) ) {
-		if ( 'on' == strtolower( $_SERVER['HTTPS'] ) ) {
-			return true;
-		}
-
-		if ( '1' == $_SERVER['HTTPS'] ) {
-			return true;
-		}
-	} elseif ( isset($_SERVER['SERVER_PORT'] ) && ( '443' == $_SERVER['SERVER_PORT'] ) ) {
-		return true;
-	}
-	return false;
+	$app = getApp();
+	return $app['request']->isSecure() || 443 === (int) $app['request']->getPort();
 }
 
 /**

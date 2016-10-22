@@ -399,9 +399,11 @@ function wp_http_supports( $capabilities = [], $url = null ) {
  * @return string URL of the origin. Empty string if no origin.
  */
 function get_http_origin() {
+	$app = getApp();
+
 	$origin = '';
-	if ( ! empty ( $_SERVER[ 'HTTP_ORIGIN' ] ) ) {
-			$origin = $_SERVER[ 'HTTP_ORIGIN' ];
+	if ( ! empty ( $app['request']->server->get( 'HTTP_ORIGIN' ) ) ) {
+		$origin = $app['request']->server->get( 'HTTP_ORIGIN' );
 	}
 
 	/**
@@ -493,18 +495,20 @@ function is_allowed_http_origin( $origin = null ) {
  *                      if headers are not sent.
  */
 function send_origin_headers() {
+	$app = getApp();
+
 	$origin = get_http_origin();
 
 	if ( is_allowed_http_origin( $origin ) ) {
-		@header( 'Access-Control-Allow-Origin: ' .  $origin );
-		@header( 'Access-Control-Allow-Credentials: true' );
-		if ( 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
-					exit;
+		header( 'Access-Control-Allow-Origin: ' .  $origin );
+		header( 'Access-Control-Allow-Credentials: true' );
+		if ( 'OPTIONS' === $app['request.method'] ) {
+			exit;
 		}
 		return $origin;
 	}
 
-	if ( 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
+	if ( 'OPTIONS' === $app['request.method'] ) {
 		status_header( 403 );
 		exit;
 	}

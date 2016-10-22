@@ -2581,7 +2581,7 @@ class Manager {
 	 * @return bool Whether the user agent is iOS.
 	 */
 	public function is_ios() {
-		return wp_is_mobile() && preg_match( '/iPad|iPod|iPhone/', $_SERVER['HTTP_USER_AGENT'] );
+		return wp_is_mobile() && preg_match( '/iPad|iPod|iPhone/', $this->app['request.useragent'] );
 	}
 
 	/**

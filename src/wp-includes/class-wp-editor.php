@@ -1157,8 +1157,10 @@ final class _WP_Editors {
 		$version = 'ver=' . $app['tinymce_version'];
 		$tmce_on = !empty(self::$mce_settings);
 
-		$compressed = $app['scripts.compress'] && $app['scripts.concat'] && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
-			&& false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip');
+		$compressed = $app['scripts.compress'] &&
+			$app['scripts.concat'] &&
+			$app['request']->server->has( 'HTTP_ACCEPT_ENCODING' ) &&
+			false !== stripos( $app['request']->server->get( 'HTTP_ACCEPT_ENCODING' ), 'gzip' );
 
 		$mceInit = $qtInit = '';
 		if ( $tmce_on ) {

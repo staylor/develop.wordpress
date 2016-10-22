@@ -45,7 +45,7 @@ if ( $mime[ 'type' ] ) {
 }
 
 header( 'Content-Type: ' . $mimetype ); // always send this
-if ( false === strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) ) {
+if ( false === strpos( $_server->get( 'SERVER_SOFTWARE' ), 'Microsoft-IIS' ) ) {
 	header( 'Content-Length: ' . filesize( $file ) );
 }
 
@@ -65,13 +65,13 @@ header( 'ETag: ' . $etag );
 header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 100000000 ) . ' GMT' );
 
 // Support for Conditional GET - use stripslashes to avoid formatting.php dependency
-$client_etag = isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) ? stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] ) : false;
+$client_etag = $_server->has( 'HTTP_IF_NONE_MATCH' ) ? stripslashes( $_server->has( 'HTTP_IF_NONE_MATCH' ) ) : false;
 
-if ( ! isset( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ) {
-	$_SERVER['HTTP_IF_MODIFIED_SINCE'] = false;
+if ( ! $_server->has( 'HTTP_IF_MODIFIED_SINCE' ) ) {
+	$_server->set( 'HTTP_IF_MODIFIED_SINCE', false );
 }
 
-$client_last_modified = trim( $_SERVER['HTTP_IF_MODIFIED_SINCE'] );
+$client_last_modified = trim( $_server->get( 'HTTP_IF_MODIFIED_SINCE' ) );
 // If string is empty, return 0. If not, attempt to parse into a timestamp
 $client_modified_timestamp = $client_last_modified ? strtotime( $client_last_modified ) : 0;
 

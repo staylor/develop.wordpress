@@ -272,7 +272,8 @@ class WP_Importer {
  * @return mixed
  */
 function get_cli_args( $param, $required = false ) {
-	$args = $_SERVER['argv'];
+	$app = getApp();
+	$args = $app['request']->server->get( 'argv' );
 
 	$out = [];
 

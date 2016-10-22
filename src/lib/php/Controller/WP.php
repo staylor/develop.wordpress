@@ -472,13 +472,13 @@ class WP extends Observer {
 			$headers['ETag'] = $wp_etag;
 
 			// Support for Conditional GET
-			if (isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) ) {
-				$client_etag = wp_unslash( $_SERVER['HTTP_IF_NONE_MATCH'] );
+			if ( $this->app->_server->get( 'HTTP_IF_NONE_MATCH' ) ) {
+				$client_etag = wp_unslash( $this->app->_server->get( 'HTTP_IF_NONE_MATCH' ) );
 			} else {
 				$client_etag = false;
 			}
 
-			$client_last_modified = empty( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ? '' : trim( $_SERVER['HTTP_IF_MODIFIED_SINCE'] );
+			$client_last_modified = empty( $this->app->_server->get( 'HTTP_IF_MODIFIED_SINCE' ) ) ? '' : trim( $this->app->_server->get( 'HTTP_IF_MODIFIED_SINCE' ) );
 			// If string is empty, return 0. If not, attempt to parse into a timestamp
 			$client_modified_timestamp = $client_last_modified ? strtotime( $client_last_modified) : 0;
 

@@ -102,12 +102,17 @@ function get_file_description( $file ) {
  * @return string Full filesystem path to the root of the WordPress installation
  */
 function get_home_path() {
+	$app = getApp();
+
 	$home    = set_url_scheme( get_option( 'home' ), 'http' );
 	$siteurl = set_url_scheme( get_option( 'siteurl' ), 'http' );
 	if ( ! empty( $home ) && 0 !== strcasecmp( $home, $siteurl ) ) {
 		$wp_path_rel_to_home = str_ireplace( $home, '', $siteurl ); /* $siteurl - $home */
-		$pos = strripos( str_replace( '\\', '/', $_SERVER['SCRIPT_FILENAME'] ), trailingslashit( $wp_path_rel_to_home ) );
-		$home_path = substr( $_SERVER['SCRIPT_FILENAME'], 0, $pos );
+		$pos = strripos(
+			str_replace( '\\', '/', $app['request']->server->get( 'SCRIPT_FILENAME' ) ),
+			trailingslashit( $wp_path_rel_to_home )
+		);
+		$home_path = substr( $app['request']->server->get( 'SCRIPT_FILENAME' ), 0, $pos );
 		$home_path = trailingslashit( $home_path );
 	} else {
 		$home_path = ABSPATH;
