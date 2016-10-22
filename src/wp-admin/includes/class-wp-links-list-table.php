@@ -94,8 +94,9 @@ class WP_Links_List_Table extends WP_List_Table {
 	protected function extra_tablenav( $which ) {
 		global $cat_id;
 
-		if ( 'top' != $which )
+		if ( 'top' != $which ) {
 			return;
+		}
 ?>
 		<div class="alignleft actions">
 <?php

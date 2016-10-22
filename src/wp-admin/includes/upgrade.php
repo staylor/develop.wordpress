@@ -1264,11 +1264,13 @@ function upgrade_300() {
 	$wpdb = $app['db'];
 	$wp_current_db_version = $app['wp_current_db_version'];
 
-	if ( $wp_current_db_version < 15093 )
+	if ( $wp_current_db_version < 15093 ) {
 		populate_roles_300();
+	}
 
-	if ( $wp_current_db_version < 14139 && is_multisite() && is_main_site() && ! defined( 'MULTISITE' ) && get_site_option( 'siteurl' ) === false )
+	if ( $wp_current_db_version < 14139 && is_multisite() && is_main_site() && ! defined( 'MULTISITE' ) && get_site_option( 'siteurl' ) === false ) {
 		add_site_option( 'siteurl', '' );
+	}
 
 	// 3.0 screen options key name changes.
 	if ( wp_should_upgrade_global_tables() ) {
@@ -1313,16 +1315,18 @@ function upgrade_330() {
 		$wpdb->query( "DELETE FROM $wpdb->usermeta WHERE meta_key IN ('show_admin_bar_admin', 'plugins_last_view')" );
 	}
 
-	if ( $wp_current_db_version >= 11548 )
+	if ( $wp_current_db_version >= 11548 ) {
 		return;
+	}
 
 	$sidebars_widgets = get_option( 'sidebars_widgets', [] );
 	$_sidebars_widgets = [];
 
-	if ( isset($sidebars_widgets['wp_inactive_widgets']) || empty($sidebars_widgets) )
+	if ( isset($sidebars_widgets['wp_inactive_widgets']) || empty($sidebars_widgets) ) {
 		$sidebars_widgets['array_version'] = 3;
-	elseif ( !isset($sidebars_widgets['array_version']) )
+	} elseif ( !isset($sidebars_widgets['array_version']) ) {
 		$sidebars_widgets['array_version'] = 1;
+	}
 
 	switch ( $sidebars_widgets['array_version'] ) {
 	case 1 :

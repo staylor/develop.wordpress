@@ -46,6 +46,7 @@ wp-tests-config.php
 
 # Operating system specific files
 .DS_Store
+.sonar
 
 # Ignore other .gitignore files to allow for personal customizations
 .gitignore

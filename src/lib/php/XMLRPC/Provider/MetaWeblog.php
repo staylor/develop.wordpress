@@ -87,9 +87,10 @@ class MetaWeblog implements ProviderInterface {
 
 		$page_template = '';
 		if ( empty( $content_struct['post_type'] ) || 'post' === $content_struct['post_type'] ) {
-			if ( $publish ) {
-				$cap  = 'publish_posts';
-			} elseif ( isset( $content_struct['post_status'] ) && 'publish' === $content_struct['post_status'] ) {
+			if (
+				$publish ||
+				( isset( $content_struct['post_status'] ) && 'publish' === $content_struct['post_status'] )
+			) {
 				$cap  = 'publish_posts';
 			} else {
 				$cap = 'edit_posts';
@@ -97,9 +98,10 @@ class MetaWeblog implements ProviderInterface {
 			$error_message = __( 'Sorry, you are not allowed to publish posts on this site.' );
 			$post_type = 'post';
 		} elseif ( 'page' === $content_struct['post_type'] ) {
-			if ( $publish ) {
-				$cap  = 'publish_pages';
-			} elseif ( isset( $content_struct['page_status'] ) && 'publish' === $content_struct['page_status'] ) {
+			if (
+				$publish ||
+				( isset( $content_struct['page_status'] ) && 'publish' === $content_struct['page_status'] )
+			) {
 				$cap  = 'publish_pages';
 			} else {
 				$cap = 'edit_pages';
