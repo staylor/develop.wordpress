@@ -245,8 +245,9 @@ Commenter avatars come from <a href="https://gravatar.com">Gravatar</a>.' );
 <blockquote>The XYZ Doohickey Company was founded in 1971, and has been providing quality doohickeys to the public ever since. Located in Gotham City, XYZ employs over 2,000 people and does all kinds of awesome things for the Gotham community.</blockquote>
 
 As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to delete this page and create new pages for your content. Have fun!" ), admin_url() );
-	if ( is_multisite() )
+	if ( is_multisite() ) {
 		$first_page = get_site_option( 'first_page', $first_page );
+	}
 	$first_post_guid = get_option( 'home' ) . '/?page_id=2';
 	$wpdb->insert( $wpdb->posts, array(
 		'post_author' => $user_id,
@@ -277,10 +278,11 @@ As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to d
 	update_option( 'widget_meta', array ( 2 => array ( 'title' => '' ), '_multiwidget' => 1 ) );
 	update_option( 'sidebars_widgets', array ( 'wp_inactive_widgets' => array (), 'sidebar-1' => array ( 0 => 'search-2', 1 => 'recent-posts-2', 2 => 'recent-comments-2', 3 => 'archives-2', 4 => 'categories-2', 5 => 'meta-2', ), 'array_version' => 3 ) );
 
-	if ( ! is_multisite() )
+	if ( ! is_multisite() ) {
 		update_user_meta( $user_id, 'show_welcome_panel', 1 );
-	elseif ( ! is_super_admin( $user_id ) && ! metadata_exists( 'user', $user_id, 'show_welcome_panel' ) )
+	} elseif ( ! is_super_admin( $user_id ) && ! metadata_exists( 'user', $user_id, 'show_welcome_panel' ) ) {
 		update_user_meta( $user_id, 'show_welcome_panel', 2 );
+	}
 
 	if ( is_multisite() ) {
 		// Flush rules to pick up the new page.
@@ -295,8 +297,9 @@ As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to d
 		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->usermeta WHERE user_id != %d AND meta_key = %s", $user_id, $app['db.table_prefix'] . 'capabilities' ) );
 
 		// Delete any caps that snuck into the previously active blog. (Hardcoded to blog 1 for now.) TODO: Get previous_blog_id.
-		if ( !is_super_admin( $user_id ) && $user_id != 1 )
+		if ( !is_super_admin( $user_id ) && $user_id != 1 ) {
 			$wpdb->delete( $wpdb->usermeta, array( 'user_id' => $user_id , 'meta_key' => $wpdb->base_prefix.'1_capabilities' ) );
+		}
 	}
 }
 endif;
@@ -428,26 +431,30 @@ function wp_upgrade() {
 	$wp_current_db_version = $app['wp_current_db_version'];
 
 	// We are up-to-date. Nothing to do.
-	if ( $app['wp_db_version'] == $wp_current_db_version )
+	if ( $app['wp_db_version'] == $wp_current_db_version ) {
 		return;
+	}
 
-	if ( ! is_blog_installed() )
+	if ( ! is_blog_installed() ) {
 		return;
+	}
 
 	wp_check_mysql_version();
 	wp_cache_flush();
 	pre_schema_upgrade();
 	make_db_current_silent();
 	upgrade_all();
-	if ( is_multisite() && is_main_site() )
+	if ( is_multisite() && is_main_site() ) {
 		upgrade_network();
+	}
 	wp_cache_flush();
 
 	if ( is_multisite() ) {
-		if ( $wpdb->get_row( "SELECT blog_id FROM {$wpdb->blog_versions} WHERE blog_id = '{$wpdb->blogid}'" ) )
+		if ( $wpdb->get_row( "SELECT blog_id FROM {$wpdb->blog_versions} WHERE blog_id = '{$wpdb->blogid}'" ) ) {
 			$wpdb->query( "UPDATE {$wpdb->blog_versions} SET db_version = '{$app['wp_db_version']}' WHERE blog_id = '{$wpdb->blogid}'" );
-		else
+		} else {
 			$wpdb->query( "INSERT INTO {$wpdb->blog_versions} ( `blog_id` , `db_version` , `last_updated` ) VALUES ( '{$wpdb->blogid}', '{$app['wp_db_version']}', NOW() );" );
+		}
 	}
 
 	/**
@@ -478,8 +485,9 @@ function upgrade_all() {
 	$app = getApp();
 
 	// We are up-to-date. Nothing to do.
-	if ( $app['wp_db_version'] == $wp_current_db_version )
+	if ( $app['wp_db_version'] == $wp_current_db_version ) {
 		return;
+	}
 
 	// If the version is not set in the DB, try to guess the version.
 	if ( empty( $wp_current_db_version ) ) {
@@ -487,12 +495,14 @@ function upgrade_all() {
 
 		// If the template option exists, we have 1.5.
 		$template = __get_option( 'template' );
-		if ( ! empty( $template ) )
+		if ( ! empty( $template ) ) {
 			$wp_current_db_version = 2541;
+		}
 	}
 
-	if ( $wp_current_db_version < 6039 )
+	if ( $wp_current_db_version < 6039 ) {
 		upgrade_230_options_table();
+	}
 
 	populate_options();
 
@@ -503,77 +513,101 @@ function upgrade_all() {
 		upgrade_130();
 	}
 
-	if ( $wp_current_db_version < 3308 )
+	if ( $wp_current_db_version < 3308 ) {
 		upgrade_160();
+	}
 
-	if ( $wp_current_db_version < 4772 )
+	if ( $wp_current_db_version < 4772 ) {
 		upgrade_210();
+	}
 
-	if ( $wp_current_db_version < 4351 )
+	if ( $wp_current_db_version < 4351 ) {
 		upgrade_old_slugs();
+	}
 
-	if ( $wp_current_db_version < 5539 )
+	if ( $wp_current_db_version < 5539 ) {
 		upgrade_230();
+	}
 
-	if ( $wp_current_db_version < 6124 )
+	if ( $wp_current_db_version < 6124 ) {
 		upgrade_230_old_tables();
+	}
 
-	if ( $wp_current_db_version < 7499 )
+	if ( $wp_current_db_version < 7499 ) {
 		upgrade_250();
+	}
 
-	if ( $wp_current_db_version < 7935 )
+	if ( $wp_current_db_version < 7935 ) {
 		upgrade_252();
+	}
 
-	if ( $wp_current_db_version < 8201 )
+	if ( $wp_current_db_version < 8201 ) {
 		upgrade_260();
+	}
 
-	if ( $wp_current_db_version < 8989 )
+	if ( $wp_current_db_version < 8989 ) {
 		upgrade_270();
+	}
 
-	if ( $wp_current_db_version < 10360 )
+	if ( $wp_current_db_version < 10360 ) {
 		upgrade_280();
+	}
 
-	if ( $wp_current_db_version < 11958 )
+	if ( $wp_current_db_version < 11958 ) {
 		upgrade_290();
+	}
 
-	if ( $wp_current_db_version < 15260 )
+	if ( $wp_current_db_version < 15260 ) {
 		upgrade_300();
+	}
 
-	if ( $wp_current_db_version < 19389 )
+	if ( $wp_current_db_version < 19389 ) {
 		upgrade_330();
+	}
 
-	if ( $wp_current_db_version < 20080 )
+	if ( $wp_current_db_version < 20080 ) {
 		upgrade_340();
+	}
 
-	if ( $wp_current_db_version < 22422 )
+	if ( $wp_current_db_version < 22422 ) {
 		upgrade_350();
+	}
 
-	if ( $wp_current_db_version < 25824 )
+	if ( $wp_current_db_version < 25824 ) {
 		upgrade_370();
+	}
 
-	if ( $wp_current_db_version < 26148 )
+	if ( $wp_current_db_version < 26148 ) {
 		upgrade_372();
+	}
 
-	if ( $wp_current_db_version < 26691 )
+	if ( $wp_current_db_version < 26691 ) {
 		upgrade_380();
+	}
 
-	if ( $wp_current_db_version < 29630 )
+	if ( $wp_current_db_version < 29630 ) {
 		upgrade_400();
+	}
 
-	if ( $wp_current_db_version < 33055 )
+	if ( $wp_current_db_version < 33055 ) {
 		upgrade_430();
+	}
 
-	if ( $wp_current_db_version < 33056 )
+	if ( $wp_current_db_version < 33056 ) {
 		upgrade_431();
+	}
 
-	if ( $wp_current_db_version < 35700 )
+	if ( $wp_current_db_version < 35700 ) {
 		upgrade_440();
+	}
 
-	if ( $wp_current_db_version < 36686 )
+	if ( $wp_current_db_version < 36686 ) {
 		upgrade_450();
+	}
 
-	if ( $wp_current_db_version < 37965 )
+	if ( $wp_current_db_version < 37965 ) {
 		upgrade_460();
+	}
 
 	maybe_disable_link_manager();
 
@@ -619,15 +653,15 @@ function upgrade_100() {
 	$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( 'links_rating_image' ) . '%', $wpdb->esc_like( 'wp-links/links-images/' ) . '%' ) );
 
 	$done_ids = $wpdb->get_results( "SELECT DISTINCT post_id FROM $wpdb->post2cat" );
-	if ( $done_ids) :
+	if ( $done_ids) {
 		$done_posts = [];
 		foreach ( $done_ids as $done_id ) :
 			$done_posts[] = $done_id->post_id;
 		endforeach;
 		$catwhere = ' AND ID NOT IN ( ' . implode( ',', $done_posts) . ' )';
-	else:
+	} else {
 		$catwhere = '';
-	endif;
+	}
 
 	$allposts = $wpdb->get_results( "SELECT ID, post_category FROM $wpdb->posts WHERE post_category != '0' $catwhere" );
 	if ( $allposts) :
@@ -741,10 +775,11 @@ function upgrade_130() {
 			$post_content = addslashes(deslash( $post->post_content) );
 			$post_title = addslashes(deslash( $post->post_title ) );
 			$post_excerpt = addslashes(deslash( $post->post_excerpt) );
-			if ( empty( $post->guid) )
+			if ( empty( $post->guid) ) {
 				$guid = get_permalink( $post->ID);
-			else
+			} else {
 				$guid = $post->guid;
+			}
 
 			$wpdb->update( $wpdb->posts, compact( 'post_title', 'post_content', 'post_excerpt', 'guid' ), array( 'ID' => $post->ID) );
 
@@ -826,34 +861,57 @@ function upgrade_160() {
 
 	$users = $wpdb->get_results( "SELECT * FROM $wpdb->users" );
 	foreach ( $users as $user ) :
-		if ( ! empty( $user->user_firstname ) )
+		if ( ! empty( $user->user_firstname ) ) {
 			update_user_meta( $user->ID, 'first_name', wp_slash( $user->user_firstname ) );
-		if ( ! empty( $user->user_lastname ) )
+		}
+		if ( ! empty( $user->user_lastname ) ) {
 			update_user_meta( $user->ID, 'last_name', wp_slash( $user->user_lastname ) );
-		if ( ! empty( $user->user_nickname ) )
+		}
+		if ( ! empty( $user->user_nickname ) ) {
 			update_user_meta( $user->ID, 'nickname', wp_slash( $user->user_nickname ) );
-		if ( ! empty( $user->user_level ) )
+		}
+		if ( ! empty( $user->user_level ) ) {
 			update_user_meta( $user->ID, $wpdb->prefix . 'user_level', $user->user_level );
-		if ( ! empty( $user->user_icq ) )
+		}
+		if ( ! empty( $user->user_icq ) ) {
 			update_user_meta( $user->ID, 'icq', wp_slash( $user->user_icq) );
-		if ( ! empty( $user->user_aim ) )
+		}
+		if ( ! empty( $user->user_aim ) ) {
 			update_user_meta( $user->ID, 'aim', wp_slash( $user->user_aim) );
-		if ( ! empty( $user->user_msn ) )
+		}
+		if ( ! empty( $user->user_msn ) ) {
 			update_user_meta( $user->ID, 'msn', wp_slash( $user->user_msn) );
-		if ( ! empty( $user->user_yim ) )
+		}
+		if ( ! empty( $user->user_yim ) ) {
 			update_user_meta( $user->ID, 'yim', wp_slash( $user->user_icq) );
-		if ( ! empty( $user->user_description ) )
+		}
+		if ( ! empty( $user->user_description ) ) {
 			update_user_meta( $user->ID, 'description', wp_slash( $user->user_description) );
+		}
 
 		if ( isset( $user->user_idmode ) ):
 			$idmode = $user->user_idmode;
-			if ( $idmode == 'nickname' ) $id = $user->user_nickname;
-			if ( $idmode == 'login' ) $id = $user->user_login;
-			if ( $idmode == 'firstname' ) $id = $user->user_firstname;
-			if ( $idmode == 'lastname' ) $id = $user->user_lastname;
-			if ( $idmode == 'namefl' ) $id = $user->user_firstname.' '.$user->user_lastname;
-			if ( $idmode == 'namelf' ) $id = $user->user_lastname.' '.$user->user_firstname;
-			if ( !$idmode) $id = $user->user_nickname;
+			if ( $idmode == 'nickname' ) {
+				$id = $user->user_nickname;
+			}
+			if ( $idmode == 'login' ) {
+				$id = $user->user_login;
+			}
+			if ( $idmode == 'firstname' ) {
+				$id = $user->user_firstname;
+			}
+			if ( $idmode == 'lastname' ) {
+				$id = $user->user_lastname;
+			}
+			if ( $idmode == 'namefl' ) {
+				$id = $user->user_firstname.' '.$user->user_lastname;
+			}
+			if ( $idmode == 'namelf' ) {
+				$id = $user->user_lastname.' '.$user->user_firstname;
+			}
+			if ( !$idmode) {
+				$id = $user->user_nickname;
+			}
 			$wpdb->update( $wpdb->users, array( 'display_name' => $id), array( 'ID' => $user->ID) );
 		endif;
 
@@ -868,15 +926,18 @@ function upgrade_160() {
 	endforeach;
 	$old_user_fields = array( 'user_firstname', 'user_lastname', 'user_icq', 'user_aim', 'user_msn', 'user_yim', 'user_idmode', 'user_ip', 'user_domain', 'user_browser', 'user_description', 'user_nickname', 'user_level' );
 	$wpdb->hide_errors();
-	foreach ( $old_user_fields as $old )
+	foreach ( $old_user_fields as $old ) {
 		$wpdb->query( "ALTER TABLE $wpdb->users DROP $old" );
+	}
 	$wpdb->show_errors();
 
 	// Populate comment_count field of posts table.
 	$comments = $wpdb->get_results( "SELECT comment_post_ID, COUNT(*) as c FROM $wpdb->comments WHERE comment_approved = '1' GROUP BY comment_post_ID" );
-	if ( is_array( $comments ) )
-		foreach ( $comments as $comment)
+	if ( is_array( $comments ) ) {
+		foreach ( $comments as $comment) {
 			$wpdb->update( $wpdb->posts, array( 'comment_count' => $comment->c), array( 'ID' => $comment->comment_post_id ) );
+		}
+	}
 
 	/*
 	 * Some alpha versions used a post status of object instead of attachment
@@ -885,14 +946,20 @@ function upgrade_160() {
 	if ( $wp_current_db_version > 2541 && $wp_current_db_version <= 3091 ) {
 		$objects = $wpdb->get_results( "SELECT ID, post_type FROM $wpdb->posts WHERE post_status = 'object'" );
 		foreach ( $objects as $object) {
-			$wpdb->update( $wpdb->posts, array(	'post_status' => 'attachment',
-												'post_mime_type' => $object->post_type,
-												'post_type' => '' ),
-										 array( 'ID' => $object->ID ) );
+			$wpdb->update(
+				$wpdb->posts,
+				array(
+					'post_status' => 'attachment',
+					'post_mime_type' => $object->post_type,
+					'post_type' => ''
+				),
+				array( 'ID' => $object->ID )
+			);
 
 			$meta = get_post_meta( $object->ID, 'imagedata', true );
-			if ( ! empty( $meta['file'] ) )
+			if ( ! empty( $meta['file'] ) ) {
 				update_attached_file( $object->ID, $meta['file'] );
+			}
 		}
 	}
 }
@@ -912,8 +979,10 @@ function upgrade_210() {
 		// Update status and type.
 		$posts = $wpdb->get_results( "SELECT ID, post_status FROM $wpdb->posts" );
 
-		if ( ! empty( $posts) ) foreach ( $posts as $post ) {
-			$status = $post->post_status;
+		if ( ! empty( $posts) ) {
+			foreach ( $posts as $post ) {
+				$status = $post->post_status;
+			}
 			$type = 'post';
 
 			if ( 'static' == $status ) {
@@ -938,9 +1007,11 @@ function upgrade_210() {
 		$wpdb->query ( "UPDATE $wpdb->posts SET post_status = 'future' WHERE post_status = 'publish' AND post_date_gmt > '$now'" );
 
 		$posts = $wpdb->get_results( "SELECT ID, post_date FROM $wpdb->posts WHERE post_status ='future'" );
-		if ( ! empty( $posts) )
-			foreach ( $posts as $post )
+		if ( ! empty( $posts) ) {
+			foreach ( $posts as $post ) {
 				wp_schedule_single_event(mysql2date( 'U', $post->post_date, false ), 'publish_future_post', array( $post->ID) );
+			}
+		}
 	}
 }
 
@@ -1025,19 +1096,22 @@ function upgrade_230() {
 	}
 
 	$select = 'post_id, category_id';
-	if ( $have_tags )
-		$select .= ', rel_type';
+	if ( $have_tags ) {
+			$select .= ', rel_type';
+	}
 
 	$posts = $wpdb->get_results( "SELECT $select FROM $wpdb->post2cat GROUP BY post_id, category_id" );
 	foreach ( $posts as $post ) {
 		$post_id = (int) $post->post_id;
 		$term_id = (int) $post->category_id;
 		$taxonomy = 'category';
-		if ( ! empty( $post->rel_type) && 'tag' == $post->rel_type)
+		if ( ! empty( $post->rel_type) && 'tag' == $post->rel_type) {
 			$taxonomy = 'tag';
+		}
 		$tt_id = $tt_ids[$term_id][$taxonomy];
-		if ( empty( $tt_id ) )
+		if ( empty( $tt_id ) ) {
 			continue;
+		}
 
 		$wpdb->insert( $wpdb->term_relationships, array( 'object_id' => $post_id, 'term_taxonomy_id' => $tt_id ) );
 	}
@@ -1079,19 +1153,24 @@ function upgrade_230() {
 
 		// Associate links to cats.
 		$links = $wpdb->get_results( "SELECT link_id, link_category FROM $wpdb->links" );
-		if ( ! empty( $links) ) foreach ( $links as $link ) {
-			if ( 0 == $link->link_category )
-				continue;
-			if ( ! isset( $link_cat_id_map[$link->link_category] ) )
-				continue;
-			$term_id = $link_cat_id_map[$link->link_category];
-			$tt_id = $tt_ids[$term_id];
-			if ( empty( $tt_id ) )
-				continue;
+		if ( ! empty( $links) ) {
+			foreach ( $links as $link ) {
+				if ( 0 == $link->link_category ) {
+					continue;
+				}
 
-			$wpdb->insert( $wpdb->term_relationships, array( 'object_id' => $link->link_id, 'term_taxonomy_id' => $tt_id ) );
+				if ( ! isset( $link_cat_id_map[$link->link_category] ) ) {
+					continue;
+				}
+				$term_id = $link_cat_id_map[$link->link_category];
+				$tt_id = $tt_ids[$term_id];
+				if ( empty( $tt_id ) ) {
+					continue;
+				}
+
+				$wpdb->insert( $wpdb->term_relationships, array( 'object_id' => $link->link_id, 'term_taxonomy_id' => $tt_id ) );
+			}
 		}
-
 		// Set default to the last category we grabbed during the upgrade loop.
 		update_option( 'default_link_category', $default_link_cat);
 	} else {
@@ -1101,8 +1180,9 @@ function upgrade_230() {
 			$term_id = (int) $link->category_id;
 			$taxonomy = 'link_category';
 			$tt_id = $tt_ids[$term_id][$taxonomy];
-			if ( empty( $tt_id ) )
+			if ( empty( $tt_id ) ) {
 				continue;
+			}
 			$wpdb->insert( $wpdb->term_relationships, array( 'object_id' => $link_id, 'term_taxonomy_id' => $tt_id ) );
 		}
 	}
@@ -1115,10 +1195,11 @@ function upgrade_230() {
 	// Recalculate all counts
 	$terms = $wpdb->get_results( "SELECT term_taxonomy_id, taxonomy FROM $wpdb->term_taxonomy" );
 	foreach ( (array) $terms as $term ) {
-		if ( ( 'post_tag' == $term->taxonomy) || ( 'category' == $term->taxonomy) )
+		if ( ( 'post_tag' == $term->taxonomy) || ( 'category' == $term->taxonomy) ) {
 			$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships, $wpdb->posts WHERE $wpdb->posts.ID = $wpdb->term_relationships.object_id AND post_status = 'publish' AND post_type = 'post' AND term_taxonomy_id = %d", $term->term_taxonomy_id ) );
-		else
+		} else {
 			$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $term->term_taxonomy_id ) );
+		}
 		$wpdb->update( $wpdb->term_taxonomy, array( 'count' => $count), array( 'term_taxonomy_id' => $term->term_taxonomy_id ) );
 	}
 }
@@ -1134,8 +1215,9 @@ function upgrade_230_options_table() {
 	$wpdb = $app['db'];
 	$old_options_fields = array( 'option_can_override', 'option_type', 'option_width', 'option_height', 'option_description', 'option_admin_level' );
 	$wpdb->hide_errors();
-	foreach ( $old_options_fields as $old )
+	foreach ( $old_options_fields as $old ) {
 		$wpdb->query( "ALTER TABLE $wpdb->options DROP $old" );
+	}
 	$wpdb->show_errors();
 }
 
@@ -1205,8 +1287,9 @@ function upgrade_260() {
 	$app = getApp();
 	$wp_current_db_version = $app['wp_current_db_version'];
 
-	if ( $wp_current_db_version < 8000 )
+	if ( $wp_current_db_version < 8000 ) {
 		populate_roles_260();
+	}
 }
 
 /**
@@ -1220,12 +1303,14 @@ function upgrade_270() {
 	$wpdb = $app['db'];
 	$wp_current_db_version = $app['wp_current_db_version'];
 
-	if ( $wp_current_db_version < 8980 )
+	if ( $wp_current_db_version < 8980 ) {
 		populate_roles_270();
+	}
 
 	// Update post_date for unpublished posts with empty timestamp
-	if ( $wp_current_db_version < 8921 )
+	if ( $wp_current_db_version < 8921 ) {
 		$wpdb->query( "UPDATE $wpdb->posts SET post_date = post_modified WHERE post_date = '0000-00-00 00:00:00'" );
+	}
 }
 
 /**
@@ -1239,15 +1324,17 @@ function upgrade_280() {
 	$wpdb = $app['db'];
 	$wp_current_db_version = $app['wp_current_db_version'];
 
-	if ( $wp_current_db_version < 10360 )
+	if ( $wp_current_db_version < 10360 ) {
 		populate_roles_280();
+	}
 	if ( is_multisite() ) {
 		$start = 0;
 		while( $rows = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options ORDER BY option_id LIMIT $start, 20" ) ) {
 			foreach ( $rows as $row ) {
 				$value = $row->option_value;
-				if ( !@unserialize( $value ) )
+				if ( !@unserialize( $value ) ) {
 					$value = stripslashes( $value );
+				}
 				if ( $value !== $row->option_value ) {
 					update_option( $row->option_name, $value );
 				}
@@ -1449,14 +1536,17 @@ function upgrade_350() {
 	$wpdb = $app['db'];
 	$wp_current_db_version = $app['wp_current_db_version'];
 
-	if ( $wp_current_db_version < 22006 && $wpdb->get_var( "SELECT link_id FROM $wpdb->links LIMIT 1" ) )
-		update_option( 'link_manager_enabled', 1 ); // Previously set to 0 by populate_options()
+	if ( $wp_current_db_version < 22006 && $wpdb->get_var( "SELECT link_id FROM $wpdb->links LIMIT 1" ) ) {
+		update_option( 'link_manager_enabled', 1 );
+	}
+	// Previously set to 0 by populate_options()
 
 	if ( $wp_current_db_version < 21811 && wp_should_upgrade_global_tables() ) {
 		$meta_keys = [];
 		foreach ( array_merge( get_post_types(), get_taxonomies() ) as $name ) {
-			if ( false !== strpos( $name, '-' ) )
-			$meta_keys[] = 'edit_' . str_replace( '-', '_', $name ) . '_per_page';
+			if ( false !== strpos( $name, '-' ) ) {
+				$meta_keys[] = 'edit_' . str_replace( '-', '_', $name ) . '_per_page';
+			}
 		}
 		if ( $meta_keys ) {
 			$meta_keys = implode( "', '", $meta_keys );
@@ -1464,8 +1554,9 @@ function upgrade_350() {
 		}
 	}
 
-	if ( $wp_current_db_version < 22422 && $term = get_term_by( 'slug', 'post-format-standard', 'post_format' ) )
+	if ( $wp_current_db_version < 22422 && $term = get_term_by( 'slug', 'post-format-standard', 'post_format' ) ) {
 		wp_delete_term( $term->term_id, 'post_format' );
+	}
 }
 
 /**
@@ -1749,10 +1840,11 @@ function upgrade_network() {
 		$wpmu_sitewide_plugins = get_site_option( 'wpmu_sitewide_plugins' );
 		$active_sitewide_plugins = get_site_option( 'active_sitewide_plugins' );
 		if ( $wpmu_sitewide_plugins ) {
-			if ( !$active_sitewide_plugins )
+			if ( !$active_sitewide_plugins ) {
 				$sitewide_plugins = (array) $wpmu_sitewide_plugins;
-			else
+			} else {
 				$sitewide_plugins = array_merge( (array) $active_sitewide_plugins, (array) $wpmu_sitewide_plugins );
+			}
 
 			update_site_option( 'active_sitewide_plugins', $sitewide_plugins );
 		}
@@ -1763,8 +1855,9 @@ function upgrade_network() {
 		while( $rows = $wpdb->get_results( "SELECT meta_key, meta_value FROM {$wpdb->sitemeta} ORDER BY meta_id LIMIT $start, 20" ) ) {
 			foreach ( $rows as $row ) {
 				$value = $row->meta_value;
-				if ( !@unserialize( $value ) )
+				if ( !@unserialize( $value ) ) {
 					$value = stripslashes( $value );
+				}
 				if ( $value !== $row->meta_value ) {
 					update_site_option( $row->meta_key, $value );
 				}
@@ -1774,16 +1867,19 @@ function upgrade_network() {
 	}
 
 	// 3.0
-	if ( $wp_current_db_version < 13576 )
+	if ( $wp_current_db_version < 13576 ) {
 		update_site_option( 'global_terms_enabled', '1' );
+	}
 
 	// 3.3
-	if ( $wp_current_db_version < 19390 )
+	if ( $wp_current_db_version < 19390 ) {
 		update_site_option( 'initial_db_version', $wp_current_db_version );
+	}
 
 	if ( $wp_current_db_version < 19470 ) {
-		if ( false === get_site_option( 'active_sitewide_plugins' ) )
+		if ( false === get_site_option( 'active_sitewide_plugins' ) ) {
 			update_site_option( 'active_sitewide_plugins', [] );
+		}
 	}
 
 	// 3.4
@@ -1795,8 +1891,9 @@ function upgrade_network() {
 			$converted = [];
 			$themes = wp_get_themes();
 			foreach ( $themes as $stylesheet => $theme_data ) {
-				if ( isset( $allowed_themes[ $theme_data->get( 'Name' ) ] ) )
+				if ( isset( $allowed_themes[ $theme_data->get( 'Name' ) ] ) ) {
 					$converted[ $stylesheet ] = true;
+				}
 			}
 			update_site_option( 'allowedthemes', $converted );
 			delete_site_option( 'allowed_themes' );
@@ -1804,8 +1901,9 @@ function upgrade_network() {
 	}
 
 	// 3.5
-	if ( $wp_current_db_version < 21823 )
+	if ( $wp_current_db_version < 21823 ) {
 		update_site_option( 'ms_files_rewriting', '1' );
+	}
 
 	// 3.5.2
 	if ( $wp_current_db_version < 24448 ) {
@@ -2030,8 +2128,9 @@ function get_alloptions_110() {
 	$all_options = new stdClass;
 	if ( $options = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options" ) ) {
 		foreach ( $options as $option ) {
-			if ( 'siteurl' == $option->option_name || 'home' == $option->option_name || 'category_base' == $option->option_name )
+			if ( 'siteurl' == $option->option_name || 'home' == $option->option_name || 'category_base' == $option->option_name ) {
 				$option->option_value = untrailingslashit( $option->option_value );
+			}
 			$all_options->{$option->option_name} = stripslashes( $option->option_value );
 		}
 	}
@@ -2052,19 +2151,23 @@ function __get_option( $setting) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( $setting == 'home' && defined( 'WP_HOME' ) )
+	if ( $setting == 'home' && defined( 'WP_HOME' ) ) {
 		return untrailingslashit( WP_HOME );
+	}
 
-	if ( $setting == 'siteurl' && defined( 'WP_SITEURL' ) )
+	if ( $setting == 'siteurl' && defined( 'WP_SITEURL' ) ) {
 		return untrailingslashit( WP_SITEURL );
+	}
 
 	$option = $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM $wpdb->options WHERE option_name = %s", $setting ) );
 
-	if ( 'home' == $setting && '' == $option )
+	if ( 'home' == $setting && '' == $option ) {
 		return __get_option( 'siteurl' );
+	}
 
-	if ( 'siteurl' == $setting || 'home' == $setting || 'category_base' == $setting || 'tag_base' == $setting )
+	if ( 'siteurl' == $setting || 'home' == $setting || 'category_base' == $setting || 'tag_base' == $setting ) {
 		$option = untrailingslashit( $option );
+	}
 
 	return maybe_unserialize( $option );
 }
@@ -2114,8 +2217,9 @@ function dbDelta( $queries = '', $execute = true ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( in_array( $queries, array( '', 'all', 'blog', 'global', 'ms_global' ), true ) )
+	if ( in_array( $queries, array( '', 'all', 'blog', 'global', 'ms_global' ), true ) ) {
 		$queries = wp_get_db_schema( $queries );
+	}
 
 	// Separate individual queries into an array
 	if ( !is_array( $queries) ) {
@@ -2191,8 +2295,9 @@ function dbDelta( $queries = '', $execute = true ) {
 		$tablefields = $wpdb->get_results( "DESCRIBE {$table};" );
 		$wpdb->suppress_errors( $suppress );
 
-		if ( ! $tablefields )
+		if ( ! $tablefields ) {
 			continue;
+		}
 
 		// Clear the field and index arrays.
 		$cfields = $indices = [];
@@ -2484,7 +2589,9 @@ function dbDelta( $queries = '', $execute = true ) {
 function make_db_current( $tables = 'all' ) {
 	$alterations = dbDelta( $tables );
 	echo "<ol>\n";
-	foreach ( $alterations as $alteration) echo "<li>$alteration</li>\n";
+	foreach ( $alterations as $alteration) {
+		echo "<li>$alteration</li>\n";
+	}
 	echo "</ol>\n";
 }
 
@@ -2519,8 +2626,9 @@ function make_site_theme_from_oldschool( $theme_name, $template ) {
 	$home_path = get_home_path();
 	$site_dir = WP_CONTENT_DIR . "/themes/$template";
 
-	if ( ! file_exists( "$home_path/index.php" ) )
+	if ( ! file_exists( "$home_path/index.php" ) ) {
 		return false;
+	}
 
 	/*
 	 * Copy files from the old locations to the site theme.
@@ -2529,25 +2637,28 @@ function make_site_theme_from_oldschool( $theme_name, $template ) {
 	$files = array( 'index.php' => 'index.php', 'wp-layout.css' => 'style.css', 'wp-comments.php' => 'comments.php', 'wp-comments-popup.php' => 'comments-popup.php' );
 
 	foreach ( $files as $oldfile => $newfile) {
-		if ( $oldfile == 'index.php' )
+		if ( $oldfile == 'index.php' ) {
 			$oldpath = $home_path;
-		else
+		} else {
 			$oldpath = ABSPATH;
+		}
 
 		// Check to make sure it's not a new index.
 		if ( $oldfile == 'index.php' ) {
 			$index = implode( '', file( "$oldpath/$oldfile" ) );
 			if (strpos( $index, 'WP_USE_THEMES' ) !== false ) {
-				if ( ! @copy(WP_CONTENT_DIR . '/themes/' . WP_DEFAULT_THEME . '/index.php', "$site_dir/$newfile" ) )
+				if ( ! @copy(WP_CONTENT_DIR . '/themes/' . WP_DEFAULT_THEME . '/index.php', "$site_dir/$newfile" ) ) {
 					return false;
+				}
 
 				// Don't copy anything.
 				continue;
 			}
 		}
 
-		if ( ! @copy( "$oldpath/$oldfile", "$site_dir/$newfile" ) )
+		if ( ! @copy( "$oldpath/$oldfile", "$site_dir/$newfile" ) ) {
 			return false;
+		}
 
 		chmod( "$site_dir/$newfile", 0777);
 
@@ -2557,8 +2668,9 @@ function make_site_theme_from_oldschool( $theme_name, $template ) {
 			$f = fopen( "$site_dir/$newfile", 'w' );
 
 			foreach ( $lines as $line) {
-				if (preg_match( '/require.*wp-blog-header/', $line) )
+				if (preg_match( '/require.*wp-blog-header/', $line) ) {
 					$line = '//' . $line;
+				}
 
 				// Update stylesheet references.
 				$line = str_replace( "<?php echo __get_option( 'siteurl' ); ?>/wp-layout.css", "<?php bloginfo( 'stylesheet_url' ); ?>", $line);
@@ -2608,10 +2720,12 @@ function make_site_theme_from_default( $theme_name, $template ) {
 	$theme_dir = @ opendir( $default_dir );
 	if ( $theme_dir ) {
 		while(( $theme_file = readdir( $theme_dir ) ) !== false ) {
-			if (is_dir( "$default_dir/$theme_file" ) )
+			if (is_dir( "$default_dir/$theme_file" ) ) {
 				continue;
-			if ( ! @copy( "$default_dir/$theme_file", "$site_dir/$theme_file" ) )
+			}
+			if ( ! @copy( "$default_dir/$theme_file", "$site_dir/$theme_file" ) ) {
 				return;
+			}
 			chmod( "$site_dir/$theme_file", 0777);
 		}
 	}
@@ -2623,11 +2737,17 @@ function make_site_theme_from_default( $theme_name, $template ) {
 		$f = fopen( "$site_dir/style.css", 'w' );
 
 		foreach ( $stylelines as $line) {
-			if (strpos( $line, 'Theme Name:' ) !== false ) $line = 'Theme Name: ' . $theme_name;
-			elseif (strpos( $line, 'Theme URI:' ) !== false ) $line = 'Theme URI: ' . __get_option( 'url' );
-			elseif (strpos( $line, 'Description:' ) !== false ) $line = 'Description: Your theme.';
-			elseif (strpos( $line, 'Version:' ) !== false ) $line = 'Version: 1';
-			elseif (strpos( $line, 'Author:' ) !== false ) $line = 'Author: You';
+			if (strpos( $line, 'Theme Name:' ) !== false ) {
+				$line = 'Theme Name: ' . $theme_name;
+			} elseif (strpos( $line, 'Theme URI:' ) !== false ) {
+				$line = 'Theme URI: ' . __get_option( 'url' );
+			} elseif (strpos( $line, 'Description:' ) !== false ) {
+				$line = 'Description: Your theme.';
+			} elseif (strpos( $line, 'Version:' ) !== false ) {
+				$line = 'Version: 1';
+			} elseif (strpos( $line, 'Author:' ) !== false ) {
+				$line = 'Author: You';
+			}
 			fwrite( $f, $line . "\n" );
 		}
 		fclose( $f);
@@ -2642,10 +2762,12 @@ function make_site_theme_from_default( $theme_name, $template ) {
 	$images_dir = @ opendir( "$default_dir/images" );
 	if ( $images_dir ) {
 		while(( $image = readdir( $images_dir ) ) !== false ) {
-			if (is_dir( "$default_dir/images/$image" ) )
+			if (is_dir( "$default_dir/images/$image" ) ) {
 				continue;
-			if ( ! @copy( "$default_dir/images/$image", "$site_dir/images/$image" ) )
+			}
+			if ( ! @copy( "$default_dir/images/$image", "$site_dir/images/$image" ) ) {
 				return;
+			}
 			chmod( "$site_dir/images/$image", 0777);
 		}
 	}
@@ -2688,9 +2810,10 @@ function make_site_theme() {
 			return false;
 		}
 	} else {
-		if ( ! make_site_theme_from_default( $theme_name, $template ) )
+		if ( ! make_site_theme_from_default( $theme_name, $template ) ) {
 			// TODO: rm -rf the site theme directory.
 			return false;
+		}
 	}
 
 	// Make the new site theme active.

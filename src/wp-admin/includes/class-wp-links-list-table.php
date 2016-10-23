@@ -56,14 +56,18 @@ class WP_Links_List_Table extends WP_List_Table {
 
 		$args = array( 'hide_invisible' => 0, 'hide_empty' => 0 );
 
-		if ( 'all' != $cat_id )
+		if ( 'all' != $cat_id ) {
 			$args['category'] = $cat_id;
-		if ( !empty( $s ) )
+		}
+		if ( !empty( $s ) ) {
 			$args['search'] = $s;
-		if ( !empty( $orderby ) )
+		}
+		if ( !empty( $orderby ) ) {
 			$args['orderby'] = $orderby;
-		if ( !empty( $order ) )
+		}
+		if ( !empty( $order ) ) {
 			$args['order'] = $order;
+		}
 
 		$this->items = get_bookmarks( $args );
 	}

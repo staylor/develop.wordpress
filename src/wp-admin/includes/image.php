@@ -38,15 +38,18 @@ function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $s
 	}
 
 	$editor = wp_get_image_editor( $src );
-	if ( is_wp_error( $editor ) )
+	if ( is_wp_error( $editor ) ) {
 		return $editor;
+	}
 
 	$src = $editor->crop( $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $src_abs );
-	if ( is_wp_error( $src ) )
+	if ( is_wp_error( $src ) ) {
 		return $src;
+	}
 
-	if ( ! $dst_file )
+	if ( ! $dst_file ) {
 		$dst_file = str_replace( basename( $src_file ), 'cropped-' . basename( $src_file ), $src_file );
+	}
 
 	/*
 	 * The directory containing the original file may no longer exist when
@@ -57,8 +60,9 @@ function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $s
 	$dst_file = dirname( $dst_file ) . '/' . wp_unique_filename( dirname( $dst_file ), basename( $dst_file ) );
 
 	$result = $editor->save( $dst_file );
-	if ( is_wp_error( $result ) )
+	if ( is_wp_error( $result ) ) {
 		return $result;
+	}
 
 	return $dst_file;
 }
@@ -130,16 +134,18 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 		if ( $sizes ) {
 			$editor = wp_get_image_editor( $file );
 
-			if ( ! is_wp_error( $editor ) )
+			if ( ! is_wp_error( $editor ) ) {
 				$metadata['sizes'] = $editor->multi_resize( $sizes );
+			}
 		} else {
 			$metadata['sizes'] = [];
 		}
 
 		// Fetch additional metadata from EXIF/IPTC.
 		$image_meta = wp_read_image_metadata( $file );
-		if ( $image_meta )
+		if ( $image_meta ) {
 			$metadata['image_meta'] = $image_meta;
+		}
 
 	} elseif ( wp_attachment_is( 'video', $attachment ) ) {
 		$metadata = wp_read_video_metadata( $file );
@@ -229,8 +235,9 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
  */
 function wp_exif_frac2dec($str) {
 	@list( $n, $d ) = explode( '/', $str );
-	if ( !empty($d) )
+	if ( !empty($d) ) {
 		return $n / $d;
+	}
 	return $str;
 }
 
@@ -266,8 +273,9 @@ function wp_exif_date2ts($str) {
  * @return bool|array False on failure. Image metadata array on success.
  */
 function wp_read_image_metadata( $file ) {
-	if ( ! file_exists( $file ) )
+	if ( ! file_exists( $file ) ) {
 		return false;
+	}
 
 	list( , , $sourceImageType ) = getimagesize( $file );
 
@@ -507,8 +515,9 @@ function file_is_displayable_image($path) {
  */
 function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 	$filepath = _load_image_to_edit_path( $attachment_id, $size );
-	if ( empty( $filepath ) )
+	if ( empty( $filepath ) ) {
 		return false;
+	}
 
 	switch ( $mime_type ) {
 	case 'image/jpeg':
@@ -612,8 +621,9 @@ function _load_image_to_edit_path( $attachment_id, $size = 'full' ) {
  */
 function _copy_image_file( $attachment_id ) {
 	$dst_file = $src_file = get_attached_file( $attachment_id );
-	if ( ! file_exists( $src_file ) )
+	if ( ! file_exists( $src_file ) ) {
 		$src_file = _load_image_to_edit_path( $attachment_id );
+	}
 
 	if ( $src_file ) {
 		$dst_file = str_replace( basename( $dst_file ), 'copy-' . basename( $dst_file ), $dst_file );
@@ -625,8 +635,9 @@ function _copy_image_file( $attachment_id ) {
 		 */
 		wp_mkdir_p( dirname( $dst_file ) );
 
-		if ( ! @copy( $src_file, $dst_file ) )
+		if ( ! @copy( $src_file, $dst_file ) ) {
 			$dst_file = false;
+		}
 	} else {
 		$dst_file = false;
 	}

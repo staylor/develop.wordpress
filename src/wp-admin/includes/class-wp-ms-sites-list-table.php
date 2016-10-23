@@ -207,8 +207,9 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 */
 	protected function get_bulk_actions() {
 		$actions = [];
-		if ( current_user_can( 'delete_sites' ) )
+		if ( current_user_can( 'delete_sites' ) ) {
 			$actions['delete'] = __( 'Delete' );
+		}
 		$actions['spam'] = _x( 'Mark as Spam', 'site' );
 		$actions['notspam'] = _x( 'Not Spam', 'site' );
 

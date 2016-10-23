@@ -41,21 +41,24 @@ function list_core_update( $update ) {
 			$form_action = 'update-core.php?action=do-core-reinstall';
 		} else {
 			$php_compat     = version_compare( $php_version, $update->php_version, '>=' );
-			if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) )
+			if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) ) {
 				$mysql_compat = true;
-			else
+			} else {
 				$mysql_compat = version_compare( $mysql_version, $update->mysql_version, '>=' );
+			}
 
-			if ( !$mysql_compat && !$php_compat )
+			if ( !$mysql_compat && !$php_compat ) {
 				$message = sprintf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s.'), $update->current, $update->php_version, $update->mysql_version, $php_version, $mysql_version );
-			elseif ( !$php_compat )
+			} elseif ( !$php_compat ) {
 				$message = sprintf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher. You are running version %3$s.'), $update->current, $update->php_version, $php_version );
-			elseif ( !$mysql_compat )
+			} elseif ( !$mysql_compat ) {
 				$message = sprintf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires MySQL version %2$s or higher. You are running version %3$s.'), $update->current, $update->mysql_version, $mysql_version );
-			else
+			} else {
 				$message = 	sprintf(__('You can update to <a href="https://codex.wordpress.org/Version_%1$s">WordPress %2$s</a> automatically:'), $update->current, $version_string);
-			if ( !$mysql_compat || !$php_compat )
+			}
+			if ( !$mysql_compat || !$php_compat ) {
 				$show_buttons = false;
+			}
 		}
 	}
 
@@ -75,14 +78,17 @@ function list_core_update( $update ) {
 			submit_button( $submit, '', 'upgrade', false );
 		}
 	}
-	if ( 'en_US' != $update->locale )
-		if ( !isset( $update->dismissed ) || !$update->dismissed )
+	if ( 'en_US' != $update->locale ) {
+		if ( !isset( $update->dismissed ) || !$update->dismissed ) {
 			submit_button( __( 'Hide this update' ), '', 'dismiss', false );
-		else
-			submit_button( __( 'Bring back this update' ), '', 'undismiss', false );
+		}
+	} else {
+		submit_button( __( 'Bring back this update' ), '', 'undismiss', false );
+	}
 	echo '</p>';
-	if ( 'en_US' != $update->locale && ( !isset($wp_local_package) || $wp_local_package != $update->locale ) )
-	    echo '<p class="hint">'.__('This localized version contains both the translation and various other localization fixes. You can skip upgrading if you want to keep your current translation.').'</p>';
+	if ( 'en_US' != $update->locale && ( !isset($wp_local_package) || $wp_local_package != $update->locale ) ) {
+		echo '<p class="hint">'.__('This localized version contains both the translation and various other localization fixes. You can skip upgrading if you want to keep your current translation.').'</p>';
+	}
 	// Partial builds don't need language-specific warnings.
 	elseif ( 'en_US' == $update->locale && get_locale() != 'en_US' && ( ! $update->packages->partial && $app['wp_version'] == $update->partial_version ) ) {
 	    echo '<p class="hint">'.sprintf( __('You are about to install WordPress %s <strong>in English (US).</strong> There is a chance this update will break your translation. You may prefer to wait for the localized version to be released.'), $update->response != 'development' ? $update->current : '' ).'</p>';
@@ -144,8 +150,9 @@ function core_upgrade_preamble() {
 				'mysql_version' => $app['required_mysql_version'],
 			);
 			$should_auto_update = $upgrader->should_update( 'core', $future_minor_update, ABSPATH );
-			if ( $should_auto_update )
+			if ( $should_auto_update ) {
 				echo ' ' . __( 'Future security updates will be applied automatically.' );
+			}
 		}
 		echo '</h2>';
 	} else {
@@ -198,10 +205,11 @@ function list_plugin_updates() {
 	$form_action = 'update-core.php?action=do-plugin-upgrade';
 
 	$core_updates = get_core_updates();
-	if ( !isset($core_updates[0]->response) || 'latest' == $core_updates[0]->response || 'development' == $core_updates[0]->response || version_compare( $core_updates[0]->current, $cur_wp_version, '=') )
+	if ( !isset($core_updates[0]->response) || 'latest' == $core_updates[0]->response || 'development' == $core_updates[0]->response || version_compare( $core_updates[0]->current, $cur_wp_version, '=') ) {
 		$core_update_version = false;
-	else
+	} else {
 		$core_update_version = $core_updates[0]->current;
+	}
 	?>
 <h2><?php _e( 'Plugins' ); ?></h2>
 <p><?php _e( 'The following plugins have new versions available. Check the ones you want to update and then click &#8220;Update Plugins&#8221;.' ); ?></p>
@@ -404,10 +412,11 @@ function list_translation_updates() {
 function do_core_upgrade( $reinstall = false ) {
 	global $wp_filesystem;
 
-	if ( $reinstall )
+	if ( $reinstall ) {
 		$url = 'update-core.php?action=do-core-reinstall';
-	else
+	} else {
 		$url = 'update-core.php?action=do-core-upgrade';
+	}
 	$url = wp_nonce_url($url, 'upgrade-core');
 
 	$app = getApp();
@@ -415,8 +424,9 @@ function do_core_upgrade( $reinstall = false ) {
 	$version = $_post->get( 'version', false );
 	$locale = $_post->get( 'locale', 'en_US' );
 	$update = find_core_update( $version, $locale );
-	if ( !$update )
+	if ( !$update ) {
 		return;
+	}
 
 	// Allow relaxed file ownership writes for User-initiated upgrades when the API specifies
 	// that it's safe to do so. This only happens when there are no new files to create.
@@ -440,14 +450,16 @@ function do_core_upgrade( $reinstall = false ) {
 	}
 
 	if ( $wp_filesystem->errors->get_error_code() ) {
-		foreach ( $wp_filesystem->errors->get_error_messages() as $message )
+		foreach ( $wp_filesystem->errors->get_error_messages() as $message ) {
 			show_message($message);
+		}
 		echo '</div>';
 		return;
 	}
 
-	if ( $reinstall )
+	if ( $reinstall ) {
 		$update->response = 'reinstall';
+	}
 
 	add_filter( 'update_feedback', 'show_message' );
 
@@ -458,8 +470,9 @@ function do_core_upgrade( $reinstall = false ) {
 
 	if ( is_wp_error($result) ) {
 		show_message($result);
-		if ( 'up_to_date' != $result->get_error_code() && 'locked' != $result->get_error_code() )
+		if ( 'up_to_date' != $result->get_error_code() && 'locked' != $result->get_error_code() ) {
 			show_message( __('Installation Failed') );
+		}
 		echo '</div>';
 		return;
 	}

@@ -20,8 +20,9 @@ use function WP\getApp;
  * @return array Containing the headers in the format id => UI String
  */
 function get_column_headers( $screen ) {
-	if ( is_string( $screen ) )
+	if ( is_string( $screen ) ) {
 		$screen = convert_to_screen( $screen );
+	}
 
 	static $column_headers = [];
 
@@ -101,7 +102,7 @@ function meta_box_prefs( $screen ) {
 	if ( is_string( $screen ) ) {
 		$screen = convert_to_screen( $screen );
 	}
-	
+
 	if ( empty( $app->meta_boxes[ $screen->id ] ) ) {
 		return;
 	}
@@ -114,11 +115,13 @@ function meta_box_prefs( $screen ) {
 				continue;
 			}
 			foreach ( $app->meta_boxes[ $screen->id ][ $context ][ $priority ] as $box ) {
-				if ( false == $box || ! $box['title'] )
+				if ( false == $box || ! $box['title'] ) {
 					continue;
+				}
 				// Submit box cannot be hidden
-				if ( 'submitdiv' == $box['id'] || 'linksubmitdiv' == $box['id'] )
+				if ( 'submitdiv' == $box['id'] || 'linksubmitdiv' == $box['id'] ) {
 					continue;
+				}
 
 				$widget_title = $box['title'];
 
@@ -146,8 +149,9 @@ function meta_box_prefs( $screen ) {
  * @return array Hidden Meta Boxes
  */
 function get_hidden_meta_boxes( $screen ) {
-	if ( is_string( $screen ) )
+	if ( is_string( $screen ) ) {
 		$screen = convert_to_screen( $screen );
+	}
 
 	$hidden = get_user_option( "metaboxhidden_{$screen->id}" );
 
@@ -157,10 +161,11 @@ function get_hidden_meta_boxes( $screen ) {
 	if ( $use_defaults ) {
 		$hidden = [];
 		if ( 'post' == $screen->base ) {
-			if ( 'post' == $screen->post_type || 'page' == $screen->post_type || 'attachment' == $screen->post_type )
+			if ( 'post' == $screen->post_type || 'page' == $screen->post_type || 'attachment' == $screen->post_type ) {
 				$hidden = array('slugdiv', 'trackbacksdiv', 'postcustom', 'postexcerpt', 'commentstatusdiv', 'commentsdiv', 'authordiv', 'revisionsdiv');
-			else
+			} else {
 				$hidden = array( 'slugdiv' );
+			}
 		}
 
 		/**
@@ -198,8 +203,9 @@ function get_hidden_meta_boxes( $screen ) {
 function add_screen_option( $option, $args = [] ) {
 	$current_screen = get_current_screen();
 
-	if ( ! $current_screen )
+	if ( ! $current_screen ) {
 		return;
+	}
 
 	$current_screen->add_option( $option, $args );
 }
@@ -214,8 +220,9 @@ function add_screen_option( $option, $args = [] ) {
 function get_current_screen() {
 	$app = getApp();
 
-	if ( ! isset( $app->current_screen ) )
+	if ( ! isset( $app->current_screen ) ) {
 		return null;
+	}
 
 	return $app->current_screen;
 }
