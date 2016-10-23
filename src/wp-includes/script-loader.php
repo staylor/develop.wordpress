@@ -529,15 +529,19 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add( 'tags-suggest', "/wp-admin/js/tags-suggest$suffix.js", array( 'jquery-ui-autocomplete', 'wp-a11y' ), false, 1 );
 		did_action( 'init' ) && $scripts->localize( 'tags-suggest', 'tagsSuggestL10n', [
 			'tagDelimiter' => _x( ',', 'tag delimiter' ),
+			'removeTerm'   => __( 'Remove term:' ),
+			'termSelected' => __( 'Term selected.' ),
+			'termAdded'    => __( 'Term added.' ),
+			'termRemoved'  => __( 'Term removed.' ),
 		] );
 
 		$scripts->add( 'post', "/wp-admin/js/post$suffix.js", [ 'suggest', 'wp-lists', 'postbox', 'tags-box', 'underscore', 'word-count', 'wp-a11y' ], false, 1 );
 		did_action( 'init' ) && $scripts->localize( 'post', 'postL10n', [
-			'ok' => __('OK' ),
-			'cancel' => __('Cancel' ),
-			'publishOn' => __('Publish on:' ),
-			'publishOnFuture' =>  __('Schedule for:' ),
-			'publishOnPast' => __('Published on:' ),
+			'ok' => __('OK'),
+			'cancel' => __('Cancel'),
+			'publishOn' => __('Publish on:'),
+			'publishOnFuture' =>  __('Schedule for:'),
+			'publishOnPast' => __('Published on:'),
 			/* translators: 1: month, 2: day, 3: year, 4: hour, 5: minute */
 			'dateFormat' => __('%1$s %2$s, %3$s @ %4$s:%5$s' ),
 			'showcomm' => __('Show more comments' ),
