@@ -96,8 +96,9 @@ function export_wp( $args = [] ) {
 
 	if ( 'all' != $args['content'] && post_type_exists( $args['content'] ) ) {
 		$ptype = get_post_type_object( $args['content'] );
-		if ( ! $ptype->can_export )
+		if ( ! $ptype->can_export ) {
 			$args['content'] = 'post';
+		}
 
 		$where = $wpdb->prepare( "{$wpdb->posts}.post_type = %s", $args['content'] );
 	} else {
@@ -106,10 +107,11 @@ function export_wp( $args = [] ) {
 		$where = $wpdb->prepare( "{$wpdb->posts}.post_type IN (" . implode( ',', $esses ) . ')', $post_types );
 	}
 
-	if ( $args['status'] && ( 'post' == $args['content'] || 'page' == $args['content'] ) )
+	if ( $args['status'] && ( 'post' == $args['content'] || 'page' == $args['content'] ) ) {
 		$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_status = %s", $args['status'] );
-	else
+	} else {
 		$where .= " AND {$wpdb->posts}.post_status != 'auto-draft'";
+	}
 
 	$join = '';
 	if ( $args['category'] && 'post' == $args['content'] ) {
@@ -120,14 +122,17 @@ function export_wp( $args = [] ) {
 	}
 
 	if ( 'post' == $args['content'] || 'page' == $args['content'] || 'attachment' == $args['content'] ) {
-		if ( $args['author'] )
+		if ( $args['author'] ) {
 			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_author = %d", $args['author'] );
+		}
 
-		if ( $args['start_date'] )
+		if ( $args['start_date'] ) {
 			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_date >= %s", date( 'Y-m-d', strtotime($args['start_date']) ) );
+		}
 
-		if ( $args['end_date'] )
+		if ( $args['end_date'] ) {
 			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_date < %s", date( 'Y-m-d', strtotime('+1 month', strtotime($args['end_date'])) ) );
+		}
 	}
 
 	// Grab a snapshot of post IDs, just in case it changes during the export.
@@ -151,18 +156,20 @@ function export_wp( $args = [] ) {
 
 		// Put categories in order with no child going before its parent.
 		while ( $cat = array_shift( $categories ) ) {
-			if ( $cat->parent == 0 || isset( $cats[$cat->parent] ) )
+			if ( $cat->parent == 0 || isset( $cats[$cat->parent] ) ) {
 				$cats[$cat->term_id] = $cat;
-			else
+			} else {
 				$categories[] = $cat;
+			}
 		}
 
 		// Put terms in order with no child going before its parent.
 		while ( $t = array_shift( $custom_terms ) ) {
-			if ( $t->parent == 0 || isset( $terms[$t->parent] ) )
+			if ( $t->parent == 0 || isset( $terms[$t->parent] ) ) {
 				$terms[$t->term_id] = $t;
-			else
+			} else {
 				$custom_terms[] = $t;
+			}
 		}
 
 		unset( $categories, $custom_taxonomies, $custom_terms );
@@ -193,11 +200,13 @@ function export_wp( $args = [] ) {
 	 */
 	function wxr_site_url() {
 		// Multisite: the base URL.
-		if ( is_multisite() )
+		if ( is_multisite() ) {
 			return network_home_url();
+		}
 		// WordPress (single site): the blog URL.
-		else
+		else {
 			return get_bloginfo_rss( 'url' );
+		}
 	}
 
 	/**
@@ -208,8 +217,9 @@ function export_wp( $args = [] ) {
 	 * @param object $category Category Object
 	 */
 	function wxr_cat_name( $category ) {
-		if ( empty( $category->name ) )
+		if ( empty( $category->name ) ) {
 			return;
+		}
 
 		echo '<wp:cat_name>' . wxr_cdata( $category->name ) . "</wp:cat_name>\n";
 	}
@@ -222,8 +232,9 @@ function export_wp( $args = [] ) {
 	 * @param object $category Category Object
 	 */
 	function wxr_category_description( $category ) {
-		if ( empty( $category->description ) )
+		if ( empty( $category->description ) ) {
 			return;
+		}
 
 		echo '<wp:category_description>' . wxr_cdata( $category->description ) . "</wp:category_description>\n";
 	}
@@ -236,8 +247,9 @@ function export_wp( $args = [] ) {
 	 * @param object $tag Tag Object
 	 */
 	function wxr_tag_name( $tag ) {
-		if ( empty( $tag->name ) )
+		if ( empty( $tag->name ) ) {
 			return;
+		}
 
 		echo '<wp:tag_name>' . wxr_cdata( $tag->name ) . "</wp:tag_name>\n";
 	}
@@ -250,8 +262,9 @@ function export_wp( $args = [] ) {
 	 * @param object $tag Tag Object
 	 */
 	function wxr_tag_description( $tag ) {
-		if ( empty( $tag->description ) )
+		if ( empty( $tag->description ) ) {
 			return;
+		}
 
 		echo '<wp:tag_description>' . wxr_cdata( $tag->description ) . "</wp:tag_description>\n";
 	}
@@ -264,8 +277,9 @@ function export_wp( $args = [] ) {
 	 * @param object $term Term Object
 	 */
 	function wxr_term_name( $term ) {
-		if ( empty( $term->name ) )
+		if ( empty( $term->name ) ) {
 			return;
+		}
 
 		echo '<wp:term_name>' . wxr_cdata( $term->name ) . "</wp:term_name>\n";
 	}
@@ -278,8 +292,9 @@ function export_wp( $args = [] ) {
 	 * @param object $term Term Object
 	 */
 	function wxr_term_description( $term ) {
-		if ( empty( $term->description ) )
+		if ( empty( $term->description ) ) {
 			return;
+		}
 
 		echo "\t\t<wp:term_description>" . wxr_cdata( $term->description ) . "</wp:term_description>\n";
 	}
@@ -336,8 +351,9 @@ function export_wp( $args = [] ) {
 
 		$authors = [];
 		$results = $wpdb->get_results( "SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_status != 'auto-draft' $and" );
-		foreach ( (array) $results as $result )
+		foreach ( (array) $results as $result ) {
 			$authors[] = get_userdata( $result->post_author );
+		}
 
 		$authors = array_filter( $authors );
 
@@ -360,8 +376,9 @@ function export_wp( $args = [] ) {
 	 */
 	function wxr_nav_menu_terms() {
 		$nav_menus = wp_get_nav_menus();
-		if ( empty( $nav_menus ) || ! is_array( $nav_menus ) )
+		if ( empty( $nav_menus ) || ! is_array( $nav_menus ) ) {
 			return;
+		}
 
 		foreach ( $nav_menus as $menu ) {
 			echo "\t<wp:term>";
@@ -382,8 +399,9 @@ function export_wp( $args = [] ) {
 		$post = get_post();
 
 		$taxonomies = get_object_taxonomies( $post->post_type );
-		if ( empty( $taxonomies ) )
+		if ( empty( $taxonomies ) ) {
 			return;
+		}
 		$terms = wp_get_object_terms( $post->ID, $taxonomies );
 
 		foreach ( (array) $terms as $term ) {
@@ -398,8 +416,9 @@ function export_wp( $args = [] ) {
 	 * @return bool
 	 */
 	function wxr_filter_postmeta( $return_me, $meta_key ) {
-		if ( '_edit_lock' == $meta_key )
+		if ( '_edit_lock' == $meta_key ) {
 			$return_me = true;
+		}
 		return $return_me;
 	}
 	add_filter( 'wxr_export_skip_postmeta', 'wxr_filter_postmeta', 10, 2 );
@@ -475,7 +494,10 @@ function export_wp( $args = [] ) {
 		wxr_term_meta( $t ); ?>
 	</wp:term>
 <?php endforeach; ?>
-<?php if ( 'all' == $args['content'] ) wxr_nav_menu_terms(); ?>
+<?php if ( 'all' == $args['content'] ) {
+	wxr_nav_menu_terms();
+}
+?>
 
 	<?php
 	/** This action is documented in wp-includes/feed-rss2.php */
@@ -556,8 +578,9 @@ function export_wp( $args = [] ) {
 			 * @param string $meta_key Current meta key.
 			 * @param object $meta     Current meta object.
 			 */
-			if ( apply_filters( 'wxr_export_skip_postmeta', false, $meta->meta_key, $meta ) )
+			if ( apply_filters( 'wxr_export_skip_postmeta', false, $meta->meta_key, $meta ) ) {
 				continue;
+			}
 		?>
 		<wp:postmeta>
 			<wp:meta_key><?php echo wxr_cdata( $meta->meta_key ); ?></wp:meta_key>

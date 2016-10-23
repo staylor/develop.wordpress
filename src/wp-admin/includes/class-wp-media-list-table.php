@@ -156,8 +156,9 @@ class WP_Media_List_Table extends WP_List_Table {
 			$actions['delete'] = __( 'Delete Permanently' );
 		}
 
-		if ( $this->detached )
+		if ( $this->detached ) {
 			$actions['attach'] = __( 'Attach' );
+		}
 
 		return $actions;
 	}
@@ -311,8 +312,9 @@ class WP_Media_List_Table extends WP_List_Table {
 		/* translators: column name */
 		if ( !$this->detached ) {
 			$posts_columns['parent'] = _x( 'Uploaded to', 'column name' );
-			if ( post_type_supports( 'attachment', 'comments' ) )
+			if ( post_type_supports( 'attachment', 'comments' ) ) {
 				$posts_columns['comments'] = '<span class="vers comment-grey-bubble" title="' . esc_attr__( 'Comments' ) . '"><span class="screen-reader-text">' . __( 'Comments' ) . '</span></span>';
+			}
 		}
 		/* translators: column name */
 		$posts_columns['date'] = _x( 'Date', 'column name' );
@@ -702,8 +704,7 @@ class WP_Media_List_Table extends WP_List_Table {
 					__( 'Attach' )
 				);
 			}
-		}
-		else {
+		} else {
 			if ( current_user_can( 'edit_post', $post->ID ) && !$this->is_trash ) {
 				$actions['edit'] = sprintf(
 					'<a href="%s" aria-label="%s">%s</a>',

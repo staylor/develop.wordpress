@@ -105,8 +105,9 @@ function edit_comment() {
  * @return WP_Comment|false Comment if found. False on failure.
  */
 function get_comment_to_edit( $id ) {
-	if ( !$comment = get_comment($id) )
+	if ( !$comment = get_comment($id) ) {
 		return false;
+	}
 
 	$comment->comment_ID = (int) $comment->comment_ID;
 	$comment->comment_post_ID = (int) $comment->comment_post_ID;
@@ -154,21 +155,25 @@ function get_pending_comments_num( $post_id ) {
 	$pending = $wpdb->get_results( "SELECT comment_post_ID, COUNT(comment_ID) as num_comments FROM $wpdb->comments WHERE comment_post_ID IN ( $post_id_in ) AND comment_approved = '0' GROUP BY comment_post_ID", ARRAY_A );
 
 	if ( $single ) {
-		if ( empty($pending) )
+		if ( empty($pending) ) {
 			return 0;
-		else
+		} else {
 			return absint($pending[0]['num_comments']);
+		}
 	}
 
 	$pending_keyed = [];
 
 	// Default to zero pending for all posts in request
-	foreach ( $post_id_array as $id )
+	foreach ( $post_id_array as $id ) {
 		$pending_keyed[$id] = 0;
+	}
 
-	if ( !empty($pending) )
-		foreach ( $pending as $pend )
+	if ( !empty($pending) ) {
+		foreach ( $pending as $pend ) {
 			$pending_keyed[$pend['comment_post_ID']] = absint($pend['num_comments']);
+		}
+	}
 
 	return $pending_keyed;
 }
@@ -190,8 +195,9 @@ function floated_admin_avatar( $name ) {
  * @since 2.7.0
  */
 function enqueue_comment_hotkeys_js() {
-	if ( 'true' == get_user_option( 'comment_shortcuts' ) )
+	if ( 'true' == get_user_option( 'comment_shortcuts' ) ) {
 		wp_enqueue_script( 'jquery-table-hotkeys' );
+	}
 }
 
 /**

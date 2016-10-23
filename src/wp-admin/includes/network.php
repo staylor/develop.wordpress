@@ -35,8 +35,9 @@ function network_domain_check() {
  */
 function allow_subdomain_install() {
 	$domain = preg_replace( '|https?://([^/]+)|', '$1', get_option( 'home' ) );
-	if ( parse_url( get_option( 'home' ), PHP_URL_PATH ) || 'localhost' == $domain || preg_match( '|^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|', $domain ) )
+	if ( parse_url( get_option( 'home' ), PHP_URL_PATH ) || 'localhost' == $domain || preg_match( '|^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|', $domain ) ) {
 		return false;
+	}
 
 	return true;
 }
@@ -58,15 +59,18 @@ function allow_subdirectory_install() {
 	 *
 	 * @param bool $allow Whether to enable the subdirectory install feature in Multisite. Default is false.
 	 */
-	if ( apply_filters( 'allow_subdirectory_install', false ) )
+	if ( apply_filters( 'allow_subdirectory_install', false ) ) {
 		return true;
+	}
 
-	if ( defined( 'ALLOW_SUBDIRECTORY_INSTALL' ) && ALLOW_SUBDIRECTORY_INSTALL )
+	if ( defined( 'ALLOW_SUBDIRECTORY_INSTALL' ) && ALLOW_SUBDIRECTORY_INSTALL ) {
 		return true;
+	}
 
 	$post = $wpdb->get_row( "SELECT ID FROM $wpdb->posts WHERE post_date < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND post_status = 'publish'" );
-	if ( empty( $post ) )
+	if ( empty( $post ) ) {
 		return true;
+	}
 
 	return false;
 }
@@ -78,11 +82,13 @@ function allow_subdirectory_install() {
  * @return string Base domain.
  */
 function get_clean_basedomain() {
-	if ( $existing_domain = network_domain_check() )
+	if ( $existing_domain = network_domain_check() ) {
 		return $existing_domain;
+	}
 	$domain = preg_replace( '|https?://|', '', get_option( 'siteurl' ) );
-	if ( $slash = strpos( $domain, '/' ) )
+	if ( $slash = strpos( $domain, '/' ) ) {
 		$domain = substr( $domain, 0, $slash );
+	}
 	return $domain;
 }
 
@@ -137,8 +143,9 @@ function network_step1( $errors = false ) {
 	$error_codes = [];
 	if ( is_wp_error( $errors ) ) {
 		echo '<div class="error"><p><strong>' . __( 'ERROR: The network could not be created.' ) . '</strong></p>';
-		foreach ( $errors->get_error_messages() as $error )
+		foreach ( $errors->get_error_messages() as $error ) {
 			echo "<p>$error</p>";
+		}
 		echo '</div>';
 		$error_codes = $errors->get_error_codes();
 	}
@@ -229,8 +236,9 @@ function network_step1( $errors = false ) {
 <?php
 	endif;
 
-		if ( WP_CONTENT_DIR != ABSPATH . 'wp-content' && ( allow_subdirectory_install() || ! allow_subdomain_install() ) )
+		if ( WP_CONTENT_DIR != ABSPATH . 'wp-content' && ( allow_subdirectory_install() || ! allow_subdomain_install() ) ) {
 			echo '<div class="error inline"><p><strong>' . __('Warning!') . '</strong> ' . __( 'Subdirectory networks may not be fully compatible with custom wp-content directories.' ) . '</p></div>';
+		}
 
 		$is_www = ( 0 === strpos( $hostname, 'www.' ) );
 		if ( $is_www ) :
@@ -270,8 +278,9 @@ function network_step1( $errors = false ) {
 						'<code>localhost.localdomain</code>'
 					);
 					// Uh oh:
-					if ( !allow_subdirectory_install() )
+					if ( !allow_subdirectory_install() ) {
 						echo ' <strong>' . __( 'Warning!' ) . ' ' . __( 'The main site in a sub-directory install will need to use a modified permalink structure, potentially breaking existing links.' ) . '</strong>';
+					}
 				?></td>
 			</tr>
 		<?php elseif ( !allow_subdomain_install() ) : ?>
@@ -280,8 +289,9 @@ function network_step1( $errors = false ) {
 				<td><?php
 					_e( 'Because your install is in a directory, the sites in your WordPress network must use sub-directories.' );
 					// Uh oh:
-					if ( !allow_subdirectory_install() )
+					if ( !allow_subdirectory_install() ) {
 						echo ' <strong>' . __( 'Warning!' ) . ' ' . __( 'The main site in a sub-directory install will need to use a modified permalink structure, potentially breaking existing links.' ) . '</strong>';
+					}
 				?></td>
 			</tr>
 		<?php elseif ( !allow_subdirectory_install() ) : ?>
@@ -357,14 +367,16 @@ function network_step2( $errors = false ) {
 	$location_of_wp_config = trailingslashit( $location_of_wp_config );
 
 	// Wildcard DNS message.
-	if ( is_wp_error( $errors ) )
+	if ( is_wp_error( $errors ) ) {
 		echo '<div class="error">' . $errors->get_error_message() . '</div>';
+	}
 
 	if ( $_post->all() ) {
-		if ( allow_subdomain_install() )
+		if ( allow_subdomain_install() ) {
 			$subdomain_install = allow_subdirectory_install() ? ! empty( $_post->get( 'subdomain_install' ) ) : true;
-		else
+		} else {
 			$subdomain_install = false;
+		}
 	} else {
 		if ( is_multisite() ) {
 			$subdomain_install = is_subdomain_install();
@@ -441,8 +453,9 @@ define('BLOG_ID_CURRENT_SITE', 1);
 <?php
 	$keys_salts = array( 'AUTH_KEY' => '', 'SECURE_AUTH_KEY' => '', 'LOGGED_IN_KEY' => '', 'NONCE_KEY' => '', 'AUTH_SALT' => '', 'SECURE_AUTH_SALT' => '', 'LOGGED_IN_SALT' => '', 'NONCE_SALT' => '' );
 	foreach ( $keys_salts as $c => $v ) {
-		if ( defined( $c ) )
+		if ( defined( $c ) ) {
 			unset( $keys_salts[ $c ] );
+		}
 	}
 
 	if ( ! empty( $keys_salts ) ) {
@@ -484,7 +497,7 @@ define('BLOG_ID_CURRENT_SITE', 1);
 ?>
 </li>
 <?php
-	if ( iis7_supports_permalinks() ) :
+	if ( iis7_supports_permalinks() ) {
 		// IIS doesn't support RewriteBase, all your RewriteBase are belong to us
 		$iis_subdir_match = ltrim( $base, '/' ) . $subdir_match;
 		$iis_rewrite_base = ltrim( $base, '/' ) . $rewrite_base;
@@ -545,16 +558,19 @@ define('BLOG_ID_CURRENT_SITE', 1);
 			'<code>' . $home_path . '</code>'
 		);
 		echo '</p>';
-		if ( ! $subdomain_install && WP_CONTENT_DIR != ABSPATH . 'wp-content' )
-			echo '<p><strong>' . __('Warning:') . ' ' . __( 'Subdirectory networks may not be fully compatible with custom wp-content directories.' ) . '</strong></p>';
+		if ( ! $subdomain_install && WP_CONTENT_DIR != ABSPATH . 'wp-content' ) {
+					echo '<p><strong>' . __('Warning:') . ' ' . __( 'Subdirectory networks may not be fully compatible with custom wp-content directories.' ) . '</strong></p>';
+		}
 		?>
 		<textarea class="code" readonly="readonly" cols="100" rows="20"><?php echo esc_textarea( $web_config_file ); ?>
 		</textarea></li>
 		</ol>
 
-	<?php else : // end iis7_supports_permalinks(). construct an htaccess file instead:
+	<?php } else {
+		// end iis7_supports_permalinks(). construct an htaccess file instead:
 
 		$ms_files_rewriting = '';
+
 		if ( is_multisite() && get_site_option( 'ms_files_rewriting' ) ) {
 			$ms_files_rewriting = "\n# uploaded files\nRewriteRule ^";
 			$ms_files_rewriting .= $subdir_match . "files/(.+) {$rewrite_base}" . WPINC . "/ms-files.php?file={$subdir_replacement_12} [L]" . "\n";
@@ -585,14 +601,16 @@ RewriteRule . index.php [L]
 			'<code>' . $home_path . '</code>'
 		);
 		echo '</p>';
-		if ( ! $subdomain_install && WP_CONTENT_DIR != ABSPATH . 'wp-content' )
-			echo '<p><strong>' . __('Warning:') . ' ' . __( 'Subdirectory networks may not be fully compatible with custom wp-content directories.' ) . '</strong></p>';
+		if ( ! $subdomain_install && WP_CONTENT_DIR != ABSPATH . 'wp-content' ) {
+					echo '<p><strong>' . __('Warning:') . ' ' . __( 'Subdirectory networks may not be fully compatible with custom wp-content directories.' ) . '</strong></p>';
+		}
 		?>
 		<textarea class="code" readonly="readonly" cols="100" rows="<?php echo substr_count( $htaccess_file, "\n" ) + 1; ?>">
 <?php echo esc_textarea( $htaccess_file ); ?></textarea></li>
 		</ol>
 
-	<?php endif; // end IIS/Apache code branches.
+<?php }
+	// end IIS/Apache code branches.
 
 	if ( !is_multisite() ) { ?>
 		<p><?php _e( 'Once you complete these steps, your network is enabled and configured. You will have to log in again.' ); ?> <a href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e( 'Log In' ); ?></a></p>
