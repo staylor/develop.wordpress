@@ -31,9 +31,9 @@ if ( force_ssl_admin() && ! is_ssl() ) {
  * @param string   $title    Optional. WordPress login Page title to display in the `<title>` element.
  *                           Default 'Log In'.
  * @param string   $message  Optional. Message to display in header. Default empty.
- * @param Error $ Error Optional. The error to pass. Default empty.
+ * @param Error $error Optional. The error to pass. Default empty.
  */
-function login_header( $title = 'Log In', $message = '', $ Error = '' ) {
+function login_header( $title = 'Log In', $message = '', $error = '' ) {
 	global $error;
 
 	$app = getApp();
@@ -43,8 +43,8 @@ function login_header( $title = 'Log In', $message = '', $ Error = '' ) {
 
 	add_action( 'login_head', 'wp_login_viewport_meta' );
 
-	if ( empty($ Error) ) {
-			$ Error = new Error();
+	if ( empty( $error) ) {
+		$error = new Error();
 	}
 
 	// Shake it!
@@ -58,8 +58,8 @@ function login_header( $title = 'Log In', $message = '', $ Error = '' ) {
 	 */
 	$shake_error_codes = apply_filters( 'shake_error_codes', $shake_error_codes );
 
-	if ( $shake_error_codes && $ Error->get_error_code() && in_array( $ Error->get_error_code(), $shake_error_codes ) ) {
-			add_action( 'login_head', 'wp_shake_js', 12 );
+	if ( $shake_error_codes && $error->get_error_code() && in_array( $error->get_error_code(), $shake_error_codes ) ) {
+		add_action( 'login_head', 'wp_shake_js', 12 );
 	}
 
 	$separator = is_rtl() ? ' &rsaquo; ' : ' &lsaquo; ';
@@ -83,7 +83,7 @@ function login_header( $title = 'Log In', $message = '', $ Error = '' ) {
 	 * This could be added by add_action('login_head'...) like wp_shake_js(),
 	 * but maybe better if it's not removable by plugins
 	 */
-	if ( 'loggedout' == $ Error->get_error_code() ) {
+	if ( 'loggedout' == $error->get_error_code() ) {
 		?>
 		<script>if("sessionStorage" in window){try{for(var key in sessionStorage){if(key.indexOf("wp-autosave-")!=-1){sessionStorage.removeItem(key)}}}catch(e){}};</script>
 		<?php
@@ -142,7 +142,7 @@ function login_header( $title = 'Log In', $message = '', $ Error = '' ) {
 		<?php
 
 		if ( 'success' ===  $interim_login ) {
-					$classes[] = 'interim-login-success';
+			$classes[] = 'interim-login-success';
 		}
 	}
 	$classes[] =' locale-' . sanitize_html_class( strtolower( str_replace( '_', '-', get_locale() ) ) );
@@ -183,25 +183,25 @@ function login_header( $title = 'Log In', $message = '', $ Error = '' ) {
 	 */
 	$message = apply_filters( 'login_message', $message );
 	if ( !empty( $message ) ) {
-			echo $message . "\n";
+		echo $message . "\n";
 	}
 
-	// In case a plugin uses $error rather than the $ Errors object
+	// In case a plugin uses $error rather than the $errors object
 	if ( !empty( $error ) ) {
-		$ Error->add('error', $error);
+		$error->add('error', $error);
 		unset($error);
 	}
 
-	if ( $ Error->get_error_code() ) {
+	if ( $error->get_error_code() ) {
 		$errors = '';
 		$messages = '';
-		foreach ( $ Error->get_error_codes() as $code ) {
-			$severity = $ Error->get_error_data( $code );
-			foreach ( $ Error->get_error_messages( $code ) as $error_message ) {
+		foreach ( $error->get_error_codes() as $code ) {
+			$severity = $error->get_error_data( $code );
+			foreach ( $error->get_error_messages( $code ) as $error_message ) {
 				if ( 'message' == $severity ) {
-									$messages .= '	' . $error_message . "<br />\n";
+					$messages .= '	' . $error_message . "<br />\n";
 				} else {
-									$errors .= '	' . $error_message . "<br />\n";
+					$errors .= '	' . $error_message . "<br />\n";
 				}
 			}
 		}
@@ -307,7 +307,7 @@ function retrieve_password() {
 	} elseif ( strpos( $_post->get( 'user_login' ), '@' ) ) {
 		$user_data = get_user_by( 'email', trim( wp_unslash( $_post->get( 'user_login' ) ) ) );
 		if ( empty( $user_data ) ) {
-					$errors->add('invalid_email', __('<strong>ERROR</strong>: There is no user registered with that email address.'));
+			$errors->add('invalid_email', __('<strong>ERROR</strong>: There is no user registered with that email address.'));
 		}
 	} else {
 		$login = trim( $_post->get( 'user_login' ) );
@@ -326,7 +326,7 @@ function retrieve_password() {
 	do_action( 'lostpassword_post', $errors );
 
 	if ( $errors->get_error_code() ) {
-			return $errors;
+		return $errors;
 	}
 
 	if ( !$user_data ) {
@@ -339,7 +339,7 @@ function retrieve_password() {
 	$user_email = $user_data->user_email;
 	$key = get_password_reset_key( $user_data );
 
-	if ( is_ Error( $key ) ) {
+	if ( is_error( $key ) ) {
 		return $key;
 	}
 
@@ -517,7 +517,7 @@ case 'retrievepassword' :
 
 	if ( $http_post ) {
 		$errors = retrieve_password();
-		if ( !is_ Error($errors) ) {
+		if ( !is_error($errors) ) {
 			$redirect_to = $_request->get( 'redirect_to', 'wp-login.php?checkemail=confirm' );
 			wp_safe_redirect( $redirect_to );
 			exit();
@@ -608,7 +608,7 @@ case 'rp' :
 		$user = false;
 	}
 
-	if ( ! $user || is_ Error( $user ) ) {
+	if ( ! $user || is_error( $user ) ) {
 		setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
 		if ( $user && $user->get_error_code() === 'expired_key' ) {
 			wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=expiredkey' ) );
@@ -621,7 +621,7 @@ case 'rp' :
 	$errors = new Error();
 
 	if ( $_post->get( 'pass1' ) && $_post->get( 'pass1' ) != $_post->get( 'pass2' ) ) {
-			$errors->add( 'password_reset_mismatch', __( 'The passwords do not match.' ) );
+		$errors->add( 'password_reset_mismatch', __( 'The passwords do not match.' ) );
 	}
 
 	/**
@@ -726,7 +726,7 @@ case 'register' :
 		$user_login = $_post->get( 'user_login', '' );
 		$user_email = $_post->get( 'user_email', '' );
 		$errors = register_new_user($user_login, $user_email);
-		if ( !is_ Error($errors) ) {
+		if ( !is_error($errors) ) {
 			$redirect_to = $_post->get( 'redirect_to', 'wp-login.php?checkemail=registered' );
 			wp_safe_redirect( $redirect_to );
 			exit();
@@ -805,7 +805,7 @@ default:
 		$redirect_to = $_request->get( 'redirect_to' );
 		// Redirect to https if user wants ssl
 		if ( $secure_cookie && false !== strpos($redirect_to, 'wp-admin') ) {
-					$redirect_to = preg_replace('|^http://|', 'https://', $redirect_to);
+			$redirect_to = preg_replace('|^http://|', 'https://', $redirect_to);
 		}
 	} else {
 		$redirect_to = admin_url();
@@ -838,7 +838,7 @@ default:
 	 */
 	$redirect_to = apply_filters( 'login_redirect', $redirect_to, $requested_redirect_to, $user );
 
-	if ( !is_ Error($user) && !$reauth ) {
+	if ( !is_error($user) && !$reauth ) {
 		if ( $app->get( 'interim_login' ) ) {
 			$message = '<p class="message">' . __('You have logged in successfully.') . '</p>';
 			$app->set( 'interim_login', 'success' );
@@ -857,11 +857,11 @@ default:
 		if ( ( empty( $redirect_to ) || $redirect_to == 'wp-admin/' || $redirect_to == admin_url() ) ) {
 			// If the user doesn't belong to a blog, send them to user admin. If the user can't edit posts, send them to their profile.
 			if ( is_multisite() && !get_active_blog_for_user($user->ID) && !is_super_admin( $user->ID ) ) {
-							$redirect_to = user_admin_url();
+				$redirect_to = user_admin_url();
 			} elseif ( is_multisite() && !$user->has_cap('read') ) {
-							$redirect_to = get_dashboard_url( $user->ID );
+				$redirect_to = get_dashboard_url( $user->ID );
 			} elseif ( !$user->has_cap('edit_posts') ) {
-							$redirect_to = $user->has_cap( 'read' ) ? admin_url( 'profile.php' ) : home_url();
+				$redirect_to = $user->has_cap( 'read' ) ? admin_url( 'profile.php' ) : home_url();
 			}
 
 			wp_redirect( $redirect_to );

@@ -117,8 +117,9 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 */
 	protected function get_bulk_actions() {
 		$actions = [];
-		if ( current_user_can( 'delete_users' ) )
+		if ( current_user_can( 'delete_users' ) ) {
 			$actions['delete'] = __( 'Delete' );
+		}
 		$actions['spam'] = _x( 'Mark as Spam', 'user' );
 		$actions['notspam'] = _x( 'Not Spam', 'user' );
 

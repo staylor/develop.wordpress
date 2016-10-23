@@ -128,8 +128,9 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		$nonmenu_tabs = apply_filters( 'install_plugins_nonmenu_tabs', $nonmenu_tabs );
 
 		// If a non-valid menu tab has been selected, And it's not a non-menu action.
-		if ( empty( $tab ) || ( !isset( $tabs[ $tab ] ) && !in_array( $tab, (array) $nonmenu_tabs ) ) )
+		if ( empty( $tab ) || ( !isset( $tabs[ $tab ] ) && !in_array( $tab, (array) $nonmenu_tabs ) ) ) {
 			$tab = key( $tabs );
+		}
 
 		$args = array(
 			'page' => $paged,
@@ -182,10 +183,11 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 			} else {
 				$user = get_user_option( 'wporg_favorites' );
 			}
-			if ( $user )
+			if ( $user ) {
 				$args['user'] = $user;
-			else
+			} else {
 				$args = false;
+			}
 
 			add_action( 'install_plugins_favorites', 'install_plugins_favorites_form', 9, 0 );
 			break;
@@ -207,8 +209,9 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		 */
 		$args = apply_filters( "install_plugins_table_api_args_{$tab}", $args );
 
-		if ( !$args )
+		if ( !$args ) {
 			return;
+		}
 
 		$api = plugins_api( 'query_plugins', $args );
 

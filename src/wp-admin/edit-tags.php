@@ -11,13 +11,15 @@ use WP\Admin\View\Term as TermView;
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! $taxnow )
+if ( ! $taxnow ) {
 	wp_die( __( 'Invalid taxonomy.' ) );
+}
 
 $tax = get_taxonomy( $taxnow );
 
-if ( ! $tax )
+if ( ! $tax ) {
 	wp_die( __( 'Invalid taxonomy.' ) );
+}
 
 if ( ! in_array( $tax->name, get_taxonomies( array( 'show_ui' => true ) ) ) ) {
    wp_die( __( 'Sorry, you are not allowed to manage these items.' ) );
@@ -223,8 +225,9 @@ if ( $pagenum > $total_pages && $total_pages > 0 ) {
 }
 
 wp_enqueue_script('admin-tags');
-if ( current_user_can($tax->cap->edit_terms) )
+if ( current_user_can($tax->cap->edit_terms) ) {
 	wp_enqueue_script('inline-edit-tax');
+}
 
 if ( 'category' == $taxnow || 'link_category' == $taxnow || 'post_tag' == $taxnow  ) {
 	$view->help->addEditTags( $taxnow );

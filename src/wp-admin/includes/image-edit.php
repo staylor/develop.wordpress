@@ -22,23 +22,26 @@ function wp_image_editor($post_id, $msg = false) {
 	$sub_sizes = isset($meta['sizes']) && is_array($meta['sizes']);
 	$note = '';
 
-	if ( isset( $meta['width'], $meta['height'] ) )
+	if ( isset( $meta['width'], $meta['height'] ) ) {
 		$big = max( $meta['width'], $meta['height'] );
-	else
+	} else {
 		die( __('Image data does not exist. Please re-upload the image.') );
+	}
 
 	$sizer = $big > 400 ? 400 / $big : 1;
 
 	$backup_sizes = get_post_meta( $post_id, '_wp_attachment_backup_sizes', true );
 	$can_restore = false;
-	if ( ! empty( $backup_sizes ) && isset( $backup_sizes['full-orig'], $meta['file'] ) )
+	if ( ! empty( $backup_sizes ) && isset( $backup_sizes['full-orig'], $meta['file'] ) ) {
 		$can_restore = $backup_sizes['full-orig']['file'] != basename( $meta['file'] );
+	}
 
 	if ( $msg ) {
-		if ( isset($msg->error) )
+		if ( isset($msg->error) ) {
 			$note = "<div class='error'><p>$msg->error</p></div>";
-		elseif ( isset($msg->msg) )
+		} elseif ( isset($msg->msg) ) {
 			$note = "<div class='updated'><p>$msg->msg</p></div>";
+		}
 	}
 
 	?>
@@ -85,8 +88,9 @@ function wp_image_editor($post_id, $msg = false) {
 		<div class="imgedit-help">
 		<p><?php _e('Discard any changes and restore the original image.');
 
-		if ( !defined('IMAGE_EDIT_OVERWRITE') || !IMAGE_EDIT_OVERWRITE )
+		if ( !defined('IMAGE_EDIT_OVERWRITE') || !IMAGE_EDIT_OVERWRITE ) {
 			echo ' '.__('Previously edited copies of the image will not be deleted.');
+		}
 
 		?></p>
 		<div class="imgedit-submit">
@@ -253,8 +257,9 @@ function wp_stream_image( $image, $mime_type, $post_id ) {
 		 */
 		$image = apply_filters( 'image_editor_save_pre', $image, $post_id );
 
-		if ( is_wp_error( $image->stream( $mime_type ) ) )
+		if ( is_wp_error( $image->stream( $mime_type ) ) ) {
 			return false;
+		}
 
 		return true;
 	} else {
@@ -318,8 +323,9 @@ function wp_save_image_file( $filename, $image, $mime_type, $post_id ) {
 		 */
 		$saved = apply_filters( 'wp_save_image_editor_file', null, $filename, $image, $mime_type, $post_id );
 
-		if ( null !== $saved )
+		if ( null !== $saved ) {
 			return $saved;
+		}
 
 		return $image->save( $filename, $mime_type );
 	} else {
@@ -345,8 +351,9 @@ function wp_save_image_file( $filename, $image, $mime_type, $post_id ) {
 		 */
 		$saved = apply_filters( 'wp_save_image_file', null, $filename, $image, $mime_type, $post_id );
 
-		if ( null !== $saved )
+		if ( null !== $saved ) {
 			return $saved;
+		}
 
 		switch ( $mime_type ) {
 		case 'image/jpeg':
@@ -464,11 +471,13 @@ function _crop_image_resource($img, $x, $y, $w, $h) {
  * @return WP_Image_Editor WP_Image_Editor instance with changes applied.
  */
 function image_edit_apply_changes( $image, $changes ) {
-	if ( is_resource( $image ) )
+	if ( is_resource( $image ) ) {
 		_deprecated_argument( __FUNCTION__, '3.5.0', __( '$image needs to be an WP_Image_Editor object' ) );
+	}
 
-	if ( !is_array($changes) )
+	if ( !is_array($changes) ) {
 		return $image;
+	}
 
 	// Expand change operations.
 	foreach ( $changes as $key => $obj ) {
@@ -505,8 +514,9 @@ function image_edit_apply_changes( $image, $changes ) {
 					break;
 				}
 			}
-			if ( !$combined )
+			if ( !$combined ) {
 				$filtered[++$i] = $changes[$j];
+			}
 		}
 		$changes = $filtered;
 		unset($filtered);
@@ -542,18 +552,21 @@ function image_edit_apply_changes( $image, $changes ) {
 		switch ( $operation->type ) {
 		case 'rotate':
 			if ( $operation->angle != 0 ) {
-				if ( $image instanceof WP_Image_Editor )
+				if ( $image instanceof WP_Image_Editor ) {
 					$image->rotate( $operation->angle );
-				else
+				} else {
 					$image = _rotate_image_resource( $image, $operation->angle );
+				}
 			}
 			break;
 		case 'flip':
-			if ( $operation->axis != 0 )
-				if ( $image instanceof WP_Image_Editor )
+			if ( $operation->axis != 0 ) {
+				if ( $image instanceof WP_Image_Editor ) {
 					$image->flip( ($operation->axis & 1) != 0, ($operation->axis & 2) != 0 );
-				else
-					$image = _flip_image_resource( $image, ( $operation->axis & 1 ) != 0, ( $operation->axis & 2 ) != 0 );
+				}
+			} else {
+				$image = _flip_image_resource( $image, ( $operation->axis & 1 ) != 0, ( $operation->axis & 2 ) != 0 );
+			}
 			break;
 		case 'crop':
 			$sel = $operation->sel;
@@ -598,8 +611,9 @@ function stream_preview_image( $post_id ) {
 	}
 
 	$changes = $_request->get( 'history' ) ? json_decode( wp_unslash( $_request->get( 'history' ) ) ) : null;
-	if ( $changes )
+	if ( $changes ) {
 		$img = image_edit_apply_changes( $img, $changes );
+	}
 
 	// Scale the image.
 	$size = $img->get_size();
@@ -610,8 +624,9 @@ function stream_preview_image( $post_id ) {
 	$w2 = max ( 1, $w * $ratio );
 	$h2 = max ( 1, $h * $ratio );
 
-	if ( is_wp_error( $img->resize( $w2, $h2 ) ) )
+	if ( is_wp_error( $img->resize( $w2, $h2 ) ) ) {
 		return false;
+	}
 
 	return wp_stream_image( $img, $post->post_mime_type, $post_id );
 }
@@ -692,10 +707,11 @@ function wp_restore_image($post_id) {
 		return $msg;
 	}
 
-	if ( !$restored )
+	if ( !$restored ) {
 		$msg->error = __('Image metadata is inconsistent.');
-	else
+	} else {
 		$msg->msg = __('Image restored successfully.');
+	}
 
 	return $msg;
 }
@@ -736,8 +752,9 @@ function wp_save_image( $post_id ) {
 		$diff = round($sX / $sY, 2) - round($fwidth / $fheight, 2);
 		if ( -0.1 < $diff && $diff < 0.1 ) {
 			// Scale the full size image.
-			if ( $img->resize( $fwidth, $fheight ) )
+			if ( $img->resize( $fwidth, $fheight ) ) {
 				$scaled = true;
+			}
 		}
 
 		if ( !$scaled ) {
@@ -762,8 +779,9 @@ function wp_save_image( $post_id ) {
 		return $return;
 	}
 
-	if ( !is_array($backup_sizes) )
+	if ( !is_array($backup_sizes) ) {
 		$backup_sizes = [];
+	}
 
 	// Generate new filename.
 	$path = get_attached_file( $post_id );
@@ -825,8 +843,9 @@ function wp_save_image( $post_id ) {
 
 		if ( $success && ('nothumb' == $target || 'all' == $target) ) {
 			$sizes = get_intermediate_image_sizes();
-			if ( 'nothumb' == $target )
+			if ( 'nothumb' == $target ) {
 				$sizes = array_diff( $sizes, array('thumbnail') );
+			}
 		}
 
 		$return->fw = $meta['width'];
@@ -858,14 +877,16 @@ function wp_save_image( $post_id ) {
 			$tag = false;
 			if ( isset( $meta['sizes'][$size] ) ) {
 				if ( isset($backup_sizes["$size-orig"]) ) {
-					if ( ( !defined('IMAGE_EDIT_OVERWRITE') || !IMAGE_EDIT_OVERWRITE ) && $backup_sizes["$size-orig"]['file'] != $meta['sizes'][$size]['file'] )
+					if ( ( !defined('IMAGE_EDIT_OVERWRITE') || !IMAGE_EDIT_OVERWRITE ) && $backup_sizes["$size-orig"]['file'] != $meta['sizes'][$size]['file'] ) {
 						$tag = "$size-$suffix";
+					}
 				} else {
 					$tag = "$size-orig";
 				}
 
-				if ( $tag )
+				if ( $tag ) {
 					$backup_sizes[$tag] = $meta['sizes'][$size];
+				}
 			}
 
 			if ( isset( $_wp_additional_image_sizes[ $size ] ) ) {

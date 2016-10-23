@@ -21,14 +21,17 @@ function wp_list_widgets() {
 	$done = [];
 
 	foreach ( $sort as $widget ) {
-		if ( in_array( $widget['callback'], $done, true ) ) // We already showed this multi-widget
+		if ( in_array( $widget['callback'], $done, true ) ) {
+			// We already showed this multi-widget
 			continue;
+		}
 
 		$sidebar = is_active_widget( $widget['callback'], $widget['id'], false, false );
 		$done[] = $widget['callback'];
 
-		if ( ! isset( $widget['params'][0] ) )
+		if ( ! isset( $widget['params'][0] ) ) {
 			$widget['params'][0] = [];
+		}
 
 		$args = array( 'widget_id' => $widget['id'], 'widget_name' => $widget['name'], '_display' => 'template' );
 
@@ -39,8 +42,9 @@ function wp_list_widgets() {
 			$args['_add'] = 'multi';
 		} else {
 			$args['_add'] = 'single';
-			if ( $sidebar )
+			if ( $sidebar ) {
 				$args['_hide'] = '1';
+			}
 		}
 
 		$args = wp_list_widget_controls_dynamic_sidebar( array( 0 => $args, 1 => $widget['params'][0] ) );
@@ -140,8 +144,9 @@ function next_widget_id_number( $id_base ) {
 	$app = getApp();
 
 	foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
-		if ( preg_match( '/' . $id_base . '-([0-9]+)$/', $widget_id, $matches ) )
+		if ( preg_match( '/' . $id_base . '-([0-9]+)$/', $widget_id, $matches ) ) {
 			$number = max($number, $matches[1]);
+		}
 	}
 	$number++;
 
@@ -198,8 +203,9 @@ function wp_widget_control( $sidebar_args ) {
 		// number == -1 implies a template where id numbers are replaced by a generic '__i__'
 		$control['params'][0]['number'] = -1;
 		// With id_base widget id's are constructed like {$id_base}-{$id_number}.
-		if ( isset($control['id_base']) )
+		if ( isset($control['id_base']) ) {
 			$id_format = $control['id_base'] . '-__i__';
+		}
 	}
 
 	$app->widgets['registered'][$widget_id]['callback'] = $app->widgets['registered'][$widget_id]['_callback'];
@@ -234,8 +240,14 @@ function wp_widget_control( $sidebar_args ) {
 	<?php echo $after_widget_content; ?>
 	<input type="hidden" name="widget-id" class="widget-id" value="<?php echo esc_attr($id_format); ?>" />
 	<input type="hidden" name="id_base" class="id_base" value="<?php echo esc_attr($id_base); ?>" />
-	<input type="hidden" name="widget-width" class="widget-width" value="<?php if (isset( $control['width'] )) echo esc_attr($control['width']); ?>" />
-	<input type="hidden" name="widget-height" class="widget-height" value="<?php if (isset( $control['height'] )) echo esc_attr($control['height']); ?>" />
+	<input type="hidden" name="widget-width" class="widget-width" value="<?php if (isset( $control['width'] )) {
+		echo esc_attr($control['width']);
+	}
+	?>" />
+	<input type="hidden" name="widget-height" class="widget-height" value="<?php if (isset( $control['height'] )) {
+		echo esc_attr($control['height']);
+	}
+	?>" />
 	<input type="hidden" name="widget_number" class="widget_number" value="<?php echo esc_attr($widget_number); ?>" />
 	<input type="hidden" name="multi_number" class="multi_number" value="<?php echo esc_attr($multi_number); ?>" />
 	<input type="hidden" name="add_new" class="add_new" value="<?php echo esc_attr($add_new); ?>" />
@@ -245,7 +257,10 @@ function wp_widget_control( $sidebar_args ) {
 		<a class="widget-control-remove" href="#remove"><?php _e('Delete'); ?></a> |
 		<a class="widget-control-close" href="#close"><?php _e('Close'); ?></a>
 		</div>
-		<div class="alignright<?php if ( 'noform' === $has_form ) echo ' widget-control-noform'; ?>">
+		<div class="alignright<?php if ( 'noform' === $has_form ) {
+				echo ' widget-control-noform';
+			}
+			?>">
 			<?php submit_button( __( 'Save' ), 'primary widget-control-save right', 'savewidget', false, array( 'id' => 'widget-' . esc_attr( $id_format ) . '-savewidget' ) ); ?>
 			<span class="spinner"></span>
 		</div>

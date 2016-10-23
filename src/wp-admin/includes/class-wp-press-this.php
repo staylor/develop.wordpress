@@ -463,8 +463,9 @@ class WP_Press_This {
 	private function _limit_embed( $src ) {
 		$src = $this->_limit_url( $src );
 
-		if ( empty( $src ) )
+		if ( empty( $src ) ) {
 			return '';
+		}
 
 		if ( preg_match( '!//(m|www)\.youtube\.com/(embed|v)/([^?]+)\?.+$!i', $src, $src_matches ) ) {
 			// Embedded Youtube videos (www or mobile)

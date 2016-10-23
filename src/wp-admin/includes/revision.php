@@ -20,26 +20,31 @@
  *                    Or, false on failure.
  */
 function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
-	if ( ! $post = get_post( $post ) )
+	if ( ! $post = get_post( $post ) ) {
 		return false;
+	}
 
 	if ( $compare_from ) {
-		if ( ! $compare_from = get_post( $compare_from ) )
+		if ( ! $compare_from = get_post( $compare_from ) ) {
 			return false;
+		}
 	} else {
 		// If we're dealing with the first revision...
 		$compare_from = false;
 	}
 
-	if ( ! $compare_to = get_post( $compare_to ) )
+	if ( ! $compare_to = get_post( $compare_to ) ) {
 		return false;
+	}
 
 	// If comparing revisions, make sure we're dealing with the right post parent.
 	// The parent post may be a 'revision' when revisions are disabled and we're looking at autosaves.
-	if ( $compare_from && $compare_from->post_parent !== $post->ID && $compare_from->ID !== $post->ID )
+	if ( $compare_from && $compare_from->post_parent !== $post->ID && $compare_from->ID !== $post->ID ) {
 		return false;
-	if ( $compare_to->post_parent !== $post->ID && $compare_to->ID !== $post->ID )
+	}
+	if ( $compare_to->post_parent !== $post->ID && $compare_to->ID !== $post->ID ) {
 		return false;
+	}
 
 	if ( $compare_from && strtotime( $compare_from->post_date_gmt ) > strtotime( $compare_to->post_date_gmt ) ) {
 		$temp = $compare_from;
@@ -48,10 +53,12 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 	}
 
 	// Add default title if title field is empty
-	if ( $compare_from && empty( $compare_from->post_title ) )
+	if ( $compare_from && empty( $compare_from->post_title ) ) {
 		$compare_from->post_title = __( '(no title)' );
-	if ( empty( $compare_to->post_title ) )
+	}
+	if ( empty( $compare_to->post_title ) ) {
 		$compare_to->post_title = __( '(no title)' );
+	}
 
 	$return = [];
 
@@ -151,8 +158,9 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 	// If revisions are disabled, we only want autosaves and the current post.
 	if ( ! wp_revisions_enabled( $post ) ) {
 		foreach ( $revisions as $revision_id => $revision ) {
-			if ( ! wp_is_post_autosave( $revision ) )
+			if ( ! wp_is_post_autosave( $revision ) ) {
 				unset( $revisions[ $revision_id ] );
+			}
 		}
 		$revisions = array( $post->ID => $post ) + $revisions;
 	}

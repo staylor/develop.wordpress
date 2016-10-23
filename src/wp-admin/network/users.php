@@ -11,8 +11,9 @@ use WP\User\Admin\Help as UserHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can( 'manage_network_users' ) )
+if ( ! current_user_can( 'manage_network_users' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+}
 
 if ( $_get->get( 'action' ) ) {
 	/** This action is documented in wp-admin/network/edit.php */
@@ -20,8 +21,9 @@ if ( $_get->get( 'action' ) ) {
 
 	switch ( $_get->get( 'action' ) ) {
 	case 'deleteuser':
-		if ( ! current_user_can( 'manage_network_users' ) )
+		if ( ! current_user_can( 'manage_network_users' ) ) {
 			wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+		}
 
 		check_admin_referer( 'deleteuser' );
 
@@ -43,8 +45,9 @@ if ( $_get->get( 'action' ) ) {
 		exit();
 
 	case 'allusers':
-		if ( !current_user_can( 'manage_network_users' ) )
+		if ( !current_user_can( 'manage_network_users' ) ) {
 			wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+		}
 
 		if ( ( $_post->get( 'action' ) || $_post->get( 'action2' ) ) && $_post->get( 'allusers' ) ) {
 			check_admin_referer( 'bulk-users-network' );
@@ -56,8 +59,9 @@ if ( $_get->get( 'action' ) ) {
 				if ( !empty( $user_id ) ) {
 					switch ( $doaction ) {
 					case 'delete':
-						if ( ! current_user_can( 'delete_users' ) )
+						if ( ! current_user_can( 'delete_users' ) ) {
 							wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+						}
 						$app->set( 'title', __( 'Users' ) );
 						$app->set( 'parent_file', 'users.php' );
 						$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
@@ -71,14 +75,17 @@ if ( $_get->get( 'action' ) ) {
 
 					case 'spam':
 						$user = get_userdata( $user_id );
-						if ( is_super_admin( $user->ID ) )
+						if ( is_super_admin( $user->ID ) ) {
 							wp_die( sprintf( __( 'Warning! User cannot be modified. The user %s is a network administrator.' ), esc_html( $user->user_login ) ) );
+						}
 
 						$userfunction = 'all_spam';
 						$blogs = get_blogs_of_user( $user_id, true );
 						foreach ( (array) $blogs as $details ) {
-							if ( $details->userblog_id != $current_site->blog_id ) // main blog not a spam !
+							if ( $details->userblog_id != $current_site->blog_id ) {
+								// main blog not a spam !
 								update_blog_status( $details->userblog_id, 'spam', '1' );
+							}
 						}
 						update_user_status( $user_id, 'spam', '1' );
 						break;
@@ -86,8 +93,9 @@ if ( $_get->get( 'action' ) ) {
 					case 'notspam':
 						$userfunction = 'all_notspam';
 						$blogs = get_blogs_of_user( $user_id, true );
-						foreach ( (array) $blogs as $details )
+						foreach ( (array) $blogs as $details ) {
 							update_blog_status( $details->userblog_id, 'spam', '0' );
+						}
 
 						update_user_status( $user_id, 'spam', '0' );
 						break;
@@ -122,44 +130,51 @@ if ( $_get->get( 'action' ) ) {
 			$location = network_admin_url( 'users.php' );
 
 			$paged = $_request->getInt( 'paged', 0 );
-			if ( $paged )
+			if ( $paged ) {
 				$location = add_query_arg( 'paged', $paged, $location );
+			}
 			wp_redirect( $location );
 		}
 		exit();
 
 	case 'dodelete':
 		check_admin_referer( 'ms-users-delete' );
-		if ( ! ( current_user_can( 'manage_network_users' ) && current_user_can( 'delete_users' ) ) )
+		if ( ! ( current_user_can( 'manage_network_users' ) && current_user_can( 'delete_users' ) ) ) {
 			wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+		}
 
 		if ( $_post->get( 'blog' ) && is_array( $_post->get( 'blog' ) ) ) {
 			foreach ( $_post->get( 'blog' ) as $id => $users ) {
 				foreach ( $users as $blogid => $user_id ) {
-					if ( ! current_user_can( 'delete_user', $id ) )
+					if ( ! current_user_can( 'delete_user', $id ) ) {
 						continue;
+					}
 
 					$d = $_post->get( 'delete' );
-					if ( $d && 'reassign' == $d[ $blogid ][ $id ] )
+					if ( $d && 'reassign' == $d[ $blogid ][ $id ] ) {
 						remove_user_from_blog( $id, $blogid, $user_id );
-					else
+					} else {
 						remove_user_from_blog( $id, $blogid );
+					}
 				}
 			}
 		}
 		$i = 0;
-		if ( is_array( $_post->get( 'user' ) ) && ! empty( $_post->get( 'user' ) ) )
+		if ( is_array( $_post->get( 'user' ) ) && ! empty( $_post->get( 'user' ) ) ) {
 			foreach ( $_post->get( 'user' ) as $id ) {
-				if ( ! current_user_can( 'delete_user', $id ) )
+				if ( ! current_user_can( 'delete_user', $id ) ) {
 					continue;
+				}
 				wpmu_delete_user( $id );
 				$i++;
 			}
+		}
 
-		if ( $i == 1 )
+		if ( $i == 1 ) {
 			$deletefunction = 'delete';
-		else
+		} else {
 			$deletefunction = 'all_delete';
+		}
 
 		wp_redirect( add_query_arg( array( 'updated' => 'true', 'action' => $deletefunction ), network_admin_url( 'users.php' ) ) );
 		exit();
@@ -236,4 +251,4 @@ if ( $_request->get( 'updated' ) == 'true' && ! empty( $_request->get( 'action' 
 	</form>
 </div>
 
-<?php require_once( ABSPATH . 'wp-admin/admin-footer.php' ); ?>
+<?php require_once( ABSPATH . 'wp-admin/admin-footer.php' );

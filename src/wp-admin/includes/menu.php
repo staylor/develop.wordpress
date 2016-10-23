@@ -154,8 +154,9 @@ if ( is_network_admin() ) {
  * that the user does not have. Run re-parent loop again.
  */
 foreach ( $app->menu as $id => $data ) {
-	if ( ! current_user_can( $data[1] ) )
+	if ( ! current_user_can( $data[1] ) ) {
 		$app->_wp_menu_nopriv[ $data[2] ] = true;
+	}
 
 	/*
 	 * If there is only one submenu and it is has same destination as the parent,

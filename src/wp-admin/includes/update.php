@@ -15,10 +15,12 @@ use function WP\getApp;
  */
 function get_preferred_from_update_core() {
 	$updates = get_core_updates();
-	if ( ! is_array( $updates ) )
+	if ( ! is_array( $updates ) ) {
 		return false;
-	if ( empty( $updates ) )
+	}
+	if ( empty( $updates ) ) {
 		return (object) array( 'response' => 'latest' );
+	}
 	return $updates[0];
 }
 
@@ -33,19 +35,22 @@ function get_core_updates( $options = [] ) {
 	$options = array_merge( array( 'available' => true, 'dismissed' => false ), $options );
 	$dismissed = get_site_option( 'dismissed_update_core' );
 
-	if ( ! is_array( $dismissed ) )
+	if ( ! is_array( $dismissed ) ) {
 		$dismissed = [];
+	}
 
 	$from_api = get_site_transient( 'update_core' );
 
-	if ( ! isset( $from_api->updates ) || ! is_array( $from_api->updates ) )
+	if ( ! isset( $from_api->updates ) || ! is_array( $from_api->updates ) ) {
 		return false;
+	}
 
 	$updates = $from_api->updates;
 	$result = [];
 	foreach ( $updates as $update ) {
-		if ( $update->response == 'autoupdate' )
+		if ( $update->response == 'autoupdate' ) {
 			continue;
+		}
 
 		if ( array_key_exists( $update->current . '|' . $update->locale, $dismissed ) ) {
 			if ( $options['dismissed'] ) {
@@ -73,20 +78,24 @@ function get_core_updates( $options = [] ) {
  */
 function find_core_auto_update() {
 	$updates = get_site_transient( 'update_core' );
-	if ( ! $updates || empty( $updates->updates ) )
+	if ( ! $updates || empty( $updates->updates ) ) {
 		return false;
+	}
 
 	$auto_update = false;
 	$upgrader = new WP_Automatic_Updater;
 	foreach ( $updates->updates as $update ) {
-		if ( 'autoupdate' != $update->response )
+		if ( 'autoupdate' != $update->response ) {
 			continue;
+		}
 
-		if ( ! $upgrader->should_update( 'core', $update, ABSPATH ) )
+		if ( ! $upgrader->should_update( 'core', $update, ABSPATH ) ) {
 			continue;
+		}
 
-		if ( ! $auto_update || version_compare( $update->current, $auto_update->current, '>' ) )
+		if ( ! $auto_update || version_compare( $update->current, $auto_update->current, '>' ) ) {
 			$auto_update = $update;
+		}
 	}
 	return $auto_update;
 }
@@ -103,8 +112,9 @@ function find_core_auto_update() {
 function get_core_checksums( $version, $locale ) {
 	$url = $http_url = 'http://api.wordpress.org/core/checksums/1.0/?' . http_build_query( compact( 'version', 'locale' ), null, '&' );
 
-	if ( $ssl = wp_http_supports( array( 'ssl' ) ) )
+	if ( $ssl = wp_http_supports( array( 'ssl' ) ) ) {
 		$url = set_url_scheme( $url, 'https' );
+	}
 
 	$options = array(
 		'timeout' => ( ( defined('DOING_CRON') && DOING_CRON ) ? 30 : 3 ),
@@ -116,14 +126,16 @@ function get_core_checksums( $version, $locale ) {
 		$response = wp_remote_get( $http_url, $options );
 	}
 
-	if ( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) )
+	if ( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) ) {
 		return false;
+	}
 
 	$body = trim( wp_remote_retrieve_body( $response ) );
 	$body = json_decode( $body, true );
 
-	if ( ! is_array( $body ) || ! isset( $body['checksums'] ) || ! is_array( $body['checksums'] ) )
+	if ( ! is_array( $body ) || ! isset( $body['checksums'] ) || ! is_array( $body['checksums'] ) ) {
 		return false;
+	}
 
 	return $body['checksums'];
 }
@@ -149,8 +161,9 @@ function undismiss_core_update( $version, $locale ) {
 	$dismissed = get_site_option( 'dismissed_update_core' );
 	$key = $version . '|' . $locale;
 
-	if ( ! isset( $dismissed[$key] ) )
+	if ( ! isset( $dismissed[$key] ) ) {
 		return false;
+	}
 
 	unset( $dismissed[$key] );
 	return update_site_option( 'dismissed_update_core', $dismissed );
@@ -165,13 +178,15 @@ function undismiss_core_update( $version, $locale ) {
 function find_core_update( $version, $locale ) {
 	$from_api = get_site_transient( 'update_core' );
 
-	if ( ! isset( $from_api->updates ) || ! is_array( $from_api->updates ) )
+	if ( ! isset( $from_api->updates ) || ! is_array( $from_api->updates ) ) {
 		return false;
+	}
 
 	$updates = $from_api->updates;
 	foreach ( $updates as $update ) {
-		if ( $update->current == $version && $update->locale == $locale )
+		if ( $update->current == $version && $update->locale == $locale ) {
 			return $update;
+		}
 	}
 	return false;
 }
@@ -182,21 +197,26 @@ function find_core_update( $version, $locale ) {
  * @return string
  */
 function core_update_footer( $msg = '' ) {
-	if ( !current_user_can('update_core') )
+	if ( !current_user_can('update_core') ) {
 		return sprintf( __( 'Version %s' ), get_bloginfo( 'version', 'display' ) );
+	}
 
 	$cur = get_preferred_from_update_core();
-	if ( ! is_object( $cur ) )
+	if ( ! is_object( $cur ) ) {
 		$cur = new stdClass;
+	}
 
-	if ( ! isset( $cur->current ) )
+	if ( ! isset( $cur->current ) ) {
 		$cur->current = '';
+	}
 
-	if ( ! isset( $cur->url ) )
+	if ( ! isset( $cur->url ) ) {
 		$cur->url = '';
+	}
 
-	if ( ! isset( $cur->response ) )
+	if ( ! isset( $cur->response ) ) {
 		$cur->response = '';
+	}
 
 	switch ( $cur->response ) {
 	case 'development' :
@@ -215,18 +235,21 @@ function core_update_footer( $msg = '' ) {
  * @return false|void
  */
 function update_nag() {
-	if ( is_multisite() && !current_user_can('update_core') )
+	if ( is_multisite() && !current_user_can('update_core') ) {
 		return false;
+	}
 
 	$app = getApp();
 
-	if ( 'update-core.php' == $app['pagenow'] )
+	if ( 'update-core.php' == $app['pagenow'] ) {
 		return;
+	}
 
 	$cur = get_preferred_from_update_core();
 
-	if ( ! isset( $cur->response ) || $cur->response != 'upgrade' )
+	if ( ! isset( $cur->response ) || $cur->response != 'upgrade' ) {
 		return false;
+	}
 
 	if ( current_user_can( 'update_core' ) ) {
 		$msg = sprintf(
@@ -268,8 +291,9 @@ function update_right_now_message() {
 	if ( current_user_can('update_core') ) {
 		$cur = get_preferred_from_update_core();
 
-		if ( isset( $cur->response ) && $cur->response == 'upgrade' )
+		if ( isset( $cur->response ) && $cur->response == 'upgrade' ) {
 			$msg .= '<a href="' . network_admin_url( 'update-core.php' ) . '" class="button" aria-describedby="wp-version">' . sprintf( __( 'Update to %s' ), $cur->current ? $cur->current : __( 'Latest' ) ) . '</a> ';
+		}
 	}
 
 	/* translators: 1: version number, 2: theme name */
@@ -314,8 +338,9 @@ function get_plugin_updates() {
  * @since 2.9.0
  */
 function wp_plugin_update_rows() {
-	if ( !current_user_can('update_plugins' ) )
+	if ( !current_user_can('update_plugins' ) ) {
 		return;
+	}
 
 	$plugins = get_site_transient( 'update_plugins' );
 	if ( isset($plugins->response) && is_array($plugins->response) ) {
@@ -453,8 +478,9 @@ function wp_plugin_update_row( $file, $plugin_data ) {
 function get_theme_updates() {
 	$current = get_site_transient('update_themes');
 
-	if ( ! isset( $current->response ) )
+	if ( ! isset( $current->response ) ) {
 		return [];
+	}
 
 	$update_themes = [];
 	foreach ( $current->response as $stylesheet => $data ) {
@@ -469,8 +495,9 @@ function get_theme_updates() {
  * @since 3.1.0
  */
 function wp_theme_update_rows() {
-	if ( !current_user_can('update_themes' ) )
+	if ( !current_user_can('update_themes' ) ) {
 		return;
+	}
 
 	$themes = get_site_transient( 'update_themes' );
 	if ( isset($themes->response) && is_array($themes->response) ) {
@@ -597,17 +624,20 @@ function maintenance_nag() {
 		 * This flag is cleared whenever a successful update occurs using Core_Upgrader.
 		 */
 		$comparison = ! empty( $failed['critical'] ) ? '>=' : '>';
-		if ( version_compare( $failed['attempted'], $app['wp_version'], $comparison ) )
+		if ( version_compare( $failed['attempted'], $app['wp_version'], $comparison ) ) {
 			$nag = true;
+		}
 	}
 
-	if ( ! $nag )
+	if ( ! $nag ) {
 		return false;
+	}
 
-	if ( current_user_can('update_core') )
+	if ( current_user_can('update_core') ) {
 		$msg = sprintf( __('An automated WordPress update has failed to complete - <a href="%s">please attempt the update again now</a>.'), 'update-core.php' );
-	else
+	} else {
 		$msg = __('An automated WordPress update has failed to complete! Please notify the site administrator.');
+	}
 
 	echo "<div class='update-nag'>$msg</div>";
 }

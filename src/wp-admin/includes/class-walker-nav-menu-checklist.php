@@ -81,8 +81,9 @@ class Walker_Nav_Menu_Checklist extends Walker_Nav_Menu {
 		$output .= '<label class="menu-item-title">';
 		$output .= '<input type="checkbox" class="menu-item-checkbox';
 
-		if ( ! empty( $item->front_or_home ) )
+		if ( ! empty( $item->front_or_home ) ) {
 			$output .= ' add-to-top';
+		}
 
 		$output .= '" name="menu-item[' . $possible_object_id . '][menu-item-object-id]" value="'. esc_attr( $item->object_id ) .'" /> ';
 
@@ -91,8 +92,9 @@ class Walker_Nav_Menu_Checklist extends Walker_Nav_Menu {
 		} elseif ( isset( $item->post_type ) ) {
 			/** This filter is documented in wp-includes/post-template.php */
 			$title = apply_filters( 'the_title', $item->post_title, $item->ID );
-			if ( ! empty( $item->front_or_home ) && _x( 'Home', 'nav menu home label' ) !== $title )
+			if ( ! empty( $item->front_or_home ) && _x( 'Home', 'nav menu home label' ) !== $title ) {
 				$title = sprintf( _x( 'Home: %s', 'nav menu front page title' ), $title );
+			}
 		}
 
 		$output .= isset( $title ) ? esc_html( $title ) : esc_html( $item->title );

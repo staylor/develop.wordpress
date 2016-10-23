@@ -51,17 +51,20 @@ class WP_Terms_List_Table extends WP_List_Table {
 		$post_type = $this->screen->post_type;
 		$taxonomy  = $this->screen->taxonomy;
 
-		if ( empty( $taxonomy ) )
+		if ( empty( $taxonomy ) ) {
 			$taxonomy = 'post_tag';
+		}
 
-		if ( ! taxonomy_exists( $taxonomy ) )
+		if ( ! taxonomy_exists( $taxonomy ) ) {
 			wp_die( __( 'Invalid taxonomy.' ) );
+		}
 
 		$tax = get_taxonomy( $taxonomy );
 
 		// @todo Still needed? Maybe just the show_ui part.
-		if ( empty( $post_type ) || !in_array( $post_type, get_post_types( array( 'show_ui' => true ) ) ) )
+		if ( empty( $post_type ) || !in_array( $post_type, get_post_types( array( 'show_ui' => true ) ) ) ) {
 			$post_type = 'post';
+		}
 
 	}
 
@@ -280,11 +283,13 @@ class WP_Terms_List_Table extends WP_List_Table {
 
 		foreach ( $terms as $key => $term ) {
 
-			if ( $count >= $end )
+			if ( $count >= $end ) {
 				break;
+			}
 
-			if ( $term->parent != $parent && ! $this->_request->get( 's' ) )
+			if ( $term->parent != $parent && ! $this->_request->get( 's' ) ) {
 				continue;
+			}
 
 			// If the page starts in a subtree, print the parents.
 			if ( $count == $start && $term->parent > 0 && ! $this->_request->get( 's' ) ) {
@@ -294,8 +299,10 @@ class WP_Terms_List_Table extends WP_List_Table {
 					$my_parent = get_term( $p, $taxonomy );
 					$my_parents[] = $my_parent;
 					$p = $my_parent->parent;
-					if ( in_array( $p, $parent_ids ) ) // Prevent parent loops.
+					if ( in_array( $p, $parent_ids ) ) {
+						// Prevent parent loops.
 						break;
+					}
 					$parent_ids[] = $p;
 				}
 				unset( $parent_ids );
@@ -317,8 +324,9 @@ class WP_Terms_List_Table extends WP_List_Table {
 
 			unset( $terms[$key] );
 
-			if ( isset( $children[$term->term_id] ) && ! $this->_request->get( 's' ) )
+			if ( isset( $children[$term->term_id] ) && ! $this->_request->get( 's' ) ) {
 				$this->_rows( $taxonomy, $terms, $children, $start, $per_page, $count, $term->term_id, $level + 1 );
+			}
 		}
 	}
 
@@ -531,8 +539,9 @@ class WP_Terms_List_Table extends WP_List_Table {
 		$tax = get_taxonomy( $this->screen->taxonomy );
 
 		$ptype_object = get_post_type_object( $this->screen->post_type );
-		if ( ! $ptype_object->show_ui )
+		if ( ! $ptype_object->show_ui ) {
 			return $count;
+		}
 
 		if ( $tax->query_var ) {
 			$args = array( $tax->query_var => $tag->slug );
@@ -540,11 +549,13 @@ class WP_Terms_List_Table extends WP_List_Table {
 			$args = array( 'taxonomy' => $tax->name, 'term' => $tag->slug );
 		}
 
-		if ( 'post' != $this->screen->post_type )
+		if ( 'post' != $this->screen->post_type ) {
 			$args['post_type'] = $this->screen->post_type;
+		}
 
-		if ( 'attachment' === $this->screen->post_type )
+		if ( 'attachment' === $this->screen->post_type ) {
 			return "<a href='" . esc_url ( add_query_arg( $args, 'upload.php' ) ) . "'>$count</a>";
+		}
 
 		return "<a href='" . esc_url ( add_query_arg( $args, 'edit.php' ) ) . "'>$count</a>";
 	}
@@ -555,8 +566,9 @@ class WP_Terms_List_Table extends WP_List_Table {
 	 */
 	public function column_links( $tag ) {
 		$count = number_format_i18n( $tag->count );
-		if ( $count )
+		if ( $count ) {
 			$count = "<a href='link-manager.php?cat_id=$tag->term_id'>$count</a>";
+		}
 		return $count;
 	}
 
@@ -589,9 +601,10 @@ class WP_Terms_List_Table extends WP_List_Table {
 	public function inline_edit() {
 		$tax = get_taxonomy( $this->screen->taxonomy );
 
-		if ( ! current_user_can( $tax->cap->edit_terms ) )
+		if ( ! current_user_can( $tax->cap->edit_terms ) ) {
 			return;
-?>
+		}
+		?>
 
 	<form method="get"><table style="display: none"><tbody id="inlineedit">
 		<tr id="inline-edit" class="inline-edit-row" style="display: none"><td colspan="<?php echo $this->get_column_count(); ?>" class="colspanchange">
@@ -617,8 +630,9 @@ class WP_Terms_List_Table extends WP_List_Table {
 		list( $columns ) = $this->get_column_info();
 
 		foreach ( $columns as $column_name => $column_display_name ) {
-			if ( isset( $core_columns[$column_name] ) )
+			if ( isset( $core_columns[$column_name] ) ) {
 				continue;
+			}
 
 			/** This action is documented in wp-admin/includes/class-wp-posts-list-table.php */
 			do_action( 'quick_edit_custom_box', $column_name, 'edit-tags', $this->screen->taxonomy );

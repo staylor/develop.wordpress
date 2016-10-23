@@ -14,8 +14,9 @@ require_once( __DIR__ . '/admin.php' );
 /** WordPress Translation Install API */
 require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
-if ( ! current_user_can( 'manage_network_options' ) )
+if ( ! current_user_can( 'manage_network_options' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+}
 
 $app->set( 'title', __( 'Network Settings' ) );
 $app->set( 'parent_file', 'settings.php' );
@@ -33,8 +34,9 @@ if ( $_post->all() ) {
 
 	$checked_options = array( 'menu_items' => [], 'registrationnotification' => 'no', 'upload_space_check_disabled' => 1, 'add_new_users' => 0 );
 	foreach ( $checked_options as $option_name => $option_unchecked_value ) {
-		if ( ! $_post->get( $option_name ) )
+		if ( ! $_post->get( $option_name ) ) {
 			$_post->set( $option_name, $option_unchecked_value );
+		}
 	}
 
 	$options = array(
@@ -55,8 +57,9 @@ if ( $_post->all() ) {
 	}
 
 	foreach ( $options as $option_name ) {
-		if ( ! $_post->get( $option_name ) )
+		if ( ! $_post->get( $option_name ) ) {
 			continue;
+		}
 		$value = wp_unslash( $_post->get( $option_name ) );
 		update_site_option( $option_name, $value );
 	}
@@ -107,8 +110,9 @@ if ( $_get->get( 'updated' ) ) {
 			<tr>
 				<th scope="row"><?php _e( 'Allow new registrations' ) ?></th>
 				<?php
-				if ( !get_site_option( 'registration' ) )
+				if ( !get_site_option( 'registration' ) ) {
 					update_site_option( 'registration', 'none' );
+				}
 				$reg = get_site_option( 'registration' );
 				?>
 				<td>
@@ -134,8 +138,9 @@ if ( $_get->get( 'updated' ) ) {
 			<tr>
 				<th scope="row"><?php _e( 'Registration notification' ) ?></th>
 				<?php
-				if ( !get_site_option( 'registrationnotification' ) )
+				if ( !get_site_option( 'registrationnotification' ) ) {
 					update_site_option( 'registrationnotification', 'yes' );
+				}
 				?>
 				<td>
 					<label><input name="registrationnotification" type="checkbox" id="registrationnotification" value="yes"<?php checked( get_site_option( 'registrationnotification' ), 'yes' ) ?> /> <?php _e( 'Send the network admin an email notification every time someone registers a site or user account.' ) ?></label>
@@ -384,4 +389,4 @@ if ( $_get->get( 'updated' ) ) {
 	</form>
 </div>
 
-<?php include( ABSPATH . 'wp-admin/admin-footer.php' ); ?>
+<?php include( ABSPATH . 'wp-admin/admin-footer.php' );

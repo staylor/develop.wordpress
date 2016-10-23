@@ -15,8 +15,9 @@ require_once( __DIR__ . '/admin.php' );
 /** WordPress Translation Install API */
 require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
-if ( ! current_user_can( 'manage_sites' ) )
+if ( ! current_user_can( 'manage_sites' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to add sites to this network.' ) );
+}
 
 $app = getApp();
 $wpdb = $app['db'];
@@ -26,13 +27,15 @@ $wpdb = $app['db'];
 if ( 'add-site' == $_request->get( 'action' ) ) {
 	check_admin_referer( 'add-blog', '_wpnonce_add-blog' );
 
-	if ( ! is_array( $_post->get( 'blog' ) ) )
+	if ( ! is_array( $_post->get( 'blog' ) ) ) {
 		wp_die( __( 'Can&#8217;t create an empty site.' ) );
+	}
 
 	$blog = $_post->get( 'blog' );
 	$domain = '';
-	if ( preg_match( '|^([a-zA-Z0-9-])+$|', $blog['domain'] ) )
+	if ( preg_match( '|^([a-zA-Z0-9-])+$|', $blog['domain'] ) ) {
 		$domain = strtolower( $blog['domain'] );
+	}
 
 	// If not a subdomain install, make sure the domain isn't a reserved word
 	if ( ! is_subdomain_install() ) {
@@ -66,8 +69,9 @@ if ( 'add-site' == $_request->get( 'action' ) ) {
 		}
 	}
 
-	if ( empty( $domain ) )
+	if ( empty( $domain ) ) {
 		wp_die( __( 'Missing or invalid site address.' ) );
+	}
 
 	if ( isset( $blog['email'] ) && '' === trim( $blog['email'] ) ) {
 		wp_die( __( 'Missing email address.' ) );
@@ -160,13 +164,14 @@ Name: %3$s' ),
 
 if ( $_get->get( 'update' ) ) {
 	$messages = [];
-	if ( 'added' == $_get->get( 'update' ) )
+	if ( 'added' == $_get->get( 'update' ) ) {
 		$messages[] = sprintf(
 			/* translators: 1: dashboard url, 2: network admin edit url */
 			__( 'Site added. <a href="%1$s">Visit Dashboard</a> or <a href="%2$s">Edit Site</a>' ),
 			esc_url( get_admin_url( $_get->getInt( 'id' ) ) ),
 			network_admin_url( 'site-info.php?id=' . $_get->getInt( 'id' ) )
 		);
+	}
 }
 
 $app->set( 'title', __( 'Add New Site' ) );
@@ -183,8 +188,9 @@ require( ABSPATH . 'wp-admin/admin-header.php' );
 <h1 id="add-new-site"><?php _e( 'Add New Site' ); ?></h1>
 <?php
 if ( ! empty( $messages ) ) {
-	foreach ( $messages as $msg )
+	foreach ( $messages as $msg ) {
 		echo '<div id="message" class="updated notice is-dismissible"><p>' . $msg . '</p></div>';
+	}
 } ?>
 <form method="post" action="<?php echo network_admin_url( 'site-new.php?action=add-site' ); ?>" novalidate="novalidate">
 <?php wp_nonce_field( 'add-blog', '_wpnonce_add-blog' ) ?>

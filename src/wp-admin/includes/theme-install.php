@@ -20,15 +20,18 @@ use function WP\getApp;
 function install_themes_feature_list() {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_theme_feature_list()' );
 
-	if ( !$cache = get_transient( 'wporg_theme_feature_list' ) )
+	if ( !$cache = get_transient( 'wporg_theme_feature_list' ) ) {
 		set_transient( 'wporg_theme_feature_list', [], 3 * HOUR_IN_SECONDS );
+	}
 
-	if ( $cache )
+	if ( $cache ) {
 		return $cache;
+	}
 
 	$feature_list = themes_api( 'feature_list', [] );
-	if ( is_wp_error( $feature_list ) )
+	if ( is_wp_error( $feature_list ) ) {
 		return [];
+	}
 
 	set_transient( 'wporg_theme_feature_list', $feature_list, 3 * HOUR_IN_SECONDS );
 
@@ -47,12 +50,13 @@ function install_theme_search_form( $type_selector = true ) {
 	$_request = $app['request']->attributes;
 	$type = wp_unslash( $_request->get( 'type', 'term' ) );
 	$term = wp_unslash( $_request->get( 's', '' ) );
-	if ( ! $type_selector )
+	if ( ! $type_selector ) {
 		echo '<p class="install-help">' . __( 'Search for themes by keyword.' ) . '</p>';
+	}
 	?>
 <form id="search-themes" method="get">
 	<input type="hidden" name="tab" value="search" />
-	<?php if ( $type_selector ) : ?>
+	<?php if ( $type_selector ) { ?>
 	<label class="screen-reader-text" for="typeselector"><?php _e('Type of search'); ?></label>
 	<select	name="type" id="typeselector">
 	<option value="term" <?php selected('term', $type) ?>><?php _e('Keyword'); ?></option>
@@ -72,9 +76,9 @@ function install_theme_search_form( $type_selector = true ) {
 		break;
 	}
 	?></label>
-	<?php else : ?>
+	<?php } else {?>
 	<label class="screen-reader-text" for="s"><?php _e('Search by keyword'); ?></label>
-	<?php endif; ?>
+	<?php } ?>
 	<input type="search" name="s" id="s" size="30" value="<?php echo esc_attr($term) ?>" autofocus="autofocus" />
 	<?php submit_button( __( 'Search' ), '', 'search', false ); ?>
 </form>
@@ -192,8 +196,9 @@ function install_theme_information() {
 	$_request = $app['request']->attributes;
 	$theme = themes_api( 'theme_information', array( 'slug' => wp_unslash( $_request->get( 'theme' ) ) ) );
 
-	if ( is_wp_error( $theme ) )
+	if ( is_wp_error( $theme ) ) {
 		wp_die( $theme );
+	}
 
 	iframe_header( __('Theme Install') );
 	if ( ! isset( $wp_list_table ) ) {

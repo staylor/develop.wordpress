@@ -103,8 +103,9 @@ class Custom_Background {
 	public function take_action() {
 		$app = getApp();
 		$_post = $app['request']->request;
-		if ( empty( $_post->all() ) )
+		if ( empty( $_post->all() ) ) {
 			return;
+		}
 
 		if ( $_post->get( 'reset-background' ) ) {
 			check_admin_referer('custom-background-reset', '_wpnonce-custom-background-reset');
@@ -126,38 +127,42 @@ class Custom_Background {
 
 		if ( $_post->get( 'background-repeat' ) ) {
 			check_admin_referer('custom-background');
-			if ( in_array( $_post->get( 'background-repeat' ), array('repeat', 'no-repeat', 'repeat-x', 'repeat-y')) )
+			if ( in_array( $_post->get( 'background-repeat' ), array('repeat', 'no-repeat', 'repeat-x', 'repeat-y')) ) {
 				$repeat = $_post->get( 'background-repeat' );
-			else
+			} else {
 				$repeat = 'repeat';
+			}
 			set_theme_mod('background_repeat', $repeat);
 		}
 
 		if ( $_post->get( 'background-position-x' ) ) {
 			check_admin_referer('custom-background');
-			if ( in_array( $_post->get( 'background-position-x' ), array('center', 'right', 'left')) )
+			if ( in_array( $_post->get( 'background-position-x' ), array('center', 'right', 'left')) ) {
 				$position = $_post->get( 'background-position-x' );
-			else
+			} else {
 				$position = 'left';
+			}
 			set_theme_mod('background_position_x', $position);
 		}
 
 		if ( $_post->get( 'background-attachment' ) ) {
 			check_admin_referer('custom-background');
-			if ( in_array( $_post->get( 'background-attachment' ), array('fixed', 'scroll')) )
+			if ( in_array( $_post->get( 'background-attachment' ), array('fixed', 'scroll')) ) {
 				$attachment = $_post->get( 'background-attachment' );
-			else
+			} else {
 				$attachment = 'fixed';
+			}
 			set_theme_mod('background_attachment', $attachment);
 		}
 
 		if ( $_post->get( 'background-color' ) ) {
 			check_admin_referer('custom-background');
 			$color = preg_replace('/[^0-9a-fA-F]/', '', $_post->get( 'background-color' ) );
-			if ( strlen($color) == 6 || strlen($color) == 3 )
+			if ( strlen($color) == 6 || strlen($color) == 3 ) {
 				set_theme_mod('background_color', $color);
-			else
+			} else {
 				set_theme_mod('background_color', '');
+			}
 		}
 
 		$this->updated = true;
@@ -204,8 +209,9 @@ class Custom_Background {
 		call_user_func( $this->admin_image_div_callback );
 	} else {
 		$background_styles = '';
-		if ( $bgcolor = get_background_color() )
+		if ( $bgcolor = get_background_color() ) {
 			$background_styles .= 'background-color: #' . $bgcolor . ';';
+		}
 
 		$background_image_thumb = get_background_image();
 		if ( $background_image_thumb ) {
@@ -330,8 +336,9 @@ class Custom_Background {
 <td><fieldset><legend class="screen-reader-text"><span><?php _e( 'Background Color' ); ?></span></legend>
 <?php
 $default_color = '';
-if ( current_theme_supports( 'custom-background', 'default-color' ) )
+if ( current_theme_supports( 'custom-background', 'default-color' ) ) {
 	$default_color = ' data-default-color="#' . esc_attr( get_theme_support( 'custom-background', 'default-color' ) ) . '"';
+}
 ?>
 <input type="text" name="background-color" id="background-color" value="#<?php echo esc_attr( get_background_color() ); ?>"<?php echo $default_color ?> />
 </fieldset></td>
@@ -365,13 +372,15 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) )
 
 		$uploaded_file = $_files->get( 'import' );
 		$wp_filetype = wp_check_filetype_and_ext( $uploaded_file['tmp_name'], $uploaded_file['name'] );
-		if ( ! wp_match_mime_types( 'image', $wp_filetype['type'] ) )
+		if ( ! wp_match_mime_types( 'image', $wp_filetype['type'] ) ) {
 			wp_die( __( 'The uploaded file is not a valid image. Please try again.' ) );
+		}
 
 		$file = wp_handle_upload($uploaded_file, $overrides);
 
-		if ( isset($file['error']) )
+		if ( isset($file['error']) ) {
 			wp_die( $file['error'] );
+		}
 
 		$url = $file['url'];
 		$type = $file['type'];

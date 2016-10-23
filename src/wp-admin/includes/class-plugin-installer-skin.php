@@ -39,8 +39,9 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	 * @access public
 	 */
 	public function before() {
-		if ( !empty($this->api) )
+		if ( !empty($this->api) ) {
 			$this->upgrader->strings['process_success'] = sprintf( __('Successfully installed the plugin <strong>%s %s</strong>.'), $this->api->name, $this->api->version);
+		}
 	}
 
 	/**
@@ -56,10 +57,11 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 
 		$from = wp_unslash( $_get->get( 'from', 'plugins' ) );
 
-		if ( 'import' == $from )
+		if ( 'import' == $from ) {
 			$install_actions['activate_plugin'] = '<a class="button button-primary" href="' . wp_nonce_url( 'plugins.php?action=activate&amp;from=import&amp;plugin=' . urlencode( $plugin_file ), 'activate-plugin_' . $plugin_file ) . '" target="_parent">' . __( 'Activate Plugin &amp; Run Importer' ) . '</a>';
-		else
+		} else {
 			$install_actions['activate_plugin'] = '<a class="button button-primary" href="' . wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . urlencode( $plugin_file ), 'activate-plugin_' . $plugin_file ) . '" target="_parent">' . __( 'Activate Plugin' ) . '</a>';
+		}
 
 		if ( is_multisite() && current_user_can( 'manage_network_plugins' ) ) {
 			$install_actions['network_activate'] = '<a class="button button-primary" href="' . wp_nonce_url( 'plugins.php?action=activate&amp;networkwide=1&amp;plugin=' . urlencode( $plugin_file ), 'activate-plugin_' . $plugin_file ) . '" target="_parent">' . __( 'Network Activate' ) . '</a>';

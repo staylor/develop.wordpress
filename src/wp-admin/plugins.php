@@ -10,8 +10,9 @@ use WP\Plugin\Admin\Help as PluginHelp;
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can('activate_plugins') )
+if ( ! current_user_can('activate_plugins') ) {
 	wp_die( __( 'Sorry, you are not allowed to manage plugins for this site.' ) );
+}
 
 $wp_list_table = _get_list_table('WP_Plugins_List_Table');
 $pagenum = $wp_list_table->get_pagenum();
@@ -33,8 +34,9 @@ if ( $action ) {
 
 	switch ( $action ) {
 	case 'activate':
-		if ( ! current_user_can('activate_plugins') )
+		if ( ! current_user_can('activate_plugins') ) {
 			wp_die(__('Sorry, you are not allowed to activate plugins for this site.'));
+		}
 
 		if ( is_multisite() && ! is_network_admin() && is_network_only_plugin( $plugin ) ) {
 			wp_redirect( self_admin_url("plugins.php?plugin_status=$status&paged=$page&s=$s") );
@@ -72,8 +74,9 @@ if ( $action ) {
 		exit;
 
 	case 'activate-selected':
-		if ( ! current_user_can('activate_plugins') )
+		if ( ! current_user_can('activate_plugins') ) {
 			wp_die(__('Sorry, you are not allowed to activate plugins for this site.'));
+		}
 
 		check_admin_referer('bulk-plugins');
 
@@ -125,12 +128,13 @@ if ( $action ) {
 
 		check_admin_referer( 'bulk-plugins' );
 
-		if ( $_get->get( 'plugins' ) )
+		if ( $_get->get( 'plugins' ) ) {
 			$plugins = explode( ',', $_get->get( 'plugins' ) );
-		elseif ( $_post->get( 'checked' ) )
+		} elseif ( $_post->get( 'checked' ) ) {
 			$plugins = (array) $_post->get( 'checked');
-		else
+		} else {
 			$plugins = [];
+		}
 
 		$app->set( 'title', __( 'Update Plugins' ) );
 		$app->set( 'parent_file', 'plugins.php' );
@@ -151,14 +155,16 @@ if ( $action ) {
 		exit;
 
 	case 'error_scrape':
-		if ( ! current_user_can('activate_plugins') )
+		if ( ! current_user_can('activate_plugins') ) {
 			wp_die(__('Sorry, you are not allowed to activate plugins for this site.'));
+		}
 
 		check_admin_referer('plugin-activation-error_' . $plugin);
 
 		$valid = validate_plugin($plugin);
-		if ( is_wp_error($valid) )
+		if ( is_wp_error($valid) ) {
 			wp_die($valid);
+		}
 
 		if ( ! WP_DEBUG ) {
 			error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_RECOVERABLE_ERROR );
@@ -172,8 +178,9 @@ if ( $action ) {
 		exit;
 
 	case 'deactivate':
-		if ( ! current_user_can('activate_plugins') )
+		if ( ! current_user_can('activate_plugins') ) {
 			wp_die(__('Sorry, you are not allowed to deactivate plugins for this site.'));
+		}
 
 		check_admin_referer('deactivate-plugin_' . $plugin);
 
@@ -190,15 +197,17 @@ if ( $action ) {
 			update_site_option( 'recently_activated', array( $plugin => time() ) + (array) get_site_option( 'recently_activated' ) );
 		}
 
-		if ( headers_sent() )
+		if ( headers_sent() ) {
 			echo "<meta http-equiv='refresh' content='" . esc_attr( "0;url=plugins.php?deactivate=true&plugin_status=$status&paged=$page&s=$s" ) . "' />";
-		else
+		} else {
 			wp_redirect( self_admin_url("plugins.php?deactivate=true&plugin_status=$status&paged=$page&s=$s") );
+		}
 		exit;
 
 	case 'deactivate-selected':
-		if ( ! current_user_can('activate_plugins') )
+		if ( ! current_user_can('activate_plugins') ) {
 			wp_die(__('Sorry, you are not allowed to deactivate plugins for this site.'));
+		}
 
 		check_admin_referer('bulk-plugins');
 
@@ -290,19 +299,19 @@ if ( $action ) {
 				}
 				$plugins_to_delete = count( $plugin_info );
 			?>
-			<?php if ( 1 == $plugins_to_delete ) : ?>
+			<?php if ( 1 == $plugins_to_delete ) { ?>
 				<h1><?php _e( 'Delete Plugin' ); ?></h1>
 				<?php if ( $have_non_network_plugins && is_network_admin() ) : ?>
 					<div class="error"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php _e( 'This plugin may be active on other sites in the network.' ); ?></p></div>
 				<?php endif; ?>
 				<p><?php _e( 'You are about to remove the following plugin:' ); ?></p>
-			<?php else: ?>
+			<?php } else { ?>
 				<h1><?php _e( 'Delete Plugins' ); ?></h1>
 				<?php if ( $have_non_network_plugins && is_network_admin() ) : ?>
 					<div class="error"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php _e( 'These plugins may be active on other sites in the network.' ); ?></p></div>
 				<?php endif; ?>
 				<p><?php _e( 'You are about to remove the following plugins:' ); ?></p>
-			<?php endif; ?>
+			<?php } ?>
 				<ul class="ul-disc">
 					<?php
 					$data_to_delete = false;
@@ -319,10 +328,11 @@ if ( $action ) {
 					?>
 				</ul>
 			<p><?php
-			if ( $data_to_delete )
+			if ( $data_to_delete ) {
 				_e('Are you sure you wish to delete these files and data?');
-			else
+			} else {
 				_e('Are you sure you wish to delete these files?');
+			}
 			?></p>
 			<form method="post" action="<?php echo esc_url( $app['request.uri'] ); ?>" style="display:inline;">
 				<input type="hidden" name="verify-delete" value="1" />
@@ -420,14 +430,15 @@ if ( ! empty( $invalid ) ) {
 }
 ?>
 
-<?php if ( $_get->get( 'error' ) ) :
+<?php if ( $_get->get( 'error' ) ) {
 
-	if ( $_get->get( 'main' ) )
+	if ( $_get->get( 'main' ) ) {
 		$errmsg = __( 'You cannot delete a plugin while it is active on the main site.' );
-	elseif ( $_get->get( 'charsout' ) )
+	} elseif ( $_get->get( 'charsout' ) ) {
 		$errmsg = sprintf(__('The plugin generated %d characters of <strong>unexpected output</strong> during activation. If you notice &#8220;headers already sent&#8221; messages, problems with syndication feeds or other issues, try deactivating or removing this plugin.'), $_get->get( 'charsout' ) );
-	else
+	} else {
 		$errmsg = __('Plugin could not be activated because it triggered a <strong>fatal error</strong>.');
+	}
 	?>
 	<div id="message" class="error"><p><?php echo $errmsg; ?></p>
 	<?php
@@ -443,14 +454,14 @@ if ( ! empty( $invalid ) ) {
 		}
 	?>
 	</div>
-<?php elseif ( $_get->get( 'deleted' ) ) :
+<?php } elseif ( $_get->get( 'deleted' ) ) {
 		$delete_result = get_transient( 'plugins_delete_result_' . $user_ID );
 		// Delete it once we're done.
 		delete_transient( 'plugins_delete_result_' . $user_ID );
 
-		if ( is_wp_error($delete_result) ) : ?>
+		if ( is_wp_error($delete_result) ) { ?>
 		<div id="message" class="error notice is-dismissible"><p><?php printf( __('Plugin could not be deleted due to an error: %s'), $delete_result->get_error_message() ); ?></p></div>
-		<?php else : ?>
+		<?php } else { ?>
 		<div id="message" class="updated notice is-dismissible">
 			<p>
 				<?php
@@ -462,18 +473,18 @@ if ( ! empty( $invalid ) ) {
 				?>
 			</p>
 		</div>
-		<?php endif; ?>
-<?php elseif ( $_get->get( 'activate' ) ) : ?>
+		<?php } ?>
+<?php } elseif ( $_get->get( 'activate' ) ) { ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Plugin <strong>activated</strong>.') ?></p></div>
-<?php elseif ( $_get->get( 'activate-multi' ) ) : ?>
+<?php } elseif ( $_get->get( 'activate-multi' ) ) { ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Selected plugins <strong>activated</strong>.'); ?></p></div>
-<?php elseif ( $_get->get( 'deactivate' ) ) : ?>
+<?php } elseif ( $_get->get( 'deactivate' ) ) { ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Plugin <strong>deactivated</strong>.') ?></p></div>
-<?php elseif ( $_get->get( 'deactivate-multi' ) ) : ?>
+<?php } elseif ( $_get->get( 'deactivate-multi' ) ) { ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Selected plugins <strong>deactivated</strong>.'); ?></p></div>
-<?php elseif ( 'update-selected' == $action ) : ?>
+<?php } elseif ( 'update-selected' == $action ) { ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('All selected plugins are up to date.'); ?></p></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="wrap">
 <h1><?php echo esc_html( $app->get( 'title' ) );

@@ -112,11 +112,11 @@ case 'auto-draft':
 <option<?php selected( $post->post_status, 'future' ); ?> value='future'><?php _e('Scheduled') ?></option>
 <?php endif; ?>
 <option<?php selected( $post->post_status, 'pending' ); ?> value='pending'><?php _e('Pending Review') ?></option>
-<?php if ( 'auto-draft' == $post->post_status ) : ?>
+<?php if ( 'auto-draft' == $post->post_status ) { ?>
 <option<?php selected( $post->post_status, 'auto-draft' ); ?> value='draft'><?php _e('Draft') ?></option>
-<?php else : ?>
+<?php } else { ?>
 <option<?php selected( $post->post_status, 'draft' ); ?> value='draft'><?php _e('Draft') ?></option>
-<?php endif; ?>
+<?php } ?>
 </select>
  <a href="#post_status" class="save-post-status hide-if-no-js button"><?php _e('OK'); ?></a>
  <a href="#post_status" class="cancel-post-status hide-if-no-js button-cancel"><?php _e('Cancel'); ?></a>
@@ -244,10 +244,11 @@ do_action( 'post_submitbox_start' );
 <div id="delete-action">
 <?php
 if ( current_user_can( "delete_post", $post->ID ) ) {
-	if ( !EMPTY_TRASH_DAYS )
+	if ( !EMPTY_TRASH_DAYS ) {
 		$delete_text = __('Delete Permanently');
-	else
+	} else {
 		$delete_text = __('Move to Trash');
+	}
 	?>
 <a class="submitdelete deletion" href="<?php echo get_delete_post_link($post->ID); ?>"><?php echo $delete_text; ?></a><?php
 } ?>
@@ -257,19 +258,20 @@ if ( current_user_can( "delete_post", $post->ID ) ) {
 <span class="spinner"></span>
 <?php
 if ( !in_array( $post->post_status, array('publish', 'future', 'private') ) || 0 == $post->ID ) {
-	if ( $can_publish ) :
-		if ( !empty($post->post_date_gmt) && time() < strtotime( $post->post_date_gmt . ' +0000' ) ) : ?>
+	if ( $can_publish ) {
+		if ( !empty($post->post_date_gmt) && time() < strtotime( $post->post_date_gmt . ' +0000' ) ) { ?>
 		<input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Schedule') ?>" />
 		<?php submit_button( __( 'Schedule' ), 'primary large', 'publish', false ); ?>
-<?php	else : ?>
+	<?php }	else { ?>
 		<input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Publish') ?>" />
-		<?php submit_button( __( 'Publish' ), 'primary large', 'publish', false ); ?>
-<?php	endif;
-	else : ?>
+		<?php submit_button( __( 'Publish' ), 'primary large', 'publish', false );
+		}
+	} else { ?>
 		<input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Submit for Review') ?>" />
-		<?php submit_button( __( 'Submit for Review' ), 'primary large', 'publish', false ); ?>
+		<?php submit_button( __( 'Submit for Review' ), 'primary large', 'publish', false );
+	}
+	?>
 <?php
-	endif;
 } else { ?>
 		<input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Update') ?>" />
 		<input name="save" type="submit" class="button button-primary button-large" id="publish" value="<?php esc_attr_e( 'Update' ) ?>" />
@@ -329,13 +331,14 @@ function attachment_submit_meta_box( $post ) {
 <div id="major-publishing-actions">
 	<div id="delete-action">
 	<?php
-	if ( current_user_can( 'delete_post', $post->ID ) )
+	if ( current_user_can( 'delete_post', $post->ID ) ) {
 		if ( EMPTY_TRASH_DAYS && MEDIA_TRASH ) {
 			echo "<a class='submitdelete deletion' href='" . get_delete_post_link( $post->ID ) . "'>" . _x( 'Trash', 'verb' ) . "</a>";
-		} else {
-			$delete_ays = ! MEDIA_TRASH ? " onclick='return showNotice.warn();'" : '';
-			echo  "<a class='submitdelete deletion'$delete_ays href='" . get_delete_post_link( $post->ID, null, true ) . "'>" . __( 'Delete Permanently' ) . "</a>";
 		}
+	} else {
+		$delete_ays = ! MEDIA_TRASH ? " onclick='return showNotice.warn();'" : '';
+		echo  "<a class='submitdelete deletion'$delete_ays href='" . get_delete_post_link( $post->ID, null, true ) . "'>" . __( 'Delete Permanently' ) . "</a>";
+	}
 	?>
 	</div>
 
@@ -373,11 +376,13 @@ function post_format_meta_box( $post, $box ) {
 
 	if ( is_array( $post_formats[0] ) ) :
 		$post_format = get_post_format( $post->ID );
-		if ( !$post_format )
+		if ( !$post_format ) {
 			$post_format = '0';
+		}
 		// Add in the current one if it isn't there yet, in case the current theme doesn't support it
-		if ( $post_format && !in_array( $post_format, $post_formats[0] ) )
+		if ( $post_format && !in_array( $post_format, $post_formats[0] ) ) {
 			$post_formats[0][] = $post_format;
+		}
 	?>
 	<div id="post-formats-select">
 		<fieldset>
@@ -435,7 +440,7 @@ function post_tags_meta_box( $post, $box ) {
 		<label for="tax-input-<?php echo $tax_name; ?>"><?php echo $taxonomy->labels->add_or_remove_items; ?></label>
 		<p><textarea name="<?php echo "tax_input[$tax_name]"; ?>" rows="3" cols="20" class="the-tags" id="tax-input-<?php echo $tax_name; ?>" <?php disabled( ! $user_can_assign_terms ); ?> aria-describedby="new-tag-<?php echo $tax_name; ?>-desc"><?php echo str_replace( ',', $comma . ' ', $terms_to_edit ); // textarea_escaped by esc_attr() ?></textarea></p>
 	</div>
- 	<?php if ( $user_can_assign_terms ) : ?>
+	<?php if ( $user_can_assign_terms ) : ?>
 	<div class="ajaxtag hide-if-no-js">
 		<label class="screen-reader-text" for="new-tag-<?php echo $tax_name; ?>"><?php echo $taxonomy->labels->add_new_item; ?></label>
 		<p><input data-wp-taxonomy="<?php echo $tax_name; ?>" type="text" id="new-tag-<?php echo $tax_name; ?>" name="newtag[<?php echo $tax_name; ?>]" class="newtag form-input-tip" size="16" autocomplete="off" aria-describedby="new-tag-<?php echo $tax_name; ?>-desc" value="" />
@@ -622,8 +627,9 @@ function post_trackback_meta_box($post) {
 	);
 ?></p>
 <?php
-if ( ! empty($pings) )
-	echo $pings;
+	if ( ! empty($pings) ) {
+		echo $pings;
+	}
 }
 
 /**
@@ -640,8 +646,9 @@ function post_custom_meta_box($post) {
 <?php
 $metadata = has_meta($post->ID);
 foreach ( $metadata as $key => $value ) {
-	if ( is_protected_meta( $metadata[ $key ][ 'meta_key' ], 'post' ) || ! current_user_can( 'edit_post_meta', $post->ID, $metadata[ $key ][ 'meta_key' ] ) )
+	if ( is_protected_meta( $metadata[ $key ][ 'meta_key' ], 'post' ) || ! current_user_can( 'edit_post_meta', $post->ID, $metadata[ $key ][ 'meta_key' ] ) ) {
 		unset( $metadata[ $key ] );
+	}
 }
 list_meta( $metadata );
 meta_form( $post ); ?>
@@ -959,10 +966,11 @@ function link_categories_meta_box($link) {
 	<div id="categories-all" class="tabs-panel">
 		<ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
 			<?php
-			if ( isset($link->link_id) )
+			if ( isset($link->link_id) ) {
 				wp_link_category_checklist($link->link_id);
-			else
+			} else {
 				wp_link_category_checklist();
+			}
 			?>
 		</ul>
 	</div>
@@ -1024,8 +1032,10 @@ function link_target_meta_box($link) { ?>
 function xfn_check( $class, $value = '', $deprecated = '' ) {
 	global $link;
 
-	if ( !empty( $deprecated ) )
-		_deprecated_argument( __FUNCTION__, '0.0.0' ); // Never implemented
+	if ( !empty( $deprecated ) ) {
+		_deprecated_argument( __FUNCTION__, '0.0.0' );
+	}
+	// Never implemented
 
 	$link_rel = isset( $link->link_rel ) ? $link->link_rel : ''; // In PHP 5.3: $link_rel = $link->link_rel ?: '';
 	$rels = preg_split('/\s+/', $link_rel);
@@ -1035,10 +1045,18 @@ function xfn_check( $class, $value = '', $deprecated = '' ) {
 	}
 
 	if ('' == $value) {
-		if ('family' == $class && strpos($link_rel, 'child') === false && strpos($link_rel, 'parent') === false && strpos($link_rel, 'sibling') === false && strpos($link_rel, 'spouse') === false && strpos($link_rel, 'kin') === false) echo ' checked="checked"';
-		if ('friendship' == $class && strpos($link_rel, 'friend') === false && strpos($link_rel, 'acquaintance') === false && strpos($link_rel, 'contact') === false) echo ' checked="checked"';
-		if ('geographical' == $class && strpos($link_rel, 'co-resident') === false && strpos($link_rel, 'neighbor') === false) echo ' checked="checked"';
-		if ('identity' == $class && in_array('me', $rels) ) echo ' checked="checked"';
+		if ('family' == $class && strpos($link_rel, 'child') === false && strpos($link_rel, 'parent') === false && strpos($link_rel, 'sibling') === false && strpos($link_rel, 'spouse') === false && strpos($link_rel, 'kin') === false) {
+			echo ' checked="checked"';
+		}
+		if ('friendship' == $class && strpos($link_rel, 'friend') === false && strpos($link_rel, 'acquaintance') === false && strpos($link_rel, 'contact') === false) {
+			echo ' checked="checked"';
+		}
+		if ('geographical' == $class && strpos($link_rel, 'co-resident') === false && strpos($link_rel, 'neighbor') === false) {
+			echo ' checked="checked"';
+		}
+		if ('identity' == $class && in_array('me', $rels) ) {
+			echo ' checked="checked"';
+		}
 	}
 }
 
@@ -1188,8 +1206,9 @@ function link_advanced_meta_box($link) {
 		<?php
 			for ( $r = 0; $r <= 10; $r++ ) {
 				echo '<option value="' . $r . '"';
-				if ( isset($link->link_rating) && $link->link_rating == $r )
+				if ( isset($link->link_rating) && $link->link_rating == $r ) {
 					echo ' selected="selected"';
+				}
 				echo('>' . $r . '</option>');
 			}
 		?></select>&nbsp;<?php _e('(Leave at 0 for no rating.)') ?>

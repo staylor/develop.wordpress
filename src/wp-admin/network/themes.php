@@ -11,8 +11,9 @@ use WP\Theme\Admin\Help as ThemeHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( !current_user_can('manage_network_themes') )
+if ( !current_user_can('manage_network_themes') ) {
 	wp_die( __( 'Sorry, you are not allowed to manage network themes.' ) );
+}
 
 $wp_list_table = _get_list_table('WP_MS_Themes_List_Table');
 $pagenum = $wp_list_table->get_pagenum();
@@ -31,10 +32,11 @@ if ( $action ) {
 	case 'enable':
 		check_admin_referer('enable-theme_' . $_get->get( 'theme' ) );
 		WP_Theme::network_enable_theme( $_get->get( 'theme' ) );
-		if ( false === strpos( $referer, '/network/themes.php' ) )
+		if ( false === strpos( $referer, '/network/themes.php' ) ) {
 			wp_redirect( network_admin_url( 'themes.php?enabled=1' ) );
-		else
+		} else {
 			wp_safe_redirect( add_query_arg( 'enabled', 1, $referer ) );
+		}
 		exit;
 	case 'disable':
 		check_admin_referer('disable-theme_' . $_get->get( 'theme' ) );
@@ -64,12 +66,13 @@ if ( $action ) {
 	case 'update-selected' :
 		check_admin_referer( 'bulk-themes' );
 
-		if ( $_get->get( 'themes' ) )
+		if ( $_get->get( 'themes' ) ) {
 			$themes = explode( ',', $_get->get( 'themes' ) );
-		elseif ( $_post->get( 'checked' ) )
+		} elseif ( $_post->get( 'checked' ) ) {
 			$themes = (array) $_post->get( 'checked' );
-		else
+		} else {
 			$themes = [];
+		}
 
 		$app->set( 'title', __( 'Update Themes' ) );
 		$app->set( 'parent_file', 'themes.php' );
@@ -124,15 +127,15 @@ if ( $action ) {
 			$themes_to_delete = count( $themes );
 			?>
 		<div class="wrap">
-			<?php if ( 1 == $themes_to_delete ) : ?>
+			<?php if ( 1 == $themes_to_delete ) { ?>
 				<h1><?php _e( 'Delete Theme' ); ?></h1>
 				<div class="error"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php _e( 'This theme may be active on other sites in the network.' ); ?></p></div>
 				<p><?php _e( 'You are about to remove the following theme:' ); ?></p>
-			<?php else : ?>
+			<?php } else { ?>
 				<h1><?php _e( 'Delete Themes' ); ?></h1>
 				<div class="error"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php _e( 'These themes may be active on other sites in the network.' ); ?></p></div>
 				<p><?php _e( 'You are about to remove the following themes:' ); ?></p>
-			<?php endif; ?>
+			<?php } ?>
 				<ul class="ul-disc">
 				<?php
 					foreach ( $theme_info as $theme ) {
@@ -145,11 +148,11 @@ if ( $action ) {
 					}
 				?>
 				</ul>
-			<?php if ( 1 == $themes_to_delete ) : ?>
+			<?php if ( 1 == $themes_to_delete ) { ?>
 				<p><?php _e( 'Are you sure you wish to delete this theme?' ); ?></p>
-			<?php else : ?>
+			<?php } else { ?>
 				<p><?php _e( 'Are you sure you wish to delete these themes?' ); ?></p>
-			<?php endif; ?>
+			<?php } ?>
 			<form method="post" action="<?php echo esc_url( $app['request.uri'] ); ?>" style="display:inline;">
 				<input type="hidden" name="verify-delete" value="1" />
 				<input type="hidden" name="action" value="delete-selected" />
@@ -291,8 +294,9 @@ if ( $_get->get( 'enabled' ) ) {
 <?php
 $wp_list_table->views();
 
-if ( 'broken' == $status )
+if ( 'broken' == $status ) {
 	echo '<p class="clear">' . __( 'The following themes are installed but incomplete.' ) . '</p>';
+}
 ?>
 
 <form id="bulk-action-form" method="post">

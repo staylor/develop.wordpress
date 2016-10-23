@@ -12,19 +12,22 @@ use WP\User\Admin\Help as UserHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can('create_users') )
+if ( ! current_user_can('create_users') ) {
 	wp_die(__('Sorry, you are not allowed to add users to this network.'));
+}
 
 ( new UserHelp( get_current_screen() ) )->addMultisiteUserNew();
 
 if ( 'add-user' == $_request->get( 'action' ) ) {
 	check_admin_referer( 'add-user', '_wpnonce_add-user' );
 
-	if ( ! current_user_can( 'manage_network_users' ) )
+	if ( ! current_user_can( 'manage_network_users' ) ) {
 		wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+	}
 
-	if ( ! is_array( $_post->get( 'user' ) ) )
+	if ( ! is_array( $_post->get( 'user' ) ) ) {
 		wp_die( __( 'Cannot create an empty user.' ) );
+	}
 
 	$user = wp_unslash( $_post->get( 'user' ) );
 
@@ -82,15 +85,17 @@ require( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 <h1 id="add-new-user"><?php _e( 'Add New User' ); ?></h1>
 <?php
 if ( ! empty( $messages ) ) {
-	foreach ( $messages as $msg )
+	foreach ( $messages as $msg ) {
 		echo '<div id="message" class="updated notice is-dismissible"><p>' . $msg . '</p></div>';
+	}
 }
 
 if ( isset( $add_user_errors ) && is_wp_error( $add_user_errors ) ) { ?>
 	<div class="error">
 		<?php
-			foreach ( $add_user_errors->get_error_messages() as $message )
+			foreach ( $add_user_errors->get_error_messages() as $message ) {
 				echo "<p>$message</p>";
+			}
 		?>
 	</div>
 <?php } ?>

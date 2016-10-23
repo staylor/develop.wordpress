@@ -11,8 +11,9 @@ use WP\Site\Admin\Help as SiteHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can( 'manage_sites' ) )
+if ( ! current_user_can( 'manage_sites' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+}
 
 $wp_list_table = _get_list_table( 'WP_MS_Sites_List_Table' );
 $pagenum = $wp_list_table->get_pagenum();
@@ -99,8 +100,9 @@ if ( $_get->get( 'action' ) ) {
 	switch ( $_get->get( 'action' ) ) {
 
 	case 'deleteblog':
-		if ( ! current_user_can( 'delete_sites' ) )
+		if ( ! current_user_can( 'delete_sites' ) ) {
 			wp_die( __( 'Sorry, you are not allowed to access this page.' ), '', array( 'response' => 403 ) );
+		}
 
 		$updated_action = 'not_deleted';
 		if ( $id != '0' && $id != $current_site->blog_id && current_user_can( 'delete_site', $id ) ) {
@@ -117,8 +119,9 @@ if ( $_get->get( 'action' ) ) {
 				if ( $val != '0' && $val != $current_site->blog_id ) {
 					switch ( $doaction ) {
 					case 'delete':
-						if ( ! current_user_can( 'delete_site', $val ) )
+						if ( ! current_user_can( 'delete_site', $val ) ) {
 							wp_die( __( 'Sorry, you are not allowed to delete the site.' ) );
+						}
 
 						$updated_action = 'all_delete';
 						wpmu_delete_blog( $val, true );
@@ -267,8 +270,9 @@ if ( $_get->get( 'updated' ) ) {
 		break;
 	}
 
-	if ( ! empty( $msg ) )
+	if ( ! empty( $msg ) ) {
 		$msg = '<div id="message" class="updated notice is-dismissible"><p>' . $msg . '</p></div>';
+	}
 }
 
 $wp_list_table->prepare_items();

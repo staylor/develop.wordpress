@@ -69,14 +69,16 @@ class Automatic_Upgrader_Skin extends WP_Upgrader_Skin {
 		} else {
 			$string = $data;
 		}
-		if ( ! empty( $this->upgrader->strings[ $string ] ) )
+		if ( ! empty( $this->upgrader->strings[ $string ] ) ) {
 			$string = $this->upgrader->strings[ $string ];
+		}
 
 		if ( strpos( $string, '%' ) !== false ) {
 			$args = func_get_args();
 			$args = array_splice( $args, 1 );
-			if ( ! empty( $args ) )
+			if ( ! empty( $args ) ) {
 				$string = vsprintf( $string, $args );
+			}
 		}
 
 		$string = trim( $string );
@@ -91,8 +93,9 @@ class Automatic_Upgrader_Skin extends WP_Upgrader_Skin {
 			'strong' => true,
 		) );
 
-		if ( empty( $string ) )
+		if ( empty( $string ) ) {
 			return;
+		}
 
 		$this->messages[] = $string;
 	}
@@ -109,7 +112,8 @@ class Automatic_Upgrader_Skin extends WP_Upgrader_Skin {
 	 */
 	public function footer() {
 		$output = ob_get_clean();
-		if ( ! empty( $output ) )
+		if ( ! empty( $output ) ) {
 			$this->feedback( $output );
+		}
 	}
 }

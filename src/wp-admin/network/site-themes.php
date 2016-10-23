@@ -11,8 +11,9 @@ use WP\Site\Admin\Help as SiteHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can( 'manage_sites' ) )
+if ( ! current_user_can( 'manage_sites' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to manage themes for this site.' ) );
+}
 
 ( new SiteHelp( get_current_screen() ) )->addThemes();
 
@@ -34,8 +35,9 @@ if ( $paged ) {
 
 $id = $_request->getInt( 'id', 0 );
 
-if ( ! $id )
+if ( ! $id ) {
 	wp_die( __('Invalid site ID.') );
+}
 
 $wp_list_table->prepare_items();
 
@@ -44,8 +46,9 @@ if ( ! $details ) {
 	wp_die( __( 'The requested site does not exist.' ) );
 }
 
-if ( !can_edit_network( $details->site_id ) )
+if ( !can_edit_network( $details->site_id ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+}
 
 $is_main_site = is_main_site( $id );
 
@@ -59,20 +62,22 @@ if ( $action ) {
 		$theme = $_get->get( 'theme' );
 		$action = 'enabled';
 		$n = 1;
-		if ( !$allowed_themes )
+		if ( ! $allowed_themes ) {
 			$allowed_themes = array( $theme => true );
-		else
+		} else {
 			$allowed_themes[$theme] = true;
+		}
 		break;
 	case 'disable':
 		check_admin_referer( 'disable-theme_' . $_get->get( 'theme' ) );
 		$theme = $_get->get( 'theme' );
 		$action = 'disabled';
 		$n = 1;
-		if ( !$allowed_themes )
+		if ( !$allowed_themes ) {
 			$allowed_themes = [];
-		else
+		} else {
 			unset( $allowed_themes[$theme] );
+		}
 		break;
 	case 'enable-selected':
 		check_admin_referer( 'bulk-themes' );
@@ -80,8 +85,9 @@ if ( $action ) {
 			$themes = (array) $_post->get( 'checked' );
 			$action = 'enabled';
 			$n = count( $themes );
-			foreach ( (array) $themes as $theme )
+			foreach ( (array) $themes as $theme ) {
 				$allowed_themes[ $theme ] = true;
+			}
 		} else {
 			$action = 'error';
 			$n = 'none';
@@ -93,8 +99,9 @@ if ( $action ) {
 			$themes = (array) $_post->get( 'checked' );
 			$action = 'disabled';
 			$n = count( $themes );
-			foreach ( (array) $themes as $theme )
+			foreach ( (array) $themes as $theme ) {
 				unset( $allowed_themes[ $theme ] );
+			}
 		} else {
 			$action = 'error';
 			$n = 'none';
