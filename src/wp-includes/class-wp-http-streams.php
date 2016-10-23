@@ -6,7 +6,7 @@
  * @subpackage HTTP
  * @since 4.4.0
  */
-
+use WP\Error;
 /**
  * Core class used to integrate PHP Streams as an HTTP transport.
  *
@@ -25,7 +25,7 @@ class WP_Http_Streams {
 	 * @access public
 	 * @param string $url The request URL.
 	 * @param string|array $args Optional. Override the defaults.
-	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
+	 * @return array|Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A Error instance upon error
 	 */
 	public function request($url, $args = []) {
 		$defaults = array(
@@ -159,16 +159,16 @@ class WP_Http_Streams {
 		if ( false === $handle ) {
 			// SSL connection failed due to expired/invalid cert, or, OpenSSL configuration is broken.
 			if ( $secure_transport && 0 === $connection_error && '' === $connection_error_str ) {
-							return new WP_Error( 'http_request_failed', __( 'The SSL certificate for the host could not be verified.' ) );
+							return new Error( 'http_request_failed', __( 'The SSL certificate for the host could not be verified.' ) );
 			}
 
-			return new WP_Error('http_request_failed', $connection_error . ': ' . $connection_error_str );
+			return new Error('http_request_failed', $connection_error . ': ' . $connection_error_str );
 		}
 
 		// Verify that the SSL certificate is valid for this request.
 		if ( $secure_transport && $ssl_verify && ! $proxy->is_enabled() ) {
 			if ( ! static::verify_ssl_certificate( $handle, $arrURL['host'] ) ) {
-				return new WP_Error( 'http_request_failed', __( 'The SSL certificate for the host could not be verified.' ) );
+				return new Error( 'http_request_failed', __( 'The SSL certificate for the host could not be verified.' ) );
 			}
 		}
 
@@ -241,7 +241,7 @@ class WP_Http_Streams {
 				$stream_handle = fopen( $r['filename'], 'w+' );
 			}
 			if ( ! $stream_handle ) {
-				return new WP_Error( 'http_request_failed', sprintf( __( 'Could not open handle for fopen() to %s' ), $r['filename'] ) );
+				return new Error( 'http_request_failed', sprintf( __( 'Could not open handle for fopen() to %s' ), $r['filename'] ) );
 			}
 
 			$bytes_written = 0;
@@ -270,7 +270,7 @@ class WP_Http_Streams {
 				if ( $bytes_written_to_file != $this_block_size ) {
 					fclose( $handle );
 					fclose( $stream_handle );
-					return new WP_Error( 'http_request_failed', __( 'Failed to write request to temporary file.' ) );
+					return new Error( 'http_request_failed', __( 'Failed to write request to temporary file.' ) );
 				}
 
 				$bytes_written += $bytes_written_to_file;

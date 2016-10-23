@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Administration
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -13,7 +13,7 @@ use function WP\getApp;
  *
  * @since 2.0.0
  *
- * @return int|WP_Error Value 0 or WP_Error on failure. The link ID on success.
+ * @return int|Error Value 0 or Error on failure. The link ID on success.
  */
 function add_link() {
 	return edit_link();
@@ -25,7 +25,7 @@ function add_link() {
  * @since 2.0.0
  *
  * @param int $link_id Optional. ID of the link to edit. Default 0.
- * @return int|WP_Error Value 0 or WP_Error on failure. The link ID on success.
+ * @return int|Error Value 0 or Error on failure. The link ID on success.
  */
 function edit_link( $link_id = 0 ) {
 	if ( ! current_user_can( 'manage_links' ) ) {
@@ -151,8 +151,8 @@ function get_link_to_edit( $link ) {
  * @since 2.0.0
  *
  * @param array $linkdata Elements that make up the link to insert.
- * @param bool  $wp_error Optional. Whether to return a WP_Error object on failure. Default false.
- * @return int|WP_Error Value 0 or WP_Error on failure. The link ID on success.
+ * @param bool  $wp_error Optional. Whether to return a Error object on failure. Default false.
+ * @return int|Error Value 0 or Error on failure. The link ID on success.
  */
 function wp_insert_link( $linkdata, $wp_error = false ) {
 	$app = getApp();
@@ -203,7 +203,7 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
 	if ( $update ) {
 		if ( false === $wpdb->update( $wpdb->links, compact( 'link_url', 'link_name', 'link_image', 'link_target', 'link_description', 'link_visible', 'link_rating', 'link_rel', 'link_notes', 'link_rss' ), compact( 'link_id' ) ) ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_update_error', __( 'Could not update link in the database' ), $wpdb->last_error );
+				return new Error( 'db_update_error', __( 'Could not update link in the database' ), $wpdb->last_error );
 			} else {
 				return 0;
 			}
@@ -211,7 +211,7 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
 	} else {
 		if ( false === $wpdb->insert( $wpdb->links, compact( 'link_url', 'link_name', 'link_image', 'link_target', 'link_description', 'link_visible', 'link_owner', 'link_rating', 'link_rel', 'link_notes', 'link_rss' ) ) ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_insert_error', __( 'Could not insert link into the database' ), $wpdb->last_error );
+				return new Error( 'db_insert_error', __( 'Could not insert link into the database' ), $wpdb->last_error );
 			} else {
 				return 0;
 			}
@@ -272,7 +272,7 @@ function wp_set_link_cats( $link_id = 0, $link_categories = [] ) {
  * @since 2.0.0
  *
  * @param array $linkdata Link data to update.
- * @return int|WP_Error Value 0 or WP_Error on failure. The updated link ID on success.
+ * @return int|Error Value 0 or Error on failure. The updated link ID on success.
  */
 function wp_update_link( $linkdata ) {
 	$link_id = (int) $linkdata['link_id'];

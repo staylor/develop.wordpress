@@ -6,7 +6,7 @@
  * @subpackage REST_API
  * @since 4.4.0
  */
-
+use WP\Error;
 /**
  * Core class used to implement a REST response object.
  *
@@ -228,19 +228,19 @@ class WP_REST_Response extends WP_HTTP_Response {
 	}
 
 	/**
-	 * Retrieves a WP_Error object from the response.
+	 * Retrieves a Error object from the response.
 	 *
 	 * @since 4.4.0
 	 * @access public
 	 *
-	 * @return WP_Error|null WP_Error or null on not an errored response.
+	 * @return Error|null Error or null on not an errored response.
 	 */
 	public function as_error() {
 		if ( ! $this->is_error() ) {
 			return null;
 		}
 
-		$error = new WP_Error;
+		$error = new Error;
 
 		if ( is_array( $this->get_data() ) ) {
 			$data = $this->get_data();

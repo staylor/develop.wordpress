@@ -6,7 +6,7 @@
  * @subpackage Administration
  * @since 4.4.0
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -94,7 +94,7 @@ function get_clean_basedomain() {
  *
  * @since 3.0.0
  *
- * @param WP_Error $errors
+ * @param Error $errors
  */
 function network_step1( $errors = false ) {
 	$app = getApp();
@@ -333,7 +333,7 @@ function network_step1( $errors = false ) {
  *
  * @since 3.0.0
  *
- * @param WP_Error $errors
+ * @param Error $errors
  */
 function network_step2( $errors = false ) {
 	$app = getApp();

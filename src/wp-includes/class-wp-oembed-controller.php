@@ -6,7 +6,7 @@
  * @subpackage Embeds
  * @since 4.4.0
  */
-
+use WP\Error;
 /**
  * oEmbed API endpoint controller.
  *
@@ -63,7 +63,7 @@ final class WP_oEmbed_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|array oEmbed response data or WP_Error on failure.
+	 * @return Error|array oEmbed response data or Error on failure.
 	 */
 	public function get_item( $request ) {
 		$post_id = url_to_postid( $request['url'] );
@@ -81,7 +81,7 @@ final class WP_oEmbed_Controller {
 		$data = get_oembed_response_data( $post_id, $request['maxwidth'] );
 
 		if ( ! $data ) {
-			return new WP_Error( 'oembed_invalid_url', get_status_header_desc( 404 ), array( 'status' => 404 ) );
+			return new Error( 'oembed_invalid_url', get_status_header_desc( 404 ), array( 'status' => 404 ) );
 		}
 
 		return $data;

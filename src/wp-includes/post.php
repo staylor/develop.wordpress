@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Post
  */
-
+use WP\Error;
 use WP\Post\PostType;
 use function WP\getApp;
 
@@ -1105,7 +1105,7 @@ function get_post_types( $args = [], $output = 'names', $operator = 'and' ) {
  *     @type string      $_edit_link           FOR INTERNAL USE ONLY! URL segment to use for edit link of
  *                                             this post type. Default 'post.php?post=%d'.
  * }
- * @return PostType|WP_Error The registered post type object, or an error object.
+ * @return PostType|Error The registered post type object, or an error object.
  */
 function register_post_type( $post_type, $args = [] ) {
 	// Sanitize post type name
@@ -1113,7 +1113,7 @@ function register_post_type( $post_type, $args = [] ) {
 
 	if ( empty( $post_type ) || strlen( $post_type ) > 20 ) {
 		_doing_it_wrong( __FUNCTION__, __( 'Post type names must be between 1 and 20 characters in length.' ), '4.2.0' );
-		return new WP_Error( 'post_type_length_invalid', __( 'Post type names must be between 1 and 20 characters in length.' ) );
+		return new Error( 'post_type_length_invalid', __( 'Post type names must be between 1 and 20 characters in length.' ) );
 	}
 
 	PostType::set( $post_type, $args );
@@ -1142,18 +1142,18 @@ function register_post_type( $post_type, $args = [] ) {
  * @since 4.5.0
  *
  * @param string $post_type Post type to unregister.
- * @return bool|WP_Error True on success, WP_Error on failure or if the post type doesn't exist.
+ * @return bool|Error True on success, Error on failure or if the post type doesn't exist.
  */
 function unregister_post_type( $post_type ) {
 	if ( ! post_type_exists( $post_type ) ) {
-		return new WP_Error( 'invalid_post_type', __( 'Invalid post type.' ) );
+		return new Error( 'invalid_post_type', __( 'Invalid post type.' ) );
 	}
 
 	$post_type_object = PostType::get( $post_type );
 
 	// Do not allow unregistering internal post types.
 	if ( $post_type_object->_builtin ) {
-		return new WP_Error( 'invalid_post_type', __( 'Unregistering a built-in post type is not allowed' ) );
+		return new Error( 'invalid_post_type', __( 'Unregistering a built-in post type is not allowed' ) );
 	}
 
 	PostType::remove( $post_type );
@@ -2873,7 +2873,7 @@ function wp_get_post_tags( $post_id = 0, $args = [] ) {
  *                         global $post. Default 0.
  * @param string $taxonomy Optional. The taxonomy for which to retrieve terms. Default 'post_tag'.
  * @param array  $args     Optional. wp_get_object_terms() arguments. Default empty array.
- * @return array|WP_Error  List of post terms or empty array if no terms were found. WP_Error object
+ * @return array|Error  List of post terms or empty array if no terms were found. Error object
  *                         if `$taxonomy` doesn't exist.
  */
 function wp_get_post_terms( int $post_id = 0, $taxonomy = 'post_tag', $args = [] ) {
@@ -2988,8 +2988,8 @@ function wp_get_recent_posts( $args = [], $output = ARRAY_A ) {
  *     @type array  $tax_input             Array of taxonomy terms keyed by their taxonomy name. Default empty.
  *     @type array  $meta_input            Array of post meta values keyed by their post meta key. Default empty.
  * }
- * @param bool  $wp_error Optional. Whether to return a WP_Error on failure. Default false.
- * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
+ * @param bool  $wp_error Optional. Whether to return a Error on failure. Default false.
+ * @return int|Error The post ID on success. The value 0 or Error on failure.
  */
 function wp_insert_post( $postarr, $wp_error = false ) {
 	$app = getApp();
@@ -3036,7 +3036,7 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 		$post_before = get_post( $post_ID );
 		if ( is_null( $post_before ) ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'invalid_post', __( 'Invalid post ID.' ) );
+				return new Error( 'invalid_post', __( 'Invalid post ID.' ) );
 			}
 			return 0;
 		}
@@ -3073,7 +3073,7 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 	 * 2. The title, editor, and excerpt fields are all empty
 	 *
 	 * Returning a truthy value to the filter will effectively short-circuit
-	 * the new post being inserted, returning 0. If $wp_error is true, a WP_Error
+	 * the new post being inserted, returning 0. If $wp_error is true, a Error
 	 * will be returned instead.
 	 *
 	 * @since 3.3.0
@@ -3083,7 +3083,7 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 	 */
 	if ( apply_filters( 'wp_insert_post_empty_content', $maybe_empty, $postarr ) ) {
 		if ( $wp_error ) {
-			return new WP_Error( 'empty_content', __( 'Content, title, and excerpt are empty.' ) );
+			return new Error( 'empty_content', __( 'Content, title, and excerpt are empty.' ) );
 		} else {
 			return 0;
 		}
@@ -3156,7 +3156,7 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 	$valid_date = wp_checkdate( $mm, $jj, $aa, $post_date );
 	if ( ! $valid_date ) {
 		if ( $wp_error ) {
-			return new WP_Error( 'invalid_date', __( 'Whoops, the provided date is invalid.' ) );
+			return new Error( 'invalid_date', __( 'Whoops, the provided date is invalid.' ) );
 		} else {
 			return 0;
 		}
@@ -3325,7 +3325,7 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 		do_action( 'pre_post_update', $post_ID, $data );
 		if ( false === $wpdb->update( $wpdb->posts, $data, $where ) ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_update_error', __( 'Could not update post in the database' ), $wpdb->last_error);
+				return new Error( 'db_update_error', __( 'Could not update post in the database' ), $wpdb->last_error);
 			} else {
 				return 0;
 			}
@@ -3340,7 +3340,7 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 		}
 		if ( false === $wpdb->insert( $wpdb->posts, $data ) ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_insert_error', __( 'Could not insert post into the database' ), $wpdb->last_error);
+				return new Error( 'db_insert_error', __( 'Could not insert post into the database' ), $wpdb->last_error);
 			} else {
 				return 0;
 			}
@@ -3438,7 +3438,7 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 		$page_templates = wp_get_theme()->get_page_templates( $post );
 		if ( 'default' != $postarr['page_template'] && ! isset( $page_templates[ $postarr['page_template'] ] ) ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'invalid_page_template', __( 'The page template is invalid.' ) );
+				return new Error( 'invalid_page_template', __( 'The page template is invalid.' ) );
 			}
 			update_post_meta( $post_ID, '_wp_page_template', 'default' );
 		} else {
@@ -3558,8 +3558,8 @@ function wp_insert_post( $postarr, $wp_error = false ) {
  *
  * @param array|object $postarr  Optional. Post data. Arrays are expected to be escaped,
  *                               objects are not. Default array.
- * @param bool         $wp_error Optional. Allow return of WP_Error on failure. Default false.
- * @return int|WP_Error The value 0 or WP_Error on failure. The post ID on success.
+ * @param bool         $wp_error Optional. Allow return of Error on failure. Default false.
+ * @return int|Error The value 0 or Error on failure. The post ID on success.
  */
 function wp_update_post( $postarr = [], $wp_error = false ) {
 	if ( is_object( $postarr) ) {
@@ -3573,7 +3573,7 @@ function wp_update_post( $postarr = [], $wp_error = false ) {
 
 	if ( is_null( $post ) ) {
 		if ( $wp_error ) {
-					return new WP_Error( 'invalid_post', __( 'Invalid post ID.' ) );
+					return new Error( 'invalid_post', __( 'Invalid post ID.' ) );
 		}
 		return 0;
 	}
@@ -3867,7 +3867,7 @@ function _truncate_post_slug( $slug, $length = 200 ) {
  * @param int          $post_id Optional. The Post ID. Does not default to the ID of the global $post.
  * @param string|array $tags    Optional. An array of tags to set for the post, or a string of tags
  *                              separated by commas. Default empty.
- * @return array|false|WP_Error Array of affected term IDs. WP_Error or false on failure.
+ * @return array|false|Error Array of affected term IDs. Error or false on failure.
  */
 function wp_add_post_tags( $post_id = 0, $tags = '' ) {
 	return wp_set_post_tags( $post_id, $tags, true );
@@ -3885,7 +3885,7 @@ function wp_add_post_tags( $post_id = 0, $tags = '' ) {
  *                              separated by commas. Default empty.
  * @param bool         $append  Optional. If true, don't delete existing tags, just add on. If false,
  *                              replace the tags with the new tags. Default false.
- * @return array|false|WP_Error Array of term taxonomy IDs of affected terms. WP_Error or false on failure.
+ * @return array|false|Error Array of term taxonomy IDs of affected terms. Error or false on failure.
  */
 function wp_set_post_tags( $post_id = 0, $tags = '', $append = false ) {
 	return wp_set_post_terms( $post_id, $tags, 'post_tag', $append);
@@ -3904,7 +3904,7 @@ function wp_set_post_tags( $post_id = 0, $tags = '', $append = false ) {
  * @param string       $taxonomy Optional. Taxonomy name. Default 'post_tag'.
  * @param bool         $append   Optional. If true, don't delete existing terms, just add on. If false,
  *                               replace the terms with the new terms. Default false.
- * @return array|false|WP_Error Array of term taxonomy IDs of affected terms. WP_Error or false on failure.
+ * @return array|false|Error Array of term taxonomy IDs of affected terms. Error or false on failure.
  */
 function wp_set_post_terms( int $post_id = 0, $tags = '', $taxonomy = 'post_tag', $append = false ) {
 	if ( ! $post_id ) {
@@ -3948,7 +3948,7 @@ function wp_set_post_terms( int $post_id = 0, $tags = '', $taxonomy = 'post_tag'
  *                                   Default empty array.
  * @param bool      $append         If true, don't delete existing categories, just add on.
  *                                  If false, replace the categories with the new categories.
- * @return array|false|WP_Error Array of term taxonomy IDs of affected categories. WP_Error or false on failure.
+ * @return array|false|Error Array of term taxonomy IDs of affected categories. Error or false on failure.
  */
 function wp_set_post_categories( int $post_ID = 0, $post_categories = [], $append = false ) {
 	$post_type = get_post_type( $post_ID );
@@ -4870,15 +4870,15 @@ function is_local_attachment( $url) {
  * setting the value for the 'comment_status' key.
  *
  * @since 2.0.0
- * @since 4.7.0 Added the `$wp_error` parameter to allow a WP_Error to be returned on failure.
+ * @since 4.7.0 Added the `$wp_error` parameter to allow a Error to be returned on failure.
  *
  * @see wp_insert_post()
  *
  * @param string|array $args     Arguments for inserting an attachment.
  * @param string       $file     Optional. Filename.
  * @param int          $parent   Optional. Parent post ID.
- * @param bool         $wp_error Optional. Whether to return a WP_Error on failure. Default false.
- * @return int|WP_Error The attachment ID on success. The value 0 or WP_Error on failure.
+ * @param bool         $wp_error Optional. Whether to return a Error on failure. Default false.
+ * @return int|Error The attachment ID on success. The value 0 or Error on failure.
  */
 function wp_insert_attachment( $args, $file = false, $parent = 0, $wp_error = false ) {
 	$defaults = [

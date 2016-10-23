@@ -807,7 +807,7 @@ class Manager {
 	 * @access protected
 	 *
 	 * @param int $post_id Changeset post ID.
-	 * @return array|WP_Error Changeset data or WP_Error on error.
+	 * @return array|Error Changeset data or Error on error.
 	 */
 	protected function get_changeset_post_data( $post_id ) {
 		if ( ! $post_id ) {
@@ -1403,7 +1403,7 @@ class Manager {
 	 *
 	 * Validation is skipped for unregistered settings or for values that are
 	 * already null since they will be skipped anyway. Sanitization is applied
-	 * to values that pass validation, and values that become null or `WP_Error`
+	 * to values that pass validation, and values that become null or `Error`
 	 * after sanitizing are marked invalid.
 	 *
 	 * @since 4.6.0
@@ -1419,7 +1419,7 @@ class Manager {
 	 *     @type bool $validate_existence  Whether a setting's existence will be checked.
 	 *     @type bool $validate_capability Whether the setting capability will be checked.
 	 * }
-	 * @return array Mapping of setting IDs to return value of validate method calls, either `true` or `WP_Error`.
+	 * @return array Mapping of setting IDs to return value of validate method calls, either `true` or `Error`.
 	 */
 	public function validate_setting_values( $setting_values, $options = [] ) {
 		$options = wp_parse_args( $options, [
@@ -1470,14 +1470,14 @@ class Manager {
 	/**
 	 * Prepares setting validity for exporting to the client (JS).
 	 *
-	 * Converts `WP_Error` instance into array suitable for passing into the
+	 * Converts `Error` instance into array suitable for passing into the
 	 * `wp.customize.Notification` JS model.
 	 *
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @param true|WP_Error $validity Setting validity.
-	 * @return true|array If `$validity` was a WP_Error, the error codes will be array-mapped
+	 * @param true|Error $validity Setting validity.
+	 * @return true|array If `$validity` was a Error, the error codes will be array-mapped
 	 *                    to their respective `message` and `data` to pass into the
 	 *                    `wp.customize.Notification` JS model.
 	 */
@@ -1667,7 +1667,7 @@ class Manager {
 	 *     @type string $date_gmt Date in GMT. Optional.
 	 * }
 	 *
-	 * @return array|WP_Error Returns array on success and WP_Error with array data on error.
+	 * @return array|Error Returns array on success and Error with array data on error.
 	 */
 	function save_changeset_post( $args = [] ) {
 
@@ -1937,7 +1937,7 @@ class Manager {
 	 * @see _wp_customize_publish_changeset()
 	 *
 	 * @param int $changeset_post_id ID for customize_changeset post. Defaults to the changeset for the current manager instance.
-	 * @return true|WP_Error True or error info.
+	 * @return true|Error True or error info.
 	 */
 	public function _publish_changeset_values( $changeset_post_id ) {
 		$publishing_changeset_data = $this->get_changeset_post_data( $changeset_post_id );

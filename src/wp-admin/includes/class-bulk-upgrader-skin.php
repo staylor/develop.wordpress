@@ -6,7 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
+use WP\Error;
 /**
  * Generic Bulk Upgrader Skin for WordPress Upgrades.
  *
@@ -87,7 +87,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 
 	/**
 	 *
-	 * @param string|WP_Error $error
+	 * @param string|Error $error
 	 */
 	public function error($error) {
 		if ( is_string($error) && isset( $this->upgrader->strings[$error] ) )

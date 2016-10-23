@@ -6,6 +6,7 @@
  * @subpackage Template
  */
 
+use WP\Error;
 use WP\User\User;
 use function WP\getApp;
 
@@ -252,7 +253,7 @@ function get_permalink( $post = 0, $leavename = false ) {
  * @param int $id         Optional. Post ID. Default uses the global `$post`.
  * @param bool $leavename Optional, defaults to false. Whether to keep post name. Default false.
  * @param bool $sample    Optional, defaults to false. Is it a sample permalink. Default false.
- * @return string|WP_Error The post permalink.
+ * @return string|Error The post permalink.
  */
 function get_post_permalink( $id = 0, $leavename = false, $sample = false ) {
 	$post = get_post($id);

@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Bookmark
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -65,7 +65,7 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
  * @param string $field The name of the data field to return
  * @param int $bookmark The bookmark ID to get field
  * @param string $context Optional. The context of how the field will be used.
- * @return string|WP_Error
+ * @return string|Error
  */
 function get_bookmark_field( $field, int $bookmark, $context = 'display' ) {
 	$bookmark = get_bookmark( $bookmark );

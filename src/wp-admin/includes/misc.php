@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Administration
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -318,7 +318,7 @@ function wp_reset_vars( $vars ) {
  *
  * @since 2.1.0
  *
- * @param string|WP_Error $message
+ * @param string|Error $message
  */
 function show_message($message) {
 	if ( is_wp_error($message) ){

@@ -1,4 +1,5 @@
 <?php
+use WP\Error;
 
 class WP_REST_Posts_Controller extends WP_REST_Controller {
 
@@ -89,14 +90,14 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to read /posts.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_items_permissions_check( $request ) {
 
 		$post_type = get_post_type_object( $this->post_type );
 
 		if ( 'edit' === $request['context'] && ! current_user_can( $post_type->cap->edit_posts ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit these posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit these posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -106,13 +107,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Get a collection of posts.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
 
 		// Make sure a search string is set in case the orderby is set to 'relevance'.
 		if ( ! empty( $request['orderby'] ) && 'relevance' === $request['orderby'] && empty( $request['search'] ) && empty( $request['filter']['s'] ) ) {
-			return new WP_Error( 'rest_no_search_term_defined', __( 'You need to define a search term to order by relevance.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_no_search_term_defined', __( 'You need to define a search term to order by relevance.' ), array( 'status' => 400 ) );
 		}
 
 		// Retrieve the list of registered collection query parameters.
@@ -303,20 +304,20 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to read a post.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_item_permissions_check( $request ) {
 
 		$post = $this->get_post( (int) $request['id'] );
 
 		if ( 'edit' === $request['context'] && $post && ! $this->check_update_permission( $post ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit this post.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit this post.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( $post && ! empty( $request['password'] ) ) {
 			// Check post password, and return error if invalid.
 			if ( ! hash_equals( $post->post_password, $request['password'] ) ) {
-				return new WP_Error( 'rest_post_incorrect_password', __( 'Incorrect post password.' ), array( 'status' => 403 ) );
+				return new Error( 'rest_post_incorrect_password', __( 'Incorrect post password.' ), array( 'status' => 403 ) );
 			}
 		}
 
@@ -366,14 +367,14 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Get a single post.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function get_item( $request ) {
 		$id = (int) $request['id'];
 		$post = $this->get_post( $id );
 
 		if ( empty( $id ) || empty( $post->ID ) || $this->post_type !== $post->post_type ) {
-			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid post id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_post_invalid_id', __( 'Invalid post id.' ), array( 'status' => 404 ) );
 		}
 
 		$data = $this->prepare_item_for_response( $post, $request );
@@ -390,22 +391,22 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to create a post.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function create_item_permissions_check( $request ) {
 
 		$post_type = get_post_type_object( $this->post_type );
 
 		if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-			return new WP_Error( 'rest_cannot_edit_others', __( 'You are not allowed to create posts as this user.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_edit_others', __( 'You are not allowed to create posts as this user.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( ! empty( $request['sticky'] ) && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-			return new WP_Error( 'rest_cannot_assign_sticky', __( 'You do not have permission to make posts sticky.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_assign_sticky', __( 'You do not have permission to make posts sticky.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( ! current_user_can( $post_type->cap->create_posts ) ) {
-			return new WP_Error( 'rest_cannot_create', __( 'Sorry, you are not allowed to create new posts.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_create', __( 'Sorry, you are not allowed to create new posts.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		return true;
 	}
@@ -414,11 +415,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Create a single post.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function create_item( $request ) {
 		if ( ! empty( $request['id'] ) ) {
-			return new WP_Error( 'rest_post_exists', __( 'Cannot create existing post.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_post_exists', __( 'Cannot create existing post.' ), array( 'status' => 400 ) );
 		}
 
 		$post = $this->prepare_item_for_database( $request );
@@ -501,7 +502,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to update a post.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function update_item_permissions_check( $request ) {
 
@@ -509,15 +510,15 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$post_type = get_post_type_object( $this->post_type );
 
 		if ( $post && ! $this->check_update_permission( $post ) ) {
-			return new WP_Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to update this post.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to update this post.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-			return new WP_Error( 'rest_cannot_edit_others', __( 'You are not allowed to update posts as this user.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_edit_others', __( 'You are not allowed to update posts as this user.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( ! empty( $request['sticky'] ) && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-			return new WP_Error( 'rest_cannot_assign_sticky', __( 'You do not have permission to make posts sticky.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_assign_sticky', __( 'You do not have permission to make posts sticky.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -527,14 +528,14 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Update a single post.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function update_item( $request ) {
 		$id = (int) $request['id'];
 		$post = $this->get_post( $id );
 
 		if ( empty( $id ) || empty( $post->ID ) || $this->post_type !== $post->post_type ) {
-			return new WP_Error( 'rest_post_invalid_id', __( 'Post id is invalid.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_post_invalid_id', __( 'Post id is invalid.' ), array( 'status' => 404 ) );
 		}
 
 		$post = $this->prepare_item_for_database( $request );
@@ -605,14 +606,14 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to delete a post.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	public function delete_item_permissions_check( $request ) {
 
 		$post = $this->get_post( $request['id'] );
 
 		if ( $post && ! $this->check_delete_permission( $post ) ) {
-			return new WP_Error( 'rest_cannot_delete', __( 'Sorry, you are not allowed to delete posts.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_delete', __( 'Sorry, you are not allowed to delete posts.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -622,7 +623,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Delete a single post.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error
+	 * @return WP_REST_Response|Error
 	 */
 	public function delete_item( $request ) {
 		$id = (int) $request['id'];
@@ -631,7 +632,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$post = $this->get_post( $id );
 
 		if ( empty( $id ) || empty( $post->ID ) || $this->post_type !== $post->post_type ) {
-			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid post id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_post_invalid_id', __( 'Invalid post id.' ), array( 'status' => 404 ) );
 		}
 
 		$supports_trash = ( EMPTY_TRASH_DAYS > 0 );
@@ -650,7 +651,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$supports_trash = apply_filters( "rest_{$this->post_type}_trashable", $supports_trash, $post );
 
 		if ( ! $this->check_delete_permission( $post ) ) {
-			return new WP_Error( 'rest_user_cannot_delete_post', __( 'Sorry, you are not allowed to delete this post.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_user_cannot_delete_post', __( 'Sorry, you are not allowed to delete this post.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		$request->set_param( 'context', 'edit' );
@@ -662,12 +663,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		} else {
 			// If we don't support trashing for this type, error out.
 			if ( ! $supports_trash ) {
-				return new WP_Error( 'rest_trash_not_supported', __( 'The post does not support trashing.' ), array( 'status' => 501 ) );
+				return new Error( 'rest_trash_not_supported', __( 'The post does not support trashing.' ), array( 'status' => 501 ) );
 			}
 
 			// Otherwise, only trash if we haven't already.
 			if ( 'trash' === $post->post_status ) {
-				return new WP_Error( 'rest_already_trashed', __( 'The post has already been deleted.' ), array( 'status' => 410 ) );
+				return new Error( 'rest_already_trashed', __( 'The post has already been deleted.' ), array( 'status' => 410 ) );
 			}
 
 			// (Note that internally this falls through to `wp_delete_post` if
@@ -676,7 +677,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		if ( ! $result ) {
-			return new WP_Error( 'rest_cannot_delete', __( 'The post cannot be deleted.' ), array( 'status' => 500 ) );
+			return new Error( 'rest_cannot_delete', __( 'The post cannot be deleted.' ), array( 'status' => 500 ) );
 		}
 
 		/**
@@ -824,7 +825,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * Prepare a single post for create or update.
 	 *
 	 * @param WP_REST_Request $request Request object.
-	 * @return WP_Error|stdClass $prepared_post Post object.
+	 * @return Error|stdClass $prepared_post Post object.
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$prepared_post = new stdClass;
@@ -908,7 +909,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			if ( get_current_user_id() !== $post_author ) {
 				$user_obj = get_userdata( $post_author );
 				if ( ! $user_obj ) {
-					return new WP_Error( 'rest_invalid_author', __( 'Invalid author id.' ), array( 'status' => 400 ) );
+					return new Error( 'rest_invalid_author', __( 'Invalid author id.' ), array( 'status' => 400 ) );
 				}
 			}
 			$prepared_post->post_author = $post_author;
@@ -919,17 +920,17 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$prepared_post->post_password = $request['password'];
 
 			if ( ! empty( $schema['properties']['sticky'] ) && ! empty( $request['sticky'] ) ) {
-				return new WP_Error( 'rest_invalid_field', __( 'A post can not be sticky and have a password.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_invalid_field', __( 'A post can not be sticky and have a password.' ), array( 'status' => 400 ) );
 			}
 
 			if ( ! empty( $prepared_post->ID ) && is_sticky( $prepared_post->ID ) ) {
-				return new WP_Error( 'rest_invalid_field', __( 'A sticky post can not be password protected.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_invalid_field', __( 'A sticky post can not be password protected.' ), array( 'status' => 400 ) );
 			}
 		}
 
 		if ( ! empty( $schema['properties']['sticky'] ) && ! empty( $request['sticky'] ) ) {
 			if ( ! empty( $prepared_post->ID ) && post_password_required( $prepared_post->ID ) ) {
-				return new WP_Error( 'rest_invalid_field', __( 'A password protected post can not be set to sticky.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_invalid_field', __( 'A password protected post can not be set to sticky.' ), array( 'status' => 400 ) );
 			}
 		}
 
@@ -937,7 +938,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $schema['properties']['parent'] ) && ! empty( $request['parent'] ) ) {
 			$parent = $this->get_post( (int) $request['parent'] );
 			if ( empty( $parent ) ) {
-				return new WP_Error( 'rest_post_invalid_id', __( 'Invalid post parent id.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_post_invalid_id', __( 'Invalid post parent id.' ), array( 'status' => 400 ) );
 			}
 
 			$prepared_post->post_parent = (int) $parent->ID;
@@ -976,7 +977,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 *
 	 * @param string $post_status Post status.
 	 * @param object $post_type   Post type.
-	 * @return WP_Error|string $post_status
+	 * @return Error|string $post_status
 	 */
 	protected function handle_status_param( $post_status, $post_type ) {
 
@@ -986,13 +987,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			break;
 		case 'private':
 			if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
-				return new WP_Error( 'rest_cannot_publish', __( 'Sorry, you are not allowed to create private posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+				return new Error( 'rest_cannot_publish', __( 'Sorry, you are not allowed to create private posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
 			}
 			break;
 		case 'publish':
 		case 'future':
 			if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
-				return new WP_Error( 'rest_cannot_publish', __( 'Sorry, you are not allowed to publish posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+				return new Error( 'rest_cannot_publish', __( 'Sorry, you are not allowed to publish posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
 			}
 			break;
 		default:
@@ -1010,7 +1011,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 *
 	 * @param int $featured_media Featured Media ID.
 	 * @param int $post_id        Post ID.
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	protected function handle_featured_media( $featured_media, $post_id ) {
 
@@ -1020,7 +1021,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			if ( $result ) {
 				return true;
 			} else {
-				return new WP_Error( 'rest_invalid_featured_media', __( 'Invalid featured media id.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_invalid_featured_media', __( 'Invalid featured media id.' ), array( 'status' => 400 ) );
 			}
 		} else {
 			return delete_post_thumbnail( $post_id );
@@ -1047,7 +1048,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 *
 	 * @param  int             $post_id The post ID to update the terms form.
 	 * @param  WP_REST_Request $request The request object with post and terms data.
-	 * @return null|WP_Error   WP_Error on an error assigning any of the terms.
+	 * @return null|Error   Error on an error assigning any of the terms.
 	 */
 	protected function handle_terms( $post_id, $request ) {
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
@@ -1943,7 +1944,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * @param  mixed           $value     Post status.
 	 * @param  WP_REST_Request $request   Full details about the request.
 	 * @param  string          $parameter
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function validate_user_can_query_private_statuses( $value, $request, $parameter ) {
 		if ( 'publish' === $value ) {
@@ -1953,6 +1954,6 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
 			return true;
 		}
-		return new WP_Error( 'rest_forbidden_status', __( 'Status is forbidden.' ), array( 'status' => rest_authorization_required_code() ) );
+		return new Error( 'rest_forbidden_status', __( 'Status is forbidden.' ), array( 'status' => rest_authorization_required_code() ) );
 	}
 }

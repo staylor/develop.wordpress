@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Filesystem
  */
-
+use WP\Error;
 /**
  * Base WordPress Filesystem class for which Filesystem implementations extend
  *
@@ -41,7 +41,7 @@ class WP_Filesystem_Base {
 
 	/**
 	 * @access public
-	 * @var WP_Error
+	 * @var Error
 	 */
 	public $errors = null;
 

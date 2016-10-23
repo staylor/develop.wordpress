@@ -6,7 +6,7 @@
  * @subpackage Administration
  * @since 1.0.0
  */
-
+use WP\Error;
 use WP\Admin\View\User as UserView;
 
 /** WordPress Administration Bootstrap */
@@ -75,7 +75,7 @@ case 'delete':
 	}
 
 	if ( ! current_user_can( 'delete_users' ) ) {
-		$error = new WP_Error( 'edit_users', __( 'You can&#8217;t delete users.' ) );
+		$error = new Error( 'edit_users', __( 'You can&#8217;t delete users.' ) );
 		$errors[] = [
 			'class' => 'error',
 			'label' => __( 'ERROR:' ),
@@ -189,7 +189,7 @@ case 'remove':
 	}
 
 	if ( ! current_user_can('remove_users' ) ) {
-		$error = new WP_Error( 'edit_users', __( 'You can&#8217;t remove users.' ) );
+		$error = new Error( 'edit_users', __( 'You can&#8217;t remove users.' ) );
 	}
 
 	if ( empty( $_request->get( 'users' ) ) ) {

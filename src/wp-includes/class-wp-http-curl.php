@@ -6,7 +6,7 @@
  * @subpackage HTTP
  * @since 4.4.0
  */
-
+use WP\Error;
 /**
  * Core class used to integrate Curl as an HTTP transport.
  *
@@ -71,7 +71,7 @@ class WP_Http_Curl {
 	 *
 	 * @param string $url The request URL.
 	 * @param string|array $args Optional. Override the defaults.
-	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
+	 * @return array|Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A Error instance upon error
 	 */
 	public function request($url, $args = []) {
 		$defaults = array(
@@ -191,7 +191,7 @@ class WP_Http_Curl {
 				$this->stream_handle = fopen( $r['filename'], 'w+' );
 			}
 			if ( ! $this->stream_handle ) {
-				return new WP_Error( 'http_request_failed', sprintf( __( 'Could not open handle for fopen() to %s' ), $r['filename'] ) );
+				return new Error( 'http_request_failed', sprintf( __( 'Could not open handle for fopen() to %s' ), $r['filename'] ) );
 			}
 		} else {
 			$this->stream_handle = false;
@@ -232,11 +232,11 @@ class WP_Http_Curl {
 
 			if ( $curl_error = curl_error( $handle ) ) {
 				curl_close( $handle );
-				return new WP_Error( 'http_request_failed', $curl_error );
+				return new Error( 'http_request_failed', $curl_error );
 			}
 			if ( in_array( curl_getinfo( $handle, CURLINFO_HTTP_CODE ), array( 301, 302 ) ) ) {
 				curl_close( $handle );
-				return new WP_Error( 'http_request_failed', __( 'Too many redirects.' ) );
+				return new Error( 'http_request_failed', __( 'Too many redirects.' ) );
 			}
 
 			curl_close( $handle );
@@ -261,21 +261,21 @@ class WP_Http_Curl {
 					if ( $r['stream'] ) {
 						curl_close( $handle );
 						fclose( $this->stream_handle );
-						return new WP_Error( 'http_request_failed', __( 'Failed to write request to temporary file.' ) );
+						return new Error( 'http_request_failed', __( 'Failed to write request to temporary file.' ) );
 					} else {
 						curl_close( $handle );
-						return new WP_Error( 'http_request_failed', curl_error( $handle ) );
+						return new Error( 'http_request_failed', curl_error( $handle ) );
 					}
 				}
 			} else {
 				if ( $curl_error = curl_error( $handle ) ) {
 					curl_close( $handle );
-					return new WP_Error( 'http_request_failed', $curl_error );
+					return new Error( 'http_request_failed', $curl_error );
 				}
 			}
 			if ( in_array( curl_getinfo( $handle, CURLINFO_HTTP_CODE ), array( 301, 302 ) ) ) {
 				curl_close( $handle );
-				return new WP_Error( 'http_request_failed', __( 'Too many redirects.' ) );
+				return new Error( 'http_request_failed', __( 'Too many redirects.' ) );
 			}
 		}
 

@@ -1,5 +1,5 @@
 <?php
-
+use WP\Error;
 /**
  * Access terms associated with a taxonomy.
  */
@@ -105,7 +105,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Checks if a request has access to read terms in the specified taxonomy.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_items_permissions_check( $request ) {
 		$tax_obj = get_taxonomy( $this->taxonomy );
@@ -113,7 +113,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 			return false;
 		}
 		if ( 'edit' === $request['context'] && ! current_user_can( $tax_obj->cap->edit_terms ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_forbidden_context', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		return true;
 	}
@@ -122,7 +122,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Gets terms associated with a taxonomy.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error
+	 * @return WP_REST_Response|Error
 	 */
 	public function get_items( $request ) {
 
@@ -310,7 +310,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Checks if a request has access to read the specified term.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_item_permissions_check( $request ) {
 		$tax_obj = get_taxonomy( $this->taxonomy );
@@ -318,7 +318,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 			return false;
 		}
 		if ( 'edit' === $request['context'] && ! current_user_can( $tax_obj->cap->edit_terms ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_forbidden_context', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		return true;
 	}
@@ -327,13 +327,13 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Gets a single term from a taxonomy.
 	 *
 	 * @param WP_REST_Request $request Full details about the request
-	 * @return WP_REST_Request|WP_Error
+	 * @return WP_REST_Request|Error
 	 */
 	public function get_item( $request ) {
 
 		$term = get_term( (int) $request['id'], $this->taxonomy );
 		if ( ! $term || $term->taxonomy !== $this->taxonomy ) {
-			return new WP_Error( 'rest_term_invalid', __( "Resource doesn't exist." ), array( 'status' => 404 ) );
+			return new Error( 'rest_term_invalid', __( "Resource doesn't exist." ), array( 'status' => 404 ) );
 		}
 		if ( is_wp_error( $term ) ) {
 			return $term;
@@ -348,7 +348,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Checks if a request has access to create a term.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function create_item_permissions_check( $request ) {
 
@@ -358,7 +358,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$taxonomy_obj = get_taxonomy( $this->taxonomy );
 		if ( ! current_user_can( $taxonomy_obj->cap->manage_terms ) ) {
-			return new WP_Error( 'rest_cannot_create', __( 'Sorry, you cannot create new resource.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_create', __( 'Sorry, you cannot create new resource.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -368,18 +368,18 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Creates a single term in a taxonomy.
 	 *
 	 * @param WP_REST_Request $request Full details about the request
-	 * @return WP_REST_Request|WP_Error
+	 * @return WP_REST_Request|Error
 	 */
 	public function create_item( $request ) {
 		if ( isset( $request['parent'] ) ) {
 			if ( ! is_taxonomy_hierarchical( $this->taxonomy ) ) {
-				return new WP_Error( 'rest_taxonomy_not_hierarchical', __( 'Can not set resource parent, taxonomy is not hierarchical.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_taxonomy_not_hierarchical', __( 'Can not set resource parent, taxonomy is not hierarchical.' ), array( 'status' => 400 ) );
 			}
 
 			$parent = get_term( (int) $request['parent'], $this->taxonomy );
 
 			if ( ! $parent ) {
-				return new WP_Error( 'rest_term_invalid', __( "Parent resource doesn't exist." ), array( 'status' => 400 ) );
+				return new Error( 'rest_term_invalid', __( "Parent resource doesn't exist." ), array( 'status' => 400 ) );
 			}
 		}
 
@@ -436,7 +436,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Checks if a request has access to update the specified term.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function update_item_permissions_check( $request ) {
 
@@ -446,12 +446,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$term = get_term( (int) $request['id'], $this->taxonomy );
 		if ( ! $term ) {
-			return new WP_Error( 'rest_term_invalid', __( "Resource doesn't exist." ), array( 'status' => 404 ) );
+			return new Error( 'rest_term_invalid', __( "Resource doesn't exist." ), array( 'status' => 404 ) );
 		}
 
 		$taxonomy_obj = get_taxonomy( $this->taxonomy );
 		if ( ! current_user_can( $taxonomy_obj->cap->edit_terms ) ) {
-			return new WP_Error( 'rest_cannot_update', __( 'Sorry, you cannot update resource.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_update', __( 'Sorry, you cannot update resource.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -461,18 +461,18 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Updates a single term from a taxonomy.
 	 *
 	 * @param WP_REST_Request $request Full details about the request
-	 * @return WP_REST_Request|WP_Error
+	 * @return WP_REST_Request|Error
 	 */
 	public function update_item( $request ) {
 		if ( isset( $request['parent'] ) ) {
 			if ( ! is_taxonomy_hierarchical( $this->taxonomy ) ) {
-				return new WP_Error( 'rest_taxonomy_not_hierarchical', __( 'Can not set resource parent, taxonomy is not hierarchical.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_taxonomy_not_hierarchical', __( 'Can not set resource parent, taxonomy is not hierarchical.' ), array( 'status' => 400 ) );
 			}
 
 			$parent = get_term( (int) $request['parent'], $this->taxonomy );
 
 			if ( ! $parent ) {
-				return new WP_Error( 'rest_term_invalid', __( "Parent resource doesn't exist." ), array( 'status' => 400 ) );
+				return new Error( 'rest_term_invalid', __( "Parent resource doesn't exist." ), array( 'status' => 400 ) );
 			}
 		}
 
@@ -515,7 +515,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Checks if a request has access to delete the specified term.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function delete_item_permissions_check( $request ) {
 		if ( ! $this->check_is_taxonomy_allowed( $this->taxonomy ) ) {
@@ -523,11 +523,11 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		}
 		$term = get_term( (int) $request['id'], $this->taxonomy );
 		if ( ! $term ) {
-			return new WP_Error( 'rest_term_invalid', __( "Resource doesn't exist." ), array( 'status' => 404 ) );
+			return new Error( 'rest_term_invalid', __( "Resource doesn't exist." ), array( 'status' => 404 ) );
 		}
 		$taxonomy_obj = get_taxonomy( $this->taxonomy );
 		if ( ! current_user_can( $taxonomy_obj->cap->delete_terms ) ) {
-			return new WP_Error( 'rest_cannot_delete', __( 'Sorry, you cannot delete resource.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_delete', __( 'Sorry, you cannot delete resource.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		return true;
 	}
@@ -536,7 +536,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Deletes a single term from a taxonomy.
 	 *
 	 * @param WP_REST_Request $request Full details about the request
-	 * @return WP_REST_Response|WP_Error
+	 * @return WP_REST_Response|Error
 	 */
 	public function delete_item( $request ) {
 
@@ -544,7 +544,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		// We don't support trashing for this resource type.
 		if ( ! $force ) {
-			return new WP_Error( 'rest_trash_not_supported', __( 'Resource does not support trashing.' ), array( 'status' => 501 ) );
+			return new Error( 'rest_trash_not_supported', __( 'Resource does not support trashing.' ), array( 'status' => 501 ) );
 		}
 
 		$term = get_term( (int) $request['id'], $this->taxonomy );
@@ -553,7 +553,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$retval = wp_delete_term( $term->term_id, $term->taxonomy );
 		if ( ! $retval ) {
-			return new WP_Error( 'rest_cannot_delete', __( 'The resource cannot be deleted.' ), array( 'status' => 500 ) );
+			return new Error( 'rest_cannot_delete', __( 'The resource cannot be deleted.' ), array( 'status' => 500 ) );
 		}
 
 		/**
@@ -893,7 +893,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * Checks that the taxonomy is valid.
 	 *
 	 * @param string $taxonomy Taxonomy to check.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	protected function check_is_taxonomy_allowed( $taxonomy ) {
 		$taxonomy_obj = get_taxonomy( $taxonomy );

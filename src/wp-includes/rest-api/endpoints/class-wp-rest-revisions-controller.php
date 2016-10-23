@@ -1,4 +1,5 @@
 <?php
+use WP\Error;
 
 class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
@@ -57,7 +58,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_items_permissions_check( $request ) {
 
@@ -67,7 +68,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 		}
 		$parent_post_type_obj = get_post_type_object( $parent->post_type );
 		if ( ! current_user_can( $parent_post_type_obj->cap->edit_post, $parent->ID ) ) {
-			return new WP_Error( 'rest_cannot_read', __( 'Sorry, you cannot view revisions of this post.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_read', __( 'Sorry, you cannot view revisions of this post.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -79,13 +80,13 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
 
 		$parent = $this->get_post( $request['parent'] );
 		if ( ! $request['parent'] || ! $parent || $this->parent_post_type !== $parent->post_type ) {
-			return new WP_Error( 'rest_post_invalid_parent', __( 'Invalid post parent id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_post_invalid_parent', __( 'Invalid post parent id.' ), array( 'status' => 404 ) );
 		}
 
 		$revisions = wp_get_post_revisions( $request['parent'] );
@@ -104,7 +105,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_item_permissions_check( $request ) {
 		return $this->get_items_permissions_check( $request );
@@ -116,18 +117,18 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|array
+	 * @return Error|array
 	 */
 	public function get_item( $request ) {
 
 		$parent = $this->get_post( $request['parent'] );
 		if ( ! $request['parent'] || ! $parent || $this->parent_post_type !== $parent->post_type ) {
-			return new WP_Error( 'rest_post_invalid_parent', __( 'Invalid post parent id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_post_invalid_parent', __( 'Invalid post parent id.' ), array( 'status' => 404 ) );
 		}
 
 		$revision = $this->get_post( $request['id'] );
 		if ( ! $revision || 'revision' !== $revision->post_type ) {
-			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid revision id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_post_invalid_id', __( 'Invalid revision id.' ), array( 'status' => 404 ) );
 		}
 
 		$response = $this->prepare_item_for_response( $revision, $request );
@@ -140,7 +141,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function delete_item_permissions_check( $request ) {
 
@@ -151,7 +152,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 		$post = $this->get_post( $request['id'] );
 		if ( ! $post ) {
-			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid revision id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_post_invalid_id', __( 'Invalid revision id.' ), array( 'status' => 404 ) );
 		}
 		$post_type = get_post_type_object( 'revision' );
 		return current_user_can( $post_type->cap->delete_post, $post->ID );
@@ -163,7 +164,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function delete_item( $request ) {
 		$result = wp_delete_post( $request['id'], true );
@@ -181,7 +182,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 		if ( $result ) {
 			return true;
 		} else {
-			return new WP_Error( 'rest_cannot_delete', __( 'The post cannot be deleted.' ), array( 'status' => 500 ) );
+			return new Error( 'rest_cannot_delete', __( 'The post cannot be deleted.' ), array( 'status' => 500 ) );
 		}
 	}
 

@@ -6,7 +6,7 @@
  * @subpackage Nav_Menus
  * @since 3.0.0
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -199,7 +199,7 @@ function is_nav_menu_item( $menu_item_id = 0 ) {
  * @since 3.0.0
  *
  * @param string $menu_name Menu name.
- * @return int|WP_Error Menu ID on success, WP_Error object on failure.
+ * @return int|Error Menu ID on success, Error object on failure.
  */
 function wp_create_nav_menu( $menu_name ) {
 	// expected_slashed ($menu_name)
@@ -212,7 +212,7 @@ function wp_create_nav_menu( $menu_name ) {
  * @since 3.0.0
  *
  * @param string $menu Menu ID, slug, or name.
- * @return bool|WP_Error True on success, false or WP_Error object on failure.
+ * @return bool|Error True on success, false or Error object on failure.
  */
 function wp_delete_nav_menu( $menu ) {
 	$menu = wp_get_nav_menu_object( $menu );
@@ -262,7 +262,7 @@ function wp_delete_nav_menu( $menu ) {
  *
  * @param int   $menu_id   The ID of the menu or "0" to create a new menu.
  * @param array $menu_data The array of menu data.
- * @return int|WP_Error Menu ID on success, WP_Error object on failure.
+ * @return int|Error Menu ID on success, Error object on failure.
  */
 function wp_update_nav_menu_object( $menu_id = 0, $menu_data = [] ) {
 	// expected_slashed ($menu_data)
@@ -285,7 +285,7 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = [] ) {
 		isset( $_possible_existing->term_id ) &&
 		$_possible_existing->term_id != $menu_id
 	) {
-		return new WP_Error( 'menu_exists',
+		return new Error( 'menu_exists',
 			/* translators: %s: menu name */
 			sprintf( __( 'The menu name %s conflicts with another menu name. Please try another.' ),
 				'<strong>' . esc_html( $menu_data['menu-name'] ) . '</strong>'
@@ -298,7 +298,7 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = [] ) {
 		$menu_exists = get_term_by( 'name', $menu_data['menu-name'], 'nav_menu' );
 
 		if ( $menu_exists ) {
-			return new WP_Error( 'menu_exists',
+			return new Error( 'menu_exists',
 				/* translators: %s: menu name */
 				sprintf( __( 'The menu name %s conflicts with another menu name. Please try another.' ),
 					'<strong>' . esc_html( $menu_data['menu-name'] ) . '</strong>'
@@ -362,18 +362,18 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = [] ) {
  * @param int   $menu_id         The ID of the menu. Required. If "0", makes the menu item a draft orphan.
  * @param int   $menu_item_db_id The ID of the menu item. If "0", creates a new menu item.
  * @param array $menu_item_data  The menu item's data.
- * @return int|WP_Error The menu item's database ID or WP_Error object on failure.
+ * @return int|Error The menu item's database ID or Error object on failure.
  */
 function wp_update_nav_menu_item( int $menu_id = 0, int $menu_item_db_id = 0, $menu_item_data = [] ) {
 	// make sure that we don't convert non-nav_menu_item objects into nav_menu_item objects
 	if ( ! empty( $menu_item_db_id ) && ! is_nav_menu_item( $menu_item_db_id ) ) {
-		return new WP_Error( 'update_nav_menu_item_failed', __( 'The given object ID is not that of a menu item.' ) );
+		return new Error( 'update_nav_menu_item_failed', __( 'The given object ID is not that of a menu item.' ) );
 	}
 
 	$menu = wp_get_nav_menu_object( $menu_id );
 
 	if ( ! $menu && 0 !== $menu_id ) {
-		return new WP_Error( 'invalid_menu_id', __( 'Invalid menu ID.' ) );
+		return new Error( 'invalid_menu_id', __( 'Invalid menu ID.' ) );
 	}
 
 	if ( is_wp_error( $menu ) ) {

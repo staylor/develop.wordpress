@@ -1,6 +1,7 @@
 <?php
 namespace WP\XMLRPC;
 
+use WP\Error as WPError;
 use WP\IXR\{Date,Error};
 use WP\User\User;
 use function WP\getApp;
@@ -80,7 +81,7 @@ trait Utils {
 		}
 
 		if ( $this->auth_failed ) {
-			$user = new \WP_Error( 'login_prevented' );
+			$user = new WPError( 'login_prevented' );
 		} else {
 			$user = wp_authenticate( $username, $password );
 		}

@@ -6,7 +6,7 @@
  * @subpackage Multisite
  * @since 3.0.0
  */
-
+use WP\Error;
 use WP\User\User;
 use function WP\getApp;
 
@@ -153,7 +153,7 @@ function get_blog_post( $blog_id, $post_id ) {
  * @param int    $blog_id ID of the blog you're adding the user to.
  * @param int    $user_id ID of the user you're adding.
  * @param string $role    The role you want the user to have
- * @return true|WP_Error
+ * @return true|Error
  */
 function add_user_to_blog( $blog_id, $user_id, $role ) {
 	switch_to_blog($blog_id);
@@ -162,7 +162,7 @@ function add_user_to_blog( $blog_id, $user_id, $role ) {
 
 	if ( ! $user ) {
 		restore_current_blog();
-		return new WP_Error( 'user_does_not_exist', __( 'The requested user does not exist.' ) );
+		return new Error( 'user_does_not_exist', __( 'The requested user does not exist.' ) );
 	}
 
 	if ( !get_user_meta($user_id, 'primary_blog', true) ) {
@@ -203,7 +203,7 @@ function add_user_to_blog( $blog_id, $user_id, $role ) {
  * @param int    $user_id  ID of the user you're removing.
  * @param int    $blog_id  ID of the blog you're removing the user from.
  * @param string $reassign Optional. A user to whom to reassign posts.
- * @return true|WP_Error
+ * @return true|Error
  */
 function remove_user_from_blog( int $user_id, int $blog_id = 0, $reassign = '') {
 	$app = getApp();
@@ -243,7 +243,7 @@ function remove_user_from_blog( int $user_id, int $blog_id = 0, $reassign = '') 
 	$user = get_userdata( $user_id );
 	if ( ! $user ) {
 		restore_current_blog();
-		return new WP_Error('user_does_not_exist', __('That user does not exist.'));
+		return new Error('user_does_not_exist', __('That user does not exist.'));
 	}
 
 	$user->remove_all_caps();
@@ -416,7 +416,7 @@ function wpmu_validate_user_signup($user_name, $user_email) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	$errors = new WP_Error();
+	$errors = new Error();
 
 	$orig_username = $user_name;
 	$user_name = preg_replace( '/\s+/', '', sanitize_user( $user_name, true ) );
@@ -528,7 +528,7 @@ function wpmu_validate_user_signup($user_name, $user_email) {
 	 *     @type string   $user_name     Sanitized and unique username.
 	 *     @type string   $orig_username Original username.
 	 *     @type string   $user_email    User email address.
-	 *     @type WP_Error $errors        WP_Error object containing any errors found.
+	 *     @type Error $errors        Error object containing any errors found.
 	 * }
 	 */
 	return apply_filters( 'wpmu_validate_user_signup', $result );
@@ -567,7 +567,7 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 
 	$blog_title = strip_tags( $blog_title );
 
-	$errors = new WP_Error();
+	$errors = new Error();
 	$illegal_names = get_site_option( 'illegal_names' );
 	if ( $illegal_names == false ) {
 		$illegal_names = array( 'www', 'web', 'root', 'admin', 'main', 'invite', 'administrator' );
@@ -671,7 +671,7 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 	 *     @type string         $blogname   The unique site name (slug).
 	 *     @type string         $blog_title Blog title.
 	 *     @type string|User    $user       By default, an empty string. A user object if provided.
-	 *     @type WP_Error       $errors     WP_Error containing any errors found.
+	 *     @type Error       $errors     Error containing any errors found.
 	 * }
 	 */
 	return apply_filters( 'wpmu_validate_blog_signup', $result );
@@ -978,7 +978,7 @@ function wpmu_signup_user_notification( $user, $user_email, $key, $meta = [] ) {
  * @since MU
  *
  * @param string $key The activation key provided to the user.
- * @return array|WP_Error An array containing information about the activated user and/or blog
+ * @return array|Error An array containing information about the activated user and/or blog
  */
 function wpmu_activate_signup($key) {
 	$app = getApp();
@@ -987,14 +987,14 @@ function wpmu_activate_signup($key) {
 	$signup = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $wpdb->signups WHERE activation_key = %s", $key) );
 
 	if ( empty( $signup ) ) {
-			return new WP_Error( 'invalid_key', __( 'Invalid activation key.' ) );
+			return new Error( 'invalid_key', __( 'Invalid activation key.' ) );
 	}
 
 	if ( $signup->active ) {
 		if ( empty( $signup->domain ) ) {
-					return new WP_Error( 'already_active', __( 'The user is already active.' ), $signup );
+					return new Error( 'already_active', __( 'The user is already active.' ), $signup );
 		} else {
-					return new WP_Error( 'already_active', __( 'The site is already active.' ), $signup );
+					return new Error( 'already_active', __( 'The site is already active.' ), $signup );
 		}
 	}
 
@@ -1010,7 +1010,7 @@ function wpmu_activate_signup($key) {
 	}
 
 	if ( ! $user_id ) {
-			return new WP_Error('create_user', __('Could not create user'), $signup);
+			return new Error('create_user', __('Could not create user'), $signup);
 	}
 
 	$now = current_time('mysql', true);
@@ -1019,7 +1019,7 @@ function wpmu_activate_signup($key) {
 		$wpdb->update( $wpdb->signups, array('active' => 1, 'activated' => $now), array('activation_key' => $key) );
 
 		if ( isset( $user_already_exists ) ) {
-					return new WP_Error( 'user_already_exists', __( 'That username is already activated.' ), $signup);
+					return new Error( 'user_already_exists', __( 'That username is already activated.' ), $signup);
 		}
 
 		/**
@@ -1124,7 +1124,7 @@ function wpmu_create_user( $user_name, $password, $email ) {
  * @param int    $user_id The user ID of the new site's admin.
  * @param array  $meta    Optional. Used to set initial site options.
  * @param int    $site_id Optional. Only relevant on multi-network installs.
- * @return int|WP_Error Returns WP_Error object on failure, int $blog_id on success
+ * @return int|Error Returns Error object on failure, int $blog_id on success
  */
 function wpmu_create_blog( $domain, $path, $title, int $user_id, $meta = [], $site_id = 1 ) {
 	$defaults = array(
@@ -1147,7 +1147,7 @@ function wpmu_create_blog( $domain, $path, $title, int $user_id, $meta = [], $si
 
 	// Check if the domain has been used already. We should return an error message.
 	if ( domain_exists($domain, $path, $site_id) ) {
-		return new WP_Error( 'blog_taken', __( 'Sorry, that site already exists!' ) );
+		return new Error( 'blog_taken', __( 'Sorry, that site already exists!' ) );
 	}
 
 	if ( ! wp_installing() ) {
@@ -1155,7 +1155,7 @@ function wpmu_create_blog( $domain, $path, $title, int $user_id, $meta = [], $si
 	}
 
 	if ( ! $blog_id = insert_blog($domain, $path, $site_id) ) {
-		return new WP_Error('insert_blog', __('Could not create site.'));
+		return new Error('insert_blog', __('Could not create site.'));
 	}
 
 	switch_to_blog($blog_id);
@@ -2053,7 +2053,7 @@ function maybe_add_existing_user_to_blog() {
  * @since MU
  *
  * @param array $details
- * @return true|WP_Error|void
+ * @return true|Error|void
  */
 function add_existing_user_to_blog( $details = false ) {
 	if ( is_array( $details ) ) {
@@ -2065,7 +2065,7 @@ function add_existing_user_to_blog( $details = false ) {
 		 * @since MU
 		 *
 		 * @param int   $user_id User ID.
-		 * @param mixed $result  True on success or a WP_Error object if the user doesn't exist.
+		 * @param mixed $result  True on success or a Error object if the user doesn't exist.
 		 */
 		do_action( 'added_existing_user', $details['user_id'], $result );
 		return $result;

@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Filesystem
  */
-
+use WP\Error;
 /**
  * WordPress Filesystem Class for direct PHP file and folder manipulation.
  *
@@ -25,7 +25,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 	 */
 	public function __construct($arg) {
 		$this->method = 'direct';
-		$this->errors = new WP_Error();
+		$this->errors = new Error();
 	}
 
 	/**

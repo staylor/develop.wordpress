@@ -1,4 +1,5 @@
 <?php
+use WP\Error;
 
 class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 
@@ -38,7 +39,7 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 	 * Check whether a given request has permission to read types.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( 'edit' === $request['context'] ) {
@@ -47,7 +48,7 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 					return true;
 				}
 			}
-			return new WP_Error( 'rest_cannot_view', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_view', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		return true;
 	}
@@ -56,7 +57,7 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 	 * Get all public post types
 	 *
 	 * @param WP_REST_Request $request
-	 * @return array|WP_Error
+	 * @return array|Error
 	 */
 	public function get_items( $request ) {
 		$data = array();
@@ -74,18 +75,18 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 	 * Get a specific post type
 	 *
 	 * @param WP_REST_Request $request
-	 * @return array|WP_Error
+	 * @return array|Error
 	 */
 	public function get_item( $request ) {
 		$obj = get_post_type_object( $request['type'] );
 		if ( empty( $obj ) ) {
-			return new WP_Error( 'rest_type_invalid', __( 'Invalid resource.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_type_invalid', __( 'Invalid resource.' ), array( 'status' => 404 ) );
 		}
 		if ( empty( $obj->show_in_rest ) ) {
-			return new WP_Error( 'rest_cannot_read_type', __( 'Cannot view resource.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_read_type', __( 'Cannot view resource.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		if ( 'edit' === $request['context'] && ! current_user_can( $obj->cap->edit_posts ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to manage this resource.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to manage this resource.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		$data = $this->prepare_item_for_response( $obj, $request );
 		return rest_ensure_response( $data );

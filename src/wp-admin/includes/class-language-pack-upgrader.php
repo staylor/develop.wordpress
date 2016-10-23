@@ -6,7 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
+use WP\Error;
 /**
  * Core class used for updating/installing language packs (translations)
  * for plugins, themes, and core.
@@ -23,7 +23,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 *
 	 * @since 3.7.0
 	 * @access public
-	 * @var array|WP_Error $result
+	 * @var array|Error $result
 	 * @see WP_Upgrader::$result
 	 */
 	public $result;
@@ -131,7 +131,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 * @param string|false $update Optional. Whether an update offer is available. Default false.
 	 * @param array        $args   Optional. Other optional arguments, see
 	 *                             Language_Pack_Upgrader::bulk_upgrade(). Default empty array.
-	 * @return array|bool|WP_Error The result of the upgrade, or a WP_Error object instead.
+	 * @return array|bool|Error The result of the upgrade, or a Error object instead.
 	 */
 	public function upgrade( $update = false, $args = [] ) {
 		if ( $update ) {
@@ -162,8 +162,8 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 *     @type bool $clear_update_cache Whether to clear the update cache when done.
 	 *                                    Default true.
 	 * }
-	 * @return array|bool|WP_Error Will return an array of results, or true if there are no updates,
-	 *                                   false or WP_Error for initial errors.
+	 * @return array|bool|Error Will return an array of results, or true if there are no updates,
+	 *                                   false or Error for initial errors.
 	 */
 	public function bulk_upgrade( $language_updates = [], $args = [] ) {
 		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
@@ -220,7 +220,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 		$remote_destination = $wp_filesystem->find_folder( WP_LANG_DIR );
 		if ( ! $wp_filesystem->exists( $remote_destination ) )
 			if ( ! $wp_filesystem->mkdir( $remote_destination, FS_CHMOD_DIR ) )
-				return new WP_Error( 'mkdir_failed_lang_dir', $this->strings['mkdir_failed'], $remote_destination );
+				return new Error( 'mkdir_failed_lang_dir', $this->strings['mkdir_failed'], $remote_destination );
 
 		$language_updates_results = [];
 
@@ -311,7 +311,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 *
 	 * @global WP_Filesystem_Base $wp_filesystem Subclass
 	 *
-	 * @param string|WP_Error $source
+	 * @param string|Error $source
 	 * @param string          $remote_source
 	 */
 	public function check_package( $source, $remote_source ) {
@@ -333,7 +333,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 		}
 
 		if ( ! $mo || ! $po ) {
-			return new WP_Error( 'incompatible_archive_pomo', $this->strings['incompatible_archive'],
+			return new Error( 'incompatible_archive_pomo', $this->strings['incompatible_archive'],
 				/* translators: 1: .po 2: .mo */
 				sprintf( __( 'The language pack is missing either the %1$s or %2$s files.' ),
 					'<code>.po</code>',

@@ -1,5 +1,5 @@
 <?php
-
+use WP\Error;
 /**
  * Manage meta values for an object.
  */
@@ -36,7 +36,7 @@ abstract class WP_REST_Meta_Fields {
 	 *
 	 * @param int             $object_id Object ID to fetch meta for.
 	 * @param WP_REST_Request $request   Full details about the request.
-	 * @return WP_Error|object
+	 * @return Error|object
 	 */
 	public function get_value( $object_id, $request ) {
 		$fields   = $this->get_registered_fields();
@@ -89,7 +89,7 @@ abstract class WP_REST_Meta_Fields {
 	 *
 	 * @param WP_REST_Request $request    Full details about the request.
 	 * @param int             $object_id  Object ID to fetch meta for.
-	 * @return WP_Error|null Error if one occurs, null on success.
+	 * @return Error|null Error if one occurs, null on success.
 	 */
 	public function update_value( $request, $object_id ) {
 		$fields = $this->get_registered_fields();
@@ -122,11 +122,11 @@ abstract class WP_REST_Meta_Fields {
 	 *
 	 * @param int    $object_id Object ID the field belongs to.
 	 * @param string $name      Key for the field.
-	 * @return bool|WP_Error True if meta field is deleted, error otherwise.
+	 * @return bool|Error True if meta field is deleted, error otherwise.
 	 */
 	protected function delete_meta_value( $object_id, $name ) {
 		if ( ! current_user_can( 'delete_post_meta', $object_id, $name ) ) {
-			return new WP_Error(
+			return new Error(
 				'rest_cannot_delete',
 				sprintf( __( 'You do not have permission to edit the %s custom field.' ), $name ),
 				array( 'key' => $name, 'status' => rest_authorization_required_code() )
@@ -134,7 +134,7 @@ abstract class WP_REST_Meta_Fields {
 		}
 
 		if ( ! delete_metadata( $this->get_meta_type(), $object_id, wp_slash( $name ) ) ) {
-			return new WP_Error(
+			return new Error(
 				'rest_meta_database_error',
 				__( 'Could not delete meta value from database.' ),
 				array( 'key' => $name, 'status' => WP_Http::INTERNAL_SERVER_ERROR )
@@ -152,11 +152,11 @@ abstract class WP_REST_Meta_Fields {
 	 * @param int    $object_id Object ID to update.
 	 * @param string $name      Key for the custom field.
 	 * @param array  $values    List of values to update to.
-	 * @return bool|WP_Error True if meta fields are updated, error otherwise.
+	 * @return bool|Error True if meta fields are updated, error otherwise.
 	 */
 	protected function update_multi_meta_value( $object_id, $name, $values ) {
 		if ( ! current_user_can( 'edit_post_meta', $object_id, $name ) ) {
-			return new WP_Error(
+			return new Error(
 				'rest_cannot_update',
 				sprintf( __( 'You do not have permission to edit the %s custom field.' ), $name ),
 				array( 'key' => $name, 'status' => rest_authorization_required_code() )
@@ -188,7 +188,7 @@ abstract class WP_REST_Meta_Fields {
 		$to_remove = array_unique( $to_remove );
 		foreach ( $to_remove as $value ) {
 			if ( ! delete_metadata( $this->get_meta_type(), $object_id, wp_slash( $name ), wp_slash( $value ) ) ) {
-				return new WP_Error(
+				return new Error(
 					'rest_meta_database_error',
 					__( 'Could not update meta value in database.' ),
 					array( 'key' => $name, 'status' => WP_Http::INTERNAL_SERVER_ERROR )
@@ -197,7 +197,7 @@ abstract class WP_REST_Meta_Fields {
 		}
 		foreach ( $to_add as $value ) {
 			if ( ! add_metadata( $this->get_meta_type(), $object_id, wp_slash( $name ), wp_slash( $value ) ) ) {
-				return new WP_Error(
+				return new Error(
 					'rest_meta_database_error',
 					__( 'Could not update meta value in database.' ),
 					array( 'key' => $name, 'status' => WP_Http::INTERNAL_SERVER_ERROR )
@@ -214,11 +214,11 @@ abstract class WP_REST_Meta_Fields {
 	 * @param int    $object_id Object ID to update.
 	 * @param string $name      Key for the custom field.
 	 * @param mixed  $value     Updated value.
-	 * @return bool|WP_Error True if meta field is updated, error otherwise.
+	 * @return bool|Error True if meta field is updated, error otherwise.
 	 */
 	protected function update_meta_value( $object_id, $name, $value ) {
 		if ( ! current_user_can( 'edit_post_meta', $object_id, $name ) ) {
-			return new WP_Error(
+			return new Error(
 				'rest_cannot_update',
 				sprintf( __( 'You do not have permission to edit the %s custom field.' ), $name ),
 				array( 'key' => $name, 'status' => rest_authorization_required_code() )
@@ -238,7 +238,7 @@ abstract class WP_REST_Meta_Fields {
 		}
 
 		if ( ! update_metadata( $meta_type, $object_id, $meta_key, $meta_value ) ) {
-			return new WP_Error(
+			return new Error(
 				'rest_meta_database_error',
 				__( 'Could not update meta value in database.' ),
 				array( 'key' => $name, 'status' => WP_Http::INTERNAL_SERVER_ERROR )

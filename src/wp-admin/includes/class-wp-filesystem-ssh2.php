@@ -1,4 +1,5 @@
 <?php
+use WP\Error;
 /**
  * WordPress Filesystem Class for implementing SSH2
  *
@@ -54,7 +55,7 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	 */
 	public function __construct( $opt = '' ) {
 		$this->method = 'ssh2';
-		$this->errors = new WP_Error();
+		$this->errors = new Error();
 
 		//Check if possible to use ssh2 functions.
 		if ( ! extension_loaded('ssh2') ) {

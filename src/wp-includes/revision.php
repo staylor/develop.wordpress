@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Post_Revisions
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -109,7 +109,7 @@ function _wp_post_revision_data( $post = [], $autosave = false ) {
  * @since 2.6.0
  *
  * @param int $post_id The ID of the post to save as a revision.
- * @return int|WP_Error|void Void or 0 if error, new revision ID, if success.
+ * @return int|Error|void Void or 0 if error, new revision ID, if success.
  */
 function wp_save_post_revision( $post_id ) {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -294,7 +294,7 @@ function wp_is_post_autosave( $post ) {
  *
  * @param int|WP_Post|array|null $post     Post ID, post object OR post array.
  * @param bool                   $autosave Optional. Is the revision an autosave?
- * @return int|WP_Error WP_Error or 0 if error, new revision ID if success.
+ * @return int|Error Error or 0 if error, new revision ID if success.
  */
 function _wp_put_post_revision( $post = null, $autosave = false ) {
 	if ( is_object($post) ) {
@@ -304,11 +304,11 @@ function _wp_put_post_revision( $post = null, $autosave = false ) {
 	}
 
 	if ( ! $post || empty($post['ID']) ) {
-		return new WP_Error( 'invalid_post', __( 'Invalid post ID.' ) );
+		return new Error( 'invalid_post', __( 'Invalid post ID.' ) );
 	}
 
 	if ( isset($post['post_type']) && 'revision' == $post['post_type'] ) {
-		return new WP_Error( 'post_type', __( 'Cannot create a revision of a revision' ) );
+		return new Error( 'post_type', __( 'Cannot create a revision of a revision' ) );
 	}
 
 	$post = _wp_post_revision_data( $post, $autosave );
@@ -424,7 +424,7 @@ function wp_restore_post_revision( $revision_id, $fields = null ) {
  * @since 2.6.0
  *
  * @param int|WP_Post $revision_id Revision ID or revision object.
- * @return array|false|WP_Post|WP_Error|null Null or WP_Error if error, deleted post if success.
+ * @return array|false|WP_Post|Error|null Null or Error if error, deleted post if success.
  */
 function wp_delete_post_revision( $revision_id ) {
 	if ( ! $revision = wp_get_post_revision( $revision_id ) ) {

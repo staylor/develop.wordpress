@@ -44,7 +44,7 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	 * Get the settings.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|array
+	 * @return Error|array
 	 */
 	public function get_item( $request ) {
 		$options  = $this->get_registered_options();
@@ -104,7 +104,7 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	 * Update settings for the settings object.
 	 *
 	 * @param  WP_REST_Request $request Full detail about the request.
-	 * @return WP_Error|array
+	 * @return Error|array
 	 */
 	public function update_item( $request ) {
 		$options = $this->get_registered_options();

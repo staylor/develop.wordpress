@@ -6,6 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
+use WP\Error;
 use function WP\getApp;
 /**
  * Core class used for updating core.
@@ -58,7 +59,7 @@ class Core_Upgrader extends WP_Upgrader {
 	 *        @type bool $do_rollback      Whether to perform this "upgrade" as a rollback.
 	 *                                     Default false.
 	 * }
-	 * @return null|false|WP_Error False or WP_Error on failure, null on success.
+	 * @return null|false|Error False or Error on failure, null on success.
 	 */
 	public function upgrade( $current, $args = [] ) {
 		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
@@ -78,7 +79,7 @@ class Core_Upgrader extends WP_Upgrader {
 
 		// Is an update available?
 		if ( !isset( $current->response ) || $current->response == 'latest' )
-			return new WP_Error('up_to_date', $this->strings['up_to_date']);
+			return new Error('up_to_date', $this->strings['up_to_date']);
 
 		$res = $this->fs_connect( array( ABSPATH, WP_CONTENT_DIR ), $parsed_args['allow_relaxed_file_ownership'] );
 		if ( ! $res || is_wp_error( $res ) ) {
@@ -117,7 +118,7 @@ class Core_Upgrader extends WP_Upgrader {
 		// Lock to prevent multiple Core Updates occurring
 		$lock = WP_Upgrader::create_lock( 'core_updater', 15 * MINUTE_IN_SECONDS );
 		if ( ! $lock ) {
-			return new WP_Error( 'locked', $this->strings['locked'] );
+			return new Error( 'locked', $this->strings['locked'] );
 		}
 
 		$download = $this->download_package( $current->packages->$to_download );
@@ -136,7 +137,7 @@ class Core_Upgrader extends WP_Upgrader {
 		if ( !$wp_filesystem->copy($working_dir . '/wordpress/wp-admin/includes/update-core.php', $wp_dir . 'wp-admin/includes/update-core.php', true) ) {
 			$wp_filesystem->delete($working_dir, true);
 			WP_Upgrader::release_lock( 'core_updater' );
-			return new WP_Error( 'copy_failed_for_update_core_file', __( 'The update cannot be installed because we will be unable to copy some files. This is usually due to inconsistent file permissions.' ), 'wp-admin/includes/update-core.php' );
+			return new Error( 'copy_failed_for_update_core_file', __( 'The update cannot be installed because we will be unable to copy some files. This is usually due to inconsistent file permissions.' ), 'wp-admin/includes/update-core.php' );
 		}
 		$wp_filesystem->chmod($wp_dir . 'wp-admin/includes/update-core.php', FS_CHMOD_FILE);
 
@@ -144,7 +145,7 @@ class Core_Upgrader extends WP_Upgrader {
 
 		if ( ! function_exists( 'update_core' ) ) {
 			WP_Upgrader::release_lock( 'core_updater' );
-			return new WP_Error( 'copy_failed_space', $this->strings['copy_failed_space'] );
+			return new Error( 'copy_failed_space', $this->strings['copy_failed_space'] );
 		}
 
 		$result = update_core( $working_dir, $wp_dir );
@@ -178,7 +179,7 @@ class Core_Upgrader extends WP_Upgrader {
 				$rollback_result = $this->upgrade( $current, array_merge( $parsed_args, array( 'do_rollback' => true ) ) );
 
 				$original_result = $result;
-				$result = new WP_Error( 'rollback_was_required', $this->strings['rollback_was_required'], (object) array( 'update' => $original_result, 'rollback' => $rollback_result ) );
+				$result = new Error( 'rollback_was_required', $this->strings['rollback_was_required'], (object) array( 'update' => $original_result, 'rollback' => $rollback_result ) );
 			}
 		}
 

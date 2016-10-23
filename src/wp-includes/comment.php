@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Comment
  */
-
+use WP\Error;
 use WP\Comment\Comment;
 use function WP\getApp;
 
@@ -604,14 +604,14 @@ function sanitize_comment_cookies() {
  *
  * @since 2.0.0
  * @since 4.7.0 The `$avoid_die` parameter was added, allowing the function to
- *              return a WP_Error object instead of dying.
+ *              return a Error object instead of dying.
  *
  * @param array $commentdata Contains information on the comment.
  * @param bool  $avoid_die   When true, a disallowed comment will result in the function
- *                           returning a WP_Error object, rather than executing wp_die().
+ *                           returning a Error object, rather than executing wp_die().
  *                           Default false.
- * @return int|string|WP_Error Allowed comments return the approval status (0|1|'spam').
- *                             If `$avoid_die` is true, disallowed comments return a WP_Error.
+ * @return int|string|Error Allowed comments return the approval status (0|1|'spam').
+ *                             If `$avoid_die` is true, disallowed comments return a Error.
  */
 function wp_allow_comment( $commentdata, $avoid_die = false ) {
 	$app = getApp();
@@ -660,7 +660,7 @@ function wp_allow_comment( $commentdata, $avoid_die = false ) {
 		 */
 		do_action( 'comment_duplicate_trigger', $commentdata );
 		if ( true === $avoid_die ) {
-			return new WP_Error( 'comment_duplicate', __( 'Duplicate comment detected; it looks as though you&#8217;ve already said that!' ), 409 );
+			return new Error( 'comment_duplicate', __( 'Duplicate comment detected; it looks as though you&#8217;ve already said that!' ), 409 );
 		}
 
 		if ( wp_doing_ajax() ) {
@@ -716,7 +716,7 @@ function wp_allow_comment( $commentdata, $avoid_die = false ) {
 	);
 
 	if ( $is_flood ) {
-		return new WP_Error( 'comment_flood', __( 'You are posting comments too quickly. Slow down.' ), 429 );
+		return new Error( 'comment_flood', __( 'You are posting comments too quickly. Slow down.' ), 429 );
 	}
 
 	if ( ! empty( $commentdata['user_id'] ) ) {
@@ -796,7 +796,7 @@ function check_comment_flood_db() {
  * @param string $email     Comment author email address.
  * @param string $date      MySQL time string.
  * @param bool   $avoid_die When true, a disallowed comment will result in the function
- *                          returning a WP_Error object, rather than executing wp_die().
+ *                          returning a Error object, rather than executing wp_die().
  *                          Default false.
  * @return bool Whether comment flooding is occurring.
  */
@@ -1832,7 +1832,7 @@ function wp_throttle_comment_flood( $block, $time_lastcomment, $time_newcomment 
  * @since 1.5.0
  * @since 4.3.0 'comment_agent' and 'comment_author_IP' can be set via `$commentdata`.
  * @since 4.7.0 The `$avoid_die` parameter was added, allowing the function to
- *              return a WP_Error object instead of dying.
+ *              return a Error object instead of dying.
  *
  * @see wp_insert_comment()
  *
@@ -1855,9 +1855,9 @@ function wp_throttle_comment_flood( $block, $time_lastcomment, $time_newcomment 
  *     @type string $comment_author_IP    Comment author IP address in IPv4 format. Default is the value of
  *                                        'REMOTE_ADDR' in the `$_SERVER` superglobal sent in the original request.
  * }
- * @param bool $avoid_die Should errors be returned as WP_Error objects instead of
+ * @param bool $avoid_die Should errors be returned as Error objects instead of
  *                        executing wp_die()? Default false.
- * @return int|false|WP_Error The ID of the comment on success, false or WP_Error on failure.
+ * @return int|false|Error The ID of the comment on success, false or Error on failure.
  */
 function wp_new_comment( $commentdata, $avoid_die = false ) {
 	$app = getApp();
@@ -2029,8 +2029,8 @@ function wp_new_comment_notify_postauthor( $comment_ID ) {
  *
  * @param int|Comment    $comment_id     Comment ID or Comment object.
  * @param string         $comment_status New comment status, either 'hold', 'approve', 'spam', or 'trash'.
- * @param bool           $wp_error       Whether to return a WP_Error object if there is a failure. Default is false.
- * @return bool|WP_Error True on success, false or WP_Error on failure.
+ * @param bool           $wp_error       Whether to return a Error object if there is a failure. Default is false.
+ * @return bool|Error True on success, false or Error on failure.
  */
 function wp_set_comment_status($comment_id, $comment_status, $wp_error = false) {
 	$app = getApp();
@@ -2060,7 +2060,7 @@ function wp_set_comment_status($comment_id, $comment_status, $wp_error = false) 
 
 	if ( !$wpdb->update( $wpdb->comments, array('comment_approved' => $status), array( 'comment_ID' => $comment_old->comment_ID ) ) ) {
 		if ( $wp_error ) {
-					return new WP_Error('db_update_error', __('Could not update comment status'), $wpdb->last_error);
+					return new Error('db_update_error', __('Could not update comment status'), $wpdb->last_error);
 		} else {
 					return false;
 		}
@@ -2915,7 +2915,7 @@ function _close_comments_for_old_post( $open, $post_id ) {
  *     @type string|int $comment_parent              The ID of this comment's parent, if any. Default 0.
  *     @type string     $_wp_unfiltered_html_comment The nonce value for allowing unfiltered HTML.
  * }
- * @return Comment|WP_Error A Comment object on success, a WP_Error object on failure.
+ * @return Comment|Error A Comment object on success, a Error object on failure.
  */
 function wp_handle_comment_submission( $comment_data ) {
 
@@ -2954,7 +2954,7 @@ function wp_handle_comment_submission( $comment_data ) {
 		 */
 		do_action( 'comment_id_not_found', $comment_post_ID );
 
-		return new WP_Error( 'comment_id_not_found' );
+		return new Error( 'comment_id_not_found' );
 
 	}
 
@@ -2962,7 +2962,7 @@ function wp_handle_comment_submission( $comment_data ) {
 	$status = get_post_status( $post );
 
 	if ( ( 'private' == $status ) && ! current_user_can( 'read_post', $comment_post_ID ) ) {
-		return new WP_Error( 'comment_id_not_found' );
+		return new Error( 'comment_id_not_found' );
 	}
 
 	$status_obj = get_post_status_object( $status );
@@ -2978,7 +2978,7 @@ function wp_handle_comment_submission( $comment_data ) {
 		 */
 		do_action( 'comment_closed', $comment_post_ID );
 
-		return new WP_Error( 'comment_closed', __( 'Sorry, comments are closed for this item.' ), 403 );
+		return new Error( 'comment_closed', __( 'Sorry, comments are closed for this item.' ), 403 );
 
 	} elseif ( 'trash' == $status ) {
 
@@ -2991,7 +2991,7 @@ function wp_handle_comment_submission( $comment_data ) {
 		 */
 		do_action( 'comment_on_trash', $comment_post_ID );
 
-		return new WP_Error( 'comment_on_trash' );
+		return new Error( 'comment_on_trash' );
 
 	} elseif ( ! $status_obj->public && ! $status_obj->private ) {
 
@@ -3004,7 +3004,7 @@ function wp_handle_comment_submission( $comment_data ) {
 		 */
 		do_action( 'comment_on_draft', $comment_post_ID );
 
-		return new WP_Error( 'comment_on_draft' );
+		return new Error( 'comment_on_draft' );
 
 	} elseif ( post_password_required( $comment_post_ID ) ) {
 
@@ -3017,7 +3017,7 @@ function wp_handle_comment_submission( $comment_data ) {
 		 */
 		do_action( 'comment_on_password_protected', $comment_post_ID );
 
-		return new WP_Error( 'comment_on_password_protected' );
+		return new Error( 'comment_on_password_protected' );
 
 	} else {
 
@@ -3052,7 +3052,7 @@ function wp_handle_comment_submission( $comment_data ) {
 		}
 	} else {
 		if ( get_option( 'comment_registration' ) ) {
-			return new WP_Error( 'not_logged_in', __( 'Sorry, you must be logged in to post a comment.' ), 403 );
+			return new Error( 'not_logged_in', __( 'Sorry, you must be logged in to post a comment.' ), 403 );
 		}
 	}
 
@@ -3061,28 +3061,28 @@ function wp_handle_comment_submission( $comment_data ) {
 
 	if ( get_option( 'require_name_email' ) && ! $user->exists() ) {
 		if ( 6 > strlen( $comment_author_email ) || '' == $comment_author ) {
-			return new WP_Error( 'require_name_email', __( '<strong>ERROR</strong>: please fill the required fields (name, email).' ), 200 );
+			return new Error( 'require_name_email', __( '<strong>ERROR</strong>: please fill the required fields (name, email).' ), 200 );
 		} elseif ( ! is_email( $comment_author_email ) ) {
-			return new WP_Error( 'require_valid_email', __( '<strong>ERROR</strong>: please enter a valid email address.' ), 200 );
+			return new Error( 'require_valid_email', __( '<strong>ERROR</strong>: please enter a valid email address.' ), 200 );
 		}
 	}
 
 	if ( isset( $comment_author ) && $max_lengths['comment_author'] < mb_strlen( $comment_author, '8bit' ) ) {
-		return new WP_Error( 'comment_author_column_length', __( '<strong>ERROR</strong>: your name is too long.' ), 200 );
+		return new Error( 'comment_author_column_length', __( '<strong>ERROR</strong>: your name is too long.' ), 200 );
 	}
 
 	if ( isset( $comment_author_email ) && $max_lengths['comment_author_email'] < strlen( $comment_author_email ) ) {
-		return new WP_Error( 'comment_author_email_column_length', __( '<strong>ERROR</strong>: your email address is too long.' ), 200 );
+		return new Error( 'comment_author_email_column_length', __( '<strong>ERROR</strong>: your email address is too long.' ), 200 );
 	}
 
 	if ( isset( $comment_author_url ) && $max_lengths['comment_author_url'] < strlen( $comment_author_url ) ) {
-		return new WP_Error( 'comment_author_url_column_length', __( '<strong>ERROR</strong>: your url is too long.' ), 200 );
+		return new Error( 'comment_author_url_column_length', __( '<strong>ERROR</strong>: your url is too long.' ), 200 );
 	}
 
 	if ( '' == $comment_content ) {
-		return new WP_Error( 'require_valid_comment', __( '<strong>ERROR</strong>: please type a comment.' ), 200 );
+		return new Error( 'require_valid_comment', __( '<strong>ERROR</strong>: please type a comment.' ), 200 );
 	} elseif ( $max_lengths['comment_content'] < mb_strlen( $comment_content, '8bit' ) ) {
-		return new WP_Error( 'comment_content_column_length', __( '<strong>ERROR</strong>: your comment is too long.' ), 200 );
+		return new Error( 'comment_content_column_length', __( '<strong>ERROR</strong>: your comment is too long.' ), 200 );
 	}
 
 	$commentdata = compact(
@@ -3102,7 +3102,7 @@ function wp_handle_comment_submission( $comment_data ) {
 	}
 
 	if ( ! $comment_id ) {
-		return new WP_Error( 'comment_save_error', __( '<strong>ERROR</strong>: The comment could not be saved. Please try again later.' ), 500 );
+		return new Error( 'comment_save_error', __( '<strong>ERROR</strong>: The comment could not be saved. Please try again later.' ), 500 );
 	}
 
 	return get_comment( $comment_id );

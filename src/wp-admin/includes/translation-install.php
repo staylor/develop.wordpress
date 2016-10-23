@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Administration
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -15,13 +15,13 @@ use function WP\getApp;
  *
  * @param string       $type Type of translations. Accepts 'plugins', 'themes', 'core'.
  * @param array|object $args Translation API arguments. Optional.
- * @return object|WP_Error On success an object of translations, WP_Error on failure.
+ * @return object|Error On success an object of translations, Error on failure.
  */
 function translations_api( $type, $args = null ) {
 	$app = getApp();
 
 	if ( ! in_array( $type, array( 'plugins', 'themes', 'core' ) ) ) {
-		return	new WP_Error( 'invalid_type', __( 'Invalid translation type.' ) );
+		return	new Error( 'invalid_type', __( 'Invalid translation type.' ) );
 	}
 
 	/**
@@ -63,11 +63,11 @@ function translations_api( $type, $args = null ) {
 		}
 
 		if ( is_wp_error( $request ) ) {
-			$res = new WP_Error( 'translations_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), $request->get_error_message() );
+			$res = new Error( 'translations_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), $request->get_error_message() );
 		} else {
 			$res = json_decode( wp_remote_retrieve_body( $request ), true );
 			if ( ! is_object( $res ) && ! is_array( $res ) ) {
-				$res = new WP_Error( 'translations_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), wp_remote_retrieve_body( $request ) );
+				$res = new Error( 'translations_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), wp_remote_retrieve_body( $request ) );
 			}
 		}
 	}
@@ -77,7 +77,7 @@ function translations_api( $type, $args = null ) {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param object|WP_Error $res  Response object or WP_Error.
+	 * @param object|Error $res  Response object or Error.
 	 * @param string          $type The type of translations being requested.
 	 * @param object          $args Translation API arguments.
 	 */

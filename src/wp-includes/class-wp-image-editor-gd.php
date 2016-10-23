@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Image_Editor
  */
-
+use WP\Error;
 /**
  * WordPress Image Editor Class for Image Manipulation through GD
  *
@@ -88,7 +88,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @since 3.5.0
 	 * @access protected
 	 *
-	 * @return bool|WP_Error True if loaded successfully; WP_Error on failure.
+	 * @return bool|Error True if loaded successfully; Error on failure.
 	 */
 	public function load() {
 		if ( $this->image ) {
@@ -96,7 +96,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 		}
 
 		if ( ! is_file( $this->file ) && ! preg_match( '|^https?://|', $this->file ) ) {
-			return new WP_Error( 'error_loading_image', __( 'File doesn&#8217;t exist?' ), $this->file );
+			return new Error( 'error_loading_image', __( 'File doesn&#8217;t exist?' ), $this->file );
 		}
 
 		// Set artificially high because GD uses uncompressed images in memory.
@@ -105,12 +105,12 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 		$this->image = @imagecreatefromstring( file_get_contents( $this->file ) );
 
 		if ( ! is_resource( $this->image ) ) {
-			return new WP_Error( 'invalid_image', __( 'File is not an image.' ), $this->file );
+			return new Error( 'invalid_image', __( 'File is not an image.' ), $this->file );
 		}
 
 		$size = @getimagesize( $this->file );
 		if ( ! $size ) {
-			return new WP_Error( 'invalid_image', __( 'Could not read image size.' ), $this->file );
+			return new Error( 'invalid_image', __( 'Could not read image size.' ), $this->file );
 		}
 
 		if ( function_exists( 'imagealphablending' ) && function_exists( 'imagesavealpha' ) ) {
@@ -160,7 +160,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @param  int|null $max_w Image width.
 	 * @param  int|null $max_h Image height.
 	 * @param  bool     $crop
-	 * @return true|WP_Error
+	 * @return true|Error
 	 */
 	public function resize( $max_w, $max_h, $crop = false ) {
 		if ( ( $this->size[ 'width' ] == $max_w ) && ( $this->size[ 'height' ] == $max_h ) ) {
@@ -178,7 +178,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 			return $resized;
 		}
 
-		return new WP_Error( 'image_resize_error', __( 'Image resize failed.' ), $this->file );
+		return new Error( 'image_resize_error', __( 'Image resize failed.' ), $this->file );
 	}
 
 	/**
@@ -186,12 +186,12 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @param int $max_w
 	 * @param int $max_h
 	 * @param bool|array $crop
-	 * @return resource|WP_Error
+	 * @return resource|Error
 	 */
 	protected function _resize( $max_w, $max_h, $crop = false ) {
 		$dims = image_resize_dimensions( $this->size[ 'width' ], $this->size[ 'height' ], $max_w, $max_h, $crop );
 		if ( ! $dims ) {
-			return new WP_Error( 'error_getting_dimensions', __( 'Could not calculate resized image dimensions' ), $this->file );
+			return new Error( 'error_getting_dimensions', __( 'Could not calculate resized image dimensions' ), $this->file );
 		}
 		list( $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ) = $dims;
 
@@ -203,7 +203,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 			return $resized;
 		}
 
-		return new WP_Error( 'image_resize_error', __( 'Image resize failed.' ), $this->file );
+		return new Error( 'image_resize_error', __( 'Image resize failed.' ), $this->file );
 	}
 
 	/**
@@ -282,7 +282,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @param int  $dst_w   Optional. The destination width.
 	 * @param int  $dst_h   Optional. The destination height.
 	 * @param bool $src_abs Optional. If the source crop points are absolute.
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	public function crop( $src_x, $src_y, $src_w, $src_h, $dst_w = null, $dst_h = null, $src_abs = false ) {
 		// If destination width/height isn't specified, use same as
@@ -314,7 +314,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 			return true;
 		}
 
-		return new WP_Error( 'image_crop_error', __( 'Image crop failed.' ), $this->file );
+		return new Error( 'image_crop_error', __( 'Image crop failed.' ), $this->file );
 	}
 
 	/**
@@ -325,7 +325,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @access public
 	 *
 	 * @param float $angle
-	 * @return true|WP_Error
+	 * @return true|Error
 	 */
 	public function rotate( $angle ) {
 		if ( function_exists( 'imagerotate' ) ) {
@@ -341,7 +341,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 				return true;
 			}
 		}
-		return new WP_Error( 'image_rotate_error', __( 'Image rotate failed.' ), $this->file );
+		return new Error( 'image_rotate_error', __( 'Image rotate failed.' ), $this->file );
 	}
 
 	/**
@@ -352,7 +352,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 *
 	 * @param bool $horz Flip along Horizontal Axis
 	 * @param bool $vert Flip along Vertical Axis
-	 * @return true|WP_Error
+	 * @return true|Error
 	 */
 	public function flip( $horz, $vert ) {
 		$w = $this->size[ 'width' ];
@@ -371,7 +371,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 				return true;
 			}
 		}
-		return new WP_Error( 'image_flip_error', __( 'Image flip failed.' ), $this->file );
+		return new Error( 'image_flip_error', __( 'Image flip failed.' ), $this->file );
 	}
 
 	/**
@@ -382,7 +382,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 *
 	 * @param string|null $filename
 	 * @param string|null $mime_type
-	 * @return array|WP_Error {'path'=>string, 'file'=>string, 'width'=>int, 'height'=>int, 'mime-type'=>string}
+	 * @return array|Error {'path'=>string, 'file'=>string, 'width'=>int, 'height'=>int, 'mime-type'=>string}
 	 */
 	public function save( $filename = null, $mime_type = null ) {
 		$saved = $this->_save( $this->image, $filename, $mime_type );
@@ -399,7 +399,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @param resource $image
 	 * @param string|null $filename
 	 * @param string|null $mime_type
-	 * @return WP_Error|array
+	 * @return Error|array
 	 */
 	protected function _save( $image, $filename = null, $mime_type = null ) {
 		list( $filename, $extension, $mime_type ) = $this->get_output_format( $filename, $mime_type );
@@ -410,7 +410,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 
 		if ( 'image/gif' == $mime_type ) {
 			if ( ! $this->make_image( $filename, 'imagegif', array( $image, $filename ) ) ) {
-				return new WP_Error( 'image_save_error', __( 'Image Editor Save Failed' ) );
+				return new Error( 'image_save_error', __( 'Image Editor Save Failed' ) );
 			}
 		} elseif ( 'image/png' == $mime_type ) {
 			// convert from full colors to index colors, like original PNG.
@@ -419,14 +419,14 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 			}
 
 			if ( ! $this->make_image( $filename, 'imagepng', array( $image, $filename ) ) ) {
-				return new WP_Error( 'image_save_error', __( 'Image Editor Save Failed' ) );
+				return new Error( 'image_save_error', __( 'Image Editor Save Failed' ) );
 			}
 		} elseif ( 'image/jpeg' == $mime_type ) {
 			if ( ! $this->make_image( $filename, 'imagejpeg', array( $image, $filename, $this->get_quality() ) ) ) {
-				return new WP_Error( 'image_save_error', __( 'Image Editor Save Failed' ) );
+				return new Error( 'image_save_error', __( 'Image Editor Save Failed' ) );
 			}
 		} else {
-			return new WP_Error( 'image_save_error', __( 'Image Editor Save Failed' ) );
+			return new Error( 'image_save_error', __( 'Image Editor Save Failed' ) );
 		}
 
 		// Set correct file permissions

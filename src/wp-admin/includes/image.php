@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Administration
  */
-
+use WP\Error;
 /**
  * Crop an Image to a given size.
  *
@@ -20,7 +20,7 @@
  * @param int $dst_h The destination height.
  * @param int $src_abs Optional. If the source crop points are absolute.
  * @param string $dst_file Optional. The destination file to write to.
- * @return string|WP_Error New filepath on success, WP_Error on failure.
+ * @return string|Error New filepath on success, Error on failure.
  */
 function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $src_abs = false, $dst_file = false ) {
 	$src_file = $src;

@@ -1,4 +1,5 @@
 <?php
+use WP\Error;
 
 class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 
@@ -32,7 +33,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * Check if a given request has access to create an attachment.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|true Boolean true if the attachment may be created, or a WP_Error if not.
+	 * @return Error|true Boolean true if the attachment may be created, or a Error if not.
 	 */
 	public function create_item_permissions_check( $request ) {
 		$ret = parent::create_item_permissions_check( $request );
@@ -41,7 +42,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 		}
 
 		if ( ! current_user_can( 'upload_files' ) ) {
-			return new WP_Error( 'rest_cannot_create', __( 'Sorry, you are not allowed to upload media on this site.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_cannot_create', __( 'Sorry, you are not allowed to upload media on this site.' ), array( 'status' => 400 ) );
 		}
 
 		// Attaching media to a post requires ability to edit said post.
@@ -49,7 +50,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 			$parent = $this->get_post( (int) $request['post'] );
 			$post_parent_type = get_post_type_object( $parent->post_type );
 			if ( ! current_user_can( $post_parent_type->cap->edit_post, $request['post'] ) ) {
-				return new WP_Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to upload media to this resource.' ), array( 'status' => rest_authorization_required_code() ) );
+				return new Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to upload media to this resource.' ), array( 'status' => rest_authorization_required_code() ) );
 			}
 		}
 
@@ -60,12 +61,12 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * Create a single attachment.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response Response object on success, WP_Error object on failure.
+	 * @return Error|WP_REST_Response Response object on success, Error object on failure.
 	 */
 	public function create_item( $request ) {
 
 		if ( ! empty( $request['post'] ) && in_array( get_post_type( $request['post'] ), array( 'revision', 'attachment' ), true ) ) {
-			return new WP_Error( 'rest_invalid_param', __( 'Invalid parent type.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_invalid_param', __( 'Invalid parent type.' ), array( 'status' => 400 ) );
 		}
 
 		// Get the file via $_FILES or raw data
@@ -160,11 +161,11 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * Update a single post.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response Response object on success, WP_Error object on failure.
+	 * @return Error|WP_REST_Response Response object on success, Error object on failure.
 	 */
 	public function update_item( $request ) {
 		if ( ! empty( $request['post'] ) && in_array( get_post_type( $request['post'] ), array( 'revision', 'attachment' ), true ) ) {
-			return new WP_Error( 'rest_invalid_param', __( 'Invalid parent type.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_invalid_param', __( 'Invalid parent type.' ), array( 'status' => 400 ) );
 		}
 		$response = parent::update_item( $request );
 		if ( is_wp_error( $response ) ) {
@@ -199,7 +200,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * Prepare a single attachment for create or update.
 	 *
 	 * @param WP_REST_Request $request Request object.
-	 * @return WP_Error|stdClass $prepared_attachment Post object.
+	 * @return Error|stdClass $prepared_attachment Post object.
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$prepared_attachment = parent::prepare_item_for_database( $request );
@@ -367,25 +368,25 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 *
 	 * @param array $data    Supplied file data.
 	 * @param array $headers HTTP headers from the request.
-	 * @return array|WP_Error Data from {@see wp_handle_sideload()}.
+	 * @return array|Error Data from {@see wp_handle_sideload()}.
 	 */
 	protected function upload_from_data( $data, $headers ) {
 		if ( empty( $data ) ) {
-			return new WP_Error( 'rest_upload_no_data', __( 'No data supplied.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_upload_no_data', __( 'No data supplied.' ), array( 'status' => 400 ) );
 		}
 
 		if ( empty( $headers['content_type'] ) ) {
-			return new WP_Error( 'rest_upload_no_content_type', __( 'No Content-Type supplied.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_upload_no_content_type', __( 'No Content-Type supplied.' ), array( 'status' => 400 ) );
 		}
 
 		if ( empty( $headers['content_disposition'] ) ) {
-			return new WP_Error( 'rest_upload_no_content_disposition', __( 'No Content-Disposition supplied.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_upload_no_content_disposition', __( 'No Content-Disposition supplied.' ), array( 'status' => 400 ) );
 		}
 
 		$filename = static::get_filename_from_disposition( $headers['content_disposition'] );
 
 		if ( empty( $filename ) ) {
-			return new WP_Error( 'rest_upload_invalid_disposition', __( 'Invalid Content-Disposition supplied. Content-Disposition needs to be formatted as `attachment; filename="image.png"` or similar.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_upload_invalid_disposition', __( 'Invalid Content-Disposition supplied. Content-Disposition needs to be formatted as `attachment; filename="image.png"` or similar.' ), array( 'status' => 400 ) );
 		}
 
 		if ( ! empty( $headers['content_md5'] ) ) {
@@ -394,7 +395,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 			$actual   = md5( $data );
 
 			if ( $expected !== $actual ) {
-				return new WP_Error( 'rest_upload_hash_mismatch', __( 'Content hash did not match expected.' ), array( 'status' => 412 ) );
+				return new Error( 'rest_upload_hash_mismatch', __( 'Content hash did not match expected.' ), array( 'status' => 412 ) );
 			}
 		}
 
@@ -410,7 +411,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 		$fp = fopen( $tmpfname, 'w+' );
 
 		if ( ! $fp ) {
-			return new WP_Error( 'rest_upload_file_error', __( 'Could not open file handle.' ), array( 'status' => 500 ) );
+			return new Error( 'rest_upload_file_error', __( 'Could not open file handle.' ), array( 'status' => 500 ) );
 		}
 
 		fwrite( $fp, $data );
@@ -432,7 +433,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 			// @codingStandardsIgnoreStart
 			@unlink( $tmpfname );
 			// @codingStandardsIgnoreEnd
-			return new WP_Error( 'rest_upload_sideload_error', $sideloaded['error'], array( 'status' => 500 ) );
+			return new Error( 'rest_upload_sideload_error', $sideloaded['error'], array( 'status' => 500 ) );
 		}
 
 		return $sideloaded;
@@ -534,7 +535,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * @param  mixed           $value     Status value.
 	 * @param  WP_REST_Request $request   Request object.
 	 * @param  string          $parameter Additional parameter to pass to validation.
-	 * @return WP_Error|boolean Boolean true if the user may query, WP_Error if not.
+	 * @return Error|boolean Boolean true if the user may query, Error if not.
 	 */
 	public function validate_user_can_query_private_statuses( $value, $request, $parameter ) {
 		if ( 'inherit' === $value ) {
@@ -548,11 +549,11 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 *
 	 * @param array $files   Data from $_FILES.
 	 * @param array $headers HTTP headers from the request.
-	 * @return array|WP_Error Data from {@see wp_handle_upload()}.
+	 * @return array|Error Data from {@see wp_handle_upload()}.
 	 */
 	protected function upload_from_file( $files, $headers ) {
 		if ( empty( $files ) ) {
-			return new WP_Error( 'rest_upload_no_data', __( 'No data supplied.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_upload_no_data', __( 'No data supplied.' ), array( 'status' => 400 ) );
 		}
 
 		// Verify hash, if given.
@@ -561,7 +562,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 			$expected = trim( $content_md5 );
 			$actual = md5_file( $files['file']['tmp_name'] );
 			if ( $expected !== $actual ) {
-				return new WP_Error( 'rest_upload_hash_mismatch', __( 'Content hash did not match expected.' ), array( 'status' => 412 ) );
+				return new Error( 'rest_upload_hash_mismatch', __( 'Content hash did not match expected.' ), array( 'status' => 412 ) );
 			}
 		}
 
@@ -579,7 +580,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 		$file = wp_handle_upload( $files['file'], $overrides );
 
 		if ( isset( $file['error'] ) ) {
-			return new WP_Error( 'rest_upload_unknown_error', $file['error'], array( 'status' => 500 ) );
+			return new Error( 'rest_upload_unknown_error', $file['error'], array( 'status' => 500 ) );
 		}
 
 		return $file;

@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Administration
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -96,7 +96,7 @@ use function WP\getApp;
  *         @type bool $contributors      Whether to return the list of contributors. Default false.
  *     }
  * }
- * @return object|array|WP_Error Response object or array on success, WP_Error on failure. See the
+ * @return object|array|Error Response object or array on success, Error on failure. See the
  *         {@link https://developer.wordpress.org/reference/functions/plugins_api/ function reference article}
  *         for more information on the make-up of possible return values depending on the value of `$action`.
  */
@@ -162,11 +162,11 @@ function plugins_api( $action, $args = [] ) {
 		}
 
 		if ( is_wp_error($request) ) {
-			$res = new WP_Error('plugins_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), $request->get_error_message() );
+			$res = new Error('plugins_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), $request->get_error_message() );
 		} else {
 			$res = maybe_unserialize( wp_remote_retrieve_body( $request ) );
 			if ( ! is_object( $res ) && ! is_array( $res ) )
-				$res = new WP_Error('plugins_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), wp_remote_retrieve_body( $request ) );
+				$res = new Error('plugins_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), wp_remote_retrieve_body( $request ) );
 		}
 	} elseif ( !is_wp_error($res) ) {
 		$res->external = true;
@@ -177,7 +177,7 @@ function plugins_api( $action, $args = [] ) {
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param object|WP_Error $res    Response object or WP_Error.
+	 * @param object|Error $res    Response object or Error.
 	 * @param string          $action The type of information being requested from the Plugin Install API.
 	 * @param object          $args   Plugin API arguments.
 	 */

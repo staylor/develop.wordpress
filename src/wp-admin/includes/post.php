@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Administration
  */
-
+use WP\Error;
 use WP\User\User;
 use function WP\getApp;
 
@@ -19,7 +19,7 @@ use function WP\getApp;
  *
  * @param bool $update Are we updating a pre-existing post?
  * @param array $post_data Array of post data. Defaults to the contents of $_POST.
- * @return object|bool WP_Error on failure, true on success.
+ * @return object|bool Error on failure, true on success.
  */
 function _wp_translate_postdata( $update = false, $post_data = null ) {
 	$app = getApp();
@@ -38,14 +38,14 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 
 	if ( $update && ! current_user_can( 'edit_post', $post_data['ID'] ) ) {
 		if ( 'page' == $post_data['post_type'] )
-			return new WP_Error( 'edit_others_pages', __( 'Sorry, you are not allowed to edit pages as this user.' ) );
+			return new Error( 'edit_others_pages', __( 'Sorry, you are not allowed to edit pages as this user.' ) );
 		else
-			return new WP_Error( 'edit_others_posts', __( 'Sorry, you are not allowed to edit posts as this user.' ) );
+			return new Error( 'edit_others_posts', __( 'Sorry, you are not allowed to edit posts as this user.' ) );
 	} elseif ( ! $update && ! current_user_can( $ptype->cap->create_posts ) ) {
 		if ( 'page' == $post_data['post_type'] )
-			return new WP_Error( 'edit_others_pages', __( 'Sorry, you are not allowed to create pages as this user.' ) );
+			return new Error( 'edit_others_pages', __( 'Sorry, you are not allowed to create pages as this user.' ) );
 		else
-			return new WP_Error( 'edit_others_posts', __( 'Sorry, you are not allowed to create posts as this user.' ) );
+			return new Error( 'edit_others_posts', __( 'Sorry, you are not allowed to create posts as this user.' ) );
 	}
 
 	if ( isset( $post_data['content'] ) )
@@ -76,14 +76,14 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 		 && ! current_user_can( $ptype->cap->edit_others_posts ) ) {
 		if ( $update ) {
 			if ( 'page' == $post_data['post_type'] )
-				return new WP_Error( 'edit_others_pages', __( 'Sorry, you are not allowed to edit pages as this user.' ) );
+				return new Error( 'edit_others_pages', __( 'Sorry, you are not allowed to edit pages as this user.' ) );
 			else
-				return new WP_Error( 'edit_others_posts', __( 'Sorry, you are not allowed to edit posts as this user.' ) );
+				return new Error( 'edit_others_posts', __( 'Sorry, you are not allowed to edit posts as this user.' ) );
 		} else {
 			if ( 'page' == $post_data['post_type'] )
-				return new WP_Error( 'edit_others_pages', __( 'Sorry, you are not allowed to create pages as this user.' ) );
+				return new Error( 'edit_others_pages', __( 'Sorry, you are not allowed to create pages as this user.' ) );
 			else
-				return new WP_Error( 'edit_others_posts', __( 'Sorry, you are not allowed to create posts as this user.' ) );
+				return new Error( 'edit_others_posts', __( 'Sorry, you are not allowed to create posts as this user.' ) );
 		}
 	}
 
@@ -168,7 +168,7 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 		$post_data['post_date'] = sprintf( "%04d-%02d-%02d %02d:%02d:%02d", $aa, $mm, $jj, $hh, $mn, $ss );
 		$valid_date = wp_checkdate( $mm, $jj, $aa, $post_data['post_date'] );
 		if ( !$valid_date ) {
-			return new WP_Error( 'invalid_date', __( 'Whoops, the provided date is invalid.' ) );
+			return new Error( 'invalid_date', __( 'Whoops, the provided date is invalid.' ) );
 		}
 		$post_data['post_date_gmt'] = get_gmt_from_date( $post_data['post_date'] );
 	}
@@ -732,7 +732,7 @@ function post_exists($title, $content = '', $date = '') {
  *
  * @global User $current_user
  *
- * @return int|WP_Error
+ * @return int|Error
  */
 function wp_write_post() {
 	$app = getApp();
@@ -745,9 +745,9 @@ function wp_write_post() {
 
 	if ( !current_user_can( $ptype->cap->edit_posts ) ) {
 		if ( 'page' == $ptype->name )
-			return new WP_Error( 'edit_pages', __( 'Sorry, you are not allowed to create pages on this site.' ) );
+			return new Error( 'edit_pages', __( 'Sorry, you are not allowed to create pages on this site.' ) );
 		else
-			return new WP_Error( 'edit_posts', __( 'Sorry, you are not allowed to create posts or drafts on this site.' ) );
+			return new Error( 'edit_posts', __( 'Sorry, you are not allowed to create posts or drafts on this site.' ) );
 	}
 
 	$_post->set( 'post_mime_type', '' );
@@ -950,7 +950,7 @@ function update_meta( $meta_id, $meta_key, $meta_value ) {
  * @access private
  *
  * @param int|object $post Post ID or post object.
- * @return void|int|WP_Error Void if nothing fixed. 0 or WP_Error on update failure. The post ID on update success.
+ * @return void|int|Error Void if nothing fixed. 0 or Error on update failure. The post ID on update success.
  */
 function _fix_attachment_links( $post ) {
 	$post = get_post( $post, ARRAY_A );
@@ -1708,7 +1708,7 @@ function _admin_notice_post_locked() {
  * @since 2.6.0
  *
  * @param mixed $post_data Associative array containing the post data or int post ID.
- * @return mixed The autosave revision ID. WP_Error or 0 on error.
+ * @return mixed The autosave revision ID. Error or 0 on error.
  */
 function wp_create_post_autosave( $post_data ) {
 	$app = getApp();
@@ -1833,7 +1833,7 @@ function post_preview() {
  * @since 3.9.0
  *
  * @param array $post_data Associative array of the submitted post data.
- * @return mixed The value 0 or WP_Error on failure. The saved post ID on success.
+ * @return mixed The value 0 or Error on failure. The saved post ID on success.
  *               The ID can be the draft post_id or the autosave revision post_id.
  */
 function wp_autosave( $post_data ) {
@@ -1845,13 +1845,13 @@ function wp_autosave( $post_data ) {
 	$post_data['ID'] = $post_data['post_ID'] = $post_id;
 
 	if ( false === wp_verify_nonce( $post_data['_wpnonce'], 'update-post_' . $post_id ) ) {
-		return new WP_Error( 'invalid_nonce', __( 'Error while saving.' ) );
+		return new Error( 'invalid_nonce', __( 'Error while saving.' ) );
 	}
 
 	$post = get_post( $post_id );
 
 	if ( ! current_user_can( 'edit_post', $post->ID ) ) {
-		return new WP_Error( 'edit_posts', __( 'Sorry, you are not allowed to edit this item.' ) );
+		return new Error( 'edit_posts', __( 'Sorry, you are not allowed to edit this item.' ) );
 	}
 
 	if ( 'auto-draft' == $post->post_status )

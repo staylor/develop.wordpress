@@ -6,7 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -255,7 +255,7 @@ class WP_Automatic_Updater {
 	 * @param string $type The type of update being checked: 'core', 'theme', 'plugin', 'translation'.
 	 * @param object $item The update offer.
 	 *
-	 * @return null|WP_Error
+	 * @return null|Error
 	 */
 	public function update( $type, $item ) {
 		$skin = new Automatic_Upgrader_Skin;
@@ -340,7 +340,7 @@ class WP_Automatic_Updater {
 
 		// If the filesystem is unavailable, false is returned.
 		if ( false === $upgrade_result ) {
-			$upgrade_result = new WP_Error( 'fs_unavailable', __( 'Could not access filesystem.' ) );
+			$upgrade_result = new Error( 'fs_unavailable', __( 'Could not access filesystem.' ) );
 		}
 
 		if ( 'core' == $type ) {
@@ -504,7 +504,7 @@ class WP_Automatic_Updater {
 
 		$error_code = $result->get_error_code();
 
-		// Any of these WP_Error codes are critical failures, as in they occurred after we started to copy core files.
+		// Any of these Error codes are critical failures, as in they occurred after we started to copy core files.
 		// We should not try to perform a background update again until there is a successful one-click update performed by the user.
 		$critical = false;
 		if (
@@ -537,7 +537,7 @@ class WP_Automatic_Updater {
 		}
 
 		/*
-		 * Any other WP_Error code (like download_failed or files_not_writable) occurs before
+		 * Any other Error code (like download_failed or files_not_writable) occurs before
 		 * we tried to copy over core files. Thus, the failures are early and graceful.
 		 *
 		 * We should avoid trying to perform a background update again for the same version.
@@ -580,7 +580,7 @@ class WP_Automatic_Updater {
 	 *
 	 * @param string $type        The type of email to send. Can be one of 'success', 'fail', 'manual', 'critical'.
 	 * @param object $core_update The update offer that was attempted.
-	 * @param mixed  $result      Optional. The result for the core update. Can be WP_Error.
+	 * @param mixed  $result      Optional. The result for the core update. Can be Error.
 	 */
 	protected function send_email( $type, $core_update, $result = null ) {
 		update_site_option( 'auto_core_update_notified', array(
@@ -605,7 +605,7 @@ class WP_Automatic_Updater {
 		 * @param string $type        The type of email to send. Can be one of
 		 *                            'success', 'fail', 'critical'.
 		 * @param object $core_update The update offer that was attempted.
-		 * @param mixed  $result      The result for the core update. Can be WP_Error.
+		 * @param mixed  $result      The result for the core update. Can be Error.
 		 */
 		if ( 'manual' !== $type && ! apply_filters( 'auto_core_update_send_email', true, $type, $core_update, $result ) )
 			return;
@@ -720,7 +720,7 @@ class WP_Automatic_Updater {
 			$body .= ' ' . __( 'Your hosting company, support forum volunteers, or a friendly developer may be able to use this information to help you:' );
 
 			// If we had a rollback and we're still critical, then the rollback failed too.
-			// Loop through all errors (the main WP_Error, the update result, the rollback result) for code, data, etc.
+			// Loop through all errors (the main Error, the update result, the rollback result) for code, data, etc.
 			if ( 'rollback_was_required' == $result->get_error_code() )
 				$errors = array( $result, $result->get_error_data()->update, $result->get_error_data()->rollback );
 			else
@@ -764,7 +764,7 @@ class WP_Automatic_Updater {
 		 * @param string $type        The type of email being sent. Can be one of
 		 *                            'success', 'fail', 'manual', 'critical'.
 		 * @param object $core_update The update offer that was attempted.
-		 * @param mixed  $result      The result for the core update. Can be WP_Error.
+		 * @param mixed  $result      The result for the core update. Can be Error.
 		 */
 		$email = apply_filters( 'auto_core_update_email', $email, $type, $core_update, $result );
 

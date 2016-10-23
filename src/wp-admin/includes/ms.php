@@ -6,7 +6,7 @@
  * @subpackage Multisite
  * @since 3.0.0
  */
-
+use WP\Error;
 use WP\User\User;
 use function WP\getApp;
 
@@ -325,7 +325,7 @@ All at ###SITENAME###
  *
  * @since 3.0.0
  *
- * @global WP_Error $errors WP_Error object.
+ * @global Error $errors Error object.
  */
 function send_confirmation_on_profile_email() {
 	global $errors;
@@ -335,7 +335,7 @@ function send_confirmation_on_profile_email() {
 
 	$current_user = wp_get_current_user();
 	if ( ! is_object($errors) )
-		$errors = new WP_Error();
+		$errors = new Error();
 
 	if ( $current_user->ID != $_post->get( 'user_id' ) )
 		return false;

@@ -1,4 +1,5 @@
 <?php
+use WP\Error;
 
 class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 
@@ -39,7 +40,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * Check whether a given request has permission to read taxonomies.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( 'edit' === $request['context'] ) {
@@ -53,7 +54,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 					return true;
 				}
 			}
-			return new WP_Error( 'rest_cannot_view', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_view', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		return true;
 	}
@@ -96,7 +97,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * Check if a given request has access a taxonomy
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_item_permissions_check( $request ) {
 
@@ -107,7 +108,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 				return false;
 			}
 			if ( 'edit' === $request['context'] && ! current_user_can( $tax_obj->cap->manage_terms ) ) {
-				return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to manage this resource.' ), array( 'status' => rest_authorization_required_code() ) );
+				return new Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to manage this resource.' ), array( 'status' => rest_authorization_required_code() ) );
 			}
 		}
 
@@ -118,12 +119,12 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * Get a specific taxonomy
 	 *
 	 * @param WP_REST_Request $request
-	 * @return array|WP_Error
+	 * @return array|Error
 	 */
 	public function get_item( $request ) {
 		$tax_obj = get_taxonomy( $request['taxonomy'] );
 		if ( empty( $tax_obj ) ) {
-			return new WP_Error( 'rest_taxonomy_invalid', __( 'Invalid resource.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_taxonomy_invalid', __( 'Invalid resource.' ), array( 'status' => 404 ) );
 		}
 		$data = $this->prepare_item_for_response( $tax_obj, $request );
 		return rest_ensure_response( $data );

@@ -6,7 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
+use WP\Error;
 /**
  * Translation Upgrader Skin for WordPress Translation Upgrades.
  *
@@ -49,7 +49,7 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 
 	/**
 	 *
-	 * @param string|WP_Error $error
+	 * @param string|Error $error
 	 */
 	public function error( $error ) {
 		echo '<div class="lp-error">';

@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Media
  */
-
+use WP\Error;
 use WP\User\User;
 use function WP\getApp;
 
@@ -2873,7 +2873,7 @@ function wp_max_upload_size() {
  * @param string $path Path to the file to load.
  * @param array  $args Optional. Additional arguments for retrieving the image editor.
  *                     Default empty array.
- * @return WP_Image_Editor|WP_Error The WP_Image_Editor object if successful, an WP_Error
+ * @return WP_Image_Editor|Error The WP_Image_Editor object if successful, an Error
  *                                  object otherwise.
  */
 function wp_get_image_editor( $path, $args = [] ) {
@@ -2902,7 +2902,7 @@ function wp_get_image_editor( $path, $args = [] ) {
 		return $editor;
 	}
 
-	return new WP_Error( 'image_no_editor', __('No editor could be selected.') );
+	return new Error( 'image_no_editor', __('No editor could be selected.') );
 }
 
 /**

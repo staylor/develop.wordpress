@@ -6,7 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
+use WP\Error;
 /**
  * Core class used for upgrading/installing themes.
  *
@@ -25,7 +25,7 @@ class Theme_Upgrader extends WP_Upgrader {
 	 *
 	 * @since 2.8.0
 	 * @access public
-	 * @var array|WP_Error $result
+	 * @var array|Error $result
 	 * @see WP_Upgrader::$result
 	 */
 	public $result;
@@ -187,7 +187,7 @@ class Theme_Upgrader extends WP_Upgrader {
 	 *                                    Default true.
 	 * }
 	 *
-	 * @return bool|WP_Error True if the install was successful, false or a WP_Error object otherwise.
+	 * @return bool|Error True if the install was successful, false or a Error object otherwise.
 	 */
 	public function install( $package, $args = [] ) {
 
@@ -242,7 +242,7 @@ class Theme_Upgrader extends WP_Upgrader {
 	 *     @type bool $clear_update_cache Whether to clear the update cache if successful.
 	 *                                    Default true.
 	 * }
-	 * @return bool|WP_Error True if the upgrade was successful, false or a WP_Error object otherwise.
+	 * @return bool|Error True if the upgrade was successful, false or a Error object otherwise.
 	 */
 	public function upgrade( $theme, $args = [] ) {
 
@@ -431,7 +431,7 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @global WP_Filesystem_Base $wp_filesystem Subclass
 	 *
 	 * @param string $source The full path to the package source.
-	 * @return string|WP_Error The source or a WP_Error.
+	 * @return string|Error The source or a Error.
 	 */
 	public function check_package( $source ) {
 		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
@@ -446,7 +446,7 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		// A proper archive should have a style.css file in the single subdirectory
 		if ( ! file_exists( $working_directory . 'style.css' ) ) {
-			return new WP_Error( 'incompatible_archive_theme_no_style', $this->strings['incompatible_archive'],
+			return new Error( 'incompatible_archive_theme_no_style', $this->strings['incompatible_archive'],
 				/* translators: %s: style.css */
 				sprintf( __( 'The theme is missing the %s stylesheet.' ),
 					'<code>style.css</code>'
@@ -457,7 +457,7 @@ class Theme_Upgrader extends WP_Upgrader {
 		$info = get_file_data( $working_directory . 'style.css', array( 'Name' => 'Theme Name', 'Template' => 'Template' ) );
 
 		if ( empty( $info['Name'] ) ) {
-			return new WP_Error( 'incompatible_archive_theme_no_name', $this->strings['incompatible_archive'],
+			return new Error( 'incompatible_archive_theme_no_name', $this->strings['incompatible_archive'],
 				/* translators: %s: style.css */
 				sprintf( __( 'The %s stylesheet doesn&#8217;t contain a valid theme header.' ),
 					'<code>style.css</code>'
@@ -467,7 +467,7 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		// If it's not a child theme, it must have at least an index.php to be legit.
 		if ( empty( $info['Template'] ) && ! file_exists( $working_directory . 'index.php' ) ) {
-			return new WP_Error( 'incompatible_archive_theme_no_index', $this->strings['incompatible_archive'],
+			return new Error( 'incompatible_archive_theme_no_index', $this->strings['incompatible_archive'],
 				/* translators: %s: index.php */
 				sprintf( __( 'The theme is missing the %s file.' ),
 					'<code>index.php</code>'
@@ -487,9 +487,9 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @since 2.8.0
 	 * @access public
 	 *
-	 * @param bool|WP_Error  $return
+	 * @param bool|Error  $return
 	 * @param array          $theme
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	public function current_before($return, $theme) {
 		if ( is_wp_error($return) )
@@ -515,9 +515,9 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @since 2.8.0
 	 * @access public
 	 *
-	 * @param bool|WP_Error  $return
+	 * @param bool|Error  $return
 	 * @param array          $theme
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	public function current_after($return, $theme) {
 		if ( is_wp_error($return) )

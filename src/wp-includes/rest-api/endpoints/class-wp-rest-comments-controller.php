@@ -1,4 +1,5 @@
 <?php
+use WP\Error;
 
 /**
  * Access comments
@@ -75,7 +76,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to read comments
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_items_permissions_check( $request ) {
 
@@ -83,15 +84,15 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			foreach ( (array) $request['post'] as $post_id ) {
 				$post = $this->get_post( $post_id );
 				if ( ! empty( $post_id ) && $post && ! $this->check_read_post_permission( $post ) ) {
-					return new WP_Error( 'rest_cannot_read_post', __( 'Sorry, you cannot read the post for this comment.' ), array( 'status' => rest_authorization_required_code() ) );
+					return new Error( 'rest_cannot_read_post', __( 'Sorry, you cannot read the post for this comment.' ), array( 'status' => rest_authorization_required_code() ) );
 				} elseif ( 0 === $post_id && ! current_user_can( 'moderate_comments' ) ) {
-					return new WP_Error( 'rest_cannot_read', __( 'Sorry, you cannot read comments without a post.' ), array( 'status' => rest_authorization_required_code() ) );
+					return new Error( 'rest_cannot_read', __( 'Sorry, you cannot read comments without a post.' ), array( 'status' => rest_authorization_required_code() ) );
 				}
 			}
 		}
 
 		if ( ! empty( $request['context'] ) && 'edit' === $request['context'] && ! current_user_can( 'moderate_comments' ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you cannot view comments with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_forbidden_context', __( 'Sorry, you cannot view comments with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
@@ -111,7 +112,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 				}
 			}
 			if ( ! empty( $forbidden_params ) ) {
-				return new WP_Error( 'rest_forbidden_param', sprintf( __( 'Query parameter not permitted: %s' ), implode( ', ', $forbidden_params ) ), array( 'status' => rest_authorization_required_code() ) );
+				return new Error( 'rest_forbidden_param', sprintf( __( 'Query parameter not permitted: %s' ), implode( ', ', $forbidden_params ) ), array( 'status' => rest_authorization_required_code() ) );
 			}
 		}
 
@@ -122,7 +123,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Get a list of comments.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
 
@@ -250,7 +251,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to read the comment
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function get_item_permissions_check( $request ) {
 		$id = (int) $request['id'];
@@ -262,17 +263,17 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		}
 
 		if ( ! $this->check_read_permission( $comment ) ) {
-			return new WP_Error( 'rest_cannot_read', __( 'Sorry, you cannot read this comment.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_read', __( 'Sorry, you cannot read this comment.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		$post = $this->get_post( $comment->comment_post_ID );
 
 		if ( $post && ! $this->check_read_post_permission( $post ) ) {
-			return new WP_Error( 'rest_cannot_read_post', __( 'Sorry, you cannot read the post for this comment.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_read_post', __( 'Sorry, you cannot read the post for this comment.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( ! empty( $request['context'] ) && 'edit' === $request['context'] && ! current_user_can( 'moderate_comments' ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you cannot view this comment with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_forbidden_context', __( 'Sorry, you cannot view this comment with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -282,20 +283,20 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Get a comment.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function get_item( $request ) {
 		$id = (int) $request['id'];
 
 		$comment = get_comment( $id );
 		if ( empty( $comment ) ) {
-			return new WP_Error( 'rest_comment_invalid_id', __( 'Invalid comment id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_comment_invalid_id', __( 'Invalid comment id.' ), array( 'status' => 404 ) );
 		}
 
 		if ( ! empty( $comment->comment_post_ID ) ) {
 			$post = $this->get_post( $comment->comment_post_ID );
 			if ( empty( $post ) ) {
-				return new WP_Error( 'rest_post_invalid_id', __( 'Invalid post id.' ), array( 'status' => 404 ) );
+				return new Error( 'rest_post_invalid_id', __( 'Invalid post id.' ), array( 'status' => 404 ) );
 			}
 		}
 
@@ -308,44 +309,44 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to create a comment
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function create_item_permissions_check( $request ) {
 
 		if ( ! is_user_logged_in() && get_option( 'comment_registration' ) ) {
-			return new WP_Error( 'rest_comment_login_required', __( 'Sorry, you must be logged in to comment.' ), array( 'status' => 401 ) );
+			return new Error( 'rest_comment_login_required', __( 'Sorry, you must be logged in to comment.' ), array( 'status' => 401 ) );
 		}
 
 		// Limit who can set comment `author`, `karma` or `status` to anything other than the default.
 		if ( isset( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( 'moderate_comments' ) ) {
-			return new WP_Error( 'rest_comment_invalid_author', __( 'Comment author invalid.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_comment_invalid_author', __( 'Comment author invalid.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		if ( isset( $request['karma'] ) && $request['karma'] > 0 && ! current_user_can( 'moderate_comments' ) ) {
-			return new WP_Error( 'rest_comment_invalid_karma', __( 'Sorry, you cannot set karma for comments.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_comment_invalid_karma', __( 'Sorry, you cannot set karma for comments.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		if ( isset( $request['status'] ) && ! current_user_can( 'moderate_comments' ) ) {
-			return new WP_Error( 'rest_comment_invalid_status', __( 'Sorry, you cannot set status for comments.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_comment_invalid_status', __( 'Sorry, you cannot set status for comments.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( empty( $request['post'] ) && ! current_user_can( 'moderate_comments' ) ) {
-			return new WP_Error( 'rest_comment_invalid_post_id', __( 'Sorry, you cannot create this comment without a post.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_comment_invalid_post_id', __( 'Sorry, you cannot create this comment without a post.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( ! empty( $request['post'] ) && $post = $this->get_post( (int) $request['post'] ) ) {
 			if ( 'draft' === $post->post_status ) {
-				return new WP_Error( 'rest_comment_draft_post', __( 'Sorry, you cannot create a comment on this post.' ), array( 'status' => 403 ) );
+				return new Error( 'rest_comment_draft_post', __( 'Sorry, you cannot create a comment on this post.' ), array( 'status' => 403 ) );
 			}
 
 			if ( 'trash' === $post->post_status ) {
-				return new WP_Error( 'rest_comment_trash_post', __( 'Sorry, you cannot create a comment on this post.' ), array( 'status' => 403 ) );
+				return new Error( 'rest_comment_trash_post', __( 'Sorry, you cannot create a comment on this post.' ), array( 'status' => 403 ) );
 			}
 
 			if ( ! $this->check_read_post_permission( $post ) ) {
-				return new WP_Error( 'rest_cannot_read_post', __( 'Sorry, you cannot read the post for this comment.' ), array( 'status' => rest_authorization_required_code() ) );
+				return new Error( 'rest_cannot_read_post', __( 'Sorry, you cannot read the post for this comment.' ), array( 'status' => rest_authorization_required_code() ) );
 			}
 
 			if ( ! comments_open( $post->ID ) ) {
-				return new WP_Error( 'rest_comment_closed', __( 'Sorry, comments are closed on this post.' ), array( 'status' => 403 ) );
+				return new Error( 'rest_comment_closed', __( 'Sorry, comments are closed on this post.' ), array( 'status' => 403 ) );
 			}
 		}
 
@@ -356,11 +357,11 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Create a comment.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function create_item( $request ) {
 		if ( ! empty( $request['id'] ) ) {
-			return new WP_Error( 'rest_comment_exists', __( 'Cannot create existing comment.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_comment_exists', __( 'Cannot create existing comment.' ), array( 'status' => 400 ) );
 		}
 
 		$prepared_comment = $this->prepare_item_for_database( $request );
@@ -374,7 +375,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		 * See `wp_handle_comment_submission()`.
 		 */
 		if ( '' === $prepared_comment['comment_content'] ) {
-			return new WP_Error( 'rest_comment_content_invalid', __( 'Comment content is invalid.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_comment_content_invalid', __( 'Comment content is invalid.' ), array( 'status' => 400 ) );
 		}
 
 		// Setting remaining values before wp_insert_comment so we can
@@ -401,13 +402,13 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		// of the comment author.
 		if ( get_option( 'require_name_email' ) ) {
 			if ( ! isset( $prepared_comment['comment_author'] ) && ! isset( $prepared_comment['comment_author_email'] ) ) {
-				return new WP_Error( 'rest_comment_author_data_required', __( 'Creating a comment requires valid author name and email values.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_comment_author_data_required', __( 'Creating a comment requires valid author name and email values.' ), array( 'status' => 400 ) );
 			}
 			if ( ! isset( $prepared_comment['comment_author'] ) ) {
-				return new WP_Error( 'rest_comment_author_required', __( 'Creating a comment requires a valid author name.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_comment_author_required', __( 'Creating a comment requires a valid author name.' ), array( 'status' => 400 ) );
 			}
 			if ( ! isset( $prepared_comment['comment_author_email'] ) ) {
-				return new WP_Error( 'rest_comment_author_email_required', __( 'Creating a comment requires a valid author email.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_comment_author_email_required', __( 'Creating a comment requires a valid author email.' ), array( 'status' => 400 ) );
 			}
 		}
 
@@ -429,11 +430,11 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			$error_message = $prepared_comment['comment_approved']->get_error_message();
 
 			if ( 'comment_duplicate' === $error_code ) {
-				return new WP_Error( $error_code, $error_message, array( 'status' => 409 ) );
+				return new Error( $error_code, $error_message, array( 'status' => 409 ) );
 			}
 
 			if ( 'comment_flood' === $error_code ) {
-				return new WP_Error( $error_code, $error_message, array( 'status' => 400 ) );
+				return new Error( $error_code, $error_message, array( 'status' => 400 ) );
 			}
 
 			return $prepared_comment['comment_approved'];
@@ -451,7 +452,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 		$comment_id = wp_insert_comment( $prepared_comment );
 		if ( ! $comment_id ) {
-			return new WP_Error( 'rest_comment_failed_create', __( 'Creating comment failed.' ), array( 'status' => 500 ) );
+			return new Error( 'rest_comment_failed_create', __( 'Creating comment failed.' ), array( 'status' => 500 ) );
 		}
 
 		if ( isset( $request['status'] ) ) {
@@ -496,7 +497,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to update a comment
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function update_item_permissions_check( $request ) {
 
@@ -505,7 +506,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$comment = get_comment( $id );
 
 		if ( $comment && ! $this->check_edit_permission( $comment ) ) {
-			return new WP_Error( 'rest_cannot_edit', __( 'Sorry, you can not edit this comment.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_edit', __( 'Sorry, you can not edit this comment.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -515,18 +516,18 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Edit a comment
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function update_item( $request ) {
 		$id = (int) $request['id'];
 
 		$comment = get_comment( $id );
 		if ( empty( $comment ) ) {
-			return new WP_Error( 'rest_comment_invalid_id', __( 'Invalid comment id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_comment_invalid_id', __( 'Invalid comment id.' ), array( 'status' => 404 ) );
 		}
 
 		if ( isset( $request['type'] ) && get_comment_type( $id ) !== $request['type'] ) {
-			return new WP_Error( 'rest_comment_invalid_type', __( 'Sorry, you cannot change the comment type.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_comment_invalid_type', __( 'Sorry, you cannot change the comment type.' ), array( 'status' => 404 ) );
 		}
 
 		$prepared_args = $this->prepare_item_for_database( $request );
@@ -538,7 +539,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			// Only the comment status is being changed.
 			$change = $this->handle_status_param( $request['status'], $comment );
 			if ( ! $change ) {
-				return new WP_Error( 'rest_comment_failed_edit', __( 'Updating comment status failed.' ), array( 'status' => 500 ) );
+				return new Error( 'rest_comment_failed_edit', __( 'Updating comment status failed.' ), array( 'status' => 500 ) );
 			}
 		} else {
 			if ( is_wp_error( $prepared_args ) ) {
@@ -549,7 +550,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 			$updated = wp_update_comment( $prepared_args );
 			if ( 0 === $updated ) {
-				return new WP_Error( 'rest_comment_failed_edit', __( 'Updating comment failed.' ), array( 'status' => 500 ) );
+				return new Error( 'rest_comment_failed_edit', __( 'Updating comment failed.' ), array( 'status' => 500 ) );
 			}
 
 			if ( isset( $request['status'] ) ) {
@@ -584,16 +585,16 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Check if a given request has access to delete a comment
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return Error|boolean
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$id = (int) $request['id'];
 		$comment = get_comment( $id );
 		if ( ! $comment ) {
-			return new WP_Error( 'rest_comment_invalid_id', __( 'Invalid comment id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_comment_invalid_id', __( 'Invalid comment id.' ), array( 'status' => 404 ) );
 		}
 		if ( ! $this->check_edit_permission( $comment ) ) {
-			return new WP_Error( 'rest_cannot_delete', __( 'Sorry, you can not delete this comment.' ), array( 'status' => rest_authorization_required_code() ) );
+			return new Error( 'rest_cannot_delete', __( 'Sorry, you can not delete this comment.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		return true;
 	}
@@ -602,7 +603,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Delete a comment.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return Error|WP_REST_Response
 	 */
 	public function delete_item( $request ) {
 		$id = (int) $request['id'];
@@ -610,7 +611,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 		$comment = get_comment( $id );
 		if ( empty( $comment ) ) {
-			return new WP_Error( 'rest_comment_invalid_id', __( 'Invalid comment id.' ), array( 'status' => 404 ) );
+			return new Error( 'rest_comment_invalid_id', __( 'Invalid comment id.' ), array( 'status' => 404 ) );
 		}
 
 		/**
@@ -631,18 +632,18 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		} else {
 			// If we don't support trashing for this type, error out
 			if ( ! $supports_trash ) {
-				return new WP_Error( 'rest_trash_not_supported', __( 'The comment does not support trashing.' ), array( 'status' => 501 ) );
+				return new Error( 'rest_trash_not_supported', __( 'The comment does not support trashing.' ), array( 'status' => 501 ) );
 			}
 
 			if ( 'trash' === $comment->comment_approved ) {
-				return new WP_Error( 'rest_already_trashed', __( 'The comment has already been trashed.' ), array( 'status' => 410 ) );
+				return new Error( 'rest_already_trashed', __( 'The comment has already been trashed.' ), array( 'status' => 410 ) );
 			}
 
 			$result = wp_trash_comment( $comment->comment_ID );
 		}
 
 		if ( ! $result ) {
-			return new WP_Error( 'rest_cannot_delete', __( 'The comment cannot be deleted.' ), array( 'status' => 500 ) );
+			return new Error( 'rest_cannot_delete', __( 'The comment cannot be deleted.' ), array( 'status' => 500 ) );
 		}
 
 		/**
@@ -839,7 +840,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * Prepare a single comment to be inserted into the database.
 	 *
 	 * @param  WP_REST_Request $request Request object.
-	 * @return array|WP_Error  $prepared_comment
+	 * @return array|Error  $prepared_comment
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$prepared_comment = array();
@@ -870,7 +871,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 				$prepared_comment['comment_author_email'] = $user->user_email;
 				$prepared_comment['comment_author_url'] = $user->user_url;
 			} else {
-				return new WP_Error( 'rest_comment_author_invalid', __( 'Invalid comment author id.' ), array( 'status' => 400 ) );
+				return new Error( 'rest_comment_author_invalid', __( 'Invalid comment author id.' ), array( 'status' => 400 ) );
 			}
 		}
 
@@ -920,7 +921,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		// Require 'comment_content' unless only the 'comment_status' is being
 		// updated.
 		if ( ! empty( $prepared_comment ) && ! isset( $prepared_comment['comment_content'] ) ) {
-			return new WP_Error( 'rest_comment_content_required', __( 'Missing comment content.' ), array( 'status' => 400 ) );
+			return new Error( 'rest_comment_content_required', __( 'Missing comment content.' ), array( 'status' => 400 ) );
 		}
 
 		return apply_filters( 'rest_preprocess_comment', $prepared_comment, $request );

@@ -6,7 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
+use WP\Error;
 /**
  * Upgrader Skin for Automatic WordPress Upgrades
  *
@@ -59,7 +59,7 @@ class Automatic_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * @param string|array|WP_Error $data
+	 * @param string|array|Error $data
 	 */
 	public function feedback( $data ) {
 		if ( is_wp_error( $data ) ) {

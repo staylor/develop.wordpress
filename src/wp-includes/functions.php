@@ -5,7 +5,7 @@
  * @package WordPress
  */
 
-use WP\JSONException;
+use WP\{Error,JSONException};
 use WP\Admin\Screen;
 use WP\User\User;
 use function WP\getApp;
@@ -2648,10 +2648,10 @@ function wp_nonce_ays( $action ) {
  * @since 4.1.0 The `$title` and `$args` parameters were changed to optionally accept
  *              an integer to be used as the response code.
  *
- * @param string|WP_Error  $message Optional. Error message. If this is a WP_Error object,
+ * @param string|Error  $message Optional. Error message. If this is a Error object,
  *                                  and not an Ajax or XML-RPC request, the error's messages are used.
  *                                  Default empty.
- * @param string|int       $title   Optional. Error title. If `$message` is a `WP_Error` object,
+ * @param string|int       $title   Optional. Error title. If `$message` is an `Error` object,
  *                                  error data with the key 'title' may be used to specify the title.
  *                                  If `$title` is an integer, then it is treated as the response
  *                                  code. Default empty.
@@ -2716,7 +2716,7 @@ function wp_die( $message = '', $title = '', $args = [] ) {
  * @since 3.0.0
  * @access private
  *
- * @param string|WP_Error $message Error message or WP_Error object.
+ * @param string|Error $message Error message or Error object.
  * @param string          $title   Optional. Error title. Default empty.
  * @param string|array    $args    Optional. Arguments to control behavior. Default empty array.
  */
@@ -3224,13 +3224,13 @@ function wp_send_json_success( $data = null, $status_code = null ) {
 /**
  * Send a JSON response back to an Ajax request, indicating failure.
  *
- * If the `$data` parameter is a WP_Error object, the errors
+ * If the `$data` parameter is a Error object, the errors
  * within the object are processed and output as an array of error
  * codes and corresponding messages. All other types are output
  * without further processing.
  *
  * @since 3.5.0
- * @since 4.1.0 The `$data` parameter is now processed if a WP_Error object is passed in.
+ * @since 4.1.0 The `$data` parameter is now processed if a Error object is passed in.
  * @since 4.7.0 The `$status_code` parameter was added.
  *
  * @param mixed $data        Data to encode as JSON, then print and die.

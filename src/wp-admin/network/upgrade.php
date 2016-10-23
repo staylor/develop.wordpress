@@ -6,7 +6,7 @@
  * @subpackage Multisite
  * @since 3.0.0
  */
-
+use WP\Error;
 use WP\Install\Admin\Help as InstallHelp;
 
 /** Load WordPress Administration Bootstrap */
@@ -81,7 +81,7 @@ case "upgrade":
 		 *
 		 * @since MU
 		 *
-		 * @param array|WP_Error $response The upgrade response array or WP_Error on failure.
+		 * @param array|Error $response The upgrade response array or Error on failure.
 		 */
 		do_action( 'after_mu_upgrade', $response );
 		/**

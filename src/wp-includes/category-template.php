@@ -6,7 +6,7 @@
  * @subpackage Template
  * @since 1.2.0
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -42,7 +42,7 @@ function get_category_link( $category ) {
  * @param string $separator Optional, default is '/'. How to separate categories.
  * @param bool $nicename Optional, default is false. Whether to use nice name for display.
  * @param array $visited Optional. Already linked to categories to prevent duplicates.
- * @return string|WP_Error A list of category parents on success, WP_Error on failure.
+ * @return string|Error A list of category parents on success, Error on failure.
  */
 function get_category_parents( $id, $link = false, $separator = '/', $nicename = false, $visited = [] ) {
 	$chain = '';
@@ -152,7 +152,7 @@ function _usort_terms_by_ID( $a, $b ) {
  * @since 0.71
  *
  * @param int $cat_ID Category ID.
- * @return string|WP_Error Category name on success, WP_Error on failure.
+ * @return string|Error Category name on success, Error on failure.
  */
 function get_the_category_by_ID( int $cat_ID ) {
 	$category = get_term( $cat_ID, 'category' );
@@ -1120,7 +1120,7 @@ function get_tag_link( $tag ) {
  * @since 2.3.0
  *
  * @param int $id Post ID.
- * @return array|false|WP_Error Array of tag objects on success, false on failure.
+ * @return array|false|Error Array of tag objects on success, false on failure.
  */
 function get_the_tags( $id = 0 ) {
 
@@ -1145,7 +1145,7 @@ function get_the_tags( $id = 0 ) {
  * @param string $sep Optional. Between tags.
  * @param string $after Optional. After tags.
  * @param int $id Optional. Post ID. Defaults to the current post.
- * @return string|false|WP_Error A list of tags on success, false if there are no terms, WP_Error on failure.
+ * @return string|false|Error A list of tags on success, false if there are no terms, Error on failure.
  */
 function get_the_tag_list( $before = '', $sep = '', $after = '', $id = 0 ) {
 
@@ -1224,8 +1224,8 @@ function term_description( $term = 0, $taxonomy = 'post_tag' ) {
  *
  * @param int|object $post Post ID or object.
  * @param string $taxonomy Taxonomy name.
- * @return array|false|WP_Error Array of WP_Term objects on success, false if there are no terms
- *                              or the post does not exist, WP_Error on failure.
+ * @return array|false|Error Array of WP_Term objects on success, false if there are no terms
+ *                              or the post does not exist, Error on failure.
  */
 function get_the_terms( $post, $taxonomy ) {
 	if ( ! $post = get_post( $post ) ) {
@@ -1246,7 +1246,7 @@ function get_the_terms( $post, $taxonomy ) {
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param array|WP_Error $terms    List of attached terms, or WP_Error on failure.
+	 * @param array|Error $terms    List of attached terms, or Error on failure.
 	 * @param int            $post_id  Post ID.
 	 * @param string         $taxonomy Name of the taxonomy.
 	 */
@@ -1269,7 +1269,7 @@ function get_the_terms( $post, $taxonomy ) {
  * @param string $before Optional. Before list.
  * @param string $sep Optional. Separate items using this.
  * @param string $after Optional. After list.
- * @return string|false|WP_Error A list of terms on success, false if there are no terms, WP_Error on failure.
+ * @return string|false|Error A list of terms on success, false if there are no terms, Error on failure.
  */
 function get_the_term_list( $id, $taxonomy, $before = '', $sep = '', $after = '' ) {
 	$terms = get_the_terms( $id, $taxonomy );

@@ -9,7 +9,7 @@
  * @subpackage Feed
  * @since 2.1.0
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -675,7 +675,7 @@ function feed_content_type( $type = '' ) {
  * using SimplePie's multifeed feature.
  * See also {@link ​http://simplepie.org/wiki/faq/typical_multifeed_gotchas}
  *
- * @return WP_Error|SimplePie WP_Error object on failure or SimplePie object on success
+ * @return Error|SimplePie Error object on failure or SimplePie object on success
  */
 function fetch_feed( $url ) {
 	if ( ! class_exists( 'SimplePie', false ) ) {
@@ -709,7 +709,7 @@ function fetch_feed( $url ) {
 	$feed->handle_content_type();
 
 	if ( $feed->error() ) {
-		return new WP_Error( 'simplepie-error', $feed->error() );
+		return new Error( 'simplepie-error', $feed->error() );
 	}
 
 	return $feed;

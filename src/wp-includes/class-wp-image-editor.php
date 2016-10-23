@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Image_Editor
  */
-
+use WP\Error;
 /**
  * Base image editor class from which implementations extend
  *
@@ -69,7 +69,7 @@ abstract class WP_Image_Editor {
 	 * @access protected
 	 * @abstract
 	 *
-	 * @return bool|WP_Error True if loaded; WP_Error on failure.
+	 * @return bool|Error True if loaded; Error on failure.
 	 */
 	abstract public function load();
 
@@ -82,7 +82,7 @@ abstract class WP_Image_Editor {
 	 *
 	 * @param string $destfilename
 	 * @param string $mime_type
-	 * @return array|WP_Error {'path'=>string, 'file'=>string, 'width'=>int, 'height'=>int, 'mime-type'=>string}
+	 * @return array|Error {'path'=>string, 'file'=>string, 'width'=>int, 'height'=>int, 'mime-type'=>string}
 	 */
 	abstract public function save( $destfilename = null, $mime_type = null );
 
@@ -100,7 +100,7 @@ abstract class WP_Image_Editor {
 	 * @param  int|null $max_w Image width.
 	 * @param  int|null $max_h Image height.
 	 * @param  bool     $crop
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	abstract public function resize( $max_w, $max_h, $crop = false );
 
@@ -138,7 +138,7 @@ abstract class WP_Image_Editor {
 	 * @param int $dst_w Optional. The destination width.
 	 * @param int $dst_h Optional. The destination height.
 	 * @param bool $src_abs Optional. If the source crop points are absolute.
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	abstract public function crop( $src_x, $src_y, $src_w, $src_h, $dst_w = null, $dst_h = null, $src_abs = false );
 
@@ -150,7 +150,7 @@ abstract class WP_Image_Editor {
 	 * @abstract
 	 *
 	 * @param float $angle
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	abstract public function rotate( $angle );
 
@@ -163,7 +163,7 @@ abstract class WP_Image_Editor {
 	 *
 	 * @param bool $horz Flip along Horizontal Axis
 	 * @param bool $vert Flip along Vertical Axis
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	abstract public function flip( $horz, $vert );
 
@@ -175,7 +175,7 @@ abstract class WP_Image_Editor {
 	 * @abstract
 	 *
 	 * @param string $mime_type
-	 * @return bool|WP_Error
+	 * @return bool|Error
 	 */
 	abstract public function stream( $mime_type = null );
 
@@ -232,7 +232,7 @@ abstract class WP_Image_Editor {
 	 * @access public
 	 *
 	 * @param int $quality Compression Quality. Range: [1,100]
-	 * @return true|WP_Error True if set successfully; WP_Error on failure.
+	 * @return true|Error True if set successfully; Error on failure.
 	 */
 	public function set_quality( $quality = null ) {
 		if ( null === $quality ) {
@@ -285,7 +285,7 @@ abstract class WP_Image_Editor {
 			$this->quality = $quality;
 			return true;
 		} else {
-			return new WP_Error( 'invalid_image_quality', __( 'Attempted to set image quality outside of the range [1,100].' ) );
+			return new Error( 'invalid_image_quality', __( 'Attempted to set image quality outside of the range [1,100].' ) );
 		}
 	}
 

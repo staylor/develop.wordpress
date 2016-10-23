@@ -6,7 +6,7 @@
  * @subpackage REST_API
  * @since 4.4.0
  */
-
+use WP\Error;
 /**
  * Core class used to implement a REST request object.
  *
@@ -776,7 +776,7 @@ class WP_REST_Request implements ArrayAccess {
 	 * @since 4.4.0
 	 * @access public
 	 *
-	 * @return true|WP_Error True if parameters were sanitized, WP_Error if an error occurred during sanitization.
+	 * @return true|Error True if parameters were sanitized, Error if an error occurred during sanitization.
 	 */
 	public function sanitize_params() {
 		$attributes = $this->get_attributes();
@@ -811,7 +811,7 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		if ( $invalid_params ) {
-			return new WP_Error( 'rest_invalid_param', sprintf( __( 'Invalid parameter(s): %s' ), implode( ', ', array_keys( $invalid_params ) ) ), array( 'status' => 400, 'params' => $invalid_params ) );
+			return new Error( 'rest_invalid_param', sprintf( __( 'Invalid parameter(s): %s' ), implode( ', ', array_keys( $invalid_params ) ) ), array( 'status' => 400, 'params' => $invalid_params ) );
 		}
 
 		return true;
@@ -823,8 +823,8 @@ class WP_REST_Request implements ArrayAccess {
 	 * @since 4.4.0
 	 * @access public
 	 *
-	 * @return bool|WP_Error True if there are no parameters to validate or if all pass validation,
-	 *                       WP_Error if required parameters are missing.
+	 * @return bool|Error True if there are no parameters to validate or if all pass validation,
+	 *                       Error if required parameters are missing.
 	 */
 	public function has_valid_params() {
 		$attributes = $this->get_attributes();
@@ -844,7 +844,7 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		if ( ! empty( $required ) ) {
-			return new WP_Error( 'rest_missing_callback_param', sprintf( __( 'Missing parameter(s): %s' ), implode( ', ', $required ) ), array( 'status' => 400, 'params' => $required ) );
+			return new Error( 'rest_missing_callback_param', sprintf( __( 'Missing parameter(s): %s' ), implode( ', ', $required ) ), array( 'status' => 400, 'params' => $required ) );
 		}
 
 		/*
@@ -872,7 +872,7 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		if ( $invalid_params ) {
-			return new WP_Error( 'rest_invalid_param', sprintf( __( 'Invalid parameter(s): %s' ), implode( ', ', array_keys( $invalid_params ) ) ), array( 'status' => 400, 'params' => $invalid_params ) );
+			return new Error( 'rest_invalid_param', sprintf( __( 'Invalid parameter(s): %s' ), implode( ', ', array_keys( $invalid_params ) ) ), array( 'status' => 400, 'params' => $invalid_params ) );
 		}
 
 		return true;

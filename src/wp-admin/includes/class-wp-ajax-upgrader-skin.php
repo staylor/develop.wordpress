@@ -6,7 +6,7 @@
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
+use WP\Error;
 /**
  * Upgrader Skin for Ajax WordPress upgrades.
  *
@@ -19,11 +19,11 @@
 class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 
 	/**
-	 * Holds the WP_Error object.
+	 * Holds the Error object.
 	 *
 	 * @since 4.6.0
 	 * @access protected
-	 * @var null|WP_Error
+	 * @var null|Error
 	 */
 	protected $errors = null;
 
@@ -38,7 +38,7 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	public function __construct( $args = [] ) {
 		parent::__construct( $args );
 
-		$this->errors = new WP_Error();
+		$this->errors = new Error();
 	}
 
 	/**
@@ -47,7 +47,7 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @return WP_Error Errors during an upgrade.
+	 * @return Error Errors during an upgrade.
 	 */
 	public function get_errors() {
 		return $this->errors;
@@ -81,7 +81,7 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @param string|WP_Error $errors Errors.
+	 * @param string|Error $errors Errors.
 	 */
 	public function error( $errors ) {
 		if ( is_string( $errors ) ) {
@@ -117,7 +117,7 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	 * @since 4.6.0
 	 * @access public
 	 *
-	 * @param string|array|WP_Error $data Log entry data.
+	 * @param string|array|Error $data Log entry data.
 	 */
 	public function feedback( $data ) {
 		if ( is_wp_error( $data ) ) {

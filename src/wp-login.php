@@ -7,7 +7,7 @@
  *
  * @package WordPress
  */
-
+use WP\Error;
 use WP\User\User;
 use function WP\getApp;
 
@@ -31,9 +31,9 @@ if ( force_ssl_admin() && ! is_ssl() ) {
  * @param string   $title    Optional. WordPress login Page title to display in the `<title>` element.
  *                           Default 'Log In'.
  * @param string   $message  Optional. Message to display in header. Default empty.
- * @param WP_Error $wp_error Optional. The error to pass. Default empty.
+ * @param Error $ Error Optional. The error to pass. Default empty.
  */
-function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
+function login_header( $title = 'Log In', $message = '', $ Error = '' ) {
 	global $error;
 
 	$app = getApp();
@@ -43,8 +43,8 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 
 	add_action( 'login_head', 'wp_login_viewport_meta' );
 
-	if ( empty($wp_error) ) {
-			$wp_error = new WP_Error();
+	if ( empty($ Error) ) {
+			$ Error = new Error();
 	}
 
 	// Shake it!
@@ -58,7 +58,7 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	 */
 	$shake_error_codes = apply_filters( 'shake_error_codes', $shake_error_codes );
 
-	if ( $shake_error_codes && $wp_error->get_error_code() && in_array( $wp_error->get_error_code(), $shake_error_codes ) ) {
+	if ( $shake_error_codes && $ Error->get_error_code() && in_array( $ Error->get_error_code(), $shake_error_codes ) ) {
 			add_action( 'login_head', 'wp_shake_js', 12 );
 	}
 
@@ -83,7 +83,7 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	 * This could be added by add_action('login_head'...) like wp_shake_js(),
 	 * but maybe better if it's not removable by plugins
 	 */
-	if ( 'loggedout' == $wp_error->get_error_code() ) {
+	if ( 'loggedout' == $ Error->get_error_code() ) {
 		?>
 		<script>if("sessionStorage" in window){try{for(var key in sessionStorage){if(key.indexOf("wp-autosave-")!=-1){sessionStorage.removeItem(key)}}}catch(e){}};</script>
 		<?php
@@ -186,18 +186,18 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 			echo $message . "\n";
 	}
 
-	// In case a plugin uses $error rather than the $wp_errors object
+	// In case a plugin uses $error rather than the $ Errors object
 	if ( !empty( $error ) ) {
-		$wp_error->add('error', $error);
+		$ Error->add('error', $error);
 		unset($error);
 	}
 
-	if ( $wp_error->get_error_code() ) {
+	if ( $ Error->get_error_code() ) {
 		$errors = '';
 		$messages = '';
-		foreach ( $wp_error->get_error_codes() as $code ) {
-			$severity = $wp_error->get_error_data( $code );
-			foreach ( $wp_error->get_error_messages( $code ) as $error_message ) {
+		foreach ( $ Error->get_error_codes() as $code ) {
+			$severity = $ Error->get_error_data( $code );
+			foreach ( $ Error->get_error_messages( $code ) as $error_message ) {
 				if ( 'message' == $severity ) {
 									$messages .= '	' . $error_message . "<br />\n";
 				} else {
@@ -294,13 +294,13 @@ function wp_login_viewport_meta() {
 /**
  * Handles sending password retrieval email to user.
  *
- * @return bool|WP_Error True: when finish. WP_Error on error
+ * @return bool| Error True: when finish. Error on error
  */
 function retrieve_password() {
 	$app = getApp();
 	$_post = $app['request']->request;
 	$_cookie = $app['request']->cookies;
-	$errors = new WP_Error();
+	$errors = new Error();
 
 	if ( empty( $_post->get( 'user_login' ) ) ) {
 		$errors->add('empty_username', __('<strong>ERROR</strong>: Enter a username or email address.'));
@@ -320,7 +320,7 @@ function retrieve_password() {
 	 * @since 2.1.0
 	 * @since 4.4.0 Added the `$errors` parameter.
 	 *
-	 * @param WP_Error $errors A WP_Error object containing any errors generated
+	 * @param Error $errors A Error object containing any errors generated
 	 *                         by using invalid credentials.
 	 */
 	do_action( 'lostpassword_post', $errors );
@@ -339,7 +339,7 @@ function retrieve_password() {
 	$user_email = $user_data->user_email;
 	$key = get_password_reset_key( $user_data );
 
-	if ( is_wp_error( $key ) ) {
+	if ( is_ Error( $key ) ) {
 		return $key;
 	}
 
@@ -400,7 +400,7 @@ function retrieve_password() {
 //
 
 $action = $_request->get( 'action', 'login' );
-$errors = new WP_Error();
+$errors = new Error();
 
 if ( $_get->get( 'key' ) ) {
 	$action = 'resetpass';
@@ -517,7 +517,7 @@ case 'retrievepassword' :
 
 	if ( $http_post ) {
 		$errors = retrieve_password();
-		if ( !is_wp_error($errors) ) {
+		if ( !is_ Error($errors) ) {
 			$redirect_to = $_request->get( 'redirect_to', 'wp-login.php?checkemail=confirm' );
 			wp_safe_redirect( $redirect_to );
 			exit();
@@ -608,7 +608,7 @@ case 'rp' :
 		$user = false;
 	}
 
-	if ( ! $user || is_wp_error( $user ) ) {
+	if ( ! $user || is_ Error( $user ) ) {
 		setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
 		if ( $user && $user->get_error_code() === 'expired_key' ) {
 			wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=expiredkey' ) );
@@ -618,7 +618,7 @@ case 'rp' :
 		exit;
 	}
 
-	$errors = new WP_Error();
+	$errors = new Error();
 
 	if ( $_post->get( 'pass1' ) && $_post->get( 'pass1' ) != $_post->get( 'pass2' ) ) {
 			$errors->add( 'password_reset_mismatch', __( 'The passwords do not match.' ) );
@@ -630,7 +630,7 @@ case 'rp' :
 	 * @since 3.5.0
 	 *
 	 * @param object           $errors WP Error object.
-	 * @param User|WP_Error    $user   User object if the login and reset key match. WP_Error object otherwise.
+	 * @param User| Error    $user   User object if the login and reset key match. Error object otherwise.
 	 */
 	do_action( 'validate_password_reset', $errors, $user );
 
@@ -726,7 +726,7 @@ case 'register' :
 		$user_login = $_post->get( 'user_login', '' );
 		$user_email = $_post->get( 'user_email', '' );
 		$errors = register_new_user($user_login, $user_email);
-		if ( !is_wp_error($errors) ) {
+		if ( !is_ Error($errors) ) {
 			$redirect_to = $_post->get( 'redirect_to', 'wp-login.php?checkemail=registered' );
 			wp_safe_redirect( $redirect_to );
 			exit();
@@ -817,11 +817,11 @@ default:
 
 	if ( empty( $_cookie->get(  LOGGED_IN_COOKIE ) ) ) {
 		if ( headers_sent() ) {
-			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked due to unexpected output. For help, please see <a href="%1$s">this documentation</a> or try the <a href="%2$s">support forums</a>.' ),
+			$user = new Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked due to unexpected output. For help, please see <a href="%1$s">this documentation</a> or try the <a href="%2$s">support forums</a>.' ),
 				__( 'https://codex.wordpress.org/Cookies' ), __( 'https://wordpress.org/support/' ) ) );
 		} elseif ( $_post->get( 'testcookie' ) && empty( $_cookie->get(  TEST_COOKIE ) ) ) {
 			// If cookies are disabled we can't log in even with a valid user+pass
-			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked or not supported by your browser. You must <a href="%s">enable cookies</a> to use WordPress.' ),
+			$user = new Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked or not supported by your browser. You must <a href="%s">enable cookies</a> to use WordPress.' ),
 				__( 'https://codex.wordpress.org/Cookies' ) ) );
 		}
 	}
@@ -834,11 +834,11 @@ default:
 	 *
 	 * @param string           $redirect_to           The redirect destination URL.
 	 * @param string           $requested_redirect_to The requested redirect destination URL passed as a parameter.
-	 * @param User|WP_Error    $user                  User object if login was successful, WP_Error object otherwise.
+	 * @param User| Error    $user                  User object if login was successful, Error object otherwise.
 	 */
 	$redirect_to = apply_filters( 'login_redirect', $redirect_to, $requested_redirect_to, $user );
 
-	if ( !is_wp_error($user) && !$reauth ) {
+	if ( !is_ Error($user) && !$reauth ) {
 		if ( $app->get( 'interim_login' ) ) {
 			$message = '<p class="message">' . __('You have logged in successfully.') . '</p>';
 			$app->set( 'interim_login', 'success' );
@@ -874,7 +874,7 @@ default:
 	$errors = $user;
 	// Clear errors if loggedout is set.
 	if ( $_get->get( 'loggedout' ) || $reauth ) {
-		$errors = new WP_Error();
+		$errors = new Error();
 	}
 
 	if ( $app->get( 'interim_login' ) ) {

@@ -5,7 +5,7 @@
  * @package WordPress
  * @subpackage Filesystem
  */
-
+use WP\Error;
 /**
  * WordPress Filesystem Class for implementing FTP Sockets.
  *
@@ -28,7 +28,7 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	 */
 	public function __construct( $opt  = '' ) {
 		$this->method = 'ftpsockets';
-		$this->errors = new WP_Error();
+		$this->errors = new Error();
 
 		$this->ftp = new ftp();
 

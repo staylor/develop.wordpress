@@ -6,7 +6,7 @@
  * @subpackage Press_This
  * @since 4.2.0
  */
-
+use WP\Error;
 use function WP\getApp;
 
 /**
@@ -280,7 +280,7 @@ class WP_Press_This {
 	 */
 	public function fetch_source_html( $url ) {
 		if ( empty( $url ) ) {
-			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
+			return new Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
 		}
 
 		$remote_url = wp_safe_remote_get( $url, array(
