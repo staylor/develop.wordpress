@@ -99,8 +99,9 @@ class Theme_Upgrader extends WP_Upgrader {
 		// Check to see if we need to install a parent theme
 		$theme_info = $this->theme_info();
 
-		if ( ! $theme_info->parent() )
+		if ( ! $theme_info->parent() ) {
 			return $install_result;
+		}
 
 		$this->skin->feedback( 'parent_theme_search' );
 
@@ -140,9 +141,9 @@ class Theme_Upgrader extends WP_Upgrader {
 			'clear_working' => true
 		) );
 
-		if ( is_wp_error($parent_result) )
+		if ( is_wp_error($parent_result) ) {
 			add_filter('install_theme_complete_actions', array($this, 'hide_activate_preview_actions') );
-
+		}
 		// Start cleaning up after the parents installation
 		remove_filter('install_theme_complete_actions', '__return_false', 999);
 
@@ -219,8 +220,9 @@ class Theme_Upgrader extends WP_Upgrader {
 		remove_filter('upgrader_source_selection', array($this, 'check_package') );
 		remove_filter('upgrader_post_install', array($this, 'check_parent_theme_filter'));
 
-		if ( ! $this->result || is_wp_error($this->result) )
+		if ( ! $this->result || is_wp_error($this->result) ) {
 			return $this->result;
+		}
 
 		// Refresh the Theme Update information
 		wp_clean_themes_cache( $parsed_args['clear_update_cache'] );
@@ -289,8 +291,9 @@ class Theme_Upgrader extends WP_Upgrader {
 		remove_filter('upgrader_post_install', array($this, 'current_after'));
 		remove_filter('upgrader_clear_destination', array($this, 'delete_old_theme'));
 
-		if ( ! $this->result || is_wp_error($this->result) )
+		if ( ! $this->result || is_wp_error($this->result) ) {
 			return $this->result;
+		}
 
 		wp_clean_themes_cache( $parsed_args['clear_update_cache'] );
 
@@ -348,11 +351,12 @@ class Theme_Upgrader extends WP_Upgrader {
 		// - a theme with an update available is currently in use.
 		// @TODO: For multisite, maintenance mode should only kick in for individual sites if at all possible.
 		$maintenance = ( is_multisite() && ! empty( $themes ) );
-		foreach ( $themes as $theme )
+		foreach ( $themes as $theme ) {
 			$maintenance = $maintenance || $theme == get_stylesheet() || $theme == get_template();
-		if ( $maintenance )
+		}
+		if ( $maintenance ) {
 			$this->maintenance_mode(true);
-
+		}
 		$results = [];
 
 		$this->update_count = count($themes);
@@ -388,9 +392,10 @@ class Theme_Upgrader extends WP_Upgrader {
 			$results[$theme] = $this->result;
 
 			// Prevent credentials auth screen from displaying multiple times
-			if ( false === $result )
+			if ( false === $result ) {
 				break;
-		} //end foreach $plugins
+			}
+		}
 
 		$this->maintenance_mode(false);
 
@@ -436,13 +441,16 @@ class Theme_Upgrader extends WP_Upgrader {
 	public function check_package( $source ) {
 		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
-		if ( is_wp_error($source) )
+		if ( is_wp_error($source) ) {
 			return $source;
+		}
 
 		// Check the folder contains a valid theme
 		$working_directory = str_replace( $wp_filesystem->wp_content_dir(), trailingslashit(WP_CONTENT_DIR), $source);
-		if ( ! is_dir($working_directory) ) // Sanity check, if the above fails, let's not prevent installation.
+		// Sanity check, if the above fails, let's not prevent installation.
+		if ( ! is_dir($working_directory) ) {
 			return $source;
+		}
 
 		// A proper archive should have a style.css file in the single subdirectory
 		if ( ! file_exists( $working_directory . 'style.css' ) ) {
@@ -492,17 +500,20 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @return bool|Error
 	 */
 	public function current_before($return, $theme) {
-		if ( is_wp_error($return) )
+		if ( is_wp_error($return) ) {
 			return $return;
+		}
 
 		$theme = isset($theme['theme']) ? $theme['theme'] : '';
 
-		if ( $theme != get_stylesheet() ) //If not current
+		//If not current
+		if ( $theme != get_stylesheet() ) {
 			return $return;
+		}
 		//Change to maintenance mode now.
-		if ( ! $this->bulk )
+		if ( ! $this->bulk ) {
 			$this->maintenance_mode(true);
-
+		}
 		return $return;
 	}
 
@@ -520,13 +531,16 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @return bool|Error
 	 */
 	public function current_after($return, $theme) {
-		if ( is_wp_error($return) )
+		if ( is_wp_error($return) ) {
 			return $return;
+		}
 
 		$theme = isset($theme['theme']) ? $theme['theme'] : '';
 
-		if ( $theme != get_stylesheet() ) // If not current
+		// If not current
+		if ( $theme != get_stylesheet() ) {
 			return $return;
+		}
 
 		// Ensure stylesheet name hasn't changed after the upgrade:
 		if ( $theme == get_stylesheet() && $theme != $this->result['destination_name'] ) {
@@ -536,8 +550,9 @@ class Theme_Upgrader extends WP_Upgrader {
 		}
 
 		//Time to remove maintenance mode
-		if ( ! $this->bulk )
+		if ( ! $this->bulk ) {
 			$this->maintenance_mode(false);
+		}
 		return $return;
 	}
 
@@ -561,17 +576,21 @@ class Theme_Upgrader extends WP_Upgrader {
 	public function delete_old_theme( $removed, $local_destination, $remote_destination, $theme ) {
 		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
-		if ( is_wp_error( $removed ) )
-			return $removed; // Pass errors through.
-
-		if ( ! isset( $theme['theme'] ) )
+		if ( is_wp_error( $removed ) ) {
+			// Pass errors through.
 			return $removed;
+		}
+
+		if ( ! isset( $theme['theme'] ) ) {
+			return $removed;
+		}
 
 		$theme = $theme['theme'];
 		$themes_dir = trailingslashit( $wp_filesystem->wp_themes_dir( $theme ) );
 		if ( $wp_filesystem->exists( $themes_dir . $theme ) ) {
-			if ( ! $wp_filesystem->delete( $themes_dir . $theme, true ) )
+			if ( ! $wp_filesystem->delete( $themes_dir . $theme, true ) ) {
 				return false;
+			}
 		}
 
 		return true;
@@ -590,12 +609,12 @@ class Theme_Upgrader extends WP_Upgrader {
 	 *                        and the last result isn't set.
 	 */
 	public function theme_info($theme = null) {
-
 		if ( empty($theme) ) {
-			if ( !empty($this->result['destination_name']) )
+			if ( !empty($this->result['destination_name']) ) {
 				$theme = $this->result['destination_name'];
-			else
+			} else {
 				return false;
+			}
 		}
 		return wp_get_theme( $theme );
 	}

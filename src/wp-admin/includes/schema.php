@@ -41,9 +41,9 @@ function wp_get_db_schema( $scope = 'all', $blog_id = null ) {
 
 	$charset_collate = $wpdb->get_charset_collate();
 
-	if ( $blog_id && $blog_id != $wpdb->blogid )
+	if ( $blog_id && $blog_id != $wpdb->blogid ) {
 		$old_blog_id = $wpdb->set_blog_id( $blog_id );
-
+	}
 	// Engage multisite if in the middle of turning it on from network.php.
 	$is_multisite = is_multisite() || ( defined( 'WP_INSTALLING_NETWORK' ) && WP_INSTALLING_NETWORK );
 
@@ -238,11 +238,11 @@ CREATE TABLE $wpdb->posts (
 ) $charset_collate;\n";
 
 	// Global tables
-	if ( $is_multisite )
+	if ( $is_multisite ) {
 		$global_tables = $users_multi_table . $usermeta_table;
-	else
+	} else {
 		$global_tables = $users_single_table . $usermeta_table;
-
+	}
 	// Multisite global tables.
 	$ms_global_tables = "CREATE TABLE $wpdb->blogs (
   blog_id bigint(20) NOT NULL auto_increment,
@@ -318,8 +318,9 @@ CREATE TABLE $wpdb->signups (
 		break;
 	case 'global' :
 		$queries = $global_tables;
-		if ( $is_multisite )
+		if ( $is_multisite ) {
 			$queries .= $ms_global_tables;
+		}
 		break;
 	case 'ms_global' :
 		$queries = $ms_global_tables;
@@ -327,14 +328,15 @@ CREATE TABLE $wpdb->signups (
 	case 'all' :
 	default:
 		$queries = $global_tables . $blog_tables;
-		if ( $is_multisite )
+		if ( $is_multisite ) {
 			$queries .= $ms_global_tables;
+		}
 		break;
 	}
 
-	if ( isset( $old_blog_id ) )
+	if ( isset( $old_blog_id ) ) {
 		$wpdb->set_blog_id( $old_blog_id );
-
+	}
 	return $queries;
 }
 
@@ -385,10 +387,11 @@ function populate_options() {
 	   for all timezone strings supported by PHP.
 	*/
 	$offset_or_tz = _x( '0', 'default GMT offset or timezone string' );
-	if ( is_numeric( $offset_or_tz ) )
+	if ( is_numeric( $offset_or_tz ) ) {
 		$gmt_offset = $offset_or_tz;
-	elseif ( $offset_or_tz && in_array( $offset_or_tz, timezone_identifiers_list() ) )
-			$timezone_string = $offset_or_tz;
+	} elseif ( $offset_or_tz && in_array( $offset_or_tz, timezone_identifiers_list() ) ) {
+		$timezone_string = $offset_or_tz;
+	}
 
 	$options = array(
 	'siteurl' => $guessurl,
@@ -539,25 +542,30 @@ function populate_options() {
 
 	$insert = '';
 	foreach ( $options as $option => $value ) {
-		if ( in_array($option, $existing_options) )
+		if ( in_array($option, $existing_options) ) {
 			continue;
-		if ( in_array($option, $fat_options) )
+		}
+		if ( in_array($option, $fat_options) ) {
 			$autoload = 'no';
-		else
+		} else {
 			$autoload = 'yes';
-
-		if ( is_array($value) )
+		}
+		if ( is_array($value) ) {
 			$value = serialize($value);
-		if ( !empty($insert) )
+		}
+		if ( !empty($insert) ) {
 			$insert .= ', ';
+		}
 		$insert .= $wpdb->prepare( "(%s, %s, %s)", $option, $value, $autoload );
 	}
 
-	if ( !empty($insert) )
+	if ( !empty($insert) ) {
 		$wpdb->query("INSERT INTO $wpdb->options (option_name, option_value, autoload) VALUES " . $insert);
-
+	}
 	// In case it is set, but blank, update "home".
-	if ( !__get_option('home') ) update_option('home', $guessurl);
+	if ( !__get_option('home') ) {
+		update_option('home', $guessurl);
+	}
 
 	// Delete unused options.
 	$unusedoptions = array(
@@ -578,8 +586,9 @@ function populate_options() {
 		'wporg_popular_tags', 'what_to_show', 'rss_language', 'language', 'enable_xmlrpc', 'enable_app',
 		'embed_autourls', 'default_post_edit_rows', 'gzipcompression', 'advanced_edit'
 	);
-	foreach ( $unusedoptions as $option )
+	foreach ( $unusedoptions as $option ) {
 		delete_option($option);
+	}
 
 	// Delete obsolete magpie stuff.
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name REGEXP '^rss_[0-9a-f]{32}(_ts)?$'");
@@ -737,8 +746,9 @@ function populate_roles_210() {
 	$roles = array('administrator', 'editor');
 	foreach ($roles as $role) {
 		$role = get_role($role);
-		if ( empty($role) )
+		if ( empty($role) ) {
 			continue;
+		}
 
 		$role->add_cap('edit_others_pages');
 		$role->add_cap('edit_published_pages');
@@ -869,9 +879,9 @@ function populate_roles_300() {
  */
 if ( !function_exists( 'install_network' ) ) :
 function install_network() {
-	if ( ! defined( 'WP_INSTALLING_NETWORK' ) )
+	if ( ! defined( 'WP_INSTALLING_NETWORK' ) ) {
 		define( 'WP_INSTALLING_NETWORK', true );
-
+	}
 	dbDelta( wp_get_db_schema( 'global' ) );
 }
 endif;
@@ -900,20 +910,23 @@ function populate_network( $network_id = 1, $domain = '', $email = '', $site_nam
 	$wpdb = $app['db'];
 
 	$errors = new Error();
-	if ( '' == $domain )
+	if ( '' == $domain ) {
 		$errors->add( 'empty_domain', __( 'You must provide a domain name.' ) );
-	if ( '' == $site_name )
+	}
+	if ( '' == $site_name ) {
 		$errors->add( 'empty_sitename', __( 'You must provide a name for your network of sites.' ) );
-
+	}
 	// Check for network collision.
-	if ( $network_id == $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $wpdb->site WHERE id = %d", $network_id ) ) )
+	if ( $network_id == $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $wpdb->site WHERE id = %d", $network_id ) ) ) {
 		$errors->add( 'siteid_exists', __( 'The network already exists.' ) );
+	}
 
-	if ( ! is_email( $email ) )
+	if ( ! is_email( $email ) ) {
 		$errors->add( 'invalid_email', __( 'You must provide a valid email address.' ) );
-
-	if ( $errors->get_error_code() )
+	}
+	if ( $errors->get_error_code() ) {
 		return $errors;
+	}
 
 	// If a user with the provided email does not exist, default to the current user as the new network admin.
 	$site_user = get_user_by( 'email', $email );
@@ -955,8 +968,9 @@ function populate_network( $network_id = 1, $domain = '', $email = '', $site_nam
 		$users = get_users( array( 'fields' => array( 'ID', 'user_login' ) ) );
 		if ( $users ) {
 			foreach ( $users as $user ) {
-				if ( is_super_admin( $user->ID ) && !in_array( $user->user_login, $site_admins ) )
+				if ( is_super_admin( $user->ID ) && !in_array( $user->user_login, $site_admins ) ) {
 					$site_admins[] = $user->user_login;
+				}
 			}
 		}
 	} else {
@@ -1019,9 +1033,9 @@ We hope you enjoy your new site. Thanks!
 		'active_sitewide_plugins' => [],
 		'WPLANG' => get_locale(),
 	);
-	if ( ! $subdomain_install )
+	if ( ! $subdomain_install ) {
 		$sitemeta['illegal_names'][] = 'blog';
-
+	}
 	/**
 	 * Filters meta for a network on creation.
 	 *
@@ -1034,10 +1048,12 @@ We hope you enjoy your new site. Thanks!
 
 	$insert = '';
 	foreach ( $sitemeta as $meta_key => $meta_value ) {
-		if ( is_array( $meta_value ) )
+		if ( is_array( $meta_value ) ) {
 			$meta_value = serialize( $meta_value );
-		if ( !empty( $insert ) )
+		}
+		if ( !empty( $insert ) ) {
 			$insert .= ', ';
+		}
 		$insert .= $wpdb->prepare( "( %d, %s, %s)", $network_id, $meta_key, $meta_value );
 	}
 	$wpdb->query( "INSERT INTO $wpdb->sitemeta ( site_id, meta_key, meta_value ) VALUES " . $insert );
@@ -1059,24 +1075,26 @@ We hope you enjoy your new site. Thanks!
 		update_user_meta( $site_user->ID, 'source_domain', $domain );
 		update_user_meta( $site_user->ID, 'primary_blog', $blog_id );
 
-		if ( $subdomain_install )
+		if ( $subdomain_install ) {
 			$app['rewrite']->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
-		else
+		} else {
 			$app['rewrite']->set_permalink_structure( '/blog/%year%/%monthnum%/%day%/%postname%/' );
-
+		}
 		flush_rewrite_rules();
 
-		if ( ! $subdomain_install )
+		if ( ! $subdomain_install ) {
 			return true;
+		}
 
 		$vhost_ok = false;
 		$errstr = '';
 		$hostname = substr( md5( time() ), 0, 6 ) . '.' . $domain; // Very random hostname!
 		$page = wp_remote_get( 'http://' . $hostname, array( 'timeout' => 5, 'httpversion' => '1.1' ) );
-		if ( is_wp_error( $page ) )
+		if ( is_wp_error( $page ) ) {
 			$errstr = $page->get_error_message();
-		elseif ( 200 == wp_remote_retrieve_response_code( $page ) )
-				$vhost_ok = true;
+		} elseif ( 200 == wp_remote_retrieve_response_code( $page ) ) {
+			$vhost_ok = true;
+		}
 
 		if ( ! $vhost_ok ) {
 			$msg = '<p><strong>' . __( 'Warning! Wildcard DNS may not be configured correctly!' ) . '</strong></p>';

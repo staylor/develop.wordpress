@@ -74,8 +74,9 @@ class Walker_Nav_Menu_Edit extends Walker_Nav_Menu {
 		$original_title = false;
 		if ( 'taxonomy' == $item->type ) {
 			$original_title = get_term_field( 'name', $item->object_id, $item->object, 'raw' );
-			if ( is_wp_error( $original_title ) )
+			if ( is_wp_error( $original_title ) ) {
 				$original_title = false;
+			}
 		} elseif ( 'post_type' == $item->type ) {
 			$original_object = get_post( $item->object_id );
 			$original_title = get_the_title( $original_object->ID );
@@ -108,8 +109,9 @@ class Walker_Nav_Menu_Edit extends Walker_Nav_Menu {
 		$title = ( ! isset( $item->label ) || '' == $item->label ) ? $title : $item->label;
 
 		$submenu_text = '';
-		if ( 0 == $depth )
+		if ( 0 == $depth ) {
 			$submenu_text = 'style="display: none;"';
+		}
 
 		?>
 		<li id="menu-item-<?php echo $item_id; ?>" class="<?php echo implode(' ', $classes ); ?>">

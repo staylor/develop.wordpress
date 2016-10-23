@@ -52,8 +52,9 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 			'activate_plugin' => '<a href="' . wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . urlencode( $this->plugin ), 'activate-plugin_' . $this->plugin) . '" target="_parent">' . __( 'Activate Plugin' ) . '</a>',
 			'plugins_page' => '<a href="' . self_admin_url( 'plugins.php' ) . '" target="_parent">' . __( 'Return to Plugins page' ) . '</a>'
 		);
-		if ( $this->plugin_active || ! $this->result || is_wp_error( $this->result ) || ! current_user_can( 'activate_plugins' ) )
+		if ( $this->plugin_active || ! $this->result || is_wp_error( $this->result ) || ! current_user_can( 'activate_plugins' ) ) {
 			unset( $update_actions['activate_plugin'] );
+		}
 
 		/**
 		 * Filters the list of action links available following a single plugin update.
@@ -65,7 +66,8 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 		 */
 		$update_actions = apply_filters( 'update_plugin_complete_actions', $update_actions, $this->plugin );
 
-		if ( ! empty($update_actions) )
+		if ( ! empty($update_actions) ) {
 			$this->feedback(implode(' | ', (array)$update_actions));
+		}
 	}
 }

@@ -49,8 +49,9 @@ class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 			'plugins_page' => '<a href="' . self_admin_url( 'plugins.php' ) . '" target="_parent">' . __( 'Return to Plugins page' ) . '</a>',
 			'updates_page' => '<a href="' . self_admin_url( 'update-core.php' ) . '" target="_parent">' . __( 'Return to WordPress Updates page' ) . '</a>'
 		];
-		if ( ! current_user_can( 'activate_plugins' ) )
+		if ( ! current_user_can( 'activate_plugins' ) ) {
 			unset( $update_actions['plugins_page'] );
+		}
 
 		/**
 		 * Filters the list of action links available following bulk plugin updates.
@@ -62,7 +63,8 @@ class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 		 */
 		$update_actions = apply_filters( 'update_bulk_plugins_complete_actions', $update_actions, $this->plugin_info );
 
-		if ( ! empty($update_actions) )
+		if ( ! empty($update_actions) ) {
 			$this->feedback(implode(' | ', (array)$update_actions));
+		}
 	}
 }

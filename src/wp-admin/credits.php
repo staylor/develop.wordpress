@@ -63,8 +63,10 @@ foreach ( $credits['groups'] as $group_slug => $group_data ) {
 		echo '<h3 class="wp-people-group">' . esc_html( $title ) . "</h3>\n";
 	}
 
-	if ( ! empty( $group_data['shuffle'] ) )
-		shuffle( $group_data['data'] ); // We were going to sort by ability to pronounce "hierarchical," but that wouldn't be fair to Matt.
+	if ( ! empty( $group_data['shuffle'] ) ) {
+		shuffle( $group_data['data'] );
+	}
+	// We were going to sort by ability to pronounce "hierarchical," but that wouldn't be fair to Matt.
 
 	switch ( $group_data['type'] ) {
 		case 'list' :
@@ -88,8 +90,9 @@ foreach ( $credits['groups'] as $group_slug => $group_data ) {
 				$data2x = get_avatar_data( $person_data[1] . '@md5.gravatar.com', [ 'size' => $size ] );
 				echo '<img src="' . esc_url( $data['url'] ) . '" srcset="' . esc_url( $data2x['url'] ) . ' 2x" class="gravatar" alt="" />' . "\n";
 				echo esc_html( $person_data[0] ) . "</a>\n\t";
-				if ( ! $compact )
+				if ( ! $compact ) {
 					echo '<span class="title">' . translate( $person_data[3] ) . "</span>\n";
+				}
 				echo "</li>\n";
 			}
 			echo "</ul>\n";

@@ -55,13 +55,19 @@ function edit_user( $user_id = 0 ) {
 		$potential_role = isset( $app['roles']->role_objects[ $new_role ] ) ? $app['roles']->role_objects[ $new_role ] : false;
 		// Don't let anyone with 'edit_users' (admins) edit their own role to something without it.
 		// Multisite super admins can freely edit their blog roles -- they possess all caps.
-		if ( ( is_multisite() && current_user_can( 'manage_sites' ) ) || $user_id != get_current_user_id() || ($potential_role && $potential_role->has_cap( 'edit_users' ) ) )
+		if (
+			( is_multisite() && current_user_can( 'manage_sites' ) ) ||
+			$user_id != get_current_user_id() ||
+			($potential_role && $potential_role->has_cap( 'edit_users' ) )
+		) {
 			$user->role = $new_role;
+		}
 
 		// If the new role isn't editable by the logged-in user die with error
 		$editable_roles = get_editable_roles();
-		if ( ! empty( $new_role ) && empty( $editable_roles[$new_role] ) )
+		if ( ! empty( $new_role ) && empty( $editable_roles[$new_role] ) ) {
 			wp_die(__('You can&#8217;t give users that role.'));
+		}
 	}
 
 	if ( $_post->get( 'email' ) ) {
@@ -126,9 +132,9 @@ function edit_user( $user_id = 0 ) {
 	$errors = new Error();
 
 	/* checking that username has been typed */
-	if ( $user->user_login == '' )
+	if ( $user->user_login == '' ) {
 		$errors->add( 'user_login', __( '<strong>ERROR</strong>: Please enter a username.' ) );
-
+	}
 	/* checking that nickname has been typed */
 	if ( $update && empty( $user->nickname ) ) {
 		$errors->add( 'nickname', __( '<strong>ERROR</strong>: Please enter a nickname.' ) );
@@ -160,15 +166,16 @@ function edit_user( $user_id = 0 ) {
 		$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter the same password in both password fields.' ), array( 'form-field' => 'pass1' ) );
 	}
 
-	if ( !empty( $pass1 ) )
+	if ( !empty( $pass1 ) ) {
 		$user->user_pass = $pass1;
-
-	if ( !$update && $_post->get( 'user_login' ) && ! validate_username( $_post->get( 'user_login' ) ) )
+	}
+	if ( !$update && $_post->get( 'user_login' ) && ! validate_username( $_post->get( 'user_login' ) ) ) {
 		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.' ));
+	}
 
-	if ( !$update && username_exists( $user->user_login ) )
+	if ( !$update && username_exists( $user->user_login ) ) {
 		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ));
-
+	}
 	/** This filter is documented in wp-includes/user.php */
 	$illegal_logins = (array) apply_filters( 'illegal_user_logins', [] );
 
@@ -196,8 +203,9 @@ function edit_user( $user_id = 0 ) {
 	 */
 	do_action_ref_array( 'user_profile_update_errors', array( &$errors, $update, &$user ) );
 
-	if ( $errors->get_error_codes() )
+	if ( $errors->get_error_codes() ) {
 		return $errors;
+	}
 
 	if ( $update ) {
 		$user_id = wp_update_user( $user );
@@ -259,9 +267,9 @@ function get_editable_roles() {
 function get_user_to_edit( $user_id ) {
 	$user = get_userdata( $user_id );
 
-	if ( $user )
+	if ( $user ) {
 		$user->filter = 'edit';
-
+	}
 	return $user;
 }
 
@@ -314,8 +322,9 @@ function wp_delete_user( $id, $reassign = null ) {
 	$id = (int) $id;
 	$user = new User( $id );
 
-	if ( !$user->exists() )
+	if ( !$user->exists() ) {
 		return false;
+	}
 
 	// Normalize $reassign to null or a user ID. 'novalue' was an older default.
 	if ( 'novalue' === $reassign ) {
@@ -358,29 +367,33 @@ function wp_delete_user( $id, $reassign = null ) {
 		$post_types_to_delete = implode( "', '", $post_types_to_delete );
 		$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_author = %d AND post_type IN ('$post_types_to_delete')", $id ) );
 		if ( $post_ids ) {
-			foreach ( $post_ids as $post_id )
+			foreach ( $post_ids as $post_id ) {
 				wp_delete_post( $post_id );
+			}
 		}
 
 		// Clean links
 		$link_ids = $wpdb->get_col( $wpdb->prepare("SELECT link_id FROM $wpdb->links WHERE link_owner = %d", $id) );
 
 		if ( $link_ids ) {
-			foreach ( $link_ids as $link_id )
+			foreach ( $link_ids as $link_id ) {
 				wp_delete_link($link_id);
+			}
 		}
 	} else {
 		$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_author = %d", $id ) );
 		$wpdb->update( $wpdb->posts, array('post_author' => $reassign), array('post_author' => $id) );
 		if ( ! empty( $post_ids ) ) {
-			foreach ( $post_ids as $post_id )
+			foreach ( $post_ids as $post_id ) {
 				clean_post_cache( $post_id );
+			}
 		}
 		$link_ids = $wpdb->get_col( $wpdb->prepare("SELECT link_id FROM $wpdb->links WHERE link_owner = %d", $id) );
 		$wpdb->update( $wpdb->links, array('link_owner' => $reassign), array('link_owner' => $id) );
 		if ( ! empty( $link_ids ) ) {
-			foreach ( $link_ids as $link_id )
+			foreach ( $link_ids as $link_id ) {
 				clean_bookmark_cache( $link_id );
+			}
 		}
 	}
 
@@ -389,9 +402,9 @@ function wp_delete_user( $id, $reassign = null ) {
 		remove_user_from_blog( $id, get_current_blog_id() );
 	} else {
 		$meta = $wpdb->get_col( $wpdb->prepare( "SELECT umeta_id FROM $wpdb->usermeta WHERE user_id = %d", $id ) );
-		foreach ( $meta as $mid )
+		foreach ( $meta as $mid ) {
 			delete_metadata_by_mid( 'user', $mid );
-
+		}
 		$wpdb->delete( $wpdb->users, array( 'ID' => $id ) );
 	}
 
@@ -433,8 +446,9 @@ function wp_revoke_user( $id ) {
 function default_password_nag_handler($errors = false) {
 	global $user_ID;
 	// Short-circuit it.
-	if ( ! get_user_option('default_password_nag') )
+	if ( ! get_user_option('default_password_nag') ) {
 		return;
+	}
 
 	// get_user_setting = JS saved UI setting. else no-js-fallback code.
 	if ( 'hide' == get_user_setting('default_password_nag') || $_get->get( 'default_password_nag' ) && '0' == $_get->get( 'default_password_nag' ) ) {
@@ -451,8 +465,9 @@ function default_password_nag_handler($errors = false) {
  */
 function default_password_nag_edit_user($user_ID, $old_data) {
 	// Short-circuit it.
-	if ( ! get_user_option('default_password_nag', $user_ID) )
+	if ( ! get_user_option('default_password_nag', $user_ID) ) {
 		return;
+	}
 
 	$new_data = get_userdata($user_ID);
 
@@ -469,8 +484,9 @@ function default_password_nag_edit_user($user_ID, $old_data) {
 function default_password_nag() {
 	$app = getApp();
 	// Short-circuit it.
-	if ( 'profile.php' == $app['pagenow'] || ! get_user_option('default_password_nag') )
+	if ( 'profile.php' == $app['pagenow'] || ! get_user_option('default_password_nag') ) {
 		return;
+	}
 
 	echo '<div class="error default-password-nag">';
 	echo '<p>';

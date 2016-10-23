@@ -51,8 +51,9 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	 * @param string $string
 	 */
 	public function feedback($string) {
-		if ( isset( $this->upgrader->strings[$string] ) )
+		if ( isset( $this->upgrader->strings[$string] ) ) {
 			$string = $this->upgrader->strings[$string];
+		}
 
 		if ( strpos($string, '%') !== false ) {
 			$args = func_get_args();
@@ -63,12 +64,15 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 				$string = vsprintf($string, $args);
 			}
 		}
-		if ( empty($string) )
+		if ( empty($string) ) {
 			return;
-		if ( $this->in_loop )
+		}
+
+		if ( $this->in_loop ) {
 			echo "$string<br />\n";
-		else
+		} else {
 			echo "<p>$string</p>\n";
+		}
 	}
 
 	/**
@@ -90,16 +94,18 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	 * @param string|Error $error
 	 */
 	public function error($error) {
-		if ( is_string($error) && isset( $this->upgrader->strings[$error] ) )
+		if ( is_string($error) && isset( $this->upgrader->strings[$error] ) ) {
 			$this->error = $this->upgrader->strings[$error];
+		}
 
 		if ( is_wp_error($error) ) {
 			$messages = [];
 			foreach ( $error->get_error_messages() as $emessage ) {
-				if ( $error->get_error_data() && is_string( $error->get_error_data() ) )
+				if ( $error->get_error_data() && is_string( $error->get_error_data() ) ) {
 					$messages[] = $emessage . ' ' . esc_html( strip_tags( $error->get_error_data() ) );
-				else
+				} else {
 					$messages[] = $emessage;
+				}
 			}
 			$this->error = implode(', ', $messages);
 		}
@@ -148,8 +154,9 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 			echo '<script type="text/javascript">jQuery(\'#progress-' . esc_js($this->upgrader->update_current) . '\').show();</script>';
 		}
 		if ( $this->result && ! is_wp_error( $this->result ) ) {
-			if ( ! $this->error )
+			if ( ! $this->error ) {
 				echo '<div class="updated"><p>' . sprintf($this->upgrader->strings['skin_update_successful'], $title, 'jQuery(\'#progress-' . esc_js($this->upgrader->update_current) . '\').toggle();jQuery(\'span\', this).toggle(); return false;') . '</p></div>';
+			}
 			echo '<script type="text/javascript">jQuery(\'.waiting-' . esc_js($this->upgrader->update_current) . '\').hide();</script>';
 		}
 

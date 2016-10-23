@@ -28,13 +28,15 @@ function wp_credits() {
 	) {
 		$response = wp_remote_get( "http://api.wordpress.org/core/credits/1.1/?version={$app['wp_version']}&locale={$locale}" );
 
-		if ( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) )
+		if ( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) ) {
 			return false;
+		}
 
 		$results = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( ! is_array( $results ) )
+		if ( ! is_array( $results ) ) {
 			return false;
+		}
 
 		set_site_transient( 'wordpress_credits_' . $locale, $results, DAY_IN_SECONDS );
 	}

@@ -10,11 +10,13 @@ use WP\Site\Admin\Help as SiteHelp;
 
 require_once( __DIR__ . '/admin.php' );
 
-if ( !is_multisite() )
+if ( !is_multisite() ) {
 	wp_die( __( 'Multisite support is not enabled.' ) );
+}
 
-if ( ! current_user_can('read') )
+if ( ! current_user_can('read') ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ) );
+}
 
 $action = $_post->get( 'action', 'splash' );
 
@@ -57,11 +59,11 @@ if ( in_array( get_site_option( 'registration' ), array( 'all', 'blog' ) ) ) {
 ?></h1>
 
 <?php
-if ( empty( $blogs ) ) :
+if ( empty( $blogs ) ) {
 	echo '<p>';
 	_e( 'You must be a member of at least one site to use this page.' );
 	echo '</p>';
-else :
+} else {
 ?>
 <form id="myblogs" method="post">
 	<?php
@@ -120,7 +122,7 @@ else :
 	}
 	?>
 	</form>
-<?php endif; ?>
+<?php } ?>
 	</div>
 <?php
 include( ABSPATH . 'wp-admin/admin-footer.php' );
