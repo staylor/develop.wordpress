@@ -39,7 +39,7 @@ if ( 'add-user' == $_request->get( 'action' ) ) {
 		$user_id = wpmu_create_user( esc_html( strtolower( $user['username'] ) ), $password, sanitize_email( $user['email'] ) );
 
 		if ( ! $user_id ) {
-	 		$add_user_errors = new Error( 'add_user_fail', __( 'Cannot add user.' ) );
+			$add_user_errors = new Error( 'add_user_fail', __( 'Cannot add user.' ) );
 		} else {
 			/**
 			  * Fires after a new user has been created via the network user-new.php page.

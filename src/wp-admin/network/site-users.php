@@ -11,9 +11,9 @@ use WP\Site\Admin\Help as SiteHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can('manage_sites') )
+if ( ! current_user_can('manage_sites') ) {
 	wp_die(__('Sorry, you are not allowed to edit this site.'));
-
+}
 $wp_list_table = _get_list_table('WP_Users_List_Table');
 $wp_list_table->prepare_items();
 
@@ -29,17 +29,17 @@ if ( $paged ) {
 
 $id = $_request->getInt( 'id', 0 );
 
-if ( ! $id )
+if ( ! $id ) {
 	wp_die( __('Invalid site ID.') );
-
+}
 $details = get_site( $id );
 if ( ! $details ) {
 	wp_die( __( 'The requested site does not exist.' ) );
 }
 
-if ( ! can_edit_network( $details->site_id ) )
+if ( ! can_edit_network( $details->site_id ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
-
+}
 $is_main_site = is_main_site( $id );
 
 switch_to_blog( $id );
@@ -82,10 +82,11 @@ if ( $action ) {
 			$newuser = $_post->get( 'newuser' );
 			$user = get_user_by( 'login', $newuser );
 			if ( $user && $user->exists() ) {
-				if ( ! is_user_member_of_blog( $user->ID, $id ) )
+				if ( ! is_user_member_of_blog( $user->ID, $id ) ) {
 					add_user_to_blog( $id, $user->ID, $_post->get( 'new_role' ) );
-				else
+				} else {
 					$update = 'err_add_member';
+				}
 			} else {
 				$update = 'err_add_notfound';
 			}
@@ -196,8 +197,9 @@ $app->set( 'submenu_file', 'sites.php' );
  *
  * @param bool $bool Whether to show the Add Existing User form. Default true.
  */
-if ( ! wp_is_large_network( 'users' ) && apply_filters( 'show_network_site_users_add_existing_form', true ) )
+if ( ! wp_is_large_network( 'users' ) && apply_filters( 'show_network_site_users_add_existing_form', true ) ) {
 	wp_enqueue_script( 'user-suggest' );
+}
 
 require( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 

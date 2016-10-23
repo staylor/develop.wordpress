@@ -76,12 +76,15 @@ function extract_from_markers( $filename, $marker ) {
 	{
 		$state = false;
 		foreach ( $markerdata as $markerline ) {
-			if (strpos($markerline, '# END ' . $marker) !== false)
-				$state = false;
-			if ( $state )
-				$result[] = $markerline;
-			if (strpos($markerline, '# BEGIN ' . $marker) !== false)
-				$state = true;
+			if (strpos($markerline, '# END ' . $marker) !== false) {
+							$state = false;
+			}
+			if ( $state ) {
+							$result[] = $markerline;
+			}
+			if (strpos($markerline, '# BEGIN ' . $marker) !== false) {
+							$state = true;
+			}
 		}
 	}
 
@@ -193,8 +196,9 @@ function insert_with_markers( $filename, $marker, $insertion ) {
  * @since 1.5.0
  */
 function save_mod_rewrite_rules() {
-	if ( is_multisite() )
-		return;
+	if ( is_multisite() ) {
+			return;
+	}
 
 	$app = getApp();
 	$home_path = get_home_path();
@@ -223,8 +227,9 @@ function save_mod_rewrite_rules() {
  * @return bool True if web.config was updated successfully
  */
 function iis7_save_url_rewrite_rules(){
-	if ( is_multisite() )
-		return;
+	if ( is_multisite() ) {
+			return;
+	}
 
 	$app = getApp();
 	$home_path = get_home_path();
@@ -256,8 +261,9 @@ function update_recently_edited( $file ) {
 		$oldfiles[] = $file;
 		$oldfiles = array_reverse( $oldfiles );
 		$oldfiles = array_unique( $oldfiles );
-		if ( 5 < count( $oldfiles ))
-			array_pop( $oldfiles );
+		if ( 5 < count( $oldfiles )) {
+					array_pop( $oldfiles );
+		}
 	} else {
 		$oldfiles[] = $file;
 	}
@@ -273,8 +279,9 @@ function update_recently_edited( $file ) {
  * @param string $value
  */
 function update_home_siteurl( $old_value, $value ) {
-	if ( wp_installing() )
-		return;
+	if ( wp_installing() ) {
+			return;
+	}
 
 	if ( is_multisite() && ms_is_switched() ) {
 		delete_option( 'rewrite_rules' );
@@ -322,10 +329,11 @@ function wp_reset_vars( $vars ) {
  */
 function show_message($message) {
 	if ( is_wp_error($message) ){
-		if ( $message->get_error_data() && is_string( $message->get_error_data() ) )
-			$message = $message->get_error_message() . ': ' . $message->get_error_data();
-		else
-			$message = $message->get_error_message();
+		if ( $message->get_error_data() && is_string( $message->get_error_data() ) ) {
+					$message = $message->get_error_message() . ': ' . $message->get_error_data();
+		} else {
+					$message = $message->get_error_message();
+		}
 	}
 	echo "<p>$message</p>\n";
 	wp_ob_end_flush_all();
@@ -339,11 +347,13 @@ function show_message($message) {
  * @return array
  */
 function wp_doc_link_parse( $content ) {
-	if ( !is_string( $content ) || empty( $content ) )
-		return [];
+	if ( !is_string( $content ) || empty( $content ) ) {
+			return [];
+	}
 
-	if ( !function_exists('token_get_all') )
-		return [];
+	if ( !function_exists('token_get_all') ) {
+			return [];
+	}
 
 	$tokens = token_get_all( $content );
 	$count = count( $tokens );
@@ -380,8 +390,9 @@ function wp_doc_link_parse( $content ) {
 
 	$out = [];
 	foreach ( $functions as $function ) {
-		if ( in_array( $function, $ignore_functions ) )
-			continue;
+		if ( in_array( $function, $ignore_functions ) ) {
+					continue;
+		}
 		$out[] = $function;
 	}
 
@@ -400,25 +411,28 @@ function set_screen_options() {
 	if ( $_post->get( 'wp_screen_options' ) && is_array( $_post->get( 'wp_screen_options' ) ) ) {
 		check_admin_referer( 'screen-options-nonce', 'screenoptionnonce' );
 
-		if ( !$user = wp_get_current_user() )
-			return;
+		if ( !$user = wp_get_current_user() ) {
+					return;
+		}
 
 		$wp_screen_options = $_post->get( 'wp_screen_options' );
 		$option = $wp_screen_options['option'];
 		$value = $wp_screen_options['value'];
 
-		if ( $option != sanitize_key( $option ) )
-			return;
+		if ( $option != sanitize_key( $option ) ) {
+					return;
+		}
 
 		$map_option = $option;
 		$type = str_replace('edit_', '', $map_option);
 		$type = str_replace('_per_page', '', $type);
-		if ( in_array( $type, get_taxonomies() ) )
-			$map_option = 'edit_tags_per_page';
-		elseif ( in_array( $type, get_post_types() ) )
-			$map_option = 'edit_per_page';
-		else
-			$option = str_replace('-', '_', $option);
+		if ( in_array( $type, get_taxonomies() ) ) {
+					$map_option = 'edit_tags_per_page';
+		} elseif ( in_array( $type, get_post_types() ) ) {
+					$map_option = 'edit_per_page';
+		} else {
+					$option = str_replace('-', '_', $option);
+		}
 
 		switch ( $map_option ) {
 		case 'edit_per_page':
@@ -435,8 +449,9 @@ function set_screen_options() {
 		case 'themes_network_per_page':
 		case 'site_themes_network_per_page':
 			$value = (int) $value;
-			if ( $value < 1 || $value > 999 )
-				return;
+			if ( $value < 1 || $value > 999 ) {
+							return;
+			}
 			break;
 		default:
 
@@ -458,8 +473,9 @@ function set_screen_options() {
 			 */
 			$value = apply_filters( 'set-screen-option', false, $option, $value );
 
-			if ( false === $value )
-				return;
+			if ( false === $value ) {
+							return;
+			}
 			break;
 		}
 
@@ -484,22 +500,25 @@ function set_screen_options() {
  * @param string $filename The file path to the configuration file
  */
 function iis7_rewrite_rule_exists($filename) {
-	if ( ! file_exists($filename) )
-		return false;
+	if ( ! file_exists($filename) ) {
+			return false;
+	}
 	if ( ! class_exists( 'DOMDocument', false ) ) {
 		return false;
 	}
 
 	$doc = new DOMDocument();
-	if ( $doc->load($filename) === false )
-		return false;
+	if ( $doc->load($filename) === false ) {
+			return false;
+	}
 	$xpath = new DOMXPath($doc);
 	$rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
-	if ( $rules->length == 0 )
-		return false;
-	else
-		return true;
-}
+	if ( $rules->length == 0 ) {
+			return false;
+	} else {
+			return true;
+	}
+	}
 
 /**
  * Delete WordPress rewrite rule from web.config file if it exists there
@@ -511,8 +530,9 @@ function iis7_rewrite_rule_exists($filename) {
  */
 function iis7_delete_rewrite_rule($filename) {
 	// If configuration file does not exist then rules also do not exist so there is nothing to delete
-	if ( ! file_exists($filename) )
-		return true;
+	if ( ! file_exists($filename) ) {
+			return true;
+	}
 
 	if ( ! class_exists( 'DOMDocument', false ) ) {
 		return false;
@@ -521,8 +541,9 @@ function iis7_delete_rewrite_rule($filename) {
 	$doc = new DOMDocument();
 	$doc->preserveWhiteSpace = false;
 
-	if ( $doc -> load($filename) === false )
-		return false;
+	if ( $doc -> load($filename) === false ) {
+			return false;
+	}
 	$xpath = new DOMXPath($doc);
 	$rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
 	if ( $rules->length > 0 ) {
@@ -559,15 +580,17 @@ function iis7_add_rewrite_rule($filename, $rewrite_rule) {
 	$doc = new DOMDocument();
 	$doc->preserveWhiteSpace = false;
 
-	if ( $doc->load($filename) === false )
-		return false;
+	if ( $doc->load($filename) === false ) {
+			return false;
+	}
 
 	$xpath = new DOMXPath($doc);
 
 	// First check if the rule already exists as in that case there is no need to re-add it
 	$wordpress_rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
-	if ( $wordpress_rules->length > 0 )
-		return true;
+	if ( $wordpress_rules->length > 0 ) {
+			return true;
+	}
 
 	// Check the XPath to the rewrite rule and create XML nodes if they do not exist
 	$xmlnodes = $xpath->query('/configuration/system.webServer/rewrite/rules');
@@ -739,22 +762,25 @@ function wp_check_locked_posts( $response, $data, $screen_id ) {
 
 	if ( array_key_exists( 'wp-check-locked-posts', $data ) && is_array( $data['wp-check-locked-posts'] ) ) {
 		foreach ( $data['wp-check-locked-posts'] as $key ) {
-			if ( ! $post_id = absint( substr( $key, 5 ) ) )
-				continue;
+			if ( ! $post_id = absint( substr( $key, 5 ) ) ) {
+							continue;
+			}
 
 			if ( ( $user_id = wp_check_post_lock( $post_id ) ) && ( $user = get_userdata( $user_id ) ) && current_user_can( 'edit_post', $post_id ) ) {
 				$send = array( 'text' => sprintf( __( '%s is currently editing' ), $user->display_name ) );
 
-				if ( ( $avatar = get_avatar( $user->ID, 18 ) ) && preg_match( "|src='([^']+)'|", $avatar, $matches ) )
-					$send['avatar_src'] = $matches[1];
+				if ( ( $avatar = get_avatar( $user->ID, 18 ) ) && preg_match( "|src='([^']+)'|", $avatar, $matches ) ) {
+									$send['avatar_src'] = $matches[1];
+				}
 
 				$checked[$key] = $send;
 			}
 		}
 	}
 
-	if ( ! empty( $checked ) )
-		$response['wp-check-locked-posts'] = $checked;
+	if ( ! empty( $checked ) ) {
+			$response['wp-check-locked-posts'] = $checked;
+	}
 
 	return $response;
 }
@@ -774,11 +800,13 @@ function wp_refresh_post_lock( $response, $data, $screen_id ) {
 		$received = $data['wp-refresh-post-lock'];
 		$send = [];
 
-		if ( ! $post_id = absint( $received['post_id'] ) )
-			return $response;
+		if ( ! $post_id = absint( $received['post_id'] ) ) {
+					return $response;
+		}
 
-		if ( ! current_user_can('edit_post', $post_id) )
-			return $response;
+		if ( ! current_user_can('edit_post', $post_id) ) {
+					return $response;
+		}
 
 		if ( ( $user_id = wp_check_post_lock( $post_id ) ) && ( $user = get_userdata( $user_id ) ) ) {
 			$error = array(
@@ -786,14 +814,16 @@ function wp_refresh_post_lock( $response, $data, $screen_id ) {
 			);
 
 			if ( $avatar = get_avatar( $user->ID, 64 ) ) {
-				if ( preg_match( "|src='([^']+)'|", $avatar, $matches ) )
-					$error['avatar_src'] = $matches[1];
+				if ( preg_match( "|src='([^']+)'|", $avatar, $matches ) ) {
+									$error['avatar_src'] = $matches[1];
+				}
 			}
 
 			$send['lock_error'] = $error;
 		} else {
-			if ( $new_lock = wp_set_post_lock( $post_id ) )
-				$send['new_lock'] = implode( ':', $new_lock );
+			if ( $new_lock = wp_set_post_lock( $post_id ) ) {
+							$send['new_lock'] = implode( ':', $new_lock );
+			}
 		}
 
 		$response['wp-refresh-post-lock'] = $send;

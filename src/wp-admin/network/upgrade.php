@@ -22,9 +22,9 @@ $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
-if ( ! current_user_can( 'manage_network' ) )
+if ( ! current_user_can( 'manage_network' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
-
+}
 echo '<div class="wrap">';
 echo '<h1>' . __( 'Upgrade Network' ) . '</h1>';
 

@@ -52,16 +52,17 @@ class WP_Themes_List_Table extends WP_List_Table {
 	public function prepare_items() {
 		$themes = wp_get_themes( array( 'allowed' => true ) );
 
-		if ( ! empty( $this->_request->get( 's' ) ) )
+		if ( ! empty( $this->_request->get( 's' ) ) ) {
 			$this->search_terms = array_unique( array_filter( array_map( 'trim', explode( ',', strtolower( wp_unslash( $this->_request->get( 's' ) ) ) ) ) ) );
-
-		if ( ! empty( $this->_request->get( 'features' ) ) )
+		}
+		if ( ! empty( $this->_request->get( 'features' ) ) ) {
 			$this->features = $this->_request->get( 'features' );
-
+		}
 		if ( $this->search_terms || $this->features ) {
 			foreach ( $themes as $key => $theme ) {
-				if ( ! $this->search_theme( $theme ) )
+				if ( ! $this->search_theme( $theme ) ) {
 					unset( $themes[ $key ] );
+				}
 			}
 		}
 
@@ -118,8 +119,9 @@ class WP_Themes_List_Table extends WP_List_Table {
 	 * @param string $which
 	 */
 	public function tablenav( $which = 'top' ) {
-		if ( $this->get_pagination_arg( 'total_pages' ) <= 1 )
+		if ( $this->get_pagination_arg( 'total_pages' ) <= 1 ) {
 			return;
+		}
 		?>
 		<div class="tablenav themes <?php echo $which; ?>">
 			<?php $this->pagination( $which ); ?>
@@ -172,7 +174,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 	public function display_rows() {
 		$themes = $this->items;
 
-		foreach ( $themes as $theme ):
+		foreach ( $themes as $theme ) {
 			?><div class="available-theme"><?php
 
 			$template   = $theme->get_template();
@@ -208,23 +210,27 @@ class WP_Themes_List_Table extends WP_List_Table {
 			?>
 
 			<span class="screenshot hide-if-customize">
-				<?php if ( $screenshot = $theme->get_screenshot() ) : ?>
+				<?php
+				$screenshot = $theme->get_screenshot();
+				if ( $screenshot ) { ?>
 					<img src="<?php echo esc_url( $screenshot ); ?>" alt="" />
-				<?php endif; ?>
+				<?php } ?>
 			</span>
 			<a href="<?php echo wp_customize_url( $stylesheet ); ?>" class="screenshot load-customize hide-if-no-customize">
-				<?php if ( $screenshot = $theme->get_screenshot() ) : ?>
+				<?php 
+				$screenshot = $theme->get_screenshot();
+				if ( $screenshot ) { ?>
 					<img src="<?php echo esc_url( $screenshot ); ?>" alt="" />
-				<?php endif; ?>
+				<?php } ?>
 			</a>
 
 			<h3><?php echo $title; ?></h3>
 			<div class="theme-author"><?php printf( __( 'By %s' ), $author ); ?></div>
 			<div class="action-links">
 				<ul>
-					<?php foreach ( $actions as $action ): ?>
+					<?php foreach ( $actions as $action ) { ?>
 						<li><?php echo $action; ?></li>
-					<?php endforeach; ?>
+					<?php } ?>
 					<li class="hide-if-no-js"><a href="#" class="theme-detail"><?php _e('Details') ?></a></li>
 				</ul>
 				<?php echo $delete_action; ?>
@@ -244,7 +250,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 
 			</div>
 		<?php
-		endforeach;
+		}
 	}
 
 	/**
@@ -254,14 +260,16 @@ class WP_Themes_List_Table extends WP_List_Table {
 	public function search_theme( $theme ) {
 		// Search the features
 		foreach ( $this->features as $word ) {
-			if ( ! in_array( $word, $theme->get('Tags') ) )
+			if ( ! in_array( $word, $theme->get('Tags') ) ) {
 				return false;
+			}
 		}
 
 		// Match all phrases
 		foreach ( $this->search_terms as $word ) {
-			if ( in_array( $word, $theme->get('Tags') ) )
+			if ( in_array( $word, $theme->get('Tags') ) ) {
 				continue;
+			}
 
 			foreach ( array( 'Name', 'Description', 'Author', 'AuthorURI' ) as $header ) {
 				// Don't mark up; Do translate.
@@ -270,11 +278,13 @@ class WP_Themes_List_Table extends WP_List_Table {
 				}
 			}
 
-			if ( false !== stripos( $theme->get_stylesheet(), $word ) )
+			if ( false !== stripos( $theme->get_stylesheet(), $word ) ) {
 				continue;
+			}
 
-			if ( false !== stripos( $theme->get_template(), $word ) )
+			if ( false !== stripos( $theme->get_template(), $word ) ) {
 				continue;
+			}
 
 			return false;
 		}
@@ -300,9 +310,9 @@ class WP_Themes_List_Table extends WP_List_Table {
 			'total_pages' => ! empty( $this->_pagination_args['total_pages'] ) ? $this->_pagination_args['total_pages'] : 1,
 		);
 
-		if ( is_array( $extra_args ) )
+		if ( is_array( $extra_args ) ) {
 			$args = array_merge( $args, $extra_args );
-
+		}
 		printf( "<script type='text/javascript'>var theme_list_args = %s;</script>\n", wp_json_encode( $args ) );
 		parent::_js_vars();
 	}

@@ -176,9 +176,9 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 		$this->init();
 		$this->upgrade_strings();
 
-		if ( ! $language_updates )
+		if ( ! $language_updates ) {
 			$language_updates = wp_get_translation_updates();
-
+		}
 		if ( empty( $language_updates ) ) {
 			$this->skin->header();
 			$this->skin->set_result( true );
@@ -188,8 +188,9 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			return true;
 		}
 
-		if ( 'upgrader_process_complete' == current_filter() )
+		if ( 'upgrader_process_complete' == current_filter() ) {
 			$this->skin->feedback( 'starting_upgrade' );
+		}
 
 		// Remove any existing upgrade filters from the plugin/theme upgraders #WP29425 & #WP29230
 		remove_all_filters( 'upgrader_pre_install' );
@@ -218,10 +219,11 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 		 * as we then may need to create a /plugins or /themes directory inside of it.
 		 */
 		$remote_destination = $wp_filesystem->find_folder( WP_LANG_DIR );
-		if ( ! $wp_filesystem->exists( $remote_destination ) )
-			if ( ! $wp_filesystem->mkdir( $remote_destination, FS_CHMOD_DIR ) )
+		if ( ! $wp_filesystem->exists( $remote_destination ) ) {
+			if ( ! $wp_filesystem->mkdir( $remote_destination, FS_CHMOD_DIR ) ) {
 				return new Error( 'mkdir_failed_lang_dir', $this->strings['mkdir_failed'], $remote_destination );
-
+			}
+		}
 		$language_updates_results = [];
 
 		foreach ( $language_updates as $language_update ) {
@@ -229,10 +231,11 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			$this->skin->language_update = $language_update;
 
 			$destination = WP_LANG_DIR;
-			if ( 'plugin' == $language_update->type )
+			if ( 'plugin' == $language_update->type ) {
 				$destination .= '/plugins';
-			elseif ( 'theme' == $language_update->type )
+			} elseif ( 'theme' == $language_update->type ) {
 				$destination .= '/themes';
+			}
 
 			$this->update_current++;
 
@@ -317,8 +320,9 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	public function check_package( $source, $remote_source ) {
 		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
-		if ( is_wp_error( $source ) )
+		if ( is_wp_error( $source ) ) {
 			return $source;
+		}
 
 		// Check that the folder contains a valid language.
 		$files = $wp_filesystem->dirlist( $remote_source );
@@ -326,10 +330,11 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 		// Check to see if a .po and .mo exist in the folder.
 		$po = $mo = false;
 		foreach ( (array) $files as $file => $filedata ) {
-			if ( '.po' == substr( $file, -3 ) )
+			if ( '.po' == substr( $file, -3 ) ) {
 				$po = true;
-			elseif ( '.mo' == substr( $file, -3 ) )
+			} elseif ( '.mo' == substr( $file, -3 ) ) {
 				$mo = true;
+			}
 		}
 
 		if ( ! $mo || ! $po ) {
@@ -361,14 +366,16 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 
 		case 'theme':
 			$theme = wp_get_theme( $update->slug );
-			if ( $theme->exists() )
+			if ( $theme->exists() ) {
 				return $theme->Get( 'Name' );
+			}
 			break;
 		case 'plugin':
 			$plugin_data = get_plugins( '/' . $update->slug );
 			$plugin_data = reset( $plugin_data );
-			if ( $plugin_data )
+			if ( $plugin_data ) {
 				return $plugin_data['Name'];
+			}
 			break;
 		}
 		return '';

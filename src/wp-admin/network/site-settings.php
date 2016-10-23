@@ -11,26 +11,27 @@ use WP\Site\Admin\Help as SiteHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can( 'manage_sites' ) )
+if ( ! current_user_can( 'manage_sites' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to edit this site.' ) );
-
+}
 $wpdb = $app['db'];
 
 ( new SiteHelp( get_current_screen() ) )->addSettings();
 
 $id = $_request->getInt( 'id', 0 );
 
-if ( ! $id )
+if ( ! $id ) {
 	wp_die( __('Invalid site ID.') );
+}
 
 $details = get_site( $id );
 if ( ! $details ) {
 	wp_die( __( 'The requested site does not exist.' ) );
 }
 
-if ( !can_edit_network( $details->site_id ) )
+if ( !can_edit_network( $details->site_id ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
-
+}
 $is_main_site = is_main_site( $id );
 
 if ( 'update-site' == $_request->get( 'action' ) && is_array( $_post->get( 'option' ) ) ) {
@@ -38,12 +39,15 @@ if ( 'update-site' == $_request->get( 'action' ) && is_array( $_post->get( 'opti
 
 	switch_to_blog( $id );
 
-	$skip_options = array( 'allowedthemes' ); // Don't update these options since they are handled elsewhere in the form.
+	// Don't update these options since they are handled elsewhere in the form.
+	$skip_options = array( 'allowedthemes' );
 	foreach ( (array) $_post->get( 'option' ) as $key => $val ) {
 		$key = wp_unslash( $key );
 		$val = wp_unslash( $val );
-		if ( $key === 0 || is_array( $val ) || in_array($key, $skip_options) )
-			continue; // Avoids "0 is a protected WP option and may not be modified" error when edit blog options
+		if ( $key === 0 || is_array( $val ) || in_array($key, $skip_options) ) {
+			// Avoids "0 is a protected WP option and may not be modified" error when edit blog options
+			continue;
+		}
 		update_option( $key, $val );
 	}
 
@@ -92,8 +96,9 @@ network_edit_site_nav( array(
 ) );
 
 if ( ! empty( $messages ) ) {
-	foreach ( $messages as $msg )
+	foreach ( $messages as $msg ) {
 		echo '<div id="message" class="updated notice is-dismissible"><p>' . $msg . '</p></div>';
+	}
 } ?>
 <form method="post" action="site-settings.php?action=update-site">
 	<?php wp_nonce_field( 'edit-site' ); ?>
@@ -110,8 +115,9 @@ if ( ! empty( $messages ) ) {
 		);
 		$options = $wpdb->get_results( $query );
 		foreach ( $options as $option ) {
-			if ( $option->option_name == 'default_role' )
+			if ( $option->option_name == 'default_role' ) {
 				$editblog_default_role = $option->option_value;
+			}
 			$disabled = false;
 			$class = 'all-options';
 			if ( is_serialized( $option->option_value ) ) {

@@ -41,9 +41,10 @@ class WP_Upgrader_Skin {
 	/**
 	 * @param WP_Upgrader $upgrader
 	 */
-	public function set_upgrader(&$upgrader) {
-		if ( is_object($upgrader) )
+	public function set_upgrader( &$upgrader ) {
+		if ( is_object($upgrader) ) {
 			$this->upgrader =& $upgrader;
+		}
 		$this->add_strings();
 	}
 
@@ -123,16 +124,18 @@ class WP_Upgrader_Skin {
 	 * @param string|Error $errors
 	 */
 	public function error($errors) {
-		if ( ! $this->done_header )
+		if ( ! $this->done_header ) {
 			$this->header();
+		}
 		if ( is_string($errors) ) {
 			$this->feedback($errors);
 		} elseif ( is_wp_error($errors) && $errors->get_error_code() ) {
 			foreach ( $errors->get_error_messages() as $message ) {
-				if ( $errors->get_error_data() && is_string( $errors->get_error_data() ) )
+				if ( $errors->get_error_data() && is_string( $errors->get_error_data() ) ) {
 					$this->feedback($message . ' ' . esc_html( strip_tags( $errors->get_error_data() ) ) );
-				else
+				} else {
 					$this->feedback($message);
+				}
 			}
 		}
 	}
@@ -142,8 +145,9 @@ class WP_Upgrader_Skin {
 	 * @param string $string
 	 */
 	public function feedback($string) {
-		if ( isset( $this->upgrader->strings[$string] ) )
+		if ( isset( $this->upgrader->strings[$string] ) ) {
 			$string = $this->upgrader->strings[$string];
+		}
 
 		if ( strpos($string, '%') !== false ) {
 			$args = func_get_args();
@@ -154,8 +158,9 @@ class WP_Upgrader_Skin {
 				$string = vsprintf($string, $args);
 			}
 		}
-		if ( empty($string) )
+		if ( empty($string) ) {
 			return;
+		}
 		show_message($string);
 	}
 
