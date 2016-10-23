@@ -722,8 +722,9 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 
 		echo "</tr>";
 
-		if ( $this->is_site_themes )
+		if ( $this->is_site_themes ) {
 			remove_action( "after_theme_row_$stylesheet", 'wp_theme_update_row' );
+		}
 
 		/**
 		 * Fires after each row in the Multisite themes list table.
