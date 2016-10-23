@@ -11,8 +11,9 @@ use WP\Admin\View\Post as PostView;
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! $typenow )
+if ( ! $typenow ) {
 	wp_die( __( 'Invalid post type.' ) );
+}
 
 if ( ! in_array( $typenow, get_post_types( array( 'show_ui' => true ) ) ) ) {
 	wp_die( __( 'Sorry, you are not allowed to edit posts in this post type.' ) );
@@ -24,8 +25,9 @@ if ( 'attachment' === $typenow && wp_redirect( admin_url( 'upload.php' ) ) ) {
 
 $post_type_object = get_post_type_object( $typenow );
 
-if ( ! $post_type_object )
+if ( ! $post_type_object ) {
 	wp_die( __( 'Invalid post type.' ) );
+}
 
 if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
 	wp_die(
@@ -71,11 +73,13 @@ if ( $doaction ) {
 		[ 'trashed', 'untrashed', 'deleted', 'locked', 'ids' ],
 		wp_get_referer()
 	);
-	if ( ! $sendback )
+	if ( ! $sendback ) {
 		$sendback = admin_url( $app->get( 'parent_file' ) );
+	}
 	$sendback = add_query_arg( 'paged', $pagenum, $sendback );
-	if ( strpos($sendback, 'post.php') !== false )
+	if ( strpos($sendback, 'post.php') !== false ) {
 		$sendback = admin_url($post_new_file);
+	}
 
 	if ( 'delete_all' == $doaction ) {
 		// Prepare for deletion of all posts with a specified post status (i.e. Empty trash).
@@ -104,16 +108,18 @@ if ( $doaction ) {
 		$trashed = $locked = 0;
 
 		foreach ( (array) $post_ids as $post_id ) {
-			if ( !current_user_can( 'delete_post', $post_id) )
+			if ( !current_user_can( 'delete_post', $post_id) ) {
 				wp_die( __('Sorry, you are not allowed to move this item to the Trash.') );
+			}
 
 			if ( wp_check_post_lock( $post_id ) ) {
 				$locked++;
 				continue;
 			}
 
-			if ( !wp_trash_post($post_id) )
+			if ( !wp_trash_post($post_id) ) {
 				wp_die( __('Error in moving to Trash.') );
+			}
 
 			$trashed++;
 		}
@@ -123,11 +129,13 @@ if ( $doaction ) {
 	case 'untrash':
 		$untrashed = 0;
 		foreach ( (array) $post_ids as $post_id ) {
-			if ( !current_user_can( 'delete_post', $post_id) )
+			if ( !current_user_can( 'delete_post', $post_id) ) {
 				wp_die( __('Sorry, you are not allowed to restore this item from the Trash.') );
+			}
 
-			if ( !wp_untrash_post($post_id) )
+			if ( !wp_untrash_post($post_id) ) {
 				wp_die( __('Error in restoring from Trash.') );
+			}
 
 			$untrashed++;
 		}
@@ -138,15 +146,18 @@ if ( $doaction ) {
 		foreach ( (array) $post_ids as $post_id ) {
 			$post_del = get_post($post_id);
 
-			if ( !current_user_can( 'delete_post', $post_id ) )
+			if ( !current_user_can( 'delete_post', $post_id ) ) {
 				wp_die( __('Sorry, you are not allowed to delete this item.') );
+			}
 
 			if ( $post_del->post_type == 'attachment' ) {
-				if ( ! wp_delete_attachment($post_id) )
+				if ( ! wp_delete_attachment($post_id) ) {
 					wp_die( __('Error in deleting.') );
+				}
 			} else {
-				if ( !wp_delete_post($post_id) )
+				if ( !wp_delete_post($post_id) ) {
 					wp_die( __('Error in deleting.') );
+				}
 			}
 			$deleted++;
 		}

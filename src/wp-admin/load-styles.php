@@ -31,8 +31,9 @@ if ( is_array( $load ) ) {
 $load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
 $load = array_unique( explode( ',', $load ) );
 
-if ( empty($load) )
+if ( empty($load) ) {
 	exit;
+}
 
 $compress = ( $_get->get( 'c' ) );
 $force_gzip = ( $compress && 'gzip' == $_get->get( 'c' ) );
@@ -53,8 +54,9 @@ if ( stripslashes( $_server->get( 'HTTP_IF_NONE_MATCH' ) ) === $app['wp_version'
 }
 
 foreach ( $load as $handle ) {
-	if ( !array_key_exists($handle, $wp_styles->registered) )
+	if ( !array_key_exists($handle, $wp_styles->registered) ) {
 		continue;
+	}
 
 	$style = $wp_styles->registered[$handle];
 

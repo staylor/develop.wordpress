@@ -21,16 +21,18 @@ case 'editattachment' :
 	$attachment_id = $_post->getInt( 'attachment_id' );
 	check_admin_referer('media-form');
 
-	if ( !current_user_can('edit_post', $attachment_id) )
+	if ( !current_user_can('edit_post', $attachment_id) ) {
 		wp_die ( __('Sorry, you are not allowed to edit this attachment.') );
+	}
 
 	$errors = media_upload_form_handler();
 
 	if ( empty($errors) ) {
 		$location = 'media.php';
 		if ( $referer = wp_get_original_referer() ) {
-			if ( false !== strpos($referer, 'upload.php') || ( url_to_postid($referer) == $attachment_id )  )
+			if ( false !== strpos($referer, 'upload.php') || ( url_to_postid($referer) == $attachment_id )  ) {
 				$location = $referer;
+			}
 		}
 		if ( false !== strpos($location, 'upload.php') ) {
 			$location = remove_query_arg('message', $location);
@@ -46,8 +48,9 @@ case 'editattachment' :
 case 'edit' :
 	$app->set( 'title', __( 'Edit Media' ) );
 
-	if ( empty($errors) )
+	if ( empty($errors) ) {
 		$errors = null;
+	}
 
 	if ( empty( $_get->get( 'attachment_id' ) ) ) {
 		wp_redirect( admin_url('upload.php') );
@@ -55,14 +58,21 @@ case 'edit' :
 	}
 	$att_id = $_get->getInt( 'attachment_id' );
 
-	if ( !current_user_can('edit_post', $att_id) )
+	if ( !current_user_can('edit_post', $att_id) ) {
 		wp_die ( __('Sorry, you are not allowed to edit this attachment.') );
+	}
 
 	$att = get_post($att_id);
 
-	if ( empty($att->ID) ) wp_die( __('You attempted to edit an attachment that doesn&#8217;t exist. Perhaps it was deleted?') );
-	if ( 'attachment' !== $att->post_type ) wp_die( __('You attempted to edit an item that isn&#8217;t an attachment. Please go back and try again.') );
-	if ( $att->post_status == 'trash' ) wp_die( __('You can&#8217;t edit this attachment because it is in the Trash. Please move it out of the Trash and try again.') );
+	if ( empty($att->ID) ) {
+		wp_die( __('You attempted to edit an attachment that doesn&#8217;t exist. Perhaps it was deleted?') );
+	}
+	if ( 'attachment' !== $att->post_type ) {
+		wp_die( __('You attempted to edit an item that isn&#8217;t an attachment. Please go back and try again.') );
+	}
+	if ( $att->post_status == 'trash' ) {
+		wp_die( __('You can&#8217;t edit this attachment because it is in the Trash. Please move it out of the Trash and try again.') );
+	}
 
 	add_filter('attachment_fields_to_edit', 'media_single_attachment_fields_to_edit', 10, 2);
 
@@ -86,8 +96,9 @@ case 'edit' :
 			break;
 		}
 	}
-	if ( $message )
+	if ( $message ) {
 		echo "<div id='message' class='$class'><p>$message</p></div>\n";
+	}
 
 ?>
 

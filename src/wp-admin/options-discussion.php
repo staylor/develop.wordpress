@@ -11,8 +11,9 @@ use WP\Option\Admin\Help as OptionHelp;
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can( 'manage_options' ) )
+if ( ! current_user_can( 'manage_options' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
+}
 
 $app->set( 'title', __( 'Discussion Settings' ) );
 $app->set( 'parent_file', 'options-general.php' );
@@ -58,7 +59,10 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 <label for="comment_registration">
 <input name="comment_registration" type="checkbox" id="comment_registration" value="1" <?php checked('1', get_option('comment_registration')); ?> />
 <?php _e('Users must be registered and logged in to comment'); ?>
-<?php if ( !get_option( 'users_can_register' ) && is_multisite() ) echo ' ' . __( '(Signup has been disabled. Only members of this site can comment.)' ); ?>
+<?php if ( !get_option( 'users_can_register' ) && is_multisite() ) {
+	echo ' ' . __( '(Signup has been disabled. Only members of this site can comment.)' );
+}
+?>
 </label>
 <br />
 
@@ -82,7 +86,9 @@ $maxdeep = (int) apply_filters( 'thread_comments_depth_max', 10 );
 $thread_comments_depth = '</label><label for="thread_comments_depth"><select name="thread_comments_depth" id="thread_comments_depth">';
 for ( $i = 2; $i <= $maxdeep; $i++ ) {
 	$thread_comments_depth .= "<option value='" . esc_attr($i) . "'";
-	if ( get_option('thread_comments_depth') == $i ) $thread_comments_depth .= " selected='selected'";
+	if ( get_option('thread_comments_depth') == $i ) {
+		$thread_comments_depth .= " selected='selected'";
+	}
 	$thread_comments_depth .= ">$i</option>";
 }
 $thread_comments_depth .= '</select>';
@@ -95,9 +101,13 @@ printf( __('Enable threaded (nested) comments %s levels deep'), $thread_comments
 <input name="page_comments" type="checkbox" id="page_comments" value="1" <?php checked( '1', get_option( 'page_comments' ) ); ?> />
 <?php
 $default_comments_page = '</label><label for="default_comments_page"><select name="default_comments_page" id="default_comments_page"><option value="newest"';
-if ( 'newest' == get_option('default_comments_page') ) $default_comments_page .= ' selected="selected"';
+if ( 'newest' == get_option('default_comments_page') ) {
+	$default_comments_page .= ' selected="selected"';
+}
 $default_comments_page .= '>' . __('last') . '</option><option value="oldest"';
-if ( 'oldest' == get_option('default_comments_page') ) $default_comments_page .= ' selected="selected"';
+if ( 'oldest' == get_option('default_comments_page') ) {
+	$default_comments_page .= ' selected="selected"';
+}
 $default_comments_page .= '>' . __('first') . '</option></select>';
 
 printf( __('Break comments into pages with %1$s top level comments per page and the %2$s page displayed by default'), '</label><label for="comments_per_page"><input name="comments_per_page" type="number" step="1" min="0" id="comments_per_page" value="' . esc_attr(get_option('comments_per_page')) . '" class="small-text" />', $default_comments_page );
@@ -107,9 +117,13 @@ printf( __('Break comments into pages with %1$s top level comments per page and 
 <label for="comment_order"><?php
 
 $comment_order = '<select name="comment_order" id="comment_order"><option value="asc"';
-if ( 'asc' == get_option('comment_order') ) $comment_order .= ' selected="selected"';
+if ( 'asc' == get_option('comment_order') ) {
+	$comment_order .= ' selected="selected"';
+}
 $comment_order .= '>' . __('older') . '</option><option value="desc"';
-if ( 'desc' == get_option('comment_order') ) $comment_order .= ' selected="selected"';
+if ( 'desc' == get_option('comment_order') ) {
+	$comment_order .= ' selected="selected"';
+}
 $comment_order .= '>' . __('newer') . '</option></select>';
 
 printf( __('Comments should be displayed with the %s comments at the top of each page'), $comment_order );
@@ -182,7 +196,10 @@ $show_avatars = get_option( 'show_avatars' );
 	</label>
 </fieldset></td>
 </tr>
-<tr class="avatar-settings<?php if ( ! $show_avatars ) echo ' hide-if-js'; ?>">
+<tr class="avatar-settings<?php if ( ! $show_avatars ) {
+	echo ' hide-if-js';
+}
+?>">
 <th scope="row"><?php _e('Maximum Rating'); ?></th>
 <td><fieldset><legend class="screen-reader-text"><span><?php _e('Maximum Rating'); ?></span></legend>
 
@@ -205,7 +222,10 @@ endforeach;
 
 </fieldset></td>
 </tr>
-<tr class="avatar-settings<?php if ( ! $show_avatars ) echo ' hide-if-js'; ?>">
+<tr class="avatar-settings<?php if ( ! $show_avatars ) {
+	echo ' hide-if-js';
+}
+?>">
 <th scope="row"><?php _e('Default Avatar'); ?></th>
 <td class="defaultavatarpicker"><fieldset><legend class="screen-reader-text"><span><?php _e('Default Avatar'); ?></span></legend>
 

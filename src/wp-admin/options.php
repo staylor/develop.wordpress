@@ -96,8 +96,9 @@ $whitelist_options['misc'] = $whitelist_options['options'] = $whitelist_options[
 
 $mail_options = array('mailserver_url', 'mailserver_port', 'mailserver_login', 'mailserver_pass');
 
-if ( ! in_array( get_option( 'blog_charset' ), array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' ) ) )
+if ( ! in_array( get_option( 'blog_charset' ), array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' ) ) ) {
 	$whitelist_options['reading'][] = 'blog_charset';
+}
 
 if ( get_site_option( 'initial_db_version' ) < 32453 ) {
 	$whitelist_options['writing'][] = 'use_smilies';
@@ -105,10 +106,12 @@ if ( get_site_option( 'initial_db_version' ) < 32453 ) {
 }
 
 if ( !is_multisite() ) {
-	if ( !defined( 'WP_SITEURL' ) )
+	if ( !defined( 'WP_SITEURL' ) ) {
 		$whitelist_options['general'][] = 'siteurl';
-	if ( !defined( 'WP_HOME' ) )
+	}
+	if ( !defined( 'WP_HOME' ) ) {
 		$whitelist_options['general'][] = 'home';
+	}
 
 	$whitelist_options['general'][] = 'admin_email';
 	$whitelist_options['general'][] = 'users_can_register';
@@ -134,8 +137,9 @@ if ( !is_multisite() ) {
 	 *
 	 * @param bool $enabled Whether post-by-email configuration is enabled. Default true.
 	 */
-	if ( apply_filters( 'enable_post_by_email_configuration', true ) )
+	if ( apply_filters( 'enable_post_by_email_configuration', true ) ) {
 		$whitelist_options['writing'] = array_merge($whitelist_options['writing'], $mail_options);
+	}
 }
 
 /**
@@ -160,12 +164,14 @@ if ( 'update' == $action ) {
 		check_admin_referer( $option_page . '-options' );
 	}
 
-	if ( !isset( $whitelist_options[ $option_page ] ) )
+	if ( !isset( $whitelist_options[ $option_page ] ) ) {
 		wp_die( __( '<strong>ERROR</strong>: options page not found.' ) );
+	}
 
 	if ( 'options' == $option_page ) {
-		if ( is_multisite() && ! is_super_admin() )
+		if ( is_multisite() && ! is_super_admin() ) {
 			wp_die( __( 'Sorry, you are not allowed to modify unregistered settings for this site.' ) );
+		}
 		$options = explode( ',', wp_unslash( $_post->get( 'page_options' ) ) );
 	} else {
 		$options = $whitelist_options[ $option_page ];
@@ -173,10 +179,12 @@ if ( 'update' == $action ) {
 
 	if ( 'general' == $option_page ) {
 		// Handle custom date/time formats.
-		if ( $_post->get( 'date_format' ) && $_post->get( 'date_format_custom' ) && '\c\u\s\t\o\m' == wp_unslash( $_post->get( 'date_format' ) ) )
+		if ( $_post->get( 'date_format' ) && $_post->get( 'date_format_custom' ) && '\c\u\s\t\o\m' == wp_unslash( $_post->get( 'date_format' ) ) ) {
 			$_post->set( 'date_format', $_post->get( 'date_format_custom' ) );
-		if ( $_post->get( 'time_format' ) && $_post->get( 'time_format_custom' ) && '\c\u\s\t\o\m' == wp_unslash( $_post->get( 'time_format' ) ) )
+		}
+		if ( $_post->get( 'time_format' ) && $_post->get( 'time_format_custom' ) && '\c\u\s\t\o\m' == wp_unslash( $_post->get( 'time_format' ) ) ) {
 			$_post->set( 'time_format', $_post->get( 'time_format_custom' ) );
+		}
 		// Map UTC+- timezones to gmt_offsets and set timezone_string to empty.
 		if ( $_post->get( 'timezone_string' ) && preg_match('/^UTC[+-]/', $_post->get( 'timezone_string' ) ) ) {
 			$_post->set( 'gmt_offset', $_post->get( 'timezone_string' ) );
@@ -238,8 +246,9 @@ if ( 'update' == $action ) {
 	 * Handle settings errors and return to options page
 	 */
 	// If no settings errors were registered add a general 'updated' message.
-	if ( !count( get_settings_errors() ) )
+	if ( !count( get_settings_errors() ) ) {
 		add_settings_error('general', 'settings_updated', __('Settings saved.'), 'updated');
+	}
 	set_transient('settings_errors', get_settings_errors(), 30);
 
 	/**
@@ -264,8 +273,9 @@ $options = $wpdb->get_results( "SELECT * FROM $wpdb->options ORDER BY option_nam
 
 foreach ( (array) $options as $option ) :
 	$disabled = false;
-	if ( $option->option_name == '' )
+	if ( $option->option_name == '' ) {
 		continue;
+	}
 	if ( is_serialized( $option->option_value ) ) {
 		if ( is_serialized_string( $option->option_value ) ) {
 			// This is a serialized string, so we should display it.
@@ -287,13 +297,13 @@ foreach ( (array) $options as $option ) :
 <tr>
 	<th scope="row"><label for="<?php echo $name ?>"><?php echo esc_html( $option->option_name ); ?></label></th>
 <td>
-<?php if ( strpos( $value, "\n" ) !== false ) : ?>
+<?php if ( strpos( $value, "\n" ) !== false ) { ?>
 	<textarea class="<?php echo $class ?>" name="<?php echo $name ?>" id="<?php echo $name ?>" cols="30" rows="5"><?php
 		echo esc_textarea( $value );
 	?></textarea>
-	<?php else: ?>
+	<?php } else { ?>
 		<input class="regular-text <?php echo $class ?>" type="text" name="<?php echo $name ?>" id="<?php echo $name ?>" value="<?php echo esc_attr( $value ) ?>"<?php disabled( $disabled, true ) ?> />
-	<?php endif ?></td>
+	<?php } ?></td>
 </tr>
 <?php endforeach; ?>
   </table>

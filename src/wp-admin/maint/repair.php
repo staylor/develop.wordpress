@@ -151,8 +151,9 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 	if ( $problems ) {
 		printf( '<p>' . __('Some database problems could not be repaired. Please copy-and-paste the following list of errors to the <a href="%s">WordPress support forums</a> to get additional assistance.') . '</p>', __( 'https://wordpress.org/support/forum/how-to-and-troubleshooting' ) );
 		$problem_output = '';
-		foreach ( $problems as $table => $problem )
+		foreach ( $problems as $table => $problem ) {
 			$problem_output .= "$table: $problem\n";
+		}
 		echo '<p><textarea name="errors" id="errors" rows="20" cols="60">' . esc_textarea( $problem_output ) . '</textarea></p>';
 	} else {
 		echo '<p>' . __( 'Repairs complete. Please remove the following line from wp-config.php to prevent this page from being used by unauthorized users.' ) . "</p><p><code>define('WP_ALLOW_REPAIR', true);</code></p>";
@@ -161,11 +162,12 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 
 	echo '<h1 class="screen-reader-text">' . __( 'WordPress database repair' ) . '</h1>';
 
-	if ( 'is_blog_installed' == $_get->get( 'referrer' ) )
+	if ( 'is_blog_installed' == $_get->get( 'referrer' ) ) {
 		echo '<p>' . __( 'One or more database tables are unavailable. To allow WordPress to attempt to repair these tables, press the &#8220;Repair Database&#8221; button. Repairing can take a while, so please be patient.' ) . '</p>';
-	else
+	} else {
 		echo '<p>' . __( 'WordPress can automatically look for some common database problems and repair them. Repairing can take a while, so please be patient.' ) . '</p>';
-?>
+	}
+	?>
 	<p class="step"><a class="button button-large" href="repair.php?repair=1"><?php _e( 'Repair Database' ); ?></a></p>
 	<p><?php _e( 'WordPress can also attempt to optimize the database. This improves performance in some situations. Repairing and optimizing the database can take a long time and the database will be locked while optimizing.' ); ?></p>
 	<p class="step"><a class="button button-large" href="repair.php?repair=2"><?php _e( 'Repair and Optimize Database' ); ?></a></p>

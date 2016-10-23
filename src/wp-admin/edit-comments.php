@@ -115,8 +115,9 @@ if ( $error ) {
 		$error_msg = __( 'Sorry, you are not allowed to edit comments on this post.' );
 		break;
 	}
-	if ( $error_msg )
+	if ( $error_msg ) {
 		echo '<div id="moderated" class="error"><p>' . $error_msg . '</p></div>';
+	}
 }
 
 $messages = $view->getEditMessages();
