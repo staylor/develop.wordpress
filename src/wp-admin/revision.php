@@ -26,20 +26,24 @@ wp_reset_vars( array( 'revision', 'action', 'from', 'to' ) );
 $revision_id = absint( $revision );
 
 $from = is_numeric( $from ) ? absint( $from ) : null;
-if ( ! $revision_id )
+if ( ! $revision_id ) {
 	$revision_id = absint( $to );
+}
 $redirect = 'edit.php';
 
 switch ( $action ) {
 case 'restore' :
-	if ( ! $revision = wp_get_post_revision( $revision_id ) )
+	if ( ! $revision = wp_get_post_revision( $revision_id ) ) {
 		break;
+	}
 
-	if ( ! current_user_can( 'edit_post', $revision->post_parent ) )
+	if ( ! current_user_can( 'edit_post', $revision->post_parent ) ) {
 		break;
+	}
 
-	if ( ! $post = get_post( $revision->post_parent ) )
+	if ( ! $post = get_post( $revision->post_parent ) ) {
 		break;
+	}
 
 	// Restore if revisions are enabled or this is an autosave.
 	if ( ! wp_revisions_enabled( $post ) && ! wp_is_post_autosave( $revision ) ) {
@@ -48,8 +52,9 @@ case 'restore' :
 	}
 
 	// Don't allow revision restore when post is locked
-	if ( wp_check_post_lock( $post->ID ) )
+	if ( wp_check_post_lock( $post->ID ) ) {
 		break;
+	}
 
 	check_admin_referer( "restore-post_{$revision->ID}" );
 
@@ -59,13 +64,16 @@ case 'restore' :
 case 'view' :
 case 'edit' :
 default :
-	if ( ! $revision = wp_get_post_revision( $revision_id ) )
+	if ( ! $revision = wp_get_post_revision( $revision_id ) ) {
 		break;
-	if ( ! $post = get_post( $revision->post_parent ) )
+	}
+	if ( ! $post = get_post( $revision->post_parent ) ) {
 		break;
+	}
 
-	if ( ! current_user_can( 'read_post', $revision->ID ) || ! current_user_can( 'edit_post', $revision->post_parent ) )
+	if ( ! current_user_can( 'read_post', $revision->ID ) || ! current_user_can( 'edit_post', $revision->post_parent ) ) {
 		break;
+	}
 
 	// Revisions disabled and we're not looking at an autosave
 	if ( ! wp_revisions_enabled( $post ) && ! wp_is_post_autosave( $revision ) ) {
@@ -84,8 +92,9 @@ default :
 }
 
 // Empty post_type means either malformed object found, or no valid parent was found.
-if ( ! $redirect && empty( $post->post_type ) )
+if ( ! $redirect && empty( $post->post_type ) ) {
 	$redirect = 'edit.php';
+}
 
 if ( ! empty( $redirect ) ) {
 	wp_redirect( $redirect );

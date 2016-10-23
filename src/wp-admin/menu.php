@@ -28,16 +28,18 @@ if ( is_multisite() ) {
 	$app->submenu[ 'index.php' ][5] = array( __('My Sites'), 'read', 'my-sites.php' );
 }
 
-if ( ! is_multisite() || is_super_admin() )
+if ( ! is_multisite() || is_super_admin() ) {
 	$update_data = wp_get_update_data();
+}
 
 if ( ! is_multisite() ) {
-	if ( current_user_can( 'update_core' ) )
+	if ( current_user_can( 'update_core' ) ) {
 		$cap = 'update_core';
-	elseif ( current_user_can( 'update_plugins' ) )
+	} elseif ( current_user_can( 'update_plugins' ) ) {
 		$cap = 'update_plugins';
-	else
+	} else {
 		$cap = 'update_themes';
+	}
 	$app->submenu[ 'index.php' ][10] = array( sprintf( __('Updates %s'), "<span class='update-plugins count-{$update_data['counts']['total']}' title='{$update_data['title']}'><span class='update-count'>" . number_format_i18n($update_data['counts']['total']) . "</span></span>" ), $cap, 'update-core.php');
 	unset( $cap );
 }
@@ -52,8 +54,9 @@ $app->menu[10] = array( __('Media'), 'upload_files', 'upload.php', '', 'menu-top
 	$app->submenu['upload.php'][10] = array( _x('Add New', 'file'), 'upload_files', 'media-new.php');
 	$i = 15;
 	foreach ( get_taxonomies_for_attachments( 'objects' ) as $tax ) {
-		if ( ! $tax->show_ui || ! $tax->show_in_menu )
+		if ( ! $tax->show_ui || ! $tax->show_in_menu ) {
 			continue;
+		}
 
 		$app->submenu['upload.php'][$i++] = array( esc_attr( $tax->labels->menu_name ), $tax->cap->manage_terms, 'edit-tags.php?taxonomy=' . $tax->name . '&amp;post_type=attachment' );
 	}
@@ -92,8 +95,9 @@ $builtin = array( 'post', 'page' );
 foreach ( array_merge( $builtin, $types ) as $ptype ) {
 	$ptype_obj = get_post_type_object( $ptype );
 	// Check if it should be a submenu.
-	if ( $ptype_obj->show_in_menu !== true )
+	if ( $ptype_obj->show_in_menu !== true ) {
 		continue;
+	}
 	$ptype_menu_position = is_int( $ptype_obj->menu_position ) ? $ptype_obj->menu_position : ++$_wp_last_object_menu; // If we're to use $_wp_last_object_menu, increment it first.
 	$ptype_for_id = sanitize_html_class( $ptype );
 
@@ -132,8 +136,9 @@ foreach ( array_merge( $builtin, $types ) as $ptype ) {
 	 * by a hard-coded value below, increment the position.
 	 */
 	$core_menu_positions = array(59, 60, 65, 70, 75, 80, 85, 99);
-	while ( isset($app->menu[$ptype_menu_position]) || in_array($ptype_menu_position, $core_menu_positions) )
+	while ( isset($app->menu[$ptype_menu_position]) || in_array($ptype_menu_position, $core_menu_positions) ) {
 		$ptype_menu_position++;
+	}
 
 	$app->menu[$ptype_menu_position] = array( esc_attr( $ptype_obj->labels->menu_name ), $ptype_obj->cap->edit_posts, $ptype_file, '', $menu_class, $ptype_menu_id, $menu_icon );
 	$app->submenu[ $ptype_file ][5]  = array( $ptype_obj->labels->all_items, $ptype_obj->cap->edit_posts,  $ptype_file );
@@ -141,8 +146,9 @@ foreach ( array_merge( $builtin, $types ) as $ptype ) {
 
 	$i = 15;
 	foreach ( get_taxonomies( [], 'objects' ) as $tax ) {
-		if ( ! $tax->show_ui || ! $tax->show_in_menu || ! in_array($ptype, (array) $tax->object_type, true) )
+		if ( ! $tax->show_ui || ! $tax->show_in_menu || ! in_array($ptype, (array) $tax->object_type, true) ) {
 			continue;
+		}
 
 		$app->submenu[ $ptype_file ][$i++] = array( esc_attr( $tax->labels->menu_name ), $tax->cap->manage_terms, sprintf( $edit_tags_file, $tax->name ) );
 	}
@@ -194,8 +200,9 @@ function _add_themes_utility_last() {
 
 $count = '';
 if ( ! is_multisite() && current_user_can( 'update_plugins' ) ) {
-	if ( ! isset( $update_data ) )
+	if ( ! isset( $update_data ) ) {
 		$update_data = wp_get_update_data();
+	}
 	$count = "<span class='update-plugins count-{$update_data['counts']['plugins']}'><span class='plugin-count'>" . number_format_i18n($update_data['counts']['plugins']) . "</span></span>";
 }
 
@@ -211,10 +218,11 @@ $app->submenu['plugins.php'][5]  = array( __('Installed Plugins'), 'activate_plu
 
 unset( $update_data );
 
-if ( current_user_can('list_users') )
+if ( current_user_can('list_users') ) {
 	$app->menu[70] = array( __('Users'), 'list_users', 'users.php', '', 'menu-top menu-icon-users', 'menu-users', 'dashicons-admin-users' );
-else
+} else {
 	$app->menu[70] = array( __('Profile'), 'read', 'profile.php', '', 'menu-top menu-icon-users', 'menu-users', 'dashicons-admin-users' );
+}
 
 if ( current_user_can('list_users') ) {
 	$app->submenu['users.php'][5] = array(__('All Users'), 'list_users', 'users.php');
@@ -238,10 +246,12 @@ $app->menu[75] = array( __('Tools'), 'edit_posts', 'tools.php', '', 'menu-top me
 	$app->submenu['tools.php'][5] = array( __('Available Tools'), 'edit_posts', 'tools.php' );
 	$app->submenu['tools.php'][10] = array( __('Import'), 'import', 'import.php' );
 	$app->submenu['tools.php'][15] = array( __('Export'), 'export', 'export.php' );
-	if ( is_multisite() && !is_main_site() )
+	if ( is_multisite() && !is_main_site() ) {
 		$app->submenu['tools.php'][25] = array( __('Delete Site'), 'delete_site', 'ms-delete-site.php' );
-	if ( ! is_multisite() && defined('WP_ALLOW_MULTISITE') && WP_ALLOW_MULTISITE )
+	}
+	if ( ! is_multisite() && defined('WP_ALLOW_MULTISITE') && WP_ALLOW_MULTISITE ) {
 		$app->submenu['tools.php'][50] = array(__('Network Setup'), 'manage_options', 'network.php');
+	}
 
 $app->menu[80] = array( __('Settings'), 'manage_options', 'options-general.php', '', 'menu-top menu-icon-settings', 'menu-settings', 'dashicons-admin-settings' );
 	$app->submenu['options-general.php'][10] = array(_x('General', 'settings screen'), 'manage_options', 'options-general.php');

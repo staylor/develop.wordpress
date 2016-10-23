@@ -11,8 +11,9 @@ use WP\Option\Admin\Help as OptionHelp;
 /** WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can( 'manage_options' ) )
+if ( ! current_user_can( 'manage_options' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
+}
 
 $app->set( 'title', __( 'Reading Settings' ) );
 $app->set( 'parent_file', 'options-general.php' );
@@ -32,11 +33,12 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 <?php
 settings_fields( 'reading' );
 
-if ( ! in_array( get_option( 'blog_charset' ), array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' ) ) )
+if ( ! in_array( get_option( 'blog_charset' ), array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' ) ) ) {
 	add_settings_field( 'blog_charset', __( 'Encoding for pages and feeds' ), 'options_reading_blog_charset', 'reading', 'default', array( 'label_for' => 'blog_charset' ) );
+}
 ?>
 
-<?php if ( ! get_pages() ) : ?>
+<?php if ( ! get_pages() ) { ?>
 <input name="show_on_front" type="hidden" value="posts" />
 <table class="form-table">
 <?php
@@ -44,7 +46,7 @@ if ( ! in_array( get_option( 'blog_charset' ), array( 'utf8', 'utf-8', 'UTF8', '
 		update_option( 'show_on_front', 'posts' );
 	endif;
 
-else :
+} else {
 	if ( 'page' == get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) && ! get_option( 'page_for_posts' ) )
 		update_option( 'show_on_front', 'posts' );
 ?>
@@ -71,7 +73,7 @@ else :
 <?php endif; ?>
 </fieldset></td>
 </tr>
-<?php endif; ?>
+<?php } ?>
 <tr>
 <th scope="row"><label for="posts_per_page"><?php _e( 'Blog pages show at most' ); ?></label></th>
 <td>
@@ -93,7 +95,7 @@ else :
 <tr class="option-site-visibility">
 <th scope="row"><?php has_action( 'blog_privacy_selector' ) ? _e( 'Site Visibility' ) : _e( 'Search Engine Visibility' ); ?> </th>
 <td><fieldset><legend class="screen-reader-text"><span><?php has_action( 'blog_privacy_selector' ) ? _e( 'Site Visibility' ) : _e( 'Search Engine Visibility' ); ?> </span></legend>
-<?php if ( has_action( 'blog_privacy_selector' ) ) : ?>
+<?php if ( has_action( 'blog_privacy_selector' ) ) { ?>
 	<input id="blog-public" type="radio" name="blog_public" value="1" <?php checked('1', get_option('blog_public')); ?> />
 	<label for="blog-public"><?php _e( 'Allow search engines to index this site' );?></label><br/>
 	<input id="blog-norobots" type="radio" name="blog_public" value="0" <?php checked('0', get_option('blog_public')); ?> />
@@ -115,11 +117,11 @@ else :
 	 */
 	do_action( 'blog_privacy_selector' );
 	?>
-<?php else : ?>
+<?php } else { ?>
 	<label for="blog_public"><input name="blog_public" type="checkbox" id="blog_public" value="0" <?php checked( '0', get_option( 'blog_public' ) ); ?> />
 	<?php _e( 'Discourage search engines from indexing this site' ); ?></label>
 	<p class="description"><?php _e( 'It is up to search engines to honor this request.' ); ?></p>
-<?php endif; ?>
+<?php } ?>
 </fieldset></td>
 </tr>
 

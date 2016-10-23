@@ -6,8 +6,9 @@
  * @subpackage Administration
  */
 
-if ( ! defined('ABSPATH') )
+if ( ! defined('ABSPATH') ) {
 	die();
+}
 
 /**
  * @global string $opml

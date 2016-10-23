@@ -11,11 +11,13 @@ require_once( __DIR__ . '/admin.php' );
 
 $wpdb = $app['db'];
 
-if ( !is_multisite() )
+if ( !is_multisite() ) {
 	wp_die( __( 'Multisite support is not enabled.' ) );
+}
 
-if ( ! current_user_can( 'delete_site' ) )
+if ( ! current_user_can( 'delete_site' ) ) {
 	wp_die(__( 'Sorry, you are not allowed to delete this site.'));
+}
 
 if ( $_get->get( 'h' ) && $_get->get( 'h' ) != '' && get_option( 'delete_blog_hash' ) != false ) {
 	if ( hash_equals( get_option( 'delete_blog_hash' ), $_get->get( 'h' ) ) ) {
