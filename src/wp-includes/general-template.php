@@ -2859,7 +2859,7 @@ function wp_resource_hints() {
 		 */
 		$urls = apply_filters( 'wp_resource_hints', $urls, $relation_type );
 
-		foreach ( $urls as $key => $url ) {
+		foreach ( $urls as $url ) {
 			$atts = array();
 
 			if ( is_array( $url ) ) {

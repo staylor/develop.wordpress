@@ -363,11 +363,11 @@ function is_email_address_unsafe( $user_email ) {
 		$banned_names = array_map( 'strtolower', $banned_names );
 		$normalized_email = strtolower( $user_email );
 
-		list( $email_local_part, $email_domain ) = explode( '@', $normalized_email );
+		list( /*$email_local_part*/, $email_domain ) = explode( '@', $normalized_email );
 
 		foreach ( $banned_names as $banned_domain ) {
 			if ( ! $banned_domain ) {
-							continue;
+				continue;
 			}
 
 			if ( $email_domain == $banned_domain ) {
@@ -1393,7 +1393,7 @@ function install_blog( int $blog_id, $blog_title = '' ) {
 	populate_roles();
 
 	// populate_roles() clears previous role definitions so we start over.
-	$wp_roles = new WP\User\Roles();
+	$wp_roles = $app['roles'];
 
 	$siteurl = $home = untrailingslashit( $url );
 
@@ -1412,9 +1412,9 @@ function install_blog( int $blog_id, $blog_title = '' ) {
 	update_option( 'home', $home );
 
 	if ( get_site_option( 'ms_files_rewriting' ) ) {
-			update_option( 'upload_path', UPLOADBLOGSDIR . "/$blog_id/files" );
+		update_option( 'upload_path', UPLOADBLOGSDIR . "/$blog_id/files" );
 	} else {
-			update_option( 'upload_path', get_blog_option( get_network()->blog_id, 'upload_path' ) );
+		update_option( 'upload_path', get_blog_option( get_network()->blog_id, 'upload_path' ) );
 	}
 
 	update_option( 'blogname', wp_unslash( $blog_title ) );

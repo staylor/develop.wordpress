@@ -73,7 +73,7 @@ class WP_Importer {
 			$count = intval( $result[0]->cnt );
 
 		// Unset to save memory.
-		unset( $results );
+		unset( $result );
 
 		return $count;
 	}

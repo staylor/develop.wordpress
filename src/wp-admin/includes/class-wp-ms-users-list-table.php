@@ -451,7 +451,12 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 		$actions['edit'] = '<a href="' . $edit_link . '">' . __( 'Edit' ) . '</a>';
 
 		if ( current_user_can( 'delete_user', $user->ID ) && ! in_array( $user->user_login, $super_admins ) ) {
-			$actions['delete'] = '<a href="' . $delete = esc_url( network_admin_url( add_query_arg( '_wp_http_referer', urlencode( wp_unslash( $app['request.uri'] ) ), wp_nonce_url( 'users.php', 'deleteuser' ) . '&amp;action=deleteuser&amp;id=' . $user->ID ) ) ) . '" class="delete">' . __( 'Delete' ) . '</a>';
+			$url = network_admin_url( add_query_arg(
+				'_wp_http_referer',
+				urlencode( wp_unslash( $app['request.uri'] ) ),
+				wp_nonce_url( 'users.php', 'deleteuser' ) . '&amp;action=deleteuser&amp;id=' . $user->ID )
+			);
+			$actions['delete'] = '<a href="' . esc_url( $url ) . '" class="delete">' . __( 'Delete' ) . '</a>';
 		}
 
 		/**
@@ -463,7 +468,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 		 *                         Default 'Edit', 'Delete'.
 		 * @param User    $user    User object.
 		 */
-		$actions = apply_filters( 'ms_user_row_actions', $actions, $user );
-		return $this->row_actions( $actions );
+		$row_actions = apply_filters( 'ms_user_row_actions', $actions, $user );
+		return $this->row_actions( $row_actions );
 	}
 }

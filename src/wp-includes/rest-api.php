@@ -56,7 +56,7 @@ function register_rest_route( $namespace, $route, $args = [], $override = false 
 		'callback'        => null,
 		'args'            => [],
 	);
-	foreach ( $args as $key => &$arg_group ) {
+	foreach ( $args as &$arg_group ) {
 		if ( ! is_numeric( $arg_group ) ) {
 			// Route option, skip here.
 			continue;

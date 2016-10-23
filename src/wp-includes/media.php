@@ -690,7 +690,7 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 	if ( is_array( $size ) ) {
 		$candidates = [];
 
-		foreach ( $imagedata['sizes'] as $_size => $data ) {
+		foreach ( $imagedata['sizes'] as $data ) {
 			// If there's an exact match to an existing image size, short circuit.
 			if ( $data['width'] == $size[0] && $data['height'] == $size[1] ) {
 				$candidates[ $data['width'] * $data['height'] ] = $data;

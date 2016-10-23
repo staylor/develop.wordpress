@@ -471,6 +471,8 @@ class WP_Network_Query {
 			 */
 			$found_networks_query = apply_filters( 'found_networks_query', 'SELECT FOUND_ROWS()', $this );
 
+			$app = getApp();
+			$wpdb = $app['db'];
 			$this->found_networks = (int) $wpdb->get_var( $found_networks_query );
 		}
 	}

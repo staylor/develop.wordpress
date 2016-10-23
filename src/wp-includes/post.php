@@ -5433,7 +5433,7 @@ function wp_mime_type_icon( $mime = 0 ) {
 		$matches = wp_match_mime_types( array_keys( $types ), $post_mimes );
 		$matches['default'] = [ 'default' ];
 
-		foreach ( $matches as $match => $wilds ) {
+		foreach ( $matches as $wilds ) {
 			foreach ( $wilds as $wild ) {
 				if ( ! isset( $types[ $wild ] ) ) {
 					continue;

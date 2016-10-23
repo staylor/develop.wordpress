@@ -274,7 +274,7 @@ class Menu {
 				// 2 = menu_slug,
 				// 3 = page_title,
 				// 4 = classes
-				foreach ( $submenu_items as $sub_key => $sub_item ) {
+				foreach ( $submenu_items as $sub_item ) {
 					if ( ! current_user_can( $sub_item[1] ) ) {
 						continue;
 					}

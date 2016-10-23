@@ -585,7 +585,6 @@ function media_buttons($editor_id = 'content') {
 }
 
 /**
- *
  * @global int $post_ID
  * @param string $type
  * @param int $post_id
@@ -593,19 +592,17 @@ function media_buttons($editor_id = 'content') {
  * @return string
  */
 function get_upload_iframe_src( $type = null, $post_id = null, $tab = null ) {
-	global $post_ID;
-
-	if ( empty( $post_id ) )
-		$post_id = $post_ID;
-
+	if ( empty( $post_id ) ) {
+		$post_id = $GLOBALS['post_ID'];
+	}
 	$upload_iframe_src = add_query_arg( 'post_id', (int) $post_id, admin_url('media-upload.php') );
 
-	if ( $type && 'media' != $type )
+	if ( $type && 'media' !== $type ) {
 		$upload_iframe_src = add_query_arg('type', $type, $upload_iframe_src);
-
-	if ( ! empty( $tab ) )
+	}
+	if ( ! empty( $tab ) ) {
 		$upload_iframe_src = add_query_arg('tab', $tab, $upload_iframe_src);
-
+	}
 	/**
 	 * Filters the upload iframe source URL for a specific media type.
 	 *
@@ -618,7 +615,7 @@ function get_upload_iframe_src( $type = null, $post_id = null, $tab = null ) {
 	 */
 	$upload_iframe_src = apply_filters( "{$type}_upload_iframe_src", $upload_iframe_src );
 
-	return add_query_arg('TB_iframe', true, $upload_iframe_src);
+	return add_query_arg( 'TB_iframe', true, $upload_iframe_src );
 }
 
 /**

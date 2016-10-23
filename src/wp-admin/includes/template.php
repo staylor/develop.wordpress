@@ -351,7 +351,6 @@ function get_inline_data($post) {
 function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $table_row = true ) {
 	global $wp_list_table;
 
-	$app = getApp();
 	/**
 	 * Filters the in-line comment reply-to form output in the Comments
 	 * list table.
@@ -1468,16 +1467,18 @@ function settings_errors( $setting = '', $sanitize = false, $hide_on_update = fa
 	$app = getApp();
 	$_get = $app['request']->query;
 
-	if ( $hide_on_update && ! empty( $_get->get( 'settings-updated' ) ) )
+	if ( $hide_on_update && ! empty( $_get->get( 'settings-updated' ) ) ) {
 		return;
+	}
 
 	$settings_errors = get_settings_errors( $setting, $sanitize );
 
-	if ( empty( $settings_errors ) )
+	if ( empty( $settings_errors ) ) {
 		return;
+	}
 
 	$output = '';
-	foreach ( $settings_errors as $key => $details ) {
+	foreach ( $settings_errors as $details ) {
 		$css_id = 'setting-error-' . $details['code'];
 		$css_class = $details['type'] . ' settings-error notice is-dismissible';
 		$output .= "<div id='$css_id' class='$css_class'> \n";

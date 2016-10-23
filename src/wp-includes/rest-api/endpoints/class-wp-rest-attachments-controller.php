@@ -476,10 +476,10 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 				continue;
 			}
 
-			list( $type, $attr_parts ) = explode( ';', $value, 2 );
-			$attr_parts = explode( ';', $attr_parts );
+			list( /*$type*/, $attr_parts ) = explode( ';', $value, 2 );
+			$parts = explode( ';', $attr_parts );
 			$attributes = array();
-			foreach ( $attr_parts as $part ) {
+			foreach ( $parts as $part ) {
 				if ( strpos( $part, '=' ) === false ) {
 					continue;
 				}

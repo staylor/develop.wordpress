@@ -1479,7 +1479,7 @@ function wp_ajax_add_meta() {
 		}
 		if (
 			( $meta->meta_value != $value || $meta->meta_key != $key ) &&
-			! $u = update_metadata_by_mid( 'post', $mid, $value, $key )
+			! update_metadata_by_mid( 'post', $mid, $value, $key )
 		) {
 			wp_die( 0 );
 			// We know meta exists; we also know it's unchanged (or DB error, in which case there are bigger problems).
@@ -2607,7 +2607,7 @@ function wp_ajax_wp_remove_post_lock() {
 		wp_die( 0 );
 	}
 
-	if ( ! $post = get_post( $post_id ) ) {
+	if ( ! get_post( $post_id ) ) {
 		wp_die( 0 );
 	}
 
@@ -2883,8 +2883,6 @@ function wp_ajax_save_attachment_compat() {
 	$post = apply_filters( 'attachment_fields_to_save', $post, $attachment_data );
 
 	if ( isset( $post['errors'] ) ) {
-		// @todo return me and display me!
-		$errors = $post['errors'];
 		unset( $post['errors'] );
 	}
 
@@ -3185,7 +3183,7 @@ function wp_ajax_get_revision_diffs() {
 	}
 
 	// Really just pre-loading the cache here.
-	if ( ! $revisions = wp_get_post_revisions( $post->ID, array( 'check_enabled' => false ) ) ) {
+	if ( ! wp_get_post_revisions( $post->ID, array( 'check_enabled' => false ) ) ) {
 		wp_send_json_error();
 	}
 

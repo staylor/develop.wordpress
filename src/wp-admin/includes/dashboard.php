@@ -1237,7 +1237,7 @@ function wp_dashboard_plugins_output( $rss, $args = [] ) {
 			$item_key = array_rand($items);
 			$item = $items[$item_key];
 
-			list($link, $frag) = explode( '#', $item->get_link() );
+			list( $link ) = explode( '#', $item->get_link() );
 
 			$link = esc_url($link);
 			if ( preg_match( '|/([^/]+?)/?$|', $link, $matches ) )

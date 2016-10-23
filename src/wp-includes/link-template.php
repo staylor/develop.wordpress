@@ -1037,10 +1037,11 @@ function edit_term_link( $link = '', $before = '', $after = '', $term = null, $e
  * @return string The search permalink.
  */
 function get_search_link( $query = '' ) {
+	$app = getApp();
 	if ( empty($query) ) {
-			$search = get_search_query( false );
+		$search = get_search_query( false );
 	} else {
-			$search = stripslashes($query);
+		$search = stripslashes($query);
 	}
 
 	$permastruct = $app['rewrite']->get_search_permastruct();

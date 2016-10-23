@@ -726,7 +726,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		}
 
 		if ( file_exists( $file ) ) {
-			list( $width, $height, $type, $attr ) = getimagesize( $file );
+			list( $width, $height/*, $type, $attr*/ ) = getimagesize( $file );
 		} else {
 			$data = wp_get_attachment_metadata( $attachment_id );
 			$height = isset( $data[ 'height' ] ) ? $data[ 'height' ] : 0;
@@ -1080,7 +1080,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		$default = sprintf( $default, get_template_directory_uri(), get_stylesheet_directory_uri() );
 
 		$default_data = [];
-		foreach ( $this->default_headers as $header => $details ) {
+		foreach ( $this->default_headers as $details ) {
 			if ( $details['url'] == $default ) {
 				$default_data = $details;
 				break;
@@ -1339,7 +1339,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		$default = sprintf( $default, get_template_directory_uri(), get_stylesheet_directory_uri() );
 		$already_has_default = false;
 
-		foreach ( $this->default_headers as $k => $h ) {
+		foreach ( $this->default_headers as $h ) {
 			if ( $h['url'] === $default ) {
 				$already_has_default = true;
 				break;

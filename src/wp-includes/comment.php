@@ -2626,11 +2626,11 @@ function pingback( $content, $post_id ) {
  */
 function privacy_ping_filter($sites) {
 	if ( '0' != get_option('blog_public') ) {
-			return $sites;
+		return $sites;
 	} else {
-			return '';
+		return '';
 	}
-	}
+}
 
 /**
  * Send a Trackback.
@@ -2650,7 +2650,7 @@ function trackback($trackback_url, $title, $excerpt, $ID) {
 	$wpdb = $app['db'];
 
 	if ( empty($trackback_url) ) {
-			return;
+		return;
 	}
 
 	$options = [];
@@ -2665,7 +2665,7 @@ function trackback($trackback_url, $title, $excerpt, $ID) {
 	$response = wp_safe_remote_post( $trackback_url, $options );
 
 	if ( is_wp_error( $response ) ) {
-			return;
+		return;
 	}
 
 	$wpdb->query( $wpdb->prepare("UPDATE $wpdb->posts SET pinged = CONCAT(pinged, '\n', %s) WHERE ID = %d", $trackback_url, $ID) );
@@ -2681,8 +2681,10 @@ function trackback($trackback_url, $title, $excerpt, $ID) {
  * @param string $path Path to send the ping.
  */
 function weblog_ping($server = '', $path = '') {
+	$app = getApp();
+
 	// using a timeout of 3 seconds should be enough to cover slow servers
-	$client = new WP_HTTP_IXR_Client($server, ((!strlen(trim($path)) || ('/' == $path)) ? false : $path));
+	$client = new \WP\IXR\HttpClient($server, ((!strlen(trim($path)) || ('/' == $path)) ? false : $path));
 	$client->timeout = 3;
 	$client->useragent .= ' -- WordPress/' . $app['wp_version'];
 
@@ -2693,7 +2695,7 @@ function weblog_ping($server = '', $path = '') {
 		// then try a normal ping
 		$client->query('weblogUpdates.ping', get_option('blogname'), $home);
 	}
-	}
+}
 
 /**
  * Default filter attached to pingback_ping_source_uri to validate the pingback's Source URI

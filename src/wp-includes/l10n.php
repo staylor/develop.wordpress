@@ -25,12 +25,11 @@ use function WP\getApp;
  * @since 1.5.0
  *
  * @global string $locale
- * @global string $wp_local_package
  *
  * @return string The locale of the blog or from the {@see 'locale'} hook.
  */
 function get_locale() {
-	global $locale, $wp_local_package;
+	global $locale;
 
 	$app = getApp();
 

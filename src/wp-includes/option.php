@@ -1324,14 +1324,11 @@ function add_network_option( int $network_id, $option, $value ) {
  *
  * @see delete_option()
  *
- * @global object $current_site
- *
  * @param int    $network_id ID of the network. Can be null to default to the current network ID.
  * @param string $option     Name of option to remove. Expected to not be SQL-escaped.
  * @return bool True, if succeed. False, if failure.
  */
 function delete_network_option( int $network_id, $option ) {
-	global $current_site;
 	$app = getApp();
 	$wpdb = $app['db'];
 

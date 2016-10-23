@@ -759,9 +759,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			esc_attr( $plugin_file )
 		);
 
-		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
+		list( $columns, $hidden/*, $sortable, $primary*/ ) = $this->get_column_info();
 
-		foreach ( $columns as $column_name => $column_display_name ) {
+		foreach ( array_keys( $columns ) as $column_name ) {
 			$extra_classes = '';
 			if ( in_array( $column_name, $hidden ) ) {
 				$extra_classes = ' hidden';

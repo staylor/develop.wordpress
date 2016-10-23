@@ -1373,7 +1373,7 @@ function upgrade_330() {
 
 				$found = false;
 
-				foreach ( $app->widgets['registered'] as $widget_id => $widget ) {
+				foreach ( $app->widgets['registered'] as $widget ) {
 					if (
 						strtolower( $widget['name'] ) === strtolower( $name ) ||
 						sanitize_title( $widget['name'] ) === sanitize_title( $name )
@@ -1586,7 +1586,6 @@ function upgrade_430() {
 function upgrade_430_fix_comments() {
 	$app = getApp();
 	$wpdb = $app['db'];
-	$wp_current_db_version = $app['wp_current_db_version'];
 
 	$content_length = $wpdb->get_col_length( $wpdb->comments, 'comment_content' );
 

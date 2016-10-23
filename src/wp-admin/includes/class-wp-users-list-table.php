@@ -446,7 +446,7 @@ class WP_Users_List_Table extends WP_List_Table {
 
 		$r = "<tr id='user-$user_object->ID'>";
 
-		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
+		list( $columns, $hidden, /*$sortable*/, $primary ) = $this->get_column_info();
 
 		foreach ( $columns as $column_name => $column_display_name ) {
 			$classes = "$column_name column-$column_name";

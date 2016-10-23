@@ -1308,7 +1308,7 @@ function wp_comment_form_unfiltered_html_nonce() {
  *                                  Default false.
  */
 function comments_template( $file = '/comments.php', $separate_comments = false ) {
-	global $withcomments, $post, $wpdb, $id, $user_login, $user_ID, $user_identity, $overridden_cpage;
+	global $withcomments, $post, $wpdb, $id, $user_login, $user_ID, $user_identity, $overridden_cpage; //NOSONAR
 
 	if ( !(is_single() || is_page() || $withcomments) || empty($post) ) {
 		return;
@@ -1317,13 +1317,13 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	$app = getApp();
 	$wpdb = $app['db'];
 	$wp_query = $app['wp']->current_query;
-	$comment = $app->get( 'comment' );
+	$comment = $app->get( 'comment' ); //NOSONAR
 
 	if ( empty($file) ) {
 		$file = '/comments.php';
 	}
 
-	$req = get_option('require_name_email');
+	$req = get_option('require_name_email'); //NOSONAR
 
 	/*
 	 * Comment author information fetched from the comment cookies.
@@ -1334,18 +1334,18 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	 * The name of the current comment author escaped for use in attributes.
 	 * Escaped by sanitize_comment_cookies().
 	 */
-	$comment_author = $commenter['comment_author'];
+	$comment_author = $commenter['comment_author']; //NOSONAR
 
 	/*
 	 * The email address of the current comment author escaped for use in attributes.
 	 * Escaped by sanitize_comment_cookies().
 	 */
-	$comment_author_email = $commenter['comment_author_email'];
+	$comment_author_email = $commenter['comment_author_email']; //NOSONAR
 
 	/*
 	 * The url of the current comment author escaped for use in attributes.
 	 */
-	$comment_author_url = esc_url($commenter['comment_author_url']);
+	$comment_author_url = esc_url($commenter['comment_author_url']); //NOSONAR
 
 	$comment_args = array(
 		'orderby' => 'comment_date_gmt',
@@ -1468,7 +1468,7 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 
 	if ( $separate_comments ) {
 		$wp_query->comments_by_type = separate_comments($comments);
-		$comments_by_type = &$wp_query->comments_by_type;
+		$comments_by_type = &$wp_query->comments_by_type; //NOSONAR
 	} else {
 		$wp_query->comments_by_type = [];
 	}

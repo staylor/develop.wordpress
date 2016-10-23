@@ -5210,7 +5210,7 @@ function wp_staticize_emoji_for_email( $mail ) {
 
 		if ( 'content-type' === strtolower( $name ) ) {
 			if ( strpos( $content, ';' ) !== false ) {
-				list( $type, $charset ) = explode( ';', $content );
+				list( $type ) = explode( ';', $content );
 				$content_type = trim( $type );
 			} else {
 				$content_type = trim( $content );

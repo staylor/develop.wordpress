@@ -530,7 +530,6 @@ class WP_Comment_Query {
 				$include_unapproved = preg_split( '/[\s,]+/', $include_unapproved );
 			}
 
-			$unapproved_ids = $unapproved_emails = [];
 			foreach ( $include_unapproved as $unapproved_identifier ) {
 				// Numeric values are assumed to be user ids.
 				if ( is_numeric( $unapproved_identifier ) ) {
@@ -1029,7 +1028,7 @@ class WP_Comment_Query {
 		// If a threaded representation was requested, build the tree.
 		if ( 'threaded' === $this->query_vars['hierarchical'] ) {
 			$threaded_comments = $ref = [];
-			foreach ( $all_comments as $k => $c ) {
+			foreach ( $all_comments as $c ) {
 				$_c = get_comment( $c->comment_ID );
 
 				// If the comment isn't in the reference array, it goes in the top level of the thread.

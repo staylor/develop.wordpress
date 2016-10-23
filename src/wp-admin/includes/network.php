@@ -560,7 +560,7 @@ define('BLOG_ID_CURRENT_SITE', 1);
 			$ms_files_rewriting .= $subdir_match . "files/(.+) {$rewrite_base}" . WPINC . "/ms-files.php?file={$subdir_replacement_12} [L]" . "\n";
 		}
 
-		$htaccess_file = <<<EOF
+		$htaccess_file = "
 RewriteEngine On
 RewriteBase {$base}
 RewriteRule ^index\.php$ - [L]
@@ -572,10 +572,10 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 RewriteRule ^{$subdir_match}(wp-(content|admin|includes).*) {$rewrite_base}{$subdir_replacement_12} [L]
-RewriteRule ^{$subdir_match}(.*\.php)$ {$rewrite_base}$subdir_replacement_12 [L]
+RewriteRule ^{$subdir_match}(.*\.php)$ {$rewrite_base}{$subdir_replacement_12} [L]
 RewriteRule . index.php [L]
 
-EOF;
+";
 
 		echo '<li><p>';
 		printf(
