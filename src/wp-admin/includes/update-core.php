@@ -862,21 +862,23 @@ function update_core($from, $to) {
 	$old_wp_version = $app['wp_version']; // The version of WordPress we're updating from
 	$development_build = ( false !== strpos( $old_wp_version . $app['wp_version'], '-' )  ); // a dash in the version indicates a Development release
 	$php_compat     = version_compare( $php_version, $app['required_php_version'], '>=' );
-	if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) )
+	if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) ) {
 		$mysql_compat = true;
-	else
+	} else {
 		$mysql_compat = version_compare( $mysql_version, $app['required_mysql_version'], '>=' );
+	}
 
-	if ( !$mysql_compat || !$php_compat )
+	if ( !$mysql_compat || !$php_compat ) {
 		$wp_filesystem->delete($from, true);
+	}
 
-	if ( !$mysql_compat && !$php_compat )
+	if ( !$mysql_compat && !$php_compat ) {
 		return new Error( 'php_mysql_not_compatible', sprintf( __('The update cannot be installed because WordPress %1$s requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s.'), $app['wp_version'], $app['required_php_version'], $app['required_mysql_version'], $php_version, $mysql_version ) );
-	elseif ( !$php_compat )
+	} elseif ( !$php_compat ) {
 		return new Error( 'php_not_compatible', sprintf( __('The update cannot be installed because WordPress %1$s requires PHP version %2$s or higher. You are running version %3$s.'), $app['wp_version'], $app['required_php_version'], $php_version ) );
-	elseif ( !$mysql_compat )
+	} elseif ( !$mysql_compat ) {
 		return new Error( 'mysql_not_compatible', sprintf( __('The update cannot be installed because WordPress %1$s requires MySQL version %2$s or higher. You are running version %3$s.'), $app['wp_version'], $app['required_mysql_version'], $mysql_version ) );
-
+	}
 	/** This filter is documented in wp-admin/includes/update-core.php */
 	apply_filters( 'update_feedback', __( 'Preparing to install the latest version&#8230;' ) );
 
@@ -886,25 +888,29 @@ function update_core($from, $to) {
 	$check_is_writable = [];
 
 	// Check to see which files don't really need updating - only available for 3.7 and higher
-	if ( function_exists( 'get_core_checksums' ) ) {
-		// Find the local version of the working directory
-		$working_dir_local = WP_CONTENT_DIR . '/upgrade/' . basename( $from ) . $distro;
 
-		$checksums = get_core_checksums( $app['wp_version'], $app['wp_local_package'] ?? 'en_US' );
-		if ( is_array( $checksums ) && isset( $checksums[ $app['wp_version'] ] ) )
-			$checksums = $checksums[ $app['wp_version'] ]; // Compat code for 3.7-beta2
-		if ( is_array( $checksums ) ) {
-			foreach ( $checksums as $file => $checksum ) {
-				if ( 'wp-content' == substr( $file, 0, 10 ) )
-					continue;
-				if ( ! file_exists( ABSPATH . $file ) )
-					continue;
-				if ( ! file_exists( $working_dir_local . $file ) )
-					continue;
-				if ( md5_file( ABSPATH . $file ) === $checksum )
-					$skip[] = $file;
-				else
-					$check_is_writable[ $file ] = ABSPATH . $file;
+	// Find the local version of the working directory
+	$working_dir_local = WP_CONTENT_DIR . '/upgrade/' . basename( $from ) . $distro;
+
+	$checksums = get_core_checksums( $app['wp_version'], $app['wp_local_package'] ?? 'en_US' );
+	if ( is_array( $checksums ) && isset( $checksums[ $app['wp_version'] ] ) ) {
+		// Compat code for 3.7-beta2
+		$checksums = $checksums[ $app['wp_version'] ];
+	}
+	if ( is_array( $checksums ) ) {
+		foreach ( $checksums as $file => $checksum ) {
+			if (
+				'wp-content' == substr( $file, 0, 10 ) ||
+				! file_exists( ABSPATH . $file ) ||
+				! file_exists( $working_dir_local . $file )
+			) {
+				continue;
+			}
+
+			if ( md5_file( ABSPATH . $file ) === $checksum ) {
+				$skip[] = $file;
+			} else {
+				$check_is_writable[ $file ] = ABSPATH . $file;
 			}
 		}
 	}
@@ -917,15 +923,17 @@ function update_core($from, $to) {
 			foreach ( $files_not_writable as $relative_file_not_writable => $file_not_writable ) {
 				// If the writable check failed, chmod file to 0644 and try again, same as copy_dir().
 				$wp_filesystem->chmod( $file_not_writable, FS_CHMOD_FILE );
-				if ( $wp_filesystem->is_writable( $file_not_writable ) )
+				if ( $wp_filesystem->is_writable( $file_not_writable ) ) {
 					unset( $files_not_writable[ $relative_file_not_writable ] );
+				}
 			}
 
 			// Store package-relative paths (the key) of non-writable files in the Error object.
 			$error_data = version_compare( $old_wp_version, '3.7-beta2', '>' ) ? array_keys( $files_not_writable ) : '';
 
-			if ( $files_not_writable )
+			if ( $files_not_writable ) {
 				return new Error( 'files_not_writable', __( 'The update cannot be installed because we will be unable to copy some files. This is usually due to inconsistent file permissions.' ), implode( ', ', $error_data ) );
+			}
 		}
 	}
 
@@ -941,9 +949,9 @@ function update_core($from, $to) {
 	apply_filters( 'update_feedback', __( 'Copying the required files&#8230;' ) );
 	// Copy new versions of WP files into place.
 	$result = _copy_dir( $from . $distro, $to, $skip );
-	if ( is_wp_error( $result ) )
+	if ( is_wp_error( $result ) ) {
 		$result = new Error( $result->get_error_code(), $result->get_error_message(), substr( $result->get_error_data(), strlen( $to ) ) );
-
+	}
 	// Since we know the core files have copied over, we can now copy the version file
 	if ( ! is_wp_error( $result ) ) {
 		if ( ! $wp_filesystem->copy( $from . $distro . 'wp-includes/version.php', $to . 'wp-includes/version.php', true /* overwrite */ ) ) {
@@ -958,14 +966,18 @@ function update_core($from, $to) {
 	$failed = [];
 	if ( isset( $checksums ) && is_array( $checksums ) ) {
 		foreach ( $checksums as $file => $checksum ) {
-			if ( 'wp-content' == substr( $file, 0, 10 ) )
+			if (
+				'wp-content' == substr( $file, 0, 10 ) ||
+				! file_exists( $working_dir_local . $file )
+			) {
 				continue;
-			if ( ! file_exists( $working_dir_local . $file ) )
-				continue;
-			if ( file_exists( ABSPATH . $file ) && md5_file( ABSPATH . $file ) == $checksum )
+			}
+
+			if ( file_exists( ABSPATH . $file ) && md5_file( ABSPATH . $file ) == $checksum ) {
 				$skip[] = $file;
-			else
+			} else {
 				$failed[] = $file;
+			}
 		}
 	}
 
@@ -973,8 +985,9 @@ function update_core($from, $to) {
 	if ( ! empty( $failed ) ) {
 		$total_size = 0;
 		foreach ( $failed as $file ) {
-			if ( file_exists( $working_dir_local . $file ) )
+			if ( file_exists( $working_dir_local . $file ) ) {
 				$total_size += filesize( $working_dir_local . $file );
+			}
 		}
 
 		// If we don't have enough free space, it isn't worth trying again.
@@ -984,18 +997,20 @@ function update_core($from, $to) {
 			$result = new Error( 'disk_full', __( 'There is not enough free disk space to complete the update.' ) );
 		} else {
 			$result = _copy_dir( $from . $distro, $to, $skip );
-			if ( is_wp_error( $result ) )
+			if ( is_wp_error( $result ) ) {
 				$result = new Error( $result->get_error_code() . '_retry', $result->get_error_message(), substr( $result->get_error_data(), strlen( $to ) ) );
+			}
 		}
 	}
 
 	// Custom Content Directory needs updating now.
 	// Copy Languages
 	if ( !is_wp_error($result) && $wp_filesystem->is_dir($from . $distro . 'wp-content/languages') ) {
-		if ( WP_LANG_DIR != ABSPATH . WPINC . '/languages' || @is_dir(WP_LANG_DIR) )
+		if ( WP_LANG_DIR != ABSPATH . WPINC . '/languages' || @is_dir(WP_LANG_DIR) ) {
 			$lang_dir = WP_LANG_DIR;
-		else
+		} else {
 			$lang_dir = WP_CONTENT_DIR . '/languages';
+		}
 
 		// Check the language directory exists first
 		if ( !@is_dir($lang_dir) && 0 === strpos($lang_dir, ABSPATH) ) {
@@ -1009,8 +1024,9 @@ function update_core($from, $to) {
 			$wp_lang_dir = $wp_filesystem->find_folder($lang_dir);
 			if ( $wp_lang_dir ) {
 				$result = copy_dir($from . $distro . 'wp-content/languages/', $wp_lang_dir);
-				if ( is_wp_error( $result ) )
+				if ( is_wp_error( $result ) ) {
 					$result = new Error( $result->get_error_code() . '_languages', $result->get_error_message(), substr( $result->get_error_data(), strlen( $wp_lang_dir ) ) );
+				}
 			}
 		}
 	}
@@ -1041,30 +1057,34 @@ function update_core($from, $to) {
 				if ( ! $wp_filesystem->exists( $from . $distro . 'wp-content/' . $file ) )
 					continue;
 
-				if ( 'plugins' == $type )
+				if ( 'plugins' == $type ) {
 					$dest = $wp_filesystem->wp_plugins_dir();
-				elseif ( 'themes' == $type )
+				} elseif ( 'themes' == $type ) {
 					$dest = trailingslashit($wp_filesystem->wp_themes_dir()); // Back-compat, ::wp_themes_dir() did not return trailingslash'd pre-3.2
-				else
+				} else {
 					continue;
+				}
 
 				if ( ! $directory ) {
-					if ( ! $development_build && $wp_filesystem->exists( $dest . $filename ) )
+					if ( ! $development_build && $wp_filesystem->exists( $dest . $filename ) ) {
 						continue;
-
-					if ( ! $wp_filesystem->copy($from . $distro . 'wp-content/' . $file, $dest . $filename, FS_CHMOD_FILE) )
+					}
+					if ( ! $wp_filesystem->copy($from . $distro . 'wp-content/' . $file, $dest . $filename, FS_CHMOD_FILE) ) {
 						$result = new Error( "copy_failed_for_new_bundled_$type", __( 'Could not copy file.' ), $dest . $filename );
-				} else {
-					if ( ! $development_build && $wp_filesystem->is_dir( $dest . $filename ) )
-						continue;
+					}
 
+				} else {
+					if ( ! $development_build && $wp_filesystem->is_dir( $dest . $filename ) ) {
+						continue;
+					}
 					$wp_filesystem->mkdir($dest . $filename, FS_CHMOD_DIR);
 					$_result = copy_dir( $from . $distro . 'wp-content/' . $file, $dest . $filename);
 
 					// If a error occurs partway through this final step, keep the error flowing through, but keep process going.
 					if ( is_wp_error( $_result ) ) {
-						if ( ! is_wp_error( $result ) )
+						if ( ! is_wp_error( $result ) ) {
 							$result = new Error;
+						}
 						$result->add( $_result->get_error_code() . "_$type", $_result->get_error_message(), substr( $_result->get_error_data(), strlen( $dest ) ) );
 					}
 				}
@@ -1081,8 +1101,9 @@ function update_core($from, $to) {
 	// Remove old files
 	foreach ( $_old_files as $old_file ) {
 		$old_file = $to . $old_file;
-		if ( !$wp_filesystem->exists($old_file) )
+		if ( !$wp_filesystem->exists($old_file) ) {
 			continue;
+		}
 		$wp_filesystem->delete($old_file, true);
 	}
 
@@ -1107,11 +1128,11 @@ function update_core($from, $to) {
 	$wp_filesystem->delete($from, true);
 
 	// Force refresh of update information
-	if ( function_exists('delete_site_transient') )
+	if ( function_exists('delete_site_transient') ) {
 		delete_site_transient('update_core');
-	else
+	} else {
 		delete_option('update_core');
-
+	}
 	/**
 	 * Fires after WordPress core has been successfully updated.
 	 *
@@ -1122,9 +1143,9 @@ function update_core($from, $to) {
 	do_action( '_core_updated_successfully', $app['wp_version'] );
 
 	// Clear the option that blocks auto updates after failures, now that we've been successful.
-	if ( function_exists( 'delete_site_option' ) )
+	if ( function_exists( 'delete_site_option' ) ) {
 		delete_site_option( 'auto_core_update_failed' );
-
+	}
 	return $app['wp_version'];
 }
 
@@ -1156,20 +1177,22 @@ function _copy_dir($from, $to, $skip_list = [] ) {
 	$to = trailingslashit($to);
 
 	foreach ( (array) $dirlist as $filename => $fileinfo ) {
-		if ( in_array( $filename, $skip_list ) )
+		if ( in_array( $filename, $skip_list ) ) {
 			continue;
-
+		}
 		if ( 'f' == $fileinfo['type'] ) {
 			if ( ! $wp_filesystem->copy($from . $filename, $to . $filename, true, FS_CHMOD_FILE) ) {
 				// If copy failed, chmod file to 0644 and try again.
 				$wp_filesystem->chmod( $to . $filename, FS_CHMOD_FILE );
-				if ( ! $wp_filesystem->copy($from . $filename, $to . $filename, true, FS_CHMOD_FILE) )
+				if ( ! $wp_filesystem->copy($from . $filename, $to . $filename, true, FS_CHMOD_FILE) ) {
 					return new Error( 'copy_failed__copy_dir', __( 'Could not copy file.' ), $to . $filename );
+				}
 			}
 		} elseif ( 'd' == $fileinfo['type'] ) {
 			if ( !$wp_filesystem->is_dir($to . $filename) ) {
-				if ( !$wp_filesystem->mkdir($to . $filename, FS_CHMOD_DIR) )
+				if ( !$wp_filesystem->mkdir($to . $filename, FS_CHMOD_DIR) ) {
 					return new Error( 'mkdir_failed__copy_dir', __( 'Could not create directory.' ), $to . $filename );
+				}
 			}
 
 			/*
@@ -1178,13 +1201,15 @@ function _copy_dir($from, $to, $skip_list = [] ) {
 			 */
 			$sub_skip_list = [];
 			foreach ( $skip_list as $skip_item ) {
-				if ( 0 === strpos( $skip_item, $filename . '/' ) )
+				if ( 0 === strpos( $skip_item, $filename . '/' ) ) {
 					$sub_skip_list[] = preg_replace( '!^' . preg_quote( $filename, '!' ) . '/!i', '', $skip_item );
+				}
 			}
 
 			$result = _copy_dir($from . $filename, $to . $filename, $sub_skip_list);
-			if ( is_wp_error($result) )
+			if ( is_wp_error($result) ) {
 				return $result;
+			}
 		}
 	}
 	return true;
@@ -1206,8 +1231,9 @@ function _redirect_to_about_wordpress( $new_version ) {
 
 	$app = getApp();
 
-	if ( version_compare( $app['wp_version'], '3.4-RC1', '>=' ) )
+	if ( version_compare( $app['wp_version'], '3.4-RC1', '>=' ) ) {
 		return;
+	}
 
 	// Ensure we only run this on the update-core.php page. The Core_Upgrader may be used in other contexts.
 	if (

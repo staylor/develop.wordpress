@@ -99,10 +99,11 @@ class WP_Upgrader {
 	public function __construct( $skin = null ) {
 		$this->app = getApp();
 
-		if ( null == $skin )
+		if ( null == $skin ) {
 			$this->skin = new WP_Upgrader_Skin();
-		else
+		} else {
 			$this->skin = $skin;
+		}
 	}
 
 	/**
@@ -172,40 +173,48 @@ class WP_Upgrader {
 
 		if ( ! WP_Filesystem( $credentials, $directories[0], $allow_relaxed_file_ownership ) ) {
 			$error = true;
-			if ( is_object($wp_filesystem) && $wp_filesystem->errors->get_error_code() )
+			if ( is_object($wp_filesystem) && $wp_filesystem->errors->get_error_code() ) {
 				$error = $wp_filesystem->errors;
+			}
 			// Failed to connect, Error and request again
 			$this->skin->request_filesystem_credentials( $error, $directories[0], $allow_relaxed_file_ownership );
 			return false;
 		}
 
-		if ( ! is_object($wp_filesystem) )
+		if ( ! is_object($wp_filesystem) ) {
 			return new Error('fs_unavailable', $this->strings['fs_unavailable'] );
+		}
 
-		if ( is_wp_error($wp_filesystem->errors) && $wp_filesystem->errors->get_error_code() )
+		if ( is_wp_error($wp_filesystem->errors) && $wp_filesystem->errors->get_error_code() ) {
 			return new Error('fs_error', $this->strings['fs_error'], $wp_filesystem->errors);
+		}
 
 		foreach ( (array)$directories as $dir ) {
 			switch ( $dir ) {
 			case ABSPATH:
-				if ( ! $wp_filesystem->abspath() )
+				if ( ! $wp_filesystem->abspath() ) {
 					return new Error('fs_no_root_dir', $this->strings['fs_no_root_dir']);
+				}
 				break;
 			case WP_CONTENT_DIR:
-				if ( ! $wp_filesystem->wp_content_dir() )
+				if ( ! $wp_filesystem->wp_content_dir() ) {
 					return new Error('fs_no_content_dir', $this->strings['fs_no_content_dir']);
+				}
 				break;
 			case WP_PLUGIN_DIR:
-				if ( ! $wp_filesystem->wp_plugins_dir() )
+				if ( ! $wp_filesystem->wp_plugins_dir() ) {
 					return new Error('fs_no_plugins_dir', $this->strings['fs_no_plugins_dir']);
+				}
 				break;
 			case get_theme_root():
-				if ( ! $wp_filesystem->wp_themes_dir() )
+				if ( ! $wp_filesystem->wp_themes_dir() ) {
 					return new Error('fs_no_themes_dir', $this->strings['fs_no_themes_dir']);
+				}
 				break;
 			default:
-				if ( ! $wp_filesystem->find_folder($dir) )
+				if ( ! $wp_filesystem->find_folder($dir) ) {
 					return new Error( 'fs_no_folder', sprintf( $this->strings['fs_no_folder'], esc_html( basename( $dir ) ) ) );
+				}
 				break;
 			}
 		}
@@ -236,21 +245,27 @@ class WP_Upgrader {
 		 * @param WP_Upgrader $this    The WP_Upgrader instance.
 		 */
 		$reply = apply_filters( 'upgrader_pre_download', false, $package, $this );
-		if ( false !== $reply )
+		if ( false !== $reply ) {
 			return $reply;
+		}
 
-		if ( ! preg_match('!^(http|https|ftp)://!i', $package) && file_exists($package) ) //Local file or remote?
-			return $package; //must be a local file..
+		if ( ! preg_match('!^(http|https|ftp)://!i', $package) && file_exists($package) ) {
+			//Local file or remote?
+			return $package;
+		}
+		//must be a local file..
 
-		if ( empty($package) )
+		if ( empty($package) ) {
 			return new Error('no_package', $this->strings['no_package']);
+		}
 
 		$this->skin->feedback('downloading_package', $package);
 
 		$download_file = download_url($package);
 
-		if ( is_wp_error($download_file) )
+		if ( is_wp_error($download_file) ) {
 			return new Error('download_failed', $this->strings['download_failed'], $download_file->get_error_message());
+		}
 
 		return $download_file;
 	}
@@ -278,23 +293,26 @@ class WP_Upgrader {
 		//Clean up contents of upgrade directory beforehand.
 		$upgrade_files = $wp_filesystem->dirlist($upgrade_folder);
 		if ( !empty($upgrade_files) ) {
-			foreach ( $upgrade_files as $file )
+			foreach ( $upgrade_files as $file ) {
 				$wp_filesystem->delete($upgrade_folder . $file['name'], true);
+			}
 		}
 
 		// We need a working directory - Strip off any .tmp or .zip suffixes
 		$working_dir = $upgrade_folder . basename( basename( $package, '.tmp' ), '.zip' );
 
 		// Clean up working directory
-		if ( $wp_filesystem->is_dir($working_dir) )
+		if ( $wp_filesystem->is_dir($working_dir) ) {
 			$wp_filesystem->delete($working_dir, true);
+		}
 
 		// Unzip package to working directory
 		$result = unzip_file( $package, $working_dir );
 
 		// Once extracted, delete the package if required.
-		if ( $delete_package )
+		if ( $delete_package ) {
 			unlink($package);
+		}
 
 		if ( is_wp_error($result) ) {
 			$wp_filesystem->delete($working_dir, true);

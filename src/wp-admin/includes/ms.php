@@ -19,14 +19,18 @@ use function WP\getApp;
  * @return array $_FILES array with 'error' key set if file exceeds quota. 'error' is empty otherwise.
  */
 function check_upload_size( $file ) {
-	if ( get_site_option( 'upload_space_check_disabled' ) )
-		return $file;
+	if ( get_site_option( 'upload_space_check_disabled' ) ) {
+			return $file;
+	}
 
-	if ( $file['error'] != '0' ) // there's already an error
+	if ( $file['error'] != '0' ) {
+		// there's already an error
 		return $file;
+	}
 
-	if ( defined( 'WP_IMPORTING' ) )
-		return $file;
+	if ( defined( 'WP_IMPORTING' ) ) {
+			return $file;
+	}
 
 	$space_left = get_upload_space_available();
 
@@ -152,8 +156,9 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 			$dh = @opendir( $dir );
 			if ( $dh ) {
 				while ( ( $file = @readdir( $dh ) ) !== false ) {
-					if ( $file == '.' || $file == '..' )
+					if ( $file == '.' || $file == '..' ) {
 						continue;
+					}
 
 					if ( @is_dir( $dir . DIRECTORY_SEPARATOR . $file ) ) {
 						$stack[] = $dir . DIRECTORY_SEPARATOR . $file;
@@ -168,15 +173,17 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 
 		$stack = array_reverse( $stack ); // Last added dirs are deepest
 		foreach ( (array) $stack as $dir ) {
-			if ( $dir != $top_dir)
-			@rmdir( $dir );
+			if ( $dir != $top_dir) {
+				@rmdir( $dir );
+			}
 		}
 
 		clean_blog_cache( $blog );
 	}
 
-	if ( $switch )
+	if ( $switch ) {
 		restore_current_blog();
+	}
 }
 
 /**
@@ -200,8 +207,9 @@ function wpmu_delete_user( $id ) {
 	$id = (int) $id;
 	$user = new User( $id );
 
-	if ( !$user->exists() )
+	if ( !$user->exists() ) {
 		return false;
+	}
 
 	// Global super-administrators are protected, and cannot be deleted.
 	$_super_admins = get_super_admins();
@@ -234,8 +242,9 @@ function wpmu_delete_user( $id ) {
 			$link_ids = $wpdb->get_col( $wpdb->prepare( "SELECT link_id FROM $wpdb->links WHERE link_owner = %d", $id ) );
 
 			if ( $link_ids ) {
-				foreach ( $link_ids as $link_id )
+				foreach ( $link_ids as $link_id ) {
 					wp_delete_link( $link_id );
+				}
 			}
 
 			restore_current_blog();
@@ -243,8 +252,9 @@ function wpmu_delete_user( $id ) {
 	}
 
 	$meta = $wpdb->get_col( $wpdb->prepare( "SELECT umeta_id FROM $wpdb->usermeta WHERE user_id = %d", $id ) );
-	foreach ( $meta as $mid )
+	foreach ( $meta as $mid ) {
 		delete_metadata_by_mid( 'user', $mid );
+	}
 
 	$wpdb->delete( $wpdb->users, array( 'ID' => $id ) );
 
@@ -265,8 +275,9 @@ function wpmu_delete_user( $id ) {
  * @param string $value     The new email address.
  */
 function update_option_new_admin_email( $old_value, $value ) {
-	if ( $value == get_option( 'admin_email' ) || !is_email( $value ) )
+	if ( $value == get_option( 'admin_email' ) || !is_email( $value ) ) {
 		return;
+	}
 
 	$hash = md5( $value. time() .mt_rand() );
 	$new_admin_email = array(
@@ -334,11 +345,13 @@ function send_confirmation_on_profile_email() {
 	$wpdb = $app['db'];
 
 	$current_user = wp_get_current_user();
-	if ( ! is_object($errors) )
+	if ( ! is_object($errors) ) {
 		$errors = new Error();
+	}
 
-	if ( $current_user->ID != $_post->get( 'user_id' ) )
+	if ( $current_user->ID != $_post->get( 'user_id' ) ) {
 		return false;
+	}
 
 	if ( $current_user->user_email != $_post->get( 'email' ) ) {
 		if ( !is_email( $_post->get( 'email' ) ) ) {
@@ -428,8 +441,9 @@ function new_user_email_admin_notice() {
  * @return bool True if user is over upload space quota, otherwise false.
  */
 function upload_is_user_over_quota( $echo = true ) {
-	if ( get_site_option( 'upload_space_check_disabled' ) )
+	if ( get_site_option( 'upload_space_check_disabled' ) ) {
 		return false;
+	}
 
 	$space_allowed = get_space_allowed();
 	if ( ! is_numeric( $space_allowed ) ) {
@@ -438,8 +452,9 @@ function upload_is_user_over_quota( $echo = true ) {
 	$space_used = get_space_used();
 
 	if ( ( $space_allowed - $space_used ) < 0 ) {
-		if ( $echo )
+		if ( $echo ) {
 			_e( 'Sorry, you have used your space allocation. Please delete some files to upload more files.' );
+		}
 		return true;
 	} else {
 		return false;
@@ -499,8 +514,9 @@ function upload_space_setting( $id ) {
 	$quota = get_option( 'blog_upload_space' );
 	restore_current_blog();
 
-	if ( !$quota )
+	if ( !$quota ) {
 		$quota = '';
+	}
 
 	?>
 	<tr>
@@ -531,8 +547,9 @@ function update_user_status( $id, $pref, $value, $deprecated = null ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( null !== $deprecated )
+	if ( null !== $deprecated ) {
 		_deprecated_argument( __FUNCTION__, '3.0.2' );
+	}
 
 	$wpdb->update( $wpdb->users, array( sanitize_key( $pref ) => $value ), array( 'ID' => $id ) );
 
@@ -575,8 +592,9 @@ function update_user_status( $id, $pref, $value, $deprecated = null ) {
 function refresh_user_details( $id ) {
 	$id = (int) $id;
 
-	if ( !$user = get_userdata( $id ) )
+	if ( !$user = get_userdata( $id ) ) {
 		return false;
+	}
 
 	clean_user_cache( $user );
 
@@ -650,18 +668,21 @@ function sync_category_tag_slugs( $term, $taxonomy ) {
  * @access private
  */
 function _access_denied_splash() {
-	if ( ! is_user_logged_in() || is_network_admin() )
+	if ( ! is_user_logged_in() || is_network_admin() ) {
 		return;
+	}
 
 	$blogs = get_blogs_of_user( get_current_user_id() );
 
-	if ( wp_list_filter( $blogs, array( 'userblog_id' => get_current_blog_id() ) ) )
+	if ( wp_list_filter( $blogs, array( 'userblog_id' => get_current_blog_id() ) ) ) {
 		return;
+	}
 
 	$blog_name = get_bloginfo( 'name' );
 
-	if ( empty( $blogs ) )
+	if ( empty( $blogs ) ) {
 		wp_die( sprintf( __( 'You attempted to access the "%1$s" dashboard, but you do not currently have privileges on this site. If you believe you should be able to access the "%1$s" dashboard, please contact your network administrator.' ), $blog_name ), 403 );
+	}
 
 	$output = '<p>' . sprintf( __( 'You attempted to access the "%1$s" dashboard, but you do not currently have privileges on this site. If you believe you should be able to access the "%1$s" dashboard, please contact your network administrator.' ), $blog_name ) . '</p>';
 	$output .= '<p>' . __( 'If you reached this screen by accident and meant to visit one of your own sites, here are some shortcuts to help you find your way.' ) . '</p>';
@@ -691,9 +712,7 @@ function _access_denied_splash() {
  * @return bool True if the user has proper permissions, false if they do not.
  */
 function check_import_new_users( $permission ) {
-	if ( !is_super_admin() )
-		return false;
-	return true;
+	return is_super_admin();
 }
 // See "import_allow_fetch_attachments" and "import_attachment_size_limit" filters too.
 
@@ -730,8 +749,10 @@ function mu_dropdown_languages( $lang_files = [], $current = '' ) {
 
 	}
 
-	if ( $flag === false ) // WordPress english
+	if ( $flag === false ) {
+		// WordPress english
 		$output[] = '<option value=""' . selected( $current, '', false ) . '>' . __( 'English' ) . "</option>";
+	}
 
 	// Order by name
 	uksort( $output, 'strnatcasecmp' );
@@ -768,7 +789,6 @@ function site_admin_notice() {
 		return;
 	}
 
-	$app = getApp();
 	if ( get_site_option( 'wpmu_upgrade_site' ) != $app['wp_db_version'] ) {
 		echo "<div class='update-nag'>" . sprintf( __( 'Thank you for Updating! Please visit the <a href="%s">Upgrade Network</a> page to update all your sites.' ), esc_url( network_admin_url( 'upgrade.php' ) ) ) . "</div>";
 	}
@@ -787,14 +807,18 @@ function site_admin_notice() {
  * @return array The new array of post data after checking for collisions.
  */
 function avoid_blog_page_permalink_collision( $data, $postarr ) {
-	if ( is_subdomain_install() )
+	if ( is_subdomain_install() ) {
 		return $data;
-	if ( $data['post_type'] != 'page' )
+	}
+	if ( $data['post_type'] != 'page' ) {
 		return $data;
-	if ( !isset( $data['post_name'] ) || $data['post_name'] == '' )
+	}
+	if ( !isset( $data['post_name'] ) || $data['post_name'] == '' ) {
 		return $data;
-	if ( !is_main_site() )
+	}
+	if ( !is_main_site() ) {
 		return $data;
+	}
 
 	$post_name = $data['post_name'];
 	$c = 0;
@@ -831,8 +855,9 @@ function choose_primary_blog() {
 			?>
 			<select name="primary_blog" id="primary_blog">
 				<?php foreach ( (array) $all_blogs as $blog ) {
-					if ( $primary_blog == $blog->userblog_id )
+					if ( $primary_blog == $blog->userblog_id ) {
 						$found = true;
+					}
 					?><option value="<?php echo $blog->userblog_id ?>"<?php selected( $primary_blog, $blog->userblog_id ); ?>><?php echo esc_url( get_home_url( $blog->userblog_id ) ) ?></option><?php
 				} ?>
 			</select>
@@ -844,8 +869,10 @@ function choose_primary_blog() {
 		} elseif ( count( $all_blogs ) == 1 ) {
 			$blog = reset( $all_blogs );
 			echo esc_url( get_home_url( $blog->userblog_id ) );
-			if ( $primary_blog != $blog->userblog_id ) // Set the primary blog again if it's out of sync with blog list.
+			if ( $primary_blog != $blog->userblog_id ) {
+				// Set the primary blog again if it's out of sync with blog list.
 				update_user_meta( get_current_user_id(), 'primary_blog', $blog->userblog_id );
+			}
 		} else {
 			echo "N/A";
 		}
@@ -871,10 +898,7 @@ function can_edit_network( $site_id ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( $site_id == $wpdb->siteid )
-		$result = true;
-	else
-		$result = false;
+	$result = ( $site_id == $wpdb->siteid );
 
 	/**
 	 * Filters whether this network can be edited from this page.
@@ -914,11 +938,11 @@ function confirm_delete_users( $users ) {
 	?>
 	<h1><?php esc_html_e( 'Users' ); ?></h1>
 
-	<?php if ( 1 == count( $users ) ) : ?>
+	<?php if ( 1 == count( $users ) ) { ?>
 		<p><?php _e( 'You have chosen to delete the user from all networks and sites.' ); ?></p>
-	<?php else : ?>
+	<?php } else { ?>
 		<p><?php _e( 'You have chosen to delete the following users from all networks and sites.' ); ?></p>
-	<?php endif; ?>
+	<?php } ?>
 
 	<form action="users.php?action=dodelete" method="post">
 	<input type="hidden" name="dodelete" />
@@ -1002,11 +1026,11 @@ function confirm_delete_users( $users ) {
 	/** This action is documented in wp-admin/users.php */
 	do_action( 'delete_user_form', $current_user, $allusers );
 
-	if ( 1 == count( $users ) ) : ?>
+	if ( 1 == count( $users ) ) { ?>
 		<p><?php _e( 'Once you hit &#8220;Confirm Deletion&#8221;, the user will be permanently removed.' ); ?></p>
-	<?php else : ?>
+	<?php } else { ?>
 		<p><?php _e( 'Once you hit &#8220;Confirm Deletion&#8221;, these users will be permanently removed.' ); ?></p>
-	<?php endif;
+	<?php }
 
 	submit_button( __('Confirm Deletion'), 'primary' );
 	?>

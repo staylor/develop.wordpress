@@ -23,8 +23,9 @@ use WP\Error;
  */
 function category_exists( $cat_name, $parent = null ) {
 	$id = term_exists($cat_name, 'category', $parent);
-	if ( is_array($id) )
+	if ( is_array($id) ) {
 		$id = $id['term_id'];
+	}
 	return $id;
 }
 
@@ -52,9 +53,9 @@ function get_category_to_edit( $id ) {
  * @return int|Error
  */
 function wp_create_category( $cat_name, $parent = 0 ) {
-	if ( $id = category_exists($cat_name, $parent) )
+	if ( $id = category_exists($cat_name, $parent) ) {
 		return $id;
-
+	}
 	return wp_insert_category( array('cat_name' => $cat_name, 'category_parent' => $parent) );
 }
 
@@ -169,8 +170,9 @@ function wp_insert_category( $catarr, $wp_error = false ) {
 function wp_update_category($catarr) {
 	$cat_ID = (int) $catarr['cat_ID'];
 
-	if ( isset($catarr['category_parent']) && ($cat_ID == $catarr['category_parent']) )
+	if ( isset($catarr['category_parent']) && ($cat_ID == $catarr['category_parent']) ) {
 		return false;
+	}
 
 	// First, get all of the original fields
 	$category = get_term( $cat_ID, 'category', ARRAY_A );
@@ -235,10 +237,10 @@ function get_tags_to_edit( $post_id, $taxonomy = 'post_tag' ) {
  * @param string $taxonomy Optional. The taxonomy for which to retrieve terms. Default 'post_tag'.
  * @return string|bool|Error
  */
-function get_terms_to_edit( $post_id, $taxonomy = 'post_tag' ) {
-	$post_id = (int) $post_id;
-	if ( !$post_id )
+function get_terms_to_edit( int $post_id, $taxonomy = 'post_tag' ) {
+	if ( !$post_id ) {
 		return false;
+	}
 
 	$terms = get_object_term_cache( $post_id, $taxonomy );
 	if ( false === $terms ) {
@@ -282,8 +284,9 @@ function get_terms_to_edit( $post_id, $taxonomy = 'post_tag' ) {
  * @return array|Error
  */
 function wp_create_term($tag_name, $taxonomy = 'post_tag') {
-	if ( $id = term_exists($tag_name, $taxonomy) )
+	if ( $id = term_exists($tag_name, $taxonomy) ) {
 		return $id;
+	}
 
 	return wp_insert_term($tag_name, $taxonomy);
 }

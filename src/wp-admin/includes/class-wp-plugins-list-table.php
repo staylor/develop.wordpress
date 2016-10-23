@@ -42,9 +42,13 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 		$status = 'all';
 		if ( $this->_request->get( 'plugin_status' ) &&
-			in_array( $this->_request->get( 'plugin_status' ), array( 'active', 'inactive', 'recently_activated', 'upgrade', 'mustuse', 'dropins', 'search' ) ) )
+			in_array(
+				$this->_request->get( 'plugin_status' ),
+				[ 'active', 'inactive', 'recently_activated', 'upgrade', 'mustuse', 'dropins', 'search' ]
+			)
+		) {
 			$status = $this->_request->get( 'plugin_status' );
-
+		}
 		if ( $this->_request->get( 's' ) ) {
 			$this->_server->set( 'REQUEST_URI', add_query_arg('s', wp_unslash( $this->_request->get( 's' ) ) ) );
 		}
@@ -91,7 +95,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		 */
 		$all_plugins = apply_filters( 'all_plugins', get_plugins() );
 
-		$plugins = array(
+		$plugins = [
 			'all'                => $all_plugins,
 			'search'             => [],
 			'active'             => [],
@@ -100,7 +104,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			'upgrade'            => [],
 			'mustuse'            => [],
 			'dropins'            => [],
-		);
+		];
 
 		$screen = $this->screen;
 
@@ -126,8 +130,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			}
 
 			/** This action is documented in wp-admin/includes/class-wp-plugins-list-table.php */
-			if ( apply_filters( 'show_advanced_plugins', true, 'dropins' ) )
+			if ( apply_filters( 'show_advanced_plugins', true, 'dropins' ) ) {
 				$plugins['dropins'] = get_dropins();
+			}
 
 			if ( current_user_can( 'update_plugins' ) ) {
 				$current = get_site_transient( 'update_plugins' );
@@ -235,11 +240,13 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		}
 
 		$totals = [];
-		foreach ( $plugins as $type => $list )
+		foreach ( $plugins as $type => $list ) {
 			$totals[ $type ] = count( $list );
+		}
 
-		if ( empty( $plugins[ $status ] ) && !in_array( $status, array( 'all', 'search' ) ) )
+		if ( empty( $plugins[ $status ] ) && !in_array( $status, array( 'all', 'search' ) ) ) {
 			$status = 'all';
+		}
 
 		$this->items = [];
 		foreach ( $plugins[ $status ] as $plugin_file => $plugin_data ) {
@@ -273,8 +280,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 		$start = ( $page - 1 ) * $plugins_per_page;
 
-		if ( $total_this_page > $plugins_per_page )
+		if ( $total_this_page > $plugins_per_page ) {
 			$this->items = array_slice( $this->items, $start, $plugins_per_page );
+		}
 
 		$this->set_pagination_args( array(
 			'total_items' => $total_this_page,
@@ -313,8 +321,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		$a = $plugin_a[$orderby];
 		$b = $plugin_b[$orderby];
 
-		if ( $a == $b )
+		if ( $a == $b ) {
 			return 0;
+		}
 
 		if ( 'DESC' === $order ) {
 			return strcasecmp( $b, $a );
@@ -339,10 +348,11 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			if ( ! is_multisite() && current_user_can( 'install_plugins' ) ) {
 				echo ' <a href="' . esc_url( admin_url( 'plugin-install.php?tab=search&s=' . urlencode( $s ) ) ) . '">' . __( 'Search for plugins in the WordPress Plugin Directory.' ) . '</a>';
 			}
-		} elseif ( ! empty( $plugins['all'] ) )
+		} elseif ( ! empty( $plugins['all'] ) ) {
 			_e( 'No plugins found.' );
-		else
+		} else {
 			_e( 'You do not appear to have any plugins available at this time.' );
+		}
 	}
 
 	/**
@@ -409,8 +419,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 		$status_links = [];
 		foreach ( $totals as $type => $count ) {
-			if ( !$count )
+			if ( !$count ) {
 				continue;
+			}
 
 			switch ( $type ) {
 			case 'all':
@@ -441,7 +452,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 					add_query_arg('plugin_status', $type, 'plugins.php'),
 					( $type === $status ) ? ' class="current"' : '',
 					sprintf( $text, number_format_i18n( $count ) )
-					);
+				);
 			}
 		}
 
@@ -458,17 +469,19 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 		$actions = [];
 
-		if ( 'active' != $status )
+		if ( 'active' != $status ) {
 			$actions['activate-selected'] = $this->screen->in_admin( 'network' ) ? __( 'Network Activate' ) : __( 'Activate' );
-
-		if ( 'inactive' != $status && 'recent' != $status )
+		}
+		if ( 'inactive' != $status && 'recent' != $status ) {
 			$actions['deactivate-selected'] = $this->screen->in_admin( 'network' ) ? __( 'Network Deactivate' ) : __( 'Deactivate' );
-
+		}
 		if ( !is_multisite() || $this->screen->in_admin( 'network' ) ) {
-			if ( current_user_can( 'update_plugins' ) )
+			if ( current_user_can( 'update_plugins' ) ) {
 				$actions['update-selected'] = __( 'Update' );
-			if ( current_user_can( 'delete_plugins' ) && ( 'active' != $status ) )
+			}
+			if ( current_user_can( 'delete_plugins' ) && ( 'active' != $status ) ) {
 				$actions['delete-selected'] = __( 'Delete' );
+			}
 		}
 
 		return $actions;
@@ -481,9 +494,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	public function bulk_actions( $which = '' ) {
 		global $status; //NOSONAR
 
-		if ( in_array( $status, array( 'mustuse', 'dropins' ) ) )
+		if ( in_array( $status, array( 'mustuse', 'dropins' ) ) ) {
 			return;
-
+		}
 		parent::bulk_actions( $which );
 	}
 
@@ -494,8 +507,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	protected function extra_tablenav( $which ) {
 		global $status; //NOSONAR
 
-		if ( ! in_array($status, array('recently_activated', 'mustuse', 'dropins') ) )
+		if ( ! in_array($status, array('recently_activated', 'mustuse', 'dropins') ) ) {
 			return;
+		}
 
 		echo '<div class="alignleft actions">';
 
@@ -535,11 +549,16 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	public function display_rows() {
 		global $status; //NOSONAR
 
-		if ( is_multisite() && ! $this->screen->in_admin( 'network' ) && in_array( $status, array( 'mustuse', 'dropins' ) ) )
+		if (
+			is_multisite() &&
+			! $this->screen->in_admin( 'network' ) &&
+			in_array( $status, array( 'mustuse', 'dropins' ) )
+		) {
 			return;
-
-		foreach ( $this->items as $plugin_file => $plugin_data )
+		}
+		foreach ( $this->items as $plugin_file => $plugin_data ) {
 			$this->single_row( array( $plugin_file, $plugin_data ) );
+		}
 	}
 
 	/**
@@ -614,7 +633,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 					if ( current_user_can( 'manage_network_plugins' ) ) {
 						/* translators: %s: plugin name */
 						$actions['deactivate'] = '<a href="' . wp_nonce_url( 'plugins.php?action=deactivate&amp;plugin=' . $plugin_file . '&amp;plugin_status=' . $context . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . $plugin_file ) . '" aria-label="' . esc_attr( sprintf( _x( 'Network Deactivate %s', 'plugin' ), $plugin_data['Name'] ) ) . '">' . __( 'Network Deactivate' ) . '</a>';
-						}
+					}
 				} else {
 					if ( current_user_can( 'manage_network_plugins' ) ) {
 						/* translators: %s: plugin name */
@@ -749,8 +768,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			$plugin_name = $plugin_data['Name'];
 		}
 
-		if ( ! empty( $totals['upgrade'] ) && ! empty( $plugin_data['update'] ) )
+		if ( ! empty( $totals['upgrade'] ) && ! empty( $plugin_data['update'] ) ) {
 			$class .= ' update';
+		}
 
 		$plugin_slug = isset( $plugin_data['slug'] ) ? $plugin_data['slug'] : sanitize_title( $plugin_name );
 		printf( '<tr class="%s" data-slug="%s" data-plugin="%s">',
@@ -784,12 +804,14 @@ class WP_Plugins_List_Table extends WP_List_Table {
 					<div class='$class second plugin-version-author-uri'>";
 
 				$plugin_meta = [];
-				if ( !empty( $plugin_data['Version'] ) )
+				if ( !empty( $plugin_data['Version'] ) ) {
 					$plugin_meta[] = sprintf( __( 'Version %s' ), $plugin_data['Version'] );
+				}
 				if ( !empty( $plugin_data['Author'] ) ) {
 					$author = $plugin_data['Author'];
-					if ( !empty( $plugin_data['AuthorURI'] ) )
+					if ( !empty( $plugin_data['AuthorURI'] ) ) {
 						$author = '<a href="' . $plugin_data['AuthorURI'] . '">' . $plugin_data['Author'] . '</a>';
+					}
 					$plugin_meta[] = sprintf( __( 'By %s' ), $author );
 				}
 

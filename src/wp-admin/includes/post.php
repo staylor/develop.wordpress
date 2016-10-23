@@ -31,34 +31,41 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 		$post_data = $_post->all();
 	}
 
-	if ( $update )
+	if ( $update ) {
 		$post_data['ID'] = (int) $post_data['post_ID'];
+	}
 
 	$ptype = get_post_type_object( $post_data['post_type'] );
 
 	if ( $update && ! current_user_can( 'edit_post', $post_data['ID'] ) ) {
-		if ( 'page' == $post_data['post_type'] )
+		if ( 'page' == $post_data['post_type'] ) {
 			return new Error( 'edit_others_pages', __( 'Sorry, you are not allowed to edit pages as this user.' ) );
-		else
+		} else {
 			return new Error( 'edit_others_posts', __( 'Sorry, you are not allowed to edit posts as this user.' ) );
+		}
 	} elseif ( ! $update && ! current_user_can( $ptype->cap->create_posts ) ) {
-		if ( 'page' == $post_data['post_type'] )
+		if ( 'page' == $post_data['post_type'] ) {
 			return new Error( 'edit_others_pages', __( 'Sorry, you are not allowed to create pages as this user.' ) );
-		else
+		} else {
 			return new Error( 'edit_others_posts', __( 'Sorry, you are not allowed to create posts as this user.' ) );
+		}
 	}
 
-	if ( isset( $post_data['content'] ) )
+	if ( isset( $post_data['content'] ) ) {
 		$post_data['post_content'] = $post_data['content'];
+	}
 
-	if ( isset( $post_data['excerpt'] ) )
+	if ( isset( $post_data['excerpt'] ) ) {
 		$post_data['post_excerpt'] = $post_data['excerpt'];
+	}
 
-	if ( isset( $post_data['parent_id'] ) )
+	if ( isset( $post_data['parent_id'] ) ) {
 		$post_data['post_parent'] = (int) $post_data['parent_id'];
+	}
 
-	if ( isset($post_data['trackback_url']) )
+	if ( isset($post_data['trackback_url']) ) {
 		$post_data['to_ping'] = $post_data['trackback_url'];
+	}
 
 	$post_data['user_ID'] = get_current_user_id();
 
@@ -75,15 +82,17 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 	if ( isset( $post_data['user_ID'] ) && ( $post_data['post_author'] != $post_data['user_ID'] )
 		 && ! current_user_can( $ptype->cap->edit_others_posts ) ) {
 		if ( $update ) {
-			if ( 'page' == $post_data['post_type'] )
+			if ( 'page' == $post_data['post_type'] ) {
 				return new Error( 'edit_others_pages', __( 'Sorry, you are not allowed to edit pages as this user.' ) );
-			else
+			} else {
 				return new Error( 'edit_others_posts', __( 'Sorry, you are not allowed to edit posts as this user.' ) );
+			}
 		} else {
-			if ( 'page' == $post_data['post_type'] )
+			if ( 'page' == $post_data['post_type'] ) {
 				return new Error( 'edit_others_pages', __( 'Sorry, you are not allowed to create pages as this user.' ) );
-			else
+			} else {
 				return new Error( 'edit_others_posts', __( 'Sorry, you are not allowed to create posts as this user.' ) );
+			}
 		}
 	}
 
@@ -101,21 +110,27 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 	}
 
 	// What to do based on which button they pressed
-	if ( isset($post_data['saveasdraft']) && '' != $post_data['saveasdraft'] )
+	if ( isset($post_data['saveasdraft']) && '' != $post_data['saveasdraft'] ) {
 		$post_data['post_status'] = 'draft';
-	if ( isset($post_data['saveasprivate']) && '' != $post_data['saveasprivate'] )
+	}
+	if ( isset($post_data['saveasprivate']) && '' != $post_data['saveasprivate'] ) {
 		$post_data['post_status'] = 'private';
-	if ( isset($post_data['publish']) && ( '' != $post_data['publish'] ) && ( !isset($post_data['post_status']) || $post_data['post_status'] != 'private' ) )
+	}
+	if ( isset($post_data['publish']) && ( '' != $post_data['publish'] ) && ( !isset($post_data['post_status']) || $post_data['post_status'] != 'private' ) ) {
 		$post_data['post_status'] = 'publish';
-	if ( isset($post_data['advanced']) && '' != $post_data['advanced'] )
+	}
+	if ( isset($post_data['advanced']) && '' != $post_data['advanced'] ) {
 		$post_data['post_status'] = 'draft';
-	if ( isset($post_data['pending']) && '' != $post_data['pending'] )
+	}
+	if ( isset($post_data['pending']) && '' != $post_data['pending'] ) {
 		$post_data['post_status'] = 'pending';
+	}
 
-	if ( isset( $post_data['ID'] ) )
+	if ( isset( $post_data['ID'] ) ) {
 		$post_id = $post_data['ID'];
-	else
+	} else {
 		$post_id = false;
+	}
 	$previous_status = $post_id ? get_post_field( 'post_status', $post_id ) : false;
 
 	if ( isset( $post_data['post_status'] ) && 'private' == $post_data['post_status'] && ! current_user_can( $ptype->cap->publish_posts ) ) {
@@ -126,9 +141,11 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 
 	// Posts 'submitted for approval' present are submitted to $_POST the same as if they were being published.
 	// Change status from 'publish' to 'pending' if user lacks permissions to publish or to resave published posts.
-	if ( isset($post_data['post_status']) && (in_array( $post_data['post_status'], $published_statuses ) && !current_user_can( $ptype->cap->publish_posts )) )
-		if ( ! in_array( $previous_status, $published_statuses ) || !current_user_can( 'edit_post', $post_id ) )
+	if ( isset($post_data['post_status']) && (in_array( $post_data['post_status'], $published_statuses ) && !current_user_can( $ptype->cap->publish_posts )) ) {
+		if ( ! in_array( $previous_status, $published_statuses ) || !current_user_can( 'edit_post', $post_id ) ) {
 			$post_data['post_status'] = 'pending';
+		}
+	}
 
 	if ( ! isset( $post_data['post_status'] ) ) {
 		$post_data['post_status'] = 'auto-draft' === $previous_status ? 'draft' : $previous_status;
@@ -138,11 +155,13 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 		unset( $post_data['post_password'] );
 	}
 
-	if (!isset( $post_data['comment_status'] ))
+	if (!isset( $post_data['comment_status'] )) {
 		$post_data['comment_status'] = 'closed';
+	}
 
-	if (!isset( $post_data['ping_status'] ))
+	if (!isset( $post_data['ping_status'] )) {
 		$post_data['ping_status'] = 'closed';
+	}
 
 	foreach ( array('aa', 'mm', 'jj', 'hh', 'mn') as $timeunit ) {
 		if ( !empty( $post_data['hidden_' . $timeunit] ) && $post_data['hidden_' . $timeunit] != $post_data[$timeunit] ) {
@@ -224,10 +243,11 @@ function edit_post( $post_data = null ) {
 
 	$ptype = get_post_type_object($post_data['post_type']);
 	if ( !current_user_can( 'edit_post', $post_ID ) ) {
-		if ( 'page' == $post_data['post_type'] )
+		if ( 'page' == $post_data['post_type'] ) {
 			wp_die( __('Sorry, you are not allowed to edit this page.' ));
-		else
+		} else {
 			wp_die( __('Sorry, you are not allowed to edit this post.' ));
+		}
 	}
 
 	if ( post_type_supports( $ptype->name, 'revisions' ) ) {
@@ -235,8 +255,9 @@ function edit_post( $post_data = null ) {
 		$revision = current( $revisions );
 
 		// Check if the revisions have been upgraded
-		if ( $revisions && _wp_get_post_revision_version( $revision ) < 1 )
+		if ( $revisions && _wp_get_post_revision_version( $revision ) < 1 ) {
 			_wp_upgrade_revisions_of_post( $post, wp_get_post_revisions( $post_ID ) );
+		}
 	}
 
 	if ( isset($post_data['visibility']) ) {
@@ -256,18 +277,21 @@ function edit_post( $post_data = null ) {
 	}
 
 	$post_data = _wp_translate_postdata( true, $post_data );
-	if ( is_wp_error($post_data) )
+	if ( is_wp_error($post_data) ) {
 		wp_die( $post_data->get_error_message() );
+	}
 
 	// Post Formats
-	if ( isset( $post_data['post_format'] ) )
+	if ( isset( $post_data['post_format'] ) ) {
 		set_post_format( $post_ID, $post_data['post_format'] );
+	}
 
 	$format_meta_urls = array( 'url', 'link_url', 'quote_source_url' );
 	foreach ( $format_meta_urls as $format_meta_url ) {
 		$keyed = '_format_' . $format_meta_url;
-		if ( isset( $post_data[ $keyed ] ) )
+		if ( isset( $post_data[ $keyed ] ) ) {
 			update_post_meta( $post_ID, $keyed, wp_slash( esc_url_raw( wp_unslash( $post_data[ $keyed ] ) ) ) );
+		}
 	}
 
 	$format_keys = array( 'quote', 'quote_source_name', 'image', 'gallery', 'audio_embed', 'video_embed' );
@@ -275,10 +299,11 @@ function edit_post( $post_data = null ) {
 	foreach ( $format_keys as $key ) {
 		$keyed = '_format_' . $key;
 		if ( isset( $post_data[ $keyed ] ) ) {
-			if ( current_user_can( 'unfiltered_html' ) )
+			if ( current_user_can( 'unfiltered_html' ) ) {
 				update_post_meta( $post_ID, $keyed, $post_data[ $keyed ] );
-			else
+			} else {
 				update_post_meta( $post_ID, $keyed, wp_filter_post_kses( $post_data[ $keyed ] ) );
+			}
 		}
 	}
 
@@ -299,24 +324,30 @@ function edit_post( $post_data = null ) {
 	// Meta Stuff
 	if ( isset($post_data['meta']) && $post_data['meta'] ) {
 		foreach ( $post_data['meta'] as $key => $value ) {
-			if ( !$meta = get_post_meta_by_id( $key ) )
+			if ( !$meta = get_post_meta_by_id( $key ) ) {
 				continue;
-			if ( $meta->post_id != $post_ID )
+			}
+			if ( $meta->post_id != $post_ID ) {
 				continue;
-			if ( is_protected_meta( $value['key'], 'post' ) || ! current_user_can( 'edit_post_meta', $post_ID, $value['key'] ) )
+			}
+			if ( is_protected_meta( $value['key'], 'post' ) || ! current_user_can( 'edit_post_meta', $post_ID, $value['key'] ) ) {
 				continue;
+			}
 			update_meta( $key, $value['key'], $value['value'] );
 		}
 	}
 
 	if ( isset($post_data['deletemeta']) && $post_data['deletemeta'] ) {
 		foreach ( $post_data['deletemeta'] as $key => $value ) {
-			if ( !$meta = get_post_meta_by_id( $key ) )
+			if ( !$meta = get_post_meta_by_id( $key ) ) {
 				continue;
-			if ( $meta->post_id != $post_ID )
+			}
+			if ( $meta->post_id != $post_ID ) {
 				continue;
-			if ( is_protected_meta( $meta->meta_key, 'post' ) || ! current_user_can( 'delete_post_meta', $post_ID, $meta->meta_key ) )
+			}
+			if ( is_protected_meta( $meta->meta_key, 'post' ) || ! current_user_can( 'delete_post_meta', $post_ID, $meta->meta_key ) ) {
 				continue;
+			}
 			delete_meta( $key );
 		}
 	}
@@ -412,10 +443,11 @@ function edit_post( $post_data = null ) {
 	wp_set_post_lock( $post_ID );
 
 	if ( current_user_can( $ptype->cap->edit_others_posts ) && current_user_can( $ptype->cap->publish_posts ) ) {
-		if ( ! empty( $post_data['sticky'] ) )
+		if ( ! empty( $post_data['sticky'] ) ) {
 			stick_post( $post_ID );
-		else
+		} else {
 			unstick_post( $post_ID );
+		}
 	}
 
 	return $post_ID;
@@ -443,16 +475,18 @@ function bulk_edit_posts( $post_data = null ) {
 		$post_data = $_post->all();
 	}
 
-	if ( isset($post_data['post_type']) )
+	if ( isset($post_data['post_type']) ) {
 		$ptype = get_post_type_object($post_data['post_type']);
-	else
+	} else {
 		$ptype = get_post_type_object('post');
+	}
 
 	if ( !current_user_can( $ptype->cap->edit_posts ) ) {
-		if ( 'page' == $ptype->name )
+		if ( 'page' == $ptype->name ) {
 			wp_die( __('Sorry, you are not allowed to edit pages.'));
-		else
+		} else {
 			wp_die( __('Sorry, you are not allowed to edit posts.'));
+		}
 	}
 
 	if ( -1 == $post_data['_status'] ) {
@@ -481,28 +515,32 @@ function bulk_edit_posts( $post_data = null ) {
 	);
 
 	foreach ( $reset as $field ) {
-		if ( isset($post_data[$field]) && ( '' == $post_data[$field] || -1 == $post_data[$field] ) )
+		if ( isset($post_data[$field]) && ( '' == $post_data[$field] || -1 == $post_data[$field] ) ) {
 			unset($post_data[$field]);
+		}
 	}
 
 	if ( isset($post_data['post_category']) ) {
-		if ( is_array($post_data['post_category']) && ! empty($post_data['post_category']) )
+		if ( is_array($post_data['post_category']) && ! empty($post_data['post_category']) ) {
 			$new_cats = array_map( 'absint', $post_data['post_category'] );
-		else
+		} else {
 			unset($post_data['post_category']);
+		}
 	}
 
 	$tax_input = [];
 	if ( isset($post_data['tax_input'])) {
 		foreach ( $post_data['tax_input'] as $tax_name => $terms ) {
-			if ( empty($terms) )
+			if ( empty($terms) ) {
 				continue;
+			}
 			if ( is_taxonomy_hierarchical( $tax_name ) ) {
 				$tax_input[ $tax_name ] = array_map( 'absint', $terms );
 			} else {
 				$comma = _x( ',', 'tag delimiter' );
-				if ( ',' !== $comma )
+				if ( ',' !== $comma ) {
 					$terms = str_replace( $comma, ',', $terms );
+				}
 				$tax_input[ $tax_name ] = explode( ',', trim( $terms, " \n\t\r\0\x0B," ) );
 			}
 		}
@@ -551,15 +589,17 @@ function bulk_edit_posts( $post_data = null ) {
 		$tax_names = get_object_taxonomies( $post );
 		foreach ( $tax_names as $tax_name ) {
 			$taxonomy_obj = get_taxonomy($tax_name);
-			if ( isset( $tax_input[$tax_name]) && current_user_can( $taxonomy_obj->cap->assign_terms ) )
+			if ( isset( $tax_input[$tax_name]) && current_user_can( $taxonomy_obj->cap->assign_terms ) ) {
 				$new_terms = $tax_input[$tax_name];
-			else
+			} else {
 				$new_terms = [];
+			}
 
-			if ( $taxonomy_obj->hierarchical )
+			if ( $taxonomy_obj->hierarchical ) {
 				$current_terms = (array) wp_get_object_terms( $post_ID, $tax_name, array('fields' => 'ids') );
-			else
+			} else {
 				$current_terms = (array) wp_get_object_terms( $post_ID, $tax_name, array('fields' => 'names') );
+			}
 
 			$post_data['tax_input'][$tax_name] = array_merge( $current_terms, $new_terms );
 		}
@@ -592,14 +632,16 @@ function bulk_edit_posts( $post_data = null ) {
 		$updated[] = wp_update_post( $post_data );
 
 		if ( isset( $post_data['sticky'] ) && current_user_can( $ptype->cap->edit_others_posts ) ) {
-			if ( 'sticky' == $post_data['sticky'] )
+			if ( 'sticky' == $post_data['sticky'] ) {
 				stick_post( $post_ID );
-			else
+			} else {
 				unstick_post( $post_ID );
+			}
 		}
 
-		if ( isset( $post_data['post_format'] ) )
+		if ( isset( $post_data['post_format'] ) ) {
 			set_post_format( $post_ID, $post_data['post_format'] );
+		}
 	}
 
 	return array( 'updated' => $updated, 'skipped' => $skipped, 'locked' => $locked );
@@ -625,8 +667,9 @@ function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) 
 	if ( $create_in_db ) {
 		$post_id = wp_insert_post( array( 'post_title' => __( 'Auto Draft' ), 'post_type' => $post_type, 'post_status' => 'auto-draft' ) );
 		$post = get_post( $post_id );
-		if ( current_theme_supports( 'post-formats' ) && post_type_supports( $post->post_type, 'post-formats' ) && get_option( 'default_post_format' ) )
+		if ( current_theme_supports( 'post-formats' ) && post_type_supports( $post->post_type, 'post-formats' ) && get_option( 'default_post_format' ) ) {
 			set_post_format( $post, get_option( 'default_post_format' ) );
+		}
 	} else {
 		$post = new stdClass;
 		$post->ID = 0;
@@ -719,8 +762,9 @@ function post_exists($title, $content = '', $date = '') {
 		$args[] = $post_content;
 	}
 
-	if ( !empty ( $args ) )
+	if ( !empty ( $args ) ) {
 		return (int) $wpdb->get_var( $wpdb->prepare($query, $args) );
+	}
 
 	return 0;
 }
@@ -738,16 +782,18 @@ function wp_write_post() {
 	$app = getApp();
 	$_post = $app['request']->request;
 
-	if ( $_post->get( 'post_type' ) )
+	if ( $_post->get( 'post_type' ) ) {
 		$ptype = get_post_type_object( $_post->get( 'post_type' ) );
-	else
+	} else {
 		$ptype = get_post_type_object('post');
+	}
 
 	if ( !current_user_can( $ptype->cap->edit_posts ) ) {
-		if ( 'page' == $ptype->name )
+		if ( 'page' == $ptype->name ) {
 			return new Error( 'edit_pages', __( 'Sorry, you are not allowed to create pages on this site.' ) );
-		else
+		} else {
 			return new Error( 'edit_posts', __( 'Sorry, you are not allowed to create posts or drafts on this site.' ) );
+		}
 	}
 
 	$_post->set( 'post_mime_type', '' );
@@ -779,16 +825,19 @@ function wp_write_post() {
 	}
 
 	$translated = _wp_translate_postdata( false );
-	if ( is_wp_error($translated) )
+	if ( is_wp_error($translated) ) {
 		return $translated;
+	}
 
 	// Create the post.
 	$post_ID = wp_insert_post( $_post->all() );
-	if ( is_wp_error( $post_ID ) )
+	if ( is_wp_error( $post_ID ) ) {
 		return $post_ID;
+	}
 
-	if ( empty($post_ID) )
+	if ( empty($post_ID) ) {
 		return 0;
+	}
 
 	add_meta( $post_ID );
 
@@ -811,10 +860,11 @@ function wp_write_post() {
  */
 function write_post() {
 	$result = wp_write_post();
-	if ( is_wp_error( $result ) )
+	if ( is_wp_error( $result ) ) {
 		wp_die( $result->get_error_message() );
-	else
+	} else {
 		return $result;
+	}
 }
 
 //
@@ -838,22 +888,27 @@ function add_meta( $post_ID ) {
 	$metakeyselect = wp_unslash( trim( $_post->get( 'metakeyselect', '' ) ) );
 	$metakeyinput = wp_unslash( trim( $_post->get( 'metakeyinput', '' ) ) );
 	$metavalue = $_post->get( 'metavalue', '' );
-	if ( is_string( $metavalue ) )
+	if ( is_string( $metavalue ) ) {
 		$metavalue = trim( $metavalue );
+	}
 
 	if ( ('0' === $metavalue || ! empty ( $metavalue ) ) && ( ( ( '#NONE#' != $metakeyselect ) && !empty ( $metakeyselect) ) || !empty ( $metakeyinput ) ) ) {
 		/*
 		 * We have a key/value pair. If both the select and the input
 		 * for the key have data, the input takes precedence.
 		 */
- 		if ( '#NONE#' != $metakeyselect )
+		if ( '#NONE#' != $metakeyselect ) {
 			$metakey = $metakeyselect;
+		}
 
-		if ( $metakeyinput )
-			$metakey = $metakeyinput; // default
+		if ( $metakeyinput ) {
+			$metakey = $metakeyinput;
+		}
+		// default
 
-		if ( is_protected_meta( $metakey, 'post' ) || ! current_user_can( 'add_post_meta', $post_ID, $metakey ) )
+		if ( is_protected_meta( $metakey, 'post' ) || ! current_user_can( 'add_post_meta', $post_ID, $metakey ) ) {
 			return false;
+		}
 
 		$metakey = wp_slash( $metakey );
 
@@ -957,12 +1012,14 @@ function _fix_attachment_links( $post ) {
 	$content = $post['post_content'];
 
 	// Don't run if no pretty permalinks or post is not published, scheduled, or privately published.
-	if ( ! get_option( 'permalink_structure' ) || ! in_array( $post['post_status'], array( 'publish', 'future', 'private' ) ) )
+	if ( ! get_option( 'permalink_structure' ) || ! in_array( $post['post_status'], array( 'publish', 'future', 'private' ) ) ) {
 		return;
+	}
 
 	// Short if there aren't any links or no '?attachment_id=' strings (strpos cannot be zero)
-	if ( !strpos($content, '?attachment_id=') || !preg_match_all( '/<a ([^>]+)>[\s\S]+?<\/a>/', $content, $link_matches ) )
+	if ( !strpos($content, '?attachment_id=') || !preg_match_all( '/<a ([^>]+)>[\s\S]+?<\/a>/', $content, $link_matches ) ) {
 		return;
+	}
 
 	$site_url = get_bloginfo('url');
 	$site_url = substr( $site_url, (int) strpos($site_url, '://') ); // remove the http(s)
@@ -971,15 +1028,17 @@ function _fix_attachment_links( $post ) {
 	foreach ( $link_matches[1] as $key => $value ) {
 		if ( !strpos($value, '?attachment_id=') || !strpos($value, 'wp-att-')
 			|| !preg_match( '/href=(["\'])[^"\']*\?attachment_id=(\d+)[^"\']*\\1/', $value, $url_match )
-			|| !preg_match( '/rel=["\'][^"\']*wp-att-(\d+)/', $value, $rel_match ) )
-				continue;
+			|| !preg_match( '/rel=["\'][^"\']*wp-att-(\d+)/', $value, $rel_match ) ) {
+			continue;
+		}
 
 		$quote = $url_match[1]; // the quote (single or double)
 		$url_id = (int) $url_match[2];
 		$rel_id = (int) $rel_match[1];
 
-		if ( !$url_id || !$rel_id || $url_id != $rel_id || strpos($url_match[0], $site_url) === false )
+		if ( !$url_id || !$rel_id || $url_id != $rel_id || strpos($url_match[0], $site_url) === false ) {
 			continue;
+		}
 
 		$link = $link_matches[0][$key];
 		$replace = str_replace( $url_match[0], 'href=' . $quote . get_attachment_link( $url_id ) . $quote, $link );
@@ -1029,10 +1088,11 @@ function wp_edit_posts_query( $q = false ) {
 	$q['cat'] = isset($q['cat']) ? (int) $q['cat'] : 0;
 	$post_stati  = get_post_stati();
 
-	if ( isset($q['post_type']) && in_array( $q['post_type'], get_post_types() ) )
+	if ( isset($q['post_type']) && in_array( $q['post_type'], get_post_types() ) ) {
 		$post_type = $q['post_type'];
-	else
+	} else {
 		$post_type = 'post';
+	}
 
 	$avail_post_stati = get_available_post_statuses($post_type);
 
@@ -1055,8 +1115,9 @@ function wp_edit_posts_query( $q = false ) {
 
 	$per_page = "edit_{$post_type}_per_page";
 	$posts_per_page = (int) get_user_option( $per_page );
-	if ( empty( $posts_per_page ) || $posts_per_page < 1 )
+	if ( empty( $posts_per_page ) || $posts_per_page < 1 ) {
 		$posts_per_page = 20;
+	}
 
 	/**
 	 * Filters the number of items per page to show for a specific 'per_page' type.
@@ -1094,8 +1155,9 @@ function wp_edit_posts_query( $q = false ) {
 		$query['fields'] = 'id=>parent';
 	}
 
-	if ( ! empty( $q['show_sticky'] ) )
+	if ( ! empty( $q['show_sticky'] ) ) {
 		$query['post__in'] = (array) get_option( 'sticky_posts' );
+	}
 
 	wp( $query );
 
@@ -1279,8 +1341,9 @@ function postbox_classes( $id, $page ) {
  */
 function get_sample_permalink($id, $title = null, $name = null) {
 	$post = get_post( $id );
-	if ( ! $post )
+	if ( ! $post ) {
 		return array( '', '' );
+	}
 
 	$ptype = get_post_type_object($post->post_type);
 
@@ -1296,8 +1359,9 @@ function get_sample_permalink($id, $title = null, $name = null) {
 
 	// If the user wants to set a new name -- override the current one
 	// Note: if empty name is supplied -- use the title instead, see #6072
-	if ( !is_null($name) )
+	if ( !is_null($name) ) {
 		$post->post_name = sanitize_title($name ? $name : $title, $post->ID);
+	}
 
 	$post->post_name = wp_unique_post_slug($post->post_name, $post->ID, $post->post_status, $post->post_type, $post->post_parent);
 
@@ -1319,8 +1383,9 @@ function get_sample_permalink($id, $title = null, $name = null) {
 
 		/** This filter is documented in wp-admin/edit-tag-form.php */
 		$uri = apply_filters( 'editable_slug', $uri, $post );
-		if ( !empty($uri) )
+		if ( !empty($uri) ) {
 			$uri .= '/';
+		}
 		$permalink = str_replace('%pagename%', "{$uri}%pagename%", $permalink);
 	}
 
@@ -1357,8 +1422,9 @@ function get_sample_permalink($id, $title = null, $name = null) {
  */
 function get_sample_permalink_html( $id, $new_title = null, $new_slug = null ) {
 	$post = get_post( $id );
-	if ( ! $post )
+	if ( ! $post ) {
 		return '';
+	}
 
 	list($permalink, $post_name) = get_sample_permalink($post->ID, $new_title, $new_slug);
 
@@ -1509,11 +1575,13 @@ function _wp_post_thumbnail_html( $thumbnail_id = null, $post = null ) {
  * @return integer False: not locked or locked by current user. Int: user ID of user with lock.
  */
 function wp_check_post_lock( $post_id ) {
-	if ( !$post = get_post( $post_id ) )
+	if ( !$post = get_post( $post_id ) ) {
 		return false;
+	}
 
-	if ( !$lock = get_post_meta( $post->ID, '_edit_lock', true ) )
+	if ( !$lock = get_post_meta( $post->ID, '_edit_lock', true ) ) {
 		return false;
+	}
 
 	$lock = explode( ':', $lock );
 	$time = $lock[0];
@@ -1522,8 +1590,9 @@ function wp_check_post_lock( $post_id ) {
 	/** This filter is documented in wp-admin/includes/ajax-actions.php */
 	$time_window = apply_filters( 'wp_check_post_lock_window', 150 );
 
-	if ( $time && $time > time() - $time_window && $user != get_current_user_id() )
+	if ( $time && $time > time() - $time_window && $user != get_current_user_id() ) {
 		return $user;
+	}
 	return false;
 }
 
@@ -1537,10 +1606,12 @@ function wp_check_post_lock( $post_id ) {
  * 	an array of the lock time and the user ID.
  */
 function wp_set_post_lock( $post_id ) {
-	if ( !$post = get_post( $post_id ) )
+	if ( !$post = get_post( $post_id ) ) {
 		return false;
-	if ( 0 == ($user_id = get_current_user_id()) )
+	}
+	if ( 0 == ($user_id = get_current_user_id()) ) {
 		return false;
+	}
 
 	$now = time();
 	$lock = "$now:$user_id";
@@ -1556,12 +1627,14 @@ function wp_set_post_lock( $post_id ) {
  * @return none
  */
 function _admin_notice_post_locked() {
-	if ( ! $post = get_post() )
+	if ( ! $post = get_post() ) {
 		return;
+	}
 
 	$user = null;
-	if (  $user_id = wp_check_post_lock( $post->ID ) )
+	if (  $user_id = wp_check_post_lock( $post->ID ) ) {
 		$user = get_userdata( $user_id );
+	}
 
 	if ( $user ) {
 
@@ -1575,8 +1648,9 @@ function _admin_notice_post_locked() {
 		 * @param bool      $display Whether to display the dialog. Default true.
 		 * @param User|bool $user    User object on success, false otherwise.
 		 */
-		if ( ! apply_filters( 'show_post_locked_dialog', true, $post, $user ) )
+		if ( ! apply_filters( 'show_post_locked_dialog', true, $post, $user ) ) {
 			return;
+		}
 
 		$locked = true;
 	} else {
@@ -1590,8 +1664,9 @@ function _admin_notice_post_locked() {
 	} else {
 		$sendback = admin_url( 'edit.php' );
 
-		if ( 'post' != $post->post_type )
+		if ( 'post' != $post->post_type ) {
 			$sendback = add_query_arg( 'post_type', $post->post_type, $sendback );
+		}
 
 		$sendback_text = get_post_type_object( $post->post_type )->labels->all_items;
 	}
@@ -1638,8 +1713,9 @@ function _admin_notice_post_locked() {
 		<p class="currently-editing wp-tab-first" tabindex="0">
 		<?php
 			_e( 'This content is currently locked.' );
-			if ( $override )
+			if ( $override ) {
 				printf( ' ' . __( 'If you take over, %s will be blocked from continuing to edit.' ), esc_html( $user->display_name ) );
+			}
 		?>
 		</p>
 		<?php
@@ -1722,8 +1798,9 @@ function wp_create_post_autosave( $post_data ) {
 	}
 
 	$post_data = _wp_translate_postdata( true, $post_data );
-	if ( is_wp_error( $post_data ) )
+	if ( is_wp_error( $post_data ) ) {
 		return $post_data;
+	}
 
 	$post_author = get_current_user_id();
 
@@ -1804,8 +1881,9 @@ function post_preview() {
 		$saved_post_id = wp_create_post_autosave( $post->ID );
 	}
 
-	if ( is_wp_error( $saved_post_id ) )
+	if ( is_wp_error( $saved_post_id ) ) {
 		wp_die( $saved_post_id->get_error_message() );
+	}
 
 	$query_args = [];
 
@@ -1838,8 +1916,9 @@ function post_preview() {
  */
 function wp_autosave( $post_data ) {
 	// Back-compat
-	if ( ! defined( 'DOING_AUTOSAVE' ) )
+	if ( ! defined( 'DOING_AUTOSAVE' ) ) {
 		define( 'DOING_AUTOSAVE', true );
+	}
 
 	$post_id = (int) $post_data['post_id'];
 	$post_data['ID'] = $post_data['post_ID'] = $post_id;
@@ -1854,11 +1933,13 @@ function wp_autosave( $post_data ) {
 		return new Error( 'edit_posts', __( 'Sorry, you are not allowed to edit this item.' ) );
 	}
 
-	if ( 'auto-draft' == $post->post_status )
+	if ( 'auto-draft' == $post->post_status ) {
 		$post_data['post_status'] = 'draft';
+	}
 
-	if ( $post_data['post_type'] != 'page' && ! empty( $post_data['catslist'] ) )
+	if ( $post_data['post_type'] != 'page' && ! empty( $post_data['catslist'] ) ) {
 		$post_data['post_category'] = explode( ',', $post_data['catslist'] );
+	}
 
 	if ( ! wp_check_post_lock( $post->ID ) && get_current_user_id() == $post->post_author && ( 'auto-draft' == $post->post_status || 'draft' == $post->post_status ) ) {
 		// Drafts and auto-drafts are just overwritten by autosave for the same user if the post is not locked

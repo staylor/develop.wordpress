@@ -7,8 +7,9 @@
  */
 
 // don't load directly
-if ( !defined('ABSPATH') )
+if ( !defined('ABSPATH') ) {
 	die('-1');
+}
 
 $post_type = get_current_screen()->post_type;
 $post_type_object = get_post_type_object( $post_type );
@@ -34,9 +35,9 @@ if ( post_type_supports( $post_type, 'editor' ) && ! wp_is_mobile() &&
 	$_wp_editor_expand = ( get_user_setting( 'editor_expand', 'on' ) === 'on' );
 }
 
-if ( wp_is_mobile() )
+if ( wp_is_mobile() ) {
 	wp_enqueue_script( 'jquery-touch-punch' );
-
+}
 /**
  * Post ID global
  * @name $post_ID
@@ -183,8 +184,9 @@ if ( $message ) {
 $notice = false;
 $form_extra = '';
 if ( 'auto-draft' == $post->post_status ) {
-	if ( 'edit' == $action )
+	if ( 'edit' == $action ) {
 		$post->post_title = '';
+	}
 	$autosave = false;
 	$form_extra .= "<input type='hidden' id='auto_draft' name='auto_draft' value='1' />";
 } else {
@@ -204,8 +206,9 @@ if ( $autosave && mysql2date( 'U', $autosave->post_modified_gmt, false ) > mysql
 		}
 	}
 	// If this autosave isn't different from the current post, begone.
-	if ( ! $notice )
+	if ( ! $notice ) {
 		wp_delete_post_revision( $autosave->ID );
+	}
 	unset($autosave_field, $_autosave_field);
 }
 
@@ -246,34 +249,35 @@ if ( current_theme_supports( 'post-formats' ) && post_type_supports( $post_type,
 // all taxonomies
 foreach ( get_object_taxonomies( $post ) as $tax_name ) {
 	$taxonomy = get_taxonomy( $tax_name );
-	if ( ! $taxonomy->show_ui || false === $taxonomy->meta_box_cb )
+	if ( ! $taxonomy->show_ui || false === $taxonomy->meta_box_cb ) {
 		continue;
+	}
 
 	$label = $taxonomy->labels->name;
 
-	if ( ! is_taxonomy_hierarchical( $tax_name ) )
+	if ( ! is_taxonomy_hierarchical( $tax_name ) ) {
 		$tax_meta_box_id = 'tagsdiv-' . $tax_name;
-	else
+	} else {
 		$tax_meta_box_id = $tax_name . 'div';
-
+	}
 	add_meta_box( $tax_meta_box_id, $label, $taxonomy->meta_box_cb, null, 'side', 'core', array( 'taxonomy' => $tax_name ) );
 }
 
-if ( post_type_supports($post_type, 'page-attributes') )
+if ( post_type_supports($post_type, 'page-attributes') ) {
 	add_meta_box('pageparentdiv', 'page' == $post_type ? __('Page Attributes') : __('Attributes'), 'page_attributes_meta_box', null, 'side', 'core');
-
-if ( $thumbnail_support && current_user_can( 'upload_files' ) )
+}
+if ( $thumbnail_support && current_user_can( 'upload_files' ) ) {
 	add_meta_box('postimagediv', esc_html( $post_type_object->labels->featured_image ), 'post_thumbnail_meta_box', null, 'side', 'low');
-
-if ( post_type_supports($post_type, 'excerpt') )
+}
+if ( post_type_supports($post_type, 'excerpt') ) {
 	add_meta_box('postexcerpt', __('Excerpt'), 'post_excerpt_meta_box', null, 'normal', 'core');
-
-if ( post_type_supports($post_type, 'trackbacks') )
+}
+if ( post_type_supports($post_type, 'trackbacks') ) {
 	add_meta_box('trackbacksdiv', __('Send Trackbacks'), 'post_trackback_meta_box', null, 'normal', 'core');
-
-if ( post_type_supports($post_type, 'custom-fields') )
+}
+if ( post_type_supports($post_type, 'custom-fields') ) {
 	add_meta_box('postcustom', __('Custom Fields'), 'post_custom_meta_box', null, 'normal', 'core');
-
+}
 /**
  * Fires in the middle of built-in meta box registration.
  *
@@ -364,15 +368,16 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 <div class="wrap">
 <h1><?php
 echo esc_html( $app->get( 'title' ) );
-if ( isset( $post_new_file ) && current_user_can( $post_type_object->cap->create_posts ) )
+if ( isset( $post_new_file ) && current_user_can( $post_type_object->cap->create_posts ) ) {
 	echo ' <a href="' . esc_url( admin_url( $post_new_file ) ) . '" class="page-title-action">' . esc_html( $post_type_object->labels->add_new ) . '</a>';
-?></h1>
-<?php if ( $notice ) : ?>
+} ?></h1>
+<?php if ( $notice ) { ?>
 <div id="notice" class="notice notice-warning"><p id="has-newer-autosave"><?php echo $notice ?></p></div>
-<?php endif; ?>
-<?php if ( $message ) : ?>
+<?php }
+
+if ( $message ) { ?>
 <div id="message" class="updated notice notice-success is-dismissible"><p><?php echo $message; ?></p></div>
-<?php endif; ?>
+<?php } ?>
 <div id="lost-connection-notice" class="error hidden">
 	<p><span class="spinner"></span> <?php _e( '<strong>Connection lost.</strong> Saving has been disabled until you&#8217;re reconnected.' ); ?>
 	<span class="hide-if-no-sessionstorage"><?php _e( 'We&#8217;re backing up this post in your browser, just in case.' ); ?></span>
@@ -402,9 +407,9 @@ $referer = wp_get_referer();
 <input type="hidden" id="active_post_lock" value="<?php echo esc_attr( implode( ':', $active_post_lock ) ); ?>" />
 <?php
 }
-if ( 'draft' != get_post_status( $post ) )
+if ( 'draft' != get_post_status( $post ) ) {
 	wp_original_referer_field(true, 'previous');
-
+}
 echo $form_extra;
 
 wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
@@ -473,8 +478,9 @@ if ( $post_type_object->public && ! ( 'pending' == get_post_status( $post ) && !
 ?>
 	<div id="edit-slug-box" class="hide-if-no-js">
 	<?php
-		if ( $has_sample_permalink )
+		if ( $has_sample_permalink ) {
 			echo $sample_permalink_html;
+		}
 	?>
 	</div>
 <?php
@@ -625,12 +631,13 @@ do_action( 'dbx_post_sidebar', $post );
 </div>
 
 <?php
-if ( post_type_supports( $post_type, 'comments' ) )
+if ( post_type_supports( $post_type, 'comments' ) ) {
 	wp_comment_reply();
+}
 ?>
 
 <?php if ( ! wp_is_mobile() && post_type_supports( $post_type, 'title' ) && '' === $post->post_title ) : ?>
 <script type="text/javascript">
 try{document.post.title.focus();}catch(e){}
 </script>
-<?php endif; ?>
+<?php endif;

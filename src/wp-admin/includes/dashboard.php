@@ -27,19 +27,20 @@ function wp_dashboard_setup() {
 
 	if ( $response && $response['upgrade'] ) {
 		add_filter( 'postbox_classes_dashboard_dashboard_browser_nag', 'dashboard_browser_nag_class' );
-		if ( $response['insecure'] )
+		if ( $response['insecure'] ) {
 			wp_add_dashboard_widget( 'dashboard_browser_nag', __( 'You are using an insecure browser!' ), 'wp_dashboard_browser_nag' );
-		else
+		} else {
 			wp_add_dashboard_widget( 'dashboard_browser_nag', __( 'Your browser is out of date!' ), 'wp_dashboard_browser_nag' );
+		}
 	}
 
 	// Right Now
-	if ( is_blog_admin() && current_user_can('edit_posts') )
+	if ( is_blog_admin() && current_user_can('edit_posts') ) {
 		wp_add_dashboard_widget( 'dashboard_right_now', __( 'At a Glance' ), 'wp_dashboard_right_now' );
-
-	if ( is_network_admin() )
+	}
+	if ( is_network_admin() ) {
 		wp_add_dashboard_widget( 'network_dashboard_right_now', __( 'Right Now' ), 'wp_network_dashboard_right_now' );
-
+	}
 	// Activity Widget
 	if ( is_blog_admin() ) {
 		wp_add_dashboard_widget( 'dashboard_activity', __( 'Activity' ), 'wp_dashboard_site_activity' );
@@ -174,12 +175,14 @@ function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_
 	$side_widgets = array( 'dashboard_quick_press', 'dashboard_primary' );
 
 	$location = 'normal';
-	if ( in_array($widget_id, $side_widgets) )
+	if ( in_array($widget_id, $side_widgets) ) {
 		$location = 'side';
+	}
 
 	$priority = 'core';
-	if ( 'dashboard_browser_nag' === $widget_id )
+	if ( 'dashboard_browser_nag' === $widget_id ) {
 		$priority = 'high';
+	}
 
 	add_meta_box( $widget_id, $widget_name, $callback, $screen, $location, $priority, $callback_args );
 }
@@ -387,11 +390,12 @@ function wp_dashboard_right_now() {
  */
 function wp_network_dashboard_right_now() {
 	$actions = [];
-	if ( current_user_can('create_sites') )
+	if ( current_user_can('create_sites') ) {
 		$actions['create-site'] = '<a href="' . network_admin_url('site-new.php') . '">' . __( 'Create a New Site' ) . '</a>';
-	if ( current_user_can('create_users') )
+	}
+	if ( current_user_can('create_users') ) {
 		$actions['create-user'] = '<a href="' . network_admin_url('user-new.php') . '">' . __( 'Create a New User' ) . '</a>';
-
+	}
 	$c_users = get_user_count();
 	$c_blogs = get_blog_count();
 
@@ -482,14 +486,17 @@ function wp_dashboard_quick_press( $error_msg = false ) {
 			$post = get_default_post_to_edit( 'post', true );
 			update_user_option( get_current_user_id(), 'dashboard_quick_press_last_post_id', (int) $post->ID ); // Save post_ID
 		} else {
-			$post->post_title = ''; // Remove the auto draft title
+			// Remove the auto draft title
+			$post->post_title = '';
 		}
 	} else {
 		$post = get_default_post_to_edit( 'post' , true);
 		$user_id = get_current_user_id();
 		// Don't create an option if this is a super admin who does not belong to this site.
-		if ( ! ( is_super_admin( $user_id ) && ! in_array( get_current_blog_id(), array_keys( get_blogs_of_user( $user_id ) ) ) ) )
-			update_user_option( $user_id, 'dashboard_quick_press_last_post_id', (int) $post->ID ); // Save post_ID
+		if ( ! ( is_super_admin( $user_id ) && ! in_array( get_current_blog_id(), array_keys( get_blogs_of_user( $user_id ) ) ) ) ) {
+			// Save post_ID
+			update_user_option( $user_id, 'dashboard_quick_press_last_post_id', (int) $post->ID );
+		}
 	}
 
 	$post_ID = (int) $post->ID;
@@ -896,19 +903,22 @@ function wp_dashboard_recent_comments( $total_items = 5 ) {
 		'number' => $total_items * 5,
 		'offset' => 0
 	);
-	if ( ! current_user_can( 'edit_posts' ) )
+	if ( ! current_user_can( 'edit_posts' ) ) {
 		$comments_query['status'] = 'approve';
+	}
 
 	while ( count( $comments ) < $total_items && $possible = get_comments( $comments_query ) ) {
 		if ( ! is_array( $possible ) ) {
 			break;
 		}
 		foreach ( $possible as $comment ) {
-			if ( ! current_user_can( 'read_post', $comment->comment_post_ID ) )
+			if ( ! current_user_can( 'read_post', $comment->comment_post_ID ) ) {
 				continue;
+			}
 			$comments[] = $comment;
-			if ( count( $comments ) == $total_items )
+			if ( count( $comments ) == $total_items ) {
 				break 2;
+			}
 		}
 		$comments_query['offset'] += $comments_query['number'];
 		$comments_query['number'] = $total_items * 10;
@@ -1046,11 +1056,13 @@ function wp_dashboard_rss_control( $widget_id, $form_inputs = [] ) {
 	$app = getApp();
 	$_post = $app['request']->request;
 
-	if ( !$widget_options = get_option( 'dashboard_widget_options' ) )
+	if ( !$widget_options = get_option( 'dashboard_widget_options' ) ) {
 		$widget_options = [];
+	}
 
-	if ( !isset($widget_options[$widget_id]) )
+	if ( !isset($widget_options[$widget_id]) ) {
 		$widget_options[$widget_id] = [];
+	}
 
 	$number = 1; // Hack to use wp_widget_rss_form()
 	$widget_options[$widget_id]['number'] = $number;
@@ -1223,16 +1235,18 @@ function wp_dashboard_plugins_output( $rss, $args = [] ) {
 	echo '<ul>';
 
 	foreach ( array( $popular ) as $feed ) {
-		if ( is_wp_error( $feed ) || ! $feed->get_item_quantity() )
+		if ( is_wp_error( $feed ) || ! $feed->get_item_quantity() ) {
 			continue;
+		}
 
 		$items = $feed->get_items(0, 5);
 
 		// Pick a random, non-installed plugin
 		while ( true ) {
 			// Abort this foreach loop iteration if there's no plugins left of this type
-			if ( 0 == count($items) )
+			if ( 0 == count($items) ) {
 				continue 2;
+			}
 
 			$item_key = array_rand($items);
 			$item = $items[$item_key];
@@ -1240,9 +1254,9 @@ function wp_dashboard_plugins_output( $rss, $args = [] ) {
 			list( $link ) = explode( '#', $item->get_link() );
 
 			$link = esc_url($link);
-			if ( preg_match( '|/([^/]+?)/?$|', $link, $matches ) )
+			if ( preg_match( '|/([^/]+?)/?$|', $link, $matches ) ) {
 				$slug = $matches[1];
-			else {
+			} else {
 				unset( $items[$item_key] );
 				continue;
 			}
@@ -1261,11 +1275,12 @@ function wp_dashboard_plugins_output( $rss, $args = [] ) {
 		}
 
 		// Eliminate some common badly formed plugin descriptions
-		while ( ( null !== $item_key = array_rand($items) ) && false !== strpos( $items[$item_key]->get_description(), 'Plugin Name:' ) )
+		while ( ( null !== $item_key = array_rand($items) ) && false !== strpos( $items[$item_key]->get_description(), 'Plugin Name:' ) ) {
 			unset($items[$item_key]);
-
-		if ( !isset($items[$item_key]) )
+		}
+		if ( !isset($items[$item_key]) ) {
 			continue;
+		}
 
 		$raw_title = $item->get_title();
 
@@ -1292,16 +1307,21 @@ function wp_dashboard_plugins_output( $rss, $args = [] ) {
  * @return bool|null True if not multisite, user can't upload files, or the space check option is disabled.
  */
 function wp_dashboard_quota() {
-	if ( !is_multisite() || !current_user_can( 'upload_files' ) || get_site_option( 'upload_space_check_disabled' ) )
+	if (
+		! is_multisite() ||
+		! current_user_can( 'upload_files' ) ||
+		get_site_option( 'upload_space_check_disabled' )
+	) {
 		return true;
-
+	}
 	$quota = get_space_allowed();
 	$used = get_space_used();
 
-	if ( $used > $quota )
+	if ( $used > $quota ) {
 		$percentused = '100';
-	else
+	} else {
 		$percentused = ( $used / $quota ) * 100;
+	}
 	$used_class = ( $percentused >= 70 ) ? ' warning' : '';
 	$used = round( $used, 2 );
 	$percentused = number_format( $percentused );
@@ -1370,9 +1390,9 @@ function wp_dashboard_browser_nag() {
 
 		$browsehappy = 'http://browsehappy.com/';
 		$locale = get_user_locale();
-		if ( 'en_US' !== $locale )
+		if ( 'en_US' !== $locale ) {
 			$browsehappy = add_query_arg( 'locale', $locale, $browsehappy );
-
+		}
 		$notice .= '<p>' . sprintf( __( '<a href="%1$s" class="update-browser-link">Update %2$s</a> or learn how to <a href="%3$s" class="browse-happy-link">browse happy</a>' ), esc_attr( $response['update_url'] ), esc_html( $response['name'] ), esc_url( $browsehappy ) ) . '</p>';
 		$notice .= '<p class="hide-if-no-js"><a href="" class="dismiss" aria-label="' . esc_attr__( 'Dismiss the browser warning panel' ) . '">' . __( 'Dismiss' ) . '</a></p>';
 		$notice .= '<div class="clear"></div>';
@@ -1398,8 +1418,9 @@ function wp_dashboard_browser_nag() {
 function dashboard_browser_nag_class( $classes ) {
 	$response = wp_check_browser_version();
 
-	if ( $response && $response['insecure'] )
+	if ( $response && $response['insecure'] ) {
 		$classes[] = 'browser-insecure';
+	}
 
 	return $classes;
 }
@@ -1413,8 +1434,9 @@ function dashboard_browser_nag_class( $classes ) {
  */
 function wp_check_browser_version() {
 	$app = getApp();
-	if ( empty( $app['request.useragent'] ) )
+	if ( empty( $app['request.useragent'] ) ) {
 		return false;
+	}
 
 	$key = md5( $app['request.useragent'] );
 
@@ -1426,8 +1448,9 @@ function wp_check_browser_version() {
 
 		$response = wp_remote_post( 'http://api.wordpress.org/core/browse-happy/1.1/', $options );
 
-		if ( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) )
+		if ( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) ) {
 			return false;
+		}
 
 		/**
 		 * Response should be an array with:
@@ -1442,8 +1465,9 @@ function wp_check_browser_version() {
 		 */
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( ! is_array( $response ) )
+		if ( ! is_array( $response ) ) {
 			return false;
+		}
 
 		set_site_transient( 'browser_' . $key, $response, WEEK_IN_SECONDS );
 	}

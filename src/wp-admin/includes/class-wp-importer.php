@@ -69,9 +69,9 @@ class WP_Importer {
 
 		$result = $wpdb->get_results( $sql );
 
-		if ( !empty( $result ) )
+		if ( !empty( $result ) ) {
 			$count = intval( $result[0]->cnt );
-
+		}
 		// Unset to save memory.
 		unset( $result );
 
@@ -148,8 +148,9 @@ class WP_Importer {
 		}
 
 		if ( function_exists( 'is_multisite' ) ) {
-			if ( is_multisite() )
+			if ( is_multisite() ) {
 				switch_to_blog( $blog_id );
+			}
 		}
 
 		return $blog_id;
@@ -201,11 +202,12 @@ class WP_Importer {
 
 		$headers = [];
 		$args = [];
-		if ( true === $head )
+		if ( true === $head ) {
 			$args['method'] = 'HEAD';
-		if ( !empty( $username ) && !empty( $password ) )
+		}
+		if ( !empty( $username ) && !empty( $password ) ) {
 			$headers['Authorization'] = 'Basic ' . base64_encode( "$username:$password" );
-
+		}
 		$args['headers'] = $headers;
 
 		return wp_safe_remote_request( $url, $args );

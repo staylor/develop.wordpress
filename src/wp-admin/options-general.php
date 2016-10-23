@@ -14,9 +14,9 @@ require_once( __DIR__ . '/admin.php' );
 /** WordPress Translation Install API */
 require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
-if ( ! current_user_can( 'manage_options' ) )
+if ( ! current_user_can( 'manage_options' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
-
+}
 $app->set( 'title', __( 'General Settings' ) );
 $app->set( 'parent_file', 'options-general.php' );
 $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
@@ -110,18 +110,20 @@ $tzstring = get_option('timezone_string');
 $check_zone_info = true;
 
 // Remove old Etc mappings. Fallback to gmt_offset.
-if ( false !== strpos($tzstring,'Etc/GMT') )
+if ( false !== strpos($tzstring,'Etc/GMT') ) {
 	$tzstring = '';
+}
 
 // Create a UTC+- zone if no timezone string exists
 if ( empty($tzstring) ) {
 	$check_zone_info = false;
-	if ( 0 == $current_offset )
+	if ( 0 == $current_offset ) {
 		$tzstring = 'UTC+0';
-	elseif ($current_offset < 0)
+	} elseif ($current_offset < 0) {
 		$tzstring = 'UTC' . $current_offset;
-	else
+	} else {
 		$tzstring = 'UTC+' . $current_offset;
+	}
 }
 
 ?>
@@ -142,14 +144,14 @@ if ( empty($tzstring) ) {
 			'<code>' . date_i18n( $timezone_format, false, true ) . '</code>'
 		);
 	?></span>
-<?php if ( get_option( 'timezone_string' ) || ! empty( $current_offset ) ) : ?>
+<?php if ( get_option( 'timezone_string' ) || ! empty( $current_offset ) ) { ?>
 	<span id="local-time"><?php
 		/* translators: %s: local time */
 		printf( __( 'Local time is %s.' ),
 			'<code>' . date_i18n( $timezone_format ) . '</code>'
 		);
 	?></span>
-<?php endif; ?>
+<?php } ?>
 </p>
 
 <?php if ( $check_zone_info && $tzstring ) : ?>
@@ -159,10 +161,11 @@ if ( empty($tzstring) ) {
 	// Set TZ so localtime works.
 	date_default_timezone_set($tzstring);
 	$now = localtime(time(), true);
-	if ( $now['tm_isdst'] )
+	if ( $now['tm_isdst'] ) {
 		_e('This timezone is currently in daylight saving time.');
-	else
+	} else {
 		_e('This timezone is currently in standard time.');
+	}
 	?>
 	<br />
 	<?php
@@ -350,4 +353,4 @@ if ( ! empty( $languages ) || ! empty( $translations ) ) {
 
 </div>
 
-<?php include( ABSPATH . 'wp-admin/admin-footer.php' ); ?>
+<?php include( ABSPATH . 'wp-admin/admin-footer.php' );

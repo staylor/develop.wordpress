@@ -16,9 +16,9 @@ if ( is_multisite() && ! is_network_admin() ) {
 	exit();
 }
 
-if ( !current_user_can('edit_themes') )
+if ( !current_user_can('edit_themes') ) {
 	wp_die('<p>'.__('Sorry, you are not allowed to edit templates for this site.').'</p>');
-
+}
 $app->set( 'title', __( 'Edit Themes' ) );
 $app->set( 'parent_file', 'themes.php' );
 $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
@@ -112,8 +112,9 @@ default:
 
 	update_recently_edited( $file );
 
-	if ( ! is_file( $file ) )
+	if ( ! is_file( $file ) ) {
 		$error = true;
+	}
 
 	$content = '';
 	if ( ! $error && filesize( $file ) > 0 ) {
@@ -140,15 +141,16 @@ default:
 
 $description = get_file_description( $relative_file );
 $file_show = array_search( $file, array_filter( $app->files['allowed'] ) );
-if ( $description != $file_show )
+if ( $description != $file_show ) {
 	$description .= ' <span>(' . $file_show . ')</span>';
+}
 ?>
 <div class="wrap">
 <h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 
 <div class="fileedit-sub">
 <div class="alignleft">
-<h2><?php echo $theme->display( 'Name' ); if ( $description ) echo ': ' . $description; ?></h2>
+<h2><?php echo $theme->display( 'Name' ); if ( $description ) { echo ': ' . $description; } ?></h2>
 </div>
 <div class="alignright">
 	<form action="theme-editor.php" method="post">
@@ -156,8 +158,9 @@ if ( $description != $file_show )
 		<select name="theme" id="theme">
 <?php
 foreach ( wp_get_themes( array( 'errors' => null ) ) as $a_stylesheet => $a_theme ) {
-	if ( $a_theme->errors() && 'theme_no_stylesheet' == $a_theme->errors()->get_error_code() )
+	if ( $a_theme->errors() && 'theme_no_stylesheet' == $a_theme->errors()->get_error_code() ) {
 		continue;
+	}
 
 	$selected = $a_stylesheet == $stylesheet ? ' selected="selected"' : '';
 	echo "\n\t" . '<option value="' . esc_attr( $a_stylesheet ) . '"' . $selected . '>' . $a_theme->display('Name') . '</option>';
@@ -175,10 +178,10 @@ if ( $theme->errors() )
 ?>
 	<div id="templateside">
 <?php
-if ( $app->files['allowed'] ) :
+if ( $app->files['allowed'] ) {
 	$previous_file_type = '';
 
-	foreach ( $app->files['allowed'] as $filename => $absolute_filename ) :
+	foreach ( $app->files['allowed'] as $filename => $absolute_filename ) {
 		$file_type = substr( $filename, strrpos( $filename, '.' ) );
 
 		if ( $file_type !== $previous_file_type ) {
@@ -224,15 +227,13 @@ if ( $app->files['allowed'] ) :
 		$previous_file_type = $file_type;
 ?>
 		<li><a href="theme-editor.php?file=<?php echo urlencode( $filename ) ?>&amp;theme=<?php echo urlencode( $stylesheet ) ?>"><?php echo $file_description; ?></a></li>
-<?php
-	endforeach;
-?>
+<?php } ?>
 </ul>
-<?php endif; ?>
+<?php } ?>
 </div>
-<?php if ( $error ) :
+<?php if ( $error ) {
 	echo '<div class="error"><p>' . __('Oops, no such file exists! Double check the name and try again, merci.') . '</p></div>';
-else : ?>
+} else { ?>
 	<form name="template" id="template" action="theme-editor.php" method="post">
 	<?php wp_nonce_field( 'edit-theme_' . $file . $stylesheet ); ?>
 		<div><textarea cols="70" rows="30" name="newcontent" id="newcontent" aria-describedby="newcontent-description"><?php echo $content; ?></textarea>
@@ -241,29 +242,30 @@ else : ?>
 		<input type="hidden" name="theme" value="<?php echo esc_attr( $theme->get_stylesheet() ); ?>" />
 		<input type="hidden" name="scrollto" id="scrollto" value="<?php echo $scrollto; ?>" />
 		</div>
-	<?php if ( ! empty( $functions ) ) : ?>
+	<?php if ( ! empty( $functions ) ) { ?>
 		<div id="documentation" class="hide-if-no-js">
 		<label for="docs-list"><?php _e('Documentation:') ?></label>
 		<?php echo $docs_select; ?>
 		<input type="button" class="button" value="<?php esc_attr_e( 'Look Up' ); ?>" onclick="if ( '' != jQuery('#docs-list').val() ) { window.open( 'https://api.wordpress.org/core/handbook/1.0/?function=' + escape( jQuery( '#docs-list' ).val() ) + '&amp;locale=<?php echo urlencode( get_user_locale() ) ?>&amp;version=<?php echo urlencode( get_bloginfo( 'version' ) ) ?>&amp;redirect=true'); }" />
 		</div>
-	<?php endif; ?>
+	<?php } ?>
 
 		<div>
-		<?php if ( is_child_theme() && $theme->get_stylesheet() == get_template() ) : ?>
+		<?php if ( is_child_theme() && $theme->get_stylesheet() == get_template() ) { ?>
 			<p><?php if ( is_writeable( $file ) ) { ?><strong><?php _e( 'Caution:' ); ?></strong><?php } ?>
 			<?php _e( 'This is a file in your current parent theme.' ); ?></p>
-		<?php endif; ?>
+		<?php } ?>
 <?php
-	if ( is_writeable( $file ) ) :
+	if ( is_writeable( $file ) ) {
 		submit_button( __( 'Update File' ), 'primary', 'submit', true );
-	else : ?>
+	} else { ?>
 <p><em><?php _e('You need to make this file writable before you can save your changes. See <a href="https://codex.wordpress.org/Changing_File_Permissions">the Codex</a> for more information.'); ?></em></p>
-<?php endif; ?>
+	<?php } ?>
 		</div>
 	</form>
 <?php
-endif; // $error
+// $error
+}
 ?>
 <br class="clear" />
 </div>

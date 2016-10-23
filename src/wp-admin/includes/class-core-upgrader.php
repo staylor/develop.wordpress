@@ -78,8 +78,9 @@ class Core_Upgrader extends WP_Upgrader {
 		$this->upgrade_strings();
 
 		// Is an update available?
-		if ( !isset( $current->response ) || $current->response == 'latest' )
+		if ( !isset( $current->response ) || $current->response == 'latest' ) {
 			return new Error('up_to_date', $this->strings['up_to_date']);
+		}
 
 		$res = $this->fs_connect( array( ABSPATH, WP_CONTENT_DIR ), $parsed_args['allow_relaxed_file_ownership'] );
 		if ( ! $res || is_wp_error( $res ) ) {
@@ -102,18 +103,19 @@ class Core_Upgrader extends WP_Upgrader {
 		 * the new_bundled zip. Don't though if the constant is set to skip bundled items.
 		 * If the API returns a no_content zip, go with it. Finally, default to the full zip.
 		 */
-		if ( $parsed_args['do_rollback'] && $current->packages->rollback )
+		if ( $parsed_args['do_rollback'] && $current->packages->rollback ) {
 			$to_download = 'rollback';
-		elseif ( $current->packages->partial && 'reinstall' != $current->response &&
-			$this->app['wp_version'] == $current->partial_version && $partial )
+		} elseif ( $current->packages->partial && 'reinstall' != $current->response &&
+			$this->app['wp_version'] == $current->partial_version && $partial ) {
 			$to_download = 'partial';
-		elseif ( $current->packages->new_bundled && version_compare( $this->app['wp_version'], $current->new_bundled, '<' )
-			&& ( ! defined( 'CORE_UPGRADE_SKIP_NEW_BUNDLED' ) || ! CORE_UPGRADE_SKIP_NEW_BUNDLED ) )
+		} elseif ( $current->packages->new_bundled && version_compare( $this->app['wp_version'], $current->new_bundled, '<' )
+			&& ( ! defined( 'CORE_UPGRADE_SKIP_NEW_BUNDLED' ) || ! CORE_UPGRADE_SKIP_NEW_BUNDLED ) ) {
 			$to_download = 'new_bundled';
-		elseif ( $current->packages->no_content )
+		} elseif ( $current->packages->no_content ) {
 			$to_download = 'no_content';
-		else
+		} else {
 			$to_download = 'full';
+		}
 
 		// Lock to prevent multiple Core Updates occurring
 		$lock = WP_Upgrader::create_lock( 'core_updater', 15 * MINUTE_IN_SECONDS );
@@ -266,28 +268,33 @@ class Core_Upgrader extends WP_Upgrader {
 		}
 
 		// 1: If we're already on that version, not much point in updating?
-		if ( $offered_ver == $app['wp_version'] )
+		if ( $offered_ver == $app['wp_version'] ) {
 			return false;
+		}
 
 		// 2: If we're running a newer version, that's a nope
-		if ( version_compare( $app['wp_version'], $offered_ver, '>' ) )
+		if ( version_compare( $app['wp_version'], $offered_ver, '>' ) ) {
 			return false;
+		}
 
 		$failure_data = get_site_option( 'auto_core_update_failed' );
 		if ( $failure_data ) {
 			// If this was a critical update failure, cannot update.
-			if ( ! empty( $failure_data['critical'] ) )
+			if ( ! empty( $failure_data['critical'] ) ) {
 				return false;
+			}
 
 			// Don't claim we can update on update-core.php if we have a non-critical failure logged.
-			if ( $app['wp_version'] == $failure_data['current'] && false !== strpos( $offered_ver, '.1.next.minor' ) )
+			if ( $app['wp_version'] == $failure_data['current'] && false !== strpos( $offered_ver, '.1.next.minor' ) ) {
 				return false;
+			}
 
 			// Cannot update if we're retrying the same A to B update that caused a non-critical failure.
 			// Some non-critical failures do allow retries, like download_failed.
 			// 3.7.1 => 3.7.2 resulted in files_not_writable, if we are still on 3.7.1 and still trying to update to 3.7.2.
-			if ( empty( $failure_data['retry'] ) && $app['wp_version'] == $failure_data['current'] && $offered_ver == $failure_data['attempted'] )
+			if ( empty( $failure_data['retry'] ) && $app['wp_version'] == $failure_data['current'] && $offered_ver == $failure_data['attempted'] ) {
 				return false;
+			}
 		}
 
 		// 3: 3.7-alpha-25000 -> 3.7-alpha-25678 -> 3.7-beta1 -> 3.7-beta2
@@ -301,8 +308,9 @@ class Core_Upgrader extends WP_Upgrader {
 			 * @param bool $upgrade_dev Whether to enable automatic updates for
 			 *                          development versions.
 			 */
-			if ( ! apply_filters( 'allow_dev_auto_core_updates', $upgrade_dev ) )
+			if ( ! apply_filters( 'allow_dev_auto_core_updates', $upgrade_dev ) ) {
 				return false;
+			}
 			// Else fall through to minor + major branches below.
 		}
 
@@ -347,15 +355,18 @@ class Core_Upgrader extends WP_Upgrader {
 	public function check_files() {
 		$checksums = get_core_checksums( $this->app['wp_version'], $this->app['wp_local_package'] ?? 'en_US' );
 
-		if ( ! is_array( $checksums ) )
+		if ( ! is_array( $checksums ) ) {
 			return false;
+		}
 
 		foreach ( $checksums as $file => $checksum ) {
 			// Skip files which get updated
-			if ( 'wp-content' == substr( $file, 0, 10 ) )
+			if ( 'wp-content' == substr( $file, 0, 10 ) ) {
 				continue;
-			if ( ! file_exists( ABSPATH . $file ) || md5_file( ABSPATH . $file ) !== $checksum )
+			}
+			if ( ! file_exists( ABSPATH . $file ) || md5_file( ABSPATH . $file ) !== $checksum ) {
 				return false;
+			}
 		}
 
 		return true;

@@ -144,8 +144,9 @@ function plugins_api( $action, $args = [] ) {
 
 	if ( false === $res ) {
 		$url = $http_url = 'http://api.wordpress.org/plugins/info/1.0/';
-		if ( $ssl = wp_http_supports( array( 'ssl' ) ) )
+		if ( $ssl = wp_http_supports( array( 'ssl' ) ) ) {
 			$url = set_url_scheme( $url, 'https' );
+		}
 
 		$http_args = array(
 			'timeout' => 15,
@@ -165,8 +166,9 @@ function plugins_api( $action, $args = [] ) {
 			$res = new Error('plugins_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), $request->get_error_message() );
 		} else {
 			$res = maybe_unserialize( wp_remote_retrieve_body( $request ) );
-			if ( ! is_object( $res ) && ! is_array( $res ) )
+			if ( ! is_object( $res ) && ! is_array( $res ) ) {
 				$res = new Error('plugins_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), wp_remote_retrieve_body( $request ) );
+			}
 		}
 	} elseif ( !is_wp_error($res) ) {
 		$res->external = true;
@@ -194,14 +196,14 @@ function plugins_api( $action, $args = [] ) {
  */
 function install_popular_tags( $args = [] ) {
 	$key = md5(serialize($args));
-	if ( false !== ($tags = get_site_transient('poptags_' . $key) ) )
+	if ( false !== ($tags = get_site_transient('poptags_' . $key) ) ) {
 		return $tags;
-
+	}
 	$tags = plugins_api('hot_tags', $args);
 
-	if ( is_wp_error($tags) )
+	if ( is_wp_error($tags) ) {
 		return $tags;
-
+	}
 	set_site_transient( 'poptags_' . $key, $tags, 3 * HOUR_IN_SECONDS );
 
 	return $tags;
@@ -371,9 +373,9 @@ function install_plugin_install_status($api, $loop = false) {
 	$_get = $app['request']->query;
 
 	// This function is called recursively, $loop prevents further loops.
-	if ( is_array($api) )
+	if ( is_array($api) ) {
 		$api = (object) $api;
-
+	}
 	// Default to a "new" plugin
 	$status = 'install';
 	$url = false;
@@ -390,8 +392,9 @@ function install_plugin_install_status($api, $loop = false) {
 				$status = 'update_available';
 				$update_file = $file;
 				$version = $plugin->new_version;
-				if ( current_user_can('update_plugins') )
+				if ( current_user_can('update_plugins') ) {
 					$url = wp_nonce_url(self_admin_url('update.php?action=upgrade-plugin&plugin=' . $update_file), 'upgrade-plugin_' . $update_file);
+				}
 				break;
 			}
 		}
@@ -401,8 +404,9 @@ function install_plugin_install_status($api, $loop = false) {
 		if ( is_dir( WP_PLUGIN_DIR . '/' . $api->slug ) ) {
 			$installed_plugin = get_plugins('/' . $api->slug);
 			if ( empty($installed_plugin) ) {
-				if ( current_user_can('install_plugins') )
+				if ( current_user_can('install_plugins') ) {
 					$url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=' . $api->slug), 'install-plugin_' . $api->slug);
+				}
 			} else {
 				$key = array_keys( $installed_plugin );
 				$key = reset( $key ); //Use the first plugin regardless of the name, Could have issues for multiple-plugins in one directory if they share different version numbers
@@ -423,8 +427,9 @@ function install_plugin_install_status($api, $loop = false) {
 			}
 		} else {
 			// "install" & no directory with that slug
-			if ( current_user_can('install_plugins') )
+			if ( current_user_can('install_plugins') ) {
 				$url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=' . $api->slug), 'install-plugin_' . $api->slug);
+			}
 		}
 	}
 	if ( $_get->get( 'from' ) ) {
@@ -650,8 +655,6 @@ function install_plugin_information() {
 	</div>
 	<div id="section-holder" class="wrap">
 	<?php
-	$app = getApp();
-
 	if ( ! empty( $api->tested ) && version_compare( substr( $app['wp_version'], 0, strlen( $api->tested ) ), $api->tested, '>' ) ) {
 		echo '<div class="notice notice-warning notice-alt"><p>' . __( '<strong>Warning:</strong> This plugin has <strong>not been tested</strong> with your current version of WordPress.' ) . '</p></div>';
 	} elseif ( ! empty( $api->requires ) && version_compare( substr( $app['wp_version'], 0, strlen( $api->requires ) ), $api->requires, '<' ) ) {

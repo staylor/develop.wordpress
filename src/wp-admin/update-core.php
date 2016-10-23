@@ -21,8 +21,13 @@ if ( is_multisite() && ! is_network_admin() ) {
 	exit();
 }
 
-if ( ! current_user_can( 'update_core' ) && ! current_user_can( 'update_themes' ) && ! current_user_can( 'update_plugins' ) )
+if (
+	! current_user_can( 'update_core' ) &&
+	! current_user_can( 'update_themes' ) &&
+	! current_user_can( 'update_plugins' )
+) {
 	wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
+}
 
 require_once( __DIR__ . '/includes/update-core-functions.php' );
 
@@ -53,17 +58,21 @@ if ( 'upgrade-core' == $action ) {
 	<?php
 	if ( $upgrade_error ) {
 		echo '<div class="error"><p>';
-		if ( $upgrade_error == 'themes' )
+		if ( $upgrade_error == 'themes' ) {
 			_e('Please select one or more themes to update.');
-		else
+		} else {
 			_e('Please select one or more plugins to update.');
+		}
 		echo '</p></div>';
 	}
 
 	$last_update_check = false;
 	$current = get_site_transient( 'update_core' );
 
-	if ( $current && isset ( $current->last_checked ) )	{
+	if (
+		$current &&
+		isset ( $current->last_checked )
+	)	{
 		$last_update_check = $current->last_checked + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
 	}
 
@@ -73,14 +82,21 @@ if ( 'upgrade-core' == $action ) {
 	echo ' &nbsp; <a class="button" href="' . esc_url( self_admin_url('update-core.php?force-check=1') ) . '">' . __( 'Check Again' ) . '</a>';
 	echo '</p>';
 
-	if ( $core = current_user_can( 'update_core' ) )
+	$core = current_user_can( 'update_core' );
+	if ( $core ) {
 		core_upgrade_preamble();
-	if ( $plugins = current_user_can( 'update_plugins' ) )
+	}
+	$plugins = current_user_can( 'update_plugins' );
+	if ( $plugins ) {
 		list_plugin_updates();
-	if ( $themes = current_user_can( 'update_themes' ) )
+	}
+	$themes = current_user_can( 'update_themes' );
+	if ( $themes ) {
 		list_theme_updates();
-	if ( $core || $plugins || $themes )
+	}
+	if ( $core || $plugins || $themes ) {
 		list_translation_updates();
+	}
 	unset( $core, $plugins, $themes );
 	/**
 	 * Fires after the core, plugin, and theme update tables.
@@ -98,25 +114,28 @@ if ( 'upgrade-core' == $action ) {
 
 } elseif ( 'do-core-upgrade' == $action || 'do-core-reinstall' == $action ) {
 
-	if ( ! current_user_can( 'update_core' ) )
+	if ( ! current_user_can( 'update_core' ) ) {
 		wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
-
+	}
 	check_admin_referer('upgrade-core');
 
 	// Do the (un)dismiss actions before headers, so that they can redirect.
-	if ( $_post->get( 'dismiss' ) )
+	if ( $_post->get( 'dismiss' ) ) {
 		do_dismiss_core_update();
-	elseif ( $_post->get( 'undismiss' ) )
+	} elseif ( $_post->get( 'undismiss' ) ) {
 		do_undismiss_core_update();
+	}
 
 	require_once(ABSPATH . 'wp-admin/admin-header.php');
-	if ( 'do-core-reinstall' == $action )
+	if ( 'do-core-reinstall' == $action ) {
 		$reinstall = true;
-	else
+	} else {
 		$reinstall = false;
+	}
 
-	if ( $_post->get( 'upgrade' ) )
+	if ( $_post->get( 'upgrade' ) ) {
 		do_core_upgrade($reinstall);
+	}
 
 	wp_localize_script( 'updates', '_wpUpdatesItemCounts', array(
 		'totals'  => wp_get_update_data(),
@@ -126,9 +145,9 @@ if ( 'upgrade-core' == $action ) {
 
 } elseif ( 'do-plugin-upgrade' == $action ) {
 
-	if ( ! current_user_can( 'update_plugins' ) )
+	if ( ! current_user_can( 'update_plugins' ) ) {
 		wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
-
+	}
 	check_admin_referer('upgrade-core');
 
 	if ( $_get->get( 'plugins' ) ) {
@@ -159,9 +178,9 @@ if ( 'upgrade-core' == $action ) {
 
 } elseif ( 'do-theme-upgrade' == $action ) {
 
-	if ( ! current_user_can( 'update_themes' ) )
+	if ( ! current_user_can( 'update_themes' ) ) {
 		wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
-
+	}
 	check_admin_referer('upgrade-core');
 
 	if ( $_get->get( 'themes' ) ) {
@@ -194,9 +213,13 @@ if ( 'upgrade-core' == $action ) {
 
 } elseif ( 'do-translation-upgrade' == $action ) {
 
-	if ( ! current_user_can( 'update_core' ) && ! current_user_can( 'update_plugins' ) && ! current_user_can( 'update_themes' ) )
+	if (
+		! current_user_can( 'update_core' ) &&
+		! current_user_can( 'update_plugins' ) &&
+		! current_user_can( 'update_themes' )
+	) {
 		wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
-
+	}
 	check_admin_referer( 'upgrade-translations' );
 
 	require_once( ABSPATH . 'wp-admin/admin-header.php' );
