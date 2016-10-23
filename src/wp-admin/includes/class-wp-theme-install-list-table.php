@@ -57,8 +57,9 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		// These are the tabs which are shown on the page,
 		$tabs = [];
 		$tabs['dashboard'] = __( 'Search' );
-		if ( 'search' === $tab )
+		if ( 'search' === $tab ) {
 			$tabs['search']	= __( 'Search Results' );
+		}
 		$tabs['upload'] = __( 'Upload' );
 		$tabs['featured'] = _x( 'Featured', 'themes' );
 		//$tabs['popular']  = _x( 'Popular', 'themes' );
@@ -81,8 +82,12 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		$nonmenu_tabs = apply_filters( 'install_themes_nonmenu_tabs', $nonmenu_tabs );
 
 		// If a non-valid menu tab has been selected, And it's not a non-menu action.
-		if ( empty( $tab ) || ( ! isset( $tabs[ $tab ] ) && ! in_array( $tab, (array) $nonmenu_tabs ) ) )
+		if (
+			empty( $tab ) ||
+			( ! isset( $tabs[ $tab ] ) && ! in_array( $tab, (array) $nonmenu_tabs ) )
+		) {
 			$tab = key( $tabs );
+		}
 
 		$args = [
 			'page' => $paged,
@@ -139,13 +144,15 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		 */
 		$args = apply_filters( "install_themes_table_api_args_{$tab}", $args );
 
-		if ( ! $args )
+		if ( ! $args ) {
 			return;
+		}
 
 		$api = themes_api( 'query_themes', $args );
 
-		if ( is_wp_error( $api ) )
+		if ( is_wp_error( $api ) ) {
 			wp_die( $api->get_error_message() . '</p> <p><a href="#" onclick="document.location.reload(); return false;">' . __( 'Try again' ) . '</a>' );
+		}
 
 		$this->items = $api->themes;
 
@@ -216,12 +223,11 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	 */
 	public function display_rows() {
 		$themes = $this->items;
-		foreach ( $themes as $theme ) {
-				?>
-				<div class="available-theme installable-theme"><?php
-					$this->single_row( $theme );
-				?></div>
-		<?php } // end foreach $theme_names
+		foreach ( $themes as $theme ) { ?>
+			<div class="available-theme installable-theme"><?php
+				$this->single_row( $theme );
+			?></div>
+		<?php }
 
 		$this->theme_installer();
 	}
@@ -246,8 +252,9 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	 *     public 'download_link' => string 'http://wordpress.org/themes/download/magazine-basic.1.1.zip'
 	 */
 	public function single_row( $theme ) {
-		if ( empty( $theme ) )
+		if ( empty( $theme ) ) {
 			return;
+		}
 
 		$name   = wp_kses( $theme->name,   $this->app->theme['allowedtags'] );
 		$author = wp_kses( $theme->author, $this->app->theme['allowedtags'] );
@@ -309,9 +316,9 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 
 		<div class="action-links">
 			<ul>
-				<?php foreach ( $actions as $action ): ?>
+				<?php foreach ( $actions as $action ) { ?>
 					<li><?php echo $action; ?></li>
-				<?php endforeach; ?>
+				<?php } ?>
 				<li class="hide-if-no-js"><a href="#" class="theme-detail"><?php _e('Details') ?></a></li>
 			</ul>
 		</div>
@@ -371,8 +378,9 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	 * @param object $theme - A WordPress.org Theme API object.
 	 */
 	public function install_theme_info( $theme ) {
-		if ( empty( $theme ) )
+		if ( empty( $theme ) ) {
 			return;
+		}
 
 		$name   = wp_kses( $theme->name,   $this->app->theme['allowedtags'] );
 		$author = wp_kses( $theme->author, $this->app->theme['allowedtags'] );
@@ -454,12 +462,13 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 
 		$installed_theme = wp_get_theme( $theme->slug );
 		if ( $installed_theme->exists() ) {
-			if ( version_compare( $installed_theme->get('Version'), $theme->version, '=' ) )
+			if ( version_compare( $installed_theme->get('Version'), $theme->version, '=' ) ) {
 				$status = 'latest_installed';
-			elseif ( version_compare( $installed_theme->get('Version'), $theme->version, '>' ) )
+			} elseif ( version_compare( $installed_theme->get('Version'), $theme->version, '>' ) ) {
 				$status = 'newer_installed';
-			else
+			} else {
 				$status = 'update_available';
+			}
 		}
 
 		return $status;

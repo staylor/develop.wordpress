@@ -61,8 +61,9 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 				$update_actions['activate'] = '<a href="' . esc_url( $activate_link ) . '" class="activatelink"><span aria-hidden="true">' . __( 'Activate' ) . '</span><span class="screen-reader-text">' . sprintf( __( 'Activate &#8220;%s&#8221;' ), $name ) . '</span></a>';
 			}
 
-			if ( ! $this->result || is_wp_error( $this->result ) || is_network_admin() )
+			if ( ! $this->result || is_wp_error( $this->result ) || is_network_admin() ) {
 				unset( $update_actions['preview'], $update_actions['activate'] );
+			}
 		}
 
 		$update_actions['themes_page'] = '<a href="' . self_admin_url( 'themes.php' ) . '" target="_parent">' . __( 'Return to Themes page' ) . '</a>';
@@ -77,7 +78,8 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 		 */
 		$update_actions = apply_filters( 'update_theme_complete_actions', $update_actions, $this->theme );
 
-		if ( ! empty($update_actions) )
+		if ( ! empty($update_actions) ) {
 			$this->feedback(implode(' | ', (array)$update_actions));
+		}
 	}
 }
