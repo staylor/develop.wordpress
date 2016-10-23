@@ -14,15 +14,19 @@ require_once( __DIR__ . '/admin.php' );
 
 wp_reset_vars( array( 'action', 'cat_id', 'link_id' ) );
 
-if ( ! current_user_can('manage_links') )
+if ( ! current_user_can('manage_links') ) {
 	wp_link_manager_disabled_message();
+}
 
-if ( $_post->get( 'deletebookmarks' ) )
+if ( $_post->get( 'deletebookmarks' ) ) {
 	$action = 'deletebookmarks';
-if ( $_post->get( 'move' ) )
+}
+if ( $_post->get( 'move' ) ) {
 	$action = 'move';
-if ( $_post->get( 'linkcheck' ) )
+}
+if ( $_post->get( 'linkcheck' ) ) {
 	$linkcheck = $_post->get( 'linkcheck' );
+}
 
 $this_file = admin_url('link-manager.php');
 
@@ -40,8 +44,9 @@ case 'deletebookmarks' :
 	foreach ($linkcheck as $link_id) {
 		$link_id = (int) $link_id;
 
-		if ( wp_delete_link($link_id) )
+		if ( wp_delete_link($link_id) ) {
 			$deleted++;
+		}
 	}
 
 	wp_redirect("$this_file?deleted=$deleted");
@@ -68,8 +73,9 @@ case 'add' :
 	check_admin_referer('add-bookmark');
 
 	$redir = wp_get_referer();
-	if ( add_link() )
+	if ( add_link() ) {
 		$redir = add_query_arg( 'added', 'true', $redir );
+	}
 
 	wp_redirect( $redir );
 	exit;
@@ -96,8 +102,9 @@ case 'edit' :
 	wp_enqueue_script('link');
 	wp_enqueue_script('xfn');
 
-	if ( wp_is_mobile() )
+	if ( wp_is_mobile() ) {
 		wp_enqueue_script( 'jquery-touch-punch' );
+	}
 
 	$app->set( 'parent_file', 'link-manager.php' );
 	$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
@@ -106,8 +113,9 @@ case 'edit' :
 
 	$link_id = $_get->getInt( 'link_id' );
 
-	if (!$link = get_link_to_edit($link_id))
+	if (!$link = get_link_to_edit($link_id)) {
 		wp_die(__('Link not found.'));
+	}
 
 	include( ABSPATH . 'wp-admin/edit-link-form.php' );
 	include( ABSPATH . 'wp-admin/admin-footer.php' );

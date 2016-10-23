@@ -3611,13 +3611,15 @@ function wp_is_numeric_array( $data ) {
  * @return array A list of objects or object fields.
  */
 function wp_filter_object_list( $list, $args = array(), $operator = 'and', $field = false ) {
-	if ( ! is_array( $list ) )
+	if ( ! is_array( $list ) ) {
 		return array();
+	}
 
 	$list = wp_list_filter( $list, $args, $operator );
 
-	if ( $field )
+	if ( $field ) {
 		$list = wp_list_pluck( $list, $field );
+	}
 
 	return $list;
 }
@@ -3637,11 +3639,13 @@ function wp_filter_object_list( $list, $args = array(), $operator = 'and', $fiel
  * @return array Array of found values.
  */
 function wp_list_filter( $list, $args = array(), $operator = 'AND' ) {
-	if ( ! is_array( $list ) )
+	if ( ! is_array( $list ) ) {
 		return array();
+	}
 
-	if ( empty( $args ) )
+	if ( empty( $args ) ) {
 		return $list;
+	}
 
 	$operator = strtoupper( $operator );
 	$count = count( $args );
@@ -3652,8 +3656,9 @@ function wp_list_filter( $list, $args = array(), $operator = 'AND' ) {
 
 		$matched = 0;
 		foreach ( $args as $m_key => $m_value ) {
-			if ( array_key_exists( $m_key, $to_match ) && $m_value == $to_match[ $m_key ] )
+			if ( array_key_exists( $m_key, $to_match ) && $m_value == $to_match[ $m_key ] ) {
 				$matched++;
+			}
 		}
 
 		if ( ( 'AND' == $operator && $matched == $count )

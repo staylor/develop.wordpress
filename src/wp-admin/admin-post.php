@@ -13,10 +13,11 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 	define( 'WP_ADMIN', true );
 }
 
-if ( defined('ABSPATH') )
+if ( defined('ABSPATH') ) {
 	require_once(ABSPATH . 'wp-load.php');
-else
+} else {
 	require_once( dirname( __DIR__ ) . '/wp-load.php' );
+}
 
 /** Allow for cross-domain requests (from the front end). */
 send_origin_headers();

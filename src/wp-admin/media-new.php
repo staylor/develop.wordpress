@@ -13,8 +13,9 @@ use WP\Media\Admin\Help as MediaHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if (!current_user_can('upload_files'))
+if (!current_user_can('upload_files')) {
 	wp_die(__('Sorry, you are not allowed to upload files.'));
+}
 
 wp_enqueue_script('plupload-handlers');
 
@@ -48,8 +49,9 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 $form_class = 'media-upload-form type-form validate';
 
-if ( get_user_setting('uploader') || $_get->get( 'browser-uploader' ) )
+if ( get_user_setting('uploader') || $_get->get( 'browser-uploader' ) ) {
 	$form_class .= ' html-uploader';
+}
 ?>
 <div class="wrap">
 	<h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>

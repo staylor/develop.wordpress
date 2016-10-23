@@ -45,21 +45,23 @@ require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 nocache_headers();
 
 // Support wp-config-sample.php one level up, for the develop repo.
-if ( file_exists( ABSPATH . 'wp-config-sample.php' ) )
+if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
 	$config_file = file( ABSPATH . 'wp-config-sample.php' );
-elseif ( file_exists( dirname( ABSPATH ) . '/wp-config-sample.php' ) )
+} elseif ( file_exists( dirname( ABSPATH ) . '/wp-config-sample.php' ) ) {
 	$config_file = file( dirname( ABSPATH ) . '/wp-config-sample.php' );
-else
+} else {
 	wp_die( __( 'Sorry, I need a wp-config-sample.php file to work from. Please re-upload this file to your WordPress installation.' ) );
+}
 
 // Check if wp-config.php has been created
-if ( file_exists( ABSPATH . 'wp-config.php' ) )
+if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
 	wp_die( '<p>' . sprintf(
 			/* translators: %s: install.php */
 			__( "The file 'wp-config.php' already exists. If you need to reset any of the configuration items in this file, please delete it first. You may try <a href='%s'>installing now</a>." ),
 			'install.php'
 		) . '</p>'
 	);
+}
 
 // Check if wp-config.php exists above the root directory but is not part of another install
 if ( @file_exists( ABSPATH . '../wp-config.php' ) && ! @file_exists( ABSPATH . '../wp-settings.php' ) ) {
@@ -91,7 +93,10 @@ function setup_config_display_header( $body_classes = [] ) {
 	header( 'Content-Type: text/html; charset=utf-8' );
 ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) echo ' dir="rtl"'; ?>>
+<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) {
+	echo ' dir="rtl"';
+}
+?>>
 <head>
 	<meta name="viewport" content="width=device-width" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -250,12 +255,14 @@ case 0:
 
 	$tryagain_link = '</p><p class="step"><a href="' . $step_1 . '" onclick="javascript:history.go(-1);return false;" class="button button-large">' . __( 'Try again' ) . '</a>';
 
-	if ( empty( $prefix ) )
+	if ( empty( $prefix ) ) {
 		wp_die( __( '<strong>ERROR</strong>: "Table Prefix" must not be empty.' . $tryagain_link ) );
+	}
 
 	// Validate $prefix: it can only contain letters, numbers and underscores.
-	if ( preg_match( '|[^a-z0-9_]|i', $prefix ) )
+	if ( preg_match( '|[^a-z0-9_]|i', $prefix ) ) {
 		wp_die( __( '<strong>ERROR</strong>: "Table Prefix" can only contain numbers, letters, and underscores.' . $tryagain_link ) );
+	}
 
 	// Test the db connection.
 	/**#@+
@@ -277,8 +284,9 @@ case 0:
 	 */
 	$wpdb->db_connect();
 
-	if ( ! empty( $wpdb->error ) )
+	if ( ! empty( $wpdb->error ) ) {
 		wp_die( $wpdb->error->get_error_message() . $tryagain_link );
+	}
 
 	$wpdb->query( "SELECT $prefix" );
 	if ( ! $wpdb->last_error ) {
@@ -325,8 +333,9 @@ case 0:
 			continue;
 		}
 
-		if ( ! preg_match( '/^define\(\'([A-Z_]+)\',([ ]+)/', $line, $match ) )
+		if ( ! preg_match( '/^define\(\'([A-Z_]+)\',([ ]+)/', $line, $match ) ) {
 			continue;
+		}
 
 		$constant = $match[1];
 		$padding  = $match[2];
@@ -357,7 +366,7 @@ case 0:
 	}
 	unset( $line );
 
-	if ( ! is_writable(ABSPATH) ) :
+	if ( ! is_writable(ABSPATH) ) {
 		setup_config_display_header();
 ?>
 <p><?php
@@ -385,15 +394,17 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 })();
 </script>
 <?php
-	else :
+	} else {
 		/*
 		 * If this file doesn't exist, then we are using the wp-config-sample.php
 		 * file one level up, which is for the develop repo.
 		 */
-		if ( file_exists( ABSPATH . 'wp-config-sample.php' ) )
+		if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
 			$path_to_wp_config = ABSPATH . 'wp-config.php';
-		else
-			$path_to_wp_config = dirname( ABSPATH ) . '/wp-config.php';
+
+		} else {
+					$path_to_wp_config = dirname( ABSPATH ) . '/wp-config.php';
+		}
 
 		$handle = fopen( $path_to_wp_config, 'w' );
 		foreach ( $config_file as $line ) {
@@ -408,7 +419,7 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 
 <p class="step"><a href="<?php echo $install; ?>" class="button button-large"><?php _e( 'Run the install' ); ?></a></p>
 <?php
-	endif;
+	}
 	break;
 }
 ?>

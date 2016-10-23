@@ -208,12 +208,13 @@ $mysql_version  = $wpdb->db_version();
 $php_compat     = version_compare( $php_version, $app['required_php_version'], '>=' );
 $mysql_compat   = version_compare( $mysql_version, $app['required_mysql_version'], '>=' ) || file_exists( WP_CONTENT_DIR . '/db.php' );
 
-if ( !$mysql_compat && !$php_compat )
+if ( !$mysql_compat && !$php_compat ) {
 	$compat = sprintf( __( 'You cannot install because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s.' ), $app['wp_version'], $app['required_php_version'], $app['required_mysql_version'], $php_version, $mysql_version );
-elseif ( !$php_compat )
+} elseif ( !$php_compat ) {
 	$compat = sprintf( __( 'You cannot install because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher. You are running version %3$s.' ), $app['wp_version'], $app['required_php_version'], $php_version );
-elseif ( !$mysql_compat )
+} elseif ( !$mysql_compat ) {
 	$compat = sprintf( __( 'You cannot install because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires MySQL version %2$s or higher. You are running version %3$s.' ), $app['wp_version'], $app['required_mysql_version'], $mysql_version );
+}
 
 if ( !$mysql_compat || !$php_compat ) {
 	display_header();
@@ -299,8 +300,9 @@ switch($step) {
 			$loaded_language = 'en_US';
 		}
 
-		if ( ! empty( $wpdb->error ) )
+		if ( ! empty( $wpdb->error ) ) {
 			wp_die( $wpdb->error->get_error_message() );
+		}
 
 		$scripts_to_print[] = 'user-profile';
 

@@ -576,21 +576,24 @@ function wp_get_nav_menus( $args = [] ) {
 function _sort_nav_menu_items( $a, $b ) {
 	global $_menu_item_sort_prop;
 
-	if ( empty( $_menu_item_sort_prop ) )
+	if ( empty( $_menu_item_sort_prop ) ) {
 		return 0;
+	}
 
-	if ( ! isset( $a->$_menu_item_sort_prop ) || ! isset( $b->$_menu_item_sort_prop ) )
+	if ( ! isset( $a->$_menu_item_sort_prop ) || ! isset( $b->$_menu_item_sort_prop ) ) {
 		return 0;
+	}
 
 	$_a = (int) $a->$_menu_item_sort_prop;
 	$_b = (int) $b->$_menu_item_sort_prop;
 
-	if ( $a->$_menu_item_sort_prop == $b->$_menu_item_sort_prop )
+	if ( $a->$_menu_item_sort_prop == $b->$_menu_item_sort_prop ) {
 		return 0;
-	elseif ( $_a == $a->$_menu_item_sort_prop && $_b == $b->$_menu_item_sort_prop )
+	} elseif ( $_a == $a->$_menu_item_sort_prop && $_b == $b->$_menu_item_sort_prop ) {
 		return $_a < $_b ? -1 : 1;
-	else
+	} else {
 		return strcmp( $a->$_menu_item_sort_prop, $b->$_menu_item_sort_prop );
+	}
 }
 
 /**

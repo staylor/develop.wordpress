@@ -11,8 +11,9 @@ use function WP\getApp;
 /** Load WordPress Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( !current_user_can('export') )
+if ( !current_user_can('export') ) {
 	wp_die(__('Sorry, you are not allowed to export the content of this site.'));
+}
 
 /** Load WordPress export API */
 require_once( ABSPATH . 'wp-admin/includes/export.php' );
@@ -93,8 +94,7 @@ if ( $_get->get( 'download' ) ) {
 			$args['start_date'] = $_get->get( 'attachment_start_date' );
 			$args['end_date'] = $_get->get( 'attachment_end_date' );
 		}
-	}
-	else {
+	} else {
 		$args['content'] = $_get->get( 'content' );
 	}
 
@@ -132,12 +132,14 @@ function export_date_options( $post_type = 'post' ) {
 	", $post_type ) );
 
 	$month_count = count( $months );
-	if ( !$month_count || ( 1 == $month_count && 0 == $months[0]->month ) )
+	if ( !$month_count || ( 1 == $month_count && 0 == $months[0]->month ) ) {
 		return;
+	}
 
 	foreach ( $months as $date ) {
-		if ( 0 == $date->year )
+		if ( 0 == $date->year ) {
 			continue;
+		}
 
 		$month = zeroise( $date->month, 2 );
 		echo '<option value="' . $date->year . '-' . $month . '">' . $app['locale']->get_month( $month ) . ' ' . $date->year . '</option>';

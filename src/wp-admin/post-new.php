@@ -24,8 +24,9 @@ if ( 'post' == $post_type ) {
 	$app->set( 'parent_file', 'edit.php' );
 	$app->set( 'submenu_file', 'post-new.php' );
 } elseif ( 'attachment' == $post_type ) {
-	if ( wp_redirect( admin_url( 'media-new.php' ) ) )
+	if ( wp_redirect( admin_url( 'media-new.php' ) ) ) {
 		exit;
+	}
 } else {
 	$app->set( 'submenu_file', "post-new.php?post_type=$post_type" );
 	if ( isset( $post_type_object ) && $post_type_object->show_in_menu && $post_type_object->show_in_menu !== true ) {
@@ -59,8 +60,9 @@ if ( ! current_user_can( $post_type_object->cap->edit_posts ) || ! current_user_
 }
 
 // Schedule auto-draft cleanup
-if ( ! wp_next_scheduled( 'wp_scheduled_auto_draft_delete' ) )
+if ( ! wp_next_scheduled( 'wp_scheduled_auto_draft_delete' ) ) {
 	wp_schedule_event( time(), 'daily', 'wp_scheduled_auto_draft_delete' );
+}
 
 wp_enqueue_script( 'autosave' );
 
@@ -69,8 +71,9 @@ if ( is_multisite() ) {
 } else {
 	$check_users = get_users( [ 'fields' => 'ID', 'number' => 2 ] );
 
-	if ( count( $check_users ) > 1 )
+	if ( count( $check_users ) > 1 ) {
 		add_action( 'admin_footer', '_admin_notice_post_locked' );
+	}
 
 	unset( $check_users );
 }

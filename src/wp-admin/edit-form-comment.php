@@ -7,8 +7,9 @@
  */
 
 // don't load directly
-if ( !defined('ABSPATH') )
+if ( !defined('ABSPATH') ) {
 	die('-1');
+}
 ?>
 <form name="post" action="comment.php" method="post" id="post">
 <?php wp_nonce_field('update-comment_' . $comment->comment_ID) ?>

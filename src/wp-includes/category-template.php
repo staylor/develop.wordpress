@@ -138,12 +138,13 @@ function _usort_terms_by_name( $a, $b ) {
  * @return int
  */
 function _usort_terms_by_ID( $a, $b ) {
-	if ( $a->term_id > $b->term_id )
+	if ( $a->term_id > $b->term_id ) {
 		return 1;
-	elseif ( $a->term_id < $b->term_id )
+	} elseif ( $a->term_id < $b->term_id ) {
 		return -1;
-	else
+	} else {
 		return 0;
+	}
 }
 
 /**
