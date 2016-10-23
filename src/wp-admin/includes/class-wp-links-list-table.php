@@ -50,7 +50,7 @@ class WP_Links_List_Table extends WP_List_Table {
 	 * @global string $order
 	 */
 	public function prepare_items() {
-		global $cat_id, $s, $orderby, $order;
+		global $cat_id, $s, $orderby, $order; //NOSONAR
 
 		wp_reset_vars( array( 'action', 'cat_id', 'link_id', 'orderby', 'order', 's' ) );
 
@@ -92,7 +92,7 @@ class WP_Links_List_Table extends WP_List_Table {
 	 * @param string $which
 	 */
 	protected function extra_tablenav( $which ) {
-		global $cat_id;
+		global $cat_id; //NOSONAR
 
 		if ( 'top' != $which ) {
 			return;
@@ -217,7 +217,7 @@ class WP_Links_List_Table extends WP_List_Table {
 	 * @param object $link The current link object.
 	 */
 	public function column_categories( $link ) {
-		global $cat_id;
+		global $cat_id; //NOSONAR
 
 		$cat_names = [];
 		foreach ( $link->link_category as $category ) {

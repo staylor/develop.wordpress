@@ -138,7 +138,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @global int      $per_page
 	 */
 	public function prepare_items() {
-		global $avail_post_stati, $per_page;
+		global $avail_post_stati, $per_page; //NOSONAR
 
 		// is going to call wp()
 		$avail_post_stati = wp_edit_posts_query();
@@ -272,7 +272,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
-		global $locked_post_status, $avail_post_stati;
+		global $locked_post_status, $avail_post_stati; //NOSONAR
 
 		$post_type = $this->screen->post_type;
 
@@ -435,7 +435,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @param string $post_type Post type slug.
 	 */
 	protected function categories_dropdown( $post_type ) {
-		global $cat;
+		global $cat; //NOSONAR
 
 		/**
 		 * Filters whether to remove the 'Categories' drop-down from the post list table.
@@ -644,7 +644,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @param int $level
 	 */
 	public function display_rows( $posts = [], $level = 0 ) {
-		global $per_page;
+		global $per_page; //NOSONAR
 
 		if ( empty( $posts ) ) {
 			$app = getApp();

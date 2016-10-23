@@ -43,7 +43,7 @@ if ( $theme->errors() && 'theme_no_stylesheet' == $theme->errors()->get_error_co
 	wp_die( __( 'The requested theme does not exist.' ) . ' ' . $theme->errors()->get_error_message() );
 }
 
-$allowed_files = $style_files = [];
+$style_files = [];
 $has_templates = false;
 $default_types = array( 'php', 'css' );
 
@@ -63,29 +63,29 @@ $file_types = array_unique( array_merge( $file_types, $default_types ) );
 foreach ( $file_types as $type ) {
 	switch ( $type ) {
 	case 'php':
-		$allowed_files += $theme->get_files( 'php', 1 );
-		$has_templates = ! empty( $allowed_files );
+		$app->files['allowed'] += $theme->get_files( 'php', 1 );
+		$has_templates = ! empty( $app->files['allowed'] );
 		break;
 	case 'css':
 		$style_files = $theme->get_files( 'css' );
-		$allowed_files['style.css'] = $style_files['style.css'];
-		$allowed_files += $style_files;
+		$app->files['allowed']['style.css'] = $style_files['style.css'];
+		$app->files['allowed'] += $style_files;
 		break;
 	default:
-		$allowed_files += $theme->get_files( $type );
+		$app->files['allowed'] += $theme->get_files( $type );
 		break;
 	}
 }
 
 if ( empty( $file ) ) {
 	$relative_file = 'style.css';
-	$file = $allowed_files['style.css'];
+	$file = $app->files['allowed']['style.css'];
 } else {
 	$relative_file = $file;
 	$file = $theme->get_stylesheet_directory() . '/' . $relative_file;
 }
 
-validate_file_to_edit( $file, $allowed_files );
+validate_file_to_edit( $file, $app->files['allowed'] );
 $scrollto = $_request->getInt( 'scrollto', 0 );
 
 switch( $action ) {
@@ -139,7 +139,7 @@ default:
 <?php endif;
 
 $description = get_file_description( $relative_file );
-$file_show = array_search( $file, array_filter( $allowed_files ) );
+$file_show = array_search( $file, array_filter( $app->files['allowed'] ) );
 if ( $description != $file_show )
 	$description .= ' <span>(' . $file_show . ')</span>';
 ?>
@@ -175,10 +175,10 @@ if ( $theme->errors() )
 ?>
 	<div id="templateside">
 <?php
-if ( $allowed_files ) :
+if ( $app->files['allowed'] ) :
 	$previous_file_type = '';
 
-	foreach ( $allowed_files as $filename => $absolute_filename ) :
+	foreach ( $app->files['allowed'] as $filename => $absolute_filename ) :
 		$file_type = substr( $filename, strrpos( $filename, '.' ) );
 
 		if ( $file_type !== $previous_file_type ) {

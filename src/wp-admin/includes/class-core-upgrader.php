@@ -61,7 +61,7 @@ class Core_Upgrader extends WP_Upgrader {
 	 * @return null|false|WP_Error False or WP_Error on failure, null on success.
 	 */
 	public function upgrade( $current, $args = [] ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$start_time = time();
 
@@ -194,7 +194,8 @@ class Core_Upgrader extends WP_Upgrader {
 				'success'          => true,
 				'fs_method'        => $wp_filesystem->method,
 				'fs_method_forced' => defined( 'FS_METHOD' ) || has_filter( 'filesystem_method' ),
-				'fs_method_direct' => !empty( $GLOBALS['_wp_filesystem_direct_method'] ) ? $GLOBALS['_wp_filesystem_direct_method'] : '',
+				// why god, why?
+				'fs_method_direct' => ! empty( $GLOBALS['_wp_filesystem_direct_method'] ) ? $GLOBALS['_wp_filesystem_direct_method'] : '', //NOSONAR
 				'time_taken'       => time() - $start_time,
 				'reported'         => $this->app['wp_version'],
 				'attempted'        => $current->version,

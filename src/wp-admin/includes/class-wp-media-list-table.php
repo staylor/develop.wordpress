@@ -68,7 +68,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @global array    $avail_post_mime_types
 	 */
 	public function prepare_items() {
-		global $post_mime_types, $avail_post_mime_types;
+		global $post_mime_types, $avail_post_mime_types; //NOSONAR
 
 		$app = getApp();
 
@@ -93,7 +93,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
-		global $post_mime_types, $avail_post_mime_types;
+		global $post_mime_types, $avail_post_mime_types; //NOSONAR
 
 		$app = getApp();
 		$_get = $app['request']->query;
@@ -605,7 +605,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @global WP_Post $post
 	 */
 	public function display_rows() {
-		global $post;
+		global $post; //NOSONAR
 
 		$app = getApp();
 		$wp_query = $app['wp']->current_query;

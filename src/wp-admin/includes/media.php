@@ -72,7 +72,7 @@ function update_gallery_tab($tabs) {
  * @global string $redir_tab
  */
 function the_media_upload_tabs() {
-	global $redir_tab;
+	global $redir_tab; //NOSONAR
 	$tabs = media_upload_tabs();
 	$default = 'type';
 
@@ -515,7 +515,8 @@ if ( is_string( $content_func ) ) {
 }
 ?>
 </head>
-<body<?php if ( isset($GLOBALS['body_id']) ) echo ' id="' . $GLOBALS['body_id'] . '"'; ?> class="wp-core-ui no-js">
+<body<?php if ( isset($GLOBALS['body_id']) ) echo ' id="' . $GLOBALS['body_id'] . '"'; //NOSONAR
+?> class="wp-core-ui no-js">
 <script type="text/javascript">
 document.body.className = document.body.className.replace('no-js', 'js');
 </script>

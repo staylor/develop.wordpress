@@ -585,13 +585,13 @@ class WP extends Observer {
 	public function register_globals() {
 		// Extract updated query vars back into global namespace.
 		foreach ( (array) $this->current_query->query_vars as $key => $value ) {
-			$GLOBALS[ $key ] = $value;
+			$GLOBALS[ $key ] = $value; //NOSONAR
 		}
 
-		$GLOBALS['post'] = $this->current_query->post ?? null;
+		$GLOBALS['post'] = $this->current_query->post ?? null; //NOSONAR
 
 		if ( $this->current_query->is_single() || $this->current_query->is_page() ) {
-			$GLOBALS['more'] = 1;
+			$GLOBALS['more'] = 1; //NOSONAR
 		}
 
 		if ( $this->current_query->is_author() && isset( $this->current_query->post ) ) {

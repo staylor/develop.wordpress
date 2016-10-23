@@ -16,6 +16,7 @@ class App extends Container {
 	public $meta_keys = [];
 	public $post_statuses = [];
 	public $shortcode_tags = [];
+	public $importers = [];
 
 	public $wpsmiliestrans = [];
 	public $wp_smiliessearch;
@@ -36,6 +37,8 @@ class App extends Container {
 	public $nav_menus = [
 		'registered' => [],
 		'max_depth' => 0,
+		'placeholder' => -1,
+		'selected_id' => 0,
 	];
 
 	public $theme = [
@@ -45,6 +48,19 @@ class App extends Container {
 		'editor_styles' => [],
 		'custom_image_header' => null,
 		'custom_background' => null,
+		'allowedtags' => [
+			'a' => [ 'href' => [], 'title' => [], 'target' => [] ],
+			'abbr' => [ 'title' => [] ], 'acronym' => ['title' => [] ],
+			'code' => [], 'pre' => [], 'em' => [], 'strong' => [],
+			'div' => [], 'p' => [], 'ul' => [], 'ol' => [], 'li' => [],
+			'h1' => [], 'h2' => [], 'h3' => [], 'h4' => [], 'h5' => [], 'h6' => [],
+			'img' => ['src' => [], 'class' => [], 'alt' => [] ]
+		],
+		'field_defaults' => [
+			'description' => true, 'sections' => false, 'tested' => true, 'requires' => true,
+			'rating' => true, 'downloaded' => true, 'downloadlink' => true, 'last_updated' => true,
+			'homepage' => true, 'tags' => true, 'num_ratings' => true
+		],
 	];
 
 	public $show_admin_bar;
@@ -57,6 +73,18 @@ class App extends Container {
 	public $submenu = [];
 	public $_wp_menu_nopriv = [];
 	public $_wp_submenu_nopriv = [];
+
+	// dashboard
+	public $dashboard = [
+		'control_callbacks' => [],
+	];
+
+	public $files = [
+		'descriptions' => [],
+		'allowed' => [],
+	];
+
+	public $_wp_admin_css_colors = [];
 
 	// this is the mechanism we will use to store entries
 	// that were previously global variables

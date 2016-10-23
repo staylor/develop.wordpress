@@ -637,23 +637,21 @@ function saveDomDocument($doc, $filename) {
  *
  * @since 3.0.0
  *
- * @global array $_wp_admin_css_colors
- *
  * @param int $user_id User ID.
  */
 function admin_color_scheme_picker( $user_id ) {
-	global $_wp_admin_css_colors;
+	$app = getApp();
 
-	ksort( $_wp_admin_css_colors );
+	ksort( $app->_wp_admin_css_colors );
 
-	if ( isset( $_wp_admin_css_colors['fresh'] ) ) {
+	if ( isset( $app->_wp_admin_css_colors['fresh'] ) ) {
 		// Set Default ('fresh') and Light should go first.
-		$_wp_admin_css_colors = array_filter( array_merge( array( 'fresh' => '', 'light' => '' ), $_wp_admin_css_colors ) );
+		$app->_wp_admin_css_colors = array_filter( array_merge( array( 'fresh' => '', 'light' => '' ), $app->_wp_admin_css_colors ) );
 	}
 
 	$current_color = get_user_option( 'admin_color', $user_id );
 
-	if ( empty( $current_color ) || ! isset( $_wp_admin_css_colors[ $current_color ] ) ) {
+	if ( empty( $current_color ) || ! isset( $app->_wp_admin_css_colors[ $current_color ] ) ) {
 		$current_color = 'fresh';
 	}
 
@@ -662,7 +660,7 @@ function admin_color_scheme_picker( $user_id ) {
 		<legend class="screen-reader-text"><span><?php _e( 'Admin Color Scheme' ); ?></span></legend>
 		<?php
 		wp_nonce_field( 'save-color-scheme', 'color-nonce', false );
-		foreach ( $_wp_admin_css_colors as $color => $color_info ) :
+		foreach ( $app->_wp_admin_css_colors as $color => $color_info ) :
 
 			?>
 			<div class="color-option <?php echo ( $color == $current_color ) ? 'selected' : ''; ?>">
@@ -693,24 +691,20 @@ function admin_color_scheme_picker( $user_id ) {
 	<?php
 }
 
-/**
- *
- * @global array $_wp_admin_css_colors
- */
 function wp_color_scheme_settings() {
-	global $_wp_admin_css_colors;
+	$app = getApp();
 
 	$color_scheme = get_user_option( 'admin_color' );
 
 	// It's possible to have a color scheme set that is no longer registered.
-	if ( empty( $_wp_admin_css_colors[ $color_scheme ] ) ) {
+	if ( empty( $app->_wp_admin_css_colors[ $color_scheme ] ) ) {
 		$color_scheme = 'fresh';
 	}
 
-	if ( ! empty( $_wp_admin_css_colors[ $color_scheme ]->icon_colors ) ) {
-		$icon_colors = $_wp_admin_css_colors[ $color_scheme ]->icon_colors;
-	} elseif ( ! empty( $_wp_admin_css_colors['fresh']->icon_colors ) ) {
-		$icon_colors = $_wp_admin_css_colors['fresh']->icon_colors;
+	if ( ! empty( $app->_wp_admin_css_colors[ $color_scheme ]->icon_colors ) ) {
+		$icon_colors = $app->_wp_admin_css_colors[ $color_scheme ]->icon_colors;
+	} elseif ( ! empty( $app->_wp_admin_css_colors['fresh']->icon_colors ) ) {
+		$icon_colors = $app->_wp_admin_css_colors['fresh']->icon_colors;
 	} else {
 		// Fall back to the default set of icon colors if the default scheme is missing.
 		$icon_colors = array( 'base' => '#82878c', 'focus' => '#00a0d2', 'current' => '#fff' );

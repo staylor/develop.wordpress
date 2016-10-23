@@ -17,25 +17,25 @@ $app->set( 'parent_file', 'edit-comments.php' );
 $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 $app->set( 'submenu_file', 'edit-comments.php' );
 
-/**
- * @global string $action
- */
-global $action;
 wp_reset_vars( [ 'action' ] );
+$action = $GLOBALS['action']; //NOSONAR
 
-if ( $_post->get( 'deletecomment' ) )
+if ( $_post->get( 'deletecomment' ) ) {
 	$action = 'deletecomment';
+}
 
-if ( 'cdc' == $action )
+if ( 'cdc' == $action ) {
 	$action = 'delete';
-elseif ( 'mac' == $action )
+} elseif ( 'mac' == $action ) {
 	$action = 'approve';
+}
 
 if ( $_get->get( 'dt' ) ) {
-	if ( 'spam' == $_get->get( 'dt' ) )
+	if ( 'spam' == $_get->get( 'dt' ) ) {
 		$action = 'spam';
-	elseif ( 'trash' == $_get->get( 'dt' ) )
+	} elseif ( 'trash' == $_get->get( 'dt' ) ) {
 		$action = 'trash';
+	}
 }
 
 switch( $action ) {

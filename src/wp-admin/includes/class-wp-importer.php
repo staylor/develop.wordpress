@@ -252,14 +252,13 @@ class WP_Importer {
 	 * @global array $wp_actions
 	 */
 	public function stop_the_insanity() {
-		global $wp_actions;
 		$app = getApp();
 		$wpdb = $app['db'];
 
 		// Or define( 'WP_IMPORTING', true );
 		$wpdb->queries = [];
 		// Reset $wp_actions to keep it from growing out of control
-		$wp_actions = [];
+		$GLOBALS['wp_actions'] = []; //NOSONAR
 	}
 }
 

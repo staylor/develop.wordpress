@@ -3484,15 +3484,6 @@ class Manager {
 				wp_send_json_error();
 			}
 
-			// This list matches the allowed tags in wp-admin/includes/theme-install.php.
-			$themes_allowedtags = ['a' => [ 'href' => [], 'title' => [], 'target' => [] ],
-				'abbr' => [ 'title' => [] ], 'acronym' => ['title' => [] ],
-				'code' => [], 'pre' => [], 'em' => [], 'strong' => [],
-				'div' => [], 'p' => [], 'ul' => [], 'ol' => [], 'li' => [],
-				'h1' => [], 'h2' => [], 'h3' => [], 'h4' => [], 'h5' => [], 'h6' => [],
-				'img' => ['src' => [], 'class' => [], 'alt' => [] ]
-			];
-
 			// Prepare a list of installed themes to check against before the loop.
 			$installed_themes = [];
 			$wp_themes = wp_get_themes();
@@ -3506,10 +3497,10 @@ class Manager {
 					'_wpnonce' => wp_create_nonce( 'install-theme_' . $theme->slug ),
 				], $update_php );
 
-				$theme->name        = wp_kses( $theme->name, $themes_allowedtags );
-				$theme->author      = wp_kses( $theme->author, $themes_allowedtags );
-				$theme->version     = wp_kses( $theme->version, $themes_allowedtags );
-				$theme->description = wp_kses( $theme->description, $themes_allowedtags );
+				$theme->name        = wp_kses( $theme->name, $this->app->theme['allowedtags'] );
+				$theme->author      = wp_kses( $theme->author, $this->app->theme['allowedtags'] );
+				$theme->version     = wp_kses( $theme->version, $this->app->theme['allowedtags'] );
+				$theme->description = wp_kses( $theme->description, $this->app->theme['allowedtags'] );
 				$theme->tags        = implode( ', ', $theme->tags );
 				$theme->stars       = wp_star_rating( [ 'rating' => $theme->rating, 'type' => 'percent', 'number' => $theme->num_ratings, 'echo' => false ] );
 				$theme->num_ratings = number_format_i18n( $theme->num_ratings );

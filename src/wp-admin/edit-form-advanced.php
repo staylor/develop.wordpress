@@ -6,18 +6,9 @@
  * @subpackage Administration
  */
 
-use function WP\getApp;
-
 // don't load directly
 if ( !defined('ABSPATH') )
 	die('-1');
-
-$app = getApp();
-
-/**
- * @global WP_Post      $post
- */
-global $post;
 
 $post_type = get_current_screen()->post_type;
 $post_type_object = get_post_type_object( $post_type );

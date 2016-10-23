@@ -68,7 +68,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * @global string $s
 	 */
 	public function prepare_items() {
-		global $s;
+		global $s; //NOSONAR
 
 		$app = getApp();
 		$wpdb = $app['db'];

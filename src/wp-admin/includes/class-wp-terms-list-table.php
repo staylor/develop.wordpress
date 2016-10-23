@@ -39,7 +39,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 	 * @param array $args An associative array of arguments.
 	 */
 	public function __construct( $args = [] ) {
-		global $post_type, $taxonomy, $action, $tax;
+		global $post_type, $taxonomy, $action, $tax; //NOSONAR
 
 		parent::__construct( array(
 			'plural' => 'tags',
@@ -328,7 +328,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 	 * @param int $level
 	 */
 	public function single_row( $tag, $level = 0 ) {
-		global $taxonomy;
+		global $taxonomy; //NOSONAR
  		$tag = sanitize_term( $tag, $taxonomy );
 
 		$this->level = $level;

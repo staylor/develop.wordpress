@@ -434,7 +434,7 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @return string|WP_Error The source or a WP_Error.
 	 */
 	public function check_package( $source ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		if ( is_wp_error($source) )
 			return $source;
@@ -559,7 +559,7 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @return bool
 	 */
 	public function delete_old_theme( $removed, $local_destination, $remote_destination, $theme ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		if ( is_wp_error( $removed ) )
 			return $removed; // Pass errors through.

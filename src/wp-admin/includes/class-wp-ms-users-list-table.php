@@ -32,7 +32,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 * @global string $role
 	 */
 	public function prepare_items() {
-		global $usersearch, $role;
+		global $usersearch, $role; //NOSONAR
 
 		$app = getApp();
 		$wpdb = $app['db'];
@@ -138,7 +138,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
-		global $role;
+		global $role; //NOSONAR
 
 		$total_users = get_user_count();
 		$super_admins = get_super_admins();

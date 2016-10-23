@@ -14,7 +14,7 @@
 use function WP\getApp;
 
 /** The descriptions for theme files. */
-$wp_file_descriptions = array(
+$app->files['descriptions'] = [
 	'functions.php'         => __( 'Theme Functions' ),
 	'header.php'            => __( 'Theme Header' ),
 	'footer.php'            => __( 'Theme Footer' ),
@@ -63,7 +63,7 @@ $wp_file_descriptions = array(
 	'wp-comments.php'       => __( 'Comments Template' ),
 	'wp-comments-popup.php' => __( 'Popup Comments Template' ),
 	'comments-popup.php'    => __( 'Popup Comments' ),
-);
+];
 
 /**
  * Get the description for standard WordPress theme files and other various standard
@@ -71,19 +71,17 @@ $wp_file_descriptions = array(
  *
  * @since 1.5.0
  *
- * @global array $wp_file_descriptions
  * @param string $file Filesystem path or filename
  * @return string Description of file from $wp_file_descriptions or basename of $file if description doesn't exist.
  *                Appends 'Page Template' to basename of $file if the file is a page template
  */
 function get_file_description( $file ) {
-	global $wp_file_descriptions, $allowed_files;
-
+	$app = getApp();
 	$dirname = pathinfo( $file, PATHINFO_DIRNAME );
 
-	$file_path = $allowed_files[ $file ];
-	if ( isset( $wp_file_descriptions[ basename( $file ) ] ) && '.' === $dirname ) {
-		return $wp_file_descriptions[ basename( $file ) ];
+	$file_path = $app->files['allowed'][ $file ];
+	if ( isset( $app->files['descriptions'][ basename( $file ) ] ) && '.' === $dirname ) {
+		return $app->files['descriptions'][ basename( $file ) ];
 	} elseif ( file_exists( $file_path ) && is_file( $file_path ) ) {
 		$template_data = implode( '', file( $file_path ) );
 		if ( preg_match( '|Template Name:(.*)$|mi', $template_data, $name ) ) {
@@ -573,7 +571,7 @@ function verify_file_md5( $filename, $expected_md5 ) {
  * @return mixed WP_Error on failure, True on success
  */
 function unzip_file($file, $to) {
-	global $wp_filesystem;
+	$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 	if ( ! $wp_filesystem || !is_object($wp_filesystem) )
 		return new WP_Error('fs_unavailable', __('Could not access filesystem.'));
@@ -639,7 +637,7 @@ function unzip_file($file, $to) {
  * @return mixed WP_Error on failure, True on success
  */
 function _unzip_file_ziparchive($file, $to, $needed_dirs = [] ) {
-	global $wp_filesystem;
+	$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 	$z = new ZipArchive();
 
@@ -742,7 +740,7 @@ function _unzip_file_ziparchive($file, $to, $needed_dirs = [] ) {
  * @return mixed WP_Error on failure, True on success
  */
 function _unzip_file_pclzip($file, $to, $needed_dirs = []) {
-	global $wp_filesystem;
+	$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 	mbstring_binary_safe_encoding();
 
@@ -834,7 +832,7 @@ function _unzip_file_pclzip($file, $to, $needed_dirs = []) {
  * @return mixed WP_Error on failure, True on success.
  */
 function copy_dir($from, $to, $skip_list = [] ) {
-	global $wp_filesystem;
+	$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 	$dirlist = $wp_filesystem->dirlist($from);
 
@@ -891,7 +889,7 @@ function copy_dir($from, $to, $skip_list = [] ) {
  * @return null|bool false on failure, true on success.
  */
 function WP_Filesystem( $args = false, $context = false, $allow_relaxed_file_ownership = false ) {
-	global $wp_filesystem;
+	$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 	$method = get_filesystem_method( $args, $context, $allow_relaxed_file_ownership );
 
@@ -1014,12 +1012,12 @@ function get_filesystem_method( $args = [], $context = '', $allow_relaxed_file_o
 				// WordPress is creating files as the same owner as the WordPress files,
 				// this means it's safe to modify & create new files via PHP.
 				$method = 'direct';
-				$GLOBALS['_wp_filesystem_direct_method'] = 'file_owner';
+				$GLOBALS['_wp_filesystem_direct_method'] = 'file_owner'; //NOSONAR
 			} elseif ( $allow_relaxed_file_ownership ) {
 				// The $context directory is writable, and $allow_relaxed_file_ownership is set, this means we can modify files
 				// safely in this directory. This mode doesn't create new files, only alter existing ones.
 				$method = 'direct';
-				$GLOBALS['_wp_filesystem_direct_method'] = 'relaxed_ownership';
+				$GLOBALS['_wp_filesystem_direct_method'] = 'relaxed_ownership'; //NOSONAR
 			}
 
 			@fclose($temp_handle);

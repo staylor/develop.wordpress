@@ -6,7 +6,7 @@
  * @subpackage Administration
  * @since 4.4.0
  */
-
+use function WP\getApp;
 /**
  * Create HTML list of nav menu input items.
  *
@@ -63,8 +63,6 @@ class Walker_Nav_Menu_Checklist extends Walker_Nav_Menu {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @global int $_nav_menu_placeholder
-	 *
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param object $item   Menu item data object.
 	 * @param int    $depth  Depth of menu item. Used for padding.
@@ -72,10 +70,9 @@ class Walker_Nav_Menu_Checklist extends Walker_Nav_Menu {
 	 * @param int    $id     Not used.
 	 */
 	public function start_el( &$output, $item, $depth = 0, $args = [], $id = 0 ) {
-		global $_nav_menu_placeholder;
-
-		$_nav_menu_placeholder = ( 0 > $_nav_menu_placeholder ) ? intval($_nav_menu_placeholder) - 1 : -1;
-		$possible_object_id = isset( $item->post_type ) && 'nav_menu_item' == $item->post_type ? $item->object_id : $_nav_menu_placeholder;
+		$app = getApp();
+		$app->nav_menus['placeholder'] = ( 0 > $app->nav_menus['placeholder'] ) ? intval( $app->nav_menus['placeholder'] ) - 1 : -1;
+		$possible_object_id = isset( $item->post_type ) && 'nav_menu_item' == $item->post_type ? $item->object_id : $app->nav_menus['placeholder'];
 		$possible_db_id = ( ! empty( $item->ID ) ) && ( 0 < $possible_object_id ) ? (int) $item->ID : 0;
 
 		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';

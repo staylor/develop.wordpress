@@ -100,17 +100,6 @@ $time_format = __( 'g:i a' );
 
 wp_enqueue_script( 'common' );
 
-
-
-
-/**
- * $wp_importers is sometimes set in wp-admin/includes/import.php
- * The remaining variables are imported as globals elsewhere, declared as globals here
- *
- * @global array  $wp_importers
- */
-global $wp_importers;
-
 $pagenow = $app['pagenow'];
 $typenow = $app['typenow'];
 $taxnow = $app['taxnow'];
@@ -280,7 +269,7 @@ if ( $plugin_page ) {
 		exit;
 	}
 
-	if ( ! isset($wp_importers[$importer]) || ! is_callable($wp_importers[$importer][2]) ) {
+	if ( ! isset( $app->importers[ $importer ] ) || ! is_callable( $app->importers[ $importer ][2] ) ) {
 		wp_redirect( admin_url( 'import.php?invalid=' . $importer ) );
 		exit;
 	}
@@ -320,7 +309,7 @@ if ( $plugin_page ) {
 		kses_init_filters();  // Always filter imported data with kses on multisite.
 	}
 
-	call_user_func($wp_importers[$importer][2]);
+	call_user_func( $app->importers[ $importer ][2] );
 
 	include(ABSPATH . 'wp-admin/admin-footer.php');
 

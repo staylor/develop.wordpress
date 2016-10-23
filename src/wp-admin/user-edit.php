@@ -165,7 +165,7 @@ $data = [
 	'submit_button' => get_submit_button( $submit_text ),
 	'show_visual_editor' => ! ( IS_PROFILE_PAGE && ! $user_can_edit ),
 	'visual_editor_checked' => checked( 'false', $profileuser->rich_editing ?? true, false ),
-	'show_admin_color' => count( $_wp_admin_css_colors ) > 1 && has_action( 'admin_color_scheme_picker' ),
+	'show_admin_color' => count( $app->_wp_admin_css_colors ) > 1 && has_action( 'admin_color_scheme_picker' ),
 	'show_comment_shortcuts' => ! ( IS_PROFILE_PAGE && ! $user_can_edit ),
 	'show_super_admin' => is_multisite() &&
 		is_network_admin() &&

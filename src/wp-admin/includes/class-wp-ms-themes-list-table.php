@@ -36,7 +36,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @param array $args An associative array of arguments.
 	 */
 	public function __construct( $args = [] ) {
-		global $status, $page;
+		global $status, $page; //NOSONAR
 
 		parent::__construct( array(
 			'plural' => 'themes',
@@ -85,7 +85,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @global string $s
 	 */
 	public function prepare_items() {
-		global $status, $totals, $page, $orderby, $order, $s;
+		global $status, $totals, $page, $orderby, $order, $s; //NOSONAR
 
 		wp_reset_vars( array( 'orderby', 'order', 's' ) );
 
@@ -212,7 +212,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @return int
 	 */
 	public function _order_callback( $theme_a, $theme_b ) {
-		global $orderby, $order;
+		global $orderby, $order; //NOSONAR
 
 		$a = $theme_a[ $orderby ];
 		$b = $theme_b[ $orderby ];
@@ -278,7 +278,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
-		global $totals, $status;
+		global $totals, $status; //NOSONAR
 
 		$status_links = [];
 		foreach ( $totals as $type => $count ) {
@@ -326,7 +326,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
-		global $status;
+		global $status; //NOSONAR
 
 		$actions = [];
 		if ( 'enabled' != $status )
@@ -379,7 +379,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @param WP_Theme $theme The current WP_Theme object.
 	 */
 	public function column_name( $theme ) {
-		global $status, $page, $s;
+		global $status, $page, $s; //NOSONAR
 
 		$context = $status;
 
@@ -536,7 +536,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @param WP_Theme $theme The current WP_Theme object.
 	 */
 	public function column_description( $theme ) {
-		global $status, $totals;
+		global $status, $totals; //NOSONAR
 		if ( $theme->errors() ) {
 			$pre = $status === 'broken' ? __( 'Broken Theme:' ) . ' ' : '';
 			echo '<p><strong class="error-message">' . $pre . $theme->errors()->get_error_message() . '</strong></p>';
@@ -676,7 +676,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @param WP_Theme $theme
 	 */
 	public function single_row( $theme ) {
-		global $status, $totals;
+		global $status, $totals; //NOSONAR
 
 		if ( $this->is_site_themes ) {
 			$allowed = $theme->is_allowed( 'site', $this->site_id );

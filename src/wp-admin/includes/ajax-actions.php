@@ -259,7 +259,8 @@ function wp_ajax_oembed_cache() {
 	$app = getApp();
 	$_get = $app['request']->query;
 
-	$GLOBALS['wp_embed']->cache_oembed( $_get->get( 'post' ) );
+	// this global is a classic...
+	$GLOBALS['wp_embed']->cache_oembed( $_get->get( 'post' ) ); //NOSONAR
 	wp_die( 0 );
 }
 
@@ -3032,7 +3033,8 @@ function wp_ajax_send_attachment_to_editor() {
  * @global WP_Embed $wp_embed
  */
 function wp_ajax_send_link_to_editor() {
-	global $post, $wp_embed;
+	$post = $GLOBALS['post']; //NOSONAR
+	$wp_embed = $GLOBALS['wp_embed']; //NOSONAR
 
 	check_ajax_referer( 'media-send-to-editor', 'nonce' );
 
@@ -3206,12 +3208,8 @@ function wp_ajax_get_revision_diffs() {
  * a user's own profile.
  *
  * @since 3.8.0
- *
- * @global array $_wp_admin_css_colors
  */
 function wp_ajax_save_user_color_scheme() {
-	global $_wp_admin_css_colors;
-
 	check_ajax_referer( 'save-color-scheme', 'nonce' );
 
 	$app = getApp();
@@ -3219,7 +3217,7 @@ function wp_ajax_save_user_color_scheme() {
 
 	$color_scheme = sanitize_key( $_post->get( 'color_scheme' ) );
 
-	if ( ! isset( $_wp_admin_css_colors[ $color_scheme ] ) ) {
+	if ( ! isset( $app->_wp_admin_css_colors[ $color_scheme ] ) ) {
 		wp_send_json_error();
 	}
 
@@ -3236,13 +3234,8 @@ function wp_ajax_save_user_color_scheme() {
  * Ajax handler for getting themes from themes_api().
  *
  * @since 3.9.0
- *
- * @global array $themes_allowedtags
- * @global array $theme_field_defaults
  */
 function wp_ajax_query_themes() {
-	global $themes_allowedtags, $theme_field_defaults;
-
 	if ( ! current_user_can( 'install_themes' ) ) {
 		wp_send_json_error();
 	}
@@ -3251,7 +3244,7 @@ function wp_ajax_query_themes() {
 	$_request = $app['request']->attributes;
 	$args = wp_parse_args( wp_unslash( $_request->get( 'request' ) ), array(
 		'per_page' => 20,
-		'fields'   => $theme_field_defaults
+		'fields'   => $app->theme['field_defaults']
 	) );
 
 	if ( isset( $args['browse'] ) && 'favorites' === $args['browse'] && ! isset( $args['user'] ) ) {
@@ -3301,10 +3294,10 @@ function wp_ajax_query_themes() {
 			), wp_customize_url( $theme->slug ) );
 		}
 
-		$theme->name        = wp_kses( $theme->name, $themes_allowedtags );
-		$theme->author      = wp_kses( $theme->author, $themes_allowedtags );
-		$theme->version     = wp_kses( $theme->version, $themes_allowedtags );
-		$theme->description = wp_kses( $theme->description, $themes_allowedtags );
+		$theme->name        = wp_kses( $theme->name, $app->theme['allowedtags'] );
+		$theme->author      = wp_kses( $theme->author, $app->theme['allowedtags'] );
+		$theme->version     = wp_kses( $theme->version, $app->theme['allowedtags'] );
+		$theme->description = wp_kses( $theme->description, $app->theme['allowedtags'] );
 		$theme->stars       = wp_star_rating( array( 'rating' => $theme->rating, 'type' => 'percent', 'number' => $theme->num_ratings, 'echo' => false ) );
 		$theme->num_ratings = number_format_i18n( $theme->num_ratings );
 		$theme->preview_url = set_url_scheme( $theme->preview_url );
@@ -3322,7 +3315,8 @@ function wp_ajax_query_themes() {
  * @global WP_Embed   $wp_embed   Embed API instance.
  */
 function wp_ajax_parse_embed() {
-	global $post, $wp_embed;
+	$post = $GLOBALS['post']; //NOSONAR
+	$wp_embed = $GLOBALS['wp_embed']; //NOSONAR
 
 	$app = getApp();
 	$_post = $app['request']->request;
@@ -3414,7 +3408,7 @@ function wp_ajax_parse_embed() {
  * @global WP_Post    $post
  */
 function wp_ajax_parse_media_shortcode() {
-	global $post;
+	$post = $GLOBALS['post']; //NOSONAR
 
 	$app = getApp();
 	$_post = $app['request']->request;
@@ -3743,7 +3737,7 @@ function wp_ajax_install_theme() {
 		$status['errorMessage'] = $skin->get_error_messages();
 		wp_send_json_error( $status );
 	} elseif ( is_null( $result ) ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$status['errorCode']    = 'unable_to_connect_to_filesystem';
 		$status['errorMessage'] = __( 'Unable to connect to the filesystem. Please confirm your credentials.' );
@@ -3855,7 +3849,7 @@ function wp_ajax_update_theme() {
 
 		wp_send_json_success( $status );
 	} elseif ( false === $result ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$status['errorCode']    = 'unable_to_connect_to_filesystem';
 		$status['errorMessage'] = __( 'Unable to connect to the filesystem. Please confirm your credentials.' );
@@ -3916,7 +3910,7 @@ function wp_ajax_delete_theme() {
 	$credentials = request_filesystem_credentials( $url );
 	ob_end_clean();
 	if ( false === $credentials || ! WP_Filesystem( $credentials ) ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$status['errorCode']    = 'unable_to_connect_to_filesystem';
 		$status['errorMessage'] = __( 'Unable to connect to the filesystem. Please confirm your credentials.' );
@@ -4011,7 +4005,7 @@ function wp_ajax_install_plugin() {
 		$status['errorMessage'] = $skin->get_error_messages();
 		wp_send_json_error( $status );
 	} elseif ( is_null( $result ) ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$status['errorCode']    = 'unable_to_connect_to_filesystem';
 		$status['errorMessage'] = __( 'Unable to connect to the filesystem. Please confirm your credentials.' );
@@ -4131,7 +4125,7 @@ function wp_ajax_update_plugin() {
 		}
 		wp_send_json_success( $status );
 	} elseif ( false === $result ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$status['errorCode']    = 'unable_to_connect_to_filesystem';
 		$status['errorMessage'] = __( 'Unable to connect to the filesystem. Please confirm your credentials.' );
@@ -4197,7 +4191,7 @@ function wp_ajax_delete_plugin() {
 	$credentials = request_filesystem_credentials( $url );
 	ob_end_clean();
 	if ( false === $credentials || ! WP_Filesystem( $credentials ) ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$status['errorCode']    = 'unable_to_connect_to_filesystem';
 		$status['errorMessage'] = __( 'Unable to connect to the filesystem. Please confirm your credentials.' );
@@ -4260,7 +4254,8 @@ function wp_ajax_search_plugins() {
 		'action'      => null,
 	] ), network_admin_url( 'plugins.php', 'relative' ) ) );
 
-	$GLOBALS['s'] = wp_unslash( $_post->get( 's' ) );
+	// List tables are garbage
+	$GLOBALS['s'] = wp_unslash( $_post->get( 's' ) ); //NOSONAR
 
 	$wp_list_table->prepare_items();
 

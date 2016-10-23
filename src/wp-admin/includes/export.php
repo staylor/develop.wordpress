@@ -55,7 +55,7 @@ const WXR_VERSION = '1.2';
  * }
  */
 function export_wp( $args = [] ) {
-	global $post;
+	global $post; //NOSONAR
 	$app = getApp();
 	$wpdb = $app['db'];
 

@@ -166,7 +166,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 *                                   false or WP_Error for initial errors.
 	 */
 	public function bulk_upgrade( $language_updates = [], $args = [] ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$defaults = array(
 			'clear_update_cache' => true,
@@ -315,7 +315,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	 * @param string          $remote_source
 	 */
 	public function check_package( $source, $remote_source ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		if ( is_wp_error( $source ) )
 			return $source;

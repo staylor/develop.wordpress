@@ -28,17 +28,15 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	}
 
 	/**
-	 *
 	 * @global array  $tabs
 	 * @global string $tab
 	 * @global int    $paged
 	 * @global string $type
-	 * @global array  $theme_field_defaults
 	 */
 	public function prepare_items() {
 		include( ABSPATH . 'wp-admin/includes/theme-install.php' );
 
-		global $tabs, $tab, $paged, $type, $theme_field_defaults;
+		global $tabs, $tab, $paged, $type; //NOSONAR
 		wp_reset_vars( array( 'tab' ) );
 
 		$search_terms = [];
@@ -86,7 +84,11 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		if ( empty( $tab ) || ( ! isset( $tabs[ $tab ] ) && ! in_array( $tab, (array) $nonmenu_tabs ) ) )
 			$tab = key( $tabs );
 
-		$args = array( 'page' => $paged, 'per_page' => $per_page, 'fields' => $theme_field_defaults );
+		$args = [
+			'page' => $paged,
+			'per_page' => $per_page,
+			'fields' => $app->theme['field_defaults']
+		];
 
 		switch ( $tab ) {
 		case 'search':
@@ -168,7 +170,7 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
-		global $tabs, $tab;
+		global $tabs, $tab; //NOSONAR
 
 		$display_tabs = [];
 		foreach ( (array) $tabs as $action => $text ) {
@@ -227,8 +229,6 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	/**
 	 * Prints a theme from the WordPress.org API.
 	 *
-	 * @global array $themes_allowedtags
-	 *
 	 * @param object $theme An object that contains theme data returned by the WordPress.org API.
 	 *
 	 * Example theme data:
@@ -246,13 +246,11 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	 *     public 'download_link' => string 'http://wordpress.org/themes/download/magazine-basic.1.1.zip'
 	 */
 	public function single_row( $theme ) {
-		global $themes_allowedtags;
-
 		if ( empty( $theme ) )
 			return;
 
-		$name   = wp_kses( $theme->name,   $themes_allowedtags );
-		$author = wp_kses( $theme->author, $themes_allowedtags );
+		$name   = wp_kses( $theme->name,   $this->app->theme['allowedtags'] );
+		$author = wp_kses( $theme->author, $this->app->theme['allowedtags'] );
 
 		$preview_title = sprintf( __('Preview &#8220;%s&#8221;'), $name );
 		$preview_url   = add_query_arg( array(
@@ -370,18 +368,14 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	/**
 	 * Prints the info for a theme (to be used in the theme installer modal).
 	 *
-	 * @global array $themes_allowedtags
-	 *
 	 * @param object $theme - A WordPress.org Theme API object.
 	 */
 	public function install_theme_info( $theme ) {
-		global $themes_allowedtags;
-
 		if ( empty( $theme ) )
 			return;
 
-		$name   = wp_kses( $theme->name,   $themes_allowedtags );
-		$author = wp_kses( $theme->author, $themes_allowedtags );
+		$name   = wp_kses( $theme->name,   $this->app->theme['allowedtags'] );
+		$author = wp_kses( $theme->author, $this->app->theme['allowedtags'] );
 
 		$install_url = add_query_arg( array(
 			'action' => 'install-theme',
@@ -419,10 +413,10 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 				<?php wp_star_rating( array( 'rating' => $theme->rating, 'type' => 'percent', 'number' => $theme->num_ratings ) ); ?>
 				<div class="theme-version">
 					<strong><?php _e('Version:') ?> </strong>
-					<?php echo wp_kses( $theme->version, $themes_allowedtags ); ?>
+					<?php echo wp_kses( $theme->version, $this->app->theme['allowedtags'] ); ?>
 				</div>
 				<div class="theme-description">
-					<?php echo wp_kses( $theme->description, $themes_allowedtags ); ?>
+					<?php echo wp_kses( $theme->description, $this->app->theme['allowedtags'] ); ?>
 				</div>
 			</div>
 			<input class="theme-preview-url" type="hidden" value="<?php echo esc_url( $theme->preview_url ); ?>" />
@@ -442,7 +436,7 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	 * @param array $extra_args Unused.
 	 */
 	public function _js_vars( $extra_args = [] ) {
-		global $tab, $type;
+		global $tab, $type; //NOSONAR
 		parent::_js_vars( compact( 'tab', 'type' ) );
 	}
 

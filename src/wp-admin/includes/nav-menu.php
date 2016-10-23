@@ -259,31 +259,27 @@ function wp_nav_menu_disabled_check( $nav_menu_selected_id ) {
  * Displays a meta box for the custom links menu item.
  *
  * @since 3.0.0
- *
- * @global int        $_nav_menu_placeholder
- * @global int|string $nav_menu_selected_id
  */
 function wp_nav_menu_item_link_meta_box() {
-	global $_nav_menu_placeholder, $nav_menu_selected_id;
-
-	$_nav_menu_placeholder = 0 > $_nav_menu_placeholder ? $_nav_menu_placeholder - 1 : -1;
+	$app = getApp();
+	$app->nav_menus['placeholder'] = 0 > $app->nav_menus['placeholder'] ? $app->nav_menus['placeholder'] - 1 : -1;
 
 	?>
 	<div class="customlinkdiv" id="customlinkdiv">
-		<input type="hidden" value="custom" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-type]" />
+		<input type="hidden" value="custom" name="menu-item[<?php echo $app->nav_menus['placeholder']; ?>][menu-item-type]" />
 		<p id="menu-item-url-wrap" class="wp-clearfix">
 			<label class="howto" for="custom-menu-item-url"><?php _e( 'URL' ); ?></label>
-			<input id="custom-menu-item-url" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-url]" type="text" class="code menu-item-textbox" value="http://" />
+			<input id="custom-menu-item-url" name="menu-item[<?php echo $app->nav_menus['placeholder']; ?>][menu-item-url]" type="text" class="code menu-item-textbox" value="http://" />
 		</p>
 
 		<p id="menu-item-name-wrap" class="wp-clearfix">
 			<label class="howto" for="custom-menu-item-name"><?php _e( 'Link Text' ); ?></label>
-			<input id="custom-menu-item-name" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-title]" type="text" class="regular-text menu-item-textbox" />
+			<input id="custom-menu-item-name" name="menu-item[<?php echo $app->nav_menus['placeholder']; ?>][menu-item-title]" type="text" class="regular-text menu-item-textbox" />
 		</p>
 
 		<p class="button-controls wp-clearfix">
 			<span class="add-to-menu">
-				<input type="submit"<?php wp_nav_menu_disabled_check( $nav_menu_selected_id ); ?> class="button submit-add-to-menu right" value="<?php esc_attr_e('Add to Menu'); ?>" name="add-custom-menu-item" id="submit-customlinkdiv" />
+				<input type="submit"<?php wp_nav_menu_disabled_check( $app->nav_menus['selected_id'] ); ?> class="button submit-add-to-menu right" value="<?php esc_attr_e('Add to Menu'); ?>" name="add-custom-menu-item" id="submit-customlinkdiv" />
 				<span class="spinner"></span>
 			</span>
 		</p>
@@ -297,9 +293,6 @@ function wp_nav_menu_item_link_meta_box() {
  *
  * @since 3.0.0
  *
- * @global int        $_nav_menu_placeholder
- * @global int|string $nav_menu_selected_id
- *
  * @param string $object Not used.
  * @param array  $box {
  *     Post type menu item meta box arguments.
@@ -311,8 +304,6 @@ function wp_nav_menu_item_link_meta_box() {
  * }
  */
 function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
-	global $_nav_menu_placeholder, $nav_menu_selected_id;
-
 	$post_type_name = $box['args']->name;
 
 	$app = getApp();
@@ -392,17 +383,17 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 	<div id="posttype-<?php echo $post_type_name; ?>" class="posttypediv">
 		<ul id="posttype-<?php echo $post_type_name; ?>-tabs" class="posttype-tabs add-menu-item-tabs">
 			<li <?php echo ( 'most-recent' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-posttype-<?php echo esc_attr( $post_type_name ); ?>-most-recent" href="<?php if ( $nav_menu_selected_id ) echo esc_url(add_query_arg($post_type_name . '-tab', 'most-recent', remove_query_arg($removed_args))); ?>#tabs-panel-posttype-<?php echo $post_type_name; ?>-most-recent">
+				<a class="nav-tab-link" data-type="tabs-panel-posttype-<?php echo esc_attr( $post_type_name ); ?>-most-recent" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($post_type_name . '-tab', 'most-recent', remove_query_arg($removed_args))); ?>#tabs-panel-posttype-<?php echo $post_type_name; ?>-most-recent">
 					<?php _e( 'Most Recent' ); ?>
 				</a>
 			</li>
 			<li <?php echo ( 'all' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="<?php echo esc_attr( $post_type_name ); ?>-all" href="<?php if ( $nav_menu_selected_id ) echo esc_url(add_query_arg($post_type_name . '-tab', 'all', remove_query_arg($removed_args))); ?>#<?php echo $post_type_name; ?>-all">
+				<a class="nav-tab-link" data-type="<?php echo esc_attr( $post_type_name ); ?>-all" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($post_type_name . '-tab', 'all', remove_query_arg($removed_args))); ?>#<?php echo $post_type_name; ?>-all">
 					<?php _e( 'View All' ); ?>
 				</a>
 			</li>
 			<li <?php echo ( 'search' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-posttype-<?php echo esc_attr( $post_type_name ); ?>-search" href="<?php if ( $nav_menu_selected_id ) echo esc_url(add_query_arg($post_type_name . '-tab', 'search', remove_query_arg($removed_args))); ?>#tabs-panel-posttype-<?php echo $post_type_name; ?>-search">
+				<a class="nav-tab-link" data-type="tabs-panel-posttype-<?php echo esc_attr( $post_type_name ); ?>-search" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($post_type_name . '-tab', 'search', remove_query_arg($removed_args))); ?>#tabs-panel-posttype-<?php echo $post_type_name; ?>-search">
 					<?php _e( 'Search'); ?>
 				</a>
 			</li>
@@ -492,11 +483,11 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 						$front_page_obj->front_or_home = true;
 						array_unshift( $posts, $front_page_obj );
 					} else {
-						$_nav_menu_placeholder = ( 0 > $_nav_menu_placeholder ) ? intval($_nav_menu_placeholder) - 1 : -1;
+						$app->nav_menus['placeholder'] = ( 0 > $app->nav_menus['placeholder'] ) ? intval( $app->nav_menus['placeholder'] ) - 1 : -1;
 						array_unshift( $posts, (object) array(
 							'front_or_home' => true,
 							'ID' => 0,
-							'object_id' => $_nav_menu_placeholder,
+							'object_id' => $app->nav_menus['placeholder'],
 							'post_content' => '',
 							'post_excerpt' => '',
 							'post_parent' => '',
@@ -511,10 +502,10 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 				$post_type = get_post_type_object( $post_type_name );
 
 				if ( $post_type->has_archive ) {
-					$_nav_menu_placeholder = ( 0 > $_nav_menu_placeholder ) ? intval($_nav_menu_placeholder) - 1 : -1;
+					$app->nav_menus['placeholder'] = ( 0 > $app->nav_menus['placeholder'] ) ? intval( $app->nav_menus['placeholder'] ) - 1 : -1;
 					array_unshift( $posts, (object) array(
 						'ID' => 0,
-						'object_id' => $_nav_menu_placeholder,
+						'object_id' => $app->nav_menus['placeholder'],
 						'object'     => $post_type_name,
 						'post_content' => '',
 						'post_excerpt' => '',
@@ -574,7 +565,7 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 			</span>
 
 			<span class="add-to-menu">
-				<input type="submit"<?php wp_nav_menu_disabled_check( $nav_menu_selected_id ); ?> class="button submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' ); ?>" name="add-post-type-menu-item" id="<?php echo esc_attr( 'submit-posttype-' . $post_type_name ); ?>" />
+				<input type="submit"<?php wp_nav_menu_disabled_check( $app->nav_menus['selected_id'] ); ?> class="button submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' ); ?>" name="add-post-type-menu-item" id="<?php echo esc_attr( 'submit-posttype-' . $post_type_name ); ?>" />
 				<span class="spinner"></span>
 			</span>
 		</p>
@@ -588,8 +579,6 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
  *
  * @since 3.0.0
  *
- * @global int|string $nav_menu_selected_id
- *
  * @param string $object Not used.
  * @param array  $box {
  *     Taxonomy menu item meta box arguments.
@@ -601,7 +590,6 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
  * }
  */
 function wp_nav_menu_item_taxonomy_meta_box( $object, $box ) {
-	global $nav_menu_selected_id;
 	$taxonomy_name = $box['args']->name;
 
 	$app = getApp();
@@ -679,17 +667,17 @@ function wp_nav_menu_item_taxonomy_meta_box( $object, $box ) {
 	<div id="taxonomy-<?php echo $taxonomy_name; ?>" class="taxonomydiv">
 		<ul id="taxonomy-<?php echo $taxonomy_name; ?>-tabs" class="taxonomy-tabs add-menu-item-tabs">
 			<li <?php echo ( 'most-used' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-<?php echo esc_attr( $taxonomy_name ); ?>-pop" href="<?php if ( $nav_menu_selected_id ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'most-used', remove_query_arg($removed_args))); ?>#tabs-panel-<?php echo $taxonomy_name; ?>-pop">
+				<a class="nav-tab-link" data-type="tabs-panel-<?php echo esc_attr( $taxonomy_name ); ?>-pop" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'most-used', remove_query_arg($removed_args))); ?>#tabs-panel-<?php echo $taxonomy_name; ?>-pop">
 					<?php _e( 'Most Used' ); ?>
 				</a>
 			</li>
 			<li <?php echo ( 'all' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-<?php echo esc_attr( $taxonomy_name ); ?>-all" href="<?php if ( $nav_menu_selected_id ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'all', remove_query_arg($removed_args))); ?>#tabs-panel-<?php echo $taxonomy_name; ?>-all">
+				<a class="nav-tab-link" data-type="tabs-panel-<?php echo esc_attr( $taxonomy_name ); ?>-all" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'all', remove_query_arg($removed_args))); ?>#tabs-panel-<?php echo $taxonomy_name; ?>-all">
 					<?php _e( 'View All' ); ?>
 				</a>
 			</li>
 			<li <?php echo ( 'search' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-search-taxonomy-<?php echo esc_attr( $taxonomy_name ); ?>" href="<?php if ( $nav_menu_selected_id ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'search', remove_query_arg($removed_args))); ?>#tabs-panel-search-taxonomy-<?php echo $taxonomy_name; ?>">
+				<a class="nav-tab-link" data-type="tabs-panel-search-taxonomy-<?php echo esc_attr( $taxonomy_name ); ?>" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'search', remove_query_arg($removed_args))); ?>#tabs-panel-search-taxonomy-<?php echo $taxonomy_name; ?>">
 					<?php _e( 'Search' ); ?>
 				</a>
 			</li>
@@ -775,7 +763,7 @@ function wp_nav_menu_item_taxonomy_meta_box( $object, $box ) {
 			</span>
 
 			<span class="add-to-menu">
-				<input type="submit"<?php wp_nav_menu_disabled_check( $nav_menu_selected_id ); ?> class="button submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' ); ?>" name="add-taxonomy-menu-item" id="<?php echo esc_attr( 'submit-taxonomy-' . $taxonomy_name ); ?>" />
+				<input type="submit"<?php wp_nav_menu_disabled_check( $app->nav_menus['selected_id'] ); ?> class="button submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' ); ?>" name="add-taxonomy-menu-item" id="<?php echo esc_attr( 'submit-taxonomy-' . $taxonomy_name ); ?>" />
 				<span class="spinner"></span>
 			</span>
 		</p>

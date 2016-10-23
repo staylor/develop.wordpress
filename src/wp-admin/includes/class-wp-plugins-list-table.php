@@ -33,7 +33,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @param array $args An associative array of arguments.
 	 */
 	public function __construct( $args = [] ) {
-		global $status, $page;
+		global $status, $page; //NOSONAR
 
 		parent::__construct( array(
 			'plural' => 'plugins',
@@ -76,7 +76,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @global string $s
 	 */
 	public function prepare_items() {
-		global $status, $plugins, $totals, $page, $orderby, $order, $s;
+		global $status, $plugins, $totals, $page, $orderby, $order, $s; //NOSONAR
 
 		wp_reset_vars( array( 'orderby', 'order' ) );
 
@@ -289,7 +289,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @return bool
 	 */
 	public function _search_callback( $plugin ) {
-		global $s;
+		global $s; //NOSONAR
 
 		foreach ( $plugin as $value ) {
 			if ( is_string( $value ) && false !== stripos( strip_tags( $value ), urldecode( $s ) ) ) {
@@ -308,7 +308,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @return int
 	 */
 	public function _order_callback( $plugin_a, $plugin_b ) {
-		global $orderby, $order;
+		global $orderby, $order; //NOSONAR
 
 		$a = $plugin_a[$orderby];
 		$b = $plugin_b[$orderby];
@@ -328,7 +328,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @global array $plugins
 	 */
 	public function no_items() {
-		global $plugins;
+		global $plugins; //NOSONAR
 
 		if ( $this->_request->get( 's' ) ) {
 			$s = esc_html( wp_unslash( $this->_request->get( 's' ) ) );
@@ -382,7 +382,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		global $status;
+		global $status; //NOSONAR
 
 		return array(
 			'cb'          => !in_array( $status, array( 'mustuse', 'dropins' ) ) ? '<input type="checkbox" />' : '',
@@ -405,7 +405,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
-		global $totals, $status;
+		global $totals, $status; //NOSONAR
 
 		$status_links = [];
 		foreach ( $totals as $type => $count ) {
@@ -454,7 +454,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
-		global $status;
+		global $status; //NOSONAR
 
 		$actions = [];
 
@@ -479,7 +479,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @param string $which
 	 */
 	public function bulk_actions( $which = '' ) {
-		global $status;
+		global $status; //NOSONAR
 
 		if ( in_array( $status, array( 'mustuse', 'dropins' ) ) )
 			return;
@@ -492,7 +492,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @param string $which
 	 */
 	protected function extra_tablenav( $which ) {
-		global $status;
+		global $status; //NOSONAR
 
 		if ( ! in_array($status, array('recently_activated', 'mustuse', 'dropins') ) )
 			return;
@@ -533,7 +533,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @global string $status
 	 */
 	public function display_rows() {
-		global $status;
+		global $status; //NOSONAR
 
 		if ( is_multisite() && ! $this->screen->in_admin( 'network' ) && in_array( $status, array( 'mustuse', 'dropins' ) ) )
 			return;
@@ -551,7 +551,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @param array $item
 	 */
 	public function single_row( $item ) {
-		global $status, $page, $s, $totals;
+		global $status, $page, $s, $totals; //NOSONAR
 
 		list( $plugin_file, $plugin_data ) = $item;
 		$context = $status;

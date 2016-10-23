@@ -8,7 +8,7 @@ class Provider implements ServiceProviderInterface {
 		$app['wp_version'] = function () {
 			$version = '4.7-alpha-38178-src';
 			// themes!
-			$GLOBALS['wp_version'] = $version;
+			$GLOBALS['wp_version'] = $version; //NOSONAR
 			return $version;
 		};
 
@@ -28,7 +28,7 @@ class Provider implements ServiceProviderInterface {
 		$app['required_mysql_version'] = '5.0';
 
 		$app['super_admins'] = $app->factory( function () {
-			return $GLOBALS['super_admins'] ?? null;
+			return $GLOBALS['super_admins'] ?? null; //NOSONAR
 		} );
 
 		// for non-US English locales

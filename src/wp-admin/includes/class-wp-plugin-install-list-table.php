@@ -75,7 +75,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	public function prepare_items() {
 		include( ABSPATH . 'wp-admin/includes/plugin-install.php' );
 
-		global $tabs, $tab, $paged, $type, $term;
+		global $tabs, $tab, $paged, $type, $term; //NOSONAR
 
 		$app = getApp();
 		$_get = $app['request']->query;
@@ -253,7 +253,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
-		global $tabs, $tab;
+		global $tabs, $tab; //NOSONAR
 
 		$display_tabs = [];
 		foreach ( (array) $tabs as $action => $text ) {
@@ -328,7 +328,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	 * @param string $which
 	 */
 	protected function display_tablenav( $which ) {
-		if ( $GLOBALS['tab'] === 'featured' ) {
+		if ( $GLOBALS['tab'] === 'featured' ) { //NOSONAR
 			return;
 		}
 

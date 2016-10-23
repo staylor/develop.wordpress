@@ -3399,8 +3399,6 @@ function paginate_links( $args = '' ) {
  *
  * @since 2.5.0
  *
- * @global array $_wp_admin_css_colors
- *
  * @param string $key    The unique key for this theme.
  * @param string $name   The name of the theme.
  * @param string $url    The URL of the CSS file containing the color scheme.
@@ -3415,18 +3413,14 @@ function paginate_links( $args = '' ) {
  * }
  */
 function wp_admin_css_color( $key, $name, $url, $colors = [], $icons = [] ) {
-	global $_wp_admin_css_colors;
+	$app = getApp();
 
-	if ( ! isset( $_wp_admin_css_colors ) ) {
-		$_wp_admin_css_colors = [];
-	}
-
-	$_wp_admin_css_colors[ $key ] = (object) array(
+	$app->_wp_admin_css_colors[ $key ] = (object) [
 		'name' => $name,
 		'url' => $url,
 		'colors' => $colors,
 		'icon_colors' => $icons,
-	);
+	];
 }
 
 /**

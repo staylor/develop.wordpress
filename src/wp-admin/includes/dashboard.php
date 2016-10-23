@@ -14,12 +14,8 @@ use function WP\getApp;
  * Handles POST data, sets up filters.
  *
  * @since 2.5.0
- *
- * @global array $wp_dashboard_control_callbacks
  */
 function wp_dashboard_setup() {
-	global $wp_dashboard_control_callbacks;
-	$wp_dashboard_control_callbacks = [];
 	$screen = get_current_screen();
 
 	$app = getApp();
@@ -141,8 +137,6 @@ function wp_dashboard_setup() {
  *
  * @since 2.7.0
  *
- * @global array $wp_dashboard_control_callbacks
- *
  * @param string   $widget_id        Widget ID  (used in the 'id' attribute for the widget).
  * @param string   $widget_name      Title of the widget.
  * @param callable $callback         Function that fills the widget with the desired content.
@@ -156,7 +150,6 @@ function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_
 	$_get = $app['request']->query;
 
 	$screen = get_current_screen();
-	global $wp_dashboard_control_callbacks;
 
 	$private_callback_args = array( '__widget_basename' => $widget_name );
 
@@ -167,7 +160,7 @@ function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_
 	}
 
 	if ( $control_callback && current_user_can( 'edit_dashboard' ) && is_callable( $control_callback ) ) {
-		$wp_dashboard_control_callbacks[$widget_id] = $control_callback;
+		$app->dashboard['control_callbacks'][ $widget_id ] = $control_callback;
 		if ( $widget_id == $_get->get( 'edit' ) ) {
 			list($url) = explode( '#', add_query_arg( 'edit', false ), 2 );
 			$widget_name .= ' <span class="postbox-title-action"><a href="' . esc_url( $url ) . '">' . __( 'Cancel' ) . '</a></span>';
@@ -474,7 +467,7 @@ function wp_network_dashboard_right_now() {
  * @param string $error_msg Optional. Error message. Default false.
  */
 function wp_dashboard_quick_press( $error_msg = false ) {
-	global $post_ID;
+	global $post_ID; //NOSONAR
 
 	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
@@ -756,7 +749,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			</div>
 		</li>
 <?php
-	$GLOBALS['comment'] = null;
+	$GLOBALS['comment'] = null; //NOSONAR
 }
 
 /**
@@ -1019,15 +1012,22 @@ function wp_dashboard_cached_rss_widget( $widget_id, $callback, $check_urls = []
  *
  * @since 2.5.0
  *
- * @global array $wp_dashboard_control_callbacks
- *
  * @param int $widget_control_id Registered Widget ID.
  */
 function wp_dashboard_trigger_widget_control( $widget_control_id = false ) {
-	global $wp_dashboard_control_callbacks;
+	$app = getApp();
 
-	if ( is_scalar($widget_control_id) && $widget_control_id && isset($wp_dashboard_control_callbacks[$widget_control_id]) && is_callable($wp_dashboard_control_callbacks[$widget_control_id]) ) {
-		call_user_func( $wp_dashboard_control_callbacks[$widget_control_id], '', array( 'id' => $widget_control_id, 'callback' => $wp_dashboard_control_callbacks[$widget_control_id] ) );
+	$callbacks = $app->dashboard['control_callbacks'];
+	if (
+		is_scalar( $widget_control_id ) &&
+		$widget_control_id &&
+		isset( $callbacks[ $widget_control_id ] ) &&
+		is_callable( $callbacks[ $widget_control_id ] )
+	) {
+		call_user_func( $callbacks[ $widget_control_id ], '', [
+			'id' => $widget_control_id,
+			'callback' => $callbacks[ $widget_control_id ]
+		] );
 	}
 }
 

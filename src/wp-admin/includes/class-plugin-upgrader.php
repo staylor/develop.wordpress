@@ -332,7 +332,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 *                         if no plugins were found.
 	 */
 	public function check_package($source) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		if ( is_wp_error($source) )
 			return $source;
@@ -437,7 +437,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 * @return WP_Error|bool
 	 */
 	public function delete_old_plugin($removed, $local_destination, $remote_destination, $plugin) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		if ( is_wp_error($removed) )
 			return $removed; //Pass errors through.

@@ -989,14 +989,13 @@ function wp_localize_jquery_ui_datepicker() {
  * the $_wp_admin_css_colors array value URL.
  *
  * @since 2.6.0
- * @global array $_wp_admin_css_colors
  *
  * @param string $src    Source URL.
  * @param string $handle Either 'colors' or 'colors-rtl'.
  * @return string|false URL path to CSS stylesheet for Administration Screens.
  */
 function wp_style_loader_src( $src, $handle ) {
-	global $_wp_admin_css_colors;
+	$app = getApp();
 
 	if ( wp_installing() ) {
 		return preg_replace( '#^wp-admin/#', './', $src );
@@ -1005,11 +1004,11 @@ function wp_style_loader_src( $src, $handle ) {
 	if ( 'colors' == $handle ) {
 		$color = get_user_option('admin_color' );
 
-		if ( empty($color) || !isset($_wp_admin_css_colors[$color]) ) {
+		if ( empty($color) || ! isset( $app->_wp_admin_css_colors[ $color ] ) ) {
 			$color = 'fresh';
 		}
 
-		$color = $_wp_admin_css_colors[$color];
+		$color = $app->_wp_admin_css_colors[ $color ];
 		$url = $color->url;
 
 		if ( ! $url ) {

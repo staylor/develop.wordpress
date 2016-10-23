@@ -86,7 +86,7 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @global string $usersearch
 	 */
 	public function prepare_items() {
-		global $role, $usersearch;
+		global $role, $usersearch; //NOSONAR
 
 		$usersearch = wp_unslash( trim( $this->_request->get( 's' ) ) );
 
@@ -173,7 +173,7 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @return array An array of HTML links, one for each view.
 	 */
 	protected function get_views() {
-		global $role;
+		global $role; //NOSONAR
 
 		$app = getApp();
 

@@ -13,15 +13,14 @@ use function WP\getApp;
  *
  * @since 2.0.0
  *
- * @global array $wp_importers
  * @return array
  */
 function get_importers() {
-	global $wp_importers;
-	if ( is_array( $wp_importers ) ) {
-		uasort( $wp_importers, '_usort_by_first_member' );
+	$app = getApp();
+	if ( is_array( $app->importers ) ) {
+		uasort( $app->importers, '_usort_by_first_member' );
 	}
-	return $wp_importers;
+	return $app->importers;
 }
 
 /**
@@ -45,8 +44,6 @@ function _usort_by_first_member( $a, $b ) {
  *
  * @since 2.0.0
  *
- * @global array $wp_importers
- *
  * @param string   $id          Importer tag. Used to uniquely identify importer.
  * @param string   $name        Importer name and title.
  * @param string   $description Importer description.
@@ -54,10 +51,11 @@ function _usort_by_first_member( $a, $b ) {
  * @return WP_Error Returns WP_Error when $callback is WP_Error.
  */
 function register_importer( $id, $name, $description, $callback ) {
-	global $wp_importers;
-	if ( is_wp_error( $callback ) )
+	if ( is_wp_error( $callback ) ) {
 		return $callback;
-	$wp_importers[$id] = array ( $name, $description, $callback );
+	}
+	$app = getApp();
+	$app->importers[ $id ] = [ $name, $description, $callback ];
 }
 
 /**

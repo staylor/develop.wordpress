@@ -164,7 +164,7 @@ class WP_Upgrader {
 	 * @return bool|WP_Error True if able to connect, false or a WP_Error otherwise.
 	 */
 	public function fs_connect( $directories = [], $allow_relaxed_file_ownership = false ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		if ( false === ( $credentials = $this->skin->request_filesystem_credentials( false, $directories[0], $allow_relaxed_file_ownership ) ) ) {
 			return false;
@@ -269,7 +269,7 @@ class WP_Upgrader {
 	 * @return string|WP_Error The path to the unpacked contents, or a WP_Error on failure.
 	 */
 	public function unpack_package( $package, $delete_package = true ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$this->skin->feedback('unpack_package');
 
@@ -319,7 +319,7 @@ class WP_Upgrader {
 	 * @return bool|WP_Error True upon success, WP_Error on failure.
 	 */
 	public function clear_destination( $remote_destination ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		if ( ! $wp_filesystem->exists( $remote_destination ) ) {
 			return true;
@@ -398,7 +398,7 @@ class WP_Upgrader {
 	 * @return array|WP_Error The result (also stored in `WP_Upgrader::$result`), or a WP_Error on failure.
 	 */
 	public function install_package( $args = [] ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
 		$app = getApp();
 
@@ -787,7 +787,7 @@ class WP_Upgrader {
 	 * @param bool $enable True to enable maintenance mode, false to disable.
 	 */
 	public function maintenance_mode( $enable = false ) {
-		global $wp_filesystem;
+		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 		$file = $wp_filesystem->abspath() . '.maintenance';
 		if ( $enable ) {
 			$this->skin->feedback('maintenance_start');

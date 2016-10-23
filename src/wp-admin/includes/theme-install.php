@@ -8,19 +8,6 @@
 
 use function WP\getApp;
 
-$themes_allowedtags = array('a' => array('href' => [], 'title' => [], 'target' => []),
-	'abbr' => array('title' => []), 'acronym' => array('title' => []),
-	'code' => [], 'pre' => [], 'em' => [], 'strong' => [],
-	'div' => [], 'p' => [], 'ul' => [], 'ol' => [], 'li' => [],
-	'h1' => [], 'h2' => [], 'h3' => [], 'h4' => [], 'h5' => [], 'h6' => [],
-	'img' => array('src' => [], 'class' => [], 'alt' => [])
-);
-
-$theme_field_defaults = array( 'description' => true, 'sections' => false, 'tested' => true, 'requires' => true,
-	'rating' => true, 'downloaded' => true, 'downloadlink' => true, 'last_updated' => true, 'homepage' => true,
-	'tags' => true, 'num_ratings' => true
-);
-
 /**
  * Retrieve list of WordPress theme features (aka theme tags)
  *

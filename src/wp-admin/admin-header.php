@@ -7,20 +7,14 @@
  */
 
 @header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
-if ( ! defined( 'WP_ADMIN' ) )
+if ( ! defined( 'WP_ADMIN' ) ) {
 	require_once( __DIR__ . '/admin.php' );
-
-/**
- * In case admin-header.php is included in a function.
- *
- * @global string    $update_title
- * @global int       $total_update_count
- */
-global $update_title, $total_update_count;
+}
 
 // Catch plugins that include admin-header.php before admin.php completes.
-if ( empty( $app->current_screen ) )
+if ( empty( $app->current_screen ) ) {
 	set_current_screen();
+}
 
 get_admin_page_title();
 $title = esc_html( strip_tags( $app->get( 'title' ) ) );
@@ -209,7 +203,6 @@ do_action( 'in_admin_header' );
 
 <div id="wpbody" role="main">
 <?php
-unset($title_class, $blog_name, $total_update_count, $update_title);
 
 $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 

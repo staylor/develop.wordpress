@@ -43,7 +43,7 @@ $messages = [];
 $nav_menu_selected_title = '';
 
 // The menu id of the current menu being edited
-$nav_menu_selected_id = $_request->getInt( 'menu', 0 );
+$app->nav_menus['selected_id'] = $_request->getInt( 'menu', 0 );
 
 // Get existing menu locations assignments
 $locations = get_registered_nav_menus();
@@ -70,7 +70,7 @@ case 'add-menu-item':
 	if ( $_request->has( 'nav-menu-locations' ) ) {
 		set_theme_mod( 'nav_menu_locations', array_map( 'absint', $_request->get( 'menu-locations' ) ) );
 	} elseif ( $menu_item_id ) {
-		wp_save_nav_menu_items( $nav_menu_selected_id, $menu_item_id );
+		wp_save_nav_menu_items( $app->nav_menus['selected_id'], $menu_item_id );
 	}
 	break;
 
@@ -79,7 +79,7 @@ case 'move-down-menu-item' :
 	check_admin_referer( 'move-menu_item' );
 
 	if ( $menu_item_id && is_nav_menu_item( $menu_item_id ) ) {
-		$menus = $nav_menu_selected_id ? [ $nav_menu_selected_id ] : wp_get_object_terms( $menu_item_id, 'nav_menu', [ 'fields' => 'ids' ] );
+		$menus = $app->nav_menus['selected_id'] ? [ $app->nav_menus['selected_id'] ] : wp_get_object_terms( $menu_item_id, 'nav_menu', [ 'fields' => 'ids' ] );
 		if ( ! is_wp_error( $menus ) && ! empty( $menus[0] ) ) {
 			$menu_id = (int) $menus[0];
 			$ordered_menu_items = wp_get_nav_menu_items( $menu_id );
@@ -152,7 +152,7 @@ case 'move-up-menu-item' :
 	check_admin_referer( 'move-menu_item' );
 
 	if ( is_nav_menu_item( $menu_item_id ) ) {
-		$menus = $nav_menu_selected_id ? [ $nav_menu_selected_id ] : wp_get_object_terms( $menu_item_id, 'nav_menu', array( 'fields' => 'ids' ) );
+		$menus = $app->nav_menus['selected_id'] ? [ $app->nav_menus['selected_id'] ] : wp_get_object_terms( $menu_item_id, 'nav_menu', array( 'fields' => 'ids' ) );
 		if ( ! is_wp_error( $menus ) && ! empty( $menus[0] ) ) {
 			$menu_id = (int) $menus[0];
 			$ordered_menu_items = wp_get_nav_menu_items( $menu_id );
@@ -255,12 +255,12 @@ case 'delete-menu-item':
 	break;
 
 case 'delete':
-	check_admin_referer( 'delete-nav_menu-' . $nav_menu_selected_id );
-	if ( is_nav_menu( $nav_menu_selected_id ) ) {
-		$deletion = wp_delete_nav_menu( $nav_menu_selected_id );
+	check_admin_referer( 'delete-nav_menu-' . $app->nav_menus['selected_id'] );
+	if ( is_nav_menu( $app->nav_menus['selected_id'] ) ) {
+		$deletion = wp_delete_nav_menu( $app->nav_menus['selected_id'] );
 	} else {
 		// Reset the selected menu.
-		$nav_menu_selected_id = 0;
+		$app->nav_menus['selected_id'] = 0;
 		$_request->remove( 'menu' );
 	}
 
@@ -300,7 +300,7 @@ case 'update':
 	$menu_locations = $_post->get( 'menu-locations' );
 	// Remove menu locations that have been unchecked.
 	foreach ( $locations as $location => $description ) {
-		if ( ( empty( $menu_locations ) || empty( $menu_locations[ $location ] ) ) && isset( $menu_locations[ $location ] ) && $menu_locations[ $location ] == $nav_menu_selected_id ) {
+		if ( ( empty( $menu_locations ) || empty( $menu_locations[ $location ] ) ) && isset( $menu_locations[ $location ] ) && $menu_locations[ $location ] == $app->nav_menus['selected_id'] ) {
 			unset( $menu_locations[ $location ] );
 		}
 	}
@@ -315,28 +315,28 @@ case 'update':
 	set_theme_mod( 'nav_menu_locations', $menu_locations );
 
 	// Add Menu.
-	if ( 0 == $nav_menu_selected_id ) {
+	if ( 0 == $app->nav_menus['selected_id'] ) {
 		$new_menu_title = trim( esc_html( $_post->get( 'menu-name' ) ) );
 
 		if ( $new_menu_title ) {
-			$_nav_menu_selected_id = wp_update_nav_menu_object( 0, [ 'menu-name' => $new_menu_title ] );
+			$app->nav_menus['selected_id'] = wp_update_nav_menu_object( 0, [ 'menu-name' => $new_menu_title ] );
 
-			if ( is_wp_error( $_nav_menu_selected_id ) ) {
-				$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . $_nav_menu_selected_id->get_error_message() . '</p></div>';
+			if ( is_wp_error( $app->nav_menus['selected_id'] ) ) {
+				$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . $app->nav_menus['selected_id']->get_error_message() . '</p></div>';
 			} else {
-				$_menu_object = wp_get_nav_menu_object( $_nav_menu_selected_id );
-				$nav_menu_selected_id = $_nav_menu_selected_id;
+				$_menu_object = wp_get_nav_menu_object( $app->nav_menus['selected_id'] );
+				$app->nav_menus['selected_id'] = $_nav_menu_selected_id;
 				$nav_menu_selected_title = $_menu_object->name;
 				if ( $menu_item_id ) {
-					wp_save_nav_menu_items( $nav_menu_selected_id, $menu_item_id );
+					wp_save_nav_menu_items( $app->nav_menus['selected_id'], $menu_item_id );
 				}
 				if ( $_request->get( 'zero-menu-state' ) ) {
 					// If there are menu items, add them
-					wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selected_title );
+					wp_nav_menu_update_menu_items( $app->nav_menus['selected_id'], $nav_menu_selected_title );
 					// Auto-save nav_menu_locations
 					$locations = get_nav_menu_locations();
 					foreach ( $locations as $location => $menu_id ) {
-							$locations[ $location ] = $nav_menu_selected_id;
+							$locations[ $location ] = $app->nav_menus['selected_id'];
 							break; // There should only be 1
 					}
 					set_theme_mod( 'nav_menu_locations', $locations );
@@ -346,7 +346,7 @@ case 'update':
 					$locations = get_registered_nav_menus();
 					$menu_locations = get_nav_menu_locations();
 					if ( isset( $locations[ $use_location ] ) ) {
-						$menu_locations[ $use_location ] = $nav_menu_selected_id;
+						$menu_locations[ $use_location ] = $app->nav_menus['selected_id'];
 					}
 					set_theme_mod( 'nav_menu_locations', $menu_locations );
 				}
@@ -362,7 +362,7 @@ case 'update':
 	// Update existing menu.
 	} else {
 
-		$_menu_object = wp_get_nav_menu_object( $nav_menu_selected_id );
+		$_menu_object = wp_get_nav_menu_object( $app->nav_menus['selected_id'] );
 
 		$menu_title = trim( esc_html( $_post->get( 'menu-name' ) ) );
 		if ( ! $menu_title ) {
@@ -371,7 +371,7 @@ case 'update':
 		}
 
 		if ( ! is_wp_error( $_menu_object ) ) {
-			$_nav_menu_selected_id = wp_update_nav_menu_object( $nav_menu_selected_id, array( 'menu-name' => $menu_title ) );
+			$_nav_menu_selected_id = wp_update_nav_menu_object( $app->nav_menus['selected_id'], array( 'menu-name' => $menu_title ) );
 			if ( is_wp_error( $_nav_menu_selected_id ) ) {
 				$_menu_object = $_nav_menu_selected_id;
 				$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . $_nav_menu_selected_id->get_error_message() . '</p></div>';
@@ -386,7 +386,7 @@ case 'update':
 			$messages = array_merge( $messages, wp_nav_menu_update_menu_items( $_nav_menu_selected_id, $nav_menu_selected_title ) );
 
 			// If the menu ID changed, redirect to the new URL.
-			if ( $nav_menu_selected_id != $_nav_menu_selected_id ) {
+			if ( $app->nav_menus['selected_id'] != $_nav_menu_selected_id ) {
 				wp_redirect( admin_url( 'nav-menus.php?menu=' . intval( $_nav_menu_selected_id ) ) );
 				exit();
 			}
@@ -421,7 +421,7 @@ $nav_menus = wp_get_nav_menus();
 $menu_count = count( $nav_menus );
 
 // Are we on the add new screen?
-$add_new_screen = ! $nav_menu_selected_id;
+$add_new_screen = ! $app->nav_menus['selected_id'];
 
 $locations_screen = 'locations' == $app['request']->query->get( 'action' );
 
@@ -461,34 +461,34 @@ if ( 0 == $menu_count && ! $add_new_screen && ! $one_theme_location_no_menus )
 
 // Get recently edited nav menu.
 $recently_edited = absint( get_user_option( 'nav_menu_recently_edited' ) );
-if ( empty( $recently_edited ) && is_nav_menu( $nav_menu_selected_id ) )
-	$recently_edited = $nav_menu_selected_id;
+if ( empty( $recently_edited ) && is_nav_menu( $app->nav_menus['selected_id'] ) )
+	$recently_edited = $app->nav_menus['selected_id'];
 
 // Use $recently_edited if none are selected.
-if ( empty( $nav_menu_selected_id ) && is_nav_menu( $recently_edited ) ) {
-	$nav_menu_selected_id = $recently_edited;
+if ( empty( $app->nav_menus['selected_id'] ) && is_nav_menu( $recently_edited ) ) {
+	$app->nav_menus['selected_id'] = $recently_edited;
 }
 
 // On deletion of menu, if another menu exists, show it.
 if ( ! $add_new_screen && 0 < $menu_count && 'delete' === $action ) {
-	$nav_menu_selected_id = $nav_menus[0]->term_id;
+	$app->nav_menus['selected_id'] = $nav_menus[0]->term_id;
 }
 
-// Set $nav_menu_selected_id to 0 if no menus.
+// Set $app->nav_menus['selected_id'] to 0 if no menus.
 if ( $one_theme_location_no_menus ) {
-	$nav_menu_selected_id = 0;
-} elseif ( empty( $nav_menu_selected_id ) && ! empty( $nav_menus ) && ! $add_new_screen ) {
+	$app->nav_menus['selected_id'] = 0;
+} elseif ( empty( $app->nav_menus['selected_id'] ) && ! empty( $nav_menus ) && ! $add_new_screen ) {
 	// if we have no selection yet, and we have menus, set to the first one in the list.
-	$nav_menu_selected_id = $nav_menus[0]->term_id;
+	$app->nav_menus['selected_id'] = $nav_menus[0]->term_id;
 }
 
 // Update the user's setting.
-if ( $nav_menu_selected_id != $recently_edited && is_nav_menu( $nav_menu_selected_id ) )
-	update_user_meta( $current_user->ID, 'nav_menu_recently_edited', $nav_menu_selected_id );
+if ( $app->nav_menus['selected_id'] != $recently_edited && is_nav_menu( $app->nav_menus['selected_id'] ) )
+	update_user_meta( $current_user->ID, 'nav_menu_recently_edited', $app->nav_menus['selected_id'] );
 
 // If there's a menu, get its name.
-if ( ! $nav_menu_selected_title && is_nav_menu( $nav_menu_selected_id ) ) {
-	$_menu_object = wp_get_nav_menu_object( $nav_menu_selected_id );
+if ( ! $nav_menu_selected_title && is_nav_menu( $app->nav_menus['selected_id'] ) ) {
+	$_menu_object = wp_get_nav_menu_object( $app->nav_menus['selected_id'] );
 	$nav_menu_selected_title = ! is_wp_error( $_menu_object ) ? $_menu_object->name : '';
 }
 
@@ -504,9 +504,9 @@ if ( current_theme_supports( 'menus' ) ) {
 }
 
 // Calling wp_get_nav_menu_to_edit generates $_wp_nav_menu_max_depth.
-if ( is_nav_menu( $nav_menu_selected_id ) ) {
-	$menu_items = wp_get_nav_menu_items( $nav_menu_selected_id, array( 'post_status' => 'any' ) );
-	$edit_markup = wp_get_nav_menu_to_edit( $nav_menu_selected_id );
+if ( is_nav_menu( $app->nav_menus['selected_id'] ) ) {
+	$menu_items = wp_get_nav_menu_items( $app->nav_menus['selected_id'], array( 'post_status' => 'any' ) );
+	$edit_markup = wp_get_nav_menu_to_edit( $app->nav_menus['selected_id'] );
 }
 
 /**
@@ -622,7 +622,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 			</table>
 			<p class="button-controls wp-clearfix"><?php submit_button( __( 'Save Changes' ), 'primary left', 'nav-menu-locations', false ); ?></p>
 			<?php wp_nonce_field( 'save-menu-locations' ); ?>
-			<input type="hidden" name="menu" id="nav-menu-meta-object-id" value="<?php echo esc_attr( $nav_menu_selected_id ); ?>" />
+			<input type="hidden" name="menu" id="nav-menu-meta-object-id" value="<?php echo esc_attr( $app->nav_menus['selected_id'] ); ?>" />
 		</form>
 	</div><!-- #menu-locations-wrap -->
 	<?php
@@ -647,7 +647,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 					<option value="0" selected="selected"><?php _e( '&mdash; Select &mdash;' ); ?></option>
 				<?php endif; ?>
 				<?php foreach ( (array) $nav_menus as $_nav_menu ) : ?>
-					<option value="<?php echo esc_attr( $_nav_menu->term_id ); ?>" <?php selected( $_nav_menu->term_id, $nav_menu_selected_id ); ?>>
+					<option value="<?php echo esc_attr( $_nav_menu->term_id ); ?>" <?php selected( $_nav_menu->term_id, $app->nav_menus['selected_id'] ); ?>>
 						<?php
 						echo esc_html( $_nav_menu->truncated_name ) ;
 
@@ -689,14 +689,14 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	</div><!-- /manage-menus -->
 	<div id="nav-menus-frame" class="wp-clearfix">
 	<div id="menu-settings-column" class="metabox-holder<?php
-		if ( ! $nav_menu_selected_id ) {
+		if ( ! $app->nav_menus['selected_id'] ) {
 			echo ' metabox-holder-disabled';
 		} ?>">
 
 		<div class="clear"></div>
 
 		<form id="nav-menu-meta" class="nav-menu-meta" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="menu" id="nav-menu-meta-object-id" value="<?php echo esc_attr( $nav_menu_selected_id ); ?>" />
+			<input type="hidden" name="menu" id="nav-menu-meta-object-id" value="<?php echo esc_attr( $app->nav_menus['selected_id'] ); ?>" />
 			<input type="hidden" name="action" value="add-menu-item" />
 			<?php wp_nonce_field( 'add-menu_item', 'menu-settings-column-nonce' ); ?>
 			<?php do_accordion_sections( 'nav-menus', 'side', null ); ?>
@@ -723,13 +723,13 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 						$menu_name_val = 'value="' . esc_attr( $nav_menu_selected_title ) . '"';
 					} ?>
  					<input type="hidden" name="action" value="update" />
-					<input type="hidden" name="menu" id="menu" value="<?php echo esc_attr( $nav_menu_selected_id ); ?>" />
+					<input type="hidden" name="menu" id="menu" value="<?php echo esc_attr( $app->nav_menus['selected_id'] ); ?>" />
 					<div id="nav-menu-header">
 						<div class="major-publishing-actions wp-clearfix">
 							<label class="menu-name-label" for="menu-name"><?php _e( 'Menu Name' ); ?></label>
 							<input name="menu-name" id="menu-name" type="text" class="menu-name regular-text menu-item-textbox" <?php echo $menu_name_val . $menu_name_aria_desc; ?> />
 							<div class="publishing-action">
-								<?php submit_button( empty( $nav_menu_selected_id ) ? __( 'Create Menu' ) : __( 'Save Menu' ), 'primary large menu-save', 'save_menu', false, array( 'id' => 'save_menu_header' ) ); ?>
+								<?php submit_button( empty( $app->nav_menus['selected_id'] ) ? __( 'Create Menu' ) : __( 'Save Menu' ), 'primary large menu-save', 'save_menu', false, array( 'id' => 'save_menu_header' ) ); ?>
 							</div><!-- END .publishing-action -->
 						</div><!-- END .major-publishing-actions -->
 					</div><!-- END .nav-menu-header -->
@@ -760,7 +760,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 								<?php
 								if ( ! isset( $auto_add ) ) {
 									$auto_add = get_option( 'nav_menu_options' );
-									if ( isset( $auto_add['auto_add'] ) && false !== array_search( $nav_menu_selected_id, $auto_add['auto_add'] ) ) {
+									if ( isset( $auto_add['auto_add'] ) && false !== array_search( $app->nav_menus['selected_id'], $auto_add['auto_add'] ) ) {
 										$auto_add = true;
 									} else {
 										$auto_add = false;
@@ -778,9 +778,9 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 										<dt class="howto"><?php _e( 'Theme locations' ); ?></dt>
 										<?php foreach ( $locations as $location => $description ) : ?>
 										<dd class="checkbox-input">
-											<input type="checkbox"<?php checked( isset( $menu_locations[ $location ] ) && $menu_locations[ $location ] == $nav_menu_selected_id ); ?> name="menu-locations[<?php echo esc_attr( $location ); ?>]" id="locations-<?php echo esc_attr( $location ); ?>" value="<?php echo esc_attr( $nav_menu_selected_id ); ?>" />
+											<input type="checkbox"<?php checked( isset( $menu_locations[ $location ] ) && $menu_locations[ $location ] == $app->nav_menus['selected_id'] ); ?> name="menu-locations[<?php echo esc_attr( $location ); ?>]" id="locations-<?php echo esc_attr( $location ); ?>" value="<?php echo esc_attr( $app->nav_menus['selected_id'] ); ?>" />
 											<label for="locations-<?php echo esc_attr( $location ); ?>"><?php echo $description; ?></label>
-											<?php if ( ! empty( $menu_locations[ $location ] ) && $menu_locations[ $location ] != $nav_menu_selected_id ) : ?>
+											<?php if ( ! empty( $menu_locations[ $location ] ) && $menu_locations[ $location ] != $app->nav_menus['selected_id'] ) : ?>
 												<span class="theme-location-set"><?php
 													/* translators: %s: menu name */
 													printf( _x( '(Currently set to: %s)', 'menu location' ),
@@ -801,11 +801,11 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 						<div class="major-publishing-actions wp-clearfix">
 							<?php if ( 0 != $menu_count && ! $add_new_screen ) : ?>
 							<span class="delete-action">
-								<a class="submitdelete deletion menu-delete" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'delete', 'menu' => $nav_menu_selected_id ), admin_url( 'nav-menus.php' ) ), 'delete-nav_menu-' . $nav_menu_selected_id) ); ?>"><?php _e('Delete Menu'); ?></a>
+								<a class="submitdelete deletion menu-delete" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'delete', 'menu' => $app->nav_menus['selected_id'] ), admin_url( 'nav-menus.php' ) ), 'delete-nav_menu-' . $app->nav_menus['selected_id'] ) ); ?>"><?php _e('Delete Menu'); ?></a>
 							</span><!-- END .delete-action -->
 							<?php endif; ?>
 							<div class="publishing-action">
-								<?php submit_button( empty( $nav_menu_selected_id ) ? __( 'Create Menu' ) : __( 'Save Menu' ), 'primary large menu-save', 'save_menu', false, array( 'id' => 'save_menu_footer' ) ); ?>
+								<?php submit_button( empty( $app->nav_menus['selected_id'] ) ? __( 'Create Menu' ) : __( 'Save Menu' ), 'primary large menu-save', 'save_menu', false, array( 'id' => 'save_menu_footer' ) ); ?>
 							</div><!-- END .publishing-action -->
 						</div><!-- END .major-publishing-actions -->
 					</div><!-- /#nav-menu-footer -->
