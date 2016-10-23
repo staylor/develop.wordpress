@@ -67,15 +67,17 @@ function get_default_link_to_edit() {
 	$_get = $app['request']->query;
 
 	$link = new stdClass;
-	if ( $_get->get( 'linkurl' ) )
+	if ( $_get->get( 'linkurl' ) ) {
 		$link->link_url = esc_url( wp_unslash( $_get->get( 'linkurl' ) ) );
-	else
+	} else {
 		$link->link_url = '';
+	}
 
-	if ( $_get->get( 'name' ) )
+	if ( $_get->get( 'name' ) ) {
 		$link->link_name = esc_attr( wp_unslash( $_get->get( 'name' ) ) );
-	else
+	} else {
 		$link->link_name = '';
+	}
 
 	$link->link_visible = 'Y';
 
@@ -255,8 +257,9 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
  */
 function wp_set_link_cats( $link_id = 0, $link_categories = [] ) {
 	// If $link_categories isn't already an array, make it one:
-	if ( !is_array( $link_categories ) || 0 == count( $link_categories ) )
+	if ( !is_array( $link_categories ) || 0 == count( $link_categories ) ) {
 		$link_categories = array( get_option( 'default_link_category' ) );
+	}
 
 	$link_categories = array_map( 'intval', $link_categories );
 	$link_categories = array_unique( $link_categories );
@@ -283,11 +286,15 @@ function wp_update_link( $linkdata ) {
 	$link = wp_slash( $link );
 
 	// Passed link category list overwrites existing category list if not empty.
-	if ( isset( $linkdata['link_category'] ) && is_array( $linkdata['link_category'] )
-			 && 0 != count( $linkdata['link_category'] ) )
+	if (
+		isset( $linkdata['link_category'] ) &&
+		is_array( $linkdata['link_category'] ) &&
+		0 != count( $linkdata['link_category'] )
+	) {
 		$link_cats = $linkdata['link_category'];
-	else
+	} else {
 		$link_cats = $link['link_category'];
+	}
 
 	// Merge old and new fields with new fields overwriting old ones.
 	$linkdata = array_merge( $link, $linkdata );

@@ -71,8 +71,9 @@ class File_Upload_Upgrader {
 			$overrides = array( 'test_form' => false, 'test_type' => false );
 			$file = wp_handle_upload( $f, $overrides );
 
-			if ( isset( $file['error'] ) )
+			if ( isset( $file['error'] ) ) {
 				wp_die( $file['error'] );
+			}
 
 			$this->filename = $f['name'];
 			$this->package = $file['file'];
@@ -97,15 +98,17 @@ class File_Upload_Upgrader {
 			// Numeric Package = previously uploaded file, see above.
 			$this->id = $_get->getInt( $urlholder );
 			$attachment = get_post( $this->id );
-			if ( empty($attachment) )
+			if ( empty($attachment) ) {
 				wp_die(__('Please select a file'));
+			}
 
 			$this->filename = $attachment->post_title;
 			$this->package = get_attached_file( $attachment->ID );
 		} else {
 			// Else, It's set to something, Back compat for plugins using the old (pre-3.3) File_Uploader handler.
-			if ( ! ( ( $uploads = wp_upload_dir() ) && false === $uploads['error'] ) )
+			if ( ! ( ( $uploads = wp_upload_dir() ) && false === $uploads['error'] ) ) {
 				wp_die( $uploads['error'] );
+			}
 
 			$this->filename = sanitize_file_name( $_get->get( $urlholder ) );
 			$this->package = $uploads['basedir'] . '/' . $this->filename;
@@ -125,11 +128,11 @@ class File_Upload_Upgrader {
 	 * @return bool Whether the cleanup was successful.
 	 */
 	public function cleanup() {
-		if ( $this->id )
+		if ( $this->id ) {
 			wp_delete_attachment( $this->id );
-
-		elseif ( file_exists( $this->package ) )
+		} elseif ( file_exists( $this->package ) ) {
 			return @unlink( $this->package );
+		}
 
 		return true;
 	}

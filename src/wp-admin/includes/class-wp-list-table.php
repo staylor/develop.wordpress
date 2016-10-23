@@ -138,8 +138,9 @@ class WP_List_Table {
 
 		add_filter( "manage_{$this->screen->id}_columns", array( $this, 'get_columns' ), 0 );
 
-		if ( !$args['plural'] )
+		if ( !$args['plural'] ) {
 			$args['plural'] = $this->screen->base;
+		}
 
 		$args['plural'] = sanitize_key( $args['plural'] );
 		$args['singular'] = sanitize_key( $args['singular'] );
@@ -214,8 +215,9 @@ class WP_List_Table {
 			'per_page' => 0,
 		) );
 
-		if ( !$args['total_pages'] && $args['per_page'] > 0 )
+		if ( !$args['total_pages'] && $args['per_page'] > 0 ) {
 			$args['total_pages'] = ceil( $args['total_items'] / $args['per_page'] );
+		}
 
 		// Redirect if page number is invalid and headers are not already sent.
 		if ( ! headers_sent() && ! wp_doing_ajax() && $args['total_pages'] > 0 && $this->get_pagenum() > $args['total_pages'] ) {
@@ -341,8 +343,9 @@ class WP_List_Table {
 		 */
 		$views = apply_filters( "views_{$this->screen->id}", $views );
 
-		if ( empty( $views ) )
+		if ( empty( $views ) ) {
 			return;
+		}
 
 		$this->screen->render_screen_reader_content( 'heading_views' );
 
@@ -397,8 +400,9 @@ class WP_List_Table {
 			$two = '2';
 		}
 
-		if ( empty( $this->_actions ) )
+		if ( empty( $this->_actions ) ) {
 			return;
+		}
 
 		echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' . __( 'Select bulk action' ) . '</label>';
 		echo '<select name="action' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
@@ -454,8 +458,9 @@ class WP_List_Table {
 		$action_count = count( $actions );
 		$i = 0;
 
-		if ( !$action_count )
+		if ( !$action_count ) {
 			return '';
+		}
 
 		$out = '<div class="' . ( $always_visible ? 'row-actions visible' : 'row-actions' ) . '">';
 		foreach ( $actions as $action => $link ) {
@@ -518,8 +523,9 @@ class WP_List_Table {
 
 		$month_count = count( $months );
 
-		if ( !$month_count || ( 1 == $month_count && 0 == $months[0]->month ) )
+		if ( !$month_count || ( 1 == $month_count && 0 == $months[0]->month ) ) {
 			return;
+		}
 
 		$m = $_get->getInt( 'm', 0 );
 ?>
@@ -528,8 +534,9 @@ class WP_List_Table {
 			<option<?php selected( $m, 0 ); ?> value="0"><?php _e( 'All dates' ); ?></option>
 <?php
 		foreach ( $months as $arc_row ) {
-			if ( 0 == $arc_row->year )
+			if ( 0 == $arc_row->year ) {
 				continue;
+			}
 
 			$month = zeroise( $arc_row->month, 2 );
 			$year = $arc_row->year;
@@ -561,8 +568,9 @@ class WP_List_Table {
 <?php
 			foreach ( $this->modes as $mode => $title ) {
 				$classes = array( 'view-' . $mode );
-				if ( $current_mode === $mode )
+				if ( $current_mode === $mode ) {
 					$classes[] = 'current';
+				}
 				printf(
 					"<a href='%s' class='%s' id='view-switch-$mode'><span class='screen-reader-text'>%s</span></a>\n",
 					esc_url( add_query_arg( 'mode', $mode ) ),
@@ -638,8 +646,9 @@ class WP_List_Table {
 	public function get_pagenum() {
 		$pagenum = $this->_request->getInt( 'paged', 0 );
 
-		if ( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] )
+		if ( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] ) {
 			$pagenum = $this->_pagination_args['total_pages'];
+		}
 
 		return max( 1, $pagenum );
 	}
@@ -656,8 +665,9 @@ class WP_List_Table {
 	 */
 	protected function get_items_per_page( $option, $default = 20 ) {
 		$per_page = (int) get_user_option( $option );
-		if ( empty( $per_page ) || $per_page < 1 )
+		if ( empty( $per_page ) || $per_page < 1 ) {
 			$per_page = $default;
+		}
 
 		/**
 		 * Filters the number of items to be displayed on each page of the list table.
@@ -946,12 +956,14 @@ class WP_List_Table {
 
 		$sortable = [];
 		foreach ( $_sortable as $id => $data ) {
-			if ( empty( $data ) )
+			if ( empty( $data ) ) {
 				continue;
+			}
 
 			$data = (array) $data;
-			if ( !isset( $data[1] ) )
+			if ( !isset( $data[1] ) ) {
 				$data[1] = false;
+			}
 
 			$sortable[$id] = $data;
 		}
@@ -1016,10 +1028,11 @@ class WP_List_Table {
 				$class[] = 'hidden';
 			}
 
-			if ( 'cb' === $column_key )
+			if ( 'cb' === $column_key ) {
 				$class[] = 'check-column';
-			elseif ( in_array( $column_key, array( 'posts', 'comments', 'links' ) ) )
+			} elseif ( in_array( $column_key, array( 'posts', 'comments', 'links' ) ) ) {
 				$class[] = 'num';
+			}
 
 			if ( $column_key === $primary ) {
 				$class[] = 'column-primary';
@@ -1045,8 +1058,9 @@ class WP_List_Table {
 			$scope = ( 'th' === $tag ) ? 'scope="col"' : '';
 			$id = $with_id ? "id='$column_key'" : '';
 
-			if ( !empty( $class ) )
+			if ( !empty( $class ) ) {
 				$class = "class='" . join( ' ', $class ) . "'";
+			}
 
 			echo "<$tag $scope $id $class>$column_display_name</$tag>";
 		}
@@ -1163,8 +1177,9 @@ class WP_List_Table {
 	 * @access public
 	 */
 	public function display_rows() {
-		foreach ( $this->items as $item )
+		foreach ( $this->items as $item ) {
 			$this->single_row( $item );
+		}
 	}
 
 	/**

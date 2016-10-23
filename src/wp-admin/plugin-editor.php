@@ -15,8 +15,9 @@ if ( is_multisite() && ! is_network_admin() ) {
 	exit();
 }
 
-if ( !current_user_can('edit_plugins') )
+if ( !current_user_can('edit_plugins') ) {
 	wp_die( __('Sorry, you are not allowed to edit plugins for this site.') );
+}
 
 $app->set( 'title', __( 'Edit Plugins' ) );
 $app->set( 'parent_file', 'plugins.php' );
@@ -57,8 +58,9 @@ if ( empty( $plugin ) ) {
 
 $plugin_files = get_plugin_files($plugin);
 
-if ( empty($file) )
+if ( empty($file) ) {
 	$file = $plugin_files[0];
+}
 
 $file = validate_file_to_edit($file, $plugin_files);
 $real_file = WP_PLUGIN_DIR . '/' . $file;
@@ -135,8 +137,9 @@ if ( 'update' === $_request->get( 'action' ) ) {
 		if ( preg_match('/\.([^.]+)$/', $real_file, $matches) ) {
 			$ext = strtolower($matches[1]);
 			// If extension is not in the acceptable list, skip it
-			if ( !in_array( $ext, $editable_extensions) )
+			if ( !in_array( $ext, $editable_extensions) ) {
 				wp_die(sprintf('<p>%s</p>', __('Files of this type are not editable.')));
+			}
 		}
 	}
 
@@ -211,10 +214,11 @@ if ( 'update' === $_request->get( 'action' ) ) {
 <?php
 	foreach ( $plugins as $plugin_key => $a_plugin ) {
 		$plugin_name = $a_plugin['Name'];
-		if ( $plugin_key == $plugin )
+		if ( $plugin_key == $plugin ) {
 			$selected = " selected='selected'";
-		else
+		} else {
 			$selected = '';
+		}
 		$plugin_name = esc_attr($plugin_name);
 		$plugin_key = esc_attr($plugin_key);
 		echo "\n\t<option value=\"$plugin_key\" $selected>$plugin_name</option>";
@@ -237,8 +241,9 @@ foreach ( $plugin_files as $plugin_file ) :
 	if ( preg_match('/\.([^.]+)$/', $plugin_file, $matches) ) {
 		$ext = strtolower($matches[1]);
 		// If extension is not in the acceptable list, skip it
-		if ( !in_array( $ext, $editable_extensions ) )
+		if ( !in_array( $ext, $editable_extensions ) ) {
 			continue;
+		}
 	} else {
 		// No extension found
 		continue;
@@ -259,7 +264,7 @@ foreach ( $plugin_files as $plugin_file ) :
 		<?php if ( !empty( $docs_select ) ) : ?>
 		<div id="documentation" class="hide-if-no-js"><label for="docs-list"><?php _e('Documentation:') ?></label> <?php echo $docs_select ?> <input type="button" class="button" value="<?php esc_attr_e( 'Look Up' ) ?> " onclick="if ( '' != jQuery('#docs-list').val() ) { window.open( 'https://api.wordpress.org/core/handbook/1.0/?function=' + escape( jQuery( '#docs-list' ).val() ) + '&amp;locale=<?php echo urlencode( get_user_locale() ) ?>&amp;version=<?php echo urlencode( get_bloginfo( 'version' ) ) ?>&amp;redirect=true'); }" /></div>
 		<?php endif; ?>
-<?php if ( is_writeable($real_file) ) : ?>
+<?php if ( is_writeable($real_file) ) { ?>
 	<?php if ( in_array( $file, (array) get_option( 'active_plugins', [] ) ) ) { ?>
 		<p><?php _e('<strong>Warning:</strong> Making changes to active plugins is not recommended. If your changes cause a fatal error, the plugin will be automatically deactivated.'); ?></p>
 	<?php } ?>
@@ -273,9 +278,10 @@ foreach ( $plugin_files as $plugin_file ) :
 		}
 	?>
 	</p>
-<?php else : ?>
-	<p><em><?php _e('You need to make this file writable before you can save your changes. See <a href="https://codex.wordpress.org/Changing_File_Permissions">the Codex</a> for more information.'); ?></em></p>
-<?php endif; ?>
+<?php } else { ?>
+	<p><em><?php _e('You need to make this file writable before you can save your changes. See <a href="https://codex.wordpress.org/Changing_File_Permissions">the Codex</a> for more information.');
+?></em></p>
+<?php } ?>
 </form>
 <br class="clear" />
 </div>

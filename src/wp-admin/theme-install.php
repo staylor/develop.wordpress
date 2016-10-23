@@ -14,8 +14,9 @@ require( ABSPATH . 'wp-admin/includes/theme-install.php' );
 
 wp_reset_vars( array( 'tab' ) );
 
-if ( ! current_user_can('install_themes') )
+if ( ! current_user_can('install_themes') ) {
 	wp_die( __( 'Sorry, you are not allowed to install themes on this site.' ) );
+}
 
 if ( is_multisite() && ! is_network_admin() ) {
 	wp_redirect( network_admin_url( 'theme-install.php' ) );
