@@ -25,8 +25,9 @@ if (
  */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can('install_plugins') )
+if ( ! current_user_can('install_plugins') ) {
 	wp_die(__('Sorry, you are not allowed to install plugins on this site.'));
+}
 
 if ( is_multisite() && ! is_network_admin() ) {
 	wp_redirect( network_admin_url( 'plugin-install.php' ) );
@@ -62,8 +63,9 @@ $app->set( 'parent_file', 'plugins.php' );
 $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 wp_enqueue_script( 'plugin-install' );
-if ( 'plugin-information' != $tab )
+if ( 'plugin-information' != $tab ) {
 	add_thickbox();
+}
 
 $body_id = $tab;
 

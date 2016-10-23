@@ -138,8 +138,9 @@ function _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup 
 			$textdomain = 'default';
 		}
 		if ( $textdomain ) {
-			foreach ( array( 'Name', 'PluginURI', 'Description', 'Author', 'AuthorURI', 'Version' ) as $field )
+			foreach ( array( 'Name', 'PluginURI', 'Description', 'Author', 'AuthorURI', 'Version' ) as $field ) {
 				$plugin_data[ $field ] = translate( $plugin_data[ $field ], $textdomain );
+			}
 		}
 	}
 
@@ -169,16 +170,19 @@ function _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup 
 
 	// Apply markup
 	if ( $markup ) {
-		if ( $plugin_data['PluginURI'] && $plugin_data['Name'] )
+		if ( $plugin_data['PluginURI'] && $plugin_data['Name'] ) {
 			$plugin_data['Title'] = '<a href="' . $plugin_data['PluginURI'] . '">' . $plugin_data['Name'] . '</a>';
+		}
 
-		if ( $plugin_data['AuthorURI'] && $plugin_data['Author'] )
+		if ( $plugin_data['AuthorURI'] && $plugin_data['Author'] ) {
 			$plugin_data['Author'] = '<a href="' . $plugin_data['AuthorURI'] . '">' . $plugin_data['Author'] . '</a>';
+		}
 
 		$plugin_data['Description'] = wptexturize( $plugin_data['Description'] );
 
-		if ( $plugin_data['Author'] )
+		if ( $plugin_data['Author'] ) {
 			$plugin_data['Description'] .= ' <cite>' . sprintf( __('By %s.'), $plugin_data['Author'] ) . '</cite>';
+		}
 	}
 
 	return $plugin_data;
@@ -200,21 +204,24 @@ function get_plugin_files($plugin) {
 		$plugins_dir = @ opendir( $dir );
 		if ( $plugins_dir ) {
 			while (($file = readdir( $plugins_dir ) ) !== false ) {
-				if ( substr($file, 0, 1) == '.' )
+				if ( substr($file, 0, 1) == '.' ) {
 					continue;
+				}
 				if ( is_dir( $dir . '/' . $file ) ) {
 					$plugins_subdir = @ opendir( $dir . '/' . $file );
 					if ( $plugins_subdir ) {
 						while (($subfile = readdir( $plugins_subdir ) ) !== false ) {
-							if ( substr($subfile, 0, 1) == '.' )
+							if ( substr($subfile, 0, 1) == '.' ) {
 								continue;
+							}
 							$plugin_files[] = plugin_basename("$dir/$file/$subfile");
 						}
 						@closedir( $plugins_subdir );
 					}
 				} else {
-					if ( plugin_basename("$dir/$file") != $plugin )
+					if ( plugin_basename("$dir/$file") != $plugin ) {
 						$plugin_files[] = plugin_basename("$dir/$file");
+					}
 				}
 			}
 			@closedir( $plugins_dir );
@@ -246,54 +253,64 @@ function get_plugin_files($plugin) {
  */
 function get_plugins($plugin_folder = '') {
 
-	if ( ! $cache_plugins = wp_cache_get('plugins', 'plugins') )
+	if ( ! $cache_plugins = wp_cache_get('plugins', 'plugins') ) {
 		$cache_plugins = [];
+	}
 
-	if ( isset($cache_plugins[ $plugin_folder ]) )
+	if ( isset($cache_plugins[ $plugin_folder ]) ) {
 		return $cache_plugins[ $plugin_folder ];
+	}
 
 	$wp_plugins = array ();
 	$plugin_root = WP_PLUGIN_DIR;
-	if ( !empty($plugin_folder) )
+	if ( !empty($plugin_folder) ) {
 		$plugin_root .= $plugin_folder;
+	}
 
 	// Files in wp-content/plugins directory
 	$plugins_dir = @ opendir( $plugin_root);
 	$plugin_files = [];
 	if ( $plugins_dir ) {
 		while (($file = readdir( $plugins_dir ) ) !== false ) {
-			if ( substr($file, 0, 1) == '.' )
+			if ( substr($file, 0, 1) == '.' ) {
 				continue;
+			}
 			if ( is_dir( $plugin_root.'/'.$file ) ) {
 				$plugins_subdir = @ opendir( $plugin_root.'/'.$file );
 				if ( $plugins_subdir ) {
 					while (($subfile = readdir( $plugins_subdir ) ) !== false ) {
-						if ( substr($subfile, 0, 1) == '.' )
+						if ( substr($subfile, 0, 1) == '.' ) {
 							continue;
-						if ( substr($subfile, -4) == '.php' )
+						}
+						if ( substr($subfile, -4) == '.php' ) {
 							$plugin_files[] = "$file/$subfile";
+						}
 					}
 					closedir( $plugins_subdir );
 				}
 			} else {
-				if ( substr($file, -4) == '.php' )
+				if ( substr($file, -4) == '.php' ) {
 					$plugin_files[] = $file;
+				}
 			}
 		}
 		closedir( $plugins_dir );
 	}
 
-	if ( empty($plugin_files) )
+	if ( empty($plugin_files) ) {
 		return $wp_plugins;
+	}
 
 	foreach ( $plugin_files as $plugin_file ) {
-		if ( !is_readable( "$plugin_root/$plugin_file" ) )
+		if ( !is_readable( "$plugin_root/$plugin_file" ) ) {
 			continue;
+		}
 
 		$plugin_data = get_plugin_data( "$plugin_root/$plugin_file", false, false ); //Do not apply markup/translate as it'll be cached.
 
-		if ( empty ( $plugin_data['Name'] ) )
+		if ( empty ( $plugin_data['Name'] ) ) {
 			continue;
+		}
 
 		$wp_plugins[plugin_basename( $plugin_file )] = $plugin_data;
 	}
@@ -319,12 +336,14 @@ function get_mu_plugins() {
 	// Files in wp-content/mu-plugins directory
 	$plugin_files = [];
 
-	if ( ! is_dir( WPMU_PLUGIN_DIR ) )
+	if ( ! is_dir( WPMU_PLUGIN_DIR ) ) {
 		return $wp_plugins;
+	}
 	if ( $plugins_dir = @ opendir( WPMU_PLUGIN_DIR ) ) {
 		while ( ( $file = readdir( $plugins_dir ) ) !== false ) {
-			if ( substr( $file, -4 ) == '.php' )
+			if ( substr( $file, -4 ) == '.php' ) {
 				$plugin_files[] = $file;
+			}
 		}
 	} else {
 		return $wp_plugins;
@@ -332,23 +351,28 @@ function get_mu_plugins() {
 
 	@closedir( $plugins_dir );
 
-	if ( empty($plugin_files) )
+	if ( empty($plugin_files) ) {
 		return $wp_plugins;
+	}
 
 	foreach ( $plugin_files as $plugin_file ) {
-		if ( !is_readable( WPMU_PLUGIN_DIR . "/$plugin_file" ) )
+		if ( !is_readable( WPMU_PLUGIN_DIR . "/$plugin_file" ) ) {
 			continue;
+		}
 
 		$plugin_data = get_plugin_data( WPMU_PLUGIN_DIR . "/$plugin_file", false, false ); //Do not apply markup/translate as it'll be cached.
 
-		if ( empty ( $plugin_data['Name'] ) )
+		if ( empty ( $plugin_data['Name'] ) ) {
 			$plugin_data['Name'] = $plugin_file;
+		}
 
 		$wp_plugins[ $plugin_file ] = $plugin_data;
 	}
 
-	if ( isset( $wp_plugins['index.php'] ) && filesize( WPMU_PLUGIN_DIR . '/index.php') <= 30 ) // silence is golden
+	if ( isset( $wp_plugins['index.php'] ) && filesize( WPMU_PLUGIN_DIR . '/index.php') <= 30 ) {
+		// silence is golden
 		unset( $wp_plugins['index.php'] );
+	}
 
 	uasort( $wp_plugins, '_sort_uname_callback' );
 
@@ -380,8 +404,9 @@ function get_dropins() {
 	// These exist in the wp-content directory
 	if ( $plugins_dir = @ opendir( WP_CONTENT_DIR ) ) {
 		while ( ( $file = readdir( $plugins_dir ) ) !== false ) {
-			if ( isset( $_dropins[ $file ] ) )
+			if ( isset( $_dropins[ $file ] ) ) {
 				$plugin_files[] = $file;
+			}
 		}
 	} else {
 		return $dropins;
@@ -389,15 +414,18 @@ function get_dropins() {
 
 	@closedir( $plugins_dir );
 
-	if ( empty($plugin_files) )
+	if ( empty($plugin_files) ) {
 		return $dropins;
+	}
 
 	foreach ( $plugin_files as $plugin_file ) {
-		if ( !is_readable( WP_CONTENT_DIR . "/$plugin_file" ) )
+		if ( !is_readable( WP_CONTENT_DIR . "/$plugin_file" ) ) {
 			continue;
+		}
 		$plugin_data = get_plugin_data( WP_CONTENT_DIR . "/$plugin_file", false, false ); //Do not apply markup/translate as it'll be cached.
-		if ( empty( $plugin_data['Name'] ) )
+		if ( empty( $plugin_data['Name'] ) ) {
 			$plugin_data['Name'] = $plugin_file;
+		}
 		$dropins[ $plugin_file ] = $plugin_data;
 	}
 
@@ -482,12 +510,14 @@ function is_plugin_inactive( $plugin ) {
  * @return bool True, if active for the network, otherwise false.
  */
 function is_plugin_active_for_network( $plugin ) {
-	if ( !is_multisite() )
+	if ( !is_multisite() ) {
 		return false;
+	}
 
 	$plugins = get_site_option( 'active_sitewide_plugins');
-	if ( isset($plugins[$plugin]) )
+	if ( isset($plugins[$plugin]) ) {
 		return true;
+	}
 
 	return false;
 }
@@ -506,8 +536,9 @@ function is_plugin_active_for_network( $plugin ) {
  */
 function is_network_only_plugin( $plugin ) {
 	$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
-	if ( $plugin_data )
+	if ( $plugin_data ) {
 		return $plugin_data['Network'];
+	}
 	return false;
 }
 
@@ -552,12 +583,15 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
 	}
 
 	$valid = validate_plugin($plugin);
-	if ( is_wp_error($valid) )
+	if ( is_wp_error($valid) ) {
 		return $valid;
+	}
 
 	if ( ( $network_wide && ! isset( $current[ $plugin ] ) ) || ( ! $network_wide && ! in_array( $plugin, $current ) ) ) {
-		if ( !empty($redirect) )
-			wp_redirect(add_query_arg('_error_nonce', wp_create_nonce('plugin-activation-error_' . $plugin), $redirect)); // we'll override this later if the plugin can be included without fatal error
+		if ( !empty($redirect) ) {
+			wp_redirect(add_query_arg('_error_nonce', wp_create_nonce('plugin-activation-error_' . $plugin), $redirect));
+		}
+		// we'll override this later if the plugin can be included without fatal error
 		ob_start();
 		wp_register_plugin_realpath( WP_PLUGIN_DIR . '/' . $plugin );
 		$_wp_plugin_file = $plugin;
@@ -646,15 +680,17 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
  * 	A value of null (the default) will deactivate plugins for both the site and the network.
  */
 function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
-	if ( is_multisite() )
+	if ( is_multisite() ) {
 		$network_current = get_site_option( 'active_sitewide_plugins', [] );
+	}
 	$current = get_option( 'active_plugins', [] );
 	$do_blog = $do_network = false;
 
 	foreach ( (array) $plugins as $plugin ) {
 		$plugin = plugin_basename( trim( $plugin ) );
-		if ( ! is_plugin_active($plugin) )
+		if ( ! is_plugin_active($plugin) ) {
 			continue;
+		}
 
 		$network_deactivating = false !== $network_wide && is_plugin_active_for_network( $plugin );
 
@@ -723,10 +759,12 @@ function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
 		}
 	}
 
-	if ( $do_blog )
+	if ( $do_blog ) {
 		update_option('active_plugins', $current);
-	if ( $do_network )
+	}
+	if ( $do_network ) {
 		update_site_option( 'active_sitewide_plugins', $network_current );
+	}
 }
 
 /**
@@ -746,20 +784,24 @@ function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
  * @return bool|Error True when finished or Error if there were errors during a plugin activation.
  */
 function activate_plugins( $plugins, $redirect = '', $network_wide = false, $silent = false ) {
-	if ( !is_array($plugins) )
+	if ( !is_array($plugins) ) {
 		$plugins = array($plugins);
+	}
 
 	$errors = [];
 	foreach ( $plugins as $plugin ) {
-		if ( !empty($redirect) )
+		if ( !empty($redirect) ) {
 			$redirect = add_query_arg('plugin', $plugin, $redirect);
+		}
 		$result = activate_plugin($plugin, $redirect, $network_wide, $silent);
-		if ( is_wp_error($result) )
+		if ( is_wp_error($result) ) {
 			$errors[$plugin] = $result;
+		}
 	}
 
-	if ( !empty($errors) )
+	if ( !empty($errors) ) {
 		return new Error('plugins_invalid', __('One of the plugins is invalid.'), $errors);
+	}
 
 	return true;
 }
@@ -779,12 +821,14 @@ function activate_plugins( $plugins, $redirect = '', $network_wide = false, $sil
 function delete_plugins( $plugins, $deprecated = '' ) {
 	global $wp_filesystem;
 
-	if ( empty($plugins) )
+	if ( empty($plugins) ) {
 		return false;
+	}
 
 	$checked = [];
-	foreach ( $plugins as $plugin )
+	foreach ( $plugins as $plugin ) {
 		$checked[] = 'checked[]=' . $plugin;
+	}
 
 	$url = wp_nonce_url('plugins.php?action=delete-selected&verify-delete=1&' . implode('&', $checked), 'bulk-plugins');
 
@@ -816,11 +860,13 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 		return;
 	}
 
-	if ( ! is_object($wp_filesystem) )
+	if ( ! is_object($wp_filesystem) ) {
 		return new Error('fs_unavailable', __('Could not access filesystem.'));
+	}
 
-	if ( is_wp_error($wp_filesystem->errors) && $wp_filesystem->errors->get_error_code() )
+	if ( is_wp_error($wp_filesystem->errors) && $wp_filesystem->errors->get_error_code() ) {
 		return new Error('fs_error', __('Filesystem error.'), $wp_filesystem->errors);
+	}
 
 	// Get the base plugin folder.
 	$plugins_dir = $wp_filesystem->wp_plugins_dir();
@@ -898,8 +944,9 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 		set_site_transient( 'update_plugins', $current );
 	}
 
-	if ( ! empty($errors) )
+	if ( ! empty($errors) ) {
 		return new Error('could_not_remove_plugin', sprintf(__('Could not fully remove the plugin(s) %s.'), implode(', ', $errors)) );
+	}
 
 	return true;
 }
@@ -926,8 +973,9 @@ function validate_active_plugins() {
 		$plugins = array_merge( $plugins, array_keys( $network_plugins ) );
 	}
 
-	if ( empty( $plugins ) )
+	if ( empty( $plugins ) ) {
 		return [];
+	}
 
 	$invalid = [];
 
@@ -953,14 +1001,17 @@ function validate_active_plugins() {
  * @return Error|int 0 on success, Error on failure.
  */
 function validate_plugin($plugin) {
-	if ( validate_file($plugin) )
+	if ( validate_file($plugin) ) {
 		return new Error('plugin_invalid', __('Invalid plugin path.'));
-	if ( ! file_exists(WP_PLUGIN_DIR . '/' . $plugin) )
+	}
+	if ( ! file_exists(WP_PLUGIN_DIR . '/' . $plugin) ) {
 		return new Error('plugin_not_found', __('Plugin file does not exist.'));
+	}
 
 	$installed_plugins = get_plugins();
-	if ( ! isset($installed_plugins[$plugin]) )
+	if ( ! isset($installed_plugins[$plugin]) ) {
 		return new Error('no_plugin_header', __('The plugin does not have a valid header.'));
+	}
 	return 0;
 }
 
@@ -976,8 +1027,9 @@ function is_uninstallable_plugin($plugin) {
 	$file = plugin_basename($plugin);
 
 	$uninstallable_plugins = (array) get_option('uninstall_plugins');
-	if ( isset( $uninstallable_plugins[$file] ) || file_exists( WP_PLUGIN_DIR . '/' . dirname($file) . '/uninstall.php' ) )
+	if ( isset( $uninstallable_plugins[$file] ) || file_exists( WP_PLUGIN_DIR . '/' . dirname($file) . '/uninstall.php' ) ) {
 		return true;
+	}
 
 	return false;
 }
@@ -1085,8 +1137,9 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $func
 
 	$hookname = get_plugin_page_hookname( $menu_slug, '' );
 
-	if ( !empty( $function ) && !empty( $hookname ) && current_user_can( $capability ) )
+	if ( !empty( $function ) && !empty( $hookname ) && current_user_can( $capability ) ) {
 		add_action( $hookname, $function );
+	}
 
 	if ( empty($icon_url) ) {
 		$icon_url = 'dashicons-admin-generic';
@@ -1282,10 +1335,11 @@ function add_plugins_page( $page_title, $menu_title, $capability, $menu_slug, $f
  * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_users_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
-	if ( current_user_can('edit_users') )
+	if ( current_user_can('edit_users') ) {
 		$parent = 'users.php';
-	else
+	} else {
 		$parent = 'profile.php';
+	}
 	return add_submenu_page( $parent, $page_title, $menu_title, $capability, $menu_slug, $function );
 }
 /**
@@ -1486,8 +1540,9 @@ function menu_page_url($menu_slug, $echo = true) {
 
 	$url = esc_url($url);
 
-	if ( $echo )
+	if ( $echo ) {
 		echo $url;
+	}
 
 	return $url;
 }
@@ -1638,10 +1693,11 @@ function get_admin_page_title() {
  */
 function get_plugin_page_hook( $plugin_page, $parent_page ) {
 	$hook = get_plugin_page_hookname( $plugin_page, $parent_page );
-	if ( has_action($hook) )
+	if ( has_action($hook) ) {
 		return $hook;
-	else
+	} else {
 		return null;
+	}
 }
 
 /**
@@ -1761,8 +1817,9 @@ function user_can_access_admin_page() {
 function option_update_filter( $options ) {
 	global $new_whitelist_options;
 
-	if ( is_array( $new_whitelist_options ) )
+	if ( is_array( $new_whitelist_options ) ) {
 		$options = add_option_whitelist( $new_whitelist_options, $options );
+	}
 
 	return $options;
 }
@@ -1779,10 +1836,11 @@ function option_update_filter( $options ) {
  * @return array
  */
 function add_option_whitelist( $new_options, $options = '' ) {
-	if ( $options == '' )
+	if ( $options == '' ) {
 		global $whitelist_options;
-	else
+	} else {
 		$whitelist_options = $options;
+	}
 
 	foreach ( $new_options as $page => $keys ) {
 		foreach ( $keys as $key ) {
@@ -1791,8 +1849,9 @@ function add_option_whitelist( $new_options, $options = '' ) {
 				$whitelist_options[ $page ][] = $key;
 			} else {
 				$pos = array_search( $key, $whitelist_options[ $page ] );
-				if ( $pos === false )
+				if ( $pos === false ) {
 					$whitelist_options[ $page ][] = $key;
+				}
 			}
 		}
 	}
@@ -1812,17 +1871,19 @@ function add_option_whitelist( $new_options, $options = '' ) {
  * @return array
  */
 function remove_option_whitelist( $del_options, $options = '' ) {
-	if ( $options == '' )
+	if ( $options == '' ) {
 		global $whitelist_options;
-	else
+	} else {
 		$whitelist_options = $options;
+	}
 
 	foreach ( $del_options as $page => $keys ) {
 		foreach ( $keys as $key ) {
 			if ( isset($whitelist_options[ $page ]) && is_array($whitelist_options[ $page ]) ) {
 				$pos = array_search( $key, $whitelist_options[ $page ] );
-				if ( $pos !== false )
+				if ( $pos !== false ) {
 					unset( $whitelist_options[ $page ][ $pos ] );
+				}
 			}
 		}
 	}
@@ -1851,8 +1912,9 @@ function settings_fields($option_group) {
  * @param bool $clear_update_cache Whether to clear the Plugin updates cache
  */
 function wp_clean_plugins_cache( $clear_update_cache = true ) {
-	if ( $clear_update_cache )
+	if ( $clear_update_cache ) {
 		delete_site_transient( 'update_plugins' );
+	}
 	wp_cache_delete( 'plugins', 'plugins' );
 }
 

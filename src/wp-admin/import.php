@@ -66,10 +66,12 @@ $importers = get_importers();
 
 // If a popular importer is not registered, create a dummy registration that links to the plugin installer.
 foreach ( $popular_importers as $pop_importer => $pop_data ) {
-	if ( isset( $importers[ $pop_importer ] ) )
+	if ( isset( $importers[ $pop_importer ] ) ) {
 		continue;
-	if ( isset( $importers[ $pop_data['importer-id'] ] ) )
+	}
+	if ( isset( $importers[ $pop_data['importer-id'] ] ) ) {
 		continue;
+	}
 
 	// Fill the array of registered (already installed) importers with data of the popular importers from the WordPress.org API.
 	$importers[ $pop_data['importer-id'] ] = array( $pop_data['name'], $pop_data['description'], 'install' => $pop_data['plugin-slug'] );
@@ -186,8 +188,9 @@ if ( empty( $importers ) ) {
 <?php
 }
 
-if ( current_user_can('install_plugins') )
+if ( current_user_can('install_plugins') ) {
 	echo '<p>' . sprintf( __('If the importer you need is not listed, <a href="%s">search the plugin directory</a> to see if an importer is available.'), esc_url( network_admin_url( 'plugin-install.php?tab=search&type=tag&s=importer' ) ) ) . '</p>';
+}
 ?>
 
 </div>

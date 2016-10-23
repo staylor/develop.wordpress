@@ -53,8 +53,9 @@ if ( stripslashes( $_server->get( 'HTTP_IF_NONE_MATCH' ) ) === $app['wp_version'
 }
 
 foreach ( $load as $handle ) {
-	if ( !array_key_exists($handle, $wp_scripts->registered) )
+	if ( !array_key_exists($handle, $wp_scripts->registered) ) {
 		continue;
+	}
 
 	$path = ABSPATH . $wp_scripts->registered[$handle]->src;
 	$out .= get_file($path) . "\n";

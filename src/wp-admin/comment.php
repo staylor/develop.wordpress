@@ -50,14 +50,17 @@ case 'editcomment' :
 
 	$comment_id = $_get->getInt( 'c' );
 
-	if ( !$comment = get_comment( $comment_id ) )
+	if ( !$comment = get_comment( $comment_id ) ) {
 		comment_footer_die( __( 'Invalid comment ID.' ) . sprintf(' <a href="%s">' . __('Go back') . '</a>.', 'javascript:history.go(-1)') );
+	}
 
-	if ( !current_user_can( 'edit_comment', $comment_id ) )
+	if ( !current_user_can( 'edit_comment', $comment_id ) ) {
 		comment_footer_die( __('Sorry, you are not allowed to edit this comment.') );
+	}
 
-	if ( 'trash' == $comment->comment_approved )
+	if ( 'trash' == $comment->comment_approved ) {
 		comment_footer_die( __('This comment is in the Trash. Please move it out of the Trash if you want to edit it.') );
+	}
 
 	$comment = get_comment_to_edit( $comment_id );
 
@@ -238,26 +241,30 @@ case 'approvecomment'   :
 case 'unapprovecomment' :
 	$comment_id = $_request->getInt( 'c' );
 
-	if ( in_array( $action, array( 'approvecomment', 'unapprovecomment' ) ) )
+	if ( in_array( $action, array( 'approvecomment', 'unapprovecomment' ) ) ) {
 		check_admin_referer( 'approve-comment_' . $comment_id );
-	else
+	} else {
 		check_admin_referer( 'delete-comment_' . $comment_id );
+	}
 
 	$noredir = $_request->has( 'noredir' );
 
-	if ( !$comment = get_comment($comment_id) )
+	if ( !$comment = get_comment($comment_id) ) {
 		comment_footer_die( __( 'Invalid comment ID.' ) . sprintf(' <a href="%s">' . __('Go back') . '</a>.', 'edit-comments.php') );
-	if ( !current_user_can( 'edit_comment', $comment->comment_ID ) )
+	}
+	if ( !current_user_can( 'edit_comment', $comment->comment_ID ) ) {
 		comment_footer_die( __('Sorry, you are not allowed to edit comments on this post.') );
+	}
 
-	if ( '' != wp_get_referer() && ! $noredir && false === strpos(wp_get_referer(), 'comment.php') )
+	if ( '' != wp_get_referer() && ! $noredir && false === strpos(wp_get_referer(), 'comment.php') ) {
 		$redir = wp_get_referer();
-	elseif ( '' != wp_get_original_referer() && ! $noredir )
+	} elseif ( '' != wp_get_original_referer() && ! $noredir ) {
 		$redir = wp_get_original_referer();
-	elseif ( in_array( $action, array( 'approvecomment', 'unapprovecomment' ) ) )
+	} elseif ( in_array( $action, array( 'approvecomment', 'unapprovecomment' ) ) ) {
 		$redir = admin_url('edit-comments.php?p=' . absint( $comment->comment_post_ID ) );
-	else
+	} else {
 		$redir = admin_url('edit-comments.php');
+	}
 
 	$redir = remove_query_arg( array('spammed', 'unspammed', 'trashed', 'untrashed', 'deleted', 'ids', 'approved', 'unapproved'), $redir );
 

@@ -20,11 +20,13 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 	define( 'WP_ADMIN', true );
 }
 
-if ( ! defined('WP_NETWORK_ADMIN') )
+if ( ! defined('WP_NETWORK_ADMIN') ) {
 	define('WP_NETWORK_ADMIN', false);
+}
 
-if ( ! defined('WP_USER_ADMIN') )
+if ( ! defined('WP_USER_ADMIN') ) {
 	define('WP_USER_ADMIN', false);
+}
 
 if ( ! WP_NETWORK_ADMIN && ! WP_USER_ADMIN ) {
 	define('WP_BLOG_ADMIN', true);
@@ -90,8 +92,9 @@ require_once(ABSPATH . 'wp-admin/includes/admin.php');
 auth_redirect();
 
 // Schedule trash collection
-if ( ! wp_next_scheduled( 'wp_scheduled_delete' ) && ! wp_installing() )
+if ( ! wp_next_scheduled( 'wp_scheduled_delete' ) && ! wp_installing() ) {
 	wp_schedule_event(time(), 'daily', 'wp_scheduled_delete');
+}
 
 set_screen_options();
 
@@ -112,12 +115,13 @@ if ( $_get->get( 'page' ) ) {
 	$app->set( 'plugin_page', plugin_basename( wp_unslash( $_get->get( 'page' ) ) ) );
 }
 
-if ( WP_NETWORK_ADMIN )
+if ( WP_NETWORK_ADMIN ) {
 	require(ABSPATH . 'wp-admin/network/menu.php');
-elseif ( WP_USER_ADMIN )
+} elseif ( WP_USER_ADMIN ) {
 	require(ABSPATH . 'wp-admin/user/menu.php');
-else
+} else {
 	require(ABSPATH . 'wp-admin/menu.php');
+}
 
 if ( current_user_can( 'manage_options' ) ) {
 	wp_raise_memory_limit( 'admin' );
@@ -215,8 +219,9 @@ if ( $plugin_page ) {
 		include( ABSPATH . 'wp-admin/admin-footer.php' );
 
 	} else {
-		if ( validate_file( $plugin_page ) )
+		if ( validate_file( $plugin_page ) ) {
 			wp_die(__('Invalid plugin page'));
+		}
 
 		if ( ! (
 			file_exists( WP_PLUGIN_DIR . "/{$plugin_page}" ) &&
@@ -337,15 +342,17 @@ if ( $plugin_page ) {
 	 * In all other cases, 'load-' . $pagenow should be used instead.
 	 */
 	if ( $typenow == 'page' ) {
-		if ( $pagenow == 'post-new.php' )
+		if ( $pagenow == 'post-new.php' ) {
 			do_action( 'load-page-new.php' );
-		elseif ( $pagenow == 'post.php' )
+		} elseif ( $pagenow == 'post.php' ) {
 			do_action( 'load-page.php' );
-	}  elseif ( $pagenow == 'edit-tags.php' ) {
-		if ( $taxnow == 'category' )
+		}
+	} elseif ( $pagenow == 'edit-tags.php' ) {
+		if ( $taxnow == 'category' ) {
 			do_action( 'load-categories.php' );
-		elseif ( $taxnow == 'link_category' )
+		} elseif ( $taxnow == 'link_category' ) {
 			do_action( 'load-edit-link-categories.php' );
+		}
 	} elseif( 'term.php' === $pagenow ) {
 		do_action( 'load-edit-tags.php' );
 	}

@@ -150,13 +150,15 @@ function wp_get_popular_importers() {
 
 	if ( is_array( $popular_importers ) ) {
 		// If the data was received as translated, return it as-is.
-		if ( $popular_importers['translated'] )
+		if ( $popular_importers['translated'] ) {
 			return $popular_importers['importers'];
+		}
 
 		foreach ( $popular_importers['importers'] as &$importer ) {
 			$importer['description'] = translate( $importer['description'] );
-			if ( $importer['name'] != 'WordPress' )
+			if ( $importer['name'] != 'WordPress' ) {
 				$importer['name'] = translate( $importer['name'] );
+			}
 		}
 		return $popular_importers['importers'];
 	}

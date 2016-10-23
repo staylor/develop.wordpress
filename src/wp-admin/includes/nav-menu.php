@@ -107,8 +107,9 @@ function _wp_ajax_menu_quick_search( $request = [] ) {
 				'name__like' => $query,
 				'number' => 10,
 			));
-			if ( empty( $terms ) || is_wp_error( $terms ) )
+			if ( empty( $terms ) || is_wp_error( $terms ) ) {
 				return;
+			}
 			foreach ( (array) $terms as $term ) {
 				if ( 'markup' == $response_format ) {
 					echo walk_nav_menu_tree( array_map('wp_setup_nav_menu_item', array( $term ) ), 0, (object) $args );
@@ -189,8 +190,9 @@ function wp_initial_nav_menu_meta_boxes() {
 function wp_nav_menu_post_type_meta_boxes() {
 	$post_types = get_post_types( array( 'show_in_nav_menus' => true ), 'object' );
 
-	if ( ! $post_types )
+	if ( ! $post_types ) {
 		return;
+	}
 
 	foreach ( $post_types as $post_type ) {
 		/**
@@ -223,8 +225,9 @@ function wp_nav_menu_post_type_meta_boxes() {
 function wp_nav_menu_taxonomy_meta_boxes() {
 	$taxonomies = get_taxonomies( array( 'show_in_nav_menus' => true ), 'object' );
 
-	if ( !$taxonomies )
+	if ( !$taxonomies ) {
 		return;
+	}
 
 	foreach ( $taxonomies as $tax ) {
 		/** This filter is documented in wp-admin/includes/nav-menu.php */
@@ -249,8 +252,9 @@ function wp_nav_menu_taxonomy_meta_boxes() {
 function wp_nav_menu_disabled_check( $nav_menu_selected_id ) {
 	global $one_theme_location_no_menus;
 
-	if ( $one_theme_location_no_menus )
+	if ( $one_theme_location_no_menus ) {
 		return false;
+	}
 
 	return disabled( $nav_menu_selected_id, 0 );
 }
@@ -325,8 +329,9 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 		'update_post_meta_cache' => false
 	);
 
-	if ( isset( $box['args']->_default_query ) )
+	if ( isset( $box['args']->_default_query ) ) {
 		$args = array_merge($args, (array) $box['args']->_default_query );
+	}
 
 	// @todo transient caching of these results with proper invalidation on updating of a post of this type
 	$get_posts = new WP_Query;
@@ -383,17 +388,26 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 	<div id="posttype-<?php echo $post_type_name; ?>" class="posttypediv">
 		<ul id="posttype-<?php echo $post_type_name; ?>-tabs" class="posttype-tabs add-menu-item-tabs">
 			<li <?php echo ( 'most-recent' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-posttype-<?php echo esc_attr( $post_type_name ); ?>-most-recent" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($post_type_name . '-tab', 'most-recent', remove_query_arg($removed_args))); ?>#tabs-panel-posttype-<?php echo $post_type_name; ?>-most-recent">
+				<a class="nav-tab-link" data-type="tabs-panel-posttype-<?php echo esc_attr( $post_type_name ); ?>-most-recent" href="<?php if ( $app->nav_menus['selected_id'] ) {
+	echo esc_url(add_query_arg($post_type_name . '-tab', 'most-recent', remove_query_arg($removed_args)));
+}
+?>#tabs-panel-posttype-<?php echo $post_type_name; ?>-most-recent">
 					<?php _e( 'Most Recent' ); ?>
 				</a>
 			</li>
 			<li <?php echo ( 'all' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="<?php echo esc_attr( $post_type_name ); ?>-all" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($post_type_name . '-tab', 'all', remove_query_arg($removed_args))); ?>#<?php echo $post_type_name; ?>-all">
+				<a class="nav-tab-link" data-type="<?php echo esc_attr( $post_type_name ); ?>-all" href="<?php if ( $app->nav_menus['selected_id'] ) {
+	echo esc_url(add_query_arg($post_type_name . '-tab', 'all', remove_query_arg($removed_args)));
+}
+?>#<?php echo $post_type_name; ?>-all">
 					<?php _e( 'View All' ); ?>
 				</a>
 			</li>
 			<li <?php echo ( 'search' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-posttype-<?php echo esc_attr( $post_type_name ); ?>-search" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($post_type_name . '-tab', 'search', remove_query_arg($removed_args))); ?>#tabs-panel-posttype-<?php echo $post_type_name; ?>-search">
+				<a class="nav-tab-link" data-type="tabs-panel-posttype-<?php echo esc_attr( $post_type_name ); ?>-search" href="<?php if ( $app->nav_menus['selected_id'] ) {
+	echo esc_url(add_query_arg($post_type_name . '-tab', 'search', remove_query_arg($removed_args)));
+}
+?>#tabs-panel-posttype-<?php echo $post_type_name; ?>-search">
 					<?php _e( 'Search'); ?>
 				</a>
 			</li>
@@ -667,17 +681,26 @@ function wp_nav_menu_item_taxonomy_meta_box( $object, $box ) {
 	<div id="taxonomy-<?php echo $taxonomy_name; ?>" class="taxonomydiv">
 		<ul id="taxonomy-<?php echo $taxonomy_name; ?>-tabs" class="taxonomy-tabs add-menu-item-tabs">
 			<li <?php echo ( 'most-used' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-<?php echo esc_attr( $taxonomy_name ); ?>-pop" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'most-used', remove_query_arg($removed_args))); ?>#tabs-panel-<?php echo $taxonomy_name; ?>-pop">
+				<a class="nav-tab-link" data-type="tabs-panel-<?php echo esc_attr( $taxonomy_name ); ?>-pop" href="<?php if ( $app->nav_menus['selected_id'] ) {
+	echo esc_url(add_query_arg($taxonomy_name . '-tab', 'most-used', remove_query_arg($removed_args)));
+}
+?>#tabs-panel-<?php echo $taxonomy_name; ?>-pop">
 					<?php _e( 'Most Used' ); ?>
 				</a>
 			</li>
 			<li <?php echo ( 'all' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-<?php echo esc_attr( $taxonomy_name ); ?>-all" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'all', remove_query_arg($removed_args))); ?>#tabs-panel-<?php echo $taxonomy_name; ?>-all">
+				<a class="nav-tab-link" data-type="tabs-panel-<?php echo esc_attr( $taxonomy_name ); ?>-all" href="<?php if ( $app->nav_menus['selected_id'] ) {
+	echo esc_url(add_query_arg($taxonomy_name . '-tab', 'all', remove_query_arg($removed_args)));
+}
+?>#tabs-panel-<?php echo $taxonomy_name; ?>-all">
 					<?php _e( 'View All' ); ?>
 				</a>
 			</li>
 			<li <?php echo ( 'search' == $current_tab ? ' class="tabs"' : '' ); ?>>
-				<a class="nav-tab-link" data-type="tabs-panel-search-taxonomy-<?php echo esc_attr( $taxonomy_name ); ?>" href="<?php if ( $app->nav_menus['selected_id'] ) echo esc_url(add_query_arg($taxonomy_name . '-tab', 'search', remove_query_arg($removed_args))); ?>#tabs-panel-search-taxonomy-<?php echo $taxonomy_name; ?>">
+				<a class="nav-tab-link" data-type="tabs-panel-search-taxonomy-<?php echo esc_attr( $taxonomy_name ); ?>" href="<?php if ( $app->nav_menus['selected_id'] ) {
+	echo esc_url(add_query_arg($taxonomy_name . '-tab', 'search', remove_query_arg($removed_args)));
+}
+?>#tabs-panel-search-taxonomy-<?php echo $taxonomy_name; ?>">
 					<?php _e( 'Search' ); ?>
 				</a>
 			</li>
@@ -897,8 +920,9 @@ function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 		$result .= '<p>' . __( 'Add menu items from the column on the left.' ) . '</p>';
 		$result .= '</div>';
 
-		if ( empty($menu_items) )
-			return $result . ' <ul class="menu" id="menu-to-edit"> </ul>';
+		if ( empty($menu_items) ) {
+					return $result . ' <ul class="menu" id="menu-to-edit"> </ul>';
+		}
 
 		/**
 		 * Filters the Walker class used when adding nav menu items.
@@ -923,10 +947,12 @@ function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 
 		$some_pending_menu_items = $some_invalid_menu_items = false;
 		foreach ( (array) $menu_items as $menu_item ) {
-			if ( isset( $menu_item->post_status ) && 'draft' == $menu_item->post_status )
+			if ( isset( $menu_item->post_status ) && 'draft' == $menu_item->post_status ) {
 				$some_pending_menu_items = true;
-			if ( ! empty( $menu_item->_invalid ) )
+			}
+			if ( ! empty( $menu_item->_invalid ) ) {
 				$some_invalid_menu_items = true;
+			}
 		}
 
 		if ( $some_pending_menu_items ) {
@@ -979,8 +1005,9 @@ function _wp_delete_orphaned_draft_menu_items() {
 	// Delete orphaned draft menu items.
 	$menu_items_to_delete = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->posts AS p LEFT JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type = 'nav_menu_item' AND post_status = 'draft' AND meta_key = '_menu_item_orphaned' AND meta_value < '%d'", $delete_timestamp ) );
 
-	foreach ( (array) $menu_items_to_delete as $menu_item_id )
+	foreach ( (array) $menu_items_to_delete as $menu_item_id ) {
 		wp_delete_post( $menu_item_id, true );
+	}
 }
 
 /**
@@ -1000,8 +1027,9 @@ function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_select
 	$messages = [];
 	$menu_items = [];
 	// Index menu items by db ID
-	foreach ( $unsorted_menu_items as $_item )
+	foreach ( $unsorted_menu_items as $_item ) {
 		$menu_items[$_item->db_id] = $_item;
+	}
 
 	$post_fields = array(
 		'menu-item-db-id', 'menu-item-object-id', 'menu-item-object',
@@ -1049,14 +1077,17 @@ function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_select
 	// Store 'auto-add' pages.
 	$auto_add = ! empty( $_post->get( 'auto-add-pages' ) );
 	$nav_menu_option = (array) get_option( 'nav_menu_options' );
-	if ( ! isset( $nav_menu_option['auto_add'] ) )
+	if ( ! isset( $nav_menu_option['auto_add'] ) ) {
 		$nav_menu_option['auto_add'] = [];
+	}
 	if ( $auto_add ) {
-		if ( ! in_array( $nav_menu_selected_id, $nav_menu_option['auto_add'] ) )
+		if ( ! in_array( $nav_menu_selected_id, $nav_menu_option['auto_add'] ) ) {
 			$nav_menu_option['auto_add'][] = $nav_menu_selected_id;
+		}
 	} else {
-		if ( false !== ( $key = array_search( $nav_menu_selected_id, $nav_menu_option['auto_add'] ) ) )
+		if ( false !== ( $key = array_search( $nav_menu_selected_id, $nav_menu_option['auto_add'] ) ) ) {
 			unset( $nav_menu_option['auto_add'][$key] );
+		}
 	}
 	// Remove nonexistent/deleted menus
 	$nav_menu_option['auto_add'] = array_intersect( $nav_menu_option['auto_add'], wp_get_nav_menus( array( 'fields' => 'ids' ) ) );

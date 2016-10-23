@@ -19,17 +19,19 @@ if ( empty( $app->current_screen ) ) {
 get_admin_page_title();
 $title = esc_html( strip_tags( $app->get( 'title' ) ) );
 
-if ( is_network_admin() )
+if ( is_network_admin() ) {
 	$admin_title = sprintf( __( 'Network Admin: %s' ), esc_html( get_network()->site_name ) );
-elseif ( is_user_admin() )
+} elseif ( is_user_admin() ) {
 	$admin_title = sprintf( __( 'User Dashboard: %s' ), esc_html( get_network()->site_name ) );
-else
+} else {
 	$admin_title = get_bloginfo( 'name' );
+}
 
-if ( $admin_title == $title )
+if ( $admin_title == $title ) {
 	$admin_title = sprintf( __( '%1$s &#8212; WordPress' ), $title );
-else
+} else {
 	$admin_title = sprintf( __( '%1$s &lsaquo; %2$s &#8212; WordPress' ), $title, $admin_title );
+}
 
 /**
  * Filters the title tag content for an admin page.
@@ -123,37 +125,46 @@ do_action( "admin_head-{$hook_suffix}" );
  */
 do_action( 'admin_head' );
 
-if ( get_user_setting('mfold') == 'f' )
+if ( get_user_setting('mfold') == 'f' ) {
 	$admin_body_class .= ' folded';
+}
 
-if ( !get_user_setting('unfold') )
+if ( !get_user_setting('unfold') ) {
 	$admin_body_class .= ' auto-fold';
+}
 
-if ( is_admin_bar_showing() )
+if ( is_admin_bar_showing() ) {
 	$admin_body_class .= ' admin-bar';
+}
 
-if ( is_rtl() )
+if ( is_rtl() ) {
 	$admin_body_class .= ' rtl';
+}
 
-if ( $app->current_screen->post_type )
+if ( $app->current_screen->post_type ) {
 	$admin_body_class .= ' post-type-' . $app->current_screen->post_type;
+}
 
-if ( $app->current_screen->taxonomy )
+if ( $app->current_screen->taxonomy ) {
 	$admin_body_class .= ' taxonomy-' . $app->current_screen->taxonomy;
+}
 
 $admin_body_class .= ' branch-' . str_replace( [ '.', ',' ], '-', floatval( $app['wp_version'] ) );
 $admin_body_class .= ' version-' . str_replace( '.', '-', preg_replace( '/^([.0-9]+).*/', '$1', $app['wp_version'] ) );
 $admin_body_class .= ' admin-color-' . sanitize_html_class( get_user_option( 'admin_color' ), 'fresh' );
 $admin_body_class .= ' locale-' . sanitize_html_class( strtolower( str_replace( '_', '-', get_user_locale() ) ) );
 
-if ( wp_is_mobile() )
+if ( wp_is_mobile() ) {
 	$admin_body_class .= ' mobile';
+}
 
-if ( is_multisite() )
+if ( is_multisite() ) {
 	$admin_body_class .= ' multisite';
+}
 
-if ( is_network_admin() )
+if ( is_network_admin() ) {
 	$admin_body_class .= ' network-admin';
+}
 
 $admin_body_class .= ' no-customize-support no-svg';
 

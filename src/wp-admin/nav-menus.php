@@ -18,8 +18,9 @@ require_once( __DIR__ . '/admin.php' );
 // Load all the nav menu interface functions
 require_once( ABSPATH . 'wp-admin/includes/nav-menu.php' );
 
-if ( ! current_theme_supports( 'menus' ) && ! current_theme_supports( 'widgets' ) )
+if ( ! current_theme_supports( 'menus' ) && ! current_theme_supports( 'widgets' ) ) {
 	wp_die( __( 'Your theme does not support navigation menus or widgets.' ) );
+}
 
 // Permissions Check
 if ( ! current_user_can( 'edit_theme_options' ) ) {
@@ -206,10 +207,11 @@ case 'move-up-menu-item' :
 							! empty( $orders_to_dbids[$dbids_to_orders[$parent_db_id] - 1] )
 						) {
 							$_possible_parent_id = (int) get_post_meta( $orders_to_dbids[$dbids_to_orders[$parent_db_id] - 1], '_menu_item_menu_item_parent', true);
-							if ( in_array( $_possible_parent_id, array_keys( $dbids_to_orders ) ) )
+							if ( in_array( $_possible_parent_id, array_keys( $dbids_to_orders ) ) ) {
 								$menu_item_data['menu_item_parent'] = $_possible_parent_id;
-							else
+							} else {
 								$menu_item_data['menu_item_parent'] = 0;
+							}
 
 						// Else there isn't something before the parent.
 						} else {
@@ -456,13 +458,15 @@ wp_localize_script( 'nav-menu', 'menus', $nav_menus_l10n );
  * Redirect to add screen if there are no menus and this users has either zero,
  * or more than 1 theme locations.
  */
-if ( 0 == $menu_count && ! $add_new_screen && ! $one_theme_location_no_menus )
+if ( 0 == $menu_count && ! $add_new_screen && ! $one_theme_location_no_menus ) {
 	wp_redirect( admin_url( 'nav-menus.php?action=edit&menu=0' ) );
+}
 
 // Get recently edited nav menu.
 $recently_edited = absint( get_user_option( 'nav_menu_recently_edited' ) );
-if ( empty( $recently_edited ) && is_nav_menu( $app->nav_menus['selected_id'] ) )
+if ( empty( $recently_edited ) && is_nav_menu( $app->nav_menus['selected_id'] ) ) {
 	$recently_edited = $app->nav_menus['selected_id'];
+}
 
 // Use $recently_edited if none are selected.
 if ( empty( $app->nav_menus['selected_id'] ) && is_nav_menu( $recently_edited ) ) {
@@ -483,8 +487,9 @@ if ( $one_theme_location_no_menus ) {
 }
 
 // Update the user's setting.
-if ( $app->nav_menus['selected_id'] != $recently_edited && is_nav_menu( $app->nav_menus['selected_id'] ) )
+if ( $app->nav_menus['selected_id'] != $recently_edited && is_nav_menu( $app->nav_menus['selected_id'] ) ) {
 	update_user_meta( $current_user->ID, 'nav_menu_recently_edited', $app->nav_menus['selected_id'] );
+}
 
 // If there's a menu, get its name.
 if ( ! $nav_menu_selected_title && is_nav_menu( $app->nav_menus['selected_id'] ) ) {
@@ -523,8 +528,9 @@ add_filter('admin_body_class', 'wp_nav_menu_max_depth');
 wp_nav_menu_setup();
 wp_initial_nav_menu_meta_boxes();
 
-if ( ! current_theme_supports( 'menus' ) && ! $num_locations )
+if ( ! current_theme_supports( 'menus' ) && ! $num_locations ) {
 	$messages[] = '<div id="message" class="updated"><p>' . sprintf( __( 'Your theme does not natively support menus, but you can use them in sidebars by adding a &#8220;Custom Menu&#8221; widget on the <a href="%s">Widgets</a> screen.' ), admin_url( 'widgets.php' ) ) . '</p></div>';
+}
 
 $help = new NavMenuHelp( get_current_screen() );
 
@@ -560,18 +566,19 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 		if ( ! $action || 'locations' !== $action ) {
 			echo ' nav-tab-active';
 		} ?>"><?php esc_html_e( 'Edit Menus' ); ?></a>
-		<?php if ( $num_locations && $menu_count ) : ?>
-			<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'locations' ), admin_url( 'nav-menus.php' ) ) ); ?>" class="nav-tab<?php if ( $locations_screen ) echo ' nav-tab-active'; ?>"><?php esc_html_e( 'Manage Locations' ); ?></a>
-		<?php
-			endif;
-		?>
+		<?php if ( $num_locations && $menu_count ) { ?>
+			<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'locations' ), admin_url( 'nav-menus.php' ) ) ); ?>" class="nav-tab<?php if ( $locations_screen ) {
+	echo ' nav-tab-active';
+}
+?>"><?php esc_html_e( 'Manage Locations' ); ?></a>
+		<?php } ?>
 	</h2>
 	<?php
 	foreach ( $messages as $message ) {
 		echo $message . "\n";
 	}
 
-	if ( $locations_screen ) :
+	if ( $locations_screen ) {
 		if ( 1 == $num_locations ) {
 			echo '<p>' . __( 'Your theme supports one menu. Select which menu you would like to use.' ) . '</p>';
 		} else {
@@ -596,7 +603,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 								<option value="0"><?php printf( '&mdash; %s &mdash;', esc_html__( 'Select a Menu' ) ); ?></option>
 								<?php foreach ( $nav_menus as $menu ) : ?>
 									<?php $selected = isset( $menu_locations[$_location] ) && $menu_locations[$_location] == $menu->term_id; ?>
-									<option <?php if ( $selected ) echo 'data-orig="true"'; ?> <?php selected( $selected ); ?> value="<?php echo $menu->term_id; ?>">
+									<option <?php if ( $selected ) { echo 'data-orig="true"'; } ?> <?php selected( $selected ); ?> value="<?php echo $menu->term_id; ?>">
 										<?php echo wp_html_excerpt( $menu->name, 40, '&hellip;' ); ?>
 									</option>
 								<?php endforeach; ?>
@@ -632,13 +639,13 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	 * @since 3.6.0
 	 */
 	do_action( 'after_menu_locations_table' ); ?>
-	<?php else : ?>
+<?php } else { ?>
 	<div class="manage-menus">
- 		<?php if ( $menu_count < 2 ) : ?>
+ 		<?php if ( $menu_count < 2 ) { ?>
 		<span class="add-edit-menu-action">
 			<?php printf( __( 'Edit your menu below, or <a href="%s">create a new menu</a>.' ), esc_url( add_query_arg( array( 'action' => 'edit', 'menu' => 0 ), admin_url( 'nav-menus.php' ) ) ) ); ?>
 		</span><!-- /add-edit-menu-action -->
-		<?php else : ?>
+	<?php } else { ?>
 			<form method="get" action="<?php echo admin_url( 'nav-menus.php' ); ?>">
 			<input type="hidden" name="action" value="edit" />
 			<label for="select-menu-to-edit" class="selected-menu"><?php _e( 'Select a menu to edit:' ); ?></label>
@@ -685,7 +692,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 				<?php printf( __( 'or <a href="%s">create a new menu</a>.' ), esc_url( add_query_arg( array( 'action' => 'edit', 'menu' => 0 ), admin_url( 'nav-menus.php' ) ) ) ); ?>
 			</span><!-- /add-new-menu-action -->
 		</form>
-	<?php endif; ?>
+	<?php } ?>
 	</div><!-- /manage-menus -->
 	<div id="nav-menus-frame" class="wp-clearfix">
 	<div id="menu-settings-column" class="metabox-holder<?php
@@ -706,7 +713,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	<div id="menu-management-liquid">
 		<div id="menu-management">
 			<form id="update-nav-menu" method="post" enctype="multipart/form-data">
-				<div class="menu-edit <?php if ( $add_new_screen ) echo 'blank-slate'; ?>">
+				<div class="menu-edit <?php if ( $add_new_screen ) { echo 'blank-slate'; } ?>">
 					<input type="hidden" name="nav-menu-data">
 					<?php
 					wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
@@ -814,6 +821,6 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 		</div><!-- /#menu-management -->
 	</div><!-- /#menu-management-liquid -->
 	</div><!-- /#nav-menus-frame -->
-	<?php endif; ?>
+<?php } ?>
 </div><!-- /.wrap-->
 <?php include( ABSPATH . 'wp-admin/admin-footer.php' ); ?>
