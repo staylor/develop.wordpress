@@ -181,7 +181,7 @@ class ItemSetting extends BaseSetting {
 			throw new CustomizeException( 'Expected CustomizeManager::$nav_menus to be set.' );
 		}
 
-		if ( ! preg_match( self::ID_PATTERN, $id, $matches ) ) {
+		if ( ! preg_match( static::ID_PATTERN, $id, $matches ) ) {
 			throw new CustomizeException( "Illegal widget setting ID: $id" );
 		}
 
@@ -244,7 +244,7 @@ class ItemSetting extends BaseSetting {
 			// Note that a ID of less than one indicates a nav_menu not yet inserted.
 			if ( $this->post_id > 0 ) {
 				$post = get_post( $this->post_id );
-				if ( $post && self::POST_TYPE === $post->post_type ) {
+				if ( $post && static::POST_TYPE === $post->post_type ) {
 					$is_title_empty = empty( $post->post_title );
 					$value = (array) wp_setup_nav_menu_item( $post );
 					if ( $is_title_empty ) {

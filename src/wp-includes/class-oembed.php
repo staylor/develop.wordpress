@@ -110,19 +110,19 @@ class WP_oEmbed {
 			'#https?://www\.facebook\.com/video\.php.*#i'         => [ 'https://www.facebook.com/plugins/video/oembed.json/',       true  ],
 		];
 
-		if ( ! empty( self::$early_providers['add'] ) ) {
-			foreach ( self::$early_providers['add'] as $format => $data ) {
+		if ( ! empty( static::$early_providers['add'] ) ) {
+			foreach ( static::$early_providers['add'] as $format => $data ) {
 				$providers[ $format ] = $data;
 			}
 		}
 
-		if ( ! empty( self::$early_providers['remove'] ) ) {
-			foreach ( self::$early_providers['remove'] as $format ) {
+		if ( ! empty( static::$early_providers['remove'] ) ) {
+			foreach ( static::$early_providers['remove'] as $format ) {
 				unset( $providers[ $format ] );
 			}
 		}
 
-		self::$early_providers = [];
+		static::$early_providers = [];
 
 		/**
 		 * Filters the list of whitelisted oEmbed providers.
@@ -286,11 +286,11 @@ class WP_oEmbed {
 	 *                         Default false.
 	 */
 	public static function _add_provider_early( $format, $provider, $regex = false ) {
-		if ( empty( self::$early_providers['add'] ) ) {
-			self::$early_providers['add'] = [];
+		if ( empty( static::$early_providers['add'] ) ) {
+			static::$early_providers['add'] = [];
 		}
 
-		self::$early_providers['add'][ $format ] = [ $provider, $regex ];
+		static::$early_providers['add'][ $format ] = [ $provider, $regex ];
 	}
 
 	/**
@@ -311,11 +311,11 @@ class WP_oEmbed {
 	 *                       asterisks as wildcards.
 	 */
 	public static function _remove_provider_early( $format ) {
-		if ( empty( self::$early_providers['remove'] ) ) {
-			self::$early_providers['remove'] = [];
+		if ( empty( static::$early_providers['remove'] ) ) {
+			static::$early_providers['remove'] = [];
 		}
 
-		self::$early_providers['remove'][] = $format;
+		static::$early_providers['remove'][] = $format;
 	}
 
 	/**

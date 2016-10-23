@@ -52,27 +52,30 @@ class WP_Http_Encoding {
 	 */
 	public static function decompress( $compressed, $length = null ) {
 
-		if ( empty($compressed) ) {
+		if ( empty( $compressed ) ) {
 			return $compressed;
 		}
 
-		if ( false !== ( $decompressed = @gzinflate( $compressed ) ) ) {
-			return $decompressed;
+		$gzinflated = gzinflate( $compressed );
+		if ( false !== $gzinflated ) {
+			return $gzinflated;
 		}
 
-		if ( false !== ( $decompressed = self::compatible_gzinflate( $compressed ) ) ) {
-			return $decompressed;
+		$compatible_gzinflated = static::compatible_gzinflate( $compressed );
+		if ( false !== $compatible_gzinflated ) {
+			return $compatible_gzinflated;
 		}
 
-		if ( false !== ( $decompressed = @gzuncompress( $compressed ) ) ) {
-			return $decompressed;
+		$gzuncompressed = gzuncompress( $compressed );
+		if ( false !== $gzuncompressed ) {
+			return $gzuncompressed;
 		}
 
 		if ( function_exists('gzdecode') ) {
-			$decompressed = @gzdecode( $compressed );
+			$gzdecoded = gzdecode( $compressed );
 
-			if ( false !== $decompressed ) {
-				return $decompressed;
+			if ( false !== $gzdecoded ) {
+				return $gzdecoded;
 			}
 		}
 
@@ -150,7 +153,7 @@ class WP_Http_Encoding {
 	 */
 	public static function accept_encoding( $url, $args ) {
 		$type = [];
-		$compression_enabled = self::is_available();
+		$compression_enabled = static::is_available();
 
 		if (
 			// Decompression specifically disabled.

@@ -167,7 +167,7 @@ class WP_Http_Streams {
 
 		// Verify that the SSL certificate is valid for this request.
 		if ( $secure_transport && $ssl_verify && ! $proxy->is_enabled() ) {
-			if ( ! self::verify_ssl_certificate( $handle, $arrURL['host'] ) ) {
+			if ( ! static::verify_ssl_certificate( $handle, $arrURL['host'] ) ) {
 				return new WP_Error( 'http_request_failed', __( 'The SSL certificate for the host could not be verified.' ) );
 			}
 		}

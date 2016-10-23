@@ -184,7 +184,7 @@ class SelectiveRefresh {
 
 		$exports = [
 			'partials'       => $partials,
-			'renderQueryVar' => self::RENDER_QUERY_VAR,
+			'renderQueryVar' => static::RENDER_QUERY_VAR,
 			'l10n'           => [
 				'shiftClickToEdit' => __( 'Shift-click to edit this element.' ),
 				/* translators: %s: document.write() */
@@ -272,7 +272,7 @@ class SelectiveRefresh {
 	 */
 	public function is_render_partials_request() {
 		$app = getApp();
-		return ! empty( $app['request']->request->get( self::RENDER_QUERY_VAR ) );
+		return ! empty( $app['request']->request->get( static::RENDER_QUERY_VAR ) );
 	}
 
 	/**

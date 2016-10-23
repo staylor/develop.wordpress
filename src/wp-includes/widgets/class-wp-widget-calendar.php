@@ -59,7 +59,7 @@ class WP_Widget_Calendar extends WP_Widget {
 		if ( $title ) {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
-		if ( 0 === self::$instance ) {
+		if ( 0 === static::$instance ) {
 			echo '<div id="calendar_wrap" class="calendar_wrap">';
 		} else {
 			echo '<div class="calendar_wrap">';
@@ -68,7 +68,7 @@ class WP_Widget_Calendar extends WP_Widget {
 		echo '</div>';
 		echo $args['after_widget'];
 
-		self::$instance++;
+		static::$instance++;
 	}
 
 	/**

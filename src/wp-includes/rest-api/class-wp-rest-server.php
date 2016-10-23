@@ -489,7 +489,7 @@ class WP_REST_Server {
 	 * @return array Map of link relation to list of link hashes.
 	 */
 	public static function get_compact_response_links( $response ) {
-		$links = self::get_response_links( $response );
+		$links = static::get_response_links( $response );
 
 		if ( empty( $links ) ) {
 			return [];
@@ -652,7 +652,7 @@ class WP_REST_Server {
 
 			$this->register_route( $namespace, '/' . $namespace, array(
 				array(
-					'methods' => self::READABLE,
+					'methods' => static::READABLE,
 					'callback' => array( $this, 'get_namespace_index' ),
 					'args' => array(
 						'namespace' => array(

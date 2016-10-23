@@ -119,10 +119,10 @@ class User {
 	 * @param int $blog_id Optional Site ID, defaults to current site.
 	 */
 	public function __construct( $id = 0, $name = '', $blog_id = 0 ) {
-		if ( ! isset( self::$back_compat_keys ) ) {
+		if ( ! isset( static::$back_compat_keys ) ) {
 			$app = getApp();
 			$prefix = $app['db']->prefix;
-			self::$back_compat_keys = [
+			static::$back_compat_keys = [
 				'user_firstname' => 'first_name',
 				'user_lastname' => 'last_name',
 				'user_description' => 'description',
@@ -146,9 +146,9 @@ class User {
 		}
 
 		if ( $id ) {
-			$data = self::get_data_by( 'id', $id );
+			$data = static::get_data_by( 'id', $id );
 		} else {
-			$data = self::get_data_by( 'login', $name );
+			$data = static::get_data_by( 'login', $name );
 		}
 
 		if ( $data ) {
@@ -277,8 +277,8 @@ class User {
 			return true;
 		}
 
-		if ( isset( self::$back_compat_keys[ $key ] ) ) {
-			$key = self::$back_compat_keys[ $key ];
+		if ( isset( static::$back_compat_keys[ $key ] ) ) {
+			$key = static::$back_compat_keys[ $key ];
 		}
 
 		return metadata_exists( 'user', $this->ID, $key );
@@ -308,8 +308,8 @@ class User {
 		if ( isset( $this->data->$key ) ) {
 			$value = $this->data->$key;
 		} else {
-			if ( isset( self::$back_compat_keys[ $key ] ) ) {
-				$key = self::$back_compat_keys[ $key ];
+			if ( isset( static::$back_compat_keys[ $key ] ) ) {
+				$key = static::$back_compat_keys[ $key ];
 			}
 			$value = get_user_meta( $this->ID, $key, true );
 		}
@@ -372,8 +372,8 @@ class User {
 			unset( $this->data->$key );
 		}
 
-		if ( isset( self::$back_compat_keys[ $key ] ) ) {
-			unset( self::$back_compat_keys[ $key ] );
+		if ( isset( static::$back_compat_keys[ $key ] ) ) {
+			unset( static::$back_compat_keys[ $key ] );
 		}
 	}
 

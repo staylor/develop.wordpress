@@ -149,7 +149,7 @@ class Setting extends BaseSetting {
 			throw new CustomizeException( 'Expected CustomizeManager::$nav_menus to be set.' );
 		}
 
-		if ( ! preg_match( self::ID_PATTERN, $id, $matches ) ) {
+		if ( ! preg_match( static::ID_PATTERN, $id, $matches ) ) {
 			throw new CustomizeException( "Illegal widget setting ID: $id" );
 		}
 
@@ -281,7 +281,7 @@ class Setting extends BaseSetting {
 				'slug'             => sanitize_title( $setting_value['name'] ),
 				'count'            => 0,
 				'term_group'       => 0,
-				'taxonomy'         => self::TAXONOMY,
+				'taxonomy'         => static::TAXONOMY,
 				'filter'           => 'raw',
 			), $setting_value );
 
@@ -372,7 +372,7 @@ class Setting extends BaseSetting {
 			'slug'             => sanitize_title( $setting_value['name'] ),
 			'count'            => 0,
 			'term_group'       => 0,
-			'taxonomy'         => self::TAXONOMY,
+			'taxonomy'         => static::TAXONOMY,
 			'filter'           => 'raw',
 		), $setting_value );
 	}

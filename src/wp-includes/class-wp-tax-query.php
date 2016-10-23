@@ -158,7 +158,7 @@ class WP_Tax_Query {
 				$cleaned_query['relation'] = $this->sanitize_relation( $query );
 
 			// First-order clause.
-			} elseif ( self::is_first_order_clause( $query ) ) {
+			} elseif ( static::is_first_order_clause( $query ) ) {
 
 				$cleaned_clause = array_merge( $defaults, $query );
 				$cleaned_clause['terms'] = (array) $cleaned_clause['terms'];
@@ -412,7 +412,7 @@ class WP_Tax_Query {
 		$this->clean_query( $clause );
 
 		if ( is_wp_error( $clause ) ) {
-			return self::$no_results;
+			return static::$no_results;
 		}
 
 		$terms = $clause['terms'];
@@ -421,7 +421,7 @@ class WP_Tax_Query {
 		if ( 'IN' == $operator ) {
 
 			if ( empty( $terms ) ) {
-				return self::$no_results;
+				return static::$no_results;
 			}
 
 			$terms = implode( ',', $terms );

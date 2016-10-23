@@ -321,31 +321,31 @@ class PostType extends Observable {
 	 */
 	public static function get_meta_cap( string $name ): string
 	{
-		return self::$meta_caps[ $name ];
+		return static::$meta_caps[ $name ];
 	}
 
 	public static function has_meta_cap( string $name ): bool
 	{
-		return isset( self::$meta_caps[ $name ] );
+		return isset( static::$meta_caps[ $name ] );
 	}
 
 	public static function add_meta_cap( $name, $value ) {
-		self::$meta_caps[ $name ] = $value;
+		static::$meta_caps[ $name ] = $value;
 	}
 
 	public static function remove_meta_cap( $name ) {
-		unset( self::$meta_caps[ $name ] );
+		unset( static::$meta_caps[ $name ] );
 	}
 
 	private static $instances = [];
 
 	public static function get( $name = null ) {
 		if ( ! $name ) {
-			return self::$instances;
+			return static::$instances;
 		}
 
-		if ( isset( self::$instances[ $name ] ) ) {
-			return self::$instances[ $name ];
+		if ( isset( static::$instances[ $name ] ) ) {
+			return static::$instances[ $name ];
 		}
 	}
 
@@ -355,14 +355,14 @@ class PostType extends Observable {
 		$obj->attach( $app['wp'] );
 		$obj->load();
 
-		self::$instances[ $post_type ] = $obj;
+		static::$instances[ $post_type ] = $obj;
 	}
 
 	public static function remove( $name ) {
-		$obj = self::get( $name );
+		$obj = static::get( $name );
 		$obj->unload();
 
-		unset( self::$instances[ $name ] );
+		unset( static::$instances[ $name ] );
 	}
 
 	/**
@@ -382,7 +382,7 @@ class PostType extends Observable {
 	public function __construct( $post_type, $args = [] ) {
 		$this->name = $post_type;
 
-		self::$instances[ $post_type ] = $this;
+		static::$instances[ $post_type ] = $this;
 
 		$this->set_props( $args );
 	}
@@ -713,7 +713,7 @@ class PostType extends Observable {
 
 		// Remove registered custom meta capabilities.
 		foreach ( $this->cap as $cap ) {
-			unset( self::$meta_caps[ $cap ] );
+			unset( static::$meta_caps[ $cap ] );
 		}
 	}
 
