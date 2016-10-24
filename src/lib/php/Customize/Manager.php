@@ -9,7 +9,7 @@ namespace WP\Customize;
  */
 
 use WP_Query,
-    WP_Theme;
+	WP_Theme;
 use WP\Error;
 use function WP\getApp;
 

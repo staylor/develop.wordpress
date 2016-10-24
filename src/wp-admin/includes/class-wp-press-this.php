@@ -1030,7 +1030,7 @@ class WP_Press_This {
 	 * @since 4.2.0
 	 * @access public
 	 *
- 	 * @param array $data The site's data.
+	 * @param array $data The site's data.
 	 * @return string Discovered canonical URL, or empty
 	 */
 	public function get_canonical_link( $data ) {
