@@ -2321,16 +2321,16 @@ function dbDelta( $queries = '', $execute = true ) {
 			// Verify the found field name.
 			$validfield = true;
 			switch ( $fieldname_lowercased ) {
-				case '':
-				case 'primary':
-				case 'index':
-				case 'fulltext':
-				case 'unique':
-				case 'key':
-				case 'spatial':
-					$validfield = false;
+			case '':
+			case 'primary':
+			case 'index':
+			case 'fulltext':
+			case 'unique':
+			case 'key':
+			case 'spatial':
+				$validfield = false;
 
-					/*
+				/*
 					 * Normalize the index definition.
 					 *
 					 * This is done so the definition can be compared against the result of a
@@ -2338,84 +2338,84 @@ function dbDelta( $queries = '', $execute = true ) {
 					 * index information.
 					 */
 
-					// Extract type, name and columns from the definition.
+				// Extract type, name and columns from the definition.
+				preg_match(
+					  '/^'
+					.   '(?P<index_type>'             // 1) Type of the index.
+					.       'PRIMARY\s+KEY|(?:UNIQUE|FULLTEXT|SPATIAL)\s+(?:KEY|INDEX)|KEY|INDEX'
+					.   ' )'
+					.   '\s+'                         // Followed by at least one white space character.
+					.   '(?:'                         // Name of the index. Optional if type is PRIMARY KEY.
+					.       '`?'                      // Name can be escaped with a backtick.
+					.           '(?P<index_name>'     // 2) Name of the index.
+					.               '(?:[0-9a-zA-Z$_-]|[\xC2-\xDF][\x80-\xBF] )+'
+					.           ' )'
+					.       '`?'                      // Name can be escaped with a backtick.
+					.       '\s+'                     // Followed by at least one white space character.
+					.   ' )*'
+					.   '\( '                          // Opening bracket for the columns.
+					.       '(?P<index_columns>'
+					.           '.+?'                 // 3) Column names, index prefixes, and orders.
+					.       ' )'
+					.   '\)'                          // Closing bracket for the columns.
+					. '$/im',
+					$fld,
+					$index_matches
+				);
+
+				// Uppercase the index type and normalize space characters.
+				$index_type = strtoupper( preg_replace( '/\s+/', ' ', trim( $index_matches['index_type'] ) ) );
+
+				// 'INDEX' is a synonym for 'KEY', standardize on 'KEY'.
+				$index_type = str_replace( 'INDEX', 'KEY', $index_type );
+
+				// Escape the index name with backticks. An index for a primary key has no name.
+				$index_name = ( 'PRIMARY KEY' === $index_type ) ? '' : '`' . strtolower( $index_matches['index_name'] ) . '`';
+
+				// Parse the columns. Multiple columns are separated by a comma.
+				$index_columns = array_map( 'trim', explode( ',', $index_matches['index_columns'] ) );
+
+				// Normalize columns.
+				foreach ( $index_columns as &$index_column ) {
+					// Extract column name and number of indexed characters (sub_part).
 					preg_match(
-						  '/^'
-						.   '(?P<index_type>'             // 1) Type of the index.
-						.       'PRIMARY\s+KEY|(?:UNIQUE|FULLTEXT|SPATIAL)\s+(?:KEY|INDEX)|KEY|INDEX'
-						.   ' )'
-						.   '\s+'                         // Followed by at least one white space character.
-						.   '(?:'                         // Name of the index. Optional if type is PRIMARY KEY.
-						.       '`?'                      // Name can be escaped with a backtick.
-						.           '(?P<index_name>'     // 2) Name of the index.
-						.               '(?:[0-9a-zA-Z$_-]|[\xC2-\xDF][\x80-\xBF] )+'
-						.           ' )'
-						.       '`?'                      // Name can be escaped with a backtick.
-						.       '\s+'                     // Followed by at least one white space character.
-						.   ' )*'
-						.   '\( '                          // Opening bracket for the columns.
-						.       '(?P<index_columns>'
-						.           '.+?'                 // 3) Column names, index prefixes, and orders.
+						  '/'
+						.   '`?'                      // Name can be escaped with a backtick.
+						.       '(?P<column_name>'    // 1) Name of the column.
+						.           '(?:[0-9a-zA-Z$_-]|[\xC2-\xDF][\x80-\xBF] )+'
 						.       ' )'
-						.   '\)'                          // Closing bracket for the columns.
-						. '$/im',
-						$fld,
-						$index_matches
+						.   '`?'                      // Name can be escaped with a backtick.
+						.   '(?:'                     // Optional sub part.
+						.       '\s*'                 // Optional white space character between name and opening bracket.
+						.       '\( '                  // Opening bracket for the sub part.
+						.           '\s*'             // Optional white space character after opening bracket.
+						.           '(?P<sub_part>'
+						.               '\d+'         // 2) Number of indexed characters.
+						.           ' )'
+						.           '\s*'             // Optional white space character before closing bracket.
+						.        '\)'                 // Closing bracket for the sub part.
+						.   ' )?'
+						. '/',
+						$index_column,
+						$index_column_matches
 					);
 
-					// Uppercase the index type and normalize space characters.
-					$index_type = strtoupper( preg_replace( '/\s+/', ' ', trim( $index_matches['index_type'] ) ) );
+					// Escape the column name with backticks.
+					$index_column = '`' . $index_column_matches['column_name'] . '`';
 
-					// 'INDEX' is a synonym for 'KEY', standardize on 'KEY'.
-					$index_type = str_replace( 'INDEX', 'KEY', $index_type );
-
-					// Escape the index name with backticks. An index for a primary key has no name.
-					$index_name = ( 'PRIMARY KEY' === $index_type ) ? '' : '`' . strtolower( $index_matches['index_name'] ) . '`';
-
-					// Parse the columns. Multiple columns are separated by a comma.
-					$index_columns = array_map( 'trim', explode( ',', $index_matches['index_columns'] ) );
-
-					// Normalize columns.
-					foreach ( $index_columns as &$index_column ) {
-						// Extract column name and number of indexed characters (sub_part).
-						preg_match(
-							  '/'
-							.   '`?'                      // Name can be escaped with a backtick.
-							.       '(?P<column_name>'    // 1) Name of the column.
-							.           '(?:[0-9a-zA-Z$_-]|[\xC2-\xDF][\x80-\xBF] )+'
-							.       ' )'
-							.   '`?'                      // Name can be escaped with a backtick.
-							.   '(?:'                     // Optional sub part.
-							.       '\s*'                 // Optional white space character between name and opening bracket.
-							.       '\( '                  // Opening bracket for the sub part.
-							.           '\s*'             // Optional white space character after opening bracket.
-							.           '(?P<sub_part>'
-							.               '\d+'         // 2) Number of indexed characters.
-							.           ' )'
-							.           '\s*'             // Optional white space character before closing bracket.
-							.        '\)'                 // Closing bracket for the sub part.
-							.   ' )?'
-							. '/',
-							$index_column,
-							$index_column_matches
-						);
-
-						// Escape the column name with backticks.
-						$index_column = '`' . $index_column_matches['column_name'] . '`';
-
-						// Append the optional sup part with the number of indexed characters.
-						if ( isset( $index_column_matches['sub_part'] ) ) {
-							$index_column .= '( ' . $index_column_matches['sub_part'] . ' )';
-						}
+					// Append the optional sup part with the number of indexed characters.
+					if ( isset( $index_column_matches['sub_part'] ) ) {
+						$index_column .= '( ' . $index_column_matches['sub_part'] . ' )';
 					}
+				}
 
-					// Build the normalized index definition and add it to the list of indices.
-					$indices[] = "{$index_type} {$index_name} ( " . implode( ',', $index_columns ) . " )";
+				// Build the normalized index definition and add it to the list of indices.
+				$indices[] = "{$index_type} {$index_name} ( " . implode( ',', $index_columns ) . " )";
 
-					// Destroy no longer needed variables.
-					unset( $index_column, $index_column_matches, $index_matches, $index_type, $index_name, $index_columns );
+				// Destroy no longer needed variables.
+				unset( $index_column, $index_column_matches, $index_matches, $index_type, $index_name, $index_columns );
 
-					break;
+				break;
 			}
 
 			// If it's a valid field, add it to the field array.

@@ -69,34 +69,34 @@ foreach ( $credits['groups'] as $group_slug => $group_data ) {
 	// We were going to sort by ability to pronounce "hierarchical," but that wouldn't be fair to Matt.
 
 	switch ( $group_data['type'] ) {
-		case 'list' :
-			array_walk( $group_data['data'], '_wp_credits_add_profile_link', $credits['data']['profiles'] );
-			echo '<p class="wp-credits-list">' . wp_sprintf( '%l.', $group_data['data'] ) . "</p>\n\n";
-			break;
-		case 'libraries' :
-			array_walk( $group_data['data'], '_wp_credits_build_object_link' );
-			echo '<p class="wp-credits-list">' . wp_sprintf( '%l.', $group_data['data'] ) . "</p>\n\n";
-			break;
-		default:
-			$compact = 'compact' == $group_data['type'];
-			$classes = 'wp-people-group ' . ( $compact ? 'compact' : '' );
-			echo '<ul class="' . $classes . '" id="wp-people-group-' . $group_slug . '">' . "\n";
-			foreach ( $group_data['data'] as $person_data ) {
-				echo '<li class="wp-person" id="wp-person-' . esc_attr( $person_data[2] ) . '">' . "\n\t";
-				echo '<a href="' . esc_url( sprintf( $credits['data']['profiles'], $person_data[2] ) ) . '" class="web">';
-				$size = 'compact' == $group_data['type'] ? 30 : 60;
-				$data = get_avatar_data( $person_data[1] . '@md5.gravatar.com', [ 'size' => $size ] );
-				$size *= 2;
-				$data2x = get_avatar_data( $person_data[1] . '@md5.gravatar.com', [ 'size' => $size ] );
-				echo '<img src="' . esc_url( $data['url'] ) . '" srcset="' . esc_url( $data2x['url'] ) . ' 2x" class="gravatar" alt="" />' . "\n";
-				echo esc_html( $person_data[0] ) . "</a>\n\t";
-				if ( ! $compact ) {
-					echo '<span class="title">' . translate( $person_data[3] ) . "</span>\n";
-				}
-				echo "</li>\n";
-			}
-			echo "</ul>\n";
+	case 'list' :
+		array_walk( $group_data['data'], '_wp_credits_add_profile_link', $credits['data']['profiles'] );
+		echo '<p class="wp-credits-list">' . wp_sprintf( '%l.', $group_data['data'] ) . "</p>\n\n";
 		break;
+	case 'libraries' :
+		array_walk( $group_data['data'], '_wp_credits_build_object_link' );
+		echo '<p class="wp-credits-list">' . wp_sprintf( '%l.', $group_data['data'] ) . "</p>\n\n";
+		break;
+	default:
+		$compact = 'compact' == $group_data['type'];
+		$classes = 'wp-people-group ' . ( $compact ? 'compact' : '' );
+		echo '<ul class="' . $classes . '" id="wp-people-group-' . $group_slug . '">' . "\n";
+		foreach ( $group_data['data'] as $person_data ) {
+			echo '<li class="wp-person" id="wp-person-' . esc_attr( $person_data[2] ) . '">' . "\n\t";
+			echo '<a href="' . esc_url( sprintf( $credits['data']['profiles'], $person_data[2] ) ) . '" class="web">';
+			$size = 'compact' == $group_data['type'] ? 30 : 60;
+			$data = get_avatar_data( $person_data[1] . '@md5.gravatar.com', [ 'size' => $size ] );
+			$size *= 2;
+			$data2x = get_avatar_data( $person_data[1] . '@md5.gravatar.com', [ 'size' => $size ] );
+			echo '<img src="' . esc_url( $data['url'] ) . '" srcset="' . esc_url( $data2x['url'] ) . ' 2x" class="gravatar" alt="" />' . "\n";
+			echo esc_html( $person_data[0] ) . "</a>\n\t";
+			if ( ! $compact ) {
+				echo '<span class="title">' . translate( $person_data[3] ) . "</span>\n";
+			}
+			echo "</li>\n";
+		}
+		echo "</ul>\n";
+	break;
 	}
 }
 
