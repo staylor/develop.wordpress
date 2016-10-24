@@ -30,6 +30,11 @@ class Message {
 
 	public function parse(): bool
 	{
+		if ( ! function_exists( 'xml_parser_create' ) ) {
+			trigger_error( __( "PHP's XML extension is not available. Please contact your hosting provider to enable PHP's XML" ) );
+			return false;
+		}
+
 		// first remove the XML declaration
 		// merged from WP #10698 - this method avoids the RAM usage of preg_replace on very large messages
 		$xml = preg_replace( '/<\?xml.*?\?' . '>/s', '', substr( $this->message, 0, 100 ), 1 );
