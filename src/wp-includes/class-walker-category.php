@@ -37,7 +37,7 @@ class Walker_Category extends Walker {
 	 * @see Walker::$db_fields
 	 * @todo Decouple this
 	 */
-	public $db_fields = array ('parent' => 'parent', 'id' => 'term_id');
+	public $db_fields = array( 'parent' => 'parent', 'id' => 'term_id' );
 
 	/**
 	 * Starts the list before the elements are added.
@@ -57,7 +57,7 @@ class Walker_Category extends Walker {
 			return;
 		}
 
-		$indent = str_repeat("\t", $depth);
+		$indent = str_repeat( "\t", $depth );
 		$output .= "$indent<ul class='children'>\n";
 	}
 
@@ -79,7 +79,7 @@ class Walker_Category extends Walker {
 			return;
 		}
 
-		$indent = str_repeat("\t", $depth);
+		$indent = str_repeat( "\t", $depth );
 		$output .= "$indent</ul>\n";
 	}
 
@@ -136,7 +136,7 @@ class Walker_Category extends Walker {
 			$link .= '<a href="' . esc_url( get_term_feed_link( $category->term_id, $category->taxonomy, $args['feed_type'] ) ) . '"';
 
 			if ( empty( $args['feed'] ) ) {
-				$alt = ' alt="' . sprintf(__( 'Feed for all posts filed under %s' ), $cat_name ) . '"';
+				$alt = ' alt="' . sprintf( __( 'Feed for all posts filed under %s' ), $cat_name ) . '"';
 			} else {
 				$alt = ' alt="' . $args['feed'] . '"';
 				$name = $args['feed'];
@@ -182,7 +182,7 @@ class Walker_Category extends Walker {
 					}
 					while ( $_current_term->parent ) {
 						if ( $category->term_id == $_current_term->parent ) {
-							$css_classes[] =  'current-cat-ancestor';
+							$css_classes[] = 'current-cat-ancestor';
 							break;
 						}
 						$_current_term = get_term( $_current_term->parent, $category->taxonomy );
@@ -204,7 +204,7 @@ class Walker_Category extends Walker {
 			 */
 			$css_classes = implode( ' ', apply_filters( 'category_css_class', $css_classes, $category, $depth, $args ) );
 
-			$output .=  ' class="' . $css_classes . '"';
+			$output .= ' class="' . $css_classes . '"';
 			$output .= ">$link\n";
 		} elseif ( isset( $args['separator'] ) ) {
 			$output .= "\t$link" . $args['separator'] . "\n";

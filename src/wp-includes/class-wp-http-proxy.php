@@ -52,7 +52,7 @@ class WP_HTTP_Proxy {
 	 * @return bool
 	 */
 	public function is_enabled() {
-		return defined('WP_PROXY_HOST') && defined('WP_PROXY_PORT');
+		return defined( 'WP_PROXY_HOST' ) && defined( 'WP_PROXY_PORT' );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class WP_HTTP_Proxy {
 	 * @return bool
 	 */
 	public function use_authentication() {
-		return defined('WP_PROXY_USERNAME') && defined('WP_PROXY_PASSWORD');
+		return defined( 'WP_PROXY_USERNAME' ) && defined( 'WP_PROXY_PASSWORD' );
 	}
 
 	/**
@@ -77,7 +77,7 @@ class WP_HTTP_Proxy {
 	 * @return string
 	 */
 	public function host() {
-		if ( defined('WP_PROXY_HOST') ) {
+		if ( defined( 'WP_PROXY_HOST' ) ) {
 			return WP_PROXY_HOST;
 		}
 
@@ -92,7 +92,7 @@ class WP_HTTP_Proxy {
 	 * @return string
 	 */
 	public function port() {
-		if ( defined('WP_PROXY_PORT') ) {
+		if ( defined( 'WP_PROXY_PORT' ) ) {
 			return WP_PROXY_PORT;
 		}
 
@@ -107,7 +107,7 @@ class WP_HTTP_Proxy {
 	 * @return string
 	 */
 	public function username() {
-		if ( defined('WP_PROXY_USERNAME') ) {
+		if ( defined( 'WP_PROXY_USERNAME' ) ) {
 			return WP_PROXY_USERNAME;
 		}
 
@@ -122,7 +122,7 @@ class WP_HTTP_Proxy {
 	 * @return string
 	 */
 	public function password() {
-		if ( defined('WP_PROXY_PASSWORD') ) {
+		if ( defined( 'WP_PROXY_PASSWORD' ) ) {
 			return WP_PROXY_PASSWORD;
 		}
 
@@ -171,14 +171,14 @@ class WP_HTTP_Proxy {
 		 * parse_url() only handles http, https type URLs, and will emit E_WARNING on failure.
 		 * This will be displayed on sites, which is not reasonable.
 		 */
-		$check = @parse_url($uri);
+		$check = @parse_url( $uri );
 
 		// Malformed URL, can not process, but this could mean ssl, so let through anyway.
 		if ( $check === false ) {
 			return true;
 		}
 
-		$home = parse_url( get_option('siteurl') );
+		$home = parse_url( get_option( 'siteurl' ) );
 
 		/**
 		 * Filters whether to preempt sending the request through the proxy server.
@@ -202,28 +202,28 @@ class WP_HTTP_Proxy {
 			return false;
 		}
 
-		if ( !defined('WP_PROXY_BYPASS_HOSTS') ) {
+		if ( ! defined( 'WP_PROXY_BYPASS_HOSTS' ) ) {
 			return true;
 		}
 
 		static $bypass_hosts = null;
 		static $wildcard_regex = [];
 		if ( null === $bypass_hosts ) {
-			$bypass_hosts = preg_split('|,\s*|', WP_PROXY_BYPASS_HOSTS);
+			$bypass_hosts = preg_split( '|,\s*|', WP_PROXY_BYPASS_HOSTS );
 
-			if ( false !== strpos(WP_PROXY_BYPASS_HOSTS, '*') ) {
+			if ( false !== strpos( WP_PROXY_BYPASS_HOSTS, '*' ) ) {
 				$wildcard_regex = [];
 				foreach ( $bypass_hosts as $host ) {
 					$wildcard_regex[] = str_replace( '\*', '.+', preg_quote( $host, '/' ) );
 				}
-				$wildcard_regex = '/^(' . implode('|', $wildcard_regex) . ')$/i';
+				$wildcard_regex = '/^(' . implode( '|', $wildcard_regex ) . ')$/i';
 			}
 		}
 
-		if ( !empty($wildcard_regex) ) {
-			return !preg_match($wildcard_regex, $check['host']);
+		if ( ! empty( $wildcard_regex ) ) {
+			return ! preg_match( $wildcard_regex, $check['host'] );
 		} else {
-			return !in_array( $check['host'], $bypass_hosts );
+			return ! in_array( $check['host'], $bypass_hosts );
 		}
 	}
 }

@@ -27,9 +27,9 @@ add_action( 'wpmu_new_user', 'newuser_notify_siteadmin' );
 add_action( 'wpmu_activate_user', 'add_new_user_to_blog', 10, 3 );
 add_action( 'wpmu_activate_user', 'wpmu_welcome_user_notification', 10, 3 );
 add_action( 'after_signup_user', 'wpmu_signup_user_notification', 10, 4 );
-add_action( 'network_site_new_created_user',   'wp_send_new_user_notifications' );
+add_action( 'network_site_new_created_user', 'wp_send_new_user_notifications' );
 add_action( 'network_site_users_created_user', 'wp_send_new_user_notifications' );
-add_action( 'network_user_new_created_user',   'wp_send_new_user_notifications' );
+add_action( 'network_user_new_created_user', 'wp_send_new_user_notifications' );
 add_filter( 'sanitize_user', 'strtolower' );
 
 // Blogs
@@ -54,8 +54,8 @@ add_action( 'transition_post_status', '_update_blog_date_on_post_publish', 10, 3
 add_action( 'transition_post_status', '_update_posts_count_on_transition_post_status', 10, 2 );
 
 // Counts
-add_action( 'admin_init', 'wp_schedule_update_network_counts');
-add_action( 'update_network_counts', 'wp_update_network_counts');
+add_action( 'admin_init', 'wp_schedule_update_network_counts' );
+add_action( 'update_network_counts', 'wp_update_network_counts' );
 foreach ( array( 'user_register', 'deleted_user', 'wpmu_new_user', 'make_spam_user', 'make_ham_user' ) as $action ) {
 	add_action( $action, 'wp_maybe_update_network_user_counts' );
 }
@@ -76,11 +76,11 @@ add_action( 'phpmailer_init', 'fix_phpmailer_messageid' );
 
 // Disable somethings by default for multisite
 add_filter( 'enable_update_services_configuration', '__return_false' );
-if ( ! defined('POST_BY_EMAIL') || ! POST_BY_EMAIL ) {
+if ( ! defined( 'POST_BY_EMAIL' ) || ! POST_BY_EMAIL ) {
 	// back compat constant.
 	add_filter( 'enable_post_by_email_configuration', '__return_false' );
 }
-if ( ! defined('EDIT_ANY_USER') || ! EDIT_ANY_USER ) {
+if ( ! defined( 'EDIT_ANY_USER' ) || ! EDIT_ANY_USER ) {
 	// back compat constant.
 	add_filter( 'enable_edit_any_user_configuration', '__return_false' );
 }
@@ -88,11 +88,11 @@ add_filter( 'force_filtered_html_on_import', '__return_true' );
 
 // WP_HOME and WP_SITEURL should not have any effect in MS
 remove_filter( 'option_siteurl', '_config_wp_siteurl' );
-remove_filter( 'option_home',    '_config_wp_home'    );
+remove_filter( 'option_home', '_config_wp_home' );
 
 // Some options changes should trigger blog details refresh.
-add_action( 'update_option_blogname',   'refresh_blog_details', 10, 0 );
-add_action( 'update_option_siteurl',    'refresh_blog_details', 10, 0 );
+add_action( 'update_option_blogname', 'refresh_blog_details', 10, 0 );
+add_action( 'update_option_siteurl', 'refresh_blog_details', 10, 0 );
 add_action( 'update_option_post_count', 'refresh_blog_details', 10, 0 );
 
 // If the network upgrade hasn't run yet, assume ms-files.php rewriting is used.

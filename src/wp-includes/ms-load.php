@@ -18,8 +18,8 @@ use function WP\getApp;
  * @return bool True if subdomain configuration is enabled, false otherwise.
  */
 function is_subdomain_install() {
-	if ( defined('SUBDOMAIN_INSTALL') ) {
-			return SUBDOMAIN_INSTALL;
+	if ( defined( 'SUBDOMAIN_INSTALL' ) ) {
+		return SUBDOMAIN_INSTALL;
 	}
 
 	return ( defined( 'VHOST' ) && VHOST == 'yes' );
@@ -496,7 +496,7 @@ function ms_not_installed( $domain, $path ) {
 		__( 'https://codex.wordpress.org/Debugging_a_WordPress_Network' )
 	);
 	$msg .= ' ' . __( 'If you&#8217;re still stuck with this message, then check that your database contains the following tables:' ) . '</p><ul>';
-	foreach ( $wpdb->tables('global') as $t => $table ) {
+	foreach ( $wpdb->tables( 'global' ) as $t => $table ) {
 		if ( 'sitecategories' == $t ) {
 					continue;
 		}
