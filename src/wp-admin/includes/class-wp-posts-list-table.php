@@ -149,7 +149,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		$per_page = $this->get_items_per_page( 'edit_' . $post_type . '_per_page' );
 
 		/** This filter is documented in wp-admin/includes/post.php */
- 		$per_page = apply_filters( 'edit_posts_per_page', $per_page, $post_type );
+		$per_page = apply_filters( 'edit_posts_per_page', $per_page, $post_type );
 
 		if ( $this->hierarchical_display ) {
 			$total_items = $wp_query->post_count;
@@ -1177,10 +1177,10 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 
 		if ( $post->post_parent ) {
-		    $count = count( get_post_ancestors( $post->ID ) );
-		    $classes .= ' level-'. $count;
+			$count = count( get_post_ancestors( $post->ID ) );
+			$classes .= ' level-'. $count;
 		} else {
-		    $classes .= ' level-0';
+			$classes .= ' level-0';
 		}
 	?>
 		<tr id="post-<?php echo $post->ID; ?>" class="<?php echo implode( ' ', get_post_class( $classes, $post->ID ) ); ?>">
@@ -1547,10 +1547,10 @@ class WP_Posts_List_Table extends WP_List_Table {
 			<?php if ( $bulk ) { ?>
 					<option value="-1"><?php _e( '&mdash; No Change &mdash;' ); ?></option>
 			<?php } ?>
-    				<?php
+					<?php
 					/** This filter is documented in wp-admin/includes/meta-boxes.php */
 					$default_title = apply_filters( 'default_page_template_title',  __( 'Default Template' ), 'quick-edit' );
-    				?>
+					?>
 					<option value="default"><?php echo esc_html( $default_title ); ?></option>
 					<?php page_template_dropdown() ?>
 				</select>

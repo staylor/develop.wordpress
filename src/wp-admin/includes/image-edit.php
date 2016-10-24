@@ -531,7 +531,7 @@ function image_edit_apply_changes( $image, $changes ) {
 		 * @since 3.5.0
 		 *
 		 * @param WP_Image_Editor $image   WP_Image_Editor instance.
- 		 * @param array           $changes Array of change operations.
+		 * @param array           $changes Array of change operations.
 		 */
 		$image = apply_filters( 'wp_image_editor_before_change', $image, $changes );
 	} elseif ( is_resource( $image ) ) {
@@ -543,7 +543,7 @@ function image_edit_apply_changes( $image, $changes ) {
 		 * @deprecated 3.5.0 Use wp_image_editor_before_change instead.
 		 *
 		 * @param resource $image   GD image resource.
- 		 * @param array    $changes Array of change operations.
+		 * @param array    $changes Array of change operations.
 		 */
 		$image = apply_filters( 'image_edit_before_change', $image, $changes );
 	}

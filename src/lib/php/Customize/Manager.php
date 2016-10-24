@@ -8,7 +8,8 @@ namespace WP\Customize;
  * @since 3.4.0
  */
 
-use WP_Query,WP_Theme;
+use WP_Query,
+    WP_Theme;
 use WP\Error;
 use function WP\getApp;
 

@@ -820,17 +820,17 @@ class WP_Upgrader {
 	}
 
 	/**
- 	 * Creates a lock using WordPress options.
- 	 *
- 	 * @since 4.5.0
- 	 * @access public
- 	 * @static
- 	 *
- 	 * @param string $lock_name       The name of this unique lock.
- 	 * @param int    $release_timeout Optional. The duration in seconds to respect an existing lock.
+	 * Creates a lock using WordPress options.
+	 *
+	 * @since 4.5.0
+	 * @access public
+	 * @static
+	 *
+	 * @param string $lock_name       The name of this unique lock.
+	 * @param int    $release_timeout Optional. The duration in seconds to respect an existing lock.
 	 *                                Default: 1 hour.
- 	 * @return bool False if a lock couldn't be created or if the lock is still valid. True otherwise.
- 	 */
+	 * @return bool False if a lock couldn't be created or if the lock is still valid. True otherwise.
+	 */
 	public static function create_lock( $lock_name, $release_timeout = null ) {
 		$app = getApp();
 		$wpdb = $app['db'];
@@ -868,17 +868,17 @@ class WP_Upgrader {
 	}
 
 	/**
- 	 * Releases an upgrader lock.
- 	 *
- 	 * @since 4.5.0
- 	 * @access public
- 	 * @static
+	 * Releases an upgrader lock.
+	 *
+	 * @since 4.5.0
+	 * @access public
+	 * @static
 	 *
 	 * @see WP_Upgrader::create_lock()
- 	 *
- 	 * @param string $lock_name The name of this unique lock.
+	 *
+	 * @param string $lock_name The name of this unique lock.
 	 * @return bool True if the lock was successfully released. False on failure.
- 	 */
+	 */
 	public static function release_lock( $lock_name ) {
 		return delete_option( $lock_name . '.lock' );
 	}
