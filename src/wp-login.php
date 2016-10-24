@@ -813,7 +813,7 @@ default:
 
 	$reauth = $_request->get( 'reauth' );
 
-	$user = wp_signon( array(), $secure_cookie );
+	$user = wp_signon( [], $secure_cookie );
 
 	if ( empty( $_cookie->get(  LOGGED_IN_COOKIE ) ) ) {
 		if ( headers_sent() ) {

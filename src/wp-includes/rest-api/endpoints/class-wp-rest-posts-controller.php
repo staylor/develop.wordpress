@@ -118,7 +118,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		// Retrieve the list of registered collection query parameters.
 		$registered = $this->get_collection_params();
-		$args = array();
+		$args = [];
 
 		// This array defines mappings between public API query parameters whose
 		// values are accepted as-passed, and their internal WP_Query parameter
@@ -151,7 +151,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		// Check for & assign any parameters which require special handling or setting.
 
-		$args['date_query'] = array();
+		$args['date_query'] = [];
 		// Set before into date query. Date query must be specified as an array of an array.
 		if ( isset( $registered['before'], $request['before'] ) ) {
 			$args['date_query'][0]['before'] = $request['before'];
@@ -173,7 +173,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		if ( isset( $registered['sticky'], $request['sticky'] ) ) {
-			$sticky_posts = get_option( 'sticky_posts', array() );
+			$sticky_posts = get_option( 'sticky_posts', [] );
 			if ( $sticky_posts && $request['sticky'] ) {
 				// As post__in will be used to only get sticky posts,
 				// we have to support the case where post__in was already
@@ -181,7 +181,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				$args['post__in'] = $args['post__in'] ? array_intersect( $sticky_posts, $args['post__in'] ) : $sticky_posts;
 
 				// If we intersected, but there are no post ids in common,
-				// WP_Query won't return "no posts" for `post__in = array()`
+				// WP_Query won't return "no posts" for `post__in = []`
 				// so we have to fake it a bit.
 				if ( ! $args['post__in'] ) {
 					$args['post__in'] = array( -1 );
@@ -244,7 +244,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			add_filter( 'post_password_required', '__return_false' );
 		}
 
-		$posts = array();
+		$posts = [];
 		foreach ( $query_result as $post ) {
 			if ( ! $this->check_read_permission( $post ) ) {
 				continue;
@@ -700,10 +700,10 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request       Full details about the request.
 	 * @return array          $query_args
 	 */
-	protected function prepare_items_query( $prepared_args = array(), $request = null ) {
+	protected function prepare_items_query( $prepared_args = [], $request = null ) {
 
 		$valid_vars = array_flip( $this->get_allowed_query_vars( $request ) );
-		$query_args = array();
+		$query_args = [];
 		foreach ( $valid_vars as $var => $index ) {
 			if ( isset( $prepared_args[ $var ] ) ) {
 				/**
@@ -1185,7 +1185,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$schema = $this->get_item_schema();
 
 		// Base fields for every post.
-		$data = array();
+		$data = [];
 
 		if ( ! empty( $schema['properties']['id'] ) ) {
 			$data['id'] = $post->ID;
@@ -1328,7 +1328,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$base = ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
 			if ( ! empty( $schema['properties'][ $base ] ) ) {
 				$terms = get_the_terms( $post, $taxonomy->name );
-				$data[ $base ] = $terms ? array_values( wp_list_pluck( $terms, 'term_id' ) ) : array();
+				$data[ $base ] = $terms ? array_values( wp_list_pluck( $terms, 'term_id' ) ) : [];
 			}
 		}
 
@@ -1437,7 +1437,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		$taxonomies = get_object_taxonomies( $post->post_type );
 		if ( ! empty( $taxonomies ) ) {
-			$links['https://api.w.org/term'] = array();
+			$links['https://api.w.org/term'] = [];
 
 			foreach ( $taxonomies as $tax ) {
 				$taxonomy_obj = get_taxonomy( $tax );
@@ -1815,13 +1815,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$params['author'] = array(
 				'description'         => __( 'Limit result set to posts assigned to specific authors.' ),
 				'type'                => 'array',
-				'default'             => array(),
+				'default'             => [],
 				'sanitize_callback'   => 'wp_parse_id_list',
 			);
 			$params['author_exclude'] = array(
 				'description'         => __( 'Ensure result set excludes posts assigned to specific authors.' ),
 				'type'                => 'array',
-				'default'             => array(),
+				'default'             => [],
 				'sanitize_callback'   => 'wp_parse_id_list',
 			);
 		}
@@ -1834,13 +1834,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$params['exclude'] = array(
 			'description'        => __( 'Ensure result set excludes specific ids.' ),
 			'type'               => 'array',
-			'default'            => array(),
+			'default'            => [],
 			'sanitize_callback'  => 'wp_parse_id_list',
 		);
 		$params['include'] = array(
 			'description'        => __( 'Limit result set to specific ids.' ),
 			'type'               => 'array',
-			'default'            => array(),
+			'default'            => [],
 			'sanitize_callback'  => 'wp_parse_id_list',
 		);
 		if ( 'page' === $this->post_type || post_type_supports( $this->post_type, 'page-attributes' ) ) {
@@ -1888,13 +1888,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				'description'       => __( 'Limit result set to those of particular parent ids.' ),
 				'type'              => 'array',
 				'sanitize_callback' => 'wp_parse_id_list',
-				'default'           => array(),
+				'default'           => [],
 			);
 			$params['parent_exclude'] = array(
 				'description'       => __( 'Limit result set to all items except those of a particular parent id.' ),
 				'type'              => 'array',
 				'sanitize_callback' => 'wp_parse_id_list',
-				'default'           => array(),
+				'default'           => [],
 			);
 		}
 
@@ -1923,7 +1923,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				'description'       => sprintf( __( 'Limit result set to all items that have the specified term assigned in the %s taxonomy.' ), $base ),
 				'type'              => 'array',
 				'sanitize_callback' => 'wp_parse_id_list',
-				'default'           => array(),
+				'default'           => [],
 			);
 		}
 

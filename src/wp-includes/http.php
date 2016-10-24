@@ -637,7 +637,7 @@ function allowed_http_request_hosts( $is_external, $host ) {
  */
 function ms_allowed_http_request_hosts( $is_external, $host ) {
 	global $wpdb;
-	static $queried = array();
+	static $queried = [];
 	if ( $is_external ) {
 		return $is_external;
 	}

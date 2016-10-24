@@ -3610,9 +3610,9 @@ function wp_is_numeric_array( $data ) {
  *                              Default false.
  * @return array A list of objects or object fields.
  */
-function wp_filter_object_list( $list, $args = array(), $operator = 'and', $field = false ) {
+function wp_filter_object_list( $list, $args = [], $operator = 'and', $field = false ) {
 	if ( ! is_array( $list ) ) {
-		return array();
+		return [];
 	}
 
 	$list = wp_list_filter( $list, $args, $operator );
@@ -3638,9 +3638,9 @@ function wp_filter_object_list( $list, $args = array(), $operator = 'and', $fiel
  *                         match. Default 'AND'.
  * @return array Array of found values.
  */
-function wp_list_filter( $list, $args = array(), $operator = 'AND' ) {
+function wp_list_filter( $list, $args = [], $operator = 'AND' ) {
 	if ( ! is_array( $list ) ) {
-		return array();
+		return [];
 	}
 
 	if ( empty( $args ) ) {
@@ -3649,7 +3649,7 @@ function wp_list_filter( $list, $args = array(), $operator = 'AND' ) {
 
 	$operator = strtoupper( $operator );
 	$count = count( $args );
-	$filtered = array();
+	$filtered = [];
 
 	foreach ( $list as $key => $obj ) {
 		$to_match = (array) $obj;
@@ -3708,7 +3708,7 @@ function wp_list_pluck( $list, $field, $index_key = null ) {
 	 * When index_key is not set for a particular item, push the value
 	 * to the end of the stack. This is how array_column() behaves.
 	 */
-	$newlist = array();
+	$newlist = [];
 	foreach ( $list as $value ) {
 		if ( is_object( $value ) ) {
 			if ( isset( $value->$index_key ) ) {

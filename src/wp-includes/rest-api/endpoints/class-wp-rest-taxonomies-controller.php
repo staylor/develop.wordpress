@@ -75,7 +75,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 		} else {
 			$taxonomies = get_taxonomies( '', 'objects' );
 		}
-		$data = array();
+		$data = [];
 		foreach ( $taxonomies as $tax_type => $value ) {
 			if ( empty( $value->show_in_rest ) || ( 'edit' === $request['context'] && ! current_user_can( $value->cap->manage_terms ) ) ) {
 				continue;
@@ -249,7 +249,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * @return array
 	 */
 	public function get_collection_params() {
-		$new_params = array();
+		$new_params = [];
 		$new_params['context'] = $this->get_context_param( array( 'default' => 'view' ) );
 		$new_params['type'] = array(
 			'description'  => __( 'Limit results to resources associated with a specific post type.' ),

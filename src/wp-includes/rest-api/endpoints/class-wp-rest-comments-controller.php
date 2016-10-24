@@ -97,7 +97,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			$protected_params = array( 'author', 'author_exclude', 'karma', 'author_email', 'type', 'status' );
-			$forbidden_params = array();
+			$forbidden_params = [];
 			foreach ( $protected_params as $param ) {
 				if ( 'status' === $param ) {
 					if ( 'approve' !== $request[ $param ] ) {
@@ -152,7 +152,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			'type'           => 'type',
 		);
 
-		$prepared_args = array();
+		$prepared_args = [];
 
 		// For each known parameter which is both registered and present in the request,
 		// set the parameter's value on the query $prepared_args.
@@ -175,7 +175,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 		$prepared_args['no_found_rows'] = false;
 
-		$prepared_args['date_query'] = array();
+		$prepared_args['date_query'] = [];
 		// Set before into date query. Date query must be specified as an array of an array.
 		if ( isset( $registered['before'], $request['before'] ) ) {
 			$prepared_args['date_query'][0]['before'] = $request['before'];
@@ -203,7 +203,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$query = new WP_Comment_Query;
 		$query_result = $query->query( $prepared_args );
 
-		$comments = array();
+		$comments = [];
 		foreach ( $query_result as $comment ) {
 			if ( ! $this->check_read_permission( $comment ) ) {
 				continue;
@@ -843,7 +843,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 * @return array|Error  $prepared_comment
 	 */
 	protected function prepare_item_for_database( $request ) {
-		$prepared_comment = array();
+		$prepared_comment = [];
 
 		/**
 		 * Allow the comment_content to be set via the 'content' or
@@ -1064,7 +1064,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		);
 
 		if ( get_option( 'show_avatars' ) ) {
-			$avatar_properties = array();
+			$avatar_properties = [];
 
 			$avatar_sizes = rest_get_avatar_sizes();
 			foreach ( $avatar_sizes as $size ) {
@@ -1132,13 +1132,13 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$query_params['exclude'] = array(
 			'description'        => __( 'Ensure result set excludes specific ids.' ),
 			'type'               => 'array',
-			'default'            => array(),
+			'default'            => [],
 			'sanitize_callback'  => 'wp_parse_id_list',
 		);
 		$query_params['include'] = array(
 			'description'        => __( 'Limit result set to specific ids.' ),
 			'type'               => 'array',
-			'default'            => array(),
+			'default'            => [],
 			'sanitize_callback'  => 'wp_parse_id_list',
 		);
 		$query_params['karma'] = array(
@@ -1182,19 +1182,19 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			),
 		);
 		$query_params['parent'] = array(
-			'default'           => array(),
+			'default'           => [],
 			'description'       => __( 'Limit result set to resources of specific parent ids.' ),
 			'sanitize_callback' => 'wp_parse_id_list',
 			'type'              => 'array',
 		);
 		$query_params['parent_exclude'] = array(
-			'default'           => array(),
+			'default'           => [],
 			'description'       => __( 'Ensure result set excludes specific parent ids.' ),
 			'sanitize_callback' => 'wp_parse_id_list',
 			'type'              => 'array',
 		);
 		$query_params['post']   = array(
-			'default'           => array(),
+			'default'           => [],
 			'description'       => __( 'Limit result set to resources assigned to specific post ids.' ),
 			'type'              => 'array',
 			'sanitize_callback' => 'wp_parse_id_list',

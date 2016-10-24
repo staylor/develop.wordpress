@@ -64,7 +64,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 						'default'     => false,
 						'description' => __( 'Required to be true, as resource does not support trashing.' ),
 					),
-					'reassign' => array(),
+					'reassign' => [],
 				),
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
@@ -74,7 +74,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			'methods'         => WP_REST_Server::READABLE,
 			'callback'        => array( $this, 'get_current_item' ),
 			'args'            => array(
-				'context'          => array(),
+				'context'          => [],
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		));
@@ -127,7 +127,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			'roles'    => 'role__in',
 		);
 
-		$prepared_args = array();
+		$prepared_args = [];
 
 		// For each known parameter which is both registered and present in the request,
 		// set the parameter's value on the query $prepared_args.
@@ -181,7 +181,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		$query = new WP_User_Query( $prepared_args );
 
-		$users = array();
+		$users = [];
 		foreach ( $query->results as $user ) {
 			$data = $this->prepare_item_for_response( $user, $request );
 			$users[] = $this->prepare_response_for_collection( $data );
@@ -555,7 +555,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $user, $request ) {
 
-		$data = array();
+		$data = [];
 		$schema = $this->get_item_schema();
 		if ( ! empty( $schema['properties']['id'] ) ) {
 			$data['id'] = $user->ID;
@@ -873,7 +873,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 				'password'        => array(
 					'description' => __( 'Password for the resource (never included).' ),
 					'type'        => 'string',
-					'context'     => array(), // Password is never displayed
+					'context'     => [], // Password is never displayed
 					'required'    => true,
 				),
 				'capabilities'    => array(
@@ -892,7 +892,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		);
 
 		if ( get_option( 'show_avatars' ) ) {
-			$avatar_properties = array();
+			$avatar_properties = [];
 
 			$avatar_sizes = rest_get_avatar_sizes();
 			foreach ( $avatar_sizes as $size ) {
@@ -931,13 +931,13 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		$query_params['exclude'] = array(
 			'description'        => __( 'Ensure result set excludes specific ids.' ),
 			'type'               => 'array',
-			'default'            => array(),
+			'default'            => [],
 			'sanitize_callback'  => 'wp_parse_id_list',
 		);
 		$query_params['include'] = array(
 			'description'        => __( 'Limit result set to specific ids.' ),
 			'type'               => 'array',
-			'default'            => array(),
+			'default'            => [],
 			'sanitize_callback'  => 'wp_parse_id_list',
 		);
 		$query_params['offset'] = array(

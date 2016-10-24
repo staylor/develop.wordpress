@@ -2847,7 +2847,7 @@ function wp_resource_hints() {
 	$hints['dns-prefetch'][] = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2.2.1/svg/' );
 
 	foreach ( $hints as $relation_type => $urls ) {
-		$unique_urls = array();
+		$unique_urls = [];
 
 		/**
 		 * Filters domains and URLs for resource hints of relation type.
@@ -2860,7 +2860,7 @@ function wp_resource_hints() {
 		$urls = apply_filters( 'wp_resource_hints', $urls, $relation_type );
 
 		foreach ( $urls as $url ) {
-			$atts = array();
+			$atts = [];
 
 			if ( is_array( $url ) ) {
 				if ( isset( $url['href'] ) ) {

@@ -62,7 +62,7 @@ class WP_REST_Post_Statuses_Controller extends WP_REST_Controller {
 	 * @return array|Error
 	 */
 	public function get_items( $request ) {
-		$data = array();
+		$data = [];
 		$statuses = get_post_stati( array( 'internal' => false ), 'object' );
 		$statuses['trash'] = get_post_status_object( 'trash' );
 		foreach ( $statuses as $obj ) {

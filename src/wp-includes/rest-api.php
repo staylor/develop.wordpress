@@ -1007,7 +1007,7 @@ function rest_is_boolean( $maybe_bool ) {
 function rest_get_avatar_urls( $email ) {
 	$avatar_sizes = rest_get_avatar_sizes();
 
-	$urls = array();
+	$urls = [];
 	foreach ( $avatar_sizes as $size ) {
 		$urls[ $size ] = get_avatar_url( $email, array( 'size' => $size ) );
 	}

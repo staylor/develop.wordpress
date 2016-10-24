@@ -11,7 +11,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * @param WP_REST_Request $request       Optional. Request to prepare items for.
 	 * @return array Array of query arguments.
 	 */
-	protected function prepare_items_query( $prepared_args = array(), $request = null ) {
+	protected function prepare_items_query( $prepared_args = [], $request = null ) {
 		$query_args = parent::prepare_items_query( $prepared_args, $request );
 		if ( empty( $query_args['post_status'] ) || ! in_array( $query_args['post_status'], array( 'inherit', 'private', 'trash' ), true ) ) {
 			$query_args['post_status'] = 'inherit';
@@ -479,7 +479,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 
 			list( /*$type*/, $attr_parts ) = explode( ';', $value, 2 );
 			$parts = explode( ';', $attr_parts );
-			$attributes = array();
+			$attributes = [];
 			foreach ( $parts as $part ) {
 				if ( strpos( $part, '=' ) === false ) {
 					continue;
@@ -594,11 +594,11 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * @return array
 	 */
 	protected function get_media_types() {
-		$media_types = array();
+		$media_types = [];
 		foreach ( get_allowed_mime_types() as $mime_type ) {
 			$parts = explode( '/', $mime_type );
 			if ( ! isset( $media_types[ $parts[0] ] ) ) {
-				$media_types[ $parts[0] ] = array();
+				$media_types[ $parts[0] ] = [];
 			}
 			$media_types[ $parts[0] ][] = $mime_type;
 		}

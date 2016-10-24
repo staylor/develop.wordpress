@@ -215,7 +215,7 @@ abstract class WP_REST_Controller {
 	 * @return array
 	 */
 	public function get_item_schema() {
-		return $this->add_additional_fields_schema( array() );
+		return $this->add_additional_fields_schema( [] );
 	}
 
 	/**
@@ -276,7 +276,7 @@ abstract class WP_REST_Controller {
 	 * @param array     $args
 	 * @return array
 	 */
-	public function get_context_param( $args = array() ) {
+	public function get_context_param( $args = [] ) {
 		$param_details = array(
 			'description'        => __( 'Scope under which the request is made; determines fields present in response.' ),
 			'type'               => 'string',
@@ -287,7 +287,7 @@ abstract class WP_REST_Controller {
 		if ( empty( $schema['properties'] ) ) {
 			return array_merge( $param_details, $args );
 		}
-		$contexts = array();
+		$contexts = [];
 		foreach ( $schema['properties'] as $attributes ) {
 			if ( ! empty( $attributes['context'] ) ) {
 				$contexts = array_merge( $contexts, $attributes['context'] );
@@ -396,13 +396,13 @@ abstract class WP_REST_Controller {
 		}
 
 		if ( ! $object_type ) {
-			return array();
+			return [];
 		}
 
 		global $wp_rest_additional_fields;
 
 		if ( ! $wp_rest_additional_fields || ! isset( $wp_rest_additional_fields[ $object_type ] ) ) {
-			return array();
+			return [];
 		}
 
 		return $wp_rest_additional_fields[ $object_type ];
@@ -436,8 +436,8 @@ abstract class WP_REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
 
 		$schema                = $this->get_item_schema();
-		$schema_properties     = ! empty( $schema['properties'] ) ? $schema['properties'] : array();
-		$endpoint_args = array();
+		$schema_properties     = ! empty( $schema['properties'] ) ? $schema['properties'] : [];
+		$endpoint_args = [];
 
 		foreach ( $schema_properties as $field_id => $params ) {
 

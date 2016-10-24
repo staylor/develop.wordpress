@@ -17,7 +17,7 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_item' ),
-				'args'                => array(),
+				'args'                => [],
 				'permission_callback' => array( $this, 'get_item_permissions_check' ),
 			),
 			array(
@@ -48,7 +48,7 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	 */
 	public function get_item( $request ) {
 		$options  = $this->get_registered_options();
-		$response = array();
+		$response = [];
 
 		foreach ( $options as $name => $args ) {
 			/**
@@ -152,21 +152,21 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	 * @return array
 	 */
 	protected function get_registered_options() {
-		$rest_options = array();
+		$rest_options = [];
 
 		foreach ( get_registered_settings() as $name => $args ) {
 			if ( empty( $args['show_in_rest'] ) ) {
 				continue;
 			}
 
-			$rest_args = array();
+			$rest_args = [];
 			if ( is_array( $args['show_in_rest'] ) ) {
 				$rest_args = $args['show_in_rest'];
 			}
 
 			$defaults = array(
 				'name'   => ! empty( $rest_args['name'] ) ? $rest_args['name'] : $name,
-				'schema' => array(),
+				'schema' => [],
 			);
 			$rest_args = array_merge( $defaults, $rest_args );
 
@@ -208,7 +208,7 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'settings',
 			'type'       => 'object',
-			'properties' => array(),
+			'properties' => [],
 		);
 
 		foreach ( $options as $option_name => $option ) {

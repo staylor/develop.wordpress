@@ -583,13 +583,13 @@ function wp_old_slug_redirect() {
 		// if year, monthnum, or day have been specified, make our query more precise
 		// just in case there are multiple identical _wp_old_slug values
 		if ( get_query_var( 'year' ) ) {
-			$query .= $wpdb->prepare(" AND YEAR(post_date) = %d", get_query_var( 'year' ) );
+			$query .= $wpdb->prepare( " AND YEAR(post_date) = %d", get_query_var( 'year' ) );
 		}
 		if ( get_query_var( 'monthnum' ) ) {
-			$query .= $wpdb->prepare(" AND MONTH(post_date) = %d", get_query_var( 'monthnum' ) );
+			$query .= $wpdb->prepare( " AND MONTH(post_date) = %d", get_query_var( 'monthnum' ) );
 		}
 		if ( get_query_var( 'day' ) ) {
-			$query .= $wpdb->prepare(" AND DAYOFMONTH(post_date) = %d", get_query_var( 'day' ) );
+			$query .= $wpdb->prepare( " AND DAYOFMONTH(post_date) = %d", get_query_var( 'day' ) );
 		}
 
 		$id = (int) $wpdb->get_var( $query );
@@ -602,7 +602,7 @@ function wp_old_slug_redirect() {
 
 		if ( get_query_var( 'paged' ) > 1 ) {
 			$link = user_trailingslashit( trailingslashit( $link ) . 'page/' . get_query_var( 'paged' ) );
-		} elseif( is_embed() ) {
+		} elseif ( is_embed() ) {
 			$link = user_trailingslashit( trailingslashit( $link ) . 'embed' );
 		}
 

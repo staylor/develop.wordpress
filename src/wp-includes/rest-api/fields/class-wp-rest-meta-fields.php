@@ -40,7 +40,7 @@ abstract class WP_REST_Meta_Fields {
 	 */
 	public function get_value( $object_id, $request ) {
 		$fields   = $this->get_registered_fields();
-		$response = array();
+		$response = [];
 
 		foreach ( $fields as $name => $args ) {
 			$all_values = get_metadata( $this->get_meta_type(), $object_id, $name, false );
@@ -52,7 +52,7 @@ abstract class WP_REST_Meta_Fields {
 				}
 				$value = $this->prepare_value_for_response( $value, $request, $args );
 			} else {
-				$value = array();
+				$value = [];
 				foreach ( $all_values as $row ) {
 					$value[] = $this->prepare_value_for_response( $row, $request, $args );
 				}
@@ -254,14 +254,14 @@ abstract class WP_REST_Meta_Fields {
 	 * @return array
 	 */
 	protected function get_registered_fields() {
-		$registered = array();
+		$registered = [];
 
 		foreach ( get_registered_meta_keys( $this->get_meta_type() ) as $name => $args ) {
 			if ( empty( $args['show_in_rest'] ) ) {
 				continue;
 			}
 
-			$rest_args = array();
+			$rest_args = [];
 			if ( is_array( $args['show_in_rest'] ) ) {
 				$rest_args = $args['show_in_rest'];
 			}
@@ -269,7 +269,7 @@ abstract class WP_REST_Meta_Fields {
 			$default_args = array(
 				'name'             => $name,
 				'single'           => $args['single'],
-				'schema'           => array(),
+				'schema'           => [],
 				'prepare_callback' => array( $this, 'prepare_value' ),
 			);
 			$default_schema = array(
@@ -314,7 +314,7 @@ abstract class WP_REST_Meta_Fields {
 			'description' => __( 'Meta fields.' ),
 			'type'        => 'object',
 			'context'     => array( 'view', 'edit' ),
-			'properties'  => array(),
+			'properties'  => [],
 		);
 
 		foreach ( $fields as $key => $args ) {

@@ -91,7 +91,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 		$revisions = wp_get_post_revisions( $request['parent'] );
 
-		$response = array();
+		$response = [];
 		foreach ( $revisions as $revision ) {
 			$data = $this->prepare_item_for_response( $revision, $request );
 			$response[] = $this->prepare_response_for_collection( $data );
@@ -199,7 +199,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 		$schema = $this->get_item_schema();
 
-		$data = array();
+		$data = [];
 
 		if ( ! empty( $schema['properties']['author'] ) ) {
 			$data['author'] = $post->post_author;

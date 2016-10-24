@@ -145,7 +145,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 			'slug'       => 'slug',
 		);
 
-		$prepared_args = array();
+		$prepared_args = [];
 
 		// For each known parameter which is both registered and present in the request,
 		// set the parameter's value on the query $prepared_args.
@@ -203,7 +203,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 				$total_terms = 0;
 			}
 		}
-		$response = array();
+		$response = [];
 		foreach ( $query_result as $term ) {
 			$data = $this->prepare_item_for_response( $term, $request );
 			$response[] = $this->prepare_response_for_collection( $data );
@@ -252,7 +252,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		$query_result = get_the_terms( $prepared_args['post'], $this->taxonomy );
 		if ( empty( $query_result ) ) {
 			$this->total_terms = 0;
-			return array();
+			return [];
 		}
 
 		/*
@@ -624,7 +624,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 
 		$schema = $this->get_item_schema();
-		$data = array();
+		$data = [];
 		if ( ! empty( $schema['properties']['id'] ) ) {
 			$data['id'] = (int) $item->term_id;
 		}
@@ -708,7 +708,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 			return $links;
 		}
 
-		$post_type_links = array();
+		$post_type_links = [];
 		foreach ( $taxonomy_obj->object_type as $type ) {
 			$post_type_object = get_post_type_object( $type );
 			if ( empty( $post_type_object->show_in_rest ) ) {
@@ -817,13 +817,13 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		$query_params['exclude'] = array(
 			'description'       => __( 'Ensure result set excludes specific ids.' ),
 			'type'              => 'array',
-			'default'           => array(),
+			'default'           => [],
 			'sanitize_callback' => 'wp_parse_id_list',
 		);
 		$query_params['include'] = array(
 			'description'       => __( 'Limit result set to specific ids.' ),
 			'type'              => 'array',
-			'default'           => array(),
+			'default'           => [],
 			'sanitize_callback' => 'wp_parse_id_list',
 		);
 		if ( ! $taxonomy->hierarchical ) {

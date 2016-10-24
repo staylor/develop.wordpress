@@ -605,7 +605,7 @@ function validate_user_signup() {
 	}
 
 	/** This filter is documented in wp-signup.php */
-	wpmu_signup_user( $user_name, $user_email, apply_filters( 'add_signup_meta', array() ) );
+	wpmu_signup_user( $user_name, $user_email, apply_filters( 'add_signup_meta', [] ) );
 
 	confirm_user_signup($user_name, $user_email);
 	return true;
