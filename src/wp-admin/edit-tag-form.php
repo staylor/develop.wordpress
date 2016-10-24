@@ -119,10 +119,10 @@ do_action( "{$taxonomy}_term_edit_form_top", $tag, $taxonomy );
 		<tr class="form-field form-required term-name-wrap">
 			<th scope="row"><label for="name"><?php _ex( 'Name', 'term name' ); ?></label></th>
 			<td><input name="name" id="name" type="text" value="<?php if ( isset( $tag->name ) ) {
-	echo esc_attr($tag->name);
+	echo esc_attr( $tag->name);
 }
 ?>" size="40" aria-required="true" />
-			<p class="description"><?php _e('The name is how it appears on your site.'); ?></p></td>
+			<p class="description"><?php _e( 'The name is how it appears on your site.' ); ?></p></td>
 		</tr>
 <?php if ( !global_terms_enabled() ) { ?>
 		<tr class="form-field term-slug-wrap">
@@ -144,10 +144,10 @@ do_action( "{$taxonomy}_term_edit_form_top", $tag, $taxonomy );
 			$slug = isset( $tag->slug ) ? apply_filters( 'editable_slug', $tag->slug, $tag ) : '';
 			?>
 			<td><input name="slug" id="slug" type="text" value="<?php echo esc_attr( $slug ); ?>" size="40" />
-			<p class="description"><?php _e('The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.'); ?></p></td>
+			<p class="description"><?php _e( 'The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.' ); ?></p></td>
 		</tr>
 <?php } ?>
-<?php if ( is_taxonomy_hierarchical($taxonomy) ) : ?>
+<?php if ( is_taxonomy_hierarchical( $taxonomy) ) : ?>
 		<tr class="form-field term-parent-wrap">
 			<th scope="row"><label for="parent"><?php _ex( 'Parent', 'term parent' ); ?></label></th>
 			<td>
@@ -168,7 +168,7 @@ do_action( "{$taxonomy}_term_edit_form_top", $tag, $taxonomy );
 				$dropdown_args = apply_filters( 'taxonomy_parent_dropdown_args', $dropdown_args, $taxonomy, 'edit' );
 				wp_dropdown_categories( $dropdown_args ); ?>
 				<?php if ( 'category' == $taxonomy ) : ?>
-				<p class="description"><?php _e('Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.'); ?></p>
+				<p class="description"><?php _e( 'Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.' ); ?></p>
 				<?php endif; ?>
 			</td>
 		</tr>
@@ -176,7 +176,7 @@ do_action( "{$taxonomy}_term_edit_form_top", $tag, $taxonomy );
 		<tr class="form-field term-description-wrap">
 			<th scope="row"><label for="description"><?php _e( 'Description' ); ?></label></th>
 			<td><textarea name="description" id="description" rows="5" cols="50" class="large-text"><?php echo $tag->description; // textarea_escaped ?></textarea>
-			<p class="description"><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></p></td>
+			<p class="description"><?php _e( 'The description is not prominent by default; however, some themes may show it.' ); ?></p></td>
 		</tr>
 		<?php
 		// Back compat hooks
@@ -256,7 +256,7 @@ if ( 'category' == $taxonomy ) {
  */
 do_action( "{$taxonomy}_edit_form", $tag, $taxonomy );
 
-submit_button( __('Update') );
+submit_button( __( 'Update' ) );
 ?>
 </form>
 </div>

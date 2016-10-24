@@ -14,7 +14,7 @@ require_once( __DIR__ . '/admin.php' );
 $view = new WidgetView( $app );
 
 /** WordPress Administration Widgets API */
-require_once( __DIR__ . '/includes/widgets.php');
+require_once( __DIR__ . '/includes/widgets.php' );
 
 if ( ! current_user_can( 'edit_theme_options' ) ) {
 	wp_die(
@@ -180,7 +180,7 @@ if ( $view->_get->has( 'editwidget' ) ) {
 			call_user_func_array( $control_callback, $control['params'] );
 		} );
 	} else {
-		$data['options'] = '<p>' . __('There are no options for this widget.') . '</p>';
+		$data['options'] = '<p>' . __( 'There are no options for this widget.' ) . '</p>';
 	}
 
 	$sidebars = [];

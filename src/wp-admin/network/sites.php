@@ -283,8 +283,8 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 <div class="wrap">
 <h1><?php _e( 'Sites' ); ?>
 
-<?php if ( current_user_can( 'create_sites') ) : ?>
-	<a href="<?php echo network_admin_url('site-new.php'); ?>" class="page-title-action"><?php echo esc_html_x( 'Add New', 'site' ); ?></a>
+<?php if ( current_user_can( 'create_sites' ) ) : ?>
+	<a href="<?php echo network_admin_url( 'site-new.php' ); ?>" class="page-title-action"><?php echo esc_html_x( 'Add New', 'site' ); ?></a>
 <?php endif; ?>
 
 <?php

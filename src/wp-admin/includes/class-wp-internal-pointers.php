@@ -115,7 +115,7 @@ final class WP_Internal_Pointers {
 
 		?>
 		<script type="text/javascript">
-		(function($){
+		(function( $){
 			var options = <?php echo wp_json_encode( $args ); ?>, setup;
 
 			if ( ! options )
@@ -131,7 +131,7 @@ final class WP_Internal_Pointers {
 			});
 
 			setup = function() {
-				$('<?php echo $selector; ?>').first().pointer( options ).pointer('open');
+				$( '<?php echo $selector; ?>' ).first().pointer( options ).pointer( 'open' );
 			};
 
 			if ( options.position && options.position.defer_loading )

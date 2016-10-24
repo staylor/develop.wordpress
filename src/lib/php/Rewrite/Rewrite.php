@@ -381,7 +381,7 @@ class Rewrite extends Observable {
 	 * @return bool True, if permalinks are enabled.
 	 */
 	public function using_permalinks() {
-		return ! empty($this->permalink_structure);
+		return ! empty( $this->permalink_structure );
 	}
 
 	/**
@@ -433,11 +433,11 @@ class Rewrite extends Observable {
 	 * @param int $number Index number.
 	 * @return string
 	 */
-	public function preg_index($number) {
+	public function preg_index( $number) {
 		$match_prefix = '$';
 		$match_suffix = '';
 
-		if ( ! empty($this->matches) ) {
+		if ( ! empty( $this->matches) ) {
 			$match_prefix = '$' . $this->matches . '[';
 			$match_suffix = ']';
 		}
@@ -475,19 +475,19 @@ class Rewrite extends Observable {
 			return [ [], [] ];
 		}
 		// Now reverse it, because we need parents after children for rewrite rules to work properly.
-		$posts = array_reverse($posts, true);
+		$posts = array_reverse( $posts, true);
 
 		$page_uris = [];
 		$page_attachment_uris = [];
 
 		foreach ( $posts as $id => $post ) {
 			// URL => page name
-			$uri = get_page_uri($id);
+			$uri = get_page_uri( $id);
 			$sql = 'SELECT ID, post_name, post_parent FROM ' . $wpdb->posts . ' WHERE post_type = "attachment" AND post_parent = %d';
 			$attachments = $wpdb->get_results( $wpdb->prepare( $sql, $id ) );
-			if ( !empty($attachments) ) {
+			if ( ! empty( $attachments) ) {
 				foreach ( $attachments as $attachment ) {
-					$attach_uri = get_page_uri($attachment->ID);
+					$attach_uri = get_page_uri( $attachment->ID);
 					$page_attachment_uris[$attach_uri] = $attachment->ID;
 				}
 			}
@@ -537,11 +537,11 @@ class Rewrite extends Observable {
 	 * @return string|false False on no permalink structure. Date permalink structure.
 	 */
 	public function get_date_permastruct() {
-		if ( isset($this->date_structure) ) {
+		if ( isset( $this->date_structure ) ) {
 			return $this->date_structure;
 		}
 
-		if ( empty($this->permalink_structure) ) {
+		if ( empty( $this->permalink_structure ) ) {
 			$this->date_structure = '';
 			return false;
 		}
@@ -553,13 +553,13 @@ class Rewrite extends Observable {
 		$date_endian = '';
 
 		foreach ( $endians as $endian ) {
-			if ( false !== strpos($this->permalink_structure, $endian) ) {
+			if ( false !== strpos( $this->permalink_structure, $endian) ) {
 				$date_endian= $endian;
 				break;
 			}
 		}
 
-		if ( empty($date_endian) ) {
+		if ( empty( $date_endian) ) {
 			$date_endian = '%year%/%monthnum%/%day%';
 		}
 
@@ -568,10 +568,10 @@ class Rewrite extends Observable {
 		 * structure. If they do, move the date tags to $front/date/.
 		 */
 		$front = $this->front;
-		preg_match_all('/%.+?%/', $this->permalink_structure, $tokens);
+		preg_match_all( '/%.+?%/', $this->permalink_structure, $tokens);
 		$tok_index = 1;
 		foreach ( (array) $tokens[0] as $token) {
-			if ( '%post_id%' == $token && ($tok_index <= 3) ) {
+			if ( '%post_id%' == $token && ( $tok_index <= 3) ) {
 				$front = $front . 'date/';
 				break;
 			}
@@ -597,14 +597,14 @@ class Rewrite extends Observable {
 	public function get_year_permastruct() {
 		$structure = $this->get_date_permastruct();
 
-		if ( empty($structure) ) {
+		if ( empty( $structure ) ) {
 			return false;
 		}
 
-		$structure = str_replace('%monthnum%', '', $structure);
-		$structure = str_replace('%day%', '', $structure);
+		$structure = str_replace( '%monthnum%', '', $structure );
+		$structure = str_replace( '%day%', '', $structure );
 
-		return preg_replace('#/+#', '/', $structure);
+		return preg_replace( '#/+#', '/', $structure );
 	}
 
 	/**
@@ -621,13 +621,13 @@ class Rewrite extends Observable {
 	public function get_month_permastruct() {
 		$structure = $this->get_date_permastruct();
 
-		if ( empty($structure) ) {
+		if ( empty( $structure ) ) {
 			return false;
 		}
 
-		$structure = str_replace('%day%', '', $structure);
+		$structure = str_replace( '%day%', '', $structure );
 
-		return preg_replace('#/+#', '/', $structure);
+		return preg_replace( '#/+#', '/', $structure );
 	}
 
 	/**
@@ -658,7 +658,7 @@ class Rewrite extends Observable {
 	 * @return string|false False on failure. Category permalink structure.
 	 */
 	public function get_category_permastruct() {
-		return $this->get_extra_permastruct('category');
+		return $this->get_extra_permastruct( 'category' );
 	}
 
 	/**
@@ -675,7 +675,7 @@ class Rewrite extends Observable {
 	 * @return string|false False on failure. Tag permalink structure.
 	 */
 	public function get_tag_permastruct() {
-		return $this->get_extra_permastruct('post_tag');
+		return $this->get_extra_permastruct( 'post_tag' );
 	}
 
 	/**
@@ -687,12 +687,12 @@ class Rewrite extends Observable {
 	 * @param string $name Permalink structure name.
 	 * @return string|false False if not found. Permalink structure string.
 	 */
-	public function get_extra_permastruct($name) {
-		if ( empty($this->permalink_structure) ) {
+	public function get_extra_permastruct( $name) {
+		if ( empty( $this->permalink_structure ) ) {
 			return false;
 		}
 
-		if ( isset($this->extra_permastructs[$name]) ) {
+		if ( isset( $this->extra_permastructs[$name] ) ) {
 			return $this->extra_permastructs[$name]['struct'];
 		}
 
@@ -712,11 +712,11 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_author_permastruct() {
-		if ( isset($this->author_structure) ) {
+		if ( isset( $this->author_structure ) ) {
 			return $this->author_structure;
 		}
 
-		if ( empty($this->permalink_structure) ) {
+		if ( empty( $this->permalink_structure ) ) {
 			$this->author_structure = '';
 			return false;
 		}
@@ -739,11 +739,11 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_search_permastruct() {
-		if ( isset($this->search_structure) ) {
+		if ( isset( $this->search_structure ) ) {
 			return $this->search_structure;
 		}
 
-		if ( empty($this->permalink_structure) ) {
+		if ( empty( $this->permalink_structure ) ) {
 			$this->search_structure = '';
 			return false;
 		}
@@ -766,11 +766,11 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_page_permastruct() {
-		if ( isset($this->page_structure) ) {
+		if ( isset( $this->page_structure ) ) {
 			return $this->page_structure;
 		}
 
-		if (empty($this->permalink_structure)) {
+		if (empty( $this->permalink_structure ) ) {
 			$this->page_structure = '';
 			return false;
 		}
@@ -793,11 +793,11 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_feed_permastruct() {
-		if ( isset($this->feed_structure) ) {
+		if ( isset( $this->feed_structure ) ) {
 			return $this->feed_structure;
 		}
 
-		if ( empty($this->permalink_structure) ) {
+		if ( empty( $this->permalink_structure ) ) {
 			$this->feed_structure = '';
 			return false;
 		}
@@ -820,11 +820,11 @@ class Rewrite extends Observable {
 	 * @return string|false False if not found. Permalink structure string.
 	 */
 	public function get_comment_feed_permastruct() {
-		if ( isset($this->comment_feed_structure) ) {
+		if ( isset( $this->comment_feed_structure ) ) {
 			return $this->comment_feed_structure;
 		}
 
-		if (empty($this->permalink_structure)) {
+		if (empty( $this->permalink_structure ) ) {
 			$this->comment_feed_structure = '';
 			return false;
 		}
@@ -913,13 +913,13 @@ class Rewrite extends Observable {
 	 *                                    Default true.
 	 * @return array Rewrite rule list.
 	 */
-	public function generate_rewrite_rules($permalink_structure, $ep_mask = EP_NONE, $paged = true, $feed = true, $forcomments = false, $walk_dirs = true, $endpoints = true) {
+	public function generate_rewrite_rules( $permalink_structure, $ep_mask = EP_NONE, $paged = true, $feed = true, $forcomments = false, $walk_dirs = true, $endpoints = true) {
 		// Build a regex to match the feed section of URLs, something like (feed|atom|rss|rss2)/?
 		$feedregex2 = '';
 		foreach ( (array) $this->feeds as $feed_name) {
 			$feedregex2 .= $feed_name . '|';
 		}
-		$feedregex2 = '(' . trim($feedregex2, '|') . ')/?$';
+		$feedregex2 = '( ' . trim( $feedregex2, '|' ) . ' )/?$';
 
 		/*
 		 * $feedregex is identical but with /feed/ added on as well, so URLs like <permalink>/feed/atom
@@ -939,7 +939,7 @@ class Rewrite extends Observable {
 			$ep_query_append = array ();
 			foreach ( (array) $this->endpoints as $endpoint) {
 				// Match everything after the endpoint name, but allow for nothing to appear there.
-				$epmatch = $endpoint[1] . '(/(.*))?/?$';
+				$epmatch = $endpoint[1] . '(/(.*) )?/?$';
 
 				// This will be appended on to the rest of the query for each dir.
 				$epquery = '&' . $endpoint[2] . '=';
@@ -948,12 +948,12 @@ class Rewrite extends Observable {
 		}
 
 		// Get everything up to the first rewrite tag.
-		$front = substr($permalink_structure, 0, strpos($permalink_structure, '%'));
+		$front = substr( $permalink_structure, 0, strpos( $permalink_structure, '%' ) );
 
-		// Build an array of the tags (note that said array ends up being in $tokens[0]).
-		preg_match_all('/%.+?%/', $permalink_structure, $tokens);
+		// Build an array of the tags (note that said array ends up being in $tokens[0] ).
+		preg_match_all( '/%.+?%/', $permalink_structure, $tokens);
 
-		$num_tokens = count($tokens[0]);
+		$num_tokens = count( $tokens[0] );
 
 		$index = $this->index; //probably 'index.php'
 		$feedindex = $index;
@@ -972,14 +972,14 @@ class Rewrite extends Observable {
 				$queries[$i] = '';
 			}
 
-			$query_token = str_replace($this->rewritecode, $this->queryreplace, $tokens[0][$i]) . $this->preg_index($i+1);
+			$query_token = str_replace( $this->rewritecode, $this->queryreplace, $tokens[0][$i] ) . $this->preg_index( $i+1);
 			$queries[$i] .= $query_token;
 		}
 
 		// Get the structure, minus any cruft (stuff that isn't tags) at the front.
 		$structure = $permalink_structure;
 		if ( $front != '/' ) {
-			$structure = str_replace($front, '', $structure);
+			$structure = str_replace( $front, '', $structure );
 		}
 
 		/*
@@ -987,26 +987,26 @@ class Rewrite extends Observable {
 		 * so for example, a $structure of /%year%/%monthnum%/%postname% would create
 		 * rewrite rules for /%year%/, /%year%/%monthnum%/ and /%year%/%monthnum%/%postname%
 		 */
-		$structure = trim($structure, '/');
-		$dirs = $walk_dirs ? explode('/', $structure) : [ $structure ];
-		$num_dirs = count($dirs);
+		$structure = trim( $structure, '/' );
+		$dirs = $walk_dirs ? explode( '/', $structure ) : [ $structure ];
+		$num_dirs = count( $dirs);
 
 		// Strip slashes from the front of $front.
-		$front = preg_replace('|^/+|', '', $front);
+		$front = preg_replace( '|^/+|', '', $front);
 
 		// The main workhorse loop.
 		$post_rewrite = [];
 		$struct = $front;
 		for ( $j = 0; $j < $num_dirs; ++$j ) {
 			// Get the struct for this dir, and trim slashes off the front.
-			$struct .= $dirs[$j] . '/'; // Accumulate. see comment near explode('/', $structure) above.
-			$struct = ltrim($struct, '/');
+			$struct .= $dirs[$j] . '/'; // Accumulate. see comment near explode( '/', $structure ) above.
+			$struct = ltrim( $struct, '/' );
 
 			// Replace tags with regexes.
-			$match = str_replace($this->rewritecode, $this->rewritereplace, $struct);
+			$match = str_replace( $this->rewritecode, $this->rewritereplace, $struct);
 
 			// Make a list of tags, and store how many there are in $num_toks.
-			$num_toks = preg_match_all('/%.+?%/', $struct, $toks);
+			$num_toks = preg_match_all( '/%.+?%/', $struct, $toks);
 
 			// Get the 'tagname=$matches[i]'.
 			$query = ( ! empty( $num_toks ) && isset( $queries[$num_toks - 1] ) ) ? $queries[$num_toks - 1] : '';
@@ -1028,26 +1028,26 @@ class Rewrite extends Observable {
 
 			// Create query for /page/xx.
 			$pagematch = $match . $pageregex;
-			$pagequery = $index . '?' . $query . '&paged=' . $this->preg_index($num_toks + 1);
+			$pagequery = $index . '?' . $query . '&paged=' . $this->preg_index( $num_toks + 1);
 
 			// Create query for /comment-page-xx.
 			$commentmatch = $match . $commentregex;
-			$commentquery = $index . '?' . $query . '&cpage=' . $this->preg_index($num_toks + 1);
+			$commentquery = $index . '?' . $query . '&cpage=' . $this->preg_index( $num_toks + 1);
 
 			$rootcommentmatch = $rootcommentquery = null;
-			if ( get_option('page_on_front') ) {
+			if ( get_option( 'page_on_front' ) ) {
 				// Create query for Root /comment-page-xx.
 				$rootcommentmatch = $match . $commentregex;
-				$rootcommentquery = $index . '?' . $query . '&page_id=' . get_option('page_on_front') . '&cpage=' . $this->preg_index($num_toks + 1);
+				$rootcommentquery = $index . '?' . $query . '&page_id=' . get_option( 'page_on_front' ) . '&cpage=' . $this->preg_index( $num_toks + 1);
 			}
 
 			// Create query for /feed/(feed|atom|rss|rss2|rdf).
 			$feedmatch = $match . $feedregex;
-			$feedquery = $feedindex . '?' . $query . '&feed=' . $this->preg_index($num_toks + 1);
+			$feedquery = $feedindex . '?' . $query . '&feed=' . $this->preg_index( $num_toks + 1);
 
 			// Create query for /(feed|atom|rss|rss2|rdf) (see comment near creation of $feedregex).
 			$feedmatch2 = $match . $feedregex2;
-			$feedquery2 = $feedindex . '?' . $query . '&feed=' . $this->preg_index($num_toks + 1);
+			$feedquery2 = $feedindex . '?' . $query . '&feed=' . $this->preg_index( $num_toks + 1);
 
 			// Create query and regex for embeds.
 			$embedmatch = $match . $embedregex;
@@ -1075,7 +1075,7 @@ class Rewrite extends Observable {
 			// Only on pages with comments add ../comment-page-xx/.
 			if ( EP_PAGES & $ep_mask || EP_PERMALINK & $ep_mask ) {
 				$rewrite = array_merge( $rewrite, [ $commentmatch => $commentquery ] );
-			} elseif ( EP_ROOT & $ep_mask && get_option('page_on_front') ) {
+			} elseif ( EP_ROOT & $ep_mask && get_option( 'page_on_front' ) ) {
 				$rewrite = array_merge( $rewrite, [ $rootcommentmatch => $rootcommentquery ] );
 			}
 
@@ -1084,7 +1084,7 @@ class Rewrite extends Observable {
 				foreach ( (array) $ep_query_append as $regex => $ep) {
 					// Add the endpoints on if the mask fits.
 					if ( $ep[0] & $ep_mask || $ep[0] & $ep_mask_specific ) {
-						$rewrite[$match . $regex] = $index . '?' . $query . $ep[1] . $this->preg_index($num_toks + 2);
+						$rewrite[$match . $regex] = $index . '?' . $query . $ep[1] . $this->preg_index( $num_toks + 2);
 					}
 				}
 			}
@@ -1100,13 +1100,13 @@ class Rewrite extends Observable {
 				 * 2) post ID, 3) page name, 4) timestamp (year, month, day, hour, second and
 				 * minute all present). Set these flags now as we need them for the endpoints.
 				 */
-				if ( strpos($struct, '%postname%') !== false
-						|| strpos($struct, '%post_id%') !== false
-						|| strpos($struct, '%pagename%') !== false
-						|| (strpos($struct, '%year%') !== false && strpos($struct, '%monthnum%') !== false && strpos($struct, '%day%') !== false && strpos($struct, '%hour%') !== false && strpos($struct, '%minute%') !== false && strpos($struct, '%second%') !== false)
+				if ( strpos( $struct, '%postname%' ) !== false
+						|| strpos( $struct, '%post_id%' ) !== false
+						|| strpos( $struct, '%pagename%' ) !== false
+						|| (strpos( $struct, '%year%' ) !== false && strpos( $struct, '%monthnum%' ) !== false && strpos( $struct, '%day%' ) !== false && strpos( $struct, '%hour%' ) !== false && strpos( $struct, '%minute%' ) !== false && strpos( $struct, '%second%' ) !== false)
 						) {
 					$post = true;
-					if ( strpos($struct, '%pagename%') !== false ) {
+					if ( strpos( $struct, '%pagename%' ) !== false ) {
 						$page = true;
 					}
 				}
@@ -1140,10 +1140,10 @@ class Rewrite extends Observable {
 					$embedquery = $embedindex . '?' . $query . '&embed=true';
 
 					// Trim slashes from the end of the regex for this dir.
-					$match = rtrim($match, '/');
+					$match = rtrim( $match, '/' );
 
 					// Get rid of brackets.
-					$submatchbase = str_replace( [ '(', ')' ], '', $match);
+					$submatchbase = str_replace( [ '( ', ' )' ], '', $match );
 
 					// Add a rule for at attachments, which take the form of <permalink>/some-text.
 					$sub1 = $submatchbase . '/([^/]+)/';
@@ -1192,7 +1192,7 @@ class Rewrite extends Observable {
 					$subembedquery = $subquery . '&embed=true';
 
 					// Do endpoints for attachments.
-					if ( !empty($endpoints) ) {
+					if ( ! empty( $endpoints) ) {
 						foreach ( (array) $ep_query_append as $regex => $ep ) {
 							if ( $ep[0] & EP_ATTACHMENT ) {
 								$rewrite[$sub1 . $regex] = $subquery . $ep[1] . $this->preg_index(3);
@@ -1214,8 +1214,8 @@ class Rewrite extends Observable {
 					 * Previously: '(/[0-9]+)?/?$', which produced '/2' for page.
 					 * When cast to int, returned 0.
 					 */
-					$match = $match . '(?:/([0-9]+))?/?$';
-					$query = $index . '?' . $query . '&page=' . $this->preg_index($num_toks + 1);
+					$match = $match . '(?:/([0-9]+) )?/?$';
+					$query = $index . '?' . $query . '&page=' . $this->preg_index( $num_toks + 1);
 
 				// Not matching a permalink so this is a lot simpler.
 				} else {
@@ -1229,12 +1229,12 @@ class Rewrite extends Observable {
 				 * only contains rules/queries for trackback, pages etc) to the main regex/query for
 				 * this dir
 				 */
-				$rewrite = array_merge($rewrite, [ $match => $query ] );
+				$rewrite = array_merge( $rewrite, [ $match => $query ] );
 
 				// If we're matching a permalink, add those extras (attachments etc) on.
 				if ( $post ) {
 					// Add trackback.
-					$rewrite = array_merge(array($trackbackmatch => $trackbackquery), $rewrite);
+					$rewrite = array_merge(array( $trackbackmatch => $trackbackquery), $rewrite);
 
 					// Add embed.
 					$rewrite = array_merge( [ $embedmatch => $embedquery ], $rewrite );
@@ -1256,7 +1256,7 @@ class Rewrite extends Observable {
 				}
 			}
 			// Add the rules for this dir to the accumulating $post_rewrite.
-			$post_rewrite = array_merge($rewrite, $post_rewrite);
+			$post_rewrite = array_merge( $rewrite, $post_rewrite);
 		}
 
 		// The finished rules. phew!
@@ -1279,8 +1279,8 @@ class Rewrite extends Observable {
 	 * @param bool   $walk_dirs           Optional, default is false. Whether to create list of directories to walk over.
 	 * @return array
 	 */
-	public function generate_rewrite_rule($permalink_structure, $walk_dirs = false) {
-		return $this->generate_rewrite_rules($permalink_structure, EP_NONE, false, false, false, $walk_dirs);
+	public function generate_rewrite_rule( $permalink_structure, $walk_dirs = false) {
+		return $this->generate_rewrite_rules( $permalink_structure, EP_NONE, false, false, false, $walk_dirs);
 	}
 
 	/**
@@ -1304,7 +1304,7 @@ class Rewrite extends Observable {
 	public function rewrite_rules() {
 		$rewrite = [];
 
-		if ( empty($this->permalink_structure) ) {
+		if ( empty( $this->permalink_structure ) ) {
 			return $rewrite;
 		}
 
@@ -1356,7 +1356,7 @@ class Rewrite extends Observable {
 		$date_rewrite = apply_filters( 'date_rewrite_rules', $date_rewrite );
 
 		// Root-level rewrite rules.
-		$root_rewrite = $this->generate_rewrite_rules($this->root . '/', EP_ROOT);
+		$root_rewrite = $this->generate_rewrite_rules( $this->root . '/', EP_ROOT);
 
 		/**
 		 * Filters rewrite rules used for root-level archives.
@@ -1371,7 +1371,7 @@ class Rewrite extends Observable {
 		$root_rewrite = apply_filters( 'root_rewrite_rules', $root_rewrite );
 
 		// Comments rewrite rules.
-		$comments_rewrite = $this->generate_rewrite_rules($this->root . $this->comments_base, EP_COMMENTS, false, true, true, false);
+		$comments_rewrite = $this->generate_rewrite_rules( $this->root . $this->comments_base, EP_COMMENTS, false, true, true, false);
 
 		/**
 		 * Filters rewrite rules used for comment feed archives.
@@ -1465,14 +1465,14 @@ class Rewrite extends Observable {
 				$rules = apply_filters( 'tag_rewrite_rules', $rules );
 			}
 
-			$this->extra_rules_top = array_merge($this->extra_rules_top, $rules);
+			$this->extra_rules_top = array_merge( $this->extra_rules_top, $rules );
 		}
 
 		// Put them together.
 		if ( $this->use_verbose_page_rules ) {
-			$this->rules = array_merge($this->extra_rules_top, $robots_rewrite, $deprecated_files, $registration_pages, $root_rewrite, $comments_rewrite, $search_rewrite,  $author_rewrite, $date_rewrite, $page_rewrite, $post_rewrite, $this->extra_rules);
+			$this->rules = array_merge( $this->extra_rules_top, $robots_rewrite, $deprecated_files, $registration_pages, $root_rewrite, $comments_rewrite, $search_rewrite,  $author_rewrite, $date_rewrite, $page_rewrite, $post_rewrite, $this->extra_rules );
 		} else {
-			$this->rules = array_merge($this->extra_rules_top, $robots_rewrite, $deprecated_files, $registration_pages, $root_rewrite, $comments_rewrite, $search_rewrite,  $author_rewrite, $date_rewrite, $post_rewrite, $page_rewrite, $this->extra_rules);
+			$this->rules = array_merge( $this->extra_rules_top, $robots_rewrite, $deprecated_files, $registration_pages, $root_rewrite, $comments_rewrite, $search_rewrite,  $author_rewrite, $date_rewrite, $post_rewrite, $page_rewrite, $this->extra_rules );
 		}
 
 		/**
@@ -1510,8 +1510,8 @@ class Rewrite extends Observable {
 	 * @return array Rewrite rules.
 	 */
 	public function wp_rewrite_rules() {
-		$this->rules = get_option('rewrite_rules');
-		if ( empty($this->rules) ) {
+		$this->rules = get_option( 'rewrite_rules' );
+		if ( empty( $this->rules ) ) {
 			$this->matches = 'matches';
 			$this->rewrite_rules();
 			if ( ! did_action( 'wp_loaded' ) ) {
@@ -1545,12 +1545,12 @@ class Rewrite extends Observable {
 
 		$site_root = parse_url( site_url() );
 		if ( isset( $site_root['path'] ) ) {
-			$site_root = trailingslashit($site_root['path']);
+			$site_root = trailingslashit( $site_root['path'] );
 		}
 
-		$home_root = parse_url(home_url());
+		$home_root = parse_url( home_url() );
 		if ( isset( $home_root['path'] ) ) {
-			$home_root = trailingslashit($home_root['path']);
+			$home_root = trailingslashit( $home_root['path'] );
 		} else {
 			$home_root = '/';
 		}
@@ -1563,9 +1563,9 @@ class Rewrite extends Observable {
 		$rules .= "RewriteRule ^index\.php$ - [L]\n";
 
 		// Add in the rules that don't redirect to WP's index.php (and thus shouldn't be handled by WP at all).
-		foreach ( (array) $this->non_wp_rules as $match => $query) {
+		foreach ( (array) $this->non_wp_rules as $match => $query ) {
 			// Apache 1.3 does not support the reluctant (non-greedy) modifier.
-			$match = str_replace('.+?', '.+', $match);
+			$match = str_replace( '.+?', '.+', $match );
 
 			$rules .= 'RewriteRule ^' . $match . ' ' . $home_root . $query . " [QSA,L]\n";
 		}
@@ -1573,16 +1573,16 @@ class Rewrite extends Observable {
 		if ( $this->use_verbose_rules ) {
 			$this->matches = '';
 			$rewrite = $this->rewrite_rules();
-			$num_rules = count($rewrite);
+			$num_rules = count( $rewrite );
 			$rules .= "RewriteCond %{REQUEST_FILENAME} -f [OR]\n" .
 				"RewriteCond %{REQUEST_FILENAME} -d\n" .
 				'RewriteRule ^.*$ - [S=' . $num_rules . "]\n";
 
-			foreach ( (array) $rewrite as $match => $query) {
+			foreach ( (array) $rewrite as $match => $query ) {
 				// Apache 1.3 does not support the reluctant (non-greedy) modifier.
-				$match = str_replace('.+?', '.+', $match);
+				$match = str_replace( '.+?', '.+', $match );
 
-				if ( strpos($query, $this->index) !== false ) {
+				if ( strpos( $query, $this->index) !== false ) {
 					$rules .= 'RewriteRule ^' . $match . ' ' . $home_root . $query . " [QSA,L]\n";
 				} else {
 					$rules .= 'RewriteRule ^' . $match . ' ' . $site_root . $query . " [QSA,L]\n";
@@ -1899,21 +1899,21 @@ class Rewrite extends Observable {
 	 */
 	public function init() {
 		$this->extra_rules = $this->non_wp_rules = $this->endpoints = [];
-		$this->permalink_structure = get_option('permalink_structure');
-		$this->front = substr($this->permalink_structure, 0, strpos($this->permalink_structure, '%'));
+		$this->permalink_structure = get_option( 'permalink_structure' );
+		$this->front = substr( $this->permalink_structure, 0, strpos( $this->permalink_structure, '%' ) );
 		$this->root = '';
 
 		if ( $this->using_index_permalinks() ) {
 			$this->root = $this->index . '/';
 		}
 
-		unset($this->author_structure);
-		unset($this->date_structure);
-		unset($this->page_structure);
-		unset($this->search_structure);
-		unset($this->feed_structure);
-		unset($this->comment_feed_structure);
-		$this->use_trailing_slashes = ( '/' == substr($this->permalink_structure, -1, 1) );
+		unset( $this->author_structure );
+		unset( $this->date_structure );
+		unset( $this->page_structure );
+		unset( $this->search_structure );
+		unset( $this->feed_structure );
+		unset( $this->comment_feed_structure );
+		$this->use_trailing_slashes = ( '/' == substr( $this->permalink_structure, -1, 1 ) );
 
 		// Enable generic rules for pages if permalink structure doesn't begin with a wildcard.
 		if ( preg_match( '/^[^%]*%(?:postname|category|tag|author)%/', $this->permalink_structure ) ) {
@@ -1938,10 +1938,10 @@ class Rewrite extends Observable {
 	 *
 	 * @param string $permalink_structure Permalink structure.
 	 */
-	public function set_permalink_structure($permalink_structure) {
+	public function set_permalink_structure( $permalink_structure ) {
 		if ( $permalink_structure != $this->permalink_structure ) {
 			$old_permalink_structure = $this->permalink_structure;
-			update_option('permalink_structure', $permalink_structure);
+			update_option( 'permalink_structure', $permalink_structure );
 
 			$this->init();
 
@@ -1969,9 +1969,9 @@ class Rewrite extends Observable {
 	 *
 	 * @param string $category_base Category permalink structure base.
 	 */
-	public function set_category_base($category_base) {
-		if ( $category_base != get_option('category_base') ) {
-			update_option('category_base', $category_base);
+	public function set_category_base( $category_base) {
+		if ( $category_base != get_option( 'category_base' ) ) {
+			update_option( 'category_base', $category_base );
 			$this->init();
 		}
 	}
@@ -1989,7 +1989,7 @@ class Rewrite extends Observable {
 	 * @param string $tag_base Tag permalink structure base.
 	 */
 	public function set_tag_base( $tag_base ) {
-		if ( $tag_base != get_option( 'tag_base') ) {
+		if ( $tag_base != get_option( 'tag_base' ) ) {
 			update_option( 'tag_base', $tag_base );
 			$this->init();
 		}

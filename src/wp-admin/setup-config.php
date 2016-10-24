@@ -116,7 +116,7 @@ if ( ! empty( $_request->get( 'language' ) ) ) {
 	$language = $app['wp_local_package'];
 }
 
-switch($step) {
+switch( $step) {
 case -1:
 	if ( wp_can_install_language_pack() && empty( $language ) && ( $languages = wp_get_available_translations() ) ) {
 		setup_config_display_header( 'language-chooser' );
@@ -268,10 +268,10 @@ case 0:
 	/**#@+
 	 * @ignore
 	 */
-	define('DB_NAME', $dbname);
-	define('DB_USER', $uname);
-	define('DB_PASSWORD', $pwd);
-	define('DB_HOST', $dbhost);
+	define( 'DB_NAME', $dbname);
+	define( 'DB_USER', $uname);
+	define( 'DB_PASSWORD', $pwd);
+	define( 'DB_HOST', $dbhost);
 	/**#@-*/
 
 	// Re-construct $wpdb with these new values.
@@ -297,7 +297,7 @@ case 0:
 	// Generate keys and salts using secure CSPRNG; fallback to API if enabled; further fallback to original wp_generate_password().
 	try {
 		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|';
-		$max = strlen($chars) - 1;
+		$max = strlen( $chars) - 1;
 		for ( $i = 0; $i < 8; $i++ ) {
 			$key = '';
 			for ( $j = 0; $j < 64; $j++ ) {
@@ -345,11 +345,11 @@ case 0:
 		case 'DB_USER'     :
 		case 'DB_PASSWORD' :
 		case 'DB_HOST'     :
-			$config_file[ $line_num ] = "define('" . $constant . "'," . $padding . "'" . addcslashes( constant( $constant ), "\\'" ) . "');\r\n";
+			$config_file[ $line_num ] = "define( '" . $constant . "'," . $padding . "'" . addcslashes( constant( $constant ), "\\'" ) . "' );\r\n";
 			break;
 		case 'DB_CHARSET'  :
 			if ( 'utf8mb4' === $wpdb->charset || ( ! $wpdb->charset && $wpdb->has_cap( 'utf8mb4' ) ) ) {
-				$config_file[ $line_num ] = "define('" . $constant . "'," . $padding . "'utf8mb4');\r\n";
+				$config_file[ $line_num ] = "define( '" . $constant . "'," . $padding . "'utf8mb4' );\r\n";
 			}
 			break;
 		case 'AUTH_KEY'         :
@@ -360,13 +360,13 @@ case 0:
 		case 'SECURE_AUTH_SALT' :
 		case 'LOGGED_IN_SALT'   :
 		case 'NONCE_SALT'       :
-			$config_file[ $line_num ] = "define('" . $constant . "'," . $padding . "'" . $secret_keys[$key++] . "');\r\n";
+			$config_file[ $line_num ] = "define( '" . $constant . "'," . $padding . "'" . $secret_keys[$key++] . "' );\r\n";
 			break;
 		}
 	}
 	unset( $line );
 
-	if ( ! is_writable(ABSPATH) ) {
+	if ( ! is_writable( ABSPATH ) ) {
 		setup_config_display_header();
 ?>
 <p><?php
@@ -379,7 +379,7 @@ case 0:
 ?></p>
 <textarea id="wp-config" cols="98" rows="15" class="code" readonly="readonly"><?php
 		foreach ( $config_file as $line ) {
-			echo htmlentities($line, ENT_COMPAT, 'UTF-8');
+			echo htmlentities( $line, ENT_COMPAT, 'UTF-8' );
 		}
 ?></textarea>
 <p><?php _e( 'After you&#8217;ve done that, click &#8220;Run the install.&#8221;' ); ?></p>
@@ -387,7 +387,7 @@ case 0:
 <script>
 (function(){
 if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
-	var el = document.getElementById('wp-config');
+	var el = document.getElementById( 'wp-config' );
 	el.focus();
 	el.select();
 }

@@ -107,7 +107,7 @@ function meta_box_prefs( $screen ) {
 		return;
 	}
 
-	$hidden = get_hidden_meta_boxes($screen);
+	$hidden = get_hidden_meta_boxes( $screen);
 
 	foreach ( array_keys( $app->meta_boxes[ $screen->id ] ) as $context ) {
 		foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
@@ -162,7 +162,7 @@ function get_hidden_meta_boxes( $screen ) {
 		$hidden = [];
 		if ( 'post' == $screen->base ) {
 			if ( 'post' == $screen->post_type || 'page' == $screen->post_type || 'attachment' == $screen->post_type ) {
-				$hidden = array('slugdiv', 'trackbacksdiv', 'postcustom', 'postexcerpt', 'commentstatusdiv', 'commentsdiv', 'authordiv', 'revisionsdiv');
+				$hidden = array( 'slugdiv', 'trackbacksdiv', 'postcustom', 'postexcerpt', 'commentstatusdiv', 'commentsdiv', 'authordiv', 'revisionsdiv' );
 			} else {
 				$hidden = array( 'slugdiv' );
 			}

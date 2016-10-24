@@ -257,7 +257,7 @@ class WP_List_Table {
 	 * @return bool
 	 */
 	public function has_items() {
-		return !empty( $this->items );
+		return ! empty( $this->items );
 	}
 
 	/**
@@ -961,7 +961,7 @@ class WP_List_Table {
 			}
 
 			$data = (array) $data;
-			if ( !isset( $data[1] ) ) {
+			if ( ! isset( $data[1] ) ) {
 				$data[1] = false;
 			}
 
@@ -1058,7 +1058,7 @@ class WP_List_Table {
 			$scope = ( 'th' === $tag ) ? 'scope="col"' : '';
 			$id = $with_id ? "id='$column_key'" : '';
 
-			if ( !empty( $class ) ) {
+			if ( ! empty( $class ) ) {
 				$class = "class='" . join( ' ', $class ) . "'";
 			}
 

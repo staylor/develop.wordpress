@@ -25,22 +25,22 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @param array $args
 	 */
-	public function __construct($args = []) {
+	public function __construct( $args = [] ) {
 		$defaults = [ 'type' => 'web', 'url' => '', 'plugin' => '', 'nonce' => '', 'title' => '' ];
-		$args = wp_parse_args($args, $defaults);
+		$args = wp_parse_args( $args, $defaults);
 
 		$this->type = $args['type'];
-		$this->api = isset($args['api']) ? $args['api'] : [];
+		$this->api = isset( $args['api'] ) ? $args['api'] : [];
 
-		parent::__construct($args);
+		parent::__construct( $args);
 	}
 
 	/**
 	 * @access public
 	 */
 	public function before() {
-		if ( !empty($this->api) ) {
-			$this->upgrader->strings['process_success'] = sprintf( __('Successfully installed the plugin <strong>%s %s</strong>.'), $this->api->name, $this->api->version);
+		if ( ! empty( $this->api) ) {
+			$this->upgrader->strings['process_success'] = sprintf( __( 'Successfully installed the plugin <strong>%s %s</strong>.' ), $this->api->name, $this->api->version);
 		}
 	}
 
@@ -78,7 +78,7 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 			$install_actions['plugins_page'] = '<a href="' . self_admin_url( 'plugins.php' ) . '" target="_parent">' . __( 'Return to Plugins page' ) . '</a>';
 		}
 
-		if ( ! $this->result || is_wp_error($this->result) ) {
+		if ( ! $this->result || is_wp_error( $this->result) ) {
 			unset( $install_actions['activate_plugin'], $install_actions['network_activate'] );
 		} elseif ( ! current_user_can( 'activate_plugins' ) ) {
 			unset( $install_actions['activate_plugin'] );

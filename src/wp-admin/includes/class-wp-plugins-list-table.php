@@ -50,7 +50,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			$status = $this->_request->get( 'plugin_status' );
 		}
 		if ( $this->_request->get( 's' ) ) {
-			$this->_server->set( 'REQUEST_URI', add_query_arg('s', wp_unslash( $this->_request->get( 's' ) ) ) );
+			$this->_server->set( 'REQUEST_URI', add_query_arg( 's', wp_unslash( $this->_request->get( 's' ) ) ) );
 		}
 		$page = $this->get_pagenum();
 	}
@@ -66,7 +66,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	 * @return bool
 	 */
 	public function ajax_user_can() {
-		return current_user_can('activate_plugins');
+		return current_user_can( 'activate_plugins' );
 	}
 
 	/**
@@ -449,7 +449,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 			if ( 'search' !== $type ) {
 				$status_links[$type] = sprintf( "<a href='%s' %s>%s</a>",
-					add_query_arg('plugin_status', $type, 'plugins.php'),
+					add_query_arg( 'plugin_status', $type, 'plugins.php' ),
 					( $type === $status ) ? ' class="current"' : '',
 					sprintf( $text, number_format_i18n( $count ) )
 				);
@@ -475,7 +475,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		if ( 'inactive' != $status && 'recent' != $status ) {
 			$actions['deactivate-selected'] = $this->screen->in_admin( 'network' ) ? __( 'Network Deactivate' ) : __( 'Deactivate' );
 		}
-		if ( !is_multisite() || $this->screen->in_admin( 'network' ) ) {
+		if ( ! is_multisite() || $this->screen->in_admin( 'network' ) ) {
 			if ( current_user_can( 'update_plugins' ) ) {
 				$actions['update-selected'] = __( 'Update' );
 			}
@@ -507,7 +507,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 	protected function extra_tablenav( $which ) {
 		global $status; //NOSONAR
 
-		if ( ! in_array($status, array('recently_activated', 'mustuse', 'dropins') ) ) {
+		if ( ! in_array( $status, array( 'recently_activated', 'mustuse', 'dropins' ) ) ) {
 			return;
 		}
 
@@ -610,7 +610,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 				$description = '<p><strong>' . $dropins[ $plugin_file ][0] . ' <span class="error-message">' . __( 'Inactive:' ) . '</span></strong> ' .
 					/* translators: 1: drop-in constant name, 2: wp-config.php */
 					sprintf( __( 'Requires %1$s in %2$s file.' ),
-						"<code>define('" . $dropins[ $plugin_file ][1] . "', true);</code>",
+						"<code>define( '" . $dropins[ $plugin_file ][1] . "', true );</code>",
 						'<code>wp-config.php</code>'
 					) . '</p>';
 			}
@@ -756,7 +756,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		}
 
 		$class = $is_active ? 'active' : 'inactive';
-		$checkbox_id =  "checkbox_" . md5($plugin_data['Name']);
+		$checkbox_id =  "checkbox_" . md5( $plugin_data['Name'] );
 		if ( $restrict_network_active || $restrict_network_only || in_array( $status, array( 'mustuse', 'dropins' ) ) ) {
 			$checkbox = '';
 		} else {
@@ -804,12 +804,12 @@ class WP_Plugins_List_Table extends WP_List_Table {
 					<div class='$class second plugin-version-author-uri'>";
 
 				$plugin_meta = [];
-				if ( !empty( $plugin_data['Version'] ) ) {
+				if ( ! empty( $plugin_data['Version'] ) ) {
 					$plugin_meta[] = sprintf( __( 'Version %s' ), $plugin_data['Version'] );
 				}
-				if ( !empty( $plugin_data['Author'] ) ) {
+				if ( ! empty( $plugin_data['Author'] ) ) {
 					$author = $plugin_data['Author'];
-					if ( !empty( $plugin_data['AuthorURI'] ) ) {
+					if ( ! empty( $plugin_data['AuthorURI'] ) ) {
 						$author = '<a href="' . $plugin_data['AuthorURI'] . '">' . $plugin_data['Author'] . '</a>';
 					}
 					$plugin_meta[] = sprintf( __( 'By %s' ), $author );

@@ -8,29 +8,29 @@
 use WP\Link\Admin\Help as LinkHelp;
 
 // don't load directly
-if ( !defined('ABSPATH') ) {
-	die('-1');
+if ( !defined( 'ABSPATH' ) ) {
+	die( '-1' );
 }
 
-if ( ! empty($link_id) ) {
+if ( ! empty( $link_id ) ) {
 	$heading = sprintf( __( '<a href="%s">Links</a> / Edit Link' ), 'link-manager.php' );
-	$submit_text = __('Update Link');
+	$submit_text = __( 'Update Link' );
 	$form_name = 'editlink';
 	$nonce_action = 'update-bookmark_' . $link_id;
 } else {
 	$heading = sprintf( __( '<a href="%s">Links</a> / Add New Link' ), 'link-manager.php' );
-	$submit_text = __('Add Link');
+	$submit_text = __( 'Add Link' );
 	$form_name = 'addlink';
 	$nonce_action = 'add-bookmark';
 }
 
 require_once( ABSPATH . 'wp-admin/includes/meta-boxes.php' );
 
-add_meta_box('linksubmitdiv', __('Save'), 'link_submit_meta_box', null, 'side', 'core');
-add_meta_box('linkcategorydiv', __('Categories'), 'link_categories_meta_box', null, 'normal', 'core');
-add_meta_box('linktargetdiv', __('Target'), 'link_target_meta_box', null, 'normal', 'core');
-add_meta_box('linkxfndiv', __('Link Relationship (XFN)'), 'link_xfn_meta_box', null, 'normal', 'core');
-add_meta_box('linkadvanceddiv', __('Advanced'), 'link_advanced_meta_box', null, 'normal', 'core');
+add_meta_box( 'linksubmitdiv', __( 'Save' ), 'link_submit_meta_box', null, 'side', 'core' );
+add_meta_box( 'linkcategorydiv', __( 'Categories' ), 'link_categories_meta_box', null, 'normal', 'core' );
+add_meta_box( 'linktargetdiv', __( 'Target' ), 'link_target_meta_box', null, 'normal', 'core' );
+add_meta_box( 'linkxfndiv', __( 'Link Relationship (XFN)' ), 'link_xfn_meta_box', null, 'normal', 'core' );
+add_meta_box( 'linkadvanceddiv', __( 'Advanced' ), 'link_advanced_meta_box', null, 'normal', 'core' );
 
 /** This action is documented in wp-admin/edit-form-advanced.php */
 do_action( 'add_meta_boxes', 'link', $link );
@@ -51,7 +51,7 @@ do_action( 'do_meta_boxes', 'link', 'advanced', $link );
 /** This action is documented in wp-admin/edit-form-advanced.php */
 do_action( 'do_meta_boxes', 'link', 'side', $link );
 
-add_screen_option('layout_columns', [ 'max' => 2, 'default' => 2 ] );
+add_screen_option( 'layout_columns', [ 'max' => 2, 'default' => 2 ] );
 
 ( new LinkHelp( get_current_screen() ) )->addEditLinkForm();
 
@@ -59,10 +59,10 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 
 <div class="wrap">
-<h1><?php echo esc_html( $app->get( 'title' ) ); ?>  <a href="link-add.php" class="page-title-action"><?php echo esc_html_x('Add New', 'link'); ?></a></h1>
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?>  <a href="link-add.php" class="page-title-action"><?php echo esc_html_x( 'Add New', 'link' ); ?></a></h1>
 
 <?php if ( $_get->get( 'added' ) ) : ?>
-<div id="message" class="updated notice is-dismissible"><p><?php _e('Link added.'); ?></p></div>
+<div id="message" class="updated notice is-dismissible"><p><?php _e( 'Link added.' ); ?></p></div>
 <?php endif; ?>
 
 <form name="<?php echo esc_attr( $form_name ); ?>" id="<?php echo esc_attr( $form_name ); ?>" method="post" action="link.php">
@@ -82,24 +82,24 @@ wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 <div id="namediv" class="stuffbox">
 <h2><label for="link_name"><?php _ex( 'Name', 'link name' ) ?></label></h2>
 <div class="inside">
-	<input type="text" name="link_name" size="30" maxlength="255" value="<?php echo esc_attr($link->link_name); ?>" id="link_name" />
-	<p><?php _e('Example: Nifty blogging software'); ?></p>
+	<input type="text" name="link_name" size="30" maxlength="255" value="<?php echo esc_attr( $link->link_name); ?>" id="link_name" />
+	<p><?php _e( 'Example: Nifty blogging software' ); ?></p>
 </div>
 </div>
 
 <div id="addressdiv" class="stuffbox">
 <h2><label for="link_url"><?php _e( 'Web Address' ) ?></label></h2>
 <div class="inside">
-	<input type="text" name="link_url" size="30" maxlength="255" class="code" value="<?php echo esc_attr($link->link_url); ?>" id="link_url" />
-	<p><?php _e('Example: <code>http://wordpress.org/</code> &#8212; don&#8217;t forget the <code>http://</code>'); ?></p>
+	<input type="text" name="link_url" size="30" maxlength="255" class="code" value="<?php echo esc_attr( $link->link_url); ?>" id="link_url" />
+	<p><?php _e( 'Example: <code>http://wordpress.org/</code> &#8212; don&#8217;t forget the <code>http://</code>' ); ?></p>
 </div>
 </div>
 
 <div id="descriptiondiv" class="stuffbox">
 <h2><label for="link_description"><?php _e( 'Description' ) ?></label></h2>
 <div class="inside">
-	<input type="text" name="link_description" size="30" maxlength="255" value="<?php echo isset($link->link_description) ? esc_attr($link->link_description) : ''; ?>" id="link_description" />
-	<p><?php _e('This will be shown when someone hovers over the link in the blogroll, or optionally below the link.'); ?></p>
+	<input type="text" name="link_description" size="30" maxlength="255" value="<?php echo isset( $link->link_description) ? esc_attr( $link->link_description) : ''; ?>" id="link_description" />
+	<p><?php _e( 'This will be shown when someone hovers over the link in the blogroll, or optionally below the link.' ); ?></p>
 </div>
 </div>
 </div><!-- /post-body-content -->

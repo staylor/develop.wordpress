@@ -98,8 +98,8 @@ class File_Upload_Upgrader {
 			// Numeric Package = previously uploaded file, see above.
 			$this->id = $_get->getInt( $urlholder );
 			$attachment = get_post( $this->id );
-			if ( empty($attachment) ) {
-				wp_die(__('Please select a file'));
+			if ( empty( $attachment) ) {
+				wp_die( __( 'Please select a file' ) );
 			}
 
 			$this->filename = $attachment->post_title;

@@ -16,7 +16,7 @@ use function WP\getApp;
  * @return bool
  */
 function got_mod_rewrite() {
-	$got_rewrite = apache_mod_loaded('mod_rewrite', true);
+	$got_rewrite = apache_mod_loaded( 'mod_rewrite', true );
 
 	/**
 	 * Filters whether Apache and mod_rewrite are present.
@@ -72,18 +72,18 @@ function extract_from_markers( $filename, $marker ) {
 		return $result;
 	}
 
-	if ( $markerdata = explode( "\n", implode( '', file( $filename ) ) ));
+	if ( $markerdata = explode( "\n", implode( '', file( $filename ) ) ) )
 	{
 		$state = false;
 		foreach ( $markerdata as $markerline ) {
-			if (strpos($markerline, '# END ' . $marker) !== false) {
-							$state = false;
+			if (strpos( $markerline, '# END ' . $marker) !== false ) {
+				$state = false;
 			}
 			if ( $state ) {
-							$result[] = $markerline;
+				$result[] = $markerline;
 			}
-			if (strpos($markerline, '# BEGIN ' . $marker) !== false) {
-							$state = true;
+			if (strpos( $markerline, '# BEGIN ' . $marker) !== false ) {
+				$state = true;
 			}
 		}
 	}
@@ -208,7 +208,7 @@ function save_mod_rewrite_rules() {
 	 * If the file doesn't already exist check for write access to the directory
 	 * and whether we have some rules. Else check for write access to the file.
 	 */
-	if ((!file_exists($htaccess_file) && is_writable($home_path) && $app['rewrite']->using_mod_rewrite_permalinks()) || is_writable($htaccess_file)) {
+	if ( (!file_exists( $htaccess_file) && is_writable( $home_path) && $app['rewrite']->using_mod_rewrite_permalinks() ) || is_writable( $htaccess_file) ) {
 		if ( got_mod_rewrite() ) {
 			$rules = explode( "\n", $app['rewrite']->mod_rewrite_rules() );
 			return insert_with_markers( $htaccess_file, 'WordPress', $rules );
@@ -236,12 +236,12 @@ function iis7_save_url_rewrite_rules(){
 	$web_config_file = $home_path . 'web.config';
 
 	// Using win_is_writable() instead of is_writable() because of a bug in Windows PHP
-	if ( iis7_supports_permalinks() && ( ( ! file_exists($web_config_file) && win_is_writable($home_path) && $app['rewrite']->using_mod_rewrite_permalinks() ) || win_is_writable($web_config_file) ) ) {
-		$rule = $app['rewrite']->iis7_url_rewrite_rules(false, '', '');
-		if ( ! empty($rule) ) {
-			return iis7_add_rewrite_rule($web_config_file, $rule);
+	if ( iis7_supports_permalinks() && ( ( ! file_exists( $web_config_file) && win_is_writable( $home_path) && $app['rewrite']->using_mod_rewrite_permalinks() ) || win_is_writable( $web_config_file) ) ) {
+		$rule = $app['rewrite']->iis7_url_rewrite_rules( false, '', '' );
+		if ( ! empty( $rule) ) {
+			return iis7_add_rewrite_rule( $web_config_file, $rule);
 		} else {
-			return iis7_delete_rewrite_rule($web_config_file);
+			return iis7_delete_rewrite_rule( $web_config_file);
 		}
 	}
 	return false;
@@ -261,7 +261,7 @@ function update_recently_edited( $file ) {
 		$oldfiles[] = $file;
 		$oldfiles = array_reverse( $oldfiles );
 		$oldfiles = array_unique( $oldfiles );
-		if ( 5 < count( $oldfiles )) {
+		if ( 5 < count( $oldfiles ) ) {
 					array_pop( $oldfiles );
 		}
 	} else {
@@ -327,8 +327,8 @@ function wp_reset_vars( $vars ) {
  *
  * @param string|Error $message
  */
-function show_message($message) {
-	if ( is_wp_error($message) ){
+function show_message( $message) {
+	if ( is_wp_error( $message) ){
 		if ( $message->get_error_data() && is_string( $message->get_error_data() ) ) {
 					$message = $message->get_error_message() . ': ' . $message->get_error_data();
 		} else {
@@ -347,11 +347,11 @@ function show_message($message) {
  * @return array
  */
 function wp_doc_link_parse( $content ) {
-	if ( !is_string( $content ) || empty( $content ) ) {
+	if ( ! is_string( $content ) || empty( $content ) ) {
 			return [];
 	}
 
-	if ( !function_exists('token_get_all') ) {
+	if ( !function_exists( 'token_get_all' ) ) {
 			return [];
 	}
 
@@ -364,7 +364,7 @@ function wp_doc_link_parse( $content ) {
 			continue;
 		}
 
-		if ( T_STRING == $tokens[ $t ][0] && ( '(' == $tokens[ $t + 1 ] || '(' == $tokens[ $t + 2 ] ) ) {
+		if ( T_STRING == $tokens[ $t ][0] && ( '( ' == $tokens[ $t + 1 ] || '( ' == $tokens[ $t + 2 ] ) ) {
 			// If it's a function or class defined locally, there's not going to be any docs available
 			if ( ( isset( $tokens[ $t - 2 ][1] ) && in_array( $tokens[ $t - 2 ][1], array( 'function', 'class' ) ) ) || ( isset( $tokens[ $t - 2 ][0] ) && T_OBJECT_OPERATOR == $tokens[ $t - 1 ][0] ) ) {
 				$ignore_functions[] = $tokens[$t][1];
@@ -424,14 +424,14 @@ function set_screen_options() {
 		}
 
 		$map_option = $option;
-		$type = str_replace('edit_', '', $map_option);
-		$type = str_replace('_per_page', '', $type);
+		$type = str_replace( 'edit_', '', $map_option);
+		$type = str_replace( '_per_page', '', $type);
 		if ( in_array( $type, get_taxonomies() ) ) {
 					$map_option = 'edit_tags_per_page';
 		} elseif ( in_array( $type, get_post_types() ) ) {
 					$map_option = 'edit_per_page';
 		} else {
-					$option = str_replace('-', '_', $option);
+					$option = str_replace( '-', '_', $option);
 		}
 
 		switch ( $map_option ) {
@@ -479,7 +479,7 @@ function set_screen_options() {
 			break;
 		}
 
-		update_user_meta($user->ID, $option, $value);
+		update_user_meta( $user->ID, $option, $value);
 
 		$url = remove_query_arg( array( 'pagenum', 'apage', 'paged' ), wp_get_referer() );
 		if ( $_post->get( 'mode' ) ) {
@@ -499,8 +499,8 @@ function set_screen_options() {
  * @return bool
  * @param string $filename The file path to the configuration file
  */
-function iis7_rewrite_rule_exists($filename) {
-	if ( ! file_exists($filename) ) {
+function iis7_rewrite_rule_exists( $filename) {
+	if ( ! file_exists( $filename) ) {
 			return false;
 	}
 	if ( ! class_exists( 'DOMDocument', false ) ) {
@@ -508,11 +508,11 @@ function iis7_rewrite_rule_exists($filename) {
 	}
 
 	$doc = new DOMDocument();
-	if ( $doc->load($filename) === false ) {
+	if ( $doc->load( $filename) === false ) {
 			return false;
 	}
-	$xpath = new DOMXPath($doc);
-	$rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
+	$xpath = new DOMXPath( $doc);
+	$rules = $xpath->query( '/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\' )] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\' )]' );
 	if ( $rules->length == 0 ) {
 			return false;
 	} else {
@@ -528,9 +528,9 @@ function iis7_rewrite_rule_exists($filename) {
  * @param string $filename Name of the configuration file
  * @return bool
  */
-function iis7_delete_rewrite_rule($filename) {
+function iis7_delete_rewrite_rule( $filename) {
 	// If configuration file does not exist then rules also do not exist so there is nothing to delete
-	if ( ! file_exists($filename) ) {
+	if ( ! file_exists( $filename) ) {
 			return true;
 	}
 
@@ -541,17 +541,17 @@ function iis7_delete_rewrite_rule($filename) {
 	$doc = new DOMDocument();
 	$doc->preserveWhiteSpace = false;
 
-	if ( $doc -> load($filename) === false ) {
+	if ( $doc -> load( $filename) === false ) {
 			return false;
 	}
-	$xpath = new DOMXPath($doc);
-	$rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
+	$xpath = new DOMXPath( $doc);
+	$rules = $xpath->query( '/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\' )] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\' )]' );
 	if ( $rules->length > 0 ) {
 		$child = $rules->item(0);
 		$parent = $child->parentNode;
-		$parent->removeChild($child);
+		$parent->removeChild( $child);
 		$doc->formatOutput = true;
-		saveDomDocument($doc, $filename);
+		saveDomDocument( $doc, $filename);
 	}
 	return true;
 }
@@ -565,76 +565,76 @@ function iis7_delete_rewrite_rule($filename) {
  * @param string $rewrite_rule The XML fragment with URL Rewrite rule
  * @return bool
  */
-function iis7_add_rewrite_rule($filename, $rewrite_rule) {
+function iis7_add_rewrite_rule( $filename, $rewrite_rule) {
 	if ( ! class_exists( 'DOMDocument', false ) ) {
 		return false;
 	}
 
 	// If configuration file does not exist then we create one.
-	if ( ! file_exists($filename) ) {
-		$fp = fopen( $filename, 'w');
-		fwrite($fp, '<configuration/>');
-		fclose($fp);
+	if ( ! file_exists( $filename) ) {
+		$fp = fopen( $filename, 'w' );
+		fwrite( $fp, '<configuration/>' );
+		fclose( $fp);
 	}
 
 	$doc = new DOMDocument();
 	$doc->preserveWhiteSpace = false;
 
-	if ( $doc->load($filename) === false ) {
+	if ( $doc->load( $filename) === false ) {
 			return false;
 	}
 
-	$xpath = new DOMXPath($doc);
+	$xpath = new DOMXPath( $doc);
 
 	// First check if the rule already exists as in that case there is no need to re-add it
-	$wordpress_rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
+	$wordpress_rules = $xpath->query( '/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\' )] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\' )]' );
 	if ( $wordpress_rules->length > 0 ) {
 			return true;
 	}
 
 	// Check the XPath to the rewrite rule and create XML nodes if they do not exist
-	$xmlnodes = $xpath->query('/configuration/system.webServer/rewrite/rules');
+	$xmlnodes = $xpath->query( '/configuration/system.webServer/rewrite/rules' );
 	if ( $xmlnodes->length > 0 ) {
 		$rules_node = $xmlnodes->item(0);
 	} else {
-		$rules_node = $doc->createElement('rules');
+		$rules_node = $doc->createElement( 'rules' );
 
-		$xmlnodes = $xpath->query('/configuration/system.webServer/rewrite');
+		$xmlnodes = $xpath->query( '/configuration/system.webServer/rewrite' );
 		if ( $xmlnodes->length > 0 ) {
 			$rewrite_node = $xmlnodes->item(0);
-			$rewrite_node->appendChild($rules_node);
+			$rewrite_node->appendChild( $rules_node);
 		} else {
-			$rewrite_node = $doc->createElement('rewrite');
-			$rewrite_node->appendChild($rules_node);
+			$rewrite_node = $doc->createElement( 'rewrite' );
+			$rewrite_node->appendChild( $rules_node);
 
-			$xmlnodes = $xpath->query('/configuration/system.webServer');
+			$xmlnodes = $xpath->query( '/configuration/system.webServer' );
 			if ( $xmlnodes->length > 0 ) {
 				$system_webServer_node = $xmlnodes->item(0);
-				$system_webServer_node->appendChild($rewrite_node);
+				$system_webServer_node->appendChild( $rewrite_node);
 			} else {
-				$system_webServer_node = $doc->createElement('system.webServer');
-				$system_webServer_node->appendChild($rewrite_node);
+				$system_webServer_node = $doc->createElement( 'system.webServer' );
+				$system_webServer_node->appendChild( $rewrite_node);
 
-				$xmlnodes = $xpath->query('/configuration');
+				$xmlnodes = $xpath->query( '/configuration' );
 				if ( $xmlnodes->length > 0 ) {
 					$config_node = $xmlnodes->item(0);
-					$config_node->appendChild($system_webServer_node);
+					$config_node->appendChild( $system_webServer_node);
 				} else {
-					$config_node = $doc->createElement('configuration');
-					$doc->appendChild($config_node);
-					$config_node->appendChild($system_webServer_node);
+					$config_node = $doc->createElement( 'configuration' );
+					$doc->appendChild( $config_node);
+					$config_node->appendChild( $system_webServer_node);
 				}
 			}
 		}
 	}
 
 	$rule_fragment = $doc->createDocumentFragment();
-	$rule_fragment->appendXML($rewrite_rule);
-	$rules_node->appendChild($rule_fragment);
+	$rule_fragment->appendXML( $rewrite_rule);
+	$rules_node->appendChild( $rule_fragment);
 
 	$doc->encoding = "UTF-8";
 	$doc->formatOutput = true;
-	saveDomDocument($doc, $filename);
+	saveDomDocument( $doc, $filename);
 
 	return true;
 }
@@ -647,12 +647,12 @@ function iis7_add_rewrite_rule($filename, $rewrite_rule) {
  * @param DOMDocument $doc
  * @param string $filename
  */
-function saveDomDocument($doc, $filename) {
+function saveDomDocument( $doc, $filename) {
 	$config = $doc->saveXML();
-	$config = preg_replace("/([^\r])\n/", "$1\r\n", $config);
-	$fp = fopen($filename, 'w');
-	fwrite($fp, $config);
-	fclose($fp);
+	$config = preg_replace( "/([^\r])\n/", "$1\r\n", $config);
+	$fp = fopen( $filename, 'w' );
+	fwrite( $fp, $config);
+	fclose( $fp);
 }
 
 /**
@@ -668,7 +668,7 @@ function admin_color_scheme_picker( $user_id ) {
 	ksort( $app->_wp_admin_css_colors );
 
 	if ( isset( $app->_wp_admin_css_colors['fresh'] ) ) {
-		// Set Default ('fresh') and Light should go first.
+		// Set Default ( 'fresh' ) and Light should go first.
 		$app->_wp_admin_css_colors = array_filter( array_merge( array( 'fresh' => '', 'light' => '' ), $app->_wp_admin_css_colors ) );
 	}
 
@@ -804,7 +804,7 @@ function wp_refresh_post_lock( $response, $data, $screen_id ) {
 					return $response;
 		}
 
-		if ( ! current_user_can('edit_post', $post_id) ) {
+		if ( ! current_user_can( 'edit_post', $post_id) ) {
 					return $response;
 		}
 
@@ -857,9 +857,9 @@ function wp_refresh_post_nonces( $response, $data, $screen_id ) {
 
 		$response['wp-refresh-post-nonces'] = array(
 			'replace' => array(
-				'getpermalinknonce' => wp_create_nonce('getpermalink'),
-				'samplepermalinknonce' => wp_create_nonce('samplepermalink'),
-				'closedpostboxesnonce' => wp_create_nonce('closedpostboxes'),
+				'getpermalinknonce' => wp_create_nonce( 'getpermalink' ),
+				'samplepermalinknonce' => wp_create_nonce( 'samplepermalink' ),
+				'closedpostboxesnonce' => wp_create_nonce( 'closedpostboxes' ),
 				'_ajax_linking_nonce' => wp_create_nonce( 'internal-linking' ),
 				'_wpnonce' => wp_create_nonce( 'update-post_' . $post_id ),
 			),

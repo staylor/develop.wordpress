@@ -51,7 +51,7 @@ if ( 'upgrade-core' == $action ) {
 	$force_check = ! empty( $_get->get( 'force-check' ) );
 	wp_version_check( [], $force_check );
 
-	require_once(ABSPATH . 'wp-admin/admin-header.php');
+	require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	?>
 	<div class="wrap">
 	<h1><?php _e( 'WordPress Updates' ); ?></h1>
@@ -59,9 +59,9 @@ if ( 'upgrade-core' == $action ) {
 	if ( $upgrade_error ) {
 		echo '<div class="error"><p>';
 		if ( $upgrade_error == 'themes' ) {
-			_e('Please select one or more themes to update.');
+			_e( 'Please select one or more themes to update.' );
 		} else {
-			_e('Please select one or more plugins to update.');
+			_e( 'Please select one or more plugins to update.' );
 		}
 		echo '</p></div>';
 	}
@@ -79,7 +79,7 @@ if ( 'upgrade-core' == $action ) {
 	echo '<p>';
 	/* translators: %1 date, %2 time. */
 	printf( __( 'Last checked on %1$s at %2$s.' ), date_i18n( __( 'F j, Y' ), $last_update_check ), date_i18n( __( 'g:i a' ), $last_update_check ) );
-	echo ' &nbsp; <a class="button" href="' . esc_url( self_admin_url('update-core.php?force-check=1') ) . '">' . __( 'Check Again' ) . '</a>';
+	echo ' &nbsp; <a class="button" href="' . esc_url( self_admin_url( 'update-core.php?force-check=1' ) ) . '">' . __( 'Check Again' ) . '</a>';
 	echo '</p>';
 
 	$core = current_user_can( 'update_core' );
@@ -110,14 +110,14 @@ if ( 'upgrade-core' == $action ) {
 		'totals'  => wp_get_update_data(),
 	) );
 
-	include(ABSPATH . 'wp-admin/admin-footer.php');
+	include( ABSPATH . 'wp-admin/admin-footer.php' );
 
 } elseif ( 'do-core-upgrade' == $action || 'do-core-reinstall' == $action ) {
 
 	if ( ! current_user_can( 'update_core' ) ) {
 		wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
 	}
-	check_admin_referer('upgrade-core');
+	check_admin_referer( 'upgrade-core' );
 
 	// Do the (un)dismiss actions before headers, so that they can redirect.
 	if ( $_post->get( 'dismiss' ) ) {
@@ -126,7 +126,7 @@ if ( 'upgrade-core' == $action ) {
 		do_undismiss_core_update();
 	}
 
-	require_once(ABSPATH . 'wp-admin/admin-header.php');
+	require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	if ( 'do-core-reinstall' == $action ) {
 		$reinstall = true;
 	} else {
@@ -134,37 +134,37 @@ if ( 'upgrade-core' == $action ) {
 	}
 
 	if ( $_post->get( 'upgrade' ) ) {
-		do_core_upgrade($reinstall);
+		do_core_upgrade( $reinstall);
 	}
 
 	wp_localize_script( 'updates', '_wpUpdatesItemCounts', array(
 		'totals'  => wp_get_update_data(),
 	) );
 
-	include(ABSPATH . 'wp-admin/admin-footer.php');
+	include( ABSPATH . 'wp-admin/admin-footer.php' );
 
 } elseif ( 'do-plugin-upgrade' == $action ) {
 
 	if ( ! current_user_can( 'update_plugins' ) ) {
 		wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
 	}
-	check_admin_referer('upgrade-core');
+	check_admin_referer( 'upgrade-core' );
 
 	if ( $_get->get( 'plugins' ) ) {
 		$plugins = explode( ',', $_get->get( 'plugins' ) );
 	} elseif ( $_post->get( 'checked' ) ) {
 		$plugins = (array) $_post->get( 'checked' );
 	} else {
-		wp_redirect( admin_url('update-core.php') );
+		wp_redirect( admin_url( 'update-core.php' ) );
 		exit;
 	}
 
-	$url = 'update.php?action=update-selected&plugins=' . urlencode(implode(',', $plugins));
-	$url = wp_nonce_url($url, 'bulk-update-plugins');
+	$url = 'update.php?action=update-selected&plugins=' . urlencode( implode( ',', $plugins) );
+	$url = wp_nonce_url( $url, 'bulk-update-plugins' );
 
 	$app->set( 'title', __( 'Update Plugins' ) );
 
-	require_once(ABSPATH . 'wp-admin/admin-header.php');
+	require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	echo '<div class="wrap">';
 	echo '<h1>' . __( 'Update Plugins' ) . '</h1>';
 	echo '<iframe src="', $url, '" style="width: 100%; height: 100%; min-height: 750px;" frameborder="0" title="' . esc_attr__( 'Update progress' ) . '"></iframe>';
@@ -174,30 +174,30 @@ if ( 'upgrade-core' == $action ) {
 		'totals'  => wp_get_update_data(),
 	) );
 
-	include(ABSPATH . 'wp-admin/admin-footer.php');
+	include( ABSPATH . 'wp-admin/admin-footer.php' );
 
 } elseif ( 'do-theme-upgrade' == $action ) {
 
 	if ( ! current_user_can( 'update_themes' ) ) {
 		wp_die( __( 'Sorry, you are not allowed to update this site.' ) );
 	}
-	check_admin_referer('upgrade-core');
+	check_admin_referer( 'upgrade-core' );
 
 	if ( $_get->get( 'themes' ) ) {
 		$themes = explode( ',', $_get->get( 'themes' ) );
 	} elseif ( $_post->get( 'checked' ) ) {
 		$themes = (array) $_post->get( 'checked' );
 	} else {
-		wp_redirect( admin_url('update-core.php') );
+		wp_redirect( admin_url( 'update-core.php' ) );
 		exit;
 	}
 
-	$url = 'update.php?action=update-selected-themes&themes=' . urlencode(implode(',', $themes));
-	$url = wp_nonce_url($url, 'bulk-update-themes');
+	$url = 'update.php?action=update-selected-themes&themes=' . urlencode( implode( ',', $themes) );
+	$url = wp_nonce_url( $url, 'bulk-update-themes' );
 
 	$app->set( 'title', __( 'Update Themes' ) );
 
-	require_once(ABSPATH . 'wp-admin/admin-header.php');
+	require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	?>
 	<div class="wrap">
 		<h1><?php _e( 'Update Themes' ); ?></h1>
@@ -209,7 +209,7 @@ if ( 'upgrade-core' == $action ) {
 		'totals'  => wp_get_update_data(),
 	) );
 
-	include(ABSPATH . 'wp-admin/admin-footer.php');
+	include( ABSPATH . 'wp-admin/admin-footer.php' );
 
 } elseif ( 'do-translation-upgrade' == $action ) {
 

@@ -45,7 +45,7 @@ function edit_user( $user_id = 0 ) {
 	}
 
 	if ( !$update && $_post->get( 'user_login' ) ) {
-		$user->user_login = sanitize_user( $_post->get( 'user_login' ), true);
+		$user->user_login = sanitize_user( $_post->get( 'user_login' ), true );
 	}
 	$pass1 = $_post->get( 'pass1', '' );
 	$pass2 = $_post->get( 'pass2', '' );
@@ -58,7 +58,7 @@ function edit_user( $user_id = 0 ) {
 		if (
 			( is_multisite() && current_user_can( 'manage_sites' ) ) ||
 			$user_id != get_current_user_id() ||
-			($potential_role && $potential_role->has_cap( 'edit_users' ) )
+			( $potential_role && $potential_role->has_cap( 'edit_users' ) )
 		) {
 			$user->role = $new_role;
 		}
@@ -66,7 +66,7 @@ function edit_user( $user_id = 0 ) {
 		// If the new role isn't editable by the logged-in user die with error
 		$editable_roles = get_editable_roles();
 		if ( ! empty( $new_role ) && empty( $editable_roles[$new_role] ) ) {
-			wp_die(__('You can&#8217;t give users that role.'));
+			wp_die( __( 'You can&#8217;t give users that role.' ) );
 		}
 	}
 
@@ -80,7 +80,7 @@ function edit_user( $user_id = 0 ) {
 		} else {
 			$user->user_url = esc_url_raw( $_post->get( 'url' ) );
 			$protocols = implode( '|', array_map( 'preg_quote', wp_allowed_protocols() ) );
-			$user->user_url = preg_match('/^(' . $protocols . '):/is', $user->user_url) ? $user->user_url : 'http://'.$user->user_url;
+			$user->user_url = preg_match( '/^( ' . $protocols . ' ):/is', $user->user_url) ? $user->user_url : 'http://'.$user->user_url;
 		}
 	}
 	if ( $_post->get( 'first_name' ) ) {
@@ -166,15 +166,15 @@ function edit_user( $user_id = 0 ) {
 		$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter the same password in both password fields.' ), array( 'form-field' => 'pass1' ) );
 	}
 
-	if ( !empty( $pass1 ) ) {
+	if ( ! empty( $pass1 ) ) {
 		$user->user_pass = $pass1;
 	}
 	if ( !$update && $_post->get( 'user_login' ) && ! validate_username( $_post->get( 'user_login' ) ) ) {
-		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.' ));
+		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.' ) );
 	}
 
 	if ( !$update && username_exists( $user->user_login ) ) {
-		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ));
+		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ) );
 	}
 	/** This filter is documented in wp-includes/user.php */
 	$illegal_logins = (array) apply_filters( 'illegal_user_logins', [] );
@@ -186,10 +186,10 @@ function edit_user( $user_id = 0 ) {
 	/* checking email address */
 	if ( empty( $user->user_email ) ) {
 		$errors->add( 'empty_email', __( '<strong>ERROR</strong>: Please enter an email address.' ), array( 'form-field' => 'email' ) );
-	} elseif ( !is_email( $user->user_email ) ) {
+	} elseif ( ! is_email( $user->user_email ) ) {
 		$errors->add( 'invalid_email', __( '<strong>ERROR</strong>: The email address isn&#8217;t correct.' ), array( 'form-field' => 'email' ) );
-	} elseif ( ( $owner_id = email_exists($user->user_email) ) && ( !$update || ( $owner_id != $user->ID ) ) ) {
-		$errors->add( 'email_exists', __('<strong>ERROR</strong>: This email is already registered, please choose another one.'), array( 'form-field' => 'email' ) );
+	} elseif ( ( $owner_id = email_exists( $user->user_email) ) && ( !$update || ( $owner_id != $user->ID ) ) ) {
+		$errors->add( 'email_exists', __( '<strong>ERROR</strong>: This email is already registered, please choose another one.' ), array( 'form-field' => 'email' ) );
 	}
 
 	/**
@@ -284,7 +284,7 @@ function get_user_to_edit( $user_id ) {
 function get_users_drafts( $user_id ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-	$query = $wpdb->prepare("SELECT ID, post_title FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'draft' AND post_author = %d ORDER BY post_modified DESC", $user_id);
+	$query = $wpdb->prepare( "SELECT ID, post_title FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'draft' AND post_author = %d ORDER BY post_modified DESC", $user_id );
 
 	/**
 	 * Filters the user's drafts query string.
@@ -365,7 +365,7 @@ function wp_delete_user( $id, $reassign = null ) {
 		 */
 		$post_types_to_delete = apply_filters( 'post_types_to_delete_with_user', $post_types_to_delete, $id );
 		$post_types_to_delete = implode( "', '", $post_types_to_delete );
-		$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_author = %d AND post_type IN ('$post_types_to_delete')", $id ) );
+		$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_author = %d AND post_type IN ( '$post_types_to_delete' )", $id ) );
 		if ( $post_ids ) {
 			foreach ( $post_ids as $post_id ) {
 				wp_delete_post( $post_id );
@@ -373,23 +373,23 @@ function wp_delete_user( $id, $reassign = null ) {
 		}
 
 		// Clean links
-		$link_ids = $wpdb->get_col( $wpdb->prepare("SELECT link_id FROM $wpdb->links WHERE link_owner = %d", $id) );
+		$link_ids = $wpdb->get_col( $wpdb->prepare( "SELECT link_id FROM $wpdb->links WHERE link_owner = %d", $id ) );
 
 		if ( $link_ids ) {
 			foreach ( $link_ids as $link_id ) {
-				wp_delete_link($link_id);
+				wp_delete_link( $link_id );
 			}
 		}
 	} else {
 		$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_author = %d", $id ) );
-		$wpdb->update( $wpdb->posts, array('post_author' => $reassign), array('post_author' => $id) );
+		$wpdb->update( $wpdb->posts, array( 'post_author' => $reassign), array( 'post_author' => $id ) );
 		if ( ! empty( $post_ids ) ) {
 			foreach ( $post_ids as $post_id ) {
 				clean_post_cache( $post_id );
 			}
 		}
-		$link_ids = $wpdb->get_col( $wpdb->prepare("SELECT link_id FROM $wpdb->links WHERE link_owner = %d", $id) );
-		$wpdb->update( $wpdb->links, array('link_owner' => $reassign), array('link_owner' => $id) );
+		$link_ids = $wpdb->get_col( $wpdb->prepare( "SELECT link_id FROM $wpdb->links WHERE link_owner = %d", $id ) );
+		$wpdb->update( $wpdb->links, array( 'link_owner' => $reassign), array( 'link_owner' => $id ) );
 		if ( ! empty( $link_ids ) ) {
 			foreach ( $link_ids as $link_id ) {
 				clean_bookmark_cache( $link_id );
@@ -443,17 +443,17 @@ function wp_revoke_user( $id ) {
  *
  * @param false $errors Deprecated.
  */
-function default_password_nag_handler($errors = false) {
+function default_password_nag_handler( $errors = false ) {
 	global $user_ID;
 	// Short-circuit it.
-	if ( ! get_user_option('default_password_nag') ) {
+	if ( ! get_user_option( 'default_password_nag' ) ) {
 		return;
 	}
 
 	// get_user_setting = JS saved UI setting. else no-js-fallback code.
-	if ( 'hide' == get_user_setting('default_password_nag') || $_get->get( 'default_password_nag' ) && '0' == $_get->get( 'default_password_nag' ) ) {
-		delete_user_setting('default_password_nag');
-		update_user_option($user_ID, 'default_password_nag', false, true);
+	if ( 'hide' == get_user_setting( 'default_password_nag' ) || $_get->get( 'default_password_nag' ) && '0' == $_get->get( 'default_password_nag' ) ) {
+		delete_user_setting( 'default_password_nag' );
+		update_user_option( $user_ID, 'default_password_nag', false, true );
 	}
 }
 
@@ -463,18 +463,18 @@ function default_password_nag_handler($errors = false) {
  * @param int    $user_ID
  * @param object $old_data
  */
-function default_password_nag_edit_user($user_ID, $old_data) {
+function default_password_nag_edit_user( $user_ID, $old_data) {
 	// Short-circuit it.
-	if ( ! get_user_option('default_password_nag', $user_ID) ) {
+	if ( ! get_user_option( 'default_password_nag', $user_id ) ) {
 		return;
 	}
 
-	$new_data = get_userdata($user_ID);
+	$new_data = get_userdata( $user_id );
 
 	// Remove the nag if the password has been changed.
 	if ( $new_data->user_pass != $old_data->user_pass ) {
-		delete_user_setting('default_password_nag');
-		update_user_option($user_ID, 'default_password_nag', false, true);
+		delete_user_setting( 'default_password_nag' );
+		update_user_option( $user_ID, 'default_password_nag', false, true );
 	}
 }
 
@@ -484,17 +484,17 @@ function default_password_nag_edit_user($user_ID, $old_data) {
 function default_password_nag() {
 	$app = getApp();
 	// Short-circuit it.
-	if ( 'profile.php' == $app['pagenow'] || ! get_user_option('default_password_nag') ) {
+	if ( 'profile.php' == $app['pagenow'] || ! get_user_option( 'default_password_nag' ) ) {
 		return;
 	}
 
 	echo '<div class="error default-password-nag">';
 	echo '<p>';
-	echo '<strong>' . __('Notice:') . '</strong> ';
-	_e('You&rsquo;re using the auto-generated password for your account. Would you like to change it?');
+	echo '<strong>' . __( 'Notice:' ) . '</strong> ';
+	_e( 'You&rsquo;re using the auto-generated password for your account. Would you like to change it?' );
 	echo '</p><p>';
-	printf( '<a href="%s">' . __('Yes, take me to my profile page') . '</a> | ', get_edit_profile_url() . '#password' );
-	printf( '<a href="%s" id="default-password-nag-no">' . __('No thanks, do not remind me again') . '</a>', '?default_password_nag=0' );
+	printf( '<a href="%s">' . __( 'Yes, take me to my profile page' ) . '</a> | ', get_edit_profile_url() . '#password' );
+	printf( '<a href="%s" id="default-password-nag-no">' . __( 'No thanks, do not remind me again' ) . '</a>', '?default_password_nag=0' );
 	echo '</p></div>';
 }
 
@@ -504,13 +504,13 @@ function default_password_nag() {
  */
 function delete_users_add_js() { ?>
 <script>
-jQuery(document).ready( function($) {
-	var submit = $('#submit').prop('disabled', true);
-	$('input[name="delete_option"]').one('change', function() {
-		submit.prop('disabled', false);
+jQuery(document).ready( function( $) {
+	var submit = $( '#submit' ).prop( 'disabled', true );
+	$( 'input[name="delete_option"]' ).one( 'change', function() {
+		submit.prop( 'disabled', false );
 	});
-	$('#reassign_user').focus( function() {
-		$('#delete_option1').prop('checked', true).trigger('change');
+	$( '#reassign_user' ).focus( function() {
+		$( '#delete_option1' ).prop( 'checked', true ).trigger( 'change' );
 	});
 });
 </script>
@@ -526,11 +526,11 @@ jQuery(document).ready( function($) {
  *
  * @param object $user User data object
  */
-function use_ssl_preference($user) {
+function use_ssl_preference( $user) {
 ?>
 	<tr class="user-use-ssl-wrap">
-		<th scope="row"><?php _e('Use https')?></th>
-		<td><label for="use_ssl"><input name="use_ssl" type="checkbox" id="use_ssl" value="1" <?php checked('1', $user->use_ssl); ?> /> <?php _e('Always use https when visiting the admin'); ?></label></td>
+		<th scope="row"><?php _e( 'Use https' )?></th>
+		<td><label for="use_ssl"><input name="use_ssl" type="checkbox" id="use_ssl" value="1" <?php checked( '1', $user->use_ssl); ?> /> <?php _e( 'Always use https when visiting the admin' ); ?></label></td>
 	</tr>
 <?php
 }

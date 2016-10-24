@@ -23,7 +23,7 @@ class _WP_List_Table_Compat extends WP_List_Table {
 
 		$this->_screen = $screen;
 
-		if ( !empty( $columns ) ) {
+		if ( ! empty( $columns ) ) {
 			$this->_columns = $columns;
 			add_filter( 'manage_' . $screen->id . '_columns', array( $this, 'get_columns' ), 0 );
 		}

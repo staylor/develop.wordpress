@@ -407,7 +407,7 @@ class WP_Automatic_Updater {
 		// Next, Plugins
 		wp_update_plugins(); // Check for Plugin updates
 		$plugin_updates = get_site_transient( 'update_plugins' );
-		if ( $plugin_updates && !empty( $plugin_updates->response ) ) {
+		if ( $plugin_updates && ! empty( $plugin_updates->response ) ) {
 			foreach ( $plugin_updates->response as $plugin ) {
 				$this->update( 'plugin', $plugin );
 			}
@@ -418,7 +418,7 @@ class WP_Automatic_Updater {
 		// Next, those themes we all love
 		wp_update_themes();  // Check for Theme updates
 		$theme_updates = get_site_transient( 'update_themes' );
-		if ( $theme_updates && !empty( $theme_updates->response ) ) {
+		if ( $theme_updates && ! empty( $theme_updates->response ) ) {
 			foreach ( $theme_updates->response as $theme ) {
 				$this->update( 'theme', (object) $theme );
 			}

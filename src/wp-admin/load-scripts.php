@@ -53,23 +53,23 @@ if ( stripslashes( $_server->get( 'HTTP_IF_NONE_MATCH' ) ) === $app['wp_version'
 }
 
 foreach ( $load as $handle ) {
-	if ( !array_key_exists($handle, $wp_scripts->registered) ) {
+	if ( !array_key_exists( $handle, $wp_scripts->registered) ) {
 		continue;
 	}
 
 	$path = ABSPATH . $wp_scripts->registered[$handle]->src;
-	$out .= get_file($path) . "\n";
+	$out .= get_file( $path) . "\n";
 }
 
-header("Etag: {$app['wp_version']}");
-header('Content-Type: application/javascript; charset=UTF-8');
-header('Expires: ' . gmdate( "D, d M Y H:i:s", time() + $expires_offset ) . ' GMT');
-header("Cache-Control: public, max-age=$expires_offset");
+header( "Etag: {$app['wp_version']}" );
+header( 'Content-Type: application/javascript; charset=UTF-8' );
+header( 'Expires: ' . gmdate( "D, d M Y H:i:s", time() + $expires_offset ) . ' GMT' );
+header( "Cache-Control: public, max-age=$expires_offset" );
 
 if (
 	$compress &&
-	! ini_get('zlib.output_compression') &&
-	'ob_gzhandler' != ini_get('output_handler') &&
+	! ini_get( 'zlib.output_compression' ) &&
+	'ob_gzhandler' != ini_get( 'output_handler' ) &&
 	$_server->get( 'HTTP_ACCEPT_ENCODING' )
 ) {
 	header( 'Vary: Accept-Encoding' ); // Handle proxies

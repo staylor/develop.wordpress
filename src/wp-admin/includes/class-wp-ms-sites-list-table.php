@@ -87,7 +87,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 
 		$s = $this->_request->get( 's' ) ? wp_unslash( trim( $this->_request->get( 's' ) ) ) : '';
 		$wild = '';
-		if ( false !== strpos($s, '*') ) {
+		if ( false !== strpos( $s, '*' ) ) {
 			$wild = '*';
 			$s = trim( $s, '*' );
 		}
@@ -114,7 +114,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 			'network_id' => get_current_network_id(),
 		];
 
-		if ( empty($s) ) {
+		if ( empty( $s) ) {
 			// Nothing to do.
 		} elseif ( preg_match( '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $s ) ||
 					preg_match( '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.?$/', $s ) ||

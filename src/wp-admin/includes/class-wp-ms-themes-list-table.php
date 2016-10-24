@@ -323,7 +323,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 
 			if ( 'search' != $type ) {
 				$status_links[$type] = sprintf( "<a href='%s' %s>%s</a>",
-					esc_url( add_query_arg('theme_status', $type, $url) ),
+					esc_url( add_query_arg( 'theme_status', $type, $url) ),
 					( $type === $status ) ? ' class="current"' : '',
 					sprintf( $text, number_format_i18n( $count ) )
 				);
@@ -380,7 +380,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 * @param WP_Theme $theme The current WP_Theme object.
 	 */
 	public function column_cb( $theme ) {
-		$checkbox_id = 'checkbox_' . md5( $theme->get('Name') );
+		$checkbox_id = 'checkbox_' . md5( $theme->get( 'Name' ) );
 		?>
 		<input type="checkbox" name="checked[]" value="<?php echo esc_attr( $theme->get_stylesheet() ) ?>" id="<?php echo $checkbox_id ?>" />
 		<label class="screen-reader-text" for="<?php echo $checkbox_id ?>" ><?php _e( 'Select' ) ?>  <?php echo $theme->display( 'Name' ) ?></label>
@@ -469,7 +469,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 			);
 		}
 
-		if ( current_user_can('edit_themes') ) {
+		if ( current_user_can( 'edit_themes' ) ) {
 			$url = add_query_arg( array(
 				'theme' => $theme_key,
 			), 'theme-editor.php' );
@@ -580,12 +580,12 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 		$stylesheet = $theme->get_stylesheet();
 		$theme_meta = [];
 
-		if ( $theme->get('Version') ) {
-			$theme_meta[] = sprintf( __( 'Version %s' ), $theme->display('Version') );
+		if ( $theme->get( 'Version' ) ) {
+			$theme_meta[] = sprintf( __( 'Version %s' ), $theme->display( 'Version' ) );
 		}
-		$theme_meta[] = sprintf( __( 'By %s' ), $theme->display('Author') );
+		$theme_meta[] = sprintf( __( 'By %s' ), $theme->display( 'Author' ) );
 
-		if ( $theme->get('ThemeURI') ) {
+		if ( $theme->get( 'ThemeURI' ) ) {
 			/* translators: %s: theme name */
 			$aria_label = sprintf( __( 'Visit %s homepage' ), $theme->display( 'Name' ) );
 
@@ -665,7 +665,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 				break;
 
 			case 'name':
-				echo "<td class='theme-title column-primary{$extra_classes}'><strong>" . $item->display('Name') . "</strong>";
+				echo "<td class='theme-title column-primary{$extra_classes}'><strong>" . $item->display( 'Name' ) . "</strong>";
 
 				$this->column_name( $item );
 

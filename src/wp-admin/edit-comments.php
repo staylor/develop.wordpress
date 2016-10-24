@@ -135,8 +135,8 @@ if ( $messages ) {
 <?php if ( $post_id ) : ?>
 <input type="hidden" name="p" value="<?php echo esc_attr( intval( $post_id ) ); ?>" />
 <?php endif; ?>
-<input type="hidden" name="comment_status" value="<?php echo esc_attr($comment_status); ?>" />
-<input type="hidden" name="pagegen_timestamp" value="<?php echo esc_attr(current_time( 'mysql', 1)); ?>" />
+<input type="hidden" name="comment_status" value="<?php echo esc_attr( $comment_status); ?>" />
+<input type="hidden" name="pagegen_timestamp" value="<?php echo esc_attr(current_time( 'mysql', 1) ); ?>" />
 
 <input type="hidden" name="_total" value="<?php echo esc_attr( $wp_list_table->get_pagination_arg( 'total_items' ) ); ?>" />
 <input type="hidden" name="_per_page" value="<?php echo esc_attr( $wp_list_table->get_pagination_arg( 'per_page' ) ); ?>" />

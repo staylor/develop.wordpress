@@ -17,7 +17,7 @@ if ( ! current_user_can( 'manage_sites' ) ) {
 
 ( new SiteHelp( get_current_screen() ) )->addThemes();
 
-$wp_list_table = _get_list_table('WP_MS_Themes_List_Table');
+$wp_list_table = _get_list_table( 'WP_MS_Themes_List_Table' );
 
 $action = $wp_list_table->current_action();
 
@@ -36,7 +36,7 @@ if ( $paged ) {
 $id = $_request->getInt( 'id', 0 );
 
 if ( ! $id ) {
-	wp_die( __('Invalid site ID.') );
+	wp_die( __( 'Invalid site ID.' ) );
 }
 
 $wp_list_table->prepare_items();
@@ -203,4 +203,4 @@ if ( $_get->get( 'enabled' ) ) {
 </form>
 
 </div>
-<?php include(ABSPATH . 'wp-admin/admin-footer.php'); ?>
+<?php include( ABSPATH . 'wp-admin/admin-footer.php' ); ?>

@@ -35,7 +35,7 @@ if ( ! current_user_can( $tax->cap->manage_terms ) ) {
 
 $view = new TermView( $app );
 
-$wp_list_table = _get_list_table('WP_Terms_List_Table');
+$wp_list_table = _get_list_table( 'WP_Terms_List_Table' );
 $pagenum = $wp_list_table->get_pagenum();
 
 $app->set( 'title', $tax->labels->name );
@@ -224,9 +224,9 @@ if ( $pagenum > $total_pages && $total_pages > 0 ) {
 	exit;
 }
 
-wp_enqueue_script('admin-tags');
-if ( current_user_can($tax->cap->edit_terms) ) {
-	wp_enqueue_script('inline-edit-tax');
+wp_enqueue_script( 'admin-tags' );
+if ( current_user_can( $tax->cap->edit_terms) ) {
+	wp_enqueue_script( 'inline-edit-tax' );
 }
 
 if ( 'category' == $taxnow || 'link_category' == $taxnow || 'post_tag' == $taxnow  ) {
@@ -285,7 +285,7 @@ endif; ?>
 
 <?php
 
-if ( current_user_can($tax->cap->edit_terms) ) {
+if ( current_user_can( $tax->cap->edit_terms) ) {
 	if ( 'category' == $taxnow ) {
 		/**
  		 * Fires before the Add Category form.
@@ -346,18 +346,18 @@ do_action( "{$taxnow}_term_new_form_tag" );
 <input type="hidden" name="screen" value="<?php echo esc_attr( $current_screen->id ); ?>" />
 <input type="hidden" name="taxonomy" value="<?php echo esc_attr( $taxnow ); ?>" />
 <input type="hidden" name="post_type" value="<?php echo esc_attr( $typenow ); ?>" />
-<?php wp_nonce_field('add-tag', '_wpnonce_add-tag'); ?>
+<?php wp_nonce_field( 'add-tag', '_wpnonce_add-tag' ); ?>
 
 <div class="form-field form-required term-name-wrap">
 	<label for="tag-name"><?php _ex( 'Name', 'term name' ); ?></label>
 	<input name="tag-name" id="tag-name" type="text" value="" size="40" aria-required="true" />
-	<p><?php _e('The name is how it appears on your site.'); ?></p>
+	<p><?php _e( 'The name is how it appears on your site.' ); ?></p>
 </div>
 <?php if ( ! global_terms_enabled() ) : ?>
 <div class="form-field term-slug-wrap">
 	<label for="tag-slug"><?php _e( 'Slug' ); ?></label>
 	<input name="slug" id="tag-slug" type="text" value="" size="40" />
-	<p><?php _e('The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.'); ?></p>
+	<p><?php _e( 'The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.' ); ?></p>
 </div>
 <?php endif; // global_terms_enabled() ?>
 <?php if ( is_taxonomy_hierarchical( $taxnow ) ) : ?>
@@ -400,14 +400,14 @@ do_action( "{$taxnow}_term_new_form_tag" );
 	wp_dropdown_categories( $dropdown_args );
 	?>
 	<?php if ( 'category' == $taxnow ) : // @todo: Generic text for hierarchical taxonomies ?>
-		<p><?php _e('Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.'); ?></p>
+		<p><?php _e( 'Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.' ); ?></p>
 	<?php endif; ?>
 </div>
 <?php endif; // is_taxonomy_hierarchical() ?>
 <div class="form-field term-description-wrap">
 	<label for="tag-description"><?php _e( 'Description' ); ?></label>
 	<textarea name="description" id="tag-description" rows="5" cols="40"></textarea>
-	<p><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></p>
+	<p><?php _e( 'The description is not prominent by default; however, some themes may show it.' ); ?></p>
 </div>
 
 <?php
@@ -503,7 +503,7 @@ do_action( "{$taxnow}_add_form", $taxnow );
 		/* translators: %s: default category */
 		__( 'Deleting a category does not delete the posts in that category. Instead, posts that were only assigned to the deleted category are set to the category %s.' ),
 		/** This filter is documented in wp-includes/category-template.php */
-		'<strong>' . apply_filters( 'the_category', get_cat_name( get_option( 'default_category') ) ) . '</strong>'
+		'<strong>' . apply_filters( 'the_category', get_cat_name( get_option( 'default_category' ) ) ) . '</strong>'
 	);
 	?>
 </p>

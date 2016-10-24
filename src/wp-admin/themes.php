@@ -21,7 +21,7 @@ if ( ! current_user_can( 'switch_themes' ) && ! current_user_can( 'edit_theme_op
 
 if ( current_user_can( 'switch_themes' ) && $_get->get( 'action' ) ) {
 	if ( 'activate' == $_get->get( 'action' ) ) {
-		check_admin_referer('switch-theme_' . $_get->get( 'stylesheet' ) );
+		check_admin_referer( 'switch-theme_' . $_get->get( 'stylesheet' ) );
 		$theme = wp_get_theme( $_get->get( 'stylesheet' ) );
 
 		if ( ! $theme->exists() || ! $theme->is_allowed() ) {
@@ -33,10 +33,10 @@ if ( current_user_can( 'switch_themes' ) && $_get->get( 'action' ) ) {
 		}
 
 		switch_theme( $theme->get_stylesheet() );
-		wp_redirect( admin_url('themes.php?activated=true') );
+		wp_redirect( admin_url( 'themes.php?activated=true' ) );
 		exit;
 	} elseif ( 'delete' == $_get->get( 'action' ) ) {
-		check_admin_referer('delete-theme_' . $_get->get( 'stylesheet' ) );
+		check_admin_referer( 'delete-theme_' . $_get->get( 'stylesheet' ) );
 		$theme = wp_get_theme( $_get->get( 'stylesheet' ) );
 
 		if ( ! current_user_can( 'delete_themes' ) ) {
@@ -113,14 +113,14 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	</h1>
 <?php
 if ( ! validate_current_theme() || $_get->get( 'broken' ) ) : ?>
-<div id="message1" class="updated notice is-dismissible"><p><?php _e('The active theme is broken. Reverting to the default theme.'); ?></p></div>
+<div id="message1" class="updated notice is-dismissible"><p><?php _e( 'The active theme is broken. Reverting to the default theme.' ); ?></p></div>
 <?php elseif ( $_get->get( 'activated' ) ) :
 		if ( $_get->get( 'previewed' ) ) { ?>
 		<div id="message2" class="updated notice is-dismissible"><p><?php _e( 'Settings saved and theme activated.' ); ?> <a href="<?php echo home_url( '/' ); ?>"><?php _e( 'Visit site' ); ?></a></p></div>
 		<?php } else { ?>
 <div id="message2" class="updated notice is-dismissible"><p><?php _e( 'New theme activated.' ); ?> <a href="<?php echo home_url( '/' ); ?>"><?php _e( 'Visit site' ); ?></a></p></div><?php
 		} elseif ( $_get->get( 'deleted' ) ) : ?>
-<div id="message3" class="updated notice is-dismissible"><p><?php _e('Theme deleted.') ?></p></div>
+<div id="message3" class="updated notice is-dismissible"><p><?php _e( 'Theme deleted.' ) ?></p></div>
 <?php elseif ( $_get->get( 'delete-active-child' ) ) : ?>
 	<div id="message4" class="error"><p><?php _e( 'You cannot delete a theme while it has an active child theme.' ); ?></p></div>
 <?php
@@ -148,13 +148,13 @@ if ( ! $ct->errors() || ( 1 == count( $ct->errors()->get_error_codes() )
 				continue;
 			}
 			// 0 = name, 1 = capability, 2 = file
-			if ( ( strcmp($self, $item[2]) == 0 && ! $parent_file ) || ( $parent_file && ( $item[2] === $parent_file ) ) ) {
+			if ( ( strcmp( $self, $item[2] ) == 0 && ! $parent_file ) || ( $parent_file && ( $item[2] === $parent_file ) ) ) {
 				$class = ' current';
 			}
 			if ( ! empty( $app->submenu[ $item[2] ] ) ) {
-				$app->submenu[$item[2]] = array_values($app->submenu[$item[2]]); // Re-index.
-				$menu_hook = get_plugin_page_hook($app->submenu[$item[2]][0][2], $item[2]);
-				if ( file_exists(WP_PLUGIN_DIR . "/{$app->submenu[$item[2]][0][2]}") || !empty($menu_hook)) {
+				$app->submenu[$item[2]] = array_values( $app->submenu[$item[2]] ); // Re-index.
+				$menu_hook = get_plugin_page_hook( $app->submenu[$item[2]][0][2], $item[2] );
+				if ( file_exists(WP_PLUGIN_DIR . "/{$app->submenu[$item[2]][0][2]}" ) || ! empty( $menu_hook) ) {
 					$current_theme_actions[] = "<a class='button$class' href='admin.php?page={$app->submenu[$item[2]][0][2]}'>{$item[0]}</a>";
 				} else {
 					$current_theme_actions[] = "<a class='button$class' href='{$app->submenu[$item[2]][0][2]}'>{$item[0]}</a>";
@@ -258,11 +258,11 @@ foreach ( $themes as $theme ) :
 
 <?php
 // List broken themes, if any.
-if ( ! is_multisite() && current_user_can('edit_themes') && $broken_themes = wp_get_themes( array( 'errors' => true ) ) ) {
+if ( ! is_multisite() && current_user_can( 'edit_themes' ) && $broken_themes = wp_get_themes( array( 'errors' => true ) ) ) {
 ?>
 
 <div class="broken-themes">
-<h3><?php _e('Broken Themes'); ?></h3>
+<h3><?php _e( 'Broken Themes' ); ?></h3>
 <p><?php _e( 'The following themes are installed but incomplete.' ); ?></p>
 
 <?php
@@ -271,8 +271,8 @@ $can_install = current_user_can( 'install_themes' );
 ?>
 <table>
 	<tr>
-		<th><?php _ex('Name', 'theme name'); ?></th>
-		<th><?php _e('Description'); ?></th>
+		<th><?php _ex( 'Name', 'theme name' ); ?></th>
+		<th><?php _e( 'Description' ); ?></th>
 		<?php if ( $can_delete ) { ?>
 			<td></td>
 		<?php } ?>

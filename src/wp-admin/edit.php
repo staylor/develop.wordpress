@@ -41,7 +41,7 @@ $view = new PostView( $app );
 
 $wpdb = $app['db'];
 
-$wp_list_table = _get_list_table('WP_Posts_List_Table');
+$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 $pagenum = $wp_list_table->get_pagenum();
 
 // Back-compat for viewing comments of an entry
@@ -67,7 +67,7 @@ $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 $doaction = $wp_list_table->current_action();
 
 if ( $doaction ) {
-	check_admin_referer('bulk-posts');
+	check_admin_referer( 'bulk-posts' );
 
 	$sendback = remove_query_arg(
 		[ 'trashed', 'untrashed', 'deleted', 'locked', 'ids' ],
@@ -77,13 +77,13 @@ if ( $doaction ) {
 		$sendback = admin_url( $app->get( 'parent_file' ) );
 	}
 	$sendback = add_query_arg( 'paged', $pagenum, $sendback );
-	if ( strpos($sendback, 'post.php') !== false ) {
-		$sendback = admin_url($post_new_file);
+	if ( strpos( $sendback, 'post.php' ) !== false ) {
+		$sendback = admin_url( $post_new_file);
 	}
 
 	if ( 'delete_all' == $doaction ) {
 		// Prepare for deletion of all posts with a specified post status (i.e. Empty trash).
-		$post_status = preg_replace('/[^a-z0-9_-]+/i', '', $view->_request->get( 'post_status' ) );
+		$post_status = preg_replace( '/[^a-z0-9_-]+/i', '', $view->_request->get( 'post_status' ) );
 		// Validate the post status exists.
 		if ( get_post_status_object( $post_status ) ) {
 			$sql = "SELECT ID FROM $wpdb->posts WHERE post_type=%s AND post_status = %s";
@@ -95,10 +95,10 @@ if ( $doaction ) {
 	} elseif ( $view->_request->get( 'ids' ) ) {
 		$post_ids = explode( ',', $view->_request->get( 'ids' ) );
 	} elseif ( $view->_request->get( 'post' ) ) {
-		$post_ids = array_map('intval', $view->_request->get( 'post' ) );
+		$post_ids = array_map( 'intval', $view->_request->get( 'post' ) );
 	}
 
-	if ( !isset( $post_ids ) ) {
+	if ( ! isset( $post_ids ) ) {
 		wp_redirect( $sendback );
 		exit;
 	}
@@ -108,8 +108,8 @@ if ( $doaction ) {
 		$trashed = $locked = 0;
 
 		foreach ( (array) $post_ids as $post_id ) {
-			if ( !current_user_can( 'delete_post', $post_id) ) {
-				wp_die( __('Sorry, you are not allowed to move this item to the Trash.') );
+			if ( !current_user_can( 'delete_post', $post_id ) ) {
+				wp_die( __( 'Sorry, you are not allowed to move this item to the Trash.' ) );
 			}
 
 			if ( wp_check_post_lock( $post_id ) ) {
@@ -117,57 +117,57 @@ if ( $doaction ) {
 				continue;
 			}
 
-			if ( !wp_trash_post($post_id) ) {
-				wp_die( __('Error in moving to Trash.') );
+			if ( !wp_trash_post( $post_id ) ) {
+				wp_die( __( 'Error in moving to Trash.' ) );
 			}
 
 			$trashed++;
 		}
 
-		$sendback = add_query_arg( array('trashed' => $trashed, 'ids' => join(',', $post_ids), 'locked' => $locked ), $sendback );
+		$sendback = add_query_arg( array( 'trashed' => $trashed, 'ids' => join( ',', $post_ids), 'locked' => $locked ), $sendback );
 		break;
 	case 'untrash':
 		$untrashed = 0;
 		foreach ( (array) $post_ids as $post_id ) {
-			if ( !current_user_can( 'delete_post', $post_id) ) {
-				wp_die( __('Sorry, you are not allowed to restore this item from the Trash.') );
+			if ( !current_user_can( 'delete_post', $post_id ) ) {
+				wp_die( __( 'Sorry, you are not allowed to restore this item from the Trash.' ) );
 			}
 
-			if ( !wp_untrash_post($post_id) ) {
-				wp_die( __('Error in restoring from Trash.') );
+			if ( !wp_untrash_post( $post_id ) ) {
+				wp_die( __( 'Error in restoring from Trash.' ) );
 			}
 
 			$untrashed++;
 		}
-		$sendback = add_query_arg('untrashed', $untrashed, $sendback);
+		$sendback = add_query_arg( 'untrashed', $untrashed, $sendback);
 		break;
 	case 'delete':
 		$deleted = 0;
 		foreach ( (array) $post_ids as $post_id ) {
-			$post_del = get_post($post_id);
+			$post_del = get_post( $post_id );
 
 			if ( !current_user_can( 'delete_post', $post_id ) ) {
-				wp_die( __('Sorry, you are not allowed to delete this item.') );
+				wp_die( __( 'Sorry, you are not allowed to delete this item.' ) );
 			}
 
 			if ( $post_del->post_type == 'attachment' ) {
-				if ( ! wp_delete_attachment($post_id) ) {
-					wp_die( __('Error in deleting.') );
+				if ( ! wp_delete_attachment( $post_id ) ) {
+					wp_die( __( 'Error in deleting.' ) );
 				}
 			} else {
-				if ( !wp_delete_post($post_id) ) {
-					wp_die( __('Error in deleting.') );
+				if ( !wp_delete_post( $post_id ) ) {
+					wp_die( __( 'Error in deleting.' ) );
 				}
 			}
 			$deleted++;
 		}
-		$sendback = add_query_arg('deleted', $deleted, $sendback);
+		$sendback = add_query_arg( 'deleted', $deleted, $sendback);
 		break;
 	case 'edit':
 		if ( $view->_request->get( 'bulk_edit' ) ) {
 			$done = bulk_edit_posts( $view->_request->all() );
 
-			if ( is_array($done) ) {
+			if ( is_array( $done) ) {
 				$done['updated'] = count( $done['updated'] );
 				$done['skipped'] = count( $done['skipped'] );
 				$done['locked'] = count( $done['locked'] );
@@ -192,19 +192,19 @@ if ( $doaction ) {
 		break;
 	}
 
-	$sendback = remove_query_arg( array('action', 'action2', 'tags_input', 'post_author', 'comment_status', 'ping_status', '_status', 'post', 'bulk_edit', 'post_view'), $sendback );
+	$sendback = remove_query_arg( array( 'action', 'action2', 'tags_input', 'post_author', 'comment_status', 'ping_status', '_status', 'post', 'bulk_edit', 'post_view' ), $sendback );
 
-	wp_redirect($sendback);
+	wp_redirect( $sendback);
 	exit();
 } elseif ( $view->_request->get( '_wp_http_referer' ) ) {
-	 wp_redirect( remove_query_arg( array('_wp_http_referer', '_wpnonce'), wp_unslash( $app['request.uri'] ) ) );
+	 wp_redirect( remove_query_arg( array( '_wp_http_referer', '_wpnonce' ), wp_unslash( $app['request.uri'] ) ) );
 	 exit;
 }
 
 $wp_list_table->prepare_items();
 
-wp_enqueue_script('inline-edit-post');
-wp_enqueue_script('heartbeat');
+wp_enqueue_script( 'inline-edit-post' );
+wp_enqueue_script( 'heartbeat' );
 
 $app->set( 'title', $post_type_object->labels->name );
 
@@ -294,7 +294,7 @@ foreach ( $bulk_counts as $message => $count ) {
 	if ( $message == 'trashed' && $view->_request->get( 'ids' ) ) {
 		$ids = preg_replace( '/[^0-9,]/', '', $view->_request->get( 'ids' ) );
 		$url = "edit.php?post_type={$typenow}&doaction=undo&action=untrash&ids=$ids";
-		$messages[] = '<a href="' . esc_url( wp_nonce_url( $url, "bulk-posts" ) ) . '">' . __('Undo') . '</a>';
+		$messages[] = '<a href="' . esc_url( wp_nonce_url( $url, "bulk-posts" ) ) . '">' . __( 'Undo' ) . '</a>';
 	}
 }
 

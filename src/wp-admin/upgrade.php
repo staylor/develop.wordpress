@@ -24,7 +24,7 @@ nocache_headers();
 timer_start();
 require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-delete_site_transient('update_core');
+delete_site_transient( 'update_core' );
 
 $value = $_get->get( 'step', 0 );
 
@@ -62,7 +62,7 @@ if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) ) {
 <body class="wp-core-ui">
 <p id="logo"><a href="<?php echo esc_url( __( 'https://wordpress.org/' ) ); ?>" tabindex="-1"><?php _e( 'WordPress' ); ?></a></p>
 
-<?php if ( get_option( 'db_version' ) == $app['wp_db_version'] || !is_blog_installed() ) { ?>
+<?php if ( get_option( 'db_version' ) == $app['wp_db_version'] || ! is_blog_installed() ) { ?>
 
 <h1><?php _e( 'No Update Required' ); ?></h1>
 <p><?php _e( 'Your WordPress database is already up-to-date!' ); ?></p>
@@ -70,11 +70,11 @@ if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) ) {
 
 <?php } elseif ( !$php_compat || !$mysql_compat ) {
 	if ( !$mysql_compat && !$php_compat ) {
-		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s.'), $app['wp_version'], $app['required_php_version'], $app['required_mysql_version'], $php_version, $mysql_version );
+		printf( __( 'You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s.' ), $app['wp_version'], $app['required_php_version'], $app['required_mysql_version'], $php_version, $mysql_version );
 	} elseif ( !$php_compat ) {
-		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher. You are running version %3$s.'), $app['wp_version'], $app['required_php_version'], $php_version );
+		printf( __( 'You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires PHP version %2$s or higher. You are running version %3$s.' ), $app['wp_version'], $app['required_php_version'], $php_version );
 	} elseif ( !$mysql_compat ) {
-		printf( __('You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires MySQL version %2$s or higher. You are running version %3$s.'), $app['wp_version'], $app['required_mysql_version'], $mysql_version );
+		printf( __( 'You cannot update because <a href="https://codex.wordpress.org/Version_%1$s">WordPress %1$s</a> requires MySQL version %2$s or higher. You are running version %3$s.' ), $app['wp_version'], $app['required_mysql_version'], $mysql_version );
 	}
 } else {
 switch ( $step ) {
@@ -96,7 +96,7 @@ case 1:
 
 		$backto = $_get->get( 'backto' ) ? wp_unslash( urldecode( $_get->get( 'backto' ) ) ) : __get_option( 'home' ) . '/';
 		$backto = esc_url( $backto );
-		$backto = wp_validate_redirect($backto, __get_option( 'home' ) . '/');
+		$backto = wp_validate_redirect( $backto, __get_option( 'home' ) . '/' );
 ?>
 <h1><?php _e( 'Update Complete' ); ?></h1>
 <p><?php _e( 'Your WordPress database has been successfully updated!' ); ?></p>

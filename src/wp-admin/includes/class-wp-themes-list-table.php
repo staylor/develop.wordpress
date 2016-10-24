@@ -179,9 +179,9 @@ class WP_Themes_List_Table extends WP_List_Table {
 
 			$template   = $theme->get_template();
 			$stylesheet = $theme->get_stylesheet();
-			$title      = $theme->display('Name');
-			$version    = $theme->display('Version');
-			$author     = $theme->display('Author');
+			$title      = $theme->display( 'Name' );
+			$version    = $theme->display( 'Version' );
+			$author     = $theme->display( 'Author' );
 
 			$activate_link = wp_nonce_url( "themes.php?action=activate&amp;template=" . urlencode( $template ) . "&amp;stylesheet=" . urlencode( $stylesheet ), 'switch-theme_' . $stylesheet );
 
@@ -232,7 +232,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 					<?php foreach ( $actions as $action ) { ?>
 						<li><?php echo $action; ?></li>
 					<?php } ?>
-					<li class="hide-if-no-js"><a href="#" class="theme-detail"><?php _e('Details') ?></a></li>
+					<li class="hide-if-no-js"><a href="#" class="theme-detail"><?php _e( 'Details' ) ?></a></li>
 				</ul>
 				<?php echo $delete_action; ?>
 
@@ -240,8 +240,8 @@ class WP_Themes_List_Table extends WP_List_Table {
 			</div>
 
 			<div class="themedetaildiv hide-if-js">
-				<p><strong><?php _e('Version:'); ?></strong> <?php echo $version; ?></p>
-				<p><?php echo $theme->display('Description'); ?></p>
+				<p><strong><?php _e( 'Version:' ); ?></strong> <?php echo $version; ?></p>
+				<p><?php echo $theme->display( 'Description' ); ?></p>
 				<?php if ( $theme->parent() ) {
 					printf( ' <p class="howto">' . __( 'This <a href="%1$s">child theme</a> requires its parent theme, %2$s.' ) . '</p>',
 						__( 'https://codex.wordpress.org/Child_Themes' ),
@@ -261,14 +261,14 @@ class WP_Themes_List_Table extends WP_List_Table {
 	public function search_theme( $theme ) {
 		// Search the features
 		foreach ( $this->features as $word ) {
-			if ( ! in_array( $word, $theme->get('Tags') ) ) {
+			if ( ! in_array( $word, $theme->get( 'Tags' ) ) ) {
 				return false;
 			}
 		}
 
 		// Match all phrases
 		foreach ( $this->search_terms as $word ) {
-			if ( in_array( $word, $theme->get('Tags') ) ) {
+			if ( in_array( $word, $theme->get( 'Tags' ) ) ) {
 				continue;
 			}
 

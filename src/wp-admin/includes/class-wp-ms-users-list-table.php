@@ -62,7 +62,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 
 		if ( $role === 'super' ) {
 			$logins = implode( "', '", get_super_admins() );
-			$args['include'] = $wpdb->get_col( "SELECT ID FROM $wpdb->users WHERE user_login IN ('$logins')" );
+			$args['include'] = $wpdb->get_col( "SELECT ID FROM $wpdb->users WHERE user_login IN ( '$logins' )" );
 		}
 
 		/*
@@ -147,9 +147,9 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 
 		$class = $role != 'super' ? ' class="current"' : '';
 		$role_links = [];
-		$role_links['all'] = "<a href='" . network_admin_url('users.php') . "'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users, 'users' ), number_format_i18n( $total_users ) ) . '</a>';
+		$role_links['all'] = "<a href='" . network_admin_url( 'users.php' ) . "'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users, 'users' ), number_format_i18n( $total_users ) ) . '</a>';
 		$class = $role === 'super' ? ' class="current"' : '';
-		$role_links['super'] = "<a href='" . network_admin_url('users.php?role=super') . "'$class>" . sprintf( _n( 'Super Admin <span class="count">(%s)</span>', 'Super Admins <span class="count">(%s)</span>', $total_admins ), number_format_i18n( $total_admins ) ) . '</a>';
+		$role_links['super'] = "<a href='" . network_admin_url( 'users.php?role=super' ) . "'$class>" . sprintf( _n( 'Super Admin <span class="count">(%s)</span>', 'Super Admins <span class="count">(%s)</span>', $total_admins ), number_format_i18n( $total_admins ) ) . '</a>';
 
 		return $role_links;
 	}

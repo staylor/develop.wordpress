@@ -57,7 +57,7 @@ if ( 'grid' === $mode ) {
 	$app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 	$data = [
-		'_admin_search_query' => $app->mute( '_admin_search_query'),
+		'_admin_search_query' => $app->mute( '_admin_search_query' ),
 		'js_error' => sprintf(
 			/* translators: %s: list view URL */
 			__( 'The grid view for the Media Library requires JavaScript. <a href="%s">Switch to the list view</a>.' ),
@@ -83,7 +83,7 @@ $pagenum = $wp_list_table->get_pagenum();
 $doaction = $wp_list_table->current_action();
 
 if ( $doaction ) {
-	check_admin_referer('bulk-media');
+	check_admin_referer( 'bulk-media' );
 
 	$post_ids = null;
 	if ( 'delete_all' === $doaction ) {

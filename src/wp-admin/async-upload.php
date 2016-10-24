@@ -34,7 +34,7 @@ if ( 'upload-attachment' !== $_request->get( 'action' ) ) {
 		$_cookie->set( AUTH_COOKIE, $_request_auth_cookie );
 	}
 
-	if ( empty($_cookie->get( LOGGED_IN_COOKIE ) ) && ! empty( $_request_logged_in_cookie ) ) {
+	if ( empty( $_cookie->get( LOGGED_IN_COOKIE ) ) && ! empty( $_request_logged_in_cookie ) ) {
 		$_cookie->set( LOGGED_IN_COOKIE, $_request_logged_in_cookie );
 	}
 	unset( $current_user );
@@ -85,19 +85,19 @@ if ( $_request->getInt( 'fetch' ) ) {
 		break;
 
 	case 2:
-		add_filter('attachment_fields_to_edit', 'media_single_attachment_fields_to_edit', 10, 2);
+		add_filter( 'attachment_fields_to_edit', 'media_single_attachment_fields_to_edit', 10, 2);
 		echo get_media_item( $id, [ 'send' => false, 'delete' => true ] );
 		break;
 
 	default:
-		add_filter('attachment_fields_to_edit', 'media_post_single_attachment_fields_to_edit', 10, 2);
-		echo get_media_item($id);
+		add_filter( 'attachment_fields_to_edit', 'media_post_single_attachment_fields_to_edit', 10, 2);
+		echo get_media_item( $id );
 		break;
 	}
 	exit;
 }
 
-check_admin_referer('media-form');
+check_admin_referer( 'media-form' );
 
 $post_id = 0;
 if ( $_request->has( 'post_id' ) ) {
@@ -111,8 +111,8 @@ $id = media_handle_upload( 'async-upload', $post_id );
 if ( is_wp_error( $id ) ) {
 	$async_upload = $_files->get( 'async-upload' );
 	echo '<div class="error-div error">
-	<a class="dismiss" href="#" onclick="jQuery(this).parents(\'div.media-item\').slideUp(200, function(){jQuery(this).remove();});">' . __('Dismiss') . '</a>
-	<strong>' . sprintf(__('&#8220;%s&#8221; has failed to upload.'), esc_html( $async_upload['name'] ) ) . '</strong><br />' .
+	<a class="dismiss" href="#" onclick="jQuery(this).parents(\'div.media-item\' ).slideUp(200, function(){jQuery(this).remove();});">' . __( 'Dismiss' ) . '</a>
+	<strong>' . sprintf( __( '&#8220;%s&#8221; has failed to upload.' ), esc_html( $async_upload['name'] ) ) . '</strong><br />' .
 	esc_html( $id->get_error_message() ) . '</div>';
 	exit();
 }

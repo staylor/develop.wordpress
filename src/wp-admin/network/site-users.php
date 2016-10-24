@@ -11,10 +11,10 @@ use WP\Site\Admin\Help as SiteHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can('manage_sites') ) {
-	wp_die(__('Sorry, you are not allowed to edit this site.'));
+if ( ! current_user_can( 'manage_sites' ) ) {
+	wp_die( __( 'Sorry, you are not allowed to edit this site.' ) );
 }
-$wp_list_table = _get_list_table('WP_Users_List_Table');
+$wp_list_table = _get_list_table( 'WP_Users_List_Table' );
 $wp_list_table->prepare_items();
 
 ( new SiteHelp( get_current_screen() ) )->addUsers();
@@ -30,7 +30,7 @@ if ( $paged ) {
 $id = $_request->getInt( 'id', 0 );
 
 if ( ! $id ) {
-	wp_die( __('Invalid site ID.') );
+	wp_die( __( 'Invalid site ID.' ) );
 }
 $details = get_site( $id );
 if ( ! $details ) {
@@ -55,7 +55,7 @@ if ( $action ) {
 		if ( ! is_array( $_post->get( 'user' ) ) || empty( $user['username'] ) || empty( $user['email'] ) ) {
 			$update = 'err_new';
 		} else {
-			$password = wp_generate_password( 12, false);
+			$password = wp_generate_password( 12, false );
 			$user_id = wpmu_create_user( esc_html( strtolower( $user['username'] ) ), $password, esc_html( $user['email'] ) );
 
 			if ( false === $user_id ) {
@@ -77,7 +77,7 @@ if ( $action ) {
 
 	case 'adduser':
 		check_admin_referer( 'add-user', '_wpnonce_add-user' );
-		if ( !empty( $_post->get( 'newuser' ) ) ) {
+		if ( ! empty( $_post->get( 'newuser' ) ) ) {
 			$update = 'adduser';
 			$newuser = $_post->get( 'newuser' );
 			$user = get_user_by( 'login', $newuser );
@@ -307,7 +307,7 @@ if ( current_user_can( 'promote_users' ) && apply_filters( 'show_network_site_us
  */
 if ( current_user_can( 'create_users' ) && apply_filters( 'show_network_site_users_add_new_form', true ) ) : ?>
 <h2 id="add-new-user"><?php _e( 'Add New User' ); ?></h2>
-<form action="<?php echo network_admin_url('site-users.php?action=newuser'); ?>" id="newuser" method="post">
+<form action="<?php echo network_admin_url( 'site-users.php?action=newuser' ); ?>" id="newuser" method="post">
 	<input type="hidden" name="id" value="<?php echo esc_attr( $id ) ?>" />
 	<table class="form-table">
 		<tr>

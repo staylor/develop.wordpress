@@ -62,7 +62,7 @@ function wp_get_db_schema( $scope = 'all', $blog_id = null ) {
   meta_value longtext,
   PRIMARY KEY  (meta_id),
   KEY term_id (term_id),
-  KEY meta_key (meta_key($max_index_length))
+  KEY meta_key (meta_key( $max_index_length))
 ) $charset_collate;
 CREATE TABLE $wpdb->terms (
  term_id bigint(20) unsigned NOT NULL auto_increment,
@@ -70,8 +70,8 @@ CREATE TABLE $wpdb->terms (
  slug varchar(200) NOT NULL default '',
  term_group bigint(10) NOT NULL default 0,
  PRIMARY KEY  (term_id),
- KEY slug (slug($max_index_length)),
- KEY name (name($max_index_length))
+ KEY slug (slug( $max_index_length)),
+ KEY name (name( $max_index_length))
 ) $charset_collate;
 CREATE TABLE $wpdb->term_taxonomy (
  term_taxonomy_id bigint(20) unsigned NOT NULL auto_increment,
@@ -98,7 +98,7 @@ CREATE TABLE $wpdb->commentmeta (
   meta_value longtext,
   PRIMARY KEY  (meta_id),
   KEY comment_id (comment_id),
-  KEY meta_key (meta_key($max_index_length))
+  KEY meta_key (meta_key( $max_index_length))
 ) $charset_collate;
 CREATE TABLE $wpdb->comments (
   comment_ID bigint(20) unsigned NOT NULL auto_increment,
@@ -155,7 +155,7 @@ CREATE TABLE $wpdb->postmeta (
   meta_value longtext,
   PRIMARY KEY  (meta_id),
   KEY post_id (post_id),
-  KEY meta_key (meta_key($max_index_length))
+  KEY meta_key (meta_key( $max_index_length))
 ) $charset_collate;
 CREATE TABLE $wpdb->posts (
   ID bigint(20) unsigned NOT NULL auto_increment,
@@ -182,7 +182,7 @@ CREATE TABLE $wpdb->posts (
   post_mime_type varchar(100) NOT NULL default '',
   comment_count bigint(20) NOT NULL default '0',
   PRIMARY KEY  (ID),
-  KEY post_name (post_name($max_index_length)),
+  KEY post_name (post_name( $max_index_length)),
   KEY type_status_date (post_type,post_status,post_date,ID),
   KEY post_parent (post_parent),
   KEY post_author (post_author)
@@ -234,7 +234,7 @@ CREATE TABLE $wpdb->posts (
   meta_value longtext,
   PRIMARY KEY  (umeta_id),
   KEY user_id (user_id),
-  KEY meta_key (meta_key($max_index_length))
+  KEY meta_key (meta_key( $max_index_length))
 ) $charset_collate;\n";
 
 	// Global tables
@@ -290,7 +290,7 @@ CREATE TABLE $wpdb->sitemeta (
   meta_key varchar(255) default NULL,
   meta_value longtext,
   PRIMARY KEY  (meta_id),
-  KEY meta_key (meta_key($max_index_length)),
+  KEY meta_key (meta_key( $max_index_length)),
   KEY site_id (site_id)
 ) $charset_collate;
 CREATE TABLE $wpdb->signups (
@@ -360,7 +360,7 @@ function populate_options() {
 	 */
 	do_action( 'populate_options' );
 
-	if ( ini_get('safe_mode') ) {
+	if ( ini_get( 'safe_mode' ) ) {
 		// Safe mode can break mkdir() so use a flat structure by default.
 		$uploads_use_yearmonth_folders = 0;
 	} else {
@@ -396,9 +396,9 @@ function populate_options() {
 	$options = array(
 	'siteurl' => $guessurl,
 	'home' => $guessurl,
-	'blogname' => __('My Site'),
+	'blogname' => __( 'My Site' ),
 	/* translators: site tagline */
-	'blogdescription' => __('Just another WordPress site'),
+	'blogdescription' => __( 'Just another WordPress site' ),
 	'users_can_register' => 0,
 	'admin_email' => 'you@example.com',
 	/* translators: default start of the week. 0 = Sunday, 1 = Monday */
@@ -419,11 +419,11 @@ function populate_options() {
 	'default_pingback_flag' => 1,
 	'posts_per_page' => 10,
 	/* translators: default date format, see https://secure.php.net/date */
-	'date_format' => __('F j, Y'),
+	'date_format' => __( 'F j, Y' ),
 	/* translators: default time format, see https://secure.php.net/date */
-	'time_format' => __('g:i a'),
+	'time_format' => __( 'g:i a' ),
 	/* translators: links last updated date format, see https://secure.php.net/date */
-	'links_updated_date_format' => __('F j, Y g:i a'),
+	'links_updated_date_format' => __( 'F j, Y g:i a' ),
 	'comment_moderation' => 0,
 	'moderation_notify' => 1,
 	'permalink_structure' => '',
@@ -530,7 +530,7 @@ function populate_options() {
 	// 3.0 multisite
 	if ( is_multisite() ) {
 		/* translators: site tagline */
-		$options[ 'blogdescription' ] = sprintf(__('Just another %s site'), get_network()->site_name );
+		$options[ 'blogdescription' ] = sprintf( __( 'Just another %s site' ), get_network()->site_name );
 		$options[ 'permalink_structure' ] = '/%year%/%monthnum%/%day%/%postname%/';
 	}
 
@@ -542,29 +542,29 @@ function populate_options() {
 
 	$insert = '';
 	foreach ( $options as $option => $value ) {
-		if ( in_array($option, $existing_options) ) {
+		if ( in_array( $option, $existing_options) ) {
 			continue;
 		}
-		if ( in_array($option, $fat_options) ) {
+		if ( in_array( $option, $fat_options) ) {
 			$autoload = 'no';
 		} else {
 			$autoload = 'yes';
 		}
-		if ( is_array($value) ) {
-			$value = serialize($value);
+		if ( is_array( $value) ) {
+			$value = serialize( $value);
 		}
-		if ( !empty($insert) ) {
+		if ( ! empty( $insert) ) {
 			$insert .= ', ';
 		}
 		$insert .= $wpdb->prepare( "(%s, %s, %s)", $option, $value, $autoload );
 	}
 
-	if ( !empty($insert) ) {
-		$wpdb->query("INSERT INTO $wpdb->options (option_name, option_value, autoload) VALUES " . $insert);
+	if ( ! empty( $insert) ) {
+		$wpdb->query( "INSERT INTO $wpdb->options (option_name, option_value, autoload) VALUES " . $insert);
 	}
 	// In case it is set, but blank, update "home".
-	if ( !__get_option('home') ) {
-		update_option('home', $guessurl);
+	if ( !__get_option( 'home' ) ) {
+		update_option( 'home', $guessurl);
 	}
 
 	// Delete unused options.
@@ -587,11 +587,11 @@ function populate_options() {
 		'embed_autourls', 'default_post_edit_rows', 'gzipcompression', 'advanced_edit'
 	);
 	foreach ( $unusedoptions as $option ) {
-		delete_option($option);
+		delete_option( $option);
 	}
 
 	// Delete obsolete magpie stuff.
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name REGEXP '^rss_[0-9a-f]{32}(_ts)?$'");
+	$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name REGEXP '^rss_[0-9a-f]{32}(_ts)?$'");
 
 	/*
 	 * Deletes all expired transients. The multi-table delete syntax is used
@@ -642,99 +642,99 @@ function populate_roles_160() {
 
 	// Dummy gettext calls to get strings in the catalog.
 	/* translators: user role */
-	_x('Administrator', 'User role');
+	_x( 'Administrator', 'User role' );
 	/* translators: user role */
-	_x('Editor', 'User role');
+	_x( 'Editor', 'User role' );
 	/* translators: user role */
-	_x('Author', 'User role');
+	_x( 'Author', 'User role' );
 	/* translators: user role */
-	_x('Contributor', 'User role');
+	_x( 'Contributor', 'User role' );
 	/* translators: user role */
-	_x('Subscriber', 'User role');
+	_x( 'Subscriber', 'User role' );
 
-	add_role('administrator', 'Administrator');
-	add_role('editor', 'Editor');
-	add_role('author', 'Author');
-	add_role('contributor', 'Contributor');
-	add_role('subscriber', 'Subscriber');
+	add_role( 'administrator', 'Administrator' );
+	add_role( 'editor', 'Editor' );
+	add_role( 'author', 'Author' );
+	add_role( 'contributor', 'Contributor' );
+	add_role( 'subscriber', 'Subscriber' );
 
 	// Add caps for Administrator role
-	$role = get_role('administrator');
-	$role->add_cap('switch_themes');
-	$role->add_cap('edit_themes');
-	$role->add_cap('activate_plugins');
-	$role->add_cap('edit_plugins');
-	$role->add_cap('edit_users');
-	$role->add_cap('edit_files');
-	$role->add_cap('manage_options');
-	$role->add_cap('moderate_comments');
-	$role->add_cap('manage_categories');
-	$role->add_cap('manage_links');
-	$role->add_cap('upload_files');
-	$role->add_cap('import');
-	$role->add_cap('unfiltered_html');
-	$role->add_cap('edit_posts');
-	$role->add_cap('edit_others_posts');
-	$role->add_cap('edit_published_posts');
-	$role->add_cap('publish_posts');
-	$role->add_cap('edit_pages');
-	$role->add_cap('read');
-	$role->add_cap('level_10');
-	$role->add_cap('level_9');
-	$role->add_cap('level_8');
-	$role->add_cap('level_7');
-	$role->add_cap('level_6');
-	$role->add_cap('level_5');
-	$role->add_cap('level_4');
-	$role->add_cap('level_3');
-	$role->add_cap('level_2');
-	$role->add_cap('level_1');
-	$role->add_cap('level_0');
+	$role = get_role( 'administrator' );
+	$role->add_cap( 'switch_themes' );
+	$role->add_cap( 'edit_themes' );
+	$role->add_cap( 'activate_plugins' );
+	$role->add_cap( 'edit_plugins' );
+	$role->add_cap( 'edit_users' );
+	$role->add_cap( 'edit_files' );
+	$role->add_cap( 'manage_options' );
+	$role->add_cap( 'moderate_comments' );
+	$role->add_cap( 'manage_categories' );
+	$role->add_cap( 'manage_links' );
+	$role->add_cap( 'upload_files' );
+	$role->add_cap( 'import' );
+	$role->add_cap( 'unfiltered_html' );
+	$role->add_cap( 'edit_posts' );
+	$role->add_cap( 'edit_others_posts' );
+	$role->add_cap( 'edit_published_posts' );
+	$role->add_cap( 'publish_posts' );
+	$role->add_cap( 'edit_pages' );
+	$role->add_cap( 'read' );
+	$role->add_cap( 'level_10' );
+	$role->add_cap( 'level_9' );
+	$role->add_cap( 'level_8' );
+	$role->add_cap( 'level_7' );
+	$role->add_cap( 'level_6' );
+	$role->add_cap( 'level_5' );
+	$role->add_cap( 'level_4' );
+	$role->add_cap( 'level_3' );
+	$role->add_cap( 'level_2' );
+	$role->add_cap( 'level_1' );
+	$role->add_cap( 'level_0' );
 
 	// Add caps for Editor role
-	$role = get_role('editor');
-	$role->add_cap('moderate_comments');
-	$role->add_cap('manage_categories');
-	$role->add_cap('manage_links');
-	$role->add_cap('upload_files');
-	$role->add_cap('unfiltered_html');
-	$role->add_cap('edit_posts');
-	$role->add_cap('edit_others_posts');
-	$role->add_cap('edit_published_posts');
-	$role->add_cap('publish_posts');
-	$role->add_cap('edit_pages');
-	$role->add_cap('read');
-	$role->add_cap('level_7');
-	$role->add_cap('level_6');
-	$role->add_cap('level_5');
-	$role->add_cap('level_4');
-	$role->add_cap('level_3');
-	$role->add_cap('level_2');
-	$role->add_cap('level_1');
-	$role->add_cap('level_0');
+	$role = get_role( 'editor' );
+	$role->add_cap( 'moderate_comments' );
+	$role->add_cap( 'manage_categories' );
+	$role->add_cap( 'manage_links' );
+	$role->add_cap( 'upload_files' );
+	$role->add_cap( 'unfiltered_html' );
+	$role->add_cap( 'edit_posts' );
+	$role->add_cap( 'edit_others_posts' );
+	$role->add_cap( 'edit_published_posts' );
+	$role->add_cap( 'publish_posts' );
+	$role->add_cap( 'edit_pages' );
+	$role->add_cap( 'read' );
+	$role->add_cap( 'level_7' );
+	$role->add_cap( 'level_6' );
+	$role->add_cap( 'level_5' );
+	$role->add_cap( 'level_4' );
+	$role->add_cap( 'level_3' );
+	$role->add_cap( 'level_2' );
+	$role->add_cap( 'level_1' );
+	$role->add_cap( 'level_0' );
 
 	// Add caps for Author role
-	$role = get_role('author');
-	$role->add_cap('upload_files');
-	$role->add_cap('edit_posts');
-	$role->add_cap('edit_published_posts');
-	$role->add_cap('publish_posts');
-	$role->add_cap('read');
-	$role->add_cap('level_2');
-	$role->add_cap('level_1');
-	$role->add_cap('level_0');
+	$role = get_role( 'author' );
+	$role->add_cap( 'upload_files' );
+	$role->add_cap( 'edit_posts' );
+	$role->add_cap( 'edit_published_posts' );
+	$role->add_cap( 'publish_posts' );
+	$role->add_cap( 'read' );
+	$role->add_cap( 'level_2' );
+	$role->add_cap( 'level_1' );
+	$role->add_cap( 'level_0' );
 
 	// Add caps for Contributor role
-	$role = get_role('contributor');
-	$role->add_cap('edit_posts');
-	$role->add_cap('read');
-	$role->add_cap('level_1');
-	$role->add_cap('level_0');
+	$role = get_role( 'contributor' );
+	$role->add_cap( 'edit_posts' );
+	$role->add_cap( 'read' );
+	$role->add_cap( 'level_1' );
+	$role->add_cap( 'level_0' );
 
 	// Add caps for Subscriber role
-	$role = get_role('subscriber');
-	$role->add_cap('read');
-	$role->add_cap('level_0');
+	$role = get_role( 'subscriber' );
+	$role->add_cap( 'read' );
+	$role->add_cap( 'level_0' );
 }
 
 /**
@@ -743,45 +743,45 @@ function populate_roles_160() {
  * @since 2.1.0
  */
 function populate_roles_210() {
-	$roles = array('administrator', 'editor');
-	foreach ($roles as $role) {
-		$role = get_role($role);
-		if ( empty($role) ) {
+	$roles = array( 'administrator', 'editor' );
+	foreach ( $roles as $role) {
+		$role = get_role( $role);
+		if ( empty( $role) ) {
 			continue;
 		}
 
-		$role->add_cap('edit_others_pages');
-		$role->add_cap('edit_published_pages');
-		$role->add_cap('publish_pages');
-		$role->add_cap('delete_pages');
-		$role->add_cap('delete_others_pages');
-		$role->add_cap('delete_published_pages');
-		$role->add_cap('delete_posts');
-		$role->add_cap('delete_others_posts');
-		$role->add_cap('delete_published_posts');
-		$role->add_cap('delete_private_posts');
-		$role->add_cap('edit_private_posts');
-		$role->add_cap('read_private_posts');
-		$role->add_cap('delete_private_pages');
-		$role->add_cap('edit_private_pages');
-		$role->add_cap('read_private_pages');
+		$role->add_cap( 'edit_others_pages' );
+		$role->add_cap( 'edit_published_pages' );
+		$role->add_cap( 'publish_pages' );
+		$role->add_cap( 'delete_pages' );
+		$role->add_cap( 'delete_others_pages' );
+		$role->add_cap( 'delete_published_pages' );
+		$role->add_cap( 'delete_posts' );
+		$role->add_cap( 'delete_others_posts' );
+		$role->add_cap( 'delete_published_posts' );
+		$role->add_cap( 'delete_private_posts' );
+		$role->add_cap( 'edit_private_posts' );
+		$role->add_cap( 'read_private_posts' );
+		$role->add_cap( 'delete_private_pages' );
+		$role->add_cap( 'edit_private_pages' );
+		$role->add_cap( 'read_private_pages' );
 	}
 
-	$role = get_role('administrator');
-	if ( ! empty($role) ) {
-		$role->add_cap('delete_users');
-		$role->add_cap('create_users');
+	$role = get_role( 'administrator' );
+	if ( ! empty( $role) ) {
+		$role->add_cap( 'delete_users' );
+		$role->add_cap( 'create_users' );
 	}
 
-	$role = get_role('author');
-	if ( ! empty($role) ) {
-		$role->add_cap('delete_posts');
-		$role->add_cap('delete_published_posts');
+	$role = get_role( 'author' );
+	if ( ! empty( $role) ) {
+		$role->add_cap( 'delete_posts' );
+		$role->add_cap( 'delete_published_posts' );
 	}
 
-	$role = get_role('contributor');
-	if ( ! empty($role) ) {
-		$role->add_cap('delete_posts');
+	$role = get_role( 'contributor' );
+	if ( ! empty( $role) ) {
+		$role->add_cap( 'delete_posts' );
 	}
 }
 
@@ -793,7 +793,7 @@ function populate_roles_210() {
 function populate_roles_230() {
 	$role = get_role( 'administrator' );
 
-	if ( !empty( $role ) ) {
+	if ( ! empty( $role ) ) {
 		$role->add_cap( 'unfiltered_upload' );
 	}
 }
@@ -806,7 +806,7 @@ function populate_roles_230() {
 function populate_roles_250() {
 	$role = get_role( 'administrator' );
 
-	if ( !empty( $role ) ) {
+	if ( ! empty( $role ) ) {
 		$role->add_cap( 'edit_dashboard' );
 	}
 }
@@ -819,7 +819,7 @@ function populate_roles_250() {
 function populate_roles_260() {
 	$role = get_role( 'administrator' );
 
-	if ( !empty( $role ) ) {
+	if ( ! empty( $role ) ) {
 		$role->add_cap( 'update_plugins' );
 		$role->add_cap( 'delete_plugins' );
 	}
@@ -833,7 +833,7 @@ function populate_roles_260() {
 function populate_roles_270() {
 	$role = get_role( 'administrator' );
 
-	if ( !empty( $role ) ) {
+	if ( ! empty( $role ) ) {
 		$role->add_cap( 'install_plugins' );
 		$role->add_cap( 'update_themes' );
 	}
@@ -847,7 +847,7 @@ function populate_roles_270() {
 function populate_roles_280() {
 	$role = get_role( 'administrator' );
 
-	if ( !empty( $role ) ) {
+	if ( ! empty( $role ) ) {
 		$role->add_cap( 'install_themes' );
 	}
 }
@@ -860,7 +860,7 @@ function populate_roles_280() {
 function populate_roles_300() {
 	$role = get_role( 'administrator' );
 
-	if ( !empty( $role ) ) {
+	if ( ! empty( $role ) ) {
 		$role->add_cap( 'update_core' );
 		$role->add_cap( 'list_users' );
 		$role->add_cap( 'remove_users' );
@@ -963,7 +963,7 @@ function populate_network( $network_id = 1, $domain = '', $email = '', $site_nam
 
 	wp_cache_delete( 'networks_have_paths', 'site-options' );
 
-	if ( !is_multisite() ) {
+	if ( ! is_multisite() ) {
 		$site_admins = array( $site_user->user_login );
 		$users = get_users( array( 'fields' => array( 'ID', 'user_login' ) ) );
 		if ( $users ) {
@@ -1051,7 +1051,7 @@ We hope you enjoy your new site. Thanks!
 		if ( is_array( $meta_value ) ) {
 			$meta_value = serialize( $meta_value );
 		}
-		if ( !empty( $insert ) ) {
+		if ( ! empty( $insert ) ) {
 			$insert .= ', ';
 		}
 		$insert .= $wpdb->prepare( "( %d, %s, %s)", $network_id, $meta_key, $meta_value );

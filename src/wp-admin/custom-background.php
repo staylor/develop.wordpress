@@ -50,7 +50,7 @@ class Custom_Background {
 	 * @param callable $admin_header_callback
 	 * @param callable $admin_image_div_callback Optional custom image div output callback.
 	 */
-	public function __construct($admin_header_callback = '', $admin_image_div_callback = '') {
+	public function __construct( $admin_header_callback = '', $admin_image_div_callback = '' ) {
 		$this->admin_header_callback = $admin_header_callback;
 		$this->admin_image_div_callback = $admin_image_div_callback;
 
@@ -91,8 +91,8 @@ class Custom_Background {
 		( new Help( get_current_screen() ) )->addMain();
 
 		wp_enqueue_media();
-		wp_enqueue_script('custom-background');
-		wp_enqueue_style('wp-color-picker');
+		wp_enqueue_script( 'custom-background' );
+		wp_enqueue_style( 'wp-color-picker' );
 	}
 
 	/**
@@ -108,60 +108,60 @@ class Custom_Background {
 		}
 
 		if ( $_post->get( 'reset-background' ) ) {
-			check_admin_referer('custom-background-reset', '_wpnonce-custom-background-reset');
-			remove_theme_mod('background_image');
-			remove_theme_mod('background_image_thumb');
+			check_admin_referer( 'custom-background-reset', '_wpnonce-custom-background-reset' );
+			remove_theme_mod( 'background_image' );
+			remove_theme_mod( 'background_image_thumb' );
 			$this->updated = true;
 			return;
 		}
 
 		if ( $_post->get( 'remove-background' ) ) {
 			// @TODO: Uploaded files are not removed here.
-			check_admin_referer('custom-background-remove', '_wpnonce-custom-background-remove');
-			set_theme_mod('background_image', '');
-			set_theme_mod('background_image_thumb', '');
+			check_admin_referer( 'custom-background-remove', '_wpnonce-custom-background-remove' );
+			set_theme_mod( 'background_image', '' );
+			set_theme_mod( 'background_image_thumb', '' );
 			$this->updated = true;
 			wp_safe_redirect( $_post->get( '_wp_http_referer' ) );
 			return;
 		}
 
 		if ( $_post->get( 'background-repeat' ) ) {
-			check_admin_referer('custom-background');
-			if ( in_array( $_post->get( 'background-repeat' ), array('repeat', 'no-repeat', 'repeat-x', 'repeat-y')) ) {
+			check_admin_referer( 'custom-background' );
+			if ( in_array( $_post->get( 'background-repeat' ), array( 'repeat', 'no-repeat', 'repeat-x', 'repeat-y' ) ) ) {
 				$repeat = $_post->get( 'background-repeat' );
 			} else {
 				$repeat = 'repeat';
 			}
-			set_theme_mod('background_repeat', $repeat);
+			set_theme_mod( 'background_repeat', $repeat);
 		}
 
 		if ( $_post->get( 'background-position-x' ) ) {
-			check_admin_referer('custom-background');
-			if ( in_array( $_post->get( 'background-position-x' ), array('center', 'right', 'left')) ) {
+			check_admin_referer( 'custom-background' );
+			if ( in_array( $_post->get( 'background-position-x' ), array( 'center', 'right', 'left' ) ) ) {
 				$position = $_post->get( 'background-position-x' );
 			} else {
 				$position = 'left';
 			}
-			set_theme_mod('background_position_x', $position);
+			set_theme_mod( 'background_position_x', $position);
 		}
 
 		if ( $_post->get( 'background-attachment' ) ) {
-			check_admin_referer('custom-background');
-			if ( in_array( $_post->get( 'background-attachment' ), array('fixed', 'scroll')) ) {
+			check_admin_referer( 'custom-background' );
+			if ( in_array( $_post->get( 'background-attachment' ), array( 'fixed', 'scroll' ) ) ) {
 				$attachment = $_post->get( 'background-attachment' );
 			} else {
 				$attachment = 'fixed';
 			}
-			set_theme_mod('background_attachment', $attachment);
+			set_theme_mod( 'background_attachment', $attachment);
 		}
 
 		if ( $_post->get( 'background-color' ) ) {
-			check_admin_referer('custom-background');
-			$color = preg_replace('/[^0-9a-fA-F]/', '', $_post->get( 'background-color' ) );
-			if ( strlen($color) == 6 || strlen($color) == 3 ) {
-				set_theme_mod('background_color', $color);
+			check_admin_referer( 'custom-background' );
+			$color = preg_replace( '/[^0-9a-fA-F]/', '', $_post->get( 'background-color' ) );
+			if ( strlen( $color) == 6 || strlen( $color) == 3 ) {
+				set_theme_mod( 'background_color', $color);
 			} else {
-				set_theme_mod('background_color', '');
+				set_theme_mod( 'background_color', '' );
 			}
 		}
 
@@ -218,7 +218,7 @@ class Custom_Background {
 			$background_image_thumb = esc_url( set_url_scheme( get_theme_mod( 'background_image_thumb', str_replace( '%', '%%', $background_image_thumb ) ) ) );
 
 			// Background-image URL must be single quote, see below.
-			$background_styles .= ' background-image: url(\'' . $background_image_thumb . '\');'
+			$background_styles .= ' background-image: url(\'' . $background_image_thumb . '\' );'
 				. ' background-repeat: ' . get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) . ';'
 				. ' background-position: top ' . get_theme_mod( 'background_position_x', get_theme_support( 'custom-background', 'default-position-x' ) );
 		}
@@ -235,12 +235,12 @@ class Custom_Background {
 
 <?php if ( get_background_image() ) : ?>
 <tr>
-<th scope="row"><?php _e('Remove Image'); ?></th>
+<th scope="row"><?php _e( 'Remove Image' ); ?></th>
 <td>
 <form method="post">
-<?php wp_nonce_field('custom-background-remove', '_wpnonce-custom-background-remove'); ?>
+<?php wp_nonce_field( 'custom-background-remove', '_wpnonce-custom-background-remove' ); ?>
 <?php submit_button( __( 'Remove Background Image' ), '', 'remove-background', false ); ?><br/>
-<?php _e('This will remove the background image. You will not be able to restore any customizations.') ?>
+<?php _e( 'This will remove the background image. You will not be able to restore any customizations.' ) ?>
 </form>
 </td>
 </tr>
@@ -249,12 +249,12 @@ class Custom_Background {
 <?php $default_image = get_theme_support( 'custom-background', 'default-image' ); ?>
 <?php if ( $default_image && get_background_image() != $default_image ) : ?>
 <tr>
-<th scope="row"><?php _e('Restore Original Image'); ?></th>
+<th scope="row"><?php _e( 'Restore Original Image' ); ?></th>
 <td>
 <form method="post">
-<?php wp_nonce_field('custom-background-reset', '_wpnonce-custom-background-reset'); ?>
+<?php wp_nonce_field( 'custom-background-reset', '_wpnonce-custom-background-reset' ); ?>
 <?php submit_button( __( 'Restore Original Image' ), '', 'reset-background', false ); ?><br/>
-<?php _e('This will restore the original background image. You will not be able to restore any customizations.') ?>
+<?php _e( 'This will restore the original background image. You will not be able to restore any customizations.' ) ?>
 </form>
 </td>
 </tr>
@@ -262,7 +262,7 @@ class Custom_Background {
 
 <?php if ( current_user_can( 'upload_files' ) ): ?>
 <tr>
-<th scope="row"><?php _e('Select Image'); ?></th>
+<th scope="row"><?php _e( 'Select Image' ); ?></th>
 <td><form enctype="multipart/form-data" id="upload-form" class="wp-upload-form" method="post">
 	<p>
 		<label for="upload"><?php _e( 'Choose an image from your computer:' ); ?></label><br />
@@ -284,7 +284,7 @@ class Custom_Background {
 </tbody>
 </table>
 
-<h3><?php _e('Display Options') ?></h3>
+<h3><?php _e( 'Display Options' ) ?></h3>
 <form method="post">
 <table class="form-table">
 <tbody>
@@ -294,15 +294,15 @@ class Custom_Background {
 <td><fieldset><legend class="screen-reader-text"><span><?php _e( 'Background Position' ); ?></span></legend>
 <label>
 <input name="background-position-x" type="radio" value="left"<?php checked( 'left', get_theme_mod( 'background_position_x', get_theme_support( 'custom-background', 'default-position-x' ) ) ); ?> />
-<?php _e('Left') ?>
+<?php _e( 'Left' ) ?>
 </label>
 <label>
 <input name="background-position-x" type="radio" value="center"<?php checked( 'center', get_theme_mod( 'background_position_x', get_theme_support( 'custom-background', 'default-position-x' ) ) ); ?> />
-<?php _e('Center') ?>
+<?php _e( 'Center' ) ?>
 </label>
 <label>
 <input name="background-position-x" type="radio" value="right"<?php checked( 'right', get_theme_mod( 'background_position_x', get_theme_support( 'custom-background', 'default-position-x' ) ) ); ?> />
-<?php _e('Right') ?>
+<?php _e( 'Right' ) ?>
 </label>
 </fieldset></td>
 </tr>
@@ -310,10 +310,10 @@ class Custom_Background {
 <tr>
 <th scope="row"><?php _e( 'Repeat' ); ?></th>
 <td><fieldset><legend class="screen-reader-text"><span><?php _e( 'Background Repeat' ); ?></span></legend>
-<label><input type="radio" name="background-repeat" value="no-repeat"<?php checked( 'no-repeat', get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) ); ?> /> <?php _e('No Repeat'); ?></label>
-	<label><input type="radio" name="background-repeat" value="repeat"<?php checked( 'repeat', get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) ); ?> /> <?php _e('Tile'); ?></label>
-	<label><input type="radio" name="background-repeat" value="repeat-x"<?php checked( 'repeat-x', get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) ); ?> /> <?php _e('Tile Horizontally'); ?></label>
-	<label><input type="radio" name="background-repeat" value="repeat-y"<?php checked( 'repeat-y', get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) ); ?> /> <?php _e('Tile Vertically'); ?></label>
+<label><input type="radio" name="background-repeat" value="no-repeat"<?php checked( 'no-repeat', get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) ); ?> /> <?php _e( 'No Repeat' ); ?></label>
+	<label><input type="radio" name="background-repeat" value="repeat"<?php checked( 'repeat', get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) ); ?> /> <?php _e( 'Tile' ); ?></label>
+	<label><input type="radio" name="background-repeat" value="repeat-x"<?php checked( 'repeat-x', get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) ); ?> /> <?php _e( 'Tile Horizontally' ); ?></label>
+	<label><input type="radio" name="background-repeat" value="repeat-y"<?php checked( 'repeat-y', get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) ) ); ?> /> <?php _e( 'Tile Vertically' ); ?></label>
 </fieldset></td>
 </tr>
 
@@ -346,7 +346,7 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) ) {
 </tbody>
 </table>
 
-<?php wp_nonce_field('custom-background'); ?>
+<?php wp_nonce_field( 'custom-background' ); ?>
 <?php submit_button( null, 'primary', 'save-background-options' ); ?>
 </form>
 
@@ -367,8 +367,8 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) ) {
 			return;
 		}
 
-		check_admin_referer('custom-background-upload', '_wpnonce-custom-background-upload');
-		$overrides = array('test_form' => false);
+		check_admin_referer( 'custom-background-upload', '_wpnonce-custom-background-upload' );
+		$overrides = array( 'test_form' => false );
 
 		$uploaded_file = $_files->get( 'import' );
 		$wp_filetype = wp_check_filetype_and_ext( $uploaded_file['tmp_name'], $uploaded_file['name'] );
@@ -376,16 +376,16 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) ) {
 			wp_die( __( 'The uploaded file is not a valid image. Please try again.' ) );
 		}
 
-		$file = wp_handle_upload($uploaded_file, $overrides);
+		$file = wp_handle_upload( $uploaded_file, $overrides);
 
-		if ( isset($file['error']) ) {
+		if ( isset( $file['error'] ) ) {
 			wp_die( $file['error'] );
 		}
 
 		$url = $file['url'];
 		$type = $file['type'];
 		$file = $file['file'];
-		$filename = basename($file);
+		$filename = basename( $file);
 
 		// Construct the object array
 		$object = array(
@@ -397,16 +397,16 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) ) {
 		);
 
 		// Save the data
-		$id = wp_insert_attachment($object, $file);
+		$id = wp_insert_attachment( $object, $file);
 
 		// Add the meta-data
 		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );
-		update_post_meta( $id, '_wp_attachment_is_custom_background', get_option('stylesheet' ) );
+		update_post_meta( $id, '_wp_attachment_is_custom_background', get_option( 'stylesheet' ) );
 
-		set_theme_mod('background_image', esc_url_raw($url));
+		set_theme_mod( 'background_image', esc_url_raw( $url) );
 
 		$thumbnail = wp_get_attachment_image_src( $id, 'thumbnail' );
-		set_theme_mod('background_image_thumb', esc_url_raw( $thumbnail[0] ) );
+		set_theme_mod( 'background_image_thumb', esc_url_raw( $thumbnail[0] ) );
 
 		/** This action is documented in wp-admin/custom-header.php */
 		do_action( 'wp_create_file_in_uploads', $file, $id ); // For replication
@@ -473,18 +473,18 @@ if ( current_theme_supports( 'custom-background', 'default-color' ) ) {
 		$app = getApp();
 		$_post = $app['request']->request;
 		$attachment_id = $_post->getInt( 'attachment_id' );
-		if ( ! current_user_can('edit_theme_options') || ! $attachment_id ) {
+		if ( ! current_user_can( 'edit_theme_options' ) || ! $attachment_id ) {
 			exit;
 		}
 
 		/** This filter is documented in wp-admin/includes/media.php */
-		$sizes = array_keys(apply_filters( 'image_size_names_choose', array('thumbnail' => __('Thumbnail'), 'medium' => __('Medium'), 'large' => __('Large'), 'full' => __('Full Size')) ));
+		$sizes = array_keys(apply_filters( 'image_size_names_choose', array( 'thumbnail' => __( 'Thumbnail' ), 'medium' => __( 'Medium' ), 'large' => __( 'Large' ), 'full' => __( 'Full Size' ) ) ) );
 		$size = 'thumbnail';
 		if ( in_array( $_post->get( 'size' ), $sizes ) ) {
 			$size = esc_attr( $_post->get( 'size' ) );
 		}
 
-		update_post_meta( $attachment_id, '_wp_attachment_is_custom_background', get_option('stylesheet' ) );
+		update_post_meta( $attachment_id, '_wp_attachment_is_custom_background', get_option( 'stylesheet' ) );
 		$url = wp_get_attachment_image_src( $attachment_id, $size );
 		$thumbnail = wp_get_attachment_image_src( $attachment_id, 'thumbnail' );
 		set_theme_mod( 'background_image', esc_url_raw( $url[0] ) );

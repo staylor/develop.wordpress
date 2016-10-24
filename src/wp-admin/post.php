@@ -59,10 +59,10 @@ if ( ! $sendback ||
 		}
 	}
 } else {
-	$sendback = remove_query_arg( array('trashed', 'untrashed', 'deleted', 'ids'), $sendback );
+	$sendback = remove_query_arg( array( 'trashed', 'untrashed', 'deleted', 'ids' ), $sendback );
 }
 
-switch($action) {
+switch( $action) {
 case 'post-quickdraft-save':
 	// Check nonce and capabilities
 	$nonce = $_request->get( '_wpnonce' );
@@ -104,7 +104,7 @@ case 'edit':
 	$editing = true;
 
 	if ( empty( $post_id ) ) {
-		wp_redirect( admin_url('post.php') );
+		wp_redirect( admin_url( 'post.php' ) );
 		exit();
 	}
 
@@ -159,7 +159,7 @@ case 'edit':
 		$active_post_lock = wp_set_post_lock( $post->ID );
 
 		if ( 'attachment' !== $post_type ) {
-			wp_enqueue_script('autosave');
+			wp_enqueue_script( 'autosave' );
 		}
 	}
 
@@ -176,10 +176,10 @@ case 'edit':
 	}
 
 	$app->set( 'title', $post_type_object->labels->edit_item );
-	$post = get_post($post_id, OBJECT, 'edit');
+	$post = get_post( $post_id, OBJECT, 'edit' );
 
-	if ( post_type_supports($post_type, 'comments') ) {
-		wp_enqueue_script('admin-comments');
+	if ( post_type_supports( $post_type, 'comments' ) ) {
+		wp_enqueue_script( 'admin-comments' );
 		enqueue_comment_hotkeys_js();
 	}
 
@@ -188,7 +188,7 @@ case 'edit':
 	break;
 
 case 'editattachment':
-	check_admin_referer('update-post_' . $post_id);
+	check_admin_referer( 'update-post_' . $post_id );
 
 	// Don't let these be changed
 	$_post->remove( 'guid' );
@@ -201,7 +201,7 @@ case 'editattachment':
 	wp_update_attachment_metadata( $post_id, $newmeta );
 
 case 'editpost':
-	check_admin_referer('update-post_' . $post_id);
+	check_admin_referer( 'update-post_' . $post_id );
 
 	$post_id = edit_post();
 
@@ -210,12 +210,12 @@ case 'editpost':
 		setcookie( 'wp-saving-post', $post_id . '-saved', time() + DAY_IN_SECONDS, ADMIN_COOKIE_PATH, COOKIE_DOMAIN, is_ssl() );
 	}
 
-	redirect_post($post_id); // Send user on their way while we keep working
+	redirect_post( $post_id ); // Send user on their way while we keep working
 
 	exit();
 
 case 'trash':
-	check_admin_referer('trash-post_' . $post_id);
+	check_admin_referer( 'trash-post_' . $post_id );
 
 	if ( ! $post ) {
 		wp_die( __( 'The item you are trying to move to the Trash no longer exists.' ) );
@@ -238,11 +238,11 @@ case 'trash':
 		wp_die( __( 'Error in moving to Trash.' ) );
 	}
 
-	wp_redirect( add_query_arg( array('trashed' => 1, 'ids' => $post_id), $sendback ) );
+	wp_redirect( add_query_arg( array( 'trashed' => 1, 'ids' => $post_id ), $sendback ) );
 	exit();
 
 case 'untrash':
-	check_admin_referer('untrash-post_' . $post_id);
+	check_admin_referer( 'untrash-post_' . $post_id );
 
 	if ( ! $post ) {
 		wp_die( __( 'The item you are trying to restore from the Trash no longer exists.' ) );
@@ -260,11 +260,11 @@ case 'untrash':
 		wp_die( __( 'Error in restoring from Trash.' ) );
 	}
 
-	wp_redirect( add_query_arg('untrashed', 1, $sendback) );
+	wp_redirect( add_query_arg( 'untrashed', 1, $sendback) );
 	exit();
 
 case 'delete':
-	check_admin_referer('delete-post_' . $post_id);
+	check_admin_referer( 'delete-post_' . $post_id );
 
 	if ( ! $post ) {
 		wp_die( __( 'This item has already been deleted.' ) );
@@ -289,7 +289,7 @@ case 'delete':
 		}
 	}
 
-	wp_redirect( add_query_arg('deleted', 1, $sendback) );
+	wp_redirect( add_query_arg( 'deleted', 1, $sendback) );
 	exit();
 
 case 'preview':
@@ -297,7 +297,7 @@ case 'preview':
 
 	$url = post_preview();
 
-	wp_redirect($url);
+	wp_redirect( $url);
 	exit();
 
 default:
@@ -312,7 +312,7 @@ default:
 	 */
 	do_action( "post_action_{$action}", $post_id );
 
-	wp_redirect( admin_url('edit.php') );
+	wp_redirect( admin_url( 'edit.php' ) );
 	exit();
 } // end switch
 include( ABSPATH . 'wp-admin/admin-footer.php' );

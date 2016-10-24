@@ -299,7 +299,7 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 	$diffs = array( array(
 		'id' => $from . ':' . $selected_revision_id,
 		'fields' => wp_get_revision_ui_diff( $post->ID, $from, $selected_revision_id ),
-	));
+	) );
 
 	return array(
 		'postId'           => $post->ID,

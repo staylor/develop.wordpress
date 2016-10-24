@@ -91,7 +91,7 @@ if ( 'add-site' == $_request->get( 'action' ) ) {
 	}
 
 	$credential = 'N/A';
-	$user_id = email_exists($email);
+	$user_id = email_exists( $email);
 	// Create a new user with a random password
 	if ( !$user_id ) {
 		/**

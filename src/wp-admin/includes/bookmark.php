@@ -43,11 +43,11 @@ function edit_link( $link_id = 0 ) {
 	$_post->set( 'link_name', esc_html( $_post->get( 'link_name' ) ) );
 	$_post->set( 'link_image', esc_html( $_post->get( 'link_image' ) ) );
 	$_post->set( 'link_rss', esc_url( $_post->get( 'link_rss' ) ) );
-	if ( ! $_post->get( 'link_visible' ) || 'N' !=  $_post->get( 'link_visible' ) ) {
+	if ( ! $_post->get( 'link_visible' ) || 'N' != $_post->get( 'link_visible' ) ) {
 		$_post->set( 'link_visible', 'Y' );
 	}
 
-	if ( !empty( $link_id ) ) {
+	if ( ! empty( $link_id ) ) {
 		$_post->set( 'link_id', $link_id );
 		return wp_update_link( $_post->all() );
 	} else {
@@ -131,7 +131,7 @@ function wp_delete_link( $link_id ) {
  * @return array The requested link's categories
  */
 function wp_get_link_cats( $link_id = 0 ) {
-	$cats = wp_get_object_terms( $link_id, 'link_category', array('fields' => 'ids') );
+	$cats = wp_get_object_terms( $link_id, 'link_category', array( 'fields' => 'ids' ) );
 	return array_unique( $cats );
 }
 
@@ -257,7 +257,7 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
  */
 function wp_set_link_cats( $link_id = 0, $link_categories = [] ) {
 	// If $link_categories isn't already an array, make it one:
-	if ( !is_array( $link_categories ) || 0 == count( $link_categories ) ) {
+	if ( ! is_array( $link_categories ) || 0 == count( $link_categories ) ) {
 		$link_categories = array( get_option( 'default_link_category' ) );
 	}
 

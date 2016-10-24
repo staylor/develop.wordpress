@@ -20,27 +20,27 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 	define( 'WP_ADMIN', true );
 }
 
-if ( ! defined('WP_NETWORK_ADMIN') ) {
-	define('WP_NETWORK_ADMIN', false);
+if ( ! defined( 'WP_NETWORK_ADMIN' ) ) {
+	define( 'WP_NETWORK_ADMIN', false );
 }
 
-if ( ! defined('WP_USER_ADMIN') ) {
-	define('WP_USER_ADMIN', false);
+if ( ! defined( 'WP_USER_ADMIN' ) ) {
+	define( 'WP_USER_ADMIN', false );
 }
 
 if ( ! WP_NETWORK_ADMIN && ! WP_USER_ADMIN ) {
-	define('WP_BLOG_ADMIN', true);
+	define( 'WP_BLOG_ADMIN', true );
 }
 
 if ( $_get->get( 'import' ) && ! defined( 'WP_LOAD_IMPORTERS' ) ) {
-	define('WP_LOAD_IMPORTERS', true);
+	define( 'WP_LOAD_IMPORTERS', true );
 }
 
-require_once(dirname( __DIR__ ) . '/wp-load.php');
+require_once(dirname( __DIR__ ) . '/wp-load.php' );
 
 nocache_headers();
 
-if ( get_option('db_upgraded') ) {
+if ( get_option( 'db_upgraded' ) ) {
 	flush_rewrite_rules();
 	update_option( 'db_upgraded',  false );
 
@@ -50,8 +50,8 @@ if ( get_option('db_upgraded') ) {
 	 * @since 2.8.0
 	 */
 	do_action( 'after_db_upgrade' );
-} elseif ( get_option('db_version') != $app['wp_db_version'] && empty( $_post->all() ) ) {
-	if ( !is_multisite() ) {
+} elseif ( get_option( 'db_version' ) != $app['wp_db_version'] && empty( $_post->all() ) ) {
+	if ( ! is_multisite() ) {
 		wp_redirect( admin_url( 'upgrade.php?_wp_http_referer=' . urlencode( wp_unslash( $app['request.uri'] ) ) ) );
 		exit;
 
@@ -81,19 +81,19 @@ if ( get_option('db_upgraded') ) {
 			$response = wp_remote_get( admin_url( 'upgrade.php?step=1' ), [ 'timeout' => 120, 'httpversion' => '1.1' ] );
 			/** This action is documented in wp-admin/network/upgrade.php */
 			do_action( 'after_mu_upgrade', $response );
-			unset($response);
+			unset( $response);
 		}
-		unset($c);
+		unset( $c);
 	}
 }
 
-require_once(ABSPATH . 'wp-admin/includes/admin.php');
+require_once( ABSPATH . 'wp-admin/includes/admin.php' );
 
 auth_redirect();
 
 // Schedule trash collection
 if ( ! wp_next_scheduled( 'wp_scheduled_delete' ) && ! wp_installing() ) {
-	wp_schedule_event(time(), 'daily', 'wp_scheduled_delete');
+	wp_schedule_event(time(), 'daily', 'wp_scheduled_delete' );
 }
 
 set_screen_options();
@@ -116,11 +116,11 @@ if ( $_get->get( 'page' ) ) {
 }
 
 if ( WP_NETWORK_ADMIN ) {
-	require(ABSPATH . 'wp-admin/network/menu.php');
+	require( ABSPATH . 'wp-admin/network/menu.php' );
 } elseif ( WP_USER_ADMIN ) {
-	require(ABSPATH . 'wp-admin/user/menu.php');
+	require( ABSPATH . 'wp-admin/user/menu.php' );
 } else {
-	require(ABSPATH . 'wp-admin/menu.php');
+	require( ABSPATH . 'wp-admin/menu.php' );
 }
 
 if ( current_user_can( 'manage_options' ) ) {
@@ -160,11 +160,11 @@ if ( $plugin_page ) {
 			} else {
 				$query_string = 'page=' . $plugin_page;
 			}
-			wp_redirect( admin_url('tools.php?' . $query_string) );
+			wp_redirect( admin_url( 'tools.php?' . $query_string) );
 			exit;
 		}
 	}
-	unset($the_parent);
+	unset( $the_parent);
 }
 
 $app->set( 'hook_suffix',  '' );
@@ -206,7 +206,7 @@ if ( $plugin_page ) {
 		 */
 		do_action( "load-{$page_hook}" );
 		if ( ! $_get->get( 'noheader' ) ) {
-			require_once(ABSPATH . 'wp-admin/admin-header.php');
+			require_once( ABSPATH . 'wp-admin/admin-header.php' );
 		}
 		/**
 		 * Used to call the registered callback for a plugin screen.
@@ -220,7 +220,7 @@ if ( $plugin_page ) {
 
 	} else {
 		if ( validate_file( $plugin_page ) ) {
-			wp_die(__('Invalid plugin page'));
+			wp_die( __( 'Invalid plugin page' ) );
 		}
 
 		if ( ! (
@@ -269,7 +269,7 @@ if ( $plugin_page ) {
 		wp_die( __( 'Sorry, you are not allowed to import content.' ) );
 	}
 
-	if ( validate_file($importer) ) {
+	if ( validate_file( $importer) ) {
 		wp_redirect( admin_url( 'import.php?invalid=' . $importer ) );
 		exit;
 	}
@@ -294,11 +294,11 @@ if ( $plugin_page ) {
 	$app->set( 'title', __( 'Import' ) );
 
 	if ( ! $_get->get( 'noheader' ) ) {
-		require_once(ABSPATH . 'wp-admin/admin-header.php');
+		require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	}
-	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-	define('WP_IMPORTING', true);
+	define( 'WP_IMPORTING', true );
 
 	/**
 	 * Whether to filter imported data through kses on import.
@@ -316,10 +316,10 @@ if ( $plugin_page ) {
 
 	call_user_func( $app->importers[ $importer ][2] );
 
-	include(ABSPATH . 'wp-admin/admin-footer.php');
+	include( ABSPATH . 'wp-admin/admin-footer.php' );
 
 	// Make sure rules are flushed
-	flush_rewrite_rules(false);
+	flush_rewrite_rules( false );
 
 	exit();
 } else {

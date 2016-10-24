@@ -117,7 +117,7 @@ function get_core_checksums( $version, $locale ) {
 	}
 
 	$options = array(
-		'timeout' => ( ( defined('DOING_CRON') && DOING_CRON ) ? 30 : 3 ),
+		'timeout' => ( ( defined( 'DOING_CRON' ) && DOING_CRON ) ? 30 : 3 ),
 	);
 
 	$response = wp_remote_get( $url, $options );
@@ -197,7 +197,7 @@ function find_core_update( $version, $locale ) {
  * @return string
  */
 function core_update_footer( $msg = '' ) {
-	if ( !current_user_can('update_core') ) {
+	if ( !current_user_can( 'update_core' ) ) {
 		return sprintf( __( 'Version %s' ), get_bloginfo( 'version', 'display' ) );
 	}
 
@@ -235,7 +235,7 @@ function core_update_footer( $msg = '' ) {
  * @return false|void
  */
 function update_nag() {
-	if ( is_multisite() && !current_user_can('update_core') ) {
+	if ( is_multisite() && !current_user_can( 'update_core' ) ) {
 		return false;
 	}
 
@@ -288,7 +288,7 @@ function update_right_now_message() {
 
 	$msg = '';
 
-	if ( current_user_can('update_core') ) {
+	if ( current_user_can( 'update_core' ) ) {
 		$cur = get_preferred_from_update_core();
 
 		if ( isset( $cur->response ) && $cur->response == 'upgrade' ) {
@@ -324,7 +324,7 @@ function get_plugin_updates() {
 	$all_plugins = get_plugins();
 	$upgrade_plugins = [];
 	$current = get_site_transient( 'update_plugins' );
-	foreach ( (array)$all_plugins as $plugin_file => $plugin_data) {
+	foreach ( (array) $all_plugins as $plugin_file => $plugin_data) {
 		if ( isset( $current->response[ $plugin_file ] ) ) {
 			$upgrade_plugins[ $plugin_file ] = (object) $plugin_data;
 			$upgrade_plugins[ $plugin_file ]->update = $current->response[ $plugin_file ];
@@ -338,12 +338,12 @@ function get_plugin_updates() {
  * @since 2.9.0
  */
 function wp_plugin_update_rows() {
-	if ( !current_user_can('update_plugins' ) ) {
+	if ( !current_user_can( 'update_plugins' ) ) {
 		return;
 	}
 
 	$plugins = get_site_transient( 'update_plugins' );
-	if ( isset($plugins->response) && is_array($plugins->response) ) {
+	if ( isset( $plugins->response) && is_array( $plugins->response) ) {
 		$plugins = array_keys( $plugins->response );
 		foreach ( $plugins as $plugin_file ) {
 			add_action( "after_plugin_row_$plugin_file", 'wp_plugin_update_row', 10, 2 );
@@ -476,7 +476,7 @@ function wp_plugin_update_row( $file, $plugin_data ) {
  * @return array
  */
 function get_theme_updates() {
-	$current = get_site_transient('update_themes');
+	$current = get_site_transient( 'update_themes' );
 
 	if ( ! isset( $current->response ) ) {
 		return [];
@@ -495,12 +495,12 @@ function get_theme_updates() {
  * @since 3.1.0
  */
 function wp_theme_update_rows() {
-	if ( !current_user_can('update_themes' ) ) {
+	if ( !current_user_can( 'update_themes' ) ) {
 		return;
 	}
 
 	$themes = get_site_transient( 'update_themes' );
-	if ( isset($themes->response) && is_array($themes->response) ) {
+	if ( isset( $themes->response) && is_array( $themes->response) ) {
 		$themes = array_keys( $themes->response );
 
 		foreach ( $themes as $theme ) {
@@ -539,7 +539,7 @@ function wp_theme_update_row( $theme_key, $theme ) {
 	echo '<tr class="plugin-update-tr' . $active . '" id="' . esc_attr( $theme->get_stylesheet() . '-update' ) . '" data-slug="' . esc_attr( $theme->get_stylesheet() ) . '"><td colspan="' . $wp_list_table->get_column_count() . '" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>';
 	if ( ! current_user_can( 'update_themes' ) ) {
 		/* translators: 1: theme name, 2: details URL, 3: additional link attributes, 4: version number */
-		printf( __( 'There is a new version of %1$s available. <a href="%2$s" %3$s>View version %4$s details</a>.'),
+		printf( __( 'There is a new version of %1$s available. <a href="%2$s" %3$s>View version %4$s details</a>.' ),
 			$theme['Name'],
 			esc_url( $details_url ),
 			sprintf( 'class="thickbox open-plugin-details-modal" aria-label="%s"',
@@ -633,10 +633,10 @@ function maintenance_nag() {
 		return false;
 	}
 
-	if ( current_user_can('update_core') ) {
-		$msg = sprintf( __('An automated WordPress update has failed to complete - <a href="%s">please attempt the update again now</a>.'), 'update-core.php' );
+	if ( current_user_can( 'update_core' ) ) {
+		$msg = sprintf( __( 'An automated WordPress update has failed to complete - <a href="%s">please attempt the update again now</a>.' ), 'update-core.php' );
 	} else {
-		$msg = __('An automated WordPress update has failed to complete! Please notify the site administrator.');
+		$msg = __( 'An automated WordPress update has failed to complete! Please notify the site administrator.' );
 	}
 
 	echo "<div class='update-nag'>$msg</div>";

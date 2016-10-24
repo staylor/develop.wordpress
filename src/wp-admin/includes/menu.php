@@ -210,23 +210,23 @@ function add_menu_classes( $menu ) {
 		}
 
 		// if separator
-		if ( 0 === strpos( $top[2], 'separator') && false !== $lastorder ) {
+		if ( 0 === strpos( $top[2], 'separator' ) && false !== $lastorder ) {
 			$first = true;
 			$c = $menu[ $lastorder][4];
-			$menu[ $lastorder][4] = add_cssclass('menu-top-last', $c);
+			$menu[ $lastorder][4] = add_cssclass( 'menu-top-last', $c);
 			continue;
 		}
 
 		if ( $first ) {
 			$c = $menu[ $order][4];
-			$menu[ $order][4] = add_cssclass('menu-top-first', $c);
+			$menu[ $order][4] = add_cssclass( 'menu-top-first', $c);
 			$first = false;
 		}
 
 		// last item
 		if ( $mc == $i ) {
 			$c = $menu[ $order][4];
-			$menu[ $order][4] = add_cssclass('menu-top-last', $c);
+			$menu[ $order][4] = add_cssclass( 'menu-top-last', $c);
 		}
 
 		$lastorder = $order;

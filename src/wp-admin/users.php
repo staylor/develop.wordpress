@@ -188,7 +188,7 @@ case 'remove':
 		exit();
 	}
 
-	if ( ! current_user_can('remove_users' ) ) {
+	if ( ! current_user_can( 'remove_users' ) ) {
 		$error = new Error( 'edit_users', __( 'You can&#8217;t remove users.' ) );
 	}
 
@@ -203,14 +203,14 @@ case 'remove':
  	foreach ( $userids as $id ) {
 		$id = (int) $id;
  		$user = get_userdata( $id );
-		if ( $id == $current_user->ID && !is_super_admin() ) {
+		if ( $id == $current_user->ID && ! is_super_admin() ) {
 			/* translators: 1: user id, 2: user login */
 			$list_items[] = sprintf(
 				__( 'ID #%1$s: %2$s <strong>The current user will not be removed.</strong>' ),
 				$id,
 				$user->user_login
 			);
-		} elseif ( !current_user_can('remove_user', $id) ) {
+		} elseif ( !current_user_can( 'remove_user', $id ) ) {
 			/* translators: 1: user id, 2: user login */
 			$list_items[] = sprintf(
 				__( 'ID #%1$s: %2$s <strong>Sorry, you are not allowed to remove this user.</strong>' ),

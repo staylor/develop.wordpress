@@ -18,7 +18,7 @@
  */
 class Walker_Category_Checklist extends Walker {
 	public $tree_type = 'category';
-	public $db_fields = array ('parent' => 'parent', 'id' => 'term_id'); //TODO: decouple this
+	public $db_fields = array ( 'parent' => 'parent', 'id' => 'term_id' ); //TODO: decouple this
 
 	/**
 	 * Starts the list before the elements are added.
@@ -32,7 +32,7 @@ class Walker_Category_Checklist extends Walker {
 	 * @param array  $args   An array of arguments. @see wp_terms_checklist()
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = [] ) {
-		$indent = str_repeat("\t", $depth);
+		$indent = str_repeat( "\t", $depth);
 		$output .= "$indent<ul class='children'>\n";
 	}
 
@@ -48,7 +48,7 @@ class Walker_Category_Checklist extends Walker {
 	 * @param array  $args   An array of arguments. @see wp_terms_checklist()
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = [] ) {
-		$indent = str_repeat("\t", $depth);
+		$indent = str_repeat( "\t", $depth);
 		$output .= "$indent</ul>\n";
 	}
 

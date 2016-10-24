@@ -275,7 +275,7 @@ function wpmu_delete_user( $id ) {
  * @param string $value     The new email address.
  */
 function update_option_new_admin_email( $old_value, $value ) {
-	if ( $value == get_option( 'admin_email' ) || !is_email( $value ) ) {
+	if ( $value == get_option( 'admin_email' ) || ! is_email( $value ) ) {
 		return;
 	}
 
@@ -354,7 +354,7 @@ function send_confirmation_on_profile_email() {
 	}
 
 	if ( $current_user->user_email != $_post->get( 'email' ) ) {
-		if ( !is_email( $_post->get( 'email' ) ) ) {
+		if ( ! is_email( $_post->get( 'email' ) ) ) {
 			$errors->add( 'user_email', __( "<strong>ERROR</strong>: The email address isn&#8217;t correct." ), array( 'form-field' => 'email' ) );
 			return;
 		}
@@ -687,7 +687,7 @@ function _access_denied_splash() {
 	$output = '<p>' . sprintf( __( 'You attempted to access the "%1$s" dashboard, but you do not currently have privileges on this site. If you believe you should be able to access the "%1$s" dashboard, please contact your network administrator.' ), $blog_name ) . '</p>';
 	$output .= '<p>' . __( 'If you reached this screen by accident and meant to visit one of your own sites, here are some shortcuts to help you find your way.' ) . '</p>';
 
-	$output .= '<h3>' . __('Your Sites') . '</h3>';
+	$output .= '<h3>' . __( 'Your Sites' ) . '</h3>';
 	$output .= '<table>';
 
 	foreach ( $blogs as $blog ) {
@@ -813,10 +813,10 @@ function avoid_blog_page_permalink_collision( $data, $postarr ) {
 	if ( $data['post_type'] != 'page' ) {
 		return $data;
 	}
-	if ( !isset( $data['post_name'] ) || $data['post_name'] == '' ) {
+	if ( ! isset( $data['post_name'] ) || $data['post_name'] == '' ) {
 		return $data;
 	}
-	if ( !is_main_site() ) {
+	if ( ! is_main_site() ) {
 		return $data;
 	}
 
@@ -983,7 +983,7 @@ function confirm_delete_users( $users ) {
 				<?php
 				foreach ( (array) $blogs as $key => $details ) {
 					$blog_users = get_users( array( 'blog_id' => $details->userblog_id, 'fields' => array( 'ID', 'user_login' ) ) );
-					if ( is_array( $blog_users ) && !empty( $blog_users ) ) {
+					if ( is_array( $blog_users ) && ! empty( $blog_users ) ) {
 						$user_site = "<a href='" . esc_url( get_home_url( $details->userblog_id ) ) . "'>{$details->blogname}</a>";
 						$user_dropdown = '<label for="reassign_user" class="screen-reader-text">' . __( 'Select a user' ) . '</label>';
 						$user_dropdown .= "<select name='blog[$user_id][$key]' id='reassign_user'>";
@@ -1032,7 +1032,7 @@ function confirm_delete_users( $users ) {
 		<p><?php _e( 'Once you hit &#8220;Confirm Deletion&#8221;, these users will be permanently removed.' ); ?></p>
 	<?php }
 
-	submit_button( __('Confirm Deletion'), 'primary' );
+	submit_button( __( 'Confirm Deletion' ), 'primary' );
 	?>
 	</form>
 	<?php

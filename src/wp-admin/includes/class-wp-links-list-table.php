@@ -59,13 +59,13 @@ class WP_Links_List_Table extends WP_List_Table {
 		if ( 'all' != $cat_id ) {
 			$args['category'] = $cat_id;
 		}
-		if ( !empty( $s ) ) {
+		if ( ! empty( $s ) ) {
 			$args['search'] = $s;
 		}
-		if ( !empty( $orderby ) ) {
+		if ( ! empty( $orderby ) ) {
 			$args['orderby'] = $orderby;
 		}
-		if ( !empty( $order ) ) {
+		if ( ! empty( $order ) ) {
 			$args['order'] = $order;
 		}
 
@@ -331,8 +331,8 @@ class WP_Links_List_Table extends WP_List_Table {
 		$edit_link = get_edit_bookmark_link( $link );
 
 		$actions = [];
-		$actions['edit'] = '<a href="' . $edit_link . '">' . __('Edit') . '</a>';
-		$actions['delete'] = "<a class='submitdelete' href='" . wp_nonce_url("link.php?action=delete&amp;link_id=$link->link_id", 'delete-bookmark_' . $link->link_id) . "' onclick=\"if ( confirm( '" . esc_js(sprintf(__("You are about to delete this link '%s'\n  'Cancel' to stop, 'OK' to delete."), $link->link_name)) . "' ) ) { return true;}return false;\">" . __('Delete') . "</a>";
+		$actions['edit'] = '<a href="' . $edit_link . '">' . __( 'Edit' ) . '</a>';
+		$actions['delete'] = "<a class='submitdelete' href='" . wp_nonce_url( "link.php?action=delete&amp;link_id=$link->link_id", 'delete-bookmark_' . $link->link_id ) . "' onclick=\"if ( confirm( '" . esc_js(sprintf( __( "You are about to delete this link '%s'\n  'Cancel' to stop, 'OK' to delete." ), $link->link_name) ) . "' ) ) { return true;}return false;\">" . __( 'Delete' ) . "</a>";
 		return $this->row_actions( $actions );
 	}
 }

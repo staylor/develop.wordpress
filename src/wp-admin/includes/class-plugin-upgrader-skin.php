@@ -25,15 +25,15 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	 * @param array $args
 	 */
 	public function __construct( $args = [] ) {
-		$defaults = array( 'url' => '', 'plugin' => '', 'nonce' => '', 'title' => __('Update Plugin') );
-		$args = wp_parse_args($args, $defaults);
+		$defaults = array( 'url' => '', 'plugin' => '', 'nonce' => '', 'title' => __( 'Update Plugin' ) );
+		$args = wp_parse_args( $args, $defaults);
 
 		$this->plugin = $args['plugin'];
 
 		$this->plugin_active = is_plugin_active( $this->plugin );
 		$this->plugin_network_active = is_plugin_active_for_network( $this->plugin );
 
-		parent::__construct($args);
+		parent::__construct( $args);
 	}
 
 	/**
@@ -41,7 +41,7 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	 */
 	public function after() {
 		$this->plugin = $this->upgrader->plugin_info();
-		if ( !empty($this->plugin) && !is_wp_error($this->result) && $this->plugin_active ){
+		if ( ! empty( $this->plugin) && ! is_wp_error( $this->result) && $this->plugin_active ){
 			// Currently used only when JS is off for a single plugin update?
 			echo '<iframe title="' . esc_attr__( 'Update progress' ) . '" style="border:0;overflow:hidden" width="100%" height="170" src="' . wp_nonce_url( 'update.php?action=activate-plugin&networkwide=' . $this->plugin_network_active . '&plugin=' . urlencode( $this->plugin ), 'activate-plugin_' . $this->plugin ) . '"></iframe>';
 		}
@@ -66,8 +66,8 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 		 */
 		$update_actions = apply_filters( 'update_plugin_complete_actions', $update_actions, $this->plugin );
 
-		if ( ! empty($update_actions) ) {
-			$this->feedback(implode(' | ', (array)$update_actions));
+		if ( ! empty( $update_actions) ) {
+			$this->feedback( implode( ' | ', (array) $update_actions) );
 		}
 	}
 }

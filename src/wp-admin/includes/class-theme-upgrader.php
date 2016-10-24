@@ -46,14 +46,14 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @access public
 	 */
 	public function upgrade_strings() {
-		$this->strings['up_to_date'] = __('The theme is at the latest version.');
-		$this->strings['no_package'] = __('Update package not available.');
-		$this->strings['downloading_package'] = __('Downloading update from <span class="code">%s</span>&#8230;');
-		$this->strings['unpack_package'] = __('Unpacking the update&#8230;');
-		$this->strings['remove_old'] = __('Removing the old version of the theme&#8230;');
-		$this->strings['remove_old_failed'] = __('Could not remove the old theme.');
-		$this->strings['process_failed'] = __('Theme update failed.');
-		$this->strings['process_success'] = __('Theme updated successfully.');
+		$this->strings['up_to_date'] = __( 'The theme is at the latest version.' );
+		$this->strings['no_package'] = __( 'Update package not available.' );
+		$this->strings['downloading_package'] = __( 'Downloading update from <span class="code">%s</span>&#8230;' );
+		$this->strings['unpack_package'] = __( 'Unpacking the update&#8230;' );
+		$this->strings['remove_old'] = __( 'Removing the old version of the theme&#8230;' );
+		$this->strings['remove_old_failed'] = __( 'Could not remove the old theme.' );
+		$this->strings['process_failed'] = __( 'Theme update failed.' );
+		$this->strings['process_success'] = __( 'Theme updated successfully.' );
 	}
 
 	/**
@@ -63,23 +63,23 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @access public
 	 */
 	public function install_strings() {
-		$this->strings['no_package'] = __('Install package not available.');
-		$this->strings['downloading_package'] = __('Downloading install package from <span class="code">%s</span>&#8230;');
-		$this->strings['unpack_package'] = __('Unpacking the package&#8230;');
-		$this->strings['installing_package'] = __('Installing the theme&#8230;');
-		$this->strings['no_files'] = __('The theme contains no files.');
-		$this->strings['process_failed'] = __('Theme install failed.');
-		$this->strings['process_success'] = __('Theme installed successfully.');
+		$this->strings['no_package'] = __( 'Install package not available.' );
+		$this->strings['downloading_package'] = __( 'Downloading install package from <span class="code">%s</span>&#8230;' );
+		$this->strings['unpack_package'] = __( 'Unpacking the package&#8230;' );
+		$this->strings['installing_package'] = __( 'Installing the theme&#8230;' );
+		$this->strings['no_files'] = __( 'The theme contains no files.' );
+		$this->strings['process_failed'] = __( 'Theme install failed.' );
+		$this->strings['process_success'] = __( 'Theme installed successfully.' );
 		/* translators: 1: theme name, 2: version */
-		$this->strings['process_success_specific'] = __('Successfully installed the theme <strong>%1$s %2$s</strong>.');
-		$this->strings['parent_theme_search'] = __('This theme requires a parent theme. Checking if it is installed&#8230;');
+		$this->strings['process_success_specific'] = __( 'Successfully installed the theme <strong>%1$s %2$s</strong>.' );
+		$this->strings['parent_theme_search'] = __( 'This theme requires a parent theme. Checking if it is installed&#8230;' );
 		/* translators: 1: theme name, 2: version */
-		$this->strings['parent_theme_prepare_install'] = __('Preparing to install <strong>%1$s %2$s</strong>&#8230;');
+		$this->strings['parent_theme_prepare_install'] = __( 'Preparing to install <strong>%1$s %2$s</strong>&#8230;' );
 		/* translators: 1: theme name, 2: version */
-		$this->strings['parent_theme_currently_installed'] = __('The parent theme, <strong>%1$s %2$s</strong>, is currently installed.');
+		$this->strings['parent_theme_currently_installed'] = __( 'The parent theme, <strong>%1$s %2$s</strong>, is currently installed.' );
 		/* translators: 1: theme name, 2: version */
-		$this->strings['parent_theme_install_success'] = __('Successfully installed the parent theme, <strong>%1$s %2$s</strong>.');
-		$this->strings['parent_theme_not_found'] = __('<strong>The parent theme could not be found.</strong> You will need to install the parent theme, <strong>%s</strong>, before you can use this child theme.');
+		$this->strings['parent_theme_install_success'] = __( 'Successfully installed the parent theme, <strong>%1$s %2$s</strong>.' );
+		$this->strings['parent_theme_not_found'] = __( '<strong>The parent theme could not be found.</strong> You will need to install the parent theme, <strong>%s</strong>, before you can use this child theme.' );
 	}
 
 	/**
@@ -106,18 +106,18 @@ class Theme_Upgrader extends WP_Upgrader {
 		$this->skin->feedback( 'parent_theme_search' );
 
 		if ( ! $theme_info->parent()->errors() ) {
-			$this->skin->feedback( 'parent_theme_currently_installed', $theme_info->parent()->display('Name'), $theme_info->parent()->display('Version') );
+			$this->skin->feedback( 'parent_theme_currently_installed', $theme_info->parent()->display( 'Name' ), $theme_info->parent()->display( 'Version' ) );
 			// We already have the theme, fall through.
 			return $install_result;
 		}
 
 		// We don't have the parent theme, let's install it.
-		$api = themes_api('theme_information', array('slug' => $theme_info->get('Template'), 'fields' => array('sections' => false, 'tags' => false) ) ); //Save on a bit of bandwidth.
+		$api = themes_api( 'theme_information', array( 'slug' => $theme_info->get( 'Template' ), 'fields' => array( 'sections' => false, 'tags' => false ) ) ); //Save on a bit of bandwidth.
 
-		if ( ! $api || is_wp_error($api) ) {
-			$this->skin->feedback( 'parent_theme_not_found', $theme_info->get('Template') );
+		if ( ! $api || is_wp_error( $api) ) {
+			$this->skin->feedback( 'parent_theme_not_found', $theme_info->get( 'Template' ) );
 			// Don't show activate or preview actions after install
-			add_filter('install_theme_complete_actions', array($this, 'hide_activate_preview_actions') );
+			add_filter( 'install_theme_complete_actions', array( $this, 'hide_activate_preview_actions' ) );
 			return $install_result;
 		}
 
@@ -129,9 +129,9 @@ class Theme_Upgrader extends WP_Upgrader {
 		$this->skin->api = $api;
 		$this->strings['process_success_specific'] = $this->strings['parent_theme_install_success'];//, $api->name, $api->version);
 
-		$this->skin->feedback('parent_theme_prepare_install', $api->name, $api->version);
+		$this->skin->feedback( 'parent_theme_prepare_install', $api->name, $api->version);
 
-		add_filter('install_theme_complete_actions', '__return_false', 999); // Don't show any actions after installing the theme.
+		add_filter( 'install_theme_complete_actions', '__return_false', 999); // Don't show any actions after installing the theme.
 
 		// Install the parent theme
 		$parent_result = $this->run( array(
@@ -141,11 +141,11 @@ class Theme_Upgrader extends WP_Upgrader {
 			'clear_working' => true
 		) );
 
-		if ( is_wp_error($parent_result) ) {
-			add_filter('install_theme_complete_actions', array($this, 'hide_activate_preview_actions') );
+		if ( is_wp_error( $parent_result) ) {
+			add_filter( 'install_theme_complete_actions', array( $this, 'hide_activate_preview_actions' ) );
 		}
 		// Start cleaning up after the parents installation
-		remove_filter('install_theme_complete_actions', '__return_false', 999);
+		remove_filter( 'install_theme_complete_actions', '__return_false', 999);
 
 		// Reset child's result and data
 		$this->result = $child_result;
@@ -169,7 +169,7 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @return array
 	 */
 	public function hide_activate_preview_actions( $actions ) {
-		unset($actions['activate'], $actions['preview']);
+		unset( $actions['activate'], $actions['preview'] );
 		return $actions;
 	}
 
@@ -200,8 +200,8 @@ class Theme_Upgrader extends WP_Upgrader {
 		$this->init();
 		$this->install_strings();
 
-		add_filter('upgrader_source_selection', array($this, 'check_package') );
-		add_filter('upgrader_post_install', array($this, 'check_parent_theme_filter'), 10, 3);
+		add_filter( 'upgrader_source_selection', array( $this, 'check_package' ) );
+		add_filter( 'upgrader_post_install', array( $this, 'check_parent_theme_filter' ), 10, 3);
 		// Clear cache so wp_update_themes() knows about the new theme.
 		add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
 
@@ -217,10 +217,10 @@ class Theme_Upgrader extends WP_Upgrader {
 		) );
 
 		remove_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9 );
-		remove_filter('upgrader_source_selection', array($this, 'check_package') );
-		remove_filter('upgrader_post_install', array($this, 'check_parent_theme_filter'));
+		remove_filter( 'upgrader_source_selection', array( $this, 'check_package' ) );
+		remove_filter( 'upgrader_post_install', array( $this, 'check_parent_theme_filter' ) );
 
-		if ( ! $this->result || is_wp_error($this->result) ) {
+		if ( ! $this->result || is_wp_error( $this->result) ) {
 			return $this->result;
 		}
 
@@ -258,9 +258,9 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		// Is an update available?
 		$current = get_site_transient( 'update_themes' );
-		if ( !isset( $current->response[ $theme ] ) ) {
+		if ( ! isset( $current->response[ $theme ] ) ) {
 			$this->skin->before();
-			$this->skin->set_result(false);
+			$this->skin->set_result( false );
 			$this->skin->error( 'up_to_date' );
 			$this->skin->after();
 			return false;
@@ -268,9 +268,9 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		$r = $current->response[ $theme ];
 
-		add_filter('upgrader_pre_install', array($this, 'current_before'), 10, 2);
-		add_filter('upgrader_post_install', array($this, 'current_after'), 10, 2);
-		add_filter('upgrader_clear_destination', array($this, 'delete_old_theme'), 10, 4);
+		add_filter( 'upgrader_pre_install', array( $this, 'current_before' ), 10, 2);
+		add_filter( 'upgrader_post_install', array( $this, 'current_after' ), 10, 2);
+		add_filter( 'upgrader_clear_destination', array( $this, 'delete_old_theme' ), 10, 4);
 		// Clear cache so wp_update_themes() knows about the new theme.
 		add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
 
@@ -287,11 +287,11 @@ class Theme_Upgrader extends WP_Upgrader {
 		) );
 
 		remove_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9 );
-		remove_filter('upgrader_pre_install', array($this, 'current_before'));
-		remove_filter('upgrader_post_install', array($this, 'current_after'));
-		remove_filter('upgrader_clear_destination', array($this, 'delete_old_theme'));
+		remove_filter( 'upgrader_pre_install', array( $this, 'current_before' ) );
+		remove_filter( 'upgrader_post_install', array( $this, 'current_after' ) );
+		remove_filter( 'upgrader_clear_destination', array( $this, 'delete_old_theme' ) );
 
-		if ( ! $this->result || is_wp_error($this->result) ) {
+		if ( ! $this->result || is_wp_error( $this->result) ) {
 			return $this->result;
 		}
 
@@ -329,9 +329,9 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		$current = get_site_transient( 'update_themes' );
 
-		add_filter('upgrader_pre_install', array($this, 'current_before'), 10, 2);
-		add_filter('upgrader_post_install', array($this, 'current_after'), 10, 2);
-		add_filter('upgrader_clear_destination', array($this, 'delete_old_theme'), 10, 4);
+		add_filter( 'upgrader_pre_install', array( $this, 'current_before' ), 10, 2);
+		add_filter( 'upgrader_post_install', array( $this, 'current_after' ), 10, 2);
+		add_filter( 'upgrader_clear_destination', array( $this, 'delete_old_theme' ), 10, 4);
 		// Clear cache so wp_update_themes() knows about the new theme.
 		add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
 
@@ -355,19 +355,19 @@ class Theme_Upgrader extends WP_Upgrader {
 			$maintenance = $maintenance || $theme == get_stylesheet() || $theme == get_template();
 		}
 		if ( $maintenance ) {
-			$this->maintenance_mode(true);
+			$this->maintenance_mode( true );
 		}
 		$results = [];
 
-		$this->update_count = count($themes);
+		$this->update_count = count( $themes);
 		$this->update_current = 0;
 		foreach ( $themes as $theme ) {
 			$this->update_current++;
 
-			$this->skin->theme_info = $this->theme_info($theme);
+			$this->skin->theme_info = $this->theme_info( $theme);
 
-			if ( !isset( $current->response[ $theme ] ) ) {
-				$this->skin->set_result(true);
+			if ( ! isset( $current->response[ $theme ] ) ) {
+				$this->skin->set_result( true );
 				$this->skin->before();
 				$this->skin->feedback( 'up_to_date' );
 				$this->skin->after();
@@ -397,7 +397,7 @@ class Theme_Upgrader extends WP_Upgrader {
 			}
 		}
 
-		$this->maintenance_mode(false);
+		$this->maintenance_mode( false );
 
 		/** This action is documented in wp-admin/includes/class-wp-upgrader.php */
 		do_action( 'upgrader_process_complete', $this, array(
@@ -413,9 +413,9 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		// Cleanup our hooks, in case something else does a upgrade on this connection.
 		remove_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9 );
-		remove_filter('upgrader_pre_install', array($this, 'current_before'));
-		remove_filter('upgrader_post_install', array($this, 'current_after'));
-		remove_filter('upgrader_clear_destination', array($this, 'delete_old_theme'));
+		remove_filter( 'upgrader_pre_install', array( $this, 'current_before' ) );
+		remove_filter( 'upgrader_post_install', array( $this, 'current_after' ) );
+		remove_filter( 'upgrader_clear_destination', array( $this, 'delete_old_theme' ) );
 
 		// Refresh the Theme Update information
 		wp_clean_themes_cache( $parsed_args['clear_update_cache'] );
@@ -441,14 +441,14 @@ class Theme_Upgrader extends WP_Upgrader {
 	public function check_package( $source ) {
 		$wp_filesystem = $GLOBALS['wp_filesystem']; //NOSONAR
 
-		if ( is_wp_error($source) ) {
+		if ( is_wp_error( $source) ) {
 			return $source;
 		}
 
 		// Check the folder contains a valid theme
 		$working_directory = str_replace( $wp_filesystem->wp_content_dir(), trailingslashit(WP_CONTENT_DIR), $source);
 		// Sanity check, if the above fails, let's not prevent installation.
-		if ( ! is_dir($working_directory) ) {
+		if ( ! is_dir( $working_directory) ) {
 			return $source;
 		}
 
@@ -499,12 +499,12 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @param array          $theme
 	 * @return bool|Error
 	 */
-	public function current_before($return, $theme) {
-		if ( is_wp_error($return) ) {
+	public function current_before( $return, $theme) {
+		if ( is_wp_error( $return) ) {
 			return $return;
 		}
 
-		$theme = isset($theme['theme']) ? $theme['theme'] : '';
+		$theme = isset( $theme['theme'] ) ? $theme['theme'] : '';
 
 		//If not current
 		if ( $theme != get_stylesheet() ) {
@@ -512,7 +512,7 @@ class Theme_Upgrader extends WP_Upgrader {
 		}
 		//Change to maintenance mode now.
 		if ( ! $this->bulk ) {
-			$this->maintenance_mode(true);
+			$this->maintenance_mode( true );
 		}
 		return $return;
 	}
@@ -530,12 +530,12 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @param array          $theme
 	 * @return bool|Error
 	 */
-	public function current_after($return, $theme) {
-		if ( is_wp_error($return) ) {
+	public function current_after( $return, $theme) {
+		if ( is_wp_error( $return) ) {
 			return $return;
 		}
 
-		$theme = isset($theme['theme']) ? $theme['theme'] : '';
+		$theme = isset( $theme['theme'] ) ? $theme['theme'] : '';
 
 		// If not current
 		if ( $theme != get_stylesheet() ) {
@@ -551,7 +551,7 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		//Time to remove maintenance mode
 		if ( ! $this->bulk ) {
-			$this->maintenance_mode(false);
+			$this->maintenance_mode( false );
 		}
 		return $return;
 	}
@@ -608,9 +608,9 @@ class Theme_Upgrader extends WP_Upgrader {
 	 * @return WP_Theme|false The theme's info object, or false `$theme` is not supplied
 	 *                        and the last result isn't set.
 	 */
-	public function theme_info($theme = null) {
-		if ( empty($theme) ) {
-			if ( !empty($this->result['destination_name']) ) {
+	public function theme_info( $theme = null) {
+		if ( empty( $theme) ) {
+			if ( ! empty( $this->result['destination_name'] ) ) {
 				$theme = $this->result['destination_name'];
 			} else {
 				return false;

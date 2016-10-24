@@ -107,7 +107,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 		if ( 'post' === $post_type && $sticky_posts = get_option( 'sticky_posts' ) ) {
 			$sticky_posts = implode( ', ', array_map( 'absint', (array) $sticky_posts ) );
-			$sql = "SELECT COUNT( 1 ) FROM $wpdb->posts WHERE post_type = %s AND post_status NOT IN ('trash', 'auto-draft') AND ID IN ($sticky_posts)";
+			$sql = "SELECT COUNT( 1 ) FROM $wpdb->posts WHERE post_type = %s AND post_status NOT IN ( 'trash', 'auto-draft' ) AND ID IN ($sticky_posts)";
 			$this->sticky_posts_count = $wpdb->get_var( $wpdb->prepare( $sql, $post_type ) );
 		}
 	}
@@ -270,7 +270,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 		$post_type = $this->screen->post_type;
 
-		if ( !empty($locked_post_status) ) {
+		if ( ! empty( $locked_post_status) ) {
 			return [];
 		}
 
@@ -333,7 +333,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			$status_links['mine'] = $mine;
 		}
 
-		foreach ( get_post_stati(array('show_in_admin_status_list' => true), 'objects') as $status ) {
+		foreach ( get_post_stati( array( 'show_in_admin_status_list' => true ), 'objects' ) as $status ) {
 			$class = '';
 
 			$status_name = $status->name;
@@ -463,7 +463,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 ?>
 		<div class="alignleft actions">
 <?php
-		if ( 'top' === $which && !is_singular() ) {
+		if ( 'top' === $which && ! is_singular() ) {
 			ob_start();
 
 			$this->months_dropdown( $this->screen->post_type );
@@ -1018,7 +1018,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			 * @param string  $t_time      The published time.
 			 * @param WP_Post $post        Post object.
 			 * @param string  $column_name The column name.
-			 * @param string  $mode        The list display mode ('excerpt' or 'list').
+			 * @param string  $mode        The list display mode ( 'excerpt' or 'list' ).
 			 */
 			echo apply_filters( 'post_date_column_time', $t_time, $post, 'date', $mode );
 		} else {

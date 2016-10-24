@@ -335,7 +335,7 @@ trait Utils {
 
 				// Validating term ids.
 				foreach ( $taxonomies as $taxonomy ) {
-					if ( ! array_key_exists( $taxonomy , $post_type_taxonomies ) ) {
+					if ( ! array_key_exists( $taxonomy, $post_type_taxonomies ) ) {
 						return new Error( 401, __( 'Sorry, one of the given taxonomies is not supported by the post type.' ) );
 					}
 
@@ -351,7 +351,7 @@ trait Utils {
 						if ( ! $term ) {
 							return new Error( 403, __( 'Invalid term ID.' ) );
 						}
-						$terms[$taxonomy][] = (int) $term_id;
+						$terms[ $taxonomy ][] = (int) $term_id;
 					}
 				}
 			}
@@ -365,7 +365,7 @@ trait Utils {
 						return new Error( 401, __( 'Sorry, one of the given taxonomies is not supported by the post type.' ) );
 					}
 
-					if ( ! current_user_can( $post_type_taxonomies[$taxonomy]->cap->assign_terms ) ) {
+					if ( ! current_user_can( $post_type_taxonomies[ $taxonomy ]->cap->assign_terms ) ) {
 						return new Error( 401, __( 'Sorry, you are not allowed to assign a term to one of the given taxonomies.' ) );
 					}
 
@@ -386,7 +386,7 @@ trait Utils {
 						$ambiguous_terms = array_keys( $ambiguous_tax_term_counts );
 					}
 
-					$term_names = $post_data['terms_names'][$taxonomy];
+					$term_names = $post_data['terms_names'][ $taxonomy ];
 					foreach ( $term_names as $term_name ) {
 						if ( in_array( $term_name, $ambiguous_terms ) ) {
 							return new Error( 401, __( 'Ambiguous term name used in a hierarchical taxonomy. Please use term ID instead.' ) );
@@ -396,7 +396,7 @@ trait Utils {
 
 						if ( ! $term ) {
 							// Term doesn't exist, so check that the user is allowed to create new terms.
-							if ( ! current_user_can( $post_type_taxonomies[$taxonomy]->cap->edit_terms ) ) {
+							if ( ! current_user_can( $post_type_taxonomies[ $taxonomy ]->cap->edit_terms ) ) {
 								return new Error( 401, __( 'Sorry, you are not allowed to add a term to one of the given taxonomies.' ) );
 							}
 
@@ -405,9 +405,9 @@ trait Utils {
 							if ( is_wp_error( $term_info ) ) {
 								return new Error( 500, $term_info->get_error_message() );
 							}
-							$terms[$taxonomy][] = (int) $term_info['term_id'];
+							$terms[ $taxonomy ][] = (int) $term_info['term_id'];
 						} else {
-							$terms[$taxonomy][] = (int) $term->term_id;
+							$terms[ $taxonomy ][] = (int) $term->term_id;
 						}
 					}
 				}

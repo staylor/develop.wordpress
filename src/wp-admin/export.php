@@ -11,8 +11,8 @@ use function WP\getApp;
 /** Load WordPress Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( !current_user_can('export') ) {
-	wp_die(__('Sorry, you are not allowed to export the content of this site.'));
+if ( !current_user_can( 'export' ) ) {
+	wp_die( __( 'Sorry, you are not allowed to export the content of this site.' ) );
 }
 
 /** Load WordPress export API */
@@ -28,15 +28,15 @@ function export_add_js() {
 ?>
 <script type="text/javascript">
 	jQuery(document).ready(function($){
- 		var form = $('#export-filters'),
- 			filters = form.find('.export-filters');
+ 		var form = $( '#export-filters' ),
+ 			filters = form.find( '.export-filters' );
  		filters.hide();
- 		form.find('input:radio').change(function() {
-			filters.slideUp('fast');
+ 		form.find( 'input:radio' ).change(function() {
+			filters.slideUp( 'fast' );
 			switch ( $(this).val() ) {
-				case 'attachment': $('#attachment-filters').slideDown(); break;
-				case 'posts': $('#post-filters').slideDown(); break;
-				case 'pages': $('#page-filters').slideDown(); break;
+				case 'attachment': $( '#attachment-filters' ).slideDown(); break;
+				case 'posts': $( '#post-filters' ).slideDown(); break;
+				case 'pages': $( '#page-filters' ).slideDown(); break;
 			}
  		});
 	});
@@ -150,9 +150,9 @@ function export_date_options( $post_type = 'post' ) {
 <div class="wrap">
 <h1><?php echo esc_html( $app->get( 'title' ) ); ?></h1>
 
-<p><?php _e('When you click the button below WordPress will create an XML file for you to save to your computer.'); ?></p>
-<p><?php _e('This format, which we call WordPress eXtended RSS or WXR, will contain your posts, pages, comments, custom fields, categories, and tags.'); ?></p>
-<p><?php _e('Once you&#8217;ve saved the download file, you can use the Import function in another WordPress installation to import the content from this site.'); ?></p>
+<p><?php _e( 'When you click the button below WordPress will create an XML file for you to save to your computer.' ); ?></p>
+<p><?php _e( 'This format, which we call WordPress eXtended RSS or WXR, will contain your posts, pages, comments, custom fields, categories, and tags.' ); ?></p>
+<p><?php _e( 'Once you&#8217;ve saved the download file, you can use the Import function in another WordPress installation to import the content from this site.' ); ?></p>
 
 <h2><?php _e( 'Choose what to export' ); ?></h2>
 <form method="get" id="export-filters">
@@ -166,7 +166,7 @@ function export_date_options( $post_type = 'post' ) {
 <ul id="post-filters" class="export-filters">
 	<li>
 		<label><span class="label-responsive"><?php _e( 'Categories:' ); ?></span>
-		<?php wp_dropdown_categories( array( 'show_option_all' => __('All') ) ); ?>
+		<?php wp_dropdown_categories( array( 'show_option_all' => __( 'All' ) ) ); ?>
 		</label>
 	</li>
 	<li>
@@ -283,7 +283,7 @@ function export_date_options( $post_type = 'post' ) {
 do_action( 'export_filters' );
 ?>
 
-<?php submit_button( __('Download Export File') ); ?>
+<?php submit_button( __( 'Download Export File' ) ); ?>
 </form>
 </div>
 

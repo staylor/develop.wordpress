@@ -28,13 +28,13 @@ class Core_Upgrader extends WP_Upgrader {
 	 * @access public
 	 */
 	public function upgrade_strings() {
-		$this->strings['up_to_date'] = __('WordPress is at the latest version.');
-		$this->strings['locked'] = __('Another update is currently in progress.');
-		$this->strings['no_package'] = __('Update package not available.');
-		$this->strings['downloading_package'] = __('Downloading update from <span class="code">%s</span>&#8230;');
-		$this->strings['unpack_package'] = __('Unpacking the update&#8230;');
-		$this->strings['copy_failed'] = __('Could not copy files.');
-		$this->strings['copy_failed_space'] = __('Could not copy files. You may have run out of disk space.' );
+		$this->strings['up_to_date'] = __( 'WordPress is at the latest version.' );
+		$this->strings['locked'] = __( 'Another update is currently in progress.' );
+		$this->strings['no_package'] = __( 'Update package not available.' );
+		$this->strings['downloading_package'] = __( 'Downloading update from <span class="code">%s</span>&#8230;' );
+		$this->strings['unpack_package'] = __( 'Unpacking the update&#8230;' );
+		$this->strings['copy_failed'] = __( 'Could not copy files.' );
+		$this->strings['copy_failed_space'] = __( 'Could not copy files. You may have run out of disk space.' );
 		$this->strings['start_rollback'] = __( 'Attempting to roll back to previous version.' );
 		$this->strings['rollback_was_required'] = __( 'Due to an error during updating, WordPress has rolled back to your previous version.' );
 	}
@@ -78,8 +78,8 @@ class Core_Upgrader extends WP_Upgrader {
 		$this->upgrade_strings();
 
 		// Is an update available?
-		if ( !isset( $current->response ) || $current->response == 'latest' ) {
-			return new Error('up_to_date', $this->strings['up_to_date']);
+		if ( ! isset( $current->response ) || $current->response == 'latest' ) {
+			return new Error( 'up_to_date', $this->strings['up_to_date'] );
 		}
 
 		$res = $this->fs_connect( array( ABSPATH, WP_CONTENT_DIR ), $parsed_args['allow_relaxed_file_ownership'] );
@@ -87,7 +87,7 @@ class Core_Upgrader extends WP_Upgrader {
 			return $res;
 		}
 
-		$wp_dir = trailingslashit($wp_filesystem->abspath());
+		$wp_dir = trailingslashit( $wp_filesystem->abspath() );
 
 		$partial = true;
 		if (
@@ -136,12 +136,12 @@ class Core_Upgrader extends WP_Upgrader {
 		}
 
 		// Copy update-core.php from the new version into place.
-		if ( !$wp_filesystem->copy($working_dir . '/wordpress/wp-admin/includes/update-core.php', $wp_dir . 'wp-admin/includes/update-core.php', true) ) {
-			$wp_filesystem->delete($working_dir, true);
+		if ( !$wp_filesystem->copy( $working_dir . '/wordpress/wp-admin/includes/update-core.php', $wp_dir . 'wp-admin/includes/update-core.php', true ) ) {
+			$wp_filesystem->delete( $working_dir, true );
 			WP_Upgrader::release_lock( 'core_updater' );
 			return new Error( 'copy_failed_for_update_core_file', __( 'The update cannot be installed because we will be unable to copy some files. This is usually due to inconsistent file permissions.' ), 'wp-admin/includes/update-core.php' );
 		}
-		$wp_filesystem->chmod($wp_dir . 'wp-admin/includes/update-core.php', FS_CHMOD_FILE);
+		$wp_filesystem->chmod( $wp_dir . 'wp-admin/includes/update-core.php', FS_CHMOD_FILE);
 
 		require_once( ABSPATH . 'wp-admin/includes/update-core.php' );
 

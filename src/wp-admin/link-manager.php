@@ -15,7 +15,7 @@ if ( ! current_user_can( 'manage_links' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to edit the links for this site.' ) );
 }
 
-$wp_list_table = _get_list_table('WP_Links_List_Table');
+$wp_list_table = _get_list_table( 'WP_Links_List_Table' );
 
 // Handle bulk deletes
 $doaction = $wp_list_table->current_action();
@@ -67,14 +67,14 @@ $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 include_once( ABSPATH . 'wp-admin/admin-header.php' );
 
-if ( ! current_user_can('manage_links') ) {
-	wp_die(__('Sorry, you are not allowed to edit the links for this site.'));
+if ( ! current_user_can( 'manage_links' ) ) {
+	wp_die( __( 'Sorry, you are not allowed to edit the links for this site.' ) );
 }
 
 ?>
 
 <div class="wrap nosubsub">
-<h1><?php echo esc_html( $app->get( 'title' ) ); ?> <a href="link-add.php" class="page-title-action"><?php echo esc_html_x('Add New', 'link'); ?></a> <?php
+<h1><?php echo esc_html( $app->get( 'title' ) ); ?> <a href="link-add.php" class="page-title-action"><?php echo esc_html_x( 'Add New', 'link' ); ?></a> <?php
 if ( strlen( $_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( wp_unslash( $_request->get( 's' ) ) ) );
@@ -86,7 +86,7 @@ if ( strlen( $_request->get( 's' ) ) ) {
 if ( $_request->get( 'deleted' ) ) {
 	echo '<div id="message" class="updated notice is-dismissible"><p>';
 	$deleted = (int) $_request->get( 'deleted' );
-	printf(_n('%s link deleted.', '%s links deleted', $deleted), $deleted);
+	printf(_n( '%s link deleted.', '%s links deleted', $deleted), $deleted);
 	echo '</p></div>';
 	$_server->set( 'REQUEST_URI', remove_query_arg(
 		[ 'deleted' ],

@@ -101,11 +101,11 @@ function display_setup_form( $error = null ) {
 			<td><input name="weblog_title" type="text" id="weblog_title" size="25" value="<?php echo esc_attr( $weblog_title ); ?>" /></td>
 		</tr>
 		<tr>
-			<th scope="row"><label for="user_login"><?php _e('Username'); ?></label></th>
+			<th scope="row"><label for="user_login"><?php _e( 'Username' ); ?></label></th>
 			<td>
 			<?php
 			if ( $user_table ) {
-				_e('User(s) already exists.');
+				_e( 'User(s) already exists.' );
 				echo '<input name="user_name" type="hidden" value="admin" />';
 			} else {
 				?><input name="user_name" type="text" id="user_login" size="25" value="<?php echo esc_attr( sanitize_user( $user_name, true ) ); ?>" />
@@ -255,7 +255,7 @@ if ( ! empty( $_request->get( 'language' ) ) ) {
 
 $scripts_to_print = array( 'jquery' );
 
-switch($step) {
+switch( $step) {
 case 0: // Step 0
 	if ( wp_can_install_language_pack() && empty( $language ) && ( $languages = wp_get_available_translations() ) ) {
 		$scripts_to_print[] = 'language-chooser';
@@ -386,7 +386,7 @@ case 2:
 
 if ( ! wp_is_mobile() ) {
 	?>
-<script type="text/javascript">var t = document.getElementById('weblog_title'); if (t){ t.focus(); }</script>
+<script type="text/javascript">var t = document.getElementById( 'weblog_title' ); if (t){ t.focus(); }</script>
 	<?php
 }
 

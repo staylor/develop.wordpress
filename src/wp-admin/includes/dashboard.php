@@ -35,7 +35,7 @@ function wp_dashboard_setup() {
 	}
 
 	// Right Now
-	if ( is_blog_admin() && current_user_can('edit_posts') ) {
+	if ( is_blog_admin() && current_user_can( 'edit_posts' ) ) {
 		wp_add_dashboard_widget( 'dashboard_right_now', __( 'At a Glance' ), 'wp_dashboard_right_now' );
 	}
 	if ( is_network_admin() ) {
@@ -113,7 +113,7 @@ function wp_dashboard_setup() {
 		$name = empty( $registered[ $widget_id ]['all_link'] ) ?
 			$registered[ $widget_id ]['name'] :
 			$registered[ $widget_id ]['name'] .
-			" <a href='{$registered[ $widget_id ]['all_link']}' class='edit-box open-box'>" . __('View all') . '</a>';
+			" <a href='{$registered[ $widget_id ]['all_link']}' class='edit-box open-box'>" . __( 'View all' ) . '</a>';
 		wp_add_dashboard_widget( $widget_id, $name, $registered[ $widget_id ]['callback'], $app->widgets['controls'][$widget_id]['callback'] );
 	}
 
@@ -163,11 +163,11 @@ function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_
 	if ( $control_callback && current_user_can( 'edit_dashboard' ) && is_callable( $control_callback ) ) {
 		$app->dashboard['control_callbacks'][ $widget_id ] = $control_callback;
 		if ( $widget_id == $_get->get( 'edit' ) ) {
-			list($url) = explode( '#', add_query_arg( 'edit', false ), 2 );
+			list( $url) = explode( '#', add_query_arg( 'edit', false ), 2 );
 			$widget_name .= ' <span class="postbox-title-action"><a href="' . esc_url( $url ) . '">' . __( 'Cancel' ) . '</a></span>';
 			$callback = '_wp_dashboard_control_callback';
 		} else {
-			list($url) = explode( '#', add_query_arg( 'edit', $widget_id ), 2 );
+			list( $url) = explode( '#', add_query_arg( 'edit', $widget_id ), 2 );
 			$widget_name .= ' <span class="postbox-title-action"><a href="' . esc_url( "$url#$widget_id" ) . '" class="edit-box open-box">' . __( 'Configure' ) . '</a></span>';
 		}
 	}
@@ -175,7 +175,7 @@ function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_
 	$side_widgets = array( 'dashboard_quick_press', 'dashboard_primary' );
 
 	$location = 'normal';
-	if ( in_array($widget_id, $side_widgets) ) {
+	if ( in_array( $widget_id, $side_widgets) ) {
 		$location = 'side';
 	}
 
@@ -200,8 +200,8 @@ function _wp_dashboard_control_callback( $dashboard, $meta_box ) {
 	echo '<form method="post" class="dashboard-widget-control-form">';
 	wp_dashboard_trigger_widget_control( $meta_box['id'] );
 	wp_nonce_field( 'edit-dashboard-widget_' . $meta_box['id'], 'dashboard-widget-nonce' );
-	echo '<input type="hidden" name="widget_id" value="' . esc_attr($meta_box['id']) . '" />';
-	submit_button( __('Submit') );
+	echo '<input type="hidden" name="widget_id" value="' . esc_attr( $meta_box['id'] ) . '" />';
+	submit_button( __( 'Submit' ) );
 	echo '</form>';
 }
 
@@ -378,7 +378,7 @@ function wp_dashboard_right_now() {
 
 	$actions = ob_get_clean();
 
-	if ( !empty( $actions ) ) : ?>
+	if ( ! empty( $actions ) ) : ?>
 	<div class="sub">
 		<?php echo $actions; ?>
 	</div>
@@ -390,11 +390,11 @@ function wp_dashboard_right_now() {
  */
 function wp_network_dashboard_right_now() {
 	$actions = [];
-	if ( current_user_can('create_sites') ) {
-		$actions['create-site'] = '<a href="' . network_admin_url('site-new.php') . '">' . __( 'Create a New Site' ) . '</a>';
+	if ( current_user_can( 'create_sites' ) ) {
+		$actions['create-site'] = '<a href="' . network_admin_url( 'site-new.php' ) . '">' . __( 'Create a New Site' ) . '</a>';
 	}
-	if ( current_user_can('create_users') ) {
-		$actions['create-user'] = '<a href="' . network_admin_url('user-new.php') . '">' . __( 'Create a New User' ) . '</a>';
+	if ( current_user_can( 'create_users' ) ) {
+		$actions['create-user'] = '<a href="' . network_admin_url( 'user-new.php' ) . '">' . __( 'Create a New User' ) . '</a>';
 	}
 	$c_users = get_user_count();
 	$c_blogs = get_blog_count();
@@ -430,7 +430,7 @@ function wp_network_dashboard_right_now() {
 		do_action( 'wpmuadminresult', '' );
 	?>
 
-	<form action="<?php echo network_admin_url('users.php'); ?>" method="get">
+	<form action="<?php echo network_admin_url( 'users.php' ); ?>" method="get">
 		<p>
 			<label class="screen-reader-text" for="search-users"><?php _e( 'Search Users' ); ?></label>
 			<input type="search" name="s" value="" size="30" autocomplete="off" id="search-users"/>
@@ -438,7 +438,7 @@ function wp_network_dashboard_right_now() {
 		</p>
 	</form>
 
-	<form action="<?php echo network_admin_url('sites.php'); ?>" method="get">
+	<form action="<?php echo network_admin_url( 'sites.php' ); ?>" method="get">
 		<p>
 			<label class="screen-reader-text" for="search-sites"><?php _e( 'Search Sites' ); ?></label>
 			<input type="search" name="s" value="" size="30" autocomplete="off" id="search-sites"/>
@@ -490,7 +490,7 @@ function wp_dashboard_quick_press( $error_msg = false ) {
 			$post->post_title = '';
 		}
 	} else {
-		$post = get_default_post_to_edit( 'post' , true);
+		$post = get_default_post_to_edit( 'post' , true );
 		$user_id = get_current_user_id();
 		// Don't create an option if this is a super admin who does not belong to this site.
 		if ( ! ( is_super_admin( $user_id ) && ! in_array( get_current_blog_id(), array_keys( get_blogs_of_user( $user_id ) ) ) ) ) {
@@ -639,7 +639,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 		$actions['approve'] = "<a href='$approve_url' data-wp-lists='dim:the-comment-list:comment-$comment->comment_ID:unapproved:e7e7d3:e7e7d3:new=approved' class='vim-a' aria-label='" . esc_attr__( 'Approve this comment' ) . "'>" . __( 'Approve' ) . '</a>';
 		$actions['unapprove'] = "<a href='$unapprove_url' data-wp-lists='dim:the-comment-list:comment-$comment->comment_ID:unapproved:e7e7d3:e7e7d3:new=unapproved' class='vim-u' aria-label='" . esc_attr__( 'Unapprove this comment' ) . "'>" . __( 'Unapprove' ) . '</a>';
 		$actions['edit'] = "<a href='comment.php?action=editcomment&amp;c={$comment->comment_ID}' aria-label='" . esc_attr__( 'Edit this comment' ) . "'>". __( 'Edit' ) . '</a>';
-		$actions['reply'] = '<a onclick="window.commentReply && commentReply.open(\'' . $comment->comment_ID . '\',\''.$comment->comment_post_ID.'\');return false;" class="vim-r hide-if-no-js" aria-label="' . esc_attr__( 'Reply to this comment' ) . '" href="#">' . __( 'Reply' ) . '</a>';
+		$actions['reply'] = '<a onclick="window.commentReply && commentReply.open(\'' . $comment->comment_ID . '\',\''.$comment->comment_post_ID.'\' );return false;" class="vim-r hide-if-no-js" aria-label="' . esc_attr__( 'Reply to this comment' ) . '" href="#">' . __( 'Reply' ) . '</a>';
 		$actions['spam'] = "<a href='$spam_url' data-wp-lists='delete:the-comment-list:comment-$comment->comment_ID::spam=1' class='vim-s vim-destructive' aria-label='" . esc_attr__( 'Mark this comment as spam' ) . "'>" . /* translators: mark as spam link */ _x( 'Spam', 'verb' ) . '</a>';
 
 		if ( ! EMPTY_TRASH_DAYS ) {
@@ -661,12 +661,12 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 		 *                            'Delete', and 'Trash'.
 		 * @param WP_Comment $comment The comment object.
 		 */
-		$actions = apply_filters( 'comment_row_actions', array_filter($actions), $comment );
+		$actions = apply_filters( 'comment_row_actions', array_filter( $actions), $comment );
 
 		$i = 0;
 		foreach ( $actions as $action => $link ) {
 			++$i;
-			( ( ('approve' == $action || 'unapprove' == $action) && 2 === $i ) || 1 === $i ) ? $sep = '' : $sep = ' | ';
+			( ( ( 'approve' == $action || 'unapprove' == $action) && 2 === $i ) || 1 === $i ) ? $sep = '' : $sep = ' | ';
 
 			// Reply and quickedit need a hide-if-no-js span
 			if ( 'reply' == $action || 'quickedit' == $action ) {
@@ -805,7 +805,7 @@ function wp_dashboard_site_activity() {
  *
  *     @type int    $max     Number of posts to display.
  *     @type string $status  Post status.
- *     @type string $order   Designates ascending ('ASC') or descending ('DESC') order.
+ *     @type string $order   Designates ascending ( 'ASC' ) or descending ( 'DESC' ) order.
  *     @type string $title   Section title.
  *     @type string $id      The container id.
  * }
@@ -982,9 +982,9 @@ function wp_dashboard_cached_rss_widget( $widget_id, $callback, $check_urls = []
 	$loading = '<p class="widget-loading hide-if-no-js">' . __( 'Loading&#8230;' ) . '</p><p class="hide-if-js">' . __( 'This widget requires JavaScript.' ) . '</p>';
 	$doing_ajax = wp_doing_ajax();
 
-	if ( empty($check_urls) ) {
+	if ( empty( $check_urls) ) {
 		$widgets = get_option( 'dashboard_widget_options' );
-		if ( empty($widgets[$widget_id]['url']) && ! $doing_ajax ) {
+		if ( empty( $widgets[$widget_id]['url'] ) && ! $doing_ajax ) {
 			echo $loading;
 			return false;
 		}
@@ -1061,7 +1061,7 @@ function wp_dashboard_rss_control( $widget_id, $form_inputs = [] ) {
 		$widget_options = [];
 	}
 
-	if ( !isset($widget_options[$widget_id]) ) {
+	if ( ! isset( $widget_options[$widget_id] ) ) {
 		$widget_options[$widget_id] = [];
 	}
 
@@ -1078,13 +1078,13 @@ function wp_dashboard_rss_control( $widget_id, $form_inputs = [] ) {
 
 		// Title is optional. If black, fill it if possible.
 		if ( !$widget_options[$widget_id]['title'] && isset( $widget_rss[ $number ]['title'] ) ) {
-			$rss = fetch_feed($widget_options[$widget_id]['url']);
-			if ( is_wp_error($rss) ) {
-				$widget_options[$widget_id]['title'] = htmlentities(__('Unknown Feed'));
+			$rss = fetch_feed( $widget_options[$widget_id]['url'] );
+			if ( is_wp_error( $rss) ) {
+				$widget_options[$widget_id]['title'] = htmlentities( __( 'Unknown Feed' ) );
 			} else {
-				$widget_options[$widget_id]['title'] = htmlentities(strip_tags($rss->get_title()));
+				$widget_options[$widget_id]['title'] = htmlentities(strip_tags( $rss->get_title() ) );
 				$rss->__destruct();
-				unset($rss);
+				unset( $rss);
 			}
 		}
 		update_option( 'dashboard_widget_options', $widget_options );
@@ -1245,16 +1245,16 @@ function wp_dashboard_plugins_output( $rss, $args = [] ) {
 		// Pick a random, non-installed plugin
 		while ( true ) {
 			// Abort this foreach loop iteration if there's no plugins left of this type
-			if ( 0 == count($items) ) {
+			if ( 0 == count( $items) ) {
 				continue 2;
 			}
 
-			$item_key = array_rand($items);
+			$item_key = array_rand( $items);
 			$item = $items[$item_key];
 
 			list( $link ) = explode( '#', $item->get_link() );
 
-			$link = esc_url($link);
+			$link = esc_url( $link);
 			if ( preg_match( '|/([^/]+?)/?$|', $link, $matches ) ) {
 				$slug = $matches[1];
 			} else {
@@ -1276,20 +1276,20 @@ function wp_dashboard_plugins_output( $rss, $args = [] ) {
 		}
 
 		// Eliminate some common badly formed plugin descriptions
-		while ( ( null !== $item_key = array_rand($items) ) && false !== strpos( $items[$item_key]->get_description(), 'Plugin Name:' ) ) {
-			unset($items[$item_key]);
+		while ( ( null !== $item_key = array_rand( $items) ) && false !== strpos( $items[$item_key]->get_description(), 'Plugin Name:' ) ) {
+			unset( $items[$item_key] );
 		}
-		if ( !isset($items[$item_key]) ) {
+		if ( ! isset( $items[$item_key] ) ) {
 			continue;
 		}
 
 		$raw_title = $item->get_title();
 
-		$ilink = wp_nonce_url('plugin-install.php?tab=plugin-information&plugin=' . $slug, 'install-plugin_' . $slug) . '&amp;TB_iframe=true&amp;width=600&amp;height=800';
+		$ilink = wp_nonce_url( 'plugin-install.php?tab=plugin-information&plugin=' . $slug, 'install-plugin_' . $slug) . '&amp;TB_iframe=true&amp;width=600&amp;height=800';
 		echo '<li class="dashboard-news-plugin"><span>' . __( 'Popular Plugin' ) . ':</span> ' . esc_html( $raw_title ) .
 			'&nbsp;<a href="' . $ilink . '" class="thickbox open-plugin-details-modal" aria-label="' .
 			/* translators: %s: plugin name */
-			esc_attr( sprintf( __( 'Install %s' ), $raw_title ) ) . '">(' . __( 'Install' ) . ')</a></li>';
+			esc_attr( sprintf( __( 'Install %s' ), $raw_title ) ) . '">( ' . __( 'Install' ) . ' )</a></li>';
 
 		$feed->__destruct();
 		unset( $feed );
@@ -1381,10 +1381,10 @@ function wp_dashboard_browser_nag() {
 		}
 
 		$browser_nag_class = '';
-		if ( !empty( $response['img_src'] ) ) {
+		if ( ! empty( $response['img_src'] ) ) {
 			$img_src = ( is_ssl() && ! empty( $response['img_src_ssl'] ) )? $response['img_src_ssl'] : $response['img_src'];
 
-			$notice .= '<div class="alignright browser-icon"><a href="' . esc_attr($response['update_url']) . '"><img src="' . esc_attr( $img_src ) . '" alt="" /></a></div>';
+			$notice .= '<div class="alignright browser-icon"><a href="' . esc_attr( $response['update_url'] ) . '"><img src="' . esc_attr( $img_src ) . '" alt="" /></a></div>';
 			$browser_nag_class = ' has-browser-icon';
 		}
 		$notice .= "<p class='browser-update-nag{$browser_nag_class}'>{$msg}</p>";
@@ -1441,7 +1441,7 @@ function wp_check_browser_version() {
 
 	$key = md5( $app['request.useragent'] );
 
-	if ( false === ($response = get_site_transient('browser_' . $key) ) ) {
+	if ( false === ( $response = get_site_transient( 'browser_' . $key) ) ) {
 		$options = array(
 			'body'			=> array( 'useragent' => $app['request.useragent'] ),
 			'user-agent'	=> 'WordPress/' . $app['wp_version'] . '; ' . home_url()

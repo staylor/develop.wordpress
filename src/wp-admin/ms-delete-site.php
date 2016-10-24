@@ -11,12 +11,12 @@ require_once( __DIR__ . '/admin.php' );
 
 $wpdb = $app['db'];
 
-if ( !is_multisite() ) {
+if ( ! is_multisite() ) {
 	wp_die( __( 'Multisite support is not enabled.' ) );
 }
 
 if ( ! current_user_can( 'delete_site' ) ) {
-	wp_die(__( 'Sorry, you are not allowed to delete this site.'));
+	wp_die( __( 'Sorry, you are not allowed to delete this site.' ) );
 }
 
 if ( $_get->get( 'h' ) && $_get->get( 'h' ) != '' && get_option( 'delete_blog_hash' ) != false ) {
@@ -87,7 +87,7 @@ Webmaster
 
 <?php } else {
 	?>
-	<p><?php printf( __( 'If you do not want to use your %s site any more, you can delete it using the form below. When you click <strong>Delete My Site Permanently</strong> you will be sent an email with a link in it. Click on this link to delete your site.'), get_network()->site_name); ?></p>
+	<p><?php printf( __( 'If you do not want to use your %s site any more, you can delete it using the form below. When you click <strong>Delete My Site Permanently</strong> you will be sent an email with a link in it. Click on this link to delete your site.' ), get_network()->site_name); ?></p>
 	<p><?php _e( 'Remember, once deleted your site cannot be restored.' ) ?></p>
 
 	<form method="post" name="deletedirect">

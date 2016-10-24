@@ -81,13 +81,13 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 
 	$metadata = [];
 	$support = false;
-	if ( preg_match('!^image/!', get_post_mime_type( $attachment )) && file_is_displayable_image($file) ) {
+	if ( preg_match( '!^image/!', get_post_mime_type( $attachment ) ) && file_is_displayable_image( $file) ) {
 		$imagesize = getimagesize( $file );
 		$metadata['width'] = $imagesize[0];
 		$metadata['height'] = $imagesize[1];
 
 		// Make the file path relative to the upload dir.
-		$metadata['file'] = _wp_relative_upload_path($file);
+		$metadata['file'] = _wp_relative_upload_path( $file);
 
 		// Make thumbnails and other intermediate sizes.
 		$_wp_additional_image_sizes = wp_get_additional_image_sizes();
@@ -233,9 +233,9 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
  * @param string $str
  * @return int|float
  */
-function wp_exif_frac2dec($str) {
+function wp_exif_frac2dec( $str) {
 	@list( $n, $d ) = explode( '/', $str );
-	if ( !empty($d) ) {
+	if ( ! empty( $d) ) {
 		return $n / $d;
 	}
 	return $str;
@@ -249,8 +249,8 @@ function wp_exif_frac2dec($str) {
  * @param string $str
  * @return int
  */
-function wp_exif_date2ts($str) {
-	@list( $date, $time ) = explode( ' ', trim($str) );
+function wp_exif_date2ts( $str) {
+	@list( $date, $time ) = explode( ' ', trim( $str) );
 	@list( $y, $m, $d ) = explode( ':', $date );
 
 	return strtotime( "{$y}-{$m}-{$d} {$time}" );
@@ -397,7 +397,7 @@ function wp_read_image_metadata( $file ) {
 		if ( empty( $meta['credit'] ) ) {
 			if ( ! empty( $exif['Artist'] ) ) {
 				$meta['credit'] = trim( $exif['Artist'] );
-			} elseif ( ! empty($exif['Author'] ) ) {
+			} elseif ( ! empty( $exif['Author'] ) ) {
 				$meta['credit'] = trim( $exif['Author'] );
 			}
 		}
@@ -466,9 +466,9 @@ function wp_read_image_metadata( $file ) {
  * @param string $path File path to test if valid image.
  * @return bool True if valid image, false if not valid image.
  */
-function file_is_valid_image($path) {
-	$size = @getimagesize($path);
-	return !empty($size);
+function file_is_valid_image( $path) {
+	$size = @getimagesize( $path);
+	return ! empty( $size);
 }
 
 /**
@@ -479,7 +479,7 @@ function file_is_valid_image($path) {
  * @param string $path File path to test.
  * @return bool True if suitable, false if not suitable.
  */
-function file_is_displayable_image($path) {
+function file_is_displayable_image( $path) {
 	$displayable_image_types = array( IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP );
 
 	$info = @getimagesize( $path );
@@ -521,19 +521,19 @@ function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 
 	switch ( $mime_type ) {
 	case 'image/jpeg':
-		$image = imagecreatefromjpeg($filepath);
+		$image = imagecreatefromjpeg( $filepath);
 		break;
 	case 'image/png':
-		$image = imagecreatefrompng($filepath);
+		$image = imagecreatefrompng( $filepath);
 		break;
 	case 'image/gif':
-		$image = imagecreatefromgif($filepath);
+		$image = imagecreatefromgif( $filepath);
 		break;
 	default:
 		$image = false;
 		break;
 	}
-	if ( is_resource($image) ) {
+	if ( is_resource( $image) ) {
 		/**
 		 * Filters the current image being loaded for editing.
 		 *
@@ -544,9 +544,9 @@ function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 		 * @param string   $size          Image size.
 		 */
 		$image = apply_filters( 'load_image_to_edit', $image, $attachment_id, $size );
-		if ( function_exists('imagealphablending') && function_exists('imagesavealpha') ) {
-			imagealphablending($image, false);
-			imagesavealpha($image, true);
+		if ( function_exists( 'imagealphablending' ) && function_exists( 'imagesavealpha' ) ) {
+			imagealphablending( $image, false );
+			imagesavealpha( $image, true );
 		}
 	}
 	return $image;

@@ -31,7 +31,7 @@ if ( is_array( $load ) ) {
 $load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
 $load = array_unique( explode( ',', $load ) );
 
-if ( empty($load) ) {
+if ( empty( $load) ) {
 	exit;
 }
 
@@ -54,7 +54,7 @@ if ( stripslashes( $_server->get( 'HTTP_IF_NONE_MATCH' ) ) === $app['wp_version'
 }
 
 foreach ( $load as $handle ) {
-	if ( !array_key_exists($handle, $wp_styles->registered) ) {
+	if ( !array_key_exists( $handle, $wp_styles->registered) ) {
 		continue;
 	}
 
@@ -83,15 +83,15 @@ foreach ( $load as $handle ) {
 	}
 }
 
-header("Etag: {$app['wp_version']}");
-header('Content-Type: text/css; charset=UTF-8');
-header('Expires: ' . gmdate( "D, d M Y H:i:s", time() + $expires_offset ) . ' GMT');
-header("Cache-Control: public, max-age=$expires_offset");
+header( "Etag: {$app['wp_version']}" );
+header( 'Content-Type: text/css; charset=UTF-8' );
+header( 'Expires: ' . gmdate( "D, d M Y H:i:s", time() + $expires_offset ) . ' GMT' );
+header( "Cache-Control: public, max-age=$expires_offset" );
 
 if (
 	$compress &&
-	! ini_get('zlib.output_compression') &&
-	'ob_gzhandler' != ini_get('output_handler') &&
+	! ini_get( 'zlib.output_compression' ) &&
+	'ob_gzhandler' != ini_get( 'output_handler' ) &&
 	$_server->get( 'HTTP_ACCEPT_ENCODING' )
 ) {
 	header( 'Vary: Accept-Encoding' ); // Handle proxies

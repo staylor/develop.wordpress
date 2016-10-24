@@ -297,7 +297,7 @@ As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to d
 		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->usermeta WHERE user_id != %d AND meta_key = %s", $user_id, $app['db.table_prefix'] . 'capabilities' ) );
 
 		// Delete any caps that snuck into the previously active blog. (Hardcoded to blog 1 for now.) TODO: Get previous_blog_id.
-		if ( !is_super_admin( $user_id ) && $user_id != 1 ) {
+		if ( ! is_super_admin( $user_id ) && $user_id != 1 ) {
 			$wpdb->delete( $wpdb->usermeta, array( 'user_id' => $user_id , 'meta_key' => $wpdb->base_prefix.'1_capabilities' ) );
 		}
 	}
@@ -633,7 +633,7 @@ function upgrade_100() {
 		foreach ( $posts as $post ) {
 			if ( '' == $post->post_name ) {
 				$newtitle = sanitize_title( $post->post_title );
-				$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->posts SET post_name = %s WHERE ID = %d", $newtitle, $post->ID) );
+				$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->posts SET post_name = %s WHERE ID = %d", $newtitle, $post->id ) );
 			}
 		}
 	}
@@ -711,14 +711,14 @@ function upgrade_110() {
 	foreach ( $users as $user) {
 		if ( '' == $user->user_nicename ) {
 			$newname = sanitize_title( $user->user_nickname );
-			$wpdb->update( $wpdb->users, array( 'user_nicename' => $newname ), array( 'ID' => $user->ID) );
+			$wpdb->update( $wpdb->users, array( 'user_nicename' => $newname ), array( 'ID' => $user->id ) );
 		}
 	}
 
 	$users = $wpdb->get_results( "SELECT ID, user_pass from $wpdb->users" );
 	foreach ( $users as $row) {
 		if ( !preg_match( '/^[A-Fa-f0-9]{32}$/', $row->user_pass) ) {
-			$wpdb->update( $wpdb->users, array( 'user_pass' => md5( $row->user_pass) ), array( 'ID' => $row->ID) );
+			$wpdb->update( $wpdb->users, array( 'user_pass' => md5( $row->user_pass) ), array( 'ID' => $row->id ) );
 		}
 	}
 
@@ -775,13 +775,13 @@ function upgrade_130() {
 			$post_content = addslashes(deslash( $post->post_content) );
 			$post_title = addslashes(deslash( $post->post_title ) );
 			$post_excerpt = addslashes(deslash( $post->post_excerpt) );
-			if ( empty( $post->guid) ) {
-				$guid = get_permalink( $post->ID);
+			if ( empty( $post->guid ) ) {
+				$guid = get_permalink( $post->id );
 			} else {
 				$guid = $post->guid;
 			}
 
-			$wpdb->update( $wpdb->posts, compact( 'post_title', 'post_content', 'post_excerpt', 'guid' ), array( 'ID' => $post->ID) );
+			$wpdb->update( $wpdb->posts, compact( 'post_title', 'post_content', 'post_excerpt', 'guid' ), array( 'ID' => $post->id ) );
 
 		}
 	}
@@ -814,7 +814,7 @@ function upgrade_130() {
 	 * If plugins are not stored in an array, they're stored in the old
 	 * newline separated format. Convert to new format.
 	 */
-	if ( !is_array( $active_plugins ) ) {
+	if ( ! is_array( $active_plugins ) ) {
 		$active_plugins = explode( "\n", trim( $active_plugins) );
 		update_option( 'active_plugins', $active_plugins);
 	}
@@ -912,7 +912,7 @@ function upgrade_160() {
 			if ( !$idmode) {
 				$id = $user->user_nickname;
 			}
-			$wpdb->update( $wpdb->users, array( 'display_name' => $id), array( 'ID' => $user->ID) );
+			$wpdb->update( $wpdb->users, array( 'display_name' => $id ), array( 'ID' => $user->id ) );
 		endif;
 
 		// FIXME: RESET_CAPS is temporary code to reset roles and caps if flag is set.
@@ -993,7 +993,7 @@ function upgrade_210() {
 				$type = 'attachment';
 			}
 
-			$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->posts SET post_status = %s, post_type = %s WHERE ID = %d", $status, $type, $post->ID) );
+			$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->posts SET post_status = %s, post_type = %s WHERE ID = %d", $status, $type, $post->id ) );
 		}
 	}
 
@@ -1009,7 +1009,7 @@ function upgrade_210() {
 		$posts = $wpdb->get_results( "SELECT ID, post_date FROM $wpdb->posts WHERE post_status ='future'" );
 		if ( ! empty( $posts) ) {
 			foreach ( $posts as $post ) {
-				wp_schedule_single_event(mysql2date( 'U', $post->post_date, false ), 'publish_future_post', array( $post->ID) );
+				wp_schedule_single_event(mysql2date( 'U', $post->post_date, false ), 'publish_future_post', array( $post->id ) );
 			}
 		}
 	}
@@ -1057,7 +1057,7 @@ function upgrade_230() {
 
 			if ( empty( $term_group ) ) {
 				$term_group = $wpdb->get_var( "SELECT MAX(term_group) FROM $wpdb->terms GROUP BY term_group" ) + 1;
-				$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->terms SET term_group = %d WHERE term_id = %d", $term_group, $id) );
+				$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->terms SET term_group = %d WHERE term_id = %d", $term_group, $id ) );
 			}
 		}
 
@@ -1435,7 +1435,7 @@ function upgrade_330() {
 
 	if ( isset( $sidebars_widgets['wp_inactive_widgets'] ) || empty( $sidebars_widgets ) ) {
 		$sidebars_widgets['array_version'] = 3;
-	} elseif ( !isset( $sidebars_widgets['array_version'] ) ) {
+	} elseif ( ! isset( $sidebars_widgets['array_version'] ) ) {
 		$sidebars_widgets['array_version'] = 1;
 	}
 
@@ -2222,7 +2222,7 @@ function dbDelta( $queries = '', $execute = true ) {
 	}
 
 	// Separate individual queries into an array
-	if ( !is_array( $queries) ) {
+	if ( ! is_array( $queries) ) {
 		$queries = explode( ';', $queries );
 		$queries = array_filter( $queries );
 	}
@@ -2303,7 +2303,7 @@ function dbDelta( $queries = '', $execute = true ) {
 		$cfields = $indices = [];
 
 		// Get all of the field names in the query from between the parentheses.
-		preg_match( "|\((.*)\)|ms", $qry, $match2);
+		preg_match( "|\( (.*)\)|ms", $qry, $match2);
 		$qryline = trim( $match2[1] );
 
 		// Separate field lines into an array.
@@ -2531,7 +2531,7 @@ function dbDelta( $queries = '', $execute = true ) {
 					// Add the field to the column list string.
 					$index_columns .= '`' . $column_data['fieldname'] . '`';
 					if ( $column_data['subpart'] != '' ) {
-						$index_columns .= '('.$column_data['subpart'].')';
+						$index_columns .= '(' . $column_data['subpart'] . ')';
 					}
 				}
 
@@ -2663,7 +2663,7 @@ function make_site_theme_from_oldschool( $theme_name, $template ) {
 		chmod( "$site_dir/$newfile", 0777);
 
 		// Update the blog header include in each file.
-		$lines = explode( "\n", implode( '', file( "$site_dir/$newfile" ) ));
+		$lines = explode( "\n", implode( '', file( "$site_dir/$newfile" ) ) );
 		if ( $lines) {
 			$f = fopen( "$site_dir/$newfile", 'w' );
 
@@ -2719,7 +2719,7 @@ function make_site_theme_from_default( $theme_name, $template ) {
 
 	$theme_dir = @ opendir( $default_dir );
 	if ( $theme_dir ) {
-		while(( $theme_file = readdir( $theme_dir ) ) !== false ) {
+		while( ( $theme_file = readdir( $theme_dir ) ) !== false ) {
 			if (is_dir( "$default_dir/$theme_file" ) ) {
 				continue;
 			}
@@ -2732,7 +2732,7 @@ function make_site_theme_from_default( $theme_name, $template ) {
 	@closedir( $theme_dir );
 
 	// Rewrite the theme header.
-	$stylelines = explode( "\n", implode( '', file( "$site_dir/style.css" ) ));
+	$stylelines = explode( "\n", implode( '', file( "$site_dir/style.css" ) ) );
 	if ( $stylelines) {
 		$f = fopen( "$site_dir/style.css", 'w' );
 
@@ -2761,7 +2761,7 @@ function make_site_theme_from_default( $theme_name, $template ) {
 
 	$images_dir = @ opendir( "$default_dir/images" );
 	if ( $images_dir ) {
-		while(( $image = readdir( $images_dir ) ) !== false ) {
+		while( ( $image = readdir( $images_dir ) ) !== false ) {
 			if (is_dir( "$default_dir/images/$image" ) ) {
 				continue;
 			}
@@ -2916,7 +2916,7 @@ function pre_schema_upgrade() {
 		$wpdb->query( "DELETE o1 FROM $wpdb->options AS o1 JOIN $wpdb->options AS o2 USING (`option_name`) WHERE o2.option_id > o1.option_id" );
 
 		// Drop the old primary key and add the new.
-		$wpdb->query( "ALTER TABLE $wpdb->options DROP PRIMARY KEY, ADD PRIMARY KEY(option_id)" );
+		$wpdb->query( "ALTER TABLE $wpdb->options DROP PRIMARY KEY, ADD PRIMARY KEY(option_id )" );
 
 		// Drop the old option_name index. dbDelta() doesn't do the drop.
 		$wpdb->query( "ALTER TABLE $wpdb->options DROP INDEX option_name" );
@@ -2980,7 +2980,7 @@ CREATE TABLE $wpdb->sitecategories (
   cat_name varchar(55) NOT NULL default '',
   category_nicename varchar(200) NOT NULL default '',
   last_updated timestamp NOT NULL,
-  PRIMARY KEY  (cat_ID),
+  PRIMARY KEY  (cat_id ),
   KEY category_nicename (category_nicename),
   KEY last_updated (last_updated)
 ) $charset_collate;

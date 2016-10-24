@@ -25,8 +25,8 @@ if (
  */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can('install_plugins') ) {
-	wp_die(__('Sorry, you are not allowed to install plugins on this site.'));
+if ( ! current_user_can( 'install_plugins' ) ) {
+	wp_die( __( 'Sorry, you are not allowed to install plugins on this site.' ) );
 }
 
 if ( is_multisite() && ! is_network_admin() ) {
@@ -34,7 +34,7 @@ if ( is_multisite() && ! is_network_admin() ) {
 	exit();
 }
 
-$wp_list_table = _get_list_table('WP_Plugin_Install_List_Table');
+$wp_list_table = _get_list_table( 'WP_Plugin_Install_List_Table' );
 $pagenum = $wp_list_table->get_pagenum();
 
 if ( $_request->get( '_wp_http_referer' ) ) {
@@ -95,7 +95,7 @@ if ( 'upload' !== $tab ) {
 /**
  * WordPress Administration Template Header.
  */
-include(ABSPATH . 'wp-admin/admin-header.php');
+include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 <div class="wrap <?php echo esc_attr( "plugin-install-tab-$tab" ); ?>">
 <h1>
@@ -154,4 +154,4 @@ wp_print_admin_notice_templates();
 /**
  * WordPress Administration Template Footer.
  */
-include(ABSPATH . 'wp-admin/admin-footer.php');
+include( ABSPATH . 'wp-admin/admin-footer.php' );

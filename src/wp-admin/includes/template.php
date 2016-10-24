@@ -189,14 +189,14 @@ function wp_popular_terms_checklist( $taxonomy, $default = 0, $number = 10, $ech
 	$post = get_post();
 
 	if ( $post && $post->ID ) {
-		$checked_terms = wp_get_object_terms($post->ID, $taxonomy, array('fields'=>'ids'));
+		$checked_terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields'=>'ids' ) );
 	} else {
 		$checked_terms = [];
 	}
 
 	$terms = get_terms( $taxonomy, array( 'orderby' => 'count', 'order' => 'DESC', 'number' => $number, 'hierarchical' => false ) );
 
-	$tax = get_taxonomy($taxonomy);
+	$tax = get_taxonomy( $taxonomy);
 
 	$popular_ids = [];
 	foreach ( (array) $terms as $term ) {
@@ -269,8 +269,8 @@ function wp_link_category_checklist( $link_id = 0 ) {
  *
  * @param WP_Post $post Post object.
  */
-function get_inline_data($post) {
-	$post_type_object = get_post_type_object($post->post_type);
+function get_inline_data( $post) {
+	$post_type_object = get_post_type_object( $post->post_type);
 	if ( ! current_user_can( 'edit_post', $post->ID ) ) {
 		return;
 	}
@@ -336,7 +336,7 @@ function get_inline_data($post) {
 	}
 
 	if ( !$post_type_object->hierarchical ) {
-		echo '<div class="sticky">' . (is_sticky($post->ID) ? 'sticky' : '') . '</div>';
+		echo '<div class="sticky">' . (is_sticky( $post->ID) ? 'sticky' : '' ) . '</div>';
 	}
 
 	if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
@@ -378,7 +378,7 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 	 */
 	$content = apply_filters( 'wp_comment_reply', '', array( 'position' => $position, 'checkbox' => $checkbox, 'mode' => $mode ) );
 
-	if ( ! empty($content) ) {
+	if ( ! empty( $content) ) {
 		echo $content;
 		return;
 	}
@@ -420,22 +420,22 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 		</div>
 
 		<div class="inside">
-		<label for="author-email"><?php _e('Email') ?></label>
+		<label for="author-email"><?php _e( 'Email' ) ?></label>
 		<input type="text" name="newcomment_author_email" size="50" value="" id="author-email" />
 		</div>
 
 		<div class="inside">
-		<label for="author-url"><?php _e('URL') ?></label>
+		<label for="author-url"><?php _e( 'URL' ) ?></label>
 		<input type="text" id="author-url" name="newcomment_author_url" class="code" size="103" value="" />
 		</div>
 	</div>
 
 	<p id="replysubmit" class="submit">
 	<a href="#comments-form" class="save button button-primary alignright">
-	<span id="addbtn" style="display:none;"><?php _e('Add Comment'); ?></span>
-	<span id="savebtn" style="display:none;"><?php _e('Update Comment'); ?></span>
-	<span id="replybtn" style="display:none;"><?php _e('Submit Reply'); ?></span></a>
-	<a href="#comments-form" class="cancel button alignleft"><?php _e('Cancel'); ?></a>
+	<span id="addbtn" style="display:none;"><?php _e( 'Add Comment' ); ?></span>
+	<span id="savebtn" style="display:none;"><?php _e( 'Update Comment' ); ?></span>
+	<span id="replybtn" style="display:none;"><?php _e( 'Submit Reply' ); ?></span></a>
+	<a href="#comments-form" class="cancel button alignleft"><?php _e( 'Cancel' ); ?></a>
 	<span class="waiting spinner"></span>
 	<span class="error" style="display:none;"></span>
 	</p>
@@ -446,7 +446,7 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 	<input type="hidden" name="status" id="status" value="" />
 	<input type="hidden" name="position" id="position" value="<?php echo $position; ?>" />
 	<input type="hidden" name="checkbox" id="checkbox" value="<?php echo $checkbox ? 1 : 0; ?>" />
-	<input type="hidden" name="mode" id="mode" value="<?php echo esc_attr($mode); ?>" />
+	<input type="hidden" name="mode" id="mode" value="<?php echo esc_attr( $mode); ?>" />
 	<?php
 		wp_nonce_field( 'replyto-comment', '_ajax_nonce-replyto-comment', false );
 		if ( current_user_can( 'unfiltered_html' ) ) {
@@ -471,10 +471,10 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 function wp_comment_trashnotice() {
 ?>
 <div class="hidden" id="trash-undo-holder">
-	<div class="trash-undo-inside"><?php printf(__('Comment by %s moved to the trash.'), '<strong></strong>'); ?> <span class="undo untrash"><a href="#"><?php _e('Undo'); ?></a></span></div>
+	<div class="trash-undo-inside"><?php printf( __( 'Comment by %s moved to the trash.' ), '<strong></strong>' ); ?> <span class="undo untrash"><a href="#"><?php _e( 'Undo' ); ?></a></span></div>
 </div>
 <div class="hidden" id="spam-undo-holder">
-	<div class="spam-undo-inside"><?php printf(__('Comment by %s marked as spam.'), '<strong></strong>'); ?> <span class="undo unspam"><a href="#"><?php _e('Undo'); ?></a></span></div>
+	<div class="spam-undo-inside"><?php printf( __( 'Comment by %s marked as spam.' ), '<strong></strong>' ); ?> <span class="undo unspam"><a href="#"><?php _e( 'Undo' ); ?></a></span></div>
 </div>
 <?php
 }
@@ -559,7 +559,7 @@ function _list_meta_row( $entry, &$count ) {
 		}
 	}
 
-	$entry['meta_key'] = esc_attr($entry['meta_key']);
+	$entry['meta_key'] = esc_attr( $entry['meta_key'] );
 	$entry['meta_value'] = esc_textarea( $entry['meta_value'] ); // using a <textarea />
 	$entry['meta_id'] = (int) $entry['meta_id'];
 
@@ -651,14 +651,14 @@ function meta_form( $post = null ) {
 		if ( is_protected_meta( $key, 'post' ) || ! current_user_can( 'add_post_meta', $post->ID, $key ) ) {
 			continue;
 		}
-		echo "\n<option value='" . esc_attr($key) . "'>" . esc_html($key) . "</option>";
+		echo "\n<option value='" . esc_attr( $key) . "'>" . esc_html( $key) . "</option>";
 	}
 ?>
 </select>
 <input class="hide-if-js" type="text" id="metakeyinput" name="metakeyinput" value="" />
-<a href="#postcustomstuff" class="hide-if-no-js" onclick="jQuery('#metakeyinput, #metakeyselect, #enternew, #cancelnew').toggle();return false;">
-<span id="enternew"><?php _e('Enter new'); ?></span>
-<span id="cancelnew" class="hidden"><?php _e('Cancel'); ?></span></a>
+<a href="#postcustomstuff" class="hide-if-no-js" onclick="jQuery( '#metakeyinput, #metakeyselect, #enternew, #cancelnew' ).toggle();return false;">
+<span id="enternew"><?php _e( 'Enter new' ); ?></span>
+<span id="cancelnew" class="hidden"><?php _e( 'Cancel' ); ?></span></a>
 <?php } else { ?>
 <input type="text" id="metakeyinput" name="metakeyinput" value="" />
 <?php } ?>
@@ -695,7 +695,7 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 	$post = get_post();
 
 	if ( $for_post ) {
-		$edit = ! ( in_array($post->post_status, array('draft', 'pending') ) && (!$post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
+		$edit = ! ( in_array( $post->post_status, array( 'draft', 'pending' ) ) && (!$post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
 	}
 
 	$tab_index_attribute = '';
@@ -706,14 +706,14 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 	// todo: Remove this?
 	// echo '<label for="timestamp" style="display: block;"><input type="checkbox" class="checkbox" name="edit_date" value="1" id="timestamp"'.$tab_index_attribute.' /> '.__( 'Edit timestamp' ).'</label><br />';
 
-	$time_adj = current_time('timestamp');
-	$post_date = ($for_post) ? $post->post_date : get_comment()->comment_date;
-	$jj = ($edit) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
-	$mm = ($edit) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
-	$aa = ($edit) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
-	$hh = ($edit) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
-	$mn = ($edit) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
-	$ss = ($edit) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
+	$time_adj = current_time( 'timestamp' );
+	$post_date = ( $for_post) ? $post->post_date : get_comment()->comment_date;
+	$jj = ( $edit) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
+	$mm = ( $edit) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
+	$aa = ( $edit) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
+	$hh = ( $edit) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
+	$mn = ( $edit) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
+	$ss = ( $edit) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
 
 	$cur_jj = gmdate( 'd', $time_adj );
 	$cur_mm = gmdate( 'm', $time_adj );
@@ -723,7 +723,7 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 
 	$month = '<label><span class="screen-reader-text">' . __( 'Month' ) . '</span><select ' . ( $multi ? '' : 'id="mm" ' ) . 'name="mm"' . $tab_index_attribute . ">\n";
 	for ( $i = 1; $i < 13; $i = $i +1 ) {
-		$monthnum = zeroise($i, 2);
+		$monthnum = zeroise( $i, 2);
 		$monthtext = $app['locale']->get_month_abbrev( $app['locale']->get_month( $i ) );
 		$month .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $mm, false ) . '>';
 		/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
@@ -764,8 +764,8 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 ?>
 
 <p>
-<a href="#edit_timestamp" class="save-timestamp hide-if-no-js button"><?php _e('OK'); ?></a>
-<a href="#edit_timestamp" class="cancel-timestamp hide-if-no-js button-cancel"><?php _e('Cancel'); ?></a>
+<a href="#edit_timestamp" class="save-timestamp hide-if-no-js button"><?php _e( 'OK' ); ?></a>
+<a href="#edit_timestamp" class="cancel-timestamp hide-if-no-js button-cancel"><?php _e( 'Cancel' ); ?></a>
 </p>
 <?php
 }
@@ -803,7 +803,7 @@ function parent_dropdown( $default = 0, $parent = 0, $level = 0, $post = null ) 
 	$app = getApp();
 	$wpdb = $app['db'];
 	$post = get_post( $post );
-	$items = $wpdb->get_results( $wpdb->prepare("SELECT ID, post_parent, post_title FROM $wpdb->posts WHERE post_parent = %d AND post_type = 'page' ORDER BY menu_order", $parent) );
+	$items = $wpdb->get_results( $wpdb->prepare( "SELECT ID, post_parent, post_title FROM $wpdb->posts WHERE post_parent = %d AND post_type = 'page' ORDER BY menu_order", $parent) );
 
 	if ( $items ) {
 		foreach ( $items as $item ) {
@@ -815,7 +815,7 @@ function parent_dropdown( $default = 0, $parent = 0, $level = 0, $post = null ) 
 			$pad = str_repeat( '&nbsp;', $level * 3 );
 			$selected = selected( $default, $item->ID, false );
 
-			echo "\n\t<option class='level-$level' value='$item->ID' $selected>$pad " . esc_html($item->post_title) . "</option>";
+			echo "\n\t<option class='level-$level' value='$item->ID' $selected>$pad " . esc_html( $item->post_title) . "</option>";
 			parent_dropdown( $default, $item->ID, $level +1 );
 		}
 	} else {
@@ -837,12 +837,12 @@ function wp_dropdown_roles( $selected = '' ) {
 	$editable_roles = array_reverse( get_editable_roles() );
 
 	foreach ( $editable_roles as $role => $details ) {
-		$name = translate_user_role($details['name'] );
+		$name = translate_user_role( $details['name'] );
 		if ( $selected == $role ) {
 			// preselect specified role
-			$p = "\n\t<option selected='selected' value='" . esc_attr($role) . "'>$name</option>";
+			$p = "\n\t<option selected='selected' value='" . esc_attr( $role) . "'>$name</option>";
 		} else {
-			$r .= "\n\t<option value='" . esc_attr($role) . "'>$name</option>";
+			$r .= "\n\t<option value='" . esc_attr( $role) . "'>$name</option>";
 		}
 	}
 	echo $p . $r;
@@ -870,17 +870,17 @@ function wp_import_upload_form( $action ) {
 	$size = size_format( $bytes );
 	$upload_dir = wp_upload_dir();
 	if ( ! empty( $upload_dir['error'] ) ) {
-		?><div class="error"><p><?php _e('Before you can upload your import file, you will need to fix the following error:'); ?></p>
+		?><div class="error"><p><?php _e( 'Before you can upload your import file, you will need to fix the following error:' ); ?></p>
 		<p><strong><?php echo $upload_dir['error']; ?></strong></p></div><?php
 	} else { ?>
 <form enctype="multipart/form-data" id="import-upload-form" method="post" class="wp-upload-form" action="<?php echo esc_url( wp_nonce_url( $action, 'import-upload' ) ); ?>">
 <p>
-<label for="upload"><?php _e( 'Choose a file from your computer:' ); ?></label> (<?php printf( __('Maximum size: %s' ), $size ); ?>)
+<label for="upload"><?php _e( 'Choose a file from your computer:' ); ?></label> (<?php printf( __( 'Maximum size: %s' ), $size ); ?>)
 <input type="file" id="upload" name="import" size="25" />
 <input type="hidden" name="action" value="save" />
 <input type="hidden" name="max_file_size" value="<?php echo $bytes; ?>" />
 </p>
-<?php submit_button( __('Upload file and import'), 'primary' ); ?>
+<?php submit_button( __( 'Upload file and import' ), 'primary' ); ?>
 </form>
 <?php
 	}
@@ -897,7 +897,7 @@ function wp_import_upload_form( $action ) {
  * @param callable               $callback      Function that fills the box with the desired content.
  *                                              The function should echo its output.
  * @param string|array|Screen $screen        Optional. The screen or screens on which to show the box
- *                                              (such as a post type, 'link', or 'comment'). Accepts a single
+ *                                              (such as a post type, 'link', or 'comment' ). Accepts a single
  *                                              screen ID, Screen object, or array of screen IDs. Default
  *                                              is the current screen.
  * @param string                 $context       Optional. The context within the screen where the boxes
@@ -907,7 +907,7 @@ function wp_import_upload_form( $action ) {
  *                                              and 'side'. Menus meta boxes (accordion sections) all use
  *                                              the 'side' context. Global default is 'advanced'.
  * @param string                 $priority      Optional. The priority within the context where the boxes
- *                                              should show ('high', 'low'). Default 'default'.
+ *                                              should show ( 'high', 'low' ). Default 'default'.
  * @param array                  $callback_args Optional. Data that should be set as the $args property
  *                                              of the box array (which is the second parameter passed
  *                                              to your callback). Default null.
@@ -943,7 +943,7 @@ function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advan
 	}
 
 	foreach ( array_keys( $app->meta_boxes[ $page ] ) as $a_context ) {
-		foreach ( array('high', 'core', 'default', 'low') as $a_priority ) {
+		foreach ( array( 'high', 'core', 'default', 'low' ) as $a_priority ) {
 			if ( ! isset( $app->meta_boxes[ $page ][ $a_context ][ $a_priority ][ $id ] ) ) {
 				continue;
 			}
@@ -966,7 +966,7 @@ function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advan
 				return;
 			}
 			// If no priority given and id already present, use existing priority.
-			if ( empty($priority) ) {
+			if ( empty( $priority) ) {
 				$priority = $a_priority;
 			/*
 			 * Else, if we're adding to the sorted priority, we don't know the title
@@ -984,7 +984,7 @@ function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advan
 		}
 	}
 
-	if ( empty($priority) ) {
+	if ( empty( $priority) ) {
 		$priority = 'low';
 	}
 
@@ -1020,7 +1020,7 @@ function do_meta_boxes( $screen, $context, $object ) {
 
 	$hidden = get_hidden_meta_boxes( $screen );
 
-	printf('<div id="%s-sortables" class="meta-box-sortables">', htmlspecialchars($context));
+	printf( '<div id="%s-sortables" class="meta-box-sortables">', htmlspecialchars( $context) );
 
 	// Grab the ones the user has manually sorted. Pull them out of their previous context/priority and into the one the user chose
 	if ( ! $already_sorted && $sorted = get_user_option( "meta-box-order_$page" ) ) {
@@ -1039,14 +1039,14 @@ function do_meta_boxes( $screen, $context, $object ) {
 
 	if ( isset( $app->meta_boxes[ $page ][ $context ] ) ) {
 		foreach ( array( 'high', 'sorted', 'core', 'default', 'low' ) as $priority ) {
-			if ( isset( $app->meta_boxes[ $page ][ $context ][ $priority ]) ) {
+			if ( isset( $app->meta_boxes[ $page ][ $context ][ $priority ] ) ) {
 				foreach ( (array) $app->meta_boxes[ $page ][ $context ][ $priority ] as $box ) {
 					if ( false == $box || ! $box['title'] ) {
 						continue;
 					}
 					$i++;
-					$hidden_class = in_array($box['id'], $hidden) ? ' hide-if-js' : '';
-					echo '<div id="' . $box['id'] . '" class="postbox ' . postbox_classes($box['id'], $page) . $hidden_class . '" ' . '>' . "\n";
+					$hidden_class = in_array( $box['id'], $hidden) ? ' hide-if-js' : '';
+					echo '<div id="' . $box['id'] . '" class="postbox ' . postbox_classes( $box['id'], $page) . $hidden_class . '" ' . '>' . "\n";
 					if ( 'dashboard_browser_nag' != $box['id'] ) {
 						$widget_title = $box[ 'title' ];
 
@@ -1063,7 +1063,7 @@ function do_meta_boxes( $screen, $context, $object ) {
 					}
 					echo "<h2 class='hndle'><span>{$box['title']}</span></h2>\n";
 					echo '<div class="inside">' . "\n";
-					call_user_func($box['callback'], $object, $box);
+					call_user_func( $box['callback'], $object, $box);
 					echo "</div>\n";
 					echo "</div>\n";
 				}
@@ -1085,7 +1085,7 @@ function do_meta_boxes( $screen, $context, $object ) {
  *
  * @param string                 $id      Meta box ID (used in the 'id' attribute for the meta box).
  * @param string|array|Screen $screen  The screen or screens on which the meta box is shown (such as a
- *                                        post type, 'link', or 'comment'). Accepts a single screen ID,
+ *                                        post type, 'link', or 'comment' ). Accepts a single screen ID,
  *                                        Screen object, or array of screen IDs.
  * @param string                 $context The context within the screen where the box is set to display.
  *                                        Contexts vary from screen to screen. Post edit screen contexts
@@ -1122,7 +1122,7 @@ function remove_meta_box( $id, $screen, $context ) {
 		$app->meta_boxes[ $page ][ $context ] = [];
 	}
 
-	foreach ( array('high', 'core', 'default', 'low') as $priority ) {
+	foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
 		$app->meta_boxes[ $page ][ $context ][ $priority ][ $id ] = false;
 	}
 }
@@ -1223,7 +1223,7 @@ function do_accordion_sections( $screen, $context, $object ) {
  *                           'general', 'reading', 'writing', 'discussion', 'media', etc. Create your own using
  *                           add_options_page();
  */
-function add_settings_section($id, $title, $callback, $page) {
+function add_settings_section( $id, $title, $callback, $page) {
 	global $wp_settings_sections;
 
 	if ( 'misc' == $page ) {
@@ -1236,7 +1236,7 @@ function add_settings_section($id, $title, $callback, $page) {
 		$page = 'reading';
 	}
 
-	$wp_settings_sections[ $page ][ $id ] = array('id' => $id, 'title' => $title, 'callback' => $callback);
+	$wp_settings_sections[ $page ][ $id ] = array( 'id' => $id, 'title' => $title, 'callback' => $callback);
 }
 
 /**
@@ -1274,7 +1274,7 @@ function add_settings_section($id, $title, $callback, $page) {
  *                             field is output.
  * }
  */
-function add_settings_field($id, $title, $callback, $page, $section = 'default', $args = []) {
+function add_settings_field( $id, $title, $callback, $page, $section = 'default', $args = [] ) {
 	global $wp_settings_fields;
 
 	if ( 'misc' == $page ) {
@@ -1287,7 +1287,7 @@ function add_settings_field($id, $title, $callback, $page, $section = 'default',
 		$page = 'reading';
 	}
 
-	$wp_settings_fields[ $page ][$section][ $id ] = array('id' => $id, 'title' => $title, 'callback' => $callback, 'args' => $args);
+	$wp_settings_fields[ $page ][$section][ $id ] = array( 'id' => $id, 'title' => $title, 'callback' => $callback, 'args' => $args);
 }
 
 /**
@@ -1319,7 +1319,7 @@ function do_settings_sections( $page ) {
 			call_user_func( $section['callback'], $section );
 		}
 
-		if ( ! isset( $wp_settings_fields ) || !isset( $wp_settings_fields[ $page ] ) || !isset( $wp_settings_fields[ $page ][$section['id']] ) ) {
+		if ( ! isset( $wp_settings_fields ) || ! isset( $wp_settings_fields[ $page ] ) || ! isset( $wp_settings_fields[ $page ][$section['id']] ) ) {
 			continue;
 		}
 		echo '<table class="form-table">';
@@ -1342,7 +1342,7 @@ function do_settings_sections( $page ) {
  * @param string $page Slug title of the admin page who's settings fields you want to show.
  * @param string $section Slug title of the settings section who's fields you want to show.
  */
-function do_settings_fields($page, $section) {
+function do_settings_fields( $page, $section) {
 	global $wp_settings_fields;
 
 	if ( ! isset( $wp_settings_fields[ $page ][$section] ) ) {
@@ -1365,7 +1365,7 @@ function do_settings_fields($page, $section) {
 		}
 
 		echo '<td>';
-		call_user_func($field['callback'], $field['args']);
+		call_user_func( $field['callback'], $field['args'] );
 		echo '</td>';
 		echo '</tr>';
 	}
@@ -1412,7 +1412,7 @@ function add_settings_error( $setting, $code, $message, $type = 'error' ) {
  * Checks the $wp_settings_errors array for any errors declared during the current
  * pageload and returns them.
  *
- * If changes were just submitted ($_GET['settings-updated']) and settings errors were saved
+ * If changes were just submitted ( $_GET['settings-updated'] ) and settings errors were saved
  * to the 'settings_errors' transient then those errors will be returned instead. This
  * is used to pass errors back across pageloads.
  *
@@ -1528,7 +1528,7 @@ function settings_errors( $setting = '', $sanitize = false, $hide_on_update = fa
  *
  * @param string $found_action
  */
-function find_posts_div($found_action = '') {
+function find_posts_div( $found_action = '' ) {
 ?>
 	<div id="find-posts" class="find-box" style="display: none;">
 		<div id="find-posts-head" class="find-box-head">
@@ -1538,7 +1538,7 @@ function find_posts_div($found_action = '') {
 		<div class="find-box-inside">
 			<div class="find-box-search">
 				<?php if ( $found_action ) { ?>
-					<input type="hidden" name="found_action" value="<?php echo esc_attr($found_action); ?>" />
+					<input type="hidden" name="found_action" value="<?php echo esc_attr( $found_action); ?>" />
 				<?php } ?>
 				<input type="hidden" name="affected" id="affected" value="" />
 				<?php wp_nonce_field( 'find-posts', '_ajax_nonce', false ); ?>
@@ -1629,12 +1629,12 @@ function iframe_header( $title = '', $deprecated = false ) {
 	@header( 'Content-Type: ' . get_option( 'html_type' ) . '; charset=' . get_option( 'blog_charset' ) );
 	_wp_admin_html_begin();
 ?>
-<title><?php bloginfo('name') ?> &rsaquo; <?php echo $title ?> &#8212; <?php _e('WordPress'); ?></title>
+<title><?php bloginfo( 'name' ) ?> &rsaquo; <?php echo $title ?> &#8212; <?php _e( 'WordPress' ); ?></title>
 <?php
 wp_enqueue_style( 'colors' );
 ?>
 <script type="text/javascript">
-addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function'){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
+addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function' ){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
 function tb_close(){var win=window.dialogArguments||opener||parent||top;win.tb_remove();}
 var ajaxurl = '<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>',
 	pagenow = '<?php echo $current_screen->id; ?>',
@@ -1682,14 +1682,14 @@ $admin_body_classes = apply_filters( 'admin_body_class', '' );
 /**
  * @global string $body_id
  */
-if ( isset($GLOBALS['body_id']) ) {
+if ( isset( $GLOBALS['body_id'] ) ) {
 	echo ' id="' . $GLOBALS['body_id'] . '"';
 }
 ?> class="wp-admin wp-core-ui no-js iframe <?php echo $admin_body_classes . ' ' . $admin_body_class; ?>">
 <script type="text/javascript">
 (function(){
 var c = document.body.className;
-c = c.replace(/no-js/, 'js');
+c = c.replace(/no-js/, 'js' );
 document.body.className = c;
 })();
 </script>
@@ -1732,26 +1732,26 @@ function iframe_footer() {
  *
  * @param WP_Post $post
  */
-function _post_states($post) {
+function _post_states( $post) {
 	$app = getApp();
 	$_request = $app['request']->attributes;
 	$post_states = [];
 	$post_status = $_request->get( 'post_status', '' );
 
-	if ( !empty($post->post_password) ) {
-		$post_states['protected'] = __('Password protected');
+	if ( ! empty( $post->post_password) ) {
+		$post_states['protected'] = __( 'Password protected' );
 	}
 	if ( 'private' == $post->post_status && 'private' != $post_status ) {
-		$post_states['private'] = __('Private');
+		$post_states['private'] = __( 'Private' );
 	}
 	if ( 'draft' == $post->post_status && 'draft' != $post_status ) {
-		$post_states['draft'] = __('Draft');
+		$post_states['draft'] = __( 'Draft' );
 	}
 	if ( 'pending' == $post->post_status && 'pending' != $post_status ) {
-		$post_states['pending'] = _x('Pending', 'post status');
+		$post_states['pending'] = _x( 'Pending', 'post status' );
 	}
-	if ( is_sticky($post->ID) ) {
-		$post_states['sticky'] = __('Sticky');
+	if ( is_sticky( $post->ID) ) {
+		$post_states['sticky'] = __( 'Sticky' );
 	}
 
 	if ( 'future' === $post->post_status ) {
@@ -1778,8 +1778,8 @@ function _post_states($post) {
 	 */
 	$post_states = apply_filters( 'display_post_states', $post_states, $post );
 
-	if ( ! empty($post_states) ) {
-		$state_count = count($post_states);
+	if ( ! empty( $post_states) ) {
+		$state_count = count( $post_states);
 		$i = 0;
 		echo ' &mdash; ';
 		foreach ( $post_states as $state ) {
@@ -1797,10 +1797,10 @@ function _post_states($post) {
  */
 function _media_states( $post ) {
 	$media_states = [];
-	$stylesheet = get_option('stylesheet');
+	$stylesheet = get_option( 'stylesheet' );
 
-	if ( current_theme_supports( 'custom-header') ) {
-		$meta_header = get_post_meta($post->ID, '_wp_attachment_is_custom_header', true );
+	if ( current_theme_supports( 'custom-header' ) ) {
+		$meta_header = get_post_meta( $post->ID, '_wp_attachment_is_custom_header', true );
 
 		if ( is_random_header_image() ) {
 			$header_images = wp_list_pluck( get_uploaded_header_images(), 'attachment_id' );
@@ -1823,8 +1823,8 @@ function _media_states( $post ) {
 		}
 	}
 
-	if ( current_theme_supports( 'custom-background') ) {
-		$meta_background = get_post_meta($post->ID, '_wp_attachment_is_custom_background', true );
+	if ( current_theme_supports( 'custom-background' ) ) {
+		$meta_background = get_post_meta( $post->ID, '_wp_attachment_is_custom_background', true );
 
 		if ( ! empty( $meta_background ) && $meta_background == $stylesheet ) {
 			$media_states[] = __( 'Background Image' );
@@ -1886,7 +1886,7 @@ function compression_test() {
 			if ( window.XMLHttpRequest ) {
 				x = new XMLHttpRequest();
 			} else {
-				try{x=new ActiveXObject('Msxml2.XMLHTTP');}catch(e){try{x=new ActiveXObject('Microsoft.XMLHTTP');}catch(e){};}
+				try{x=new ActiveXObject( 'Msxml2.XMLHTTP' );}catch(e){try{x=new ActiveXObject( 'Microsoft.XMLHTTP' );}catch(e){};}
 			}
 
 			if (x) {
@@ -1894,13 +1894,13 @@ function compression_test() {
 					var r, h;
 					if ( x.readyState == 4 ) {
 						r = x.responseText.substr(0, 18);
-						h = x.getResponseHeader('Content-Encoding');
+						h = x.getResponseHeader( 'Content-Encoding' );
 						testCompression.check(r, h, test);
 					}
 				};
 
-				x.open('GET', ajaxurl + '?action=wp-compression-test&test='+test+'&_ajax_nonce='+compressionNonce+'&'+(new Date()).getTime(), true);
-				x.send('');
+				x.open( 'GET', ajaxurl + '?action=wp-compression-test&test='+test+'&_ajax_nonce='+compressionNonce+'&'+(new Date()).getTime(), true );
+				x.send( '' );
 			}
 		},
 
@@ -1910,7 +1910,7 @@ function compression_test() {
 
 			if ( 1 == test ) {
 				if ( h && ( h.match(/deflate/i) || h.match(/gzip/i) ) )
-					this.get('no');
+					this.get( 'no' );
 				else
 					this.get(2);
 
@@ -1919,9 +1919,9 @@ function compression_test() {
 
 			if ( 2 == test ) {
 				if ( '"wpCompressionTest' == r )
-					this.get('yes');
+					this.get( 'yes' );
 				else
-					this.get('no');
+					this.get( 'no' );
 			}
 		}
 	};
@@ -1937,7 +1937,7 @@ function compression_test() {
  *
  * @see get_submit_button()
  *
- * @param string       $text             The text of the button (defaults to 'Save Changes')
+ * @param string       $text             The text of the button (defaults to 'Save Changes' )
  * @param string       $type             Optional. The type and CSS class(es) of the button. Core values
  *                                       include 'primary', 'secondary', 'delete'. Default 'primary'
  * @param string       $name             The HTML name of the submit button. Defaults to "submit". If no
@@ -2036,7 +2036,7 @@ function _wp_admin_html_begin() {
 	$admin_html_class = ( is_admin_bar_showing() ) ? 'wp-toolbar' : '';
 
 	if ( $app['is_IE'] ) {
-		@header('X-UA-Compatible: IE=edge');
+		@header( 'X-UA-Compatible: IE=edge' );
 	}
 ?>
 <!DOCTYPE html>
@@ -2057,7 +2057,7 @@ function _wp_admin_html_begin() {
 ?> <?php language_attributes(); ?>>
 <!--<![endif]-->
 <head>
-<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
+<meta http-equiv="Content-Type" content="<?php bloginfo( 'html_type' ); ?>; charset=<?php echo get_option( 'blog_charset' ); ?>" />
 <?php
 }
 
@@ -2089,7 +2089,7 @@ function _local_storage_notice() {
 	<div id="local-storage-notice" class="hidden notice is-dismissible">
 	<p class="local-restore">
 		<?php _e( 'The backup of this post in your browser is different from the version below.' ); ?>
-		<button type="button" class="button restore-backup"><?php _e('Restore the backup'); ?></button>
+		<button type="button" class="button restore-backup"><?php _e( 'Restore the backup' ); ?></button>
 	</p>
 	<p class="help">
 		<?php _e( 'This will replace the current editor content with the last backup version. You can use undo and redo in the editor to get the old content back or to return to the restored version.' ); ?>

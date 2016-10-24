@@ -20,23 +20,23 @@ class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 
 	public function add_strings() {
 		parent::add_strings();
-		$this->upgrader->strings['skin_before_update_header'] = __('Updating Plugin %1$s (%2$d/%3$d)');
+		$this->upgrader->strings['skin_before_update_header'] = __( 'Updating Plugin %1$s (%2$d/%3$d)' );
 	}
 
 	/**
 	 *
 	 * @param string $title
 	 */
-	public function before($title = '') {
-		parent::before($this->plugin_info['Title']);
+	public function before( $title = '' ) {
+		parent::before( $this->plugin_info['Title'] );
 	}
 
 	/**
 	 *
 	 * @param string $title
 	 */
-	public function after($title = '') {
-		parent::after($this->plugin_info['Title']);
+	public function after( $title = '' ) {
+		parent::after( $this->plugin_info['Title'] );
 		$this->decrement_update_count( 'plugin' );
 	}
 
@@ -63,8 +63,8 @@ class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 		 */
 		$update_actions = apply_filters( 'update_bulk_plugins_complete_actions', $update_actions, $this->plugin_info );
 
-		if ( ! empty($update_actions) ) {
-			$this->feedback(implode(' | ', (array)$update_actions));
+		if ( ! empty( $update_actions) ) {
+			$this->feedback( implode( ' | ', (array) $update_actions) );
 		}
 	}
 }

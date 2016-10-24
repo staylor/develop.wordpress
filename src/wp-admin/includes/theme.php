@@ -19,15 +19,15 @@ use function WP\getApp;
  * @param string $redirect Redirect to page when complete.
  * @return void|bool|Error When void, echoes content.
  */
-function delete_theme($stylesheet, $redirect = '') {
+function delete_theme( $stylesheet, $redirect = '' ) {
 	global $wp_filesystem;
 
-	if ( empty($stylesheet) ) {
+	if ( empty( $stylesheet) ) {
 		return false;
 	}
 
 	if ( empty( $redirect ) ) {
-		$redirect = wp_nonce_url('themes.php?action=delete&stylesheet=' . urlencode( $stylesheet ), 'delete-theme_' . $stylesheet);
+		$redirect = wp_nonce_url( 'themes.php?action=delete&stylesheet=' . urlencode( $stylesheet ), 'delete-theme_' . $stylesheet);
 	}
 
 	ob_start();
@@ -36,9 +36,9 @@ function delete_theme($stylesheet, $redirect = '') {
 
 	if ( false === $credentials ) {
 		if ( ! empty( $data ) ){
-			include_once( ABSPATH . 'wp-admin/admin-header.php');
+			include_once( ABSPATH . 'wp-admin/admin-header.php' );
 			echo $data;
-			include( ABSPATH . 'wp-admin/admin-footer.php');
+			include( ABSPATH . 'wp-admin/admin-footer.php' );
 			exit;
 		}
 		return;
@@ -49,21 +49,21 @@ function delete_theme($stylesheet, $redirect = '') {
 		request_filesystem_credentials( $redirect, '', true ); // Failed to connect, Error and request again.
 		$data = ob_get_clean();
 
-		if ( ! empty($data) ) {
-			include_once( ABSPATH . 'wp-admin/admin-header.php');
+		if ( ! empty( $data) ) {
+			include_once( ABSPATH . 'wp-admin/admin-header.php' );
 			echo $data;
-			include( ABSPATH . 'wp-admin/admin-footer.php');
+			include( ABSPATH . 'wp-admin/admin-footer.php' );
 			exit;
 		}
 		return;
 	}
 
-	if ( ! is_object($wp_filesystem) ) {
-		return new Error('fs_unavailable', __('Could not access filesystem.'));
+	if ( ! is_object( $wp_filesystem) ) {
+		return new Error( 'fs_unavailable', __( 'Could not access filesystem.' ) );
 	}
 
-	if ( is_wp_error($wp_filesystem->errors) && $wp_filesystem->errors->get_error_code() ) {
-		return new Error('fs_error', __('Filesystem error.'), $wp_filesystem->errors);
+	if ( is_wp_error( $wp_filesystem->errors) && $wp_filesystem->errors->get_error_code() ) {
+		return new Error( 'fs_error', __( 'Filesystem error.' ), $wp_filesystem->errors);
 	}
 
 	// Get the base plugin folder.
@@ -125,8 +125,8 @@ function get_page_templates( $post = null ) {
  * @param string $containingfolder Path of the theme parent folder
  * @return string
  */
-function _get_template_edit_filename($fullpath, $containingfolder) {
-	return str_replace(dirname(dirname( $containingfolder )) , '', $fullpath);
+function _get_template_edit_filename( $fullpath, $containingfolder) {
+	return str_replace(dirname(dirname( $containingfolder ) ) , '', $fullpath);
 }
 
 /**
@@ -158,12 +158,12 @@ function theme_update_available( $theme ) {
 function get_theme_update_available( $theme ) {
 	static $themes_update = null;
 
-	if ( !current_user_can('update_themes' ) ) {
+	if ( !current_user_can( 'update_themes' ) ) {
 		return false;
 	}
 
-	if ( !isset($themes_update) ) {
-		$themes_update = get_site_transient('update_themes');
+	if ( ! isset( $themes_update) ) {
+		$themes_update = get_site_transient( 'update_themes' );
 	}
 
 	if ( ! ( $theme instanceof WP_Theme ) ) {
@@ -174,14 +174,14 @@ function get_theme_update_available( $theme ) {
 
 	$html = '';
 
-	if ( isset($themes_update->response[ $stylesheet ]) ) {
+	if ( isset( $themes_update->response[ $stylesheet ] ) ) {
 		$update = $themes_update->response[ $stylesheet ];
-		$theme_name = $theme->display('Name');
-		$details_url = add_query_arg(array('TB_iframe' => 'true', 'width' => 1024, 'height' => 800), $update['url']); //Theme browser inside WP? replace this, Also, theme preview JS will override this on the available list.
+		$theme_name = $theme->display( 'Name' );
+		$details_url = add_query_arg( array( 'TB_iframe' => 'true', 'width' => 1024, 'height' => 800), $update['url'] ); //Theme browser inside WP? replace this, Also, theme preview JS will override this on the available list.
 		$update_url = wp_nonce_url( admin_url( 'update.php?action=upgrade-theme&amp;theme=' . urlencode( $stylesheet ) ), 'upgrade-theme_' . $stylesheet );
 
-		if ( !is_multisite() ) {
-			if ( ! current_user_can('update_themes') ) {
+		if ( ! is_multisite() ) {
+			if ( ! current_user_can( 'update_themes' ) ) {
 				/* translators: 1: theme name, 2: theme details URL, 3: additional link attributes, 4: version number */
 				$html = sprintf( '<p><strong>' . __( 'There is a new version of %1$s available. <a href="%2$s" %3$s>View version %4$s details</a>.' ) . '</strong></p>',
 					$theme_name,
@@ -316,13 +316,13 @@ function get_theme_feature_list( $api = true ) {
 	// Loop over the wporg canonical list and apply translations
 	$wporg_features = [];
 	foreach ( (array) $feature_list as $feature_category => $feature_items ) {
-		if ( isset($category_translations[$feature_category]) ) {
+		if ( isset( $category_translations[$feature_category] ) ) {
 			$feature_category = $category_translations[$feature_category];
 		}
 		$wporg_features[$feature_category] = [];
 
 		foreach ( $feature_items as $feature ) {
-			if ( isset($features[$feature_category][$feature]) ) {
+			if ( isset( $features[$feature_category][$feature] ) ) {
 				$wporg_features[$feature_category][$feature] = $features[$feature_category][$feature];
 			} else {
 				$wporg_features[$feature_category][$feature] = $feature;
@@ -479,12 +479,12 @@ function themes_api( $action, $args = [] ) {
 			$request = wp_remote_post( $http_url, $http_args );
 		}
 
-		if ( is_wp_error($request) ) {
-			$res = new Error('themes_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), $request->get_error_message() );
+		if ( is_wp_error( $request) ) {
+			$res = new Error( 'themes_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), $request->get_error_message() );
 		} else {
 			$res = maybe_unserialize( wp_remote_retrieve_body( $request ) );
 			if ( ! is_object( $res ) && ! is_array( $res ) ) {
-				$res = new Error('themes_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), wp_remote_retrieve_body( $request ) );
+				$res = new Error( 'themes_api_failed', __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ), wp_remote_retrieve_body( $request ) );
 			}
 		}
 	}

@@ -48,7 +48,8 @@ trait Globals {
 		'custom_background' => null,
 		'allowedtags' => [
 			'a' => [ 'href' => [], 'title' => [], 'target' => [] ],
-			'abbr' => [ 'title' => [] ], 'acronym' => ['title' => [] ],
+			'abbr' => [ 'title' => [] ],
+			'acronym' => [ 'title' => [] ],
 			'code' => [], 'pre' => [], 'em' => [], 'strong' => [],
 			'div' => [], 'p' => [], 'ul' => [], 'ol' => [], 'li' => [],
 			'h1' => [], 'h2' => [], 'h3' => [], 'h4' => [], 'h5' => [], 'h6' => [],

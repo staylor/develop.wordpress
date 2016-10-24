@@ -58,7 +58,7 @@ $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 		?></p>
 	</div>
 <?php endif; ?>
-<p><?php _e('If you have posts or comments in another system, WordPress can import those into this site. To get started, choose a system to import from below:'); ?></p>
+<p><?php _e( 'If you have posts or comments in another system, WordPress can import those into this site. To get started, choose a system to import from below:' ); ?></p>
 
 <?php
 // Registered (already installed) importers. They're stored in the global $wp_importers.
@@ -78,7 +78,7 @@ foreach ( $popular_importers as $pop_importer => $pop_data ) {
 }
 
 if ( empty( $importers ) ) {
-	echo '<p>' . __('No importers are available.') . '</p>'; // TODO: make more helpful
+	echo '<p>' . __( 'No importers are available.' ) . '</p>'; // TODO: make more helpful
 } else {
 	uasort( $importers, '_usort_by_first_member' );
 ?>
@@ -188,8 +188,8 @@ if ( empty( $importers ) ) {
 <?php
 }
 
-if ( current_user_can('install_plugins') ) {
-	echo '<p>' . sprintf( __('If the importer you need is not listed, <a href="%s">search the plugin directory</a> to see if an importer is available.'), esc_url( network_admin_url( 'plugin-install.php?tab=search&type=tag&s=importer' ) ) ) . '</p>';
+if ( current_user_can( 'install_plugins' ) ) {
+	echo '<p>' . sprintf( __( 'If the importer you need is not listed, <a href="%s">search the plugin directory</a> to see if an importer is available.' ), esc_url( network_admin_url( 'plugin-install.php?tab=search&type=tag&s=importer' ) ) ) . '</p>';
 }
 ?>
 

@@ -56,7 +56,7 @@ if ( $_get->get( 'action' ) ) {
 			$userfunction = '';
 
 			foreach ( (array) $_post->get( 'allusers' ) as $user_id ) {
-				if ( !empty( $user_id ) ) {
+				if ( ! empty( $user_id ) ) {
 					switch ( $doaction ) {
 					case 'delete':
 						if ( ! current_user_can( 'delete_users' ) ) {
@@ -181,7 +181,7 @@ if ( $_get->get( 'action' ) ) {
 	}
 }
 
-$wp_list_table = _get_list_table('WP_MS_Users_List_Table');
+$wp_list_table = _get_list_table( 'WP_MS_Users_List_Table' );
 $pagenum = $wp_list_table->get_pagenum();
 $wp_list_table->prepare_items();
 $total_pages = $wp_list_table->get_pagination_arg( 'total_pages' );
@@ -229,8 +229,8 @@ if ( $_request->get( 'updated' ) == 'true' && ! empty( $_request->get( 'action' 
 	?>
 <div class="wrap">
 	<h1><?php esc_html_e( 'Users' );
-	if ( current_user_can( 'create_users') ) : ?>
-		<a href="<?php echo network_admin_url('user-new.php'); ?>" class="page-title-action"><?php echo esc_html_x( 'Add New', 'user' ); ?></a><?php
+	if ( current_user_can( 'create_users' ) ) : ?>
+		<a href="<?php echo network_admin_url( 'user-new.php' ); ?>" class="page-title-action"><?php echo esc_html_x( 'Add New', 'user' ); ?></a><?php
 	endif;
 
 	if ( strlen( $usersearch ) ) {

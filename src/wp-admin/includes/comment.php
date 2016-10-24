@@ -33,7 +33,7 @@ function comment_exists( $comment_author, $comment_date, $timezone = 'blog' ) {
 		$date_field = 'comment_date_gmt';
 	}
 
-	return $wpdb->get_var( $wpdb->prepare("SELECT comment_post_ID FROM $wpdb->comments
+	return $wpdb->get_var( $wpdb->prepare( "SELECT comment_post_ID FROM $wpdb->comments
 			WHERE comment_author = %s AND $date_field = %s",
 			stripslashes( $comment_author ),
 			stripslashes( $comment_date )
@@ -72,7 +72,7 @@ function edit_comment() {
 		$_post->set( 'comment_ID', $_post->getInt( 'comment_ID' ) );
 	}
 
-	foreach ( array ('aa', 'mm', 'jj', 'hh', 'mn') as $timeunit ) {
+	foreach ( array ( 'aa', 'mm', 'jj', 'hh', 'mn' ) as $timeunit ) {
 		if ( $_post->get( 'hidden_' . $timeunit ) && $_post->get( 'hidden_' . $timeunit ) != $_post->get( $timeunit ) ) {
 			$_post->set( 'edit_date', '1' );
 			break;
@@ -86,10 +86,10 @@ function edit_comment() {
 		$hh = $_post->get( 'hh' );
 		$mn = $_post->get( 'mn' );
 		$ss = $_post->get( 'ss' );
-		$jj = ($jj > 31 ) ? 31 : $jj;
-		$hh = ($hh > 23 ) ? $hh -24 : $hh;
-		$mn = ($mn > 59 ) ? $mn -60 : $mn;
-		$ss = ($ss > 59 ) ? $ss -60 : $ss;
+		$jj = ( $jj > 31 ) ? 31 : $jj;
+		$hh = ( $hh > 23 ) ? $hh -24 : $hh;
+		$mn = ( $mn > 59 ) ? $mn -60 : $mn;
+		$ss = ( $ss > 59 ) ? $ss -60 : $ss;
 		$_post->set( 'comment_date', "$aa-$mm-$jj $hh:$mn:$ss" );
 	}
 
@@ -105,7 +105,7 @@ function edit_comment() {
  * @return WP_Comment|false Comment if found. False on failure.
  */
 function get_comment_to_edit( $id ) {
-	if ( !$comment = get_comment($id) ) {
+	if ( !$comment = get_comment( $id ) ) {
 		return false;
 	}
 
@@ -125,7 +125,7 @@ function get_comment_to_edit( $id ) {
 	$comment->comment_author = format_to_edit( $comment->comment_author );
 	$comment->comment_author_email = format_to_edit( $comment->comment_author_email );
 	$comment->comment_author_url = format_to_edit( $comment->comment_author_url );
-	$comment->comment_author_url = esc_url($comment->comment_author_url);
+	$comment->comment_author_url = esc_url( $comment->comment_author_url);
 
 	return $comment;
 }
@@ -143,22 +143,22 @@ function get_pending_comments_num( $post_id ) {
 	$wpdb = $app['db'];
 
 	$single = false;
-	if ( !is_array($post_id) ) {
+	if ( ! is_array( $post_id ) ) {
 		$post_id_array = (array) $post_id;
 		$single = true;
 	} else {
 		$post_id_array = $post_id;
 	}
-	$post_id_array = array_map('intval', $post_id_array);
-	$post_id_in = "'" . implode("', '", $post_id_array) . "'";
+	$post_id_array = array_map( 'intval', $post_id_array);
+	$post_id_in = "'" . implode( "', '", $post_id_array) . "'";
 
-	$pending = $wpdb->get_results( "SELECT comment_post_ID, COUNT(comment_ID) as num_comments FROM $wpdb->comments WHERE comment_post_ID IN ( $post_id_in ) AND comment_approved = '0' GROUP BY comment_post_ID", ARRAY_A );
+	$pending = $wpdb->get_results( "SELECT comment_post_ID, COUNT(comment_id ) as num_comments FROM $wpdb->comments WHERE comment_post_ID IN ( $post_id_in ) AND comment_approved = '0' GROUP BY comment_post_ID", ARRAY_A );
 
 	if ( $single ) {
-		if ( empty($pending) ) {
+		if ( empty( $pending) ) {
 			return 0;
 		} else {
-			return absint($pending[0]['num_comments']);
+			return absint( $pending[0]['num_comments'] );
 		}
 	}
 
@@ -169,9 +169,9 @@ function get_pending_comments_num( $post_id ) {
 		$pending_keyed[$id] = 0;
 	}
 
-	if ( !empty($pending) ) {
+	if ( ! empty( $pending) ) {
 		foreach ( $pending as $pend ) {
-			$pending_keyed[$pend['comment_post_ID']] = absint($pend['num_comments']);
+			$pending_keyed[$pend['comment_post_ID']] = absint( $pend['num_comments'] );
 		}
 	}
 

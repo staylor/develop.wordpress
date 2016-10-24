@@ -65,7 +65,7 @@ function _get_list_table( $class, $args = [] ) {
  * @param array $columns An array of columns with column IDs as the keys and translated column names as the values
  * @see get_column_headers(), print_column_headers(), get_hidden_columns()
  */
-function register_column_headers($screen, $columns) {
+function register_column_headers( $screen, $columns) {
 	return new _WP_List_Table_Compat( $screen, $columns );
 }
 
@@ -78,7 +78,7 @@ function register_column_headers($screen, $columns) {
  * @param bool             $with_id Whether to set the id attribute or not.
  */
 function print_column_headers( $screen, $with_id = true ) {
-	$wp_list_table = new _WP_List_Table_Compat($screen);
+	$wp_list_table = new _WP_List_Table_Compat( $screen);
 
 	$wp_list_table->print_column_headers( $with_id );
 }

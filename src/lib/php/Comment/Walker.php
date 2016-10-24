@@ -182,7 +182,7 @@ class Walker extends AbstractWalker {
 		$app->set( 'comment_depth', $depth );
 		$app->set( 'comment', $comment );
 
-		if ( !empty( $args['callback'] ) ) {
+		if ( ! empty( $args['callback'] ) ) {
 			ob_start();
 			call_user_func( $args['callback'], $comment, $args, $depth );
 			$output .= ob_get_clean();

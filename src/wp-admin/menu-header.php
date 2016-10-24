@@ -13,10 +13,10 @@ use function WP\getApp;
  *
  * @global string $self
  */
-$self = preg_replace('|^.*/wp-admin/network/|i', '', $app['request.php_self'] );
-$self = preg_replace('|^.*/wp-admin/|i', '', $self);
-$self = preg_replace('|^.*/plugins/|i', '', $self);
-$self = preg_replace('|^.*/mu-plugins/|i', '', $self);
+$self = preg_replace( '|^.*/wp-admin/network/|i', '', $app['request.php_self'] );
+$self = preg_replace( '|^.*/wp-admin/|i', '', $self);
+$self = preg_replace( '|^.*/plugins/|i', '', $self);
+$self = preg_replace( '|^.*/mu-plugins/|i', '', $self);
 
 /**
  * Filters the parent file of an admin menu sub-menu item.
@@ -80,7 +80,7 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 			$submenu_items = $submenu[$item[2]];
 		}
 
-		if ( ( $parent_file && $item[2] === $parent_file ) || ( empty($typenow) && $self == $item[2] ) ) {
+		if ( ( $parent_file && $item[2] === $parent_file ) || ( empty( $typenow) && $self == $item[2] ) ) {
 			$class[] = ! empty( $submenu_items ) ? 'wp-has-current-submenu wp-menu-open' : 'current';
 		} else {
 			$class[] = 'wp-not-current-submenu';
@@ -102,7 +102,7 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 		}
 
 		/*
-		 * If the string 'none' (previously 'div') is passed instead of a URL, don't output
+		 * If the string 'none' (previously 'div' ) is passed instead of a URL, don't output
 		 * the default menu image so an icon can be added to div.wp-menu-image as background
 		 * with CSS. Dashicons and base64-encoded data:image/svg_xml URIs are also handled
 		 * as special cases.
@@ -114,7 +114,7 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 				$img = '<br />';
 			} elseif ( 0 === strpos( $item[6], 'data:image/svg+xml;base64,' ) ) {
 				$img = '<br />';
-				$img_style = ' style="background-image:url(\'' . esc_attr( $item[6] ) . '\')"';
+				$img_style = ' style="background-image:url(\'' . esc_attr( $item[6] ) . '\' )"';
 				$img_class = ' svg';
 			} elseif ( 0 === strpos( $item[6], 'dashicons-' ) ) {
 				$img = '<br />';
@@ -196,7 +196,7 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 				// This allows plugin pages with the same hook to exist under different parents.
 				} elseif (
 					( ! $app->get( 'plugin_page' ) && $self == $sub_item[2] ) ||
-					( $app->get( 'plugin_page' ) === $sub_item[2] && ( $item[2] == $self_type || $item[2] == $self || file_exists($menu_file) === false ) )
+					( $app->get( 'plugin_page' ) === $sub_item[2] && ( $item[2] == $self_type || $item[2] == $self || file_exists( $menu_file) === false ) )
 				) {
 					$class[] = 'current';
 				}
@@ -207,13 +207,13 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 
 				$class = $class ? ' class="' . join( ' ', $class ) . '"' : '';
 
-				$menu_hook = get_plugin_page_hook($sub_item[2], $item[2]);
+				$menu_hook = get_plugin_page_hook( $sub_item[2], $item[2] );
 				$sub_file = $sub_item[2];
 				if ( false !== ( $pos = strpos( $sub_file, '?' ) ) ) {
-					$sub_file = substr($sub_file, 0, $pos);
+					$sub_file = substr( $sub_file, 0, $pos);
 				}
 
-				$title = wptexturize($sub_item[0]);
+				$title = wptexturize( $sub_item[0] );
 
 				if ( ! empty( $menu_hook ) || ( ( 'index.php' != $sub_item[2] ) && file_exists( WP_PLUGIN_DIR . "/$sub_file" ) && ! file_exists( ABSPATH . "/wp-admin/$sub_file" ) ) ) {
 					// If admin.php is the current page or if the parent exists as a file in the plugins or admin dir

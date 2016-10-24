@@ -60,7 +60,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * @return bool
 	 */
 	public function ajax_user_can() {
-		return current_user_can('upload_files');
+		return current_user_can( 'upload_files' );
 	}
 
 	/**
@@ -129,7 +129,7 @@ class WP_Media_List_Table extends WP_List_Table {
 		}
 		$type_links['detached'] = '<option value="detached"' . ( $this->detached ? ' selected="selected"' : '' ) . '>' . __( 'Unattached' ) . '</option>';
 
-		if ( $this->is_trash || ( defined( 'MEDIA_TRASH') && MEDIA_TRASH ) ) {
+		if ( $this->is_trash || ( defined( 'MEDIA_TRASH' ) && MEDIA_TRASH ) ) {
 			$type_links['trash'] = sprintf(
 				'<option value="trash"%s>%s</option>',
 				selected( 'trash' === $filter, true, false ),
@@ -418,7 +418,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	 */
 	public function column_author( $post ) {
 		printf( '<a href="%s">%s</a>',
-			esc_url( add_query_arg( array( 'author' => get_the_author_meta('ID') ), 'upload.php' ) ),
+			esc_url( add_query_arg( array( 'author' => get_the_author_meta( 'ID' ) ), 'upload.php' ) ),
 			get_the_author()
 		);
 	}

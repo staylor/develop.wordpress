@@ -133,8 +133,8 @@ case 'move-down-menu-item' :
 					$menu_item_data['menu_item_parent'] = $next_item_data['ID'];
 					update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
 
-					wp_update_post($menu_item_data);
-					wp_update_post($next_item_data);
+					wp_update_post( $menu_item_data);
+					wp_update_post( $next_item_data);
 				}
 
 			// The item is last but still has a parent, so bubble up.
@@ -142,7 +142,7 @@ case 'move-down-menu-item' :
 				! empty( $menu_item_data['menu_item_parent'] ) &&
 				in_array( $menu_item_data['menu_item_parent'], $orders_to_dbids )
 			) {
-				$menu_item_data['menu_item_parent'] = (int) get_post_meta( $menu_item_data['menu_item_parent'], '_menu_item_menu_item_parent', true);
+				$menu_item_data['menu_item_parent'] = (int) get_post_meta( $menu_item_data['menu_item_parent'], '_menu_item_menu_item_parent', true );
 				update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
 			}
 		}
@@ -206,7 +206,7 @@ case 'move-up-menu-item' :
 							! empty( $dbids_to_orders[$parent_db_id] ) &&
 							! empty( $orders_to_dbids[$dbids_to_orders[$parent_db_id] - 1] )
 						) {
-							$_possible_parent_id = (int) get_post_meta( $orders_to_dbids[$dbids_to_orders[$parent_db_id] - 1], '_menu_item_menu_item_parent', true);
+							$_possible_parent_id = (int) get_post_meta( $orders_to_dbids[$dbids_to_orders[$parent_db_id] - 1], '_menu_item_menu_item_parent', true );
 							if ( in_array( $_possible_parent_id, array_keys( $dbids_to_orders ) ) ) {
 								$menu_item_data['menu_item_parent'] = $_possible_parent_id;
 							} else {
@@ -226,8 +226,8 @@ case 'move-up-menu-item' :
 
 						// Save changes.
 						update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
-						wp_update_post($menu_item_data);
-						wp_update_post($parent_data);
+						wp_update_post( $menu_item_data);
+						wp_update_post( $parent_data);
 					}
 
 				// Else this menu item is not a child of the previous.
@@ -241,7 +241,7 @@ case 'move-up-menu-item' :
 					// Just make it a child of the previous; keep the order.
 					$menu_item_data['menu_item_parent'] = (int) $orders_to_dbids[$dbids_to_orders[ $menu_item_id ] - 1];
 					update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
-					wp_update_post($menu_item_data);
+					wp_update_post( $menu_item_data);
 				}
 			}
 		}
@@ -252,7 +252,7 @@ case 'delete-menu-item':
 	check_admin_referer( 'delete-menu_item_' . $menu_item_id );
 
 	if ( is_nav_menu_item( $menu_item_id ) && wp_delete_post( $menu_item_id, true ) ) {
-		$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __('The menu item has been successfully deleted.') . '</p></div>';
+		$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __( 'The menu item has been successfully deleted.' ) . '</p></div>';
 	}
 	break;
 
@@ -523,7 +523,7 @@ function wp_nav_menu_max_depth( $classes ) {
 	return "$classes menu-max-depth-{$app->nav_menus['max_depth']}";
 }
 
-add_filter('admin_body_class', 'wp_nav_menu_max_depth');
+add_filter( 'admin_body_class', 'wp_nav_menu_max_depth' );
 
 wp_nav_menu_setup();
 wp_initial_nav_menu_meta_boxes();
@@ -776,7 +776,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 								<dl class="auto-add-pages">
 									<dt class="howto"><?php _e( 'Auto add pages' ); ?></dt>
-									<dd class="checkbox-input"><input type="checkbox"<?php checked( $auto_add ); ?> name="auto-add-pages" id="auto-add-pages" value="1" /> <label for="auto-add-pages"><?php printf( __('Automatically add new top-level pages to this menu' ), esc_url( admin_url( 'edit.php?post_type=page' ) ) ); ?></label></dd>
+									<dd class="checkbox-input"><input type="checkbox"<?php checked( $auto_add ); ?> name="auto-add-pages" id="auto-add-pages" value="1" /> <label for="auto-add-pages"><?php printf( __( 'Automatically add new top-level pages to this menu' ), esc_url( admin_url( 'edit.php?post_type=page' ) ) ); ?></label></dd>
 								</dl>
 
 								<?php if ( current_theme_supports( 'menus' ) ) : ?>
@@ -808,7 +808,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 						<div class="major-publishing-actions wp-clearfix">
 							<?php if ( 0 != $menu_count && ! $add_new_screen ) : ?>
 							<span class="delete-action">
-								<a class="submitdelete deletion menu-delete" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'delete', 'menu' => $app->nav_menus['selected_id'] ), admin_url( 'nav-menus.php' ) ), 'delete-nav_menu-' . $app->nav_menus['selected_id'] ) ); ?>"><?php _e('Delete Menu'); ?></a>
+								<a class="submitdelete deletion menu-delete" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'delete', 'menu' => $app->nav_menus['selected_id'] ), admin_url( 'nav-menus.php' ) ), 'delete-nav_menu-' . $app->nav_menus['selected_id'] ) ); ?>"><?php _e( 'Delete Menu' ); ?></a>
 							</span><!-- END .delete-action -->
 							<?php endif; ?>
 							<div class="publishing-action">

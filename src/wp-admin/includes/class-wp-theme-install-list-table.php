@@ -182,7 +182,7 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		$display_tabs = [];
 		foreach ( (array) $tabs as $action => $text ) {
 			$class = ( $action === $tab ) ? ' class="current"' : '';
-			$href = self_admin_url('theme-install.php?tab=' . $action);
+			$href = self_admin_url( 'theme-install.php?tab=' . $action);
 			$display_tabs['theme-install-'.$action] = "<a href='$href'$class>$text</a>";
 		}
 
@@ -259,7 +259,7 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 		$name   = wp_kses( $theme->name,   $this->app->theme['allowedtags'] );
 		$author = wp_kses( $theme->author, $this->app->theme['allowedtags'] );
 
-		$preview_title = sprintf( __('Preview &#8220;%s&#8221;'), $name );
+		$preview_title = sprintf( __( 'Preview &#8220;%s&#8221;' ), $name );
 		$preview_url   = add_query_arg( array(
 			'tab'   => 'theme-information',
 			'theme' => $theme->slug,
@@ -319,7 +319,7 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 				<?php foreach ( $actions as $action ) { ?>
 					<li><?php echo $action; ?></li>
 				<?php } ?>
-				<li class="hide-if-no-js"><a href="#" class="theme-detail"><?php _e('Details') ?></a></li>
+				<li class="hide-if-no-js"><a href="#" class="theme-detail"><?php _e( 'Details' ) ?></a></li>
 			</ul>
 		</div>
 
@@ -420,7 +420,7 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 			<div class="theme-details">
 				<?php wp_star_rating( array( 'rating' => $theme->rating, 'type' => 'percent', 'number' => $theme->num_ratings ) ); ?>
 				<div class="theme-version">
-					<strong><?php _e('Version:') ?> </strong>
+					<strong><?php _e( 'Version:' ) ?> </strong>
 					<?php echo wp_kses( $theme->version, $this->app->theme['allowedtags'] ); ?>
 				</div>
 				<div class="theme-description">
@@ -462,9 +462,9 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 
 		$installed_theme = wp_get_theme( $theme->slug );
 		if ( $installed_theme->exists() ) {
-			if ( version_compare( $installed_theme->get('Version'), $theme->version, '=' ) ) {
+			if ( version_compare( $installed_theme->get( 'Version' ), $theme->version, '=' ) ) {
 				$status = 'latest_installed';
-			} elseif ( version_compare( $installed_theme->get('Version'), $theme->version, '>' ) ) {
+			} elseif ( version_compare( $installed_theme->get( 'Version' ), $theme->version, '>' ) ) {
 				$status = 'newer_installed';
 			} else {
 				$status = 'update_available';

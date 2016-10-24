@@ -60,7 +60,7 @@ class Custom_Image_Header {
 	 * @param callable $admin_header_callback
 	 * @param callable $admin_image_div_callback Optional custom image div output callback.
 	 */
-	public function __construct($admin_header_callback, $admin_image_div_callback = '') {
+	public function __construct( $admin_header_callback, $admin_image_div_callback = '' ) {
 		$this->admin_header_callback = $admin_header_callback;
 		$this->admin_image_div_callback = $admin_image_div_callback;
 
@@ -144,7 +144,7 @@ class Custom_Image_Header {
 				wp_enqueue_script( 'wp-color-picker' );
 			}
 		} elseif ( 2 == $step ) {
-			wp_enqueue_script('imgareaselect');
+			wp_enqueue_script( 'imgareaselect' );
 		}
 	}
 
@@ -159,7 +159,7 @@ class Custom_Image_Header {
 		if ( ( 1 == $step || 3 == $step ) && current_theme_supports( 'custom-header', 'header-text' ) ) {
 			wp_enqueue_style( 'wp-color-picker' );
 		} elseif ( 2 == $step ) {
-			wp_enqueue_style('imgareaselect');
+			wp_enqueue_style( 'imgareaselect' );
 		}
 	}
 
@@ -169,7 +169,7 @@ class Custom_Image_Header {
 	 * @since 2.6.0
 	 */
 	public function take_action() {
-		if ( ! current_user_can('edit_theme_options') ) {
+		if ( ! current_user_can( 'edit_theme_options' ) ) {
 			return;
 		}
 
@@ -199,9 +199,9 @@ class Custom_Image_Header {
 		} elseif ( $_post->get( 'text-color' ) ) {
 			check_admin_referer( 'custom-header-options', '_wpnonce-custom-header-options' );
 			$_post->set( 'text-color',  str_replace( '#', '', $_post->get( 'text-color' ) ) );
-			$color = preg_replace('/[^0-9a-fA-F]/', '', $_post->get( 'text-color' ) );
-			if ( strlen($color) == 6 || strlen($color) == 3 ) {
-				set_theme_mod('header_textcolor', $color);
+			$color = preg_replace( '/[^0-9a-fA-F]/', '', $_post->get( 'text-color' ) );
+			if ( strlen( $color) == 6 || strlen( $color) == 3 ) {
+				set_theme_mod( 'header_textcolor', $color);
 			} elseif ( ! $color ) {
 				set_theme_mod( 'header_textcolor', 'blank' );
 			}
@@ -233,7 +233,7 @@ class Custom_Image_Header {
 		$this->default_headers = $app->theme['default_headers'];
 		$template_directory_uri = get_template_directory_uri();
 		$stylesheet_directory_uri = get_stylesheet_directory_uri();
-		foreach ( array_keys($this->default_headers) as $header ) {
+		foreach ( array_keys( $this->default_headers) as $header ) {
 			$this->default_headers[$header]['url'] =  sprintf( $this->default_headers[$header]['url'], $template_directory_uri, $stylesheet_directory_uri );
 			$this->default_headers[$header]['thumbnail_url'] =  sprintf( $this->default_headers[$header]['thumbnail_url'], $template_directory_uri, $stylesheet_directory_uri );
 		}
@@ -274,7 +274,7 @@ class Custom_Image_Header {
 			echo '<div class="default-header">';
 			echo '<label><input name="default-header" type="radio" value="' . esc_attr( $header_key ) . '" ' . checked( $header_url, get_theme_mod( 'header_image' ), false ) . ' />';
 			$width = '';
-			if ( !empty( $header['attachment_id'] ) ) {
+			if ( ! empty( $header['attachment_id'] ) ) {
 				$width = ' width="230"';
 			}
 			echo '<img src="' . set_url_scheme( $header_thumbnail ) . '" alt="' . esc_attr( $header_alt_text ) .'"' . $width . ' /></label>';
@@ -312,24 +312,24 @@ class Custom_Image_Header {
 		}
 		?>
 <script type="text/javascript">
-(function($){
+(function( $){
 	var default_color = '<?php echo $default_color; ?>',
 		header_text_fields;
 
 	function pickColor(color) {
-		$('#name').css('color', color);
-		$('#desc').css('color', color);
-		$('#text-color').val(color);
+		$( '#name' ).css( 'color', color);
+		$( '#desc' ).css( 'color', color);
+		$( '#text-color' ).val(color);
 	}
 
 	function toggle_text() {
-		var checked = $('#display-header-text').prop('checked'),
+		var checked = $( '#display-header-text' ).prop( 'checked' ),
 			text_color;
 		header_text_fields.toggle( checked );
 		if ( ! checked )
 			return;
-		text_color = $('#text-color');
-		if ( '' == text_color.val().replace('#', '') ) {
+		text_color = $( '#text-color' );
+		if ( '' == text_color.val().replace( '#', '' ) ) {
 			text_color.val( default_color );
 			pickColor( default_color );
 		} else {
@@ -338,17 +338,17 @@ class Custom_Image_Header {
 	}
 
 	$(document).ready(function() {
-		var text_color = $('#text-color');
-		header_text_fields = $('.displaying-header-text');
+		var text_color = $( '#text-color' );
+		header_text_fields = $( '.displaying-header-text' );
 		text_color.wpColorPicker({
 			change: function( event, ui ) {
-				pickColor( text_color.wpColorPicker('color') );
+				pickColor( text_color.wpColorPicker( 'color' ) );
 			},
 			clear: function() {
 				pickColor( '' );
 			}
 		});
-		$('#display-header-text').click( toggle_text );
+		$( '#display-header-text' ).click( toggle_text );
 		<?php if ( ! display_header_text() ) : ?>
 		toggle_text();
 		<?php endif; ?>
@@ -376,8 +376,8 @@ class Custom_Image_Header {
 		var xinit = <?php echo absint( get_theme_support( 'custom-header', 'width' ) ); ?>;
 		var yinit = <?php echo absint( get_theme_support( 'custom-header', 'height' ) ); ?>;
 		var ratio = xinit / yinit;
-		var ximg = jQuery('img#upload').width();
-		var yimg = jQuery('img#upload').height();
+		var ximg = jQuery( 'img#upload' ).width();
+		var yimg = jQuery( 'img#upload' ).height();
 
 		if ( yimg < yinit || ximg < xinit ) {
 			if ( ximg / yimg > ratio ) {
@@ -389,7 +389,7 @@ class Custom_Image_Header {
 			}
 		}
 
-		jQuery('img#upload').imgAreaSelect({
+		jQuery( 'img#upload' ).imgAreaSelect({
 			handles: true,
 			keys: true,
 			show: true,
@@ -415,14 +415,14 @@ class Custom_Image_Header {
 			}
 			?>
 			onInit: function () {
-				jQuery('#width').val(xinit);
-				jQuery('#height').val(yinit);
+				jQuery( '#width' ).val(xinit);
+				jQuery( '#height' ).val(yinit);
 			},
 			onSelectChange: function(img, c) {
-				jQuery('#x1').val(c.x1);
-				jQuery('#y1').val(c.y1);
-				jQuery('#width').val(c.width);
-				jQuery('#height').val(c.height);
+				jQuery( '#x1' ).val(c.x1);
+				jQuery( '#y1' ).val(c.y1);
+				jQuery( '#width' ).val(c.width);
+				jQuery( '#height' ).val(c.height);
 			}
 		});
 	});
@@ -478,7 +478,7 @@ class Custom_Image_Header {
 		$header_image = get_header_image();
 
 		if ( $header_image ) {
-			$header_image_style = 'background-image:url(' . esc_url( $header_image ) . ');';
+			$header_image_style = 'background-image:url( ' . esc_url( $header_image ) . ' );';
 		} else {
 			$header_image_style = '';
 		}
@@ -498,7 +498,7 @@ class Custom_Image_Header {
 			$style = ' style="display:none;"';
 		}
 		?>
-		<h1><a id="name" class="displaying-header-text" <?php echo $style; ?> onclick="return false;" href="<?php bloginfo('url'); ?>" tabindex="-1"><?php bloginfo( 'name' ); ?></a></h1>
+		<h1><a id="name" class="displaying-header-text" <?php echo $style; ?> onclick="return false;" href="<?php bloginfo( 'url' ); ?>" tabindex="-1"><?php bloginfo( 'name' ); ?></a></h1>
 		<div id="desc" class="displaying-header-text" <?php echo $style; ?>><?php bloginfo( 'description' ); ?></div>
 	</div>
 	<?php } ?>
@@ -576,8 +576,8 @@ class Custom_Image_Header {
 		$modal_update_href = esc_url( add_query_arg( array(
 			'page' => 'custom-header',
 			'step' => 2,
-			'_wpnonce-custom-header-upload' => wp_create_nonce('custom-header-upload'),
-		), admin_url('themes.php') ) );
+			'_wpnonce-custom-header-upload' => wp_create_nonce( 'custom-header-upload' ),
+		), admin_url( 'themes.php' ) ) );
 	?>
 	<p>
 		<label for="choose-from-library-link"><?php _e( 'Or choose an image from your media library:' ); ?></label><br />
@@ -714,7 +714,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 	 * @since 2.1.0
 	 */
 	public function step_2() {
-		check_admin_referer('custom-header-upload', '_wpnonce-custom-header-upload');
+		check_admin_referer( 'custom-header-upload', '_wpnonce-custom-header-upload' );
 		if ( ! current_theme_supports( 'custom-header', 'uploads' ) ) {
 			wp_die(
 				'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
@@ -783,7 +783,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			return $this->finished();
 		} elseif ( $width > $max_width ) {
 			$oitar = $width / $max_width;
-			$image = wp_crop_image($attachment_id, 0, 0, $width, $height, $max_width, $height / $oitar, false, str_replace(basename($file), 'midsize-'.basename($file), $file));
+			$image = wp_crop_image( $attachment_id, 0, 0, $width, $height, $max_width, $height / $oitar, false, str_replace(basename( $file), 'midsize-'.basename( $file), $file) );
 			if ( ! $image || is_wp_error( $image ) ) {
 				wp_die( __( 'Image could not be processed. Please go back and try again.' ), __( 'Image Processing Error' ) );
 			}
@@ -791,7 +791,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			/** This filter is documented in wp-admin/custom-header.php */
 			$image = apply_filters( 'wp_create_file_in_uploads', $image, $attachment_id ); // For replication
 
-			$url = str_replace(basename($url), basename($image), $url);
+			$url = str_replace(basename( $url), basename( $image), $url);
 			$width = $width / $oitar;
 			$height = $height / $oitar;
 		} else {
@@ -802,9 +802,9 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 <div class="wrap">
 <h1><?php _e( 'Crop Header Image' ); ?></h1>
 
-<form method="post" action="<?php echo esc_url(add_query_arg('step', 3)); ?>">
-	<p class="hide-if-no-js"><?php _e('Choose the part of the image you want to use as your header.'); ?></p>
-	<p class="hide-if-js"><strong><?php _e( 'You need JavaScript to choose a part of the image.'); ?></strong></p>
+<form method="post" action="<?php echo esc_url(add_query_arg( 'step', 3) ); ?>">
+	<p class="hide-if-no-js"><?php _e( 'Choose the part of the image you want to use as your header.' ); ?></p>
+	<p class="hide-if-js"><strong><?php _e( 'You need JavaScript to choose a part of the image.' ); ?></strong></p>
 
 	<div id="crop_image" style="position: relative">
 		<img src="<?php echo esc_url( $url ); ?>" id="upload" width="<?php echo $width; ?>" height="<?php echo $height; ?>" alt="" />
@@ -844,7 +844,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 		$app = getApp();
 		$_files = $app['request']->files;
 
-		$overrides = array('test_form' => false);
+		$overrides = array( 'test_form' => false );
 
 		$uploaded_file = $_files->get( 'import' );
 		$wp_filetype = wp_check_filetype_and_ext( $uploaded_file['tmp_name'], $uploaded_file['name'] );
@@ -852,16 +852,16 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 			wp_die( __( 'The uploaded file is not a valid image. Please try again.' ) );
 		}
 
-		$file = wp_handle_upload($uploaded_file, $overrides);
+		$file = wp_handle_upload( $uploaded_file, $overrides);
 
-		if ( isset($file['error']) ) {
+		if ( isset( $file['error'] ) ) {
 			wp_die( $file['error'],  __( 'Image Upload Error' ) );
 		}
 
 		$url = $file['url'];
 		$type = $file['type'];
 		$file = $file['file'];
-		$filename = basename($file);
+		$filename = basename( $file);
 
 		// Construct the object array
 		$object = array(
@@ -986,8 +986,8 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 	 * @since 2.1.0
 	 */
 	public function admin_page() {
-		if ( ! current_user_can('edit_theme_options') ) {
-			wp_die(__('Sorry, you are not allowed to customize headers.'));
+		if ( ! current_user_can( 'edit_theme_options' ) ) {
+			wp_die( __( 'Sorry, you are not allowed to customize headers.' ) );
 		}
 		$step = $this->step();
 		if ( 2 == $step ) {
@@ -1183,7 +1183,7 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 
 		return array(
 			'ID' => $parent_attachment_id,
-			'post_title' => basename($cropped),
+			'post_title' => basename( $cropped),
 			'post_mime_type' => $image_type,
 			'guid' => $url,
 			'context' => 'custom-header'

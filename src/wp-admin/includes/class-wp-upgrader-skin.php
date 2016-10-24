@@ -33,16 +33,16 @@ class WP_Upgrader_Skin {
 	 *
 	 * @param array $args
 	 */
-	public function __construct($args = []) {
+	public function __construct( $args = [] ) {
 		$defaults = array( 'url' => '', 'nonce' => '', 'title' => '', 'context' => false );
-		$this->options = wp_parse_args($args, $defaults);
+		$this->options = wp_parse_args( $args, $defaults);
 	}
 
 	/**
 	 * @param WP_Upgrader $upgrader
 	 */
 	public function set_upgrader( &$upgrader ) {
-		if ( is_object($upgrader) ) {
+		if ( is_object( $upgrader) ) {
 			$this->upgrader =& $upgrader;
 		}
 		$this->add_strings();
@@ -87,8 +87,8 @@ class WP_Upgrader_Skin {
 		if ( ! $context ) {
 			$context = $this->options['context'];
 		}
-		if ( !empty($this->options['nonce']) ) {
-			$url = wp_nonce_url($url, $this->options['nonce']);
+		if ( ! empty( $this->options['nonce'] ) ) {
+			$url = wp_nonce_url( $url, $this->options['nonce'] );
 		}
 
 		$extra_fields = [];
@@ -123,18 +123,18 @@ class WP_Upgrader_Skin {
 	 *
 	 * @param string|Error $errors
 	 */
-	public function error($errors) {
+	public function error( $errors) {
 		if ( ! $this->done_header ) {
 			$this->header();
 		}
-		if ( is_string($errors) ) {
-			$this->feedback($errors);
-		} elseif ( is_wp_error($errors) && $errors->get_error_code() ) {
+		if ( is_string( $errors) ) {
+			$this->feedback( $errors);
+		} elseif ( is_wp_error( $errors) && $errors->get_error_code() ) {
 			foreach ( $errors->get_error_messages() as $message ) {
 				if ( $errors->get_error_data() && is_string( $errors->get_error_data() ) ) {
-					$this->feedback($message . ' ' . esc_html( strip_tags( $errors->get_error_data() ) ) );
+					$this->feedback( $message . ' ' . esc_html( strip_tags( $errors->get_error_data() ) ) );
 				} else {
-					$this->feedback($message);
+					$this->feedback( $message);
 				}
 			}
 		}
@@ -144,24 +144,24 @@ class WP_Upgrader_Skin {
 	 *
 	 * @param string $string
 	 */
-	public function feedback($string) {
+	public function feedback( $string) {
 		if ( isset( $this->upgrader->strings[$string] ) ) {
 			$string = $this->upgrader->strings[$string];
 		}
 
-		if ( strpos($string, '%') !== false ) {
+		if ( strpos( $string, '%' ) !== false ) {
 			$args = func_get_args();
-			$args = array_splice($args, 1);
+			$args = array_splice( $args, 1);
 			if ( $args ) {
 				$args = array_map( 'strip_tags', $args );
 				$args = array_map( 'esc_html', $args );
-				$string = vsprintf($string, $args);
+				$string = vsprintf( $string, $args);
 			}
 		}
-		if ( empty($string) ) {
+		if ( empty( $string) ) {
 			return;
 		}
-		show_message($string);
+		show_message( $string);
 	}
 
 	/**

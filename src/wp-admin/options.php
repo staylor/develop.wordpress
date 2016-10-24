@@ -25,12 +25,12 @@ $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 $wpdb = $app['db'];
 
-wp_reset_vars(array('action', 'option_page'));
+wp_reset_vars( array( 'action', 'option_page' ) );
 
 $capability = 'manage_options';
 
 // This is for back compat and will eventually be removed.
-if ( empty($option_page) ) {
+if ( empty( $option_page) ) {
 	$option_page = 'options';
 } else {
 
@@ -60,7 +60,7 @@ if ( is_multisite() ) {
 	if ( $_get->get( 'adminhash' ) ) {
 		$new_admin_details = get_option( 'adminhash' );
 		$redirect = 'options-general.php?updated=false';
-		if ( is_array( $new_admin_details ) && hash_equals( $new_admin_details[ 'hash' ], $_get->get( 'adminhash' ) ) && !empty($new_admin_details[ 'newemail' ]) ) {
+		if ( is_array( $new_admin_details ) && hash_equals( $new_admin_details[ 'hash' ], $_get->get( 'adminhash' ) ) && ! empty( $new_admin_details[ 'newemail' ] ) ) {
 			update_option( 'admin_email', $new_admin_details[ 'newemail' ] );
 			delete_option( 'adminhash' );
 			delete_option( 'new_admin_email' );
@@ -94,7 +94,7 @@ $whitelist_options = array(
 );
 $whitelist_options['misc'] = $whitelist_options['options'] = $whitelist_options['privacy'] = [];
 
-$mail_options = array('mailserver_url', 'mailserver_port', 'mailserver_login', 'mailserver_pass');
+$mail_options = array( 'mailserver_url', 'mailserver_port', 'mailserver_login', 'mailserver_pass' );
 
 if ( ! in_array( get_option( 'blog_charset' ), array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' ) ) ) {
 	$whitelist_options['reading'][] = 'blog_charset';
@@ -105,7 +105,7 @@ if ( get_site_option( 'initial_db_version' ) < 32453 ) {
 	$whitelist_options['writing'][] = 'use_balanceTags';
 }
 
-if ( !is_multisite() ) {
+if ( ! is_multisite() ) {
 	if ( !defined( 'WP_SITEURL' ) ) {
 		$whitelist_options['general'][] = 'siteurl';
 	}
@@ -117,13 +117,13 @@ if ( !is_multisite() ) {
 	$whitelist_options['general'][] = 'users_can_register';
 	$whitelist_options['general'][] = 'default_role';
 
-	$whitelist_options['writing'] = array_merge($whitelist_options['writing'], $mail_options);
+	$whitelist_options['writing'] = array_merge( $whitelist_options['writing'], $mail_options);
 	$whitelist_options['writing'][] = 'ping_sites';
 
 	$whitelist_options['media'][] = 'uploads_use_yearmonth_folders';
 
 	// If upload_url_path and upload_path are both default values, they're locked.
-	if ( get_option( 'upload_url_path' ) || ( get_option('upload_path') != 'wp-content/uploads' && get_option('upload_path') ) ) {
+	if ( get_option( 'upload_url_path' ) || ( get_option( 'upload_path' ) != 'wp-content/uploads' && get_option( 'upload_path' ) ) ) {
 		$whitelist_options['media'][] = 'upload_path';
 		$whitelist_options['media'][] = 'upload_url_path';
 	}
@@ -138,7 +138,7 @@ if ( !is_multisite() ) {
 	 * @param bool $enabled Whether post-by-email configuration is enabled. Default true.
 	 */
 	if ( apply_filters( 'enable_post_by_email_configuration', true ) ) {
-		$whitelist_options['writing'] = array_merge($whitelist_options['writing'], $mail_options);
+		$whitelist_options['writing'] = array_merge( $whitelist_options['writing'], $mail_options);
 	}
 }
 
@@ -164,7 +164,7 @@ if ( 'update' == $action ) {
 		check_admin_referer( $option_page . '-options' );
 	}
 
-	if ( !isset( $whitelist_options[ $option_page ] ) ) {
+	if ( ! isset( $whitelist_options[ $option_page ] ) ) {
 		wp_die( __( '<strong>ERROR</strong>: options page not found.' ) );
 	}
 
@@ -186,9 +186,9 @@ if ( 'update' == $action ) {
 			$_post->set( 'time_format', $_post->get( 'time_format_custom' ) );
 		}
 		// Map UTC+- timezones to gmt_offsets and set timezone_string to empty.
-		if ( $_post->get( 'timezone_string' ) && preg_match('/^UTC[+-]/', $_post->get( 'timezone_string' ) ) ) {
+		if ( $_post->get( 'timezone_string' ) && preg_match( '/^UTC[+-]/', $_post->get( 'timezone_string' ) ) ) {
 			$_post->set( 'gmt_offset', $_post->get( 'timezone_string' ) );
-			$_post->set( 'gmt_offset', preg_replace('/UTC\+?/', '', $_post->get( 'gmt_offset' ) ) );
+			$_post->set( 'gmt_offset', preg_replace( '/UTC\+?/', '', $_post->get( 'gmt_offset' ) ) );
 			$_post->set( 'timezone_string', '' );
 		}
 
@@ -247,9 +247,9 @@ if ( 'update' == $action ) {
 	 */
 	// If no settings errors were registered add a general 'updated' message.
 	if ( !count( get_settings_errors() ) ) {
-		add_settings_error('general', 'settings_updated', __('Settings saved.'), 'updated');
+		add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'updated' );
 	}
-	set_transient('settings_errors', get_settings_errors(), 30);
+	set_transient( 'settings_errors', get_settings_errors(), 30);
 
 	/**
 	 * Redirect back to the settings page that was submitted
@@ -264,7 +264,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 <div class="wrap">
   <h1><?php esc_html_e( 'All Settings' ); ?></h1>
   <form name="form" action="options.php" method="post" id="all-options">
-  <?php wp_nonce_field('options-options') ?>
+  <?php wp_nonce_field( 'options-options' ) ?>
   <input type="hidden" name="action" value="update" />
   <input type="hidden" name="option_page" value="options" />
   <table class="form-table">

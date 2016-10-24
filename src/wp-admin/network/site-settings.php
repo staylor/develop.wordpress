@@ -21,7 +21,7 @@ $wpdb = $app['db'];
 $id = $_request->getInt( 'id', 0 );
 
 if ( ! $id ) {
-	wp_die( __('Invalid site ID.') );
+	wp_die( __( 'Invalid site ID.' ) );
 }
 
 $details = get_site( $id );
@@ -44,7 +44,7 @@ if ( 'update-site' == $_request->get( 'action' ) && is_array( $_post->get( 'opti
 	foreach ( (array) $_post->get( 'option' ) as $key => $val ) {
 		$key = wp_unslash( $key );
 		$val = wp_unslash( $val );
-		if ( $key === 0 || is_array( $val ) || in_array($key, $skip_options) ) {
+		if ( $key === 0 || is_array( $val ) || in_array( $key, $skip_options) ) {
 			// Avoids "0 is a protected WP option and may not be modified" error when edit blog options
 			continue;
 		}
@@ -62,14 +62,14 @@ if ( 'update-site' == $_request->get( 'action' ) && is_array( $_post->get( 'opti
 	do_action( 'wpmu_update_blog_options', $id );
 
 	restore_current_blog();
-	wp_redirect( add_query_arg( array( 'update' => 'updated', 'id' => $id ), 'site-settings.php') );
+	wp_redirect( add_query_arg( array( 'update' => 'updated', 'id' => $id ), 'site-settings.php' ) );
 	exit;
 }
 
 if ( $_get->get( 'update' ) ) {
 	$messages = [];
 	if ( 'updated' == $_get->get( 'update' ) ) {
-		$messages[] = __('Site options updated.');
+		$messages[] = __( 'Site options updated.' );
 	}
 }
 

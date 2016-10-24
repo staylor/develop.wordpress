@@ -14,7 +14,7 @@ require( ABSPATH . 'wp-admin/includes/theme-install.php' );
 
 wp_reset_vars( array( 'tab' ) );
 
-if ( ! current_user_can('install_themes') ) {
+if ( ! current_user_can( 'install_themes' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to install themes on this site.' ) );
 }
 
@@ -81,7 +81,7 @@ if ( $tab ) {
 
 ( new InstallHelp( get_current_screen() ) )->addThemeInstall();
 
-include(ABSPATH . 'wp-admin/admin-header.php');
+include( ABSPATH . 'wp-admin/admin-header.php' );
 
 ?>
 <div class="wrap">
@@ -310,4 +310,4 @@ if ( $tab ) {
 wp_print_request_filesystem_credentials_modal();
 wp_print_admin_notice_templates();
 
-include(ABSPATH . 'wp-admin/admin-footer.php');
+include( ABSPATH . 'wp-admin/admin-footer.php' );

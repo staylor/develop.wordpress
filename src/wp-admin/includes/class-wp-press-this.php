@@ -286,7 +286,7 @@ class WP_Press_This {
 		$remote_url = wp_safe_remote_get( $url, array(
 			'timeout' => 30,
 			// Use an explicit user-agent for Press This
-			'user-agent' => 'Press This (WordPress/' . $this->app['wp_version'] . '); ' . get_bloginfo( 'url' )
+			'user-agent' => 'Press This (WordPress/' . $this->app['wp_version'] . ' ); ' . get_bloginfo( 'url' )
 		) );
 
 		if ( is_wp_error( $remote_url ) ) {
@@ -1490,7 +1490,7 @@ class WP_Press_This {
 						<span class="saving-draft"><?php _e( 'Saving&hellip;' ); ?></span>
 					</button><button type="button" class="split-button-toggle" aria-haspopup="true" aria-expanded="false">
 						<i class="dashicons dashicons-arrow-down-alt2"></i>
-						<span class="screen-reader-text"><?php _e('More actions'); ?></span>
+						<span class="screen-reader-text"><?php _e( 'More actions' ); ?></span>
 					</button>
 				</div>
 				<ul class="split-button-body">

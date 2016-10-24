@@ -193,13 +193,13 @@ class WP_Users_List_Table extends WP_List_Table {
 
 		$total_users = $users_of_blog['total_users'];
 		$avail_roles =& $users_of_blog['avail_roles'];
-		unset($users_of_blog);
+		unset( $users_of_blog);
 
-		$class = empty($role) ? ' class="current"' : '';
+		$class = empty( $role) ? ' class="current"' : '';
 		$role_links = [];
 		$role_links['all'] = "<a href='$url'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users, 'users' ), number_format_i18n( $total_users ) ) . '</a>';
 		foreach ( $app['roles']->get_names() as $this_role => $name ) {
-			if ( !isset($avail_roles[$this_role]) ) {
+			if ( ! isset( $avail_roles[$this_role] ) ) {
 				continue;
 			}
 
@@ -211,7 +211,7 @@ class WP_Users_List_Table extends WP_List_Table {
 
 			$name = translate_user_role( $name );
 			/* translators: User role name with count */
-			$name = sprintf( __('%1$s <span class="count">(%2$s)</span>'), $name, number_format_i18n( $avail_roles[$this_role] ) );
+			$name = sprintf( __( '%1$s <span class="count">(%2$s)</span>' ), $name, number_format_i18n( $avail_roles[$this_role] ) );
 			$role_links[$this_role] = "<a href='" . esc_url( add_query_arg( 'role', $this_role, $url ) ) . "'$class>$name</a>";
 		}
 
@@ -225,7 +225,7 @@ class WP_Users_List_Table extends WP_List_Table {
 
 			$name = __( 'No role' );
 			/* translators: User role name with count */
-			$name = sprintf( __('%1$s <span class="count">(%2$s)</span>'), $name, number_format_i18n( $avail_roles['none' ] ) );
+			$name = sprintf( __( '%1$s <span class="count">(%2$s)</span>' ), $name, number_format_i18n( $avail_roles['none' ] ) );
 			$role_links['none'] = "<a href='" . esc_url( add_query_arg( 'role', 'none', $url ) ) . "'$class>$name</a>";
 
 		}
@@ -263,8 +263,8 @@ class WP_Users_List_Table extends WP_List_Table {
 	 * @since 3.1.0
 	 * @access protected
 	 *
-	 * @param string $which Whether this is being invoked above ("top")
-	 *                      or below the table ("bottom").
+	 * @param string $which Whether this is being invoked above ( "top" )
+	 *                      or below the table ( "bottom" ).
 	 */
 	protected function extra_tablenav( $which ) {
 		$id = 'bottom' === $which ? 'new_role2' : 'new_role';
@@ -423,7 +423,7 @@ class WP_Users_List_Table extends WP_List_Table {
 				$edit = "<strong>$user_object->user_login</strong><br />";
 			}
 
-			if ( !is_multisite() && get_current_user_id() != $user_object->ID && current_user_can( 'delete_user', $user_object->ID ) ) {
+			if ( ! is_multisite() && get_current_user_id() != $user_object->ID && current_user_can( 'delete_user', $user_object->ID ) ) {
 				$actions['delete'] = "<a class='submitdelete' href='" . wp_nonce_url( "users.php?action=delete&amp;user=$user_object->ID", 'bulk-users' ) . "'>" . __( 'Delete' ) . "</a>";
 			}
 			if ( is_multisite() && get_current_user_id() != $user_object->ID && current_user_can( 'remove_user', $user_object->ID ) ) {

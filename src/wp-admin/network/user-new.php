@@ -12,8 +12,8 @@ use WP\User\Admin\Help as UserHelp;
 /** Load WordPress Administration Bootstrap */
 require_once( __DIR__ . '/admin.php' );
 
-if ( ! current_user_can('create_users') ) {
-	wp_die(__('Sorry, you are not allowed to add users to this network.'));
+if ( ! current_user_can( 'create_users' ) ) {
+	wp_die( __( 'Sorry, you are not allowed to add users to this network.' ) );
 }
 
 ( new UserHelp( get_current_screen() ) )->addMultisiteUserNew();
@@ -35,7 +35,7 @@ if ( 'add-user' == $_request->get( 'action' ) ) {
 	if ( is_wp_error( $user_details[ 'errors' ] ) && ! empty( $user_details[ 'errors' ]->errors ) ) {
 		$add_user_errors = $user_details[ 'errors' ];
 	} else {
-		$password = wp_generate_password( 12, false);
+		$password = wp_generate_password( 12, false );
 		$user_id = wpmu_create_user( esc_html( strtolower( $user['username'] ) ), $password, sanitize_email( $user['email'] ) );
 
 		if ( ! $user_id ) {
@@ -49,7 +49,7 @@ if ( 'add-user' == $_request->get( 'action' ) ) {
 			  * @param int $user_id ID of the newly created user.
 			  */
 			do_action( 'network_user_new_created_user', $user_id );
-			wp_redirect( add_query_arg( array('update' => 'added', 'user_id' => $user_id ), 'user-new.php' ) );
+			wp_redirect( add_query_arg( array( 'update' => 'added', 'user_id' => $user_id ), 'user-new.php' ) );
 			exit;
 		}
 	}
@@ -99,7 +99,7 @@ if ( isset( $add_user_errors ) && is_wp_error( $add_user_errors ) ) { ?>
 		?>
 	</div>
 <?php } ?>
-	<form action="<?php echo network_admin_url('user-new.php?action=add-user'); ?>" id="adduser" method="post" novalidate="novalidate">
+	<form action="<?php echo network_admin_url( 'user-new.php?action=add-user' ); ?>" id="adduser" method="post" novalidate="novalidate">
 	<table class="form-table">
 		<tr class="form-field form-required">
 			<th scope="row"><label for="username"><?php _e( 'Username' ) ?></label></th>
@@ -122,7 +122,7 @@ if ( isset( $add_user_errors ) && is_wp_error( $add_user_errors ) ) { ?>
 	do_action( 'network_user_new_form' );
 
 	wp_nonce_field( 'add-user', '_wpnonce_add-user' );
-	submit_button( __('Add User'), 'primary', 'add-user' );
+	submit_button( __( 'Add User' ), 'primary', 'add-user' );
 	?>
 	</form>
 </div>

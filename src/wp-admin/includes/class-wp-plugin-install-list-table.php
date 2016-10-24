@@ -30,7 +30,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	 * @return bool
 	 */
 	public function ajax_user_can() {
-		return current_user_can('install_plugins');
+		return current_user_can( 'install_plugins' );
 	}
 
 	/**
@@ -128,7 +128,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		$nonmenu_tabs = apply_filters( 'install_plugins_nonmenu_tabs', $nonmenu_tabs );
 
 		// If a non-valid menu tab has been selected, And it's not a non-menu action.
-		if ( empty( $tab ) || ( !isset( $tabs[ $tab ] ) && !in_array( $tab, (array) $nonmenu_tabs ) ) ) {
+		if ( empty( $tab ) || ( ! isset( $tabs[ $tab ] ) && !in_array( $tab, (array) $nonmenu_tabs ) ) ) {
 			$tab = key( $tabs );
 		}
 
@@ -261,7 +261,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		$display_tabs = [];
 		foreach ( (array) $tabs as $action => $text ) {
 			$class = ( $action === $tab ) ? ' current' : '';
-			$href = self_admin_url('plugin-install.php?tab=' . $action);
+			$href = self_admin_url( 'plugin-install.php?tab=' . $action);
 			$display_tabs['plugin-install-'.$action] = "<a href='$href' class='$class'>$text</a>";
 		}
 		// No longer a real tab.
@@ -515,11 +515,11 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 			/* translators: 1: Plugin name and version. */
 			$action_links[] = '<a href="' . esc_url( $details_link ) . '" class="thickbox open-plugin-details-modal" aria-label="' . esc_attr( sprintf( __( 'More information about %s' ), $name ) ) . '" data-title="' . esc_attr( $name ) . '">' . __( 'More Details' ) . '</a>';
 
-			if ( !empty( $plugin['icons']['svg'] ) ) {
+			if ( ! empty( $plugin['icons']['svg'] ) ) {
 				$plugin_icon_url = $plugin['icons']['svg'];
-			} elseif ( !empty( $plugin['icons']['2x'] ) ) {
+			} elseif ( ! empty( $plugin['icons']['2x'] ) ) {
 				$plugin_icon_url = $plugin['icons']['2x'];
-			} elseif ( !empty( $plugin['icons']['1x'] ) ) {
+			} elseif ( ! empty( $plugin['icons']['1x'] ) ) {
 				$plugin_icon_url = $plugin['icons']['1x'];
 			} else {
 				$plugin_icon_url = $plugin['icons']['default'];

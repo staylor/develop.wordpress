@@ -7,7 +7,7 @@
  */
 use function WP\getApp;
 
-define('WP_REPAIRING', true);
+define( 'WP_REPAIRING', true );
 
 require_once( dirname( dirname( __DIR__ ) ) . '/wp-load.php' );
 
@@ -42,7 +42,7 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 		__( 'To allow use of this page to automatically repair database problems, please add the following line to your %s file. Once this line is added to your config, reload this page.' ),
 		'<code>wp-config.php</code>'
 	);
-	echo "</p><p><code>define('WP_ALLOW_REPAIR', true);</code></p>";
+	echo "</p><p><code>define( 'WP_ALLOW_REPAIR', true );</code></p>";
 
 	$default_key     = 'put your unique phrase here';
 	$missing_key     = false;
@@ -149,14 +149,14 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 	}
 
 	if ( $problems ) {
-		printf( '<p>' . __('Some database problems could not be repaired. Please copy-and-paste the following list of errors to the <a href="%s">WordPress support forums</a> to get additional assistance.') . '</p>', __( 'https://wordpress.org/support/forum/how-to-and-troubleshooting' ) );
+		printf( '<p>' . __( 'Some database problems could not be repaired. Please copy-and-paste the following list of errors to the <a href="%s">WordPress support forums</a> to get additional assistance.' ) . '</p>', __( 'https://wordpress.org/support/forum/how-to-and-troubleshooting' ) );
 		$problem_output = '';
 		foreach ( $problems as $table => $problem ) {
 			$problem_output .= "$table: $problem\n";
 		}
 		echo '<p><textarea name="errors" id="errors" rows="20" cols="60">' . esc_textarea( $problem_output ) . '</textarea></p>';
 	} else {
-		echo '<p>' . __( 'Repairs complete. Please remove the following line from wp-config.php to prevent this page from being used by unauthorized users.' ) . "</p><p><code>define('WP_ALLOW_REPAIR', true);</code></p>";
+		echo '<p>' . __( 'Repairs complete. Please remove the following line from wp-config.php to prevent this page from being used by unauthorized users.' ) . "</p><p><code>define( 'WP_ALLOW_REPAIR', true );</code></p>";
 	}
 } else {
 

@@ -6,7 +6,7 @@
  * @subpackage Administration
  */
 
-@header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
+@header( 'Content-Type: ' . get_option( 'html_type' ) . '; charset=' . get_option( 'blog_charset' ) );
 if ( ! defined( 'WP_ADMIN' ) ) {
 	require_once( __DIR__ . '/admin.php' );
 }
@@ -52,14 +52,14 @@ _wp_admin_html_begin();
 
 wp_enqueue_style( 'colors' );
 wp_enqueue_style( 'ie' );
-wp_enqueue_script('utils');
+wp_enqueue_script( 'utils' );
 wp_enqueue_script( 'svg-painter' );
 
 $hook_suffix = $app->get( 'hook_suffix' );
-$admin_body_class = preg_replace('/[^a-z0-9_-]+/i', '-', $hook_suffix );
+$admin_body_class = preg_replace( '/[^a-z0-9_-]+/i', '-', $hook_suffix );
 ?>
 <script type="text/javascript">
-addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function'){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
+addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function' ){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
 var ajaxurl = '<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>',
 	pagenow = '<?php echo $app->current_screen->id; ?>',
 	typenow = '<?php echo $app->current_screen->post_type; ?>',
@@ -125,11 +125,11 @@ do_action( "admin_head-{$hook_suffix}" );
  */
 do_action( 'admin_head' );
 
-if ( get_user_setting('mfold') == 'f' ) {
+if ( get_user_setting( 'mfold' ) == 'f' ) {
 	$admin_body_class .= ' folded';
 }
 
-if ( !get_user_setting('unfold') ) {
+if ( !get_user_setting( 'unfold' ) ) {
 	$admin_body_class .= ' auto-fold';
 }
 
@@ -189,7 +189,7 @@ $admin_body_classes = apply_filters( 'admin_body_class', '' );
 ?>
 <body class="wp-admin wp-core-ui no-js <?php echo $admin_body_classes . ' ' . $admin_body_class; ?>">
 <script type="text/javascript">
-	document.body.className = document.body.className.replace('no-js','js');
+	document.body.className = document.body.className.replace( 'no-js','js' );
 </script>
 
 <?php
@@ -200,7 +200,7 @@ if ( current_user_can( 'customize' ) ) {
 ?>
 
 <div id="wpwrap">
-<?php require(ABSPATH . 'wp-admin/menu-header.php'); ?>
+<?php require( ABSPATH . 'wp-admin/menu-header.php' ); ?>
 <div id="wpcontent">
 
 <?php
@@ -219,7 +219,7 @@ $app->current_screen->set_parentage( $app->get( 'parent_file' ) );
 
 ?>
 
-<div id="wpbody-content" aria-label="<?php esc_attr_e('Main content'); ?>" tabindex="0">
+<div id="wpbody-content" aria-label="<?php esc_attr_e( 'Main content' ); ?>" tabindex="0">
 <?php
 
 $app->current_screen->render_screen_meta();
@@ -259,7 +259,7 @@ if ( $app->get( 'parent_file' ) === 'options-general.php' ) {
 
 	if ( $_get->get( 'updated' ) && $_get->get( 'page' ) ) {
 		// For back-compat with plugins that don't use the Settings API and just set updated=1 in the redirect.
-		add_settings_error('general', 'settings_updated', __('Settings saved.'), 'updated');
+		add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'updated' );
 	}
 
 	settings_errors();

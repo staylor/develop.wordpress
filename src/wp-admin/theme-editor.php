@@ -16,8 +16,8 @@ if ( is_multisite() && ! is_network_admin() ) {
 	exit();
 }
 
-if ( !current_user_can('edit_themes') ) {
-	wp_die('<p>'.__('Sorry, you are not allowed to edit templates for this site.').'</p>');
+if ( !current_user_can( 'edit_themes' ) ) {
+	wp_die( '<p>'.__( 'Sorry, you are not allowed to edit templates for this site.' ).'</p>' );
 }
 $app->set( 'title', __( 'Edit Themes' ) );
 $app->set( 'parent_file', 'themes.php' );
@@ -118,8 +118,8 @@ default:
 
 	$content = '';
 	if ( ! $error && filesize( $file ) > 0 ) {
-		$f = fopen($file, 'r');
-		$content = fread($f, filesize($file));
+		$f = fopen( $file, 'r' );
+		$content = fread( $f, filesize( $file) );
 
 		if ( '.php' == substr( $file, strrpos( $file, '.' ) ) ) {
 			$functions = wp_doc_link_parse( $content );
@@ -142,7 +142,7 @@ default:
 $description = get_file_description( $relative_file );
 $file_show = array_search( $file, array_filter( $app->files['allowed'] ) );
 if ( $description != $file_show ) {
-	$description .= ' <span>(' . $file_show . ')</span>';
+	$description .= ' <span>( ' . $file_show . ' )</span>';
 }
 ?>
 <div class="wrap">
@@ -154,7 +154,7 @@ if ( $description != $file_show ) {
 </div>
 <div class="alignright">
 	<form action="theme-editor.php" method="post">
-		<strong><label for="theme"><?php _e('Select theme to edit:'); ?> </label></strong>
+		<strong><label for="theme"><?php _e( 'Select theme to edit:' ); ?> </label></strong>
 		<select name="theme" id="theme">
 <?php
 foreach ( wp_get_themes( array( 'errors' => null ) ) as $a_stylesheet => $a_theme ) {
@@ -163,7 +163,7 @@ foreach ( wp_get_themes( array( 'errors' => null ) ) as $a_stylesheet => $a_them
 	}
 
 	$selected = $a_stylesheet == $stylesheet ? ' selected="selected"' : '';
-	echo "\n\t" . '<option value="' . esc_attr( $a_stylesheet ) . '"' . $selected . '>' . $a_theme->display('Name') . '</option>';
+	echo "\n\t" . '<option value="' . esc_attr( $a_stylesheet ) . '"' . $selected . '>' . $a_theme->display( 'Name' ) . '</option>';
 }
 ?>
 		</select>
@@ -218,7 +218,7 @@ if ( $app->files['allowed'] ) {
 
 		$file_description = get_file_description( $filename );
 		if ( $filename !== basename( $absolute_filename ) || $file_description !== $filename ) {
-			$file_description .= '<br /><span class="nonessential">(' . $filename . ')</span>';
+			$file_description .= '<br /><span class="nonessential">( ' . $filename . ' )</span>';
 		}
 
 		if ( $absolute_filename === $file ) {
@@ -233,7 +233,7 @@ if ( $app->files['allowed'] ) {
 <?php } ?>
 </div>
 <?php if ( $error ) {
-	echo '<div class="error"><p>' . __('Oops, no such file exists! Double check the name and try again, merci.') . '</p></div>';
+	echo '<div class="error"><p>' . __( 'Oops, no such file exists! Double check the name and try again, merci.' ) . '</p></div>';
 } else { ?>
 	<form name="template" id="template" action="theme-editor.php" method="post">
 	<?php wp_nonce_field( 'edit-theme_' . $file . $stylesheet ); ?>
@@ -245,9 +245,9 @@ if ( $app->files['allowed'] ) {
 		</div>
 	<?php if ( ! empty( $functions ) ) { ?>
 		<div id="documentation" class="hide-if-no-js">
-		<label for="docs-list"><?php _e('Documentation:') ?></label>
+		<label for="docs-list"><?php _e( 'Documentation:' ) ?></label>
 		<?php echo $docs_select; ?>
-		<input type="button" class="button" value="<?php esc_attr_e( 'Look Up' ); ?>" onclick="if ( '' != jQuery('#docs-list').val() ) { window.open( 'https://api.wordpress.org/core/handbook/1.0/?function=' + escape( jQuery( '#docs-list' ).val() ) + '&amp;locale=<?php echo urlencode( get_user_locale() ) ?>&amp;version=<?php echo urlencode( get_bloginfo( 'version' ) ) ?>&amp;redirect=true'); }" />
+		<input type="button" class="button" value="<?php esc_attr_e( 'Look Up' ); ?>" onclick="if ( '' != jQuery( '#docs-list' ).val() ) { window.open( 'https://api.wordpress.org/core/handbook/1.0/?function=' + escape( jQuery( '#docs-list' ).val() ) + '&amp;locale=<?php echo urlencode( get_user_locale() ) ?>&amp;version=<?php echo urlencode( get_bloginfo( 'version' ) ) ?>&amp;redirect=true' ); }" />
 		</div>
 	<?php } ?>
 
@@ -260,7 +260,7 @@ if ( $app->files['allowed'] ) {
 	if ( is_writeable( $file ) ) {
 		submit_button( __( 'Update File' ), 'primary', 'submit', true );
 	} else { ?>
-<p><em><?php _e('You need to make this file writable before you can save your changes. See <a href="https://codex.wordpress.org/Changing_File_Permissions">the Codex</a> for more information.'); ?></em></p>
+<p><em><?php _e( 'You need to make this file writable before you can save your changes. See <a href="https://codex.wordpress.org/Changing_File_Permissions">the Codex</a> for more information.' ); ?></em></p>
 	<?php } ?>
 		</div>
 	</form>
@@ -271,13 +271,13 @@ if ( $app->files['allowed'] ) {
 <br class="clear" />
 </div>
 <script type="text/javascript">
-jQuery(document).ready(function($){
-	$('#template').submit(function(){ $('#scrollto').val( $('#newcontent').scrollTop() ); });
-	$('#newcontent').scrollTop( $('#scrollto').val() );
+jQuery(document).ready(function( $){
+	$( '#template' ).submit(function(){ $( '#scrollto' ).val( $( '#newcontent' ).scrollTop() ); });
+	$( '#newcontent' ).scrollTop( $( '#scrollto' ).val() );
 });
 </script>
 <?php
 break;
 }
 
-include(ABSPATH . 'wp-admin/admin-footer.php' );
+include( ABSPATH . 'wp-admin/admin-footer.php' );

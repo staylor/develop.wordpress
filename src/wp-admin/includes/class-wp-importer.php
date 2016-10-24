@@ -36,7 +36,7 @@ class WP_Importer {
 			// Increment offset
 			$offset = ( $limit + $offset );
 
-			if ( !empty( $results ) ) {
+			if ( ! empty( $results ) ) {
 				foreach ( $results as $r ) {
 					// Set permalinks into array
 					$hashtable[$r->meta_value] = intval( $r->post_id );
@@ -69,7 +69,7 @@ class WP_Importer {
 
 		$result = $wpdb->get_results( $sql );
 
-		if ( !empty( $result ) ) {
+		if ( ! empty( $result ) ) {
 			$count = intval( $result[0]->cnt );
 		}
 		// Unset to save memory.
@@ -101,7 +101,7 @@ class WP_Importer {
 			// Increment offset
 			$offset = ( $limit + $offset );
 
-			if ( !empty( $results ) ) {
+			if ( ! empty( $results ) ) {
 				foreach ( $results as $r ) {
 					// Explode comment_agent key
 					list ( $ca_bid, $source_comment_id ) = explode( '-', $r->comment_agent );
@@ -205,7 +205,7 @@ class WP_Importer {
 		if ( true === $head ) {
 			$args['method'] = 'HEAD';
 		}
-		if ( !empty( $username ) && !empty( $password ) ) {
+		if ( ! empty( $username ) && ! empty( $password ) ) {
 			$headers['Authorization'] = 'Basic ' . base64_encode( "$username:$password" );
 		}
 		$args['headers'] = $headers;
@@ -314,7 +314,7 @@ function get_cli_args( $param, $required = false ) {
 	}
 
 	// Check for missing required param
-	if ( !isset( $out[$param] ) && $required ) {
+	if ( ! isset( $out[$param] ) && $required ) {
 		// Display message and exit
 		echo "\"$param\" parameter is required but was not specified\n";
 		exit();
