@@ -518,8 +518,8 @@ define('BLOG_ID_CURRENT_SITE', 1);
                     <match url="^' . $iis_subdir_match . 'files/(.+)" ignoreCase="false" />
                     <action type="Rewrite" url="' . $iis_rewrite_base . WPINC . '/ms-files.php?file={R:1}" appendQueryString="false" />
                 </rule>';
-                }
-                $web_config_file .= '
+				}
+				$web_config_file .= '
                 <rule name="WordPress Rule 2" stopProcessing="true">
                     <match url="^' . $iis_subdir_match . 'wp-admin$" ignoreCase="false" />
                     <action type="Redirect" url="' . $iis_subdir_replacement . 'wp-admin/" redirectType="Permanent" />

@@ -31,7 +31,7 @@ $taxonomy = $tax->name;
 $app->set( 'title', $tax->labels->edit_item );
 
 if ( ! in_array( $taxonomy, get_taxonomies( array( 'show_ui' => true ) ) ) ||
-     ! current_user_can( 'edit_term', $tag->term_id )
+	 ! current_user_can( 'edit_term', $tag->term_id )
 ) {
 	wp_die(
 		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .

@@ -1400,13 +1400,13 @@ function wp_dashboard_browser_nag() {
 	}
 
 	/**
-	* Filters the notice output for the 'Browse Happy' nag meta box.
-	*
-	* @since 3.2.0
-	*
-	* @param string $notice   The notice content.
-	* @param array  $response An array containing web browser information.
-	*/
+	 * Filters the notice output for the 'Browse Happy' nag meta box.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param string $notice   The notice content.
+	 * @param array  $response An array containing web browser information.
+	 */
 	echo apply_filters( 'browse-happy-notice', $notice, $response );
 }
 

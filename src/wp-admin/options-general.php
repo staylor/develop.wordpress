@@ -180,7 +180,7 @@ if ( empty($tzstring) ) {
 		$right_now = time();
 		foreach ( timezone_transitions_get($date_time_zone_selected) as $tr) {
 			if ( $tr['ts'] > $right_now ) {
-			    $found = true;
+				$found = true;
 				break;
 			}
 		}
@@ -218,13 +218,13 @@ if ( empty($tzstring) ) {
 	<fieldset><legend class="screen-reader-text"><span><?php _e('Date Format') ?></span></legend>
 <?php
 	/**
-	* Filters the default date formats.
-	*
-	* @since 2.7.0
-	* @since 4.0.0 Added ISO date standard YYYY-MM-DD format.
-	*
-	* @param array $default_date_formats Array of default date formats.
-	*/
+	 * Filters the default date formats.
+	 *
+	 * @since 2.7.0
+	 * @since 4.0.0 Added ISO date standard YYYY-MM-DD format.
+	 *
+	 * @param array $default_date_formats Array of default date formats.
+	 */
 	$date_formats = array_unique( apply_filters( 'date_formats', array( __( 'F j, Y' ), 'Y-m-d', 'm/d/Y', 'd/m/Y' ) ) );
 
 	$custom = true;
@@ -256,12 +256,12 @@ if ( empty($tzstring) ) {
 	<fieldset><legend class="screen-reader-text"><span><?php _e('Time Format') ?></span></legend>
 <?php
 	/**
-	* Filters the default time formats.
-	*
-	* @since 2.7.0
-	*
-	* @param array $default_time_formats Array of default time formats.
-	*/
+	 * Filters the default time formats.
+	 *
+	 * @since 2.7.0
+	 *
+	 * @param array $default_time_formats Array of default time formats.
+	 */
 	$time_formats = array_unique( apply_filters( 'time_formats', array( __( 'g:i a' ), 'g:i A', 'H:i' ) ) );
 
 	$custom = true;

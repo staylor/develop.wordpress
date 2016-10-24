@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Back compat hooks
 if ( 'category' == $taxonomy ) {
 	/**
- 	 * Fires before the Edit Category form.
+	 * Fires before the Edit Category form.
 	 *
 	 * @since 2.1.0
 	 * @deprecated 3.0.0 Use {$taxonomy}_pre_edit_form instead.
