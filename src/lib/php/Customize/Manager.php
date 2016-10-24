@@ -2995,54 +2995,56 @@ class Manager {
 			'priority'    => 0,
 		] ) );
 
-		$this->add_section( new Theme\Section( $this, 'search_themes', [
-			'title'       => __( 'Search themes&hellip;' ),
-			'text_before' => __( 'Browse all WordPress.org themes' ),
-			'action'      => 'search',
-			'capability'  => 'install_themes',
-			'panel'       => 'themes',
-			'priority'    => 5,
-		] ) );
+		if ( ! is_multisite() ) {
+			$this->add_section( new Theme\Section( $this, 'search_themes', [
+				'title'       => __( 'Search themes&hellip;' ),
+				'text_before' => __( 'Browse all WordPress.org themes' ),
+				'action'      => 'search',
+				'capability'  => 'install_themes',
+				'panel'       => 'themes',
+				'priority'    => 5,
+			] ) );
 
-		$this->add_section( new Theme\Section( $this, 'featured_themes', [
-			'title'      => __( 'Featured' ),
-			'action'     => 'featured',
-			'capability' => 'install_themes',
-			'panel'      => 'themes',
-			'priority'   => 10,
-		] ) );
+			$this->add_section( new Theme\Section( $this, 'featured_themes', [
+				'title'      => __( 'Featured' ),
+				'action'     => 'featured',
+				'capability' => 'install_themes',
+				'panel'      => 'themes',
+				'priority'   => 10,
+			] ) );
 
-		$this->add_section( new Theme\Section( $this, 'popular_themes', [
-			'title'      => __( 'Popular' ),
-			'action'     => 'popular',
-			'capability' => 'install_themes',
-			'panel'      => 'themes',
-			'priority'   => 15,
-		] ) );
+			$this->add_section( new Theme\Section( $this, 'popular_themes', [
+				'title'      => __( 'Popular' ),
+				'action'     => 'popular',
+				'capability' => 'install_themes',
+				'panel'      => 'themes',
+				'priority'   => 15,
+			] ) );
 
-		$this->add_section( new Theme\Section( $this, 'latest_themes', [
-			'title'      => __( 'Latest' ),
-			'action'     => 'latest',
-			'capability' => 'install_themes',
-			'panel'      => 'themes',
-			'priority'   => 20,
-		] ) );
+			$this->add_section( new Theme\Section( $this, 'latest_themes', [
+				'title'      => __( 'Latest' ),
+				'action'     => 'latest',
+				'capability' => 'install_themes',
+				'panel'      => 'themes',
+				'priority'   => 20,
+			] ) );
 
-		$this->add_section( new Theme\Section( $this, 'feature_filter_themes', [
-			'title'      => __( 'Feature Filter' ),
-			'action'     => 'feature_filter',
-			'capability' => 'install_themes',
-			'panel'      => 'themes',
-			'priority'   => 25,
-		] ) );
+			$this->add_section( new Theme\Section( $this, 'feature_filter_themes', [
+				'title'      => __( 'Feature Filter' ),
+				'action'     => 'feature_filter',
+				'capability' => 'install_themes',
+				'panel'      => 'themes',
+				'priority'   => 25,
+			] ) );
 
-		$this->add_section( new Theme\Section( $this, 'favorites_themes', [
-			'title'      => __( 'Favorites' ),
-			'action'     => 'favorites',
-			'capability' => 'install_themes',
-			'panel'      => 'themes',
-			'priority'   => 30,
-		] ) );
+			$this->add_section( new Theme\Section( $this, 'favorites_themes', [
+				'title'      => __( 'Favorites' ),
+				'action'     => 'favorites',
+				'capability' => 'install_themes',
+				'panel'      => 'themes',
+				'priority'   => 30,
+			] ) );
+		}
 
 		// Themes Setting (unused - the theme is considerably more fundamental to the Customizer experience).
 		$this->add_setting( new FilterSetting( $this, 'active_theme', [

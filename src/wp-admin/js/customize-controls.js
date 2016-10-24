@@ -1186,7 +1186,7 @@
 
 			// Preview installed themes.
 			section.container.on( 'click', '.theme-actions .preview-theme', function() {
-				var themeId = $( this ).data( 'themeId' );
+				var themeId = $( this ).data( 'slug' );
 
 				$( '.wp-full-overlay' ).addClass( 'customize-loading' );
 				api.panel( 'themes' ).loadThemePreview( themeId ).fail( function() {
@@ -1735,7 +1735,7 @@
 		 * @param {Object}   theme
 		 */
 		showDetails: function ( theme, callback ) {
-			var section = this, link;
+			var section = this;
 			callback = callback || function(){};
 			section.currentTheme = theme.id;
 			section.overlay.html( section.template( theme ) )
@@ -1745,21 +1745,6 @@
 			section.containFocus( section.overlay );
 			section.updateLimits();
 			wp.a11y.speak( api.settings.l10n.announceThemeDetails.replace( '%s', theme.name ) );
-
-			link = section.overlay.find( '.inactive-theme > a' );
-			link.on( 'click', function( event ) {
-				event.preventDefault();
-
-				// Short-circuit if request is currently being made.
-				if ( link.hasClass( 'disabled' ) ) {
-					return;
-				}
-				link.addClass( 'disabled' );
-
-				api.panel( 'themes' ).loadThemePreview( theme.id ).fail( function() {
-					link.removeClass( 'disabled' );
-				} );
-			} );
 			callback();
 		},
 
@@ -4055,7 +4040,7 @@
 			// ssl certs.
 
 			previewer.add( 'previewUrl', params.previewUrl ).setter( function( to ) {
-				var result, urlParser, newPreviewUrl, schemeMatchingPreviewUrl, queryParams;
+				var result = null, urlParser, queryParams, parsedAllowedUrl, parsedCandidateUrls = [];
 				urlParser = document.createElement( 'a' );
 				urlParser.href = to;
 
@@ -4077,31 +4062,30 @@
 					}
 				}
 
-				newPreviewUrl = urlParser.href;
-				urlParser.protocol = previewer.scheme.get() + ':';
-				schemeMatchingPreviewUrl = urlParser.href;
+				parsedCandidateUrls.push( urlParser );
+
+				// Prepend list with URL that matches the scheme/protocol of the iframe.
+				if ( previewer.scheme.get() + ':' !== urlParser.protocol ) {
+					urlParser = document.createElement( 'a' );
+					urlParser.href = parsedCandidateUrls[0].href;
+					urlParser.protocol = previewer.scheme.get() + ':';
+					parsedCandidateUrls.unshift( urlParser );
+				}
 
 				// Attempt to match the URL to the control frame's scheme
 				// and check if it's allowed. If not, try the original URL.
-				$.each( [ schemeMatchingPreviewUrl, newPreviewUrl ], function( i, url ) {
-					$.each( previewer.allowedUrls, function( i, allowed ) {
-						var path;
-
-						allowed = allowed.replace( /\/+$/, '' );
-						path = url.replace( allowed, '' );
-
-						if ( 0 === url.indexOf( allowed ) && /^([/#?]|$)/.test( path ) ) {
-							result = url;
-							return false;
+				parsedAllowedUrl = document.createElement( 'a' );
+				_.find( parsedCandidateUrls, function( parsedCandidateUrl ) {
+					return ! _.isUndefined( _.find( previewer.allowedUrls, function( allowedUrl ) {
+						parsedAllowedUrl.href = allowedUrl;
+						if ( urlParser.protocol === parsedAllowedUrl.protocol && urlParser.host === parsedAllowedUrl.host && 0 === parsedAllowedUrl.pathname.indexOf( urlParser.pathname ) ) {
+							result = parsedCandidateUrl.href;
+							return true;
 						}
-					});
-					if ( result ) {
-						return false;
-					}
-				});
+					} ) );
+				} );
 
-				// If we found a matching result, return it. If not, bail.
-				return result ? result : null;
+				return result;
 			});
 
 			previewer.bind( 'ready', previewer.ready );
