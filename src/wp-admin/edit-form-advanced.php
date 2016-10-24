@@ -243,8 +243,9 @@ if ( 'attachment' == $post_type ) {
 	add_meta_box( 'submitdiv', __( 'Publish' ), 'post_submit_meta_box', null, 'side', 'core', $publish_callback_args );
 }
 
-if ( current_theme_supports( 'post-formats' ) && post_type_supports( $post_type, 'post-formats' ) )
+if ( current_theme_supports( 'post-formats' ) && post_type_supports( $post_type, 'post-formats' ) ) {
 	add_meta_box( 'formatdiv', _x( 'Format', 'post format' ), 'post_format_meta_box', null, 'side', 'core' );
+}
 
 // all taxonomies
 foreach ( get_object_taxonomies( $post ) as $tax_name ) {
@@ -563,8 +564,7 @@ if ( 'page' == $post_type ) {
 	 * @param WP_Post $post Post object.
 	 */
 	do_action( 'submitpage_box', $post );
-}
-else {
+} else {
 	/**
 	 * Fires before meta boxes with 'side' context are output for all post types other than 'page'.
 	 *
@@ -596,8 +596,7 @@ if ( 'page' == $post_type ) {
 	 * @param WP_Post $post Post object.
 	 */
 	do_action( 'edit_page_form', $post );
-}
-else {
+} else {
 	/**
 	 * Fires after 'normal' context meta boxes have been output for all post types other than 'page'.
 	 *

@@ -49,14 +49,16 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 <?php if ( !is_multisite() ) { ?>
 <tr>
 <th scope="row"><label for="siteurl"><?php _e('WordPress Address (URL)') ?></label></th>
-<td><input name="siteurl" type="url" id="siteurl" value="<?php form_option( 'siteurl' ); ?>"<?php disabled( defined( 'WP_SITEURL' ) ); ?> class="regular-text code<?php if ( defined( 'WP_SITEURL' ) ) echo ' disabled' ?>" /></td>
+<td><input name="siteurl" type="url" id="siteurl" value="<?php form_option( 'siteurl' ); ?>"<?php disabled( defined( 'WP_SITEURL' ) ); ?> class="regular-text code<?php if ( defined( 'WP_SITEURL' ) ) {
+	echo ' disabled' ?>" /></td>
 </tr>
 <tr>
 <th scope="row"><label for="home"><?php _e('Site Address (URL)') ?></label></th>
-<td><input name="home" type="url" id="home" aria-describedby="home-description" value="<?php form_option( 'home' ); ?>"<?php disabled( defined( 'WP_HOME' ) ); ?> class="regular-text code<?php if ( defined( 'WP_HOME' ) ) echo ' disabled' ?>" />
-<?php if ( ! defined( 'WP_HOME' ) ) : ?>
+<td><input name="home" type="url" id="home" aria-describedby="home-description" value="<?php form_option( 'home' );
+} ?>"<?php disabled( defined( 'WP_HOME' ) ); ?> class="regular-text code<?php if ( defined( 'WP_HOME' ) ) { echo ' disabled'; } ?>" />
+<?php if ( ! defined( 'WP_HOME' ) ) { ?>
 <p class="description" id="home-description"><?php _e( 'Enter the address here if you <a href="https://codex.wordpress.org/Giving_WordPress_Its_Own_Directory">want your site home page to be different from your WordPress installation directory.</a>' ); ?></p></td>
-<?php endif; ?>
+<?php } ?>
 </tr>
 <tr>
 <th scope="row"><label for="admin_email"><?php _e('Email Address') ?> </label></th>

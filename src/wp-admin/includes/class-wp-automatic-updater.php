@@ -158,10 +158,11 @@ class WP_Automatic_Updater {
 		}
 
 		// Next up, is this an item we can update?
-		if ( 'core' == $type )
+		if ( 'core' == $type ) {
 			$update = Core_Upgrader::should_update_to_version( $item->current );
-		else
+		} else {
 			$update = ! empty( $item->autoupdate );
+		}
 
 		/**
 		 * Filters whether to automatically update core, a plugin, a theme, or a language.
@@ -429,8 +430,9 @@ class WP_Automatic_Updater {
 		wp_version_check(); // Check for Core updates
 		$core_update = find_core_auto_update();
 
-		if ( $core_update )
+		if ( $core_update ) {
 			$this->update( 'core', $core_update );
+		}
 
 		// Clean up, and check for any pending translations
 		// (Core_Upgrader checks for core updates)

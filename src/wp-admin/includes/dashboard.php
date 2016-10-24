@@ -685,7 +685,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 
 			<?php echo get_avatar( $comment, 50, 'mystery' ); ?>
 
-			<?php if ( !$comment->comment_type || 'comment' == $comment->comment_type ) : ?>
+			<?php if ( !$comment->comment_type || 'comment' == $comment->comment_type ) { ?>
 
 			<div class="dashboard-comment-wrap has-row-actions">
 			<p class="comment-meta">
@@ -711,7 +711,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			</p>
 
 			<?php
-			else :
+			} else {
 				switch ( $comment->comment_type ) {
 				case 'pingback' :
 					$type = __( 'Pingback' );
@@ -748,7 +748,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			</p>
 			<p class="comment-author"><?php comment_author_link( $comment ); ?></p>
 
-			<?php endif; // comment_type ?>
+			<?php } ?>
 			<blockquote><p><?php comment_excerpt( $comment ); ?></p></blockquote>
 			<?php if ( $actions_string ) : ?>
 			<p class="row-actions"><?php echo $actions_string; ?></p>
@@ -929,8 +929,9 @@ function wp_dashboard_recent_comments( $total_items = 5 ) {
 		echo '<h3>' . __( 'Recent Comments' ) . '</h3>';
 
 		echo '<ul id="the-comment-list" data-wp-lists="list:comment">';
-		foreach ( $comments as $comment )
+		foreach ( $comments as $comment ) {
 			_wp_dashboard_recent_comments_row( $comment );
+		}
 		echo '</ul>';
 
 		if ( current_user_can( 'edit_posts' ) ) {
@@ -1504,17 +1505,17 @@ function wp_welcome_panel() {
 	<div class="welcome-panel-column">
 		<h3><?php _e( 'Next Steps' ); ?></h3>
 		<ul>
-		<?php if ( 'page' == get_option( 'show_on_front' ) && ! get_option( 'page_for_posts' ) ) : ?>
+		<?php if ( 'page' == get_option( 'show_on_front' ) && ! get_option( 'page_for_posts' ) ) { ?>
 			<li><?php printf( '<a href="%s" class="welcome-icon welcome-edit-page">' . __( 'Edit your front page' ) . '</a>', get_edit_post_link( get_option( 'page_on_front' ) ) ); ?></li>
 			<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Add additional pages' ) . '</a>', admin_url( 'post-new.php?post_type=page' ) ); ?></li>
-		<?php elseif ( 'page' == get_option( 'show_on_front' ) ) : ?>
+		<?php } elseif ( 'page' == get_option( 'show_on_front' ) ) { ?>
 			<li><?php printf( '<a href="%s" class="welcome-icon welcome-edit-page">' . __( 'Edit your front page' ) . '</a>', get_edit_post_link( get_option( 'page_on_front' ) ) ); ?></li>
 			<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Add additional pages' ) . '</a>', admin_url( 'post-new.php?post_type=page' ) ); ?></li>
 			<li><?php printf( '<a href="%s" class="welcome-icon welcome-write-blog">' . __( 'Add a blog post' ) . '</a>', admin_url( 'post-new.php' ) ); ?></li>
-		<?php else : ?>
+		<?php } else {  ?>
 			<li><?php printf( '<a href="%s" class="welcome-icon welcome-write-blog">' . __( 'Write your first blog post' ) . '</a>', admin_url( 'post-new.php' ) ); ?></li>
 			<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Add an About page' ) . '</a>', admin_url( 'post-new.php?post_type=page' ) ); ?></li>
-		<?php endif; ?>
+		<?php } ?>
 			<li><?php printf( '<a href="%s" class="welcome-icon welcome-view-site">' . __( 'View your site' ) . '</a>', home_url( '/' ) ); ?></li>
 		</ul>
 	</div>

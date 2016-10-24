@@ -173,8 +173,9 @@ foreach ( wp_get_themes( array( 'errors' => null ) ) as $a_stylesheet => $a_them
 <br class="clear" />
 </div>
 <?php
-if ( $theme->errors() )
+if ( $theme->errors() ) {
 	echo '<div class="error"><p><strong>' . __( 'This theme is broken.' ) . '</strong> ' . $theme->errors()->get_error_message() . '</p></div>';
+}
 ?>
 	<div id="templateside">
 <?php

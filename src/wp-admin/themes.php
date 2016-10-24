@@ -119,8 +119,7 @@ if ( ! validate_current_theme() || $_get->get( 'broken' ) ) : ?>
 		<div id="message2" class="updated notice is-dismissible"><p><?php _e( 'Settings saved and theme activated.' ); ?> <a href="<?php echo home_url( '/' ); ?>"><?php _e( 'Visit site' ); ?></a></p></div>
 		<?php } else { ?>
 <div id="message2" class="updated notice is-dismissible"><p><?php _e( 'New theme activated.' ); ?> <a href="<?php echo home_url( '/' ); ?>"><?php _e( 'Visit site' ); ?></a></p></div><?php
-		}
-	elseif ( $_get->get( 'deleted' ) ) : ?>
+		} elseif ( $_get->get( 'deleted' ) ) : ?>
 <div id="message3" class="updated notice is-dismissible"><p><?php _e('Theme deleted.') ?></p></div>
 <?php elseif ( $_get->get( 'delete-active-child' ) ) : ?>
 	<div id="message4" class="error"><p><?php _e( 'You cannot delete a theme while it has an active child theme.' ); ?></p></div>
@@ -145,8 +144,9 @@ if ( ! $ct->errors() || ( 1 == count( $ct->errors()->get_error_codes() )
 	if ( is_array( $app->submenu ) && isset( $app->submenu['themes.php'] ) ) {
 		foreach ( (array) $app->submenu['themes.php'] as $item) {
 			$class = '';
-			if ( 'themes.php' == $item[2] || 'theme-editor.php' == $item[2] || 0 === strpos( $item[2], 'customize.php' ) )
+			if ( 'themes.php' == $item[2] || 'theme-editor.php' == $item[2] || 0 === strpos( $item[2], 'customize.php' ) ) {
 				continue;
+			}
 			// 0 = name, 1 = capability, 2 = file
 			if ( ( strcmp($self, $item[2]) == 0 && ! $parent_file ) || ( $parent_file && ( $item[2] === $parent_file ) ) ) {
 				$class = ' current';
@@ -197,7 +197,7 @@ foreach ( $themes as $theme ) :
 	$aria_action = esc_attr( $theme['id'] . '-action' );
 	$aria_name   = esc_attr( $theme['id'] . '-name' );
 	?>
-<div class="theme<?php if ( $theme['active'] ) echo ' active'; ?>" tabindex="0" aria-describedby="<?php echo $aria_action . ' ' . $aria_name; ?>">
+<div class="theme<?php if ( $theme['active'] ) { echo ' active'; } ?>" tabindex="0" aria-describedby="<?php echo $aria_action . ' ' . $aria_name; ?>">
 	<?php if ( ! empty( $theme['screenshot'][0] ) ) { ?>
 		<div class="theme-screenshot">
 			<img src="<?php echo $theme['screenshot'][0]; ?>" alt="" />
@@ -206,15 +206,15 @@ foreach ( $themes as $theme ) :
 		<div class="theme-screenshot blank"></div>
 	<?php } ?>
 
-	<?php if ( $theme['hasUpdate'] ) : ?>
+	<?php if ( $theme['hasUpdate'] ) { ?>
 		<div class="update-message notice inline notice-warning notice-alt">
-		<?php if ( $theme['hasPackage'] ) : ?>
+		<?php if ( $theme['hasPackage'] ) { ?>
 			<p><?php _e( 'New version available. <button class="button-link" type="button">Update now</button>' ); ?></p>
-		<?php else : ?>
+		<?php } else { ?>
 			<p><?php _e( 'New version available.' ); ?></p>
-		<?php endif; ?>
+		<?php } ?>
 		</div>
-	<?php endif; ?>
+	<?php } ?>
 
 	<span class="more-details" id="<?php echo $aria_action; ?>"><?php _e( 'Theme Details' ); ?></span>
 	<div class="theme-author"><?php printf( __( 'By %s' ), $theme['author'] ); ?></div>

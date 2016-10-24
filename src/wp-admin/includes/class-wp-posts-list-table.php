@@ -566,19 +566,21 @@ class WP_Posts_List_Table extends WP_List_Table {
 		$taxonomies = array_filter( $taxonomies, 'taxonomy_exists' );
 
 		foreach ( $taxonomies as $taxonomy ) {
-			if ( 'category' === $taxonomy )
+			if ( 'category' === $taxonomy ) {
 				$column_key = 'categories';
-			elseif ( 'post_tag' === $taxonomy )
+			} elseif ( 'post_tag' === $taxonomy ) {
 				$column_key = 'tags';
-			else
+			} else {
 				$column_key = 'taxonomy-' . $taxonomy;
+			}
 
 			$posts_columns[ $column_key ] = get_taxonomy( $taxonomy )->labels->name;
 		}
 
 		$post_status = $this->_request->get( 'post_status', 'all' );
-		if ( post_type_supports( $post_type, 'comments' ) && !in_array( $post_status, array( 'pending', 'draft', 'future' ) ) )
+		if ( post_type_supports( $post_type, 'comments' ) && !in_array( $post_status, array( 'pending', 'draft', 'future' ) ) ) {
 			$posts_columns['comments'] = '<span class="vers comment-grey-bubble" title="' . esc_attr__( 'Comments' ) . '"><span class="screen-reader-text">' . __( 'Comments' ) . '</span></span>';
+		}
 
 		$posts_columns['date'] = __( 'Date' );
 
@@ -658,13 +660,15 @@ class WP_Posts_List_Table extends WP_List_Table {
 		// Create array of post IDs.
 		$post_ids = [];
 
-		foreach ( $posts as $a_post )
+		foreach ( $posts as $a_post ) {
 			$post_ids[] = $a_post->ID;
+		}
 
 		$this->comment_pending_count = get_pending_comments_num( $post_ids );
 
-		foreach ( $posts as $post )
+		foreach ( $posts as $post ) {
 			$this->single_row( $post, $level );
+		}
 	}
 
 	/**
@@ -1504,8 +1508,9 @@ class WP_Posts_List_Table extends WP_List_Table {
 			'sort_column'       => 'menu_order, post_title',
 		);
 
-		if ( $bulk )
+		if ( $bulk ) {
 			$dropdown_args['show_option_no_change'] =  __( '&mdash; No Change &mdash;' );
+		}
 
 		/**
 		 * Filters the arguments used to generate the Quick Edit page-parent drop-down.
