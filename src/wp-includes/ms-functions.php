@@ -165,10 +165,10 @@ function add_user_to_blog( $blog_id, $user_id, $role ) {
 		return new Error( 'user_does_not_exist', __( 'The requested user does not exist.' ) );
 	}
 
-	if ( !get_user_meta( $user_id, 'primary_blog', true) ) {
-		update_user_meta( $user_id, 'primary_blog', $blog_id);
-		$details = get_blog_details( $blog_id);
-		update_user_meta( $user_id, 'source_domain', $details->domain);
+	if ( !get_user_meta($user_id, 'primary_blog', true) ) {
+		update_user_meta($user_id, 'primary_blog', $blog_id);
+		$site = get_site( $blog_id );
+		update_user_meta( $user_id, 'source_domain', $site->domain );
 	}
 
 	$user->set_role( $role);
