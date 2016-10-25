@@ -79,7 +79,7 @@ function ms_cookie_constants(  ) {
 	/**
 	 * @since 2.0.0
 	 */
-	if ( ! defined( 'COOKIE_DOMAIN') && is_subdomain_install() ) {
+	if ( ! defined( 'COOKIE_DOMAIN' ) && is_subdomain_install() ) {
 		if ( ! empty( $current_network->cookie_domain ) ) {
 			define( 'COOKIE_DOMAIN', '.' . $current_network->cookie_domain );
 		} else {

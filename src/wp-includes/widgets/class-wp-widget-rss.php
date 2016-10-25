@@ -42,16 +42,16 @@ class WP_Widget_RSS extends WP_Widget {
 	 * @param array $instance Settings for the current RSS widget instance.
 	 */
 	public function widget( $args, $instance ) {
-		if ( isset($instance['error']) && $instance['error'] ) {
+		if ( isset( $instance['error'] ) && $instance['error'] ) {
 			return;
 		}
 
 		$url = ! empty( $instance['url'] ) ? $instance['url'] : '';
-		while ( stristr($url, 'http') != $url ) {
-			$url = substr($url, 1);
+		while ( stristr( $url, 'http' ) != $url ) {
+			$url = substr( $url, 1);
 		}
 
-		if ( empty($url) ) {
+		if ( empty( $url) ) {
 			return;
 		}
 
@@ -60,24 +60,24 @@ class WP_Widget_RSS extends WP_Widget {
 			return;
 		}
 
-		$rss = fetch_feed($url);
+		$rss = fetch_feed( $url);
 		$title = $instance['title'];
 		$desc = '';
 		$link = '';
 
-		if ( ! is_wp_error($rss) ) {
-			$desc = esc_attr(strip_tags(@html_entity_decode($rss->get_description(), ENT_QUOTES, get_option('blog_charset'))));
-			if ( empty($title) ) {
+		if ( ! is_wp_error( $rss) ) {
+			$desc = esc_attr(strip_tags(@html_entity_decode( $rss->get_description(), ENT_QUOTES, get_option( 'blog_charset' ) ) ) );
+			if ( empty( $title) ) {
 				$title = strip_tags( $rss->get_title() );
 			}
 			$link = strip_tags( $rss->get_permalink() );
-			while ( stristr($link, 'http') != $link ) {
-				$link = substr($link, 1);
+			while ( stristr( $link, 'http' ) != $link ) {
+				$link = substr( $link, 1);
 			}
 		}
 
-		if ( empty($title) ) {
-			$title = empty($desc) ? __('Unknown Feed') : $desc;
+		if ( empty( $title) ) {
+			$title = empty( $desc) ? __( 'Unknown Feed' ) : $desc;
 		}
 
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
@@ -96,10 +96,10 @@ class WP_Widget_RSS extends WP_Widget {
 		wp_widget_rss_output( $rss, $instance );
 		echo $args['after_widget'];
 
-		if ( ! is_wp_error($rss) ) {
+		if ( ! is_wp_error( $rss) ) {
 			$rss->__destruct();
 		}
-		unset($rss);
+		unset( $rss);
 	}
 
 	/**
@@ -114,7 +114,7 @@ class WP_Widget_RSS extends WP_Widget {
 	 * @return array Updated settings to save.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		$testurl = ( isset( $new_instance['url'] ) && ( !isset( $old_instance['url'] ) || ( $new_instance['url'] != $old_instance['url'] ) ) );
+		$testurl = ( isset( $new_instance['url'] ) && ( ! isset( $old_instance['url'] ) || ( $new_instance['url'] != $old_instance['url'] ) ) );
 		return wp_widget_rss_process( $new_instance, $testurl );
 	}
 

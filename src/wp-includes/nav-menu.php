@@ -202,7 +202,7 @@ function is_nav_menu_item( $menu_item_id = 0 ) {
  * @return int|Error Menu ID on success, Error object on failure.
  */
 function wp_create_nav_menu( $menu_name ) {
-	// expected_slashed ($menu_name)
+	// expected_slashed ( $menu_name)
 	return wp_update_nav_menu_object( 0, array( 'menu-name' => $menu_name ) );
 }
 
@@ -238,7 +238,7 @@ function wp_delete_nav_menu( $menu ) {
 	}
 	set_theme_mod( 'nav_menu_locations', $locations );
 
-	if ( $result && !is_wp_error($result) ) {
+	if ( $result && !is_wp_error( $result) ) {
 
 		/**
 		 * Fires after a navigation menu has been successfully deleted.
@@ -265,7 +265,7 @@ function wp_delete_nav_menu( $menu ) {
  * @return int|Error Menu ID on success, Error object on failure.
  */
 function wp_update_nav_menu_object( $menu_id = 0, $menu_data = [] ) {
-	// expected_slashed ($menu_data)
+	// expected_slashed ( $menu_data)
 	$menu_id = (int) $menu_id;
 
 	$_menu = wp_get_nav_menu_object( $menu_id );
@@ -492,17 +492,17 @@ function wp_update_nav_menu_item( int $menu_id = 0, int $menu_item_db_id = 0, $m
 
 	$menu_item_db_id = (int) $menu_item_db_id;
 
-	update_post_meta( $menu_item_db_id, '_menu_item_type', sanitize_key($args['menu-item-type']) );
+	update_post_meta( $menu_item_db_id, '_menu_item_type', sanitize_key( $args['menu-item-type'] ) );
 	update_post_meta( $menu_item_db_id, '_menu_item_menu_item_parent', strval( (int) $args['menu-item-parent-id'] ) );
 	update_post_meta( $menu_item_db_id, '_menu_item_object_id', strval( (int) $args['menu-item-object-id'] ) );
-	update_post_meta( $menu_item_db_id, '_menu_item_object', sanitize_key($args['menu-item-object']) );
-	update_post_meta( $menu_item_db_id, '_menu_item_target', sanitize_key($args['menu-item-target']) );
+	update_post_meta( $menu_item_db_id, '_menu_item_object', sanitize_key( $args['menu-item-object'] ) );
+	update_post_meta( $menu_item_db_id, '_menu_item_target', sanitize_key( $args['menu-item-target'] ) );
 
 	$args['menu-item-classes'] = array_map( 'sanitize_html_class', explode( ' ', $args['menu-item-classes'] ) );
 	$args['menu-item-xfn'] = implode( ' ', array_map( 'sanitize_html_class', explode( ' ', $args['menu-item-xfn'] ) ) );
 	update_post_meta( $menu_item_db_id, '_menu_item_classes', $args['menu-item-classes'] );
 	update_post_meta( $menu_item_db_id, '_menu_item_xfn', $args['menu-item-xfn'] );
-	update_post_meta( $menu_item_db_id, '_menu_item_url', esc_url_raw($args['menu-item-url']) );
+	update_post_meta( $menu_item_db_id, '_menu_item_url', esc_url_raw( $args['menu-item-url'] ) );
 
 	if ( 0 == $menu_id ) {
 			update_post_meta( $menu_item_db_id, '_menu_item_orphaned', (string) time() );
@@ -666,21 +666,21 @@ function wp_get_nav_menu_items( $menu, $args = [] ) {
 		}
 
 		if ( ! empty( $posts ) ) {
-			foreach ( array_keys($posts) as $post_type ) {
+			foreach ( array_keys( $posts) as $post_type ) {
 				get_posts( array('post__in' => $posts[$post_type], 'post_type' => $post_type, 'nopaging' => true, 'update_post_term_cache' => false) );
 			}
 		}
-		unset($posts);
+		unset( $posts);
 
 		if ( ! empty( $terms ) ) {
-			foreach ( array_keys($terms) as $taxonomy ) {
+			foreach ( array_keys( $terms) as $taxonomy ) {
 				get_terms( $taxonomy, array(
 					'include' => $terms[ $taxonomy ],
 					'hierarchical' => false,
 				) );
 			}
 		}
-		unset($terms);
+		unset( $terms);
 	}
 
 	$items = array_map( 'wp_setup_nav_menu_item', $items );
@@ -692,7 +692,7 @@ function wp_get_nav_menu_items( $menu, $args = [] ) {
 
 	if ( ARRAY_A == $args['output'] ) {
 		$GLOBALS['_menu_item_sort_prop'] = $args['output_key'];
-		usort($items, '_sort_nav_menu_items');
+		usort( $items, '_sort_nav_menu_items' );
 		$i = 1;
 		foreach ( $items as $k => $item ) {
 			$items[$k]->{$args['output_key']} = $i++;
@@ -802,7 +802,7 @@ function wp_setup_nav_menu_item( $menu_item ) {
 				$menu_item->title = '' == $menu_item->post_title ? $original_title : $menu_item->post_title;
 
 			} else {
-				$menu_item->type_label = __('Custom Link');
+				$menu_item->type_label = __('Custom Link' );
 				$menu_item->title = $menu_item->post_title;
 				$menu_item->url = ! isset( $menu_item->url ) ? get_post_meta( $menu_item->ID, '_menu_item_url', true ) : $menu_item->url;
 			}

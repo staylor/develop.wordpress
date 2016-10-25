@@ -2265,7 +2265,7 @@ function wp_count_attachments( $mime_type = '' ) {
 	foreach ( (array) $count as $row ) {
 		$counts[ $row['post_mime_type'] ] = $row['num_posts'];
 	}
-	$counts['trash'] = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = 'attachment' AND post_status = 'trash' $and");
+	$counts['trash'] = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = 'attachment' AND post_status = 'trash' $and" );
 
 	/**
 	 * Modify returned attachment counts by mime type.
@@ -4224,7 +4224,7 @@ function get_all_page_ids() {
 
 	$page_ids = wp_cache_get( 'all_page_ids', 'posts' );
 	if ( ! is_array( $page_ids ) ) {
-		$page_ids = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_type = 'page'");
+		$page_ids = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_type = 'page'" );
 		wp_cache_add( 'all_page_ids', $page_ids, 'posts' );
 	}
 
@@ -5405,7 +5405,7 @@ function wp_mime_type_icon( $mime = 0 ) {
 							continue;
 						}
 						if ( !in_array(strtolower(substr( $file, -4 ) ), [ '.png', '.gif', '.jpg' ] ) ) {
-							if ( is_dir( "$dir/$file") ) {
+							if ( is_dir( "$dir/$file" ) ) {
 								$dirs["$dir/$file"] = "$uri/$file";
 							}
 							continue;

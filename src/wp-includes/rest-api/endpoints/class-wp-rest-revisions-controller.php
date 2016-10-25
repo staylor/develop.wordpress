@@ -48,7 +48,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
-		));
+		) );
 
 	}
 

@@ -41,14 +41,14 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	 * @param array $instance Settings for the current Tag Cloud widget instance.
 	 */
 	public function widget( $args, $instance ) {
-		$current_taxonomy = $this->_get_current_taxonomy($instance);
-		if ( !empty($instance['title']) ) {
+		$current_taxonomy = $this->_get_current_taxonomy( $instance );
+		if ( ! empty( $instance['title'] ) ) {
 			$title = $instance['title'];
 		} else {
 			if ( 'post_tag' == $current_taxonomy ) {
-				$title = __('Tags');
+				$title = __( 'Tags' );
 			} else {
-				$tax = get_taxonomy($current_taxonomy);
+				$tax = get_taxonomy( $current_taxonomy );
 				$title = $tax->labels->name;
 			}
 		}
@@ -102,7 +102,7 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {
 		$instance = [];
 		$instance['title'] = sanitize_text_field( $new_instance['title'] );
-		$instance['taxonomy'] = stripslashes($new_instance['taxonomy']);
+		$instance['taxonomy'] = stripslashes( $new_instance['taxonomy'] );
 		return $instance;
 	}
 
@@ -115,7 +115,7 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	 * @param array $instance Current settings.
 	 */
 	public function form( $instance ) {
-		$current_taxonomy = $this->_get_current_taxonomy($instance);
+		$current_taxonomy = $this->_get_current_taxonomy( $instance);
 		$title_id = $this->get_field_id( 'title' );
 		$instance['title'] = ! empty( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
 
@@ -175,8 +175,8 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	 * @param array $instance Current settings.
 	 * @return string Name of the current taxonomy if set, otherwise 'post_tag'.
 	 */
-	public function _get_current_taxonomy($instance) {
-		if ( !empty($instance['taxonomy']) && taxonomy_exists($instance['taxonomy']) ) {
+	public function _get_current_taxonomy( $instance ) {
+		if ( ! empty( $instance['taxonomy'] ) && taxonomy_exists( $instance['taxonomy'] ) ) {
 			return $instance['taxonomy'];
 		}
 

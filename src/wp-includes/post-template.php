@@ -44,7 +44,7 @@ function get_the_ID() {
 function the_title( $before = '', $after = '', $echo = true ) {
 	$title = get_the_title();
 
-	if ( strlen($title) == 0 ) {
+	if ( strlen( $title) == 0 ) {
 			return;
 	}
 
@@ -409,7 +409,7 @@ function get_the_excerpt( $post = null ) {
  */
 function has_excerpt( $id = 0 ) {
 	$post = get_post( $id );
-	return ( !empty( $post->post_excerpt ) );
+	return ( ! empty( $post->post_excerpt ) );
 }
 
 /**
@@ -476,7 +476,7 @@ function get_post_class( $class = '', $post_id = null ) {
 	if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
 		$post_format = get_post_format( $post->ID );
 
-		if ( $post_format && !is_wp_error($post_format) ) {
+		if ( $post_format && !is_wp_error( $post_format) ) {
 					$classes[] = 'format-' . sanitize_html_class( $post_format );
 		} else {
 					$classes[] = 'format-standard';
@@ -611,14 +611,14 @@ function get_body_class( $class = '' ) {
 
 		$classes[] = 'single';
 		if ( isset( $post->post_type ) ) {
-			$classes[] = 'single-' . sanitize_html_class($post->post_type, $post_id);
+			$classes[] = 'single-' . sanitize_html_class( $post->post_type, $post_id);
 			$classes[] = 'postid-' . $post_id;
 
 			// Post Format
 			if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
 				$post_format = get_post_format( $post->ID );
 
-				if ( $post_format && !is_wp_error($post_format) ) {
+				if ( $post_format && !is_wp_error( $post_format) ) {
 					$classes[] = 'single-format-' . sanitize_html_class( $post_format );
 				} else {
 					$classes[] = 'single-format-standard';
@@ -627,7 +627,7 @@ function get_body_class( $class = '' ) {
 		}
 
 		if ( is_attachment() ) {
-			$mime_type = get_post_mime_type($post_id);
+			$mime_type = get_post_mime_type( $post_id);
 			$mime_prefix = array( 'application/', 'image/', 'text/', 'audio/', 'video/', 'music/' );
 			$classes[] = 'attachmentid-' . $post_id;
 			$classes[] = 'attachment-' . str_replace( $mime_prefix, '', $mime_type );
@@ -689,7 +689,7 @@ function get_body_class( $class = '' ) {
 
 		$page_id = $wp_query->get_queried_object_id();
 
-		$post = get_post($page_id);
+		$post = get_post( $page_id);
 
 		$classes[] = 'page-id-' . $page_id;
 
@@ -796,7 +796,7 @@ function get_body_class( $class = '' ) {
  */
 function post_password_required( $post = null ) {
 	$app = getApp();
-	$post = get_post($post);
+	$post = get_post( $post);
 
 	if ( empty( $post->post_password ) ) {
 		/** This filter is documented in wp-includes/post.php */
@@ -976,12 +976,12 @@ function _wp_link_page( $i ) {
 	if ( 1 == $i ) {
 		$url = get_permalink();
 	} else {
-		if ( '' == get_option('permalink_structure') || in_array($post->post_status, array('draft', 'pending')) ) {
+		if ( '' == get_option( 'permalink_structure' ) || in_array( $post->post_status, array( 'draft', 'pending' ) ) ) {
 					$url = add_query_arg( 'page', $i, get_permalink() );
-		} elseif ( 'page' == get_option('show_on_front') && get_option('page_on_front') == $post->ID ) {
-					$url = trailingslashit(get_permalink()) . user_trailingslashit("{$app['rewrite']->pagination_base}/" . $i, 'single_paged');
+		} elseif ( 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == $post->ID ) {
+					$url = trailingslashit(get_permalink() ) . user_trailingslashit( "{$app['rewrite']->pagination_base}/" . $i, 'single_paged' );
 		} else {
-					$url = trailingslashit(get_permalink()) . user_trailingslashit($i, 'single_paged');
+					$url = trailingslashit(get_permalink() ) . user_trailingslashit( $i, 'single_paged' );
 		}
 	}
 
@@ -1015,14 +1015,14 @@ function _wp_link_page( $i ) {
 function post_custom( $key = '' ) {
 	$custom = get_post_custom();
 
-	if ( !isset( $custom[$key] ) ) {
-			return false;
-	} elseif ( 1 == count($custom[$key]) ) {
-			return $custom[$key][0];
+	if ( ! isset( $custom[$key] ) ) {
+		return false;
+	} elseif ( 1 == count( $custom[$key] ) ) {
+		return $custom[$key][0];
 	} else {
-			return $custom[$key];
+		return $custom[$key];
 	}
-	}
+}
 
 /**
  * Display list of post custom fields.
@@ -1036,12 +1036,12 @@ function the_meta() {
 	if ( $keys = get_post_custom_keys() ) {
 		echo "<ul class='post-meta'>\n";
 		foreach ( (array) $keys as $key ) {
-			$keyt = trim($key);
+			$keyt = trim( $key);
 			if ( is_protected_meta( $keyt, 'post' ) ) {
 							continue;
 			}
-			$values = array_map('trim', get_post_custom_values($key));
-			$value = implode($values,', ');
+			$values = array_map( 'trim', get_post_custom_values( $key) );
+			$value = implode( $values,', ' );
 
 			/**
 			 * Filters the HTML output of the li element in the post custom fields list.
@@ -1345,9 +1345,9 @@ function wp_page_menu( $args = [] ) {
 	$list_args = $args;
 
 	// Show Home in the menu
-	if ( ! empty($args['show_home']) ) {
+	if ( ! empty( $args['show_home'] ) ) {
 		if ( true === $args['show_home'] || '1' === $args['show_home'] || 1 === $args['show_home'] ) {
-					$text = __('Home');
+					$text = __( 'Home' );
 		} else {
 					$text = $args['show_home'];
 		}
@@ -1357,13 +1357,13 @@ function wp_page_menu( $args = [] ) {
 		}
 		$menu .= '<li ' . $class . '><a href="' . home_url( '/' ) . '">' . $args['link_before'] . $text . $args['link_after'] . '</a></li>';
 		// If the front page is a page, add it to the exclude list
-		if (get_option('show_on_front') == 'page') {
-			if ( !empty( $list_args['exclude'] ) ) {
+		if (get_option( 'show_on_front' ) == 'page' ) {
+			if ( ! empty( $list_args['exclude'] ) ) {
 				$list_args['exclude'] .= ',';
 			} else {
 				$list_args['exclude'] = '';
 			}
-			$list_args['exclude'] .= get_option('page_on_front');
+			$list_args['exclude'] .= get_option( 'page_on_front' );
 		}
 	}
 
@@ -1437,7 +1437,7 @@ function wp_page_menu( $args = [] ) {
  * @return string
  */
 function walk_page_tree( $pages, $depth, $current_page, $r ) {
-	if ( empty($r['walker']) ) {
+	if ( empty( $r['walker'] ) ) {
 			$walker = new Walker_Page;
 	} else {
 			$walker = $r['walker'];
@@ -1449,8 +1449,8 @@ function walk_page_tree( $pages, $depth, $current_page, $r ) {
 		}
 	}
 
-	$args = array($pages, $depth, $r, $current_page);
-	return call_user_func_array(array($walker, 'walk'), $args);
+	$args = array( $pages, $depth, $r, $current_page);
+	return call_user_func_array(array( $walker, 'walk' ), $args);
 }
 
 /**
@@ -1464,14 +1464,14 @@ function walk_page_tree( $pages, $depth, $current_page, $r ) {
  */
 function walk_page_dropdown_tree() {
 	$args = func_get_args();
-	if ( empty($args[2]['walker']) ) {
+	if ( empty( $args[2]['walker'] ) ) {
 		// the user's options are the third parameter
 		$walker = new Walker_PageDropdown;
 	} else {
 			$walker = $args[2]['walker'];
 	}
 
-	return call_user_func_array(array($walker, 'walk'), $args);
+	return call_user_func_array(array( $walker, 'walk' ), $args);
 }
 
 //
@@ -1489,14 +1489,14 @@ function walk_page_dropdown_tree() {
  * @param bool        $permalink    Optional, default is false. Whether to include permalink.
  */
 function the_attachment_link( $id = 0, $fullsize = false, $deprecated = false, $permalink = false ) {
-	if ( !empty( $deprecated ) ) {
+	if ( ! empty( $deprecated ) ) {
 			_deprecated_argument( __FUNCTION__, '2.5.0' );
 	}
 
 	if ( $fullsize ) {
-			echo wp_get_attachment_link($id, 'full', $permalink);
+			echo wp_get_attachment_link( $id, 'full', $permalink);
 	} else {
-			echo wp_get_attachment_link($id, 'thumbnail', $permalink);
+			echo wp_get_attachment_link( $id, 'thumbnail', $permalink);
 	}
 	}
 
@@ -1567,10 +1567,10 @@ function wp_get_attachment_link( $id = 0, $size = 'thumbnail', $permalink = fals
  * @param string $content
  * @return string
  */
-function prepend_attachment($content) {
+function prepend_attachment( $content) {
 	$post = get_post();
 
-	if ( empty($post->post_type) || $post->post_type != 'attachment' ) {
+	if ( empty( $post->post_type) || $post->post_type != 'attachment' ) {
 			return $content;
 	}
 
@@ -1622,7 +1622,7 @@ function prepend_attachment($content) {
  */
 function get_the_password_form( $post = 0 ) {
 	$post = get_post( $post );
-	$label = 'pwbox-' . ( empty($post->ID) ? rand() : $post->ID );
+	$label = 'pwbox-' . ( empty( $post->ID) ? rand() : $post->ID );
 	$output = '<form action="' . esc_url( site_url( 'wp-login.php?action=postpass', 'login_post' ) ) . '" class="post-password-form" method="post">
 	<p>' . __( 'This content is password protected. To view it please enter your password below:' ) . '</p>
 	<p><label for="' . $label . '">' . __( 'Password:' ) . ' <input name="post_password" id="' . $label . '" type="password" size="20" /></label> <input type="submit" name="Submit" value="' . esc_attr_x( 'Enter', 'post password form' ) . '" /></p></form>

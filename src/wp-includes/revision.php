@@ -202,7 +202,7 @@ function wp_save_post_revision( $post_id ) {
 
 	$revisions = wp_get_post_revisions( $post_id, array( 'order' => 'ASC' ) );
 
-	$delete = count($revisions) - $revisions_to_keep;
+	$delete = count( $revisions) - $revisions_to_keep;
 
 	if ( $delete < 1 ) {
 		return $return;
@@ -297,25 +297,25 @@ function wp_is_post_autosave( $post ) {
  * @return int|Error Error or 0 if error, new revision ID if success.
  */
 function _wp_put_post_revision( $post = null, $autosave = false ) {
-	if ( is_object($post) ) {
+	if ( is_object( $post) ) {
 		$post = get_object_vars( $post );
-	} elseif ( !is_array($post) ) {
-		$post = get_post($post, ARRAY_A);
+	} elseif ( !is_array( $post) ) {
+		$post = get_post( $post, ARRAY_A);
 	}
 
-	if ( ! $post || empty($post['ID']) ) {
+	if ( ! $post || empty( $post['ID'] ) ) {
 		return new Error( 'invalid_post', __( 'Invalid post ID.' ) );
 	}
 
-	if ( isset($post['post_type']) && 'revision' == $post['post_type'] ) {
+	if ( isset( $post['post_type'] ) && 'revision' == $post['post_type'] ) {
 		return new Error( 'post_type', __( 'Cannot create a revision of a revision' ) );
 	}
 
 	$post = _wp_post_revision_data( $post, $autosave );
-	$post = wp_slash($post); //since data is from db
+	$post = wp_slash( $post); //since data is from db
 
 	$revision_id = wp_insert_post( $post );
-	if ( is_wp_error($revision_id) ) {
+	if ( is_wp_error( $revision_id) ) {
 		return $revision_id;
 	}
 
@@ -343,7 +343,7 @@ function _wp_put_post_revision( $post = null, $autosave = false ) {
  * @param string      $filter Optional sanitation filter. See sanitize_post().
  * @return WP_Post|array|null Null if error or post object if success.
  */
-function wp_get_post_revision(&$post, $output = OBJECT, $filter = 'raw') {
+function wp_get_post_revision(&$post, $output = OBJECT, $filter = 'raw' ) {
 	if ( !$revision = get_post( $post, OBJECT, $filter ) ) {
 		return $revision;
 	}
@@ -354,9 +354,9 @@ function wp_get_post_revision(&$post, $output = OBJECT, $filter = 'raw') {
 	if ( $output == OBJECT ) {
 		return $revision;
 	} elseif ( $output == ARRAY_A ) {
-		return get_object_vars($revision);
+		return get_object_vars( $revision);
 	} elseif ( $output == ARRAY_N ) {
-		return array_values(get_object_vars($revision));
+		return array_values(get_object_vars( $revision));
 	}
 
 	return $revision;
@@ -576,10 +576,10 @@ function _show_post_preview() {
 		$id = (int) $query->get( 'preview_id' );
 
 		if ( false === wp_verify_nonce( $query->get( 'preview_nonce' ), 'post_preview_' . $id ) ) {
-			wp_die( __('Sorry, you are not allowed to preview drafts.') );
+			wp_die( __( 'Sorry, you are not allowed to preview drafts.' ) );
 		}
 
-		add_filter('the_preview', '_set_preview');
+		add_filter( 'the_preview', '_set_preview' );
 	}
 }
 
@@ -694,7 +694,7 @@ function _wp_upgrade_revisions_of_post( $post, $revisions ) {
 	// Add post option exclusively
 	$lock = "revision-upgrade-{$post->ID}";
 	$now = time();
-	$result = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `$wpdb->options` (`option_name`, `option_value`, `autoload`) VALUES (%s, %s, 'no') /* LOCK */", $lock, $now ) );
+	$result = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `$wpdb->options` (`option_name`, `option_value`, `autoload`) VALUES (%s, %s, 'no' ) /* LOCK */", $lock, $now ) );
 	if ( ! $result ) {
 		// If we couldn't get a lock, see how old the previous lock is
 		$locked = get_option( $lock );

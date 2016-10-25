@@ -28,7 +28,7 @@ abstract class WP_REST_Meta_Fields {
 			'get_callback' => array( $this, 'get_value' ),
 			'update_callback' => array( $this, 'update_value' ),
 			'schema' => $this->get_field_schema(),
-		));
+		) );
 	}
 
 	/**

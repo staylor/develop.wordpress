@@ -31,7 +31,7 @@ function wp_underscore_audio_template() {
 	<?php endforeach ?>#>
 >
 	<# if ( ! _.isEmpty( data.model.src ) ) { #>
-	<source src="{{ data.model.src }}" type="{{ wp.media.view.settings.embedMimes[ data.model.src.split('.').pop() ] }}" />
+	<source src="{{ data.model.src }}" type="{{ wp.media.view.settings.embedMimes[ data.model.src.split( '.' ).pop() ] }}" />
 	<# } #>
 
 	<?php foreach ( $audio_types as $type ):
@@ -58,7 +58,7 @@ function wp_underscore_video_template() {
 
 	if ( ! _.isEmpty( data.model.src ) ) {
 		isYouTube = data.model.src.match(/youtube|youtu\.be/);
-		isVimeo = -1 !== data.model.src.indexOf('vimeo');
+		isVimeo = -1 !== data.model.src.indexOf( 'vimeo' );
 	}
 
 	if ( settings.contentWidth && data.model.width >= settings.contentWidth ) {
@@ -116,7 +116,7 @@ function wp_underscore_video_template() {
 		<# } else if ( isVimeo ) { #>
 		<source src="{{ data.model.src }}" type="video/vimeo" />
 		<# } else { #>
-		<source src="{{ data.model.src }}" type="{{ settings.embedMimes[ data.model.src.split('.').pop() ] }}" />
+		<source src="{{ data.model.src }}" type="{{ settings.embedMimes[ data.model.src.split( '.' ).pop() ] }}" />
 		<# }
 	} #>
 
@@ -673,10 +673,10 @@ function wp_print_media_templates() {
 					<?php
 					/** This filter is documented in wp-admin/includes/media.php */
 					$sizes = apply_filters( 'image_size_names_choose', array(
-						'thumbnail' => __('Thumbnail'),
-						'medium'    => __('Medium'),
-						'large'     => __('Large'),
-						'full'      => __('Full Size'),
+						'thumbnail' => __( 'Thumbnail' ),
+						'medium'    => __( 'Medium' ),
+						'large'     => __( 'Large' ),
+						'full'      => __( 'Full Size' ),
 					) );
 
 					foreach ( $sizes as $value => $name ) : ?>
@@ -767,7 +767,7 @@ function wp_print_media_templates() {
 		<h2><?php _e( 'Playlist Settings' ); ?></h2>
 
 		<# var emptyModel = _.isEmpty( data.model ),
-			isVideo = 'video' === data.controller.get('library').props.get('type'); #>
+			isVideo = 'video' === data.controller.get( 'library' ).props.get( 'type' ); #>
 
 		<label class="setting">
 			<input type="checkbox" data-setting="tracklist" <# if ( emptyModel ) { #>
@@ -922,10 +922,10 @@ function wp_print_media_templates() {
 									<?php
 									/** This filter is documented in wp-admin/includes/media.php */
 									$sizes = apply_filters( 'image_size_names_choose', array(
-										'thumbnail' => __('Thumbnail'),
-										'medium'    => __('Medium'),
-										'large'     => __('Large'),
-										'full'      => __('Full Size'),
+										'thumbnail' => __( 'Thumbnail' ),
+										'medium'    => __( 'Medium' ),
+										'large'     => __( 'Large' ),
+										'full'      => __( 'Full Size' ),
 									) );
 
 									foreach ( $sizes as $value => $name ) : ?>
@@ -1022,7 +1022,7 @@ function wp_print_media_templates() {
 				<?php wp_underscore_audio_template() ?>
 
 				<# if ( ! _.isEmpty( data.model.src ) ) {
-					ext = data.model.src.split('.').pop();
+					ext = data.model.src.split( '.' ).pop();
 					if ( html5types[ ext ] ) {
 						delete html5types[ ext ];
 					}
@@ -1105,7 +1105,7 @@ function wp_print_media_templates() {
 				<?php wp_underscore_video_template() ?>
 
 				<# if ( ! _.isEmpty( data.model.src ) ) {
-					ext = data.model.src.split('.').pop();
+					ext = data.model.src.split( '.' ).pop();
 					if ( html5types[ ext ] ) {
 						delete html5types[ ext ];
 					}

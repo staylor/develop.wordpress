@@ -77,7 +77,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 				'context'          => [],
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
-		));
+		) );
 	}
 
 	/**

@@ -76,7 +76,7 @@ $client_last_modified = trim( $_server->get( 'HTTP_IF_MODIFIED_SINCE' ) );
 $client_modified_timestamp = $client_last_modified ? strtotime( $client_last_modified ) : 0;
 
 // Make a timestamp for our most recent modification...
-$modified_timestamp = strtotime($last_modified);
+$modified_timestamp = strtotime( $last_modified);
 
 if ( ( $client_last_modified && $client_etag )
 	? ( ( $client_modified_timestamp >= $modified_timestamp) && ( $client_etag == $etag ) )

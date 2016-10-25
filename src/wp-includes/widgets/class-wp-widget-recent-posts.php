@@ -74,7 +74,7 @@ class WP_Widget_Recent_Posts extends WP_Widget {
 			'ignore_sticky_posts' => true
 		] ) );
 
-		if ($r->have_posts()) :
+		if ( $r->have_posts() ) :
 		?>
 		<?php echo $args['before_widget']; ?>
 		<?php if ( $title ) {

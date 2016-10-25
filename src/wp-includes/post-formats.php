@@ -31,7 +31,7 @@ function get_post_format( $post = null ) {
 
 	$format = reset( $_format );
 
-	return str_replace('post-format-', '', $format->slug );
+	return str_replace( 'post-format-', '', $format->slug );
 }
 
 /**
@@ -128,11 +128,11 @@ function get_post_format_slugs() {
 function get_post_format_string( $slug ) {
 	$strings = get_post_format_strings();
 	if ( !$slug ) {
-			return $strings['standard'];
+		return $strings['standard'];
 	} else {
-			return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
+		return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
 	}
-	}
+}
 
 /**
  * Returns a link to a post format index.
@@ -143,9 +143,9 @@ function get_post_format_string( $slug ) {
  * @return string|Error|false The post format term link.
  */
 function get_post_format_link( $format ) {
-	$term = get_term_by('slug', 'post-format-' . $format, 'post_format' );
+	$term = get_term_by( 'slug', 'post-format-' . $format, 'post_format' );
 	if ( ! $term || is_wp_error( $term ) ) {
-			return false;
+		return false;
 	}
 	return get_term_link( $term );
 }

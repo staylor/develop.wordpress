@@ -42,7 +42,7 @@ ms_subdomain_constants();
 
 // This block will process a request if the current network or current site objects
 // have not been populated in the global scope through something like `sunrise.php`.
-if ( !isset( $current_site ) || !isset( $current_blog ) ) {
+if ( ! isset( $current_site ) || ! isset( $current_blog ) ) {
 
 	$domain = strtolower( stripslashes( $app['request.host'] ) );
 	if ( substr( $domain, -3 ) == ':80' ) {
@@ -53,7 +53,7 @@ if ( !isset( $current_site ) || !isset( $current_blog ) ) {
 		$app['request.host'] = substr( $app['request.host'], 0, -4 );
 	}
 
-	$path = stripslashes( $app['request.uri']);
+	$path = stripslashes( $app['request.uri'] );
 	if ( is_admin() ) {
 		$path = preg_replace( '#(.*)/wp-admin/.*#', '$1/', $path );
 	}

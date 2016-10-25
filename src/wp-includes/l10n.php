@@ -390,7 +390,7 @@ function _n( $single, $plural, $number, $domain = 'default' ) {
  *                        Default 'default'.
  * @return string The translated singular or plural form.
  */
-function _nx($single, $plural, $number, $context, $domain = 'default') {
+function _nx( $single, $plural, $number, $context, $domain = 'default') {
 	$translations = get_translations_for_domain( $domain );
 	$translation  = $translations->translate_plural( $single, $plural, $number, $context );
 
@@ -919,7 +919,7 @@ function is_textdomain_loaded( $domain ) {
  * @return string Translated role name on success, original name on failure.
  */
 function translate_user_role( $name ) {
-	return translate_with_gettext_context( before_last_bar($name), 'User role' );
+	return translate_with_gettext_context( before_last_bar( $name), 'User role' );
 }
 
 /**

@@ -151,7 +151,7 @@ function wp_enqueue_style( $handle, $src = '', $deps = [], $ver = false, $media 
 	$app['styles.global'];
 
 	if ( $src ) {
-		$_handle = explode('?', $handle);
+		$_handle = explode( '?', $handle);
 		$app['styles.global']->add( $_handle[0], $src, $deps, $ver, $media );
 	}
 	$app['styles.global']->enqueue( $handle );

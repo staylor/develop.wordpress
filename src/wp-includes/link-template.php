@@ -46,12 +46,12 @@ function the_permalink( $post = 0 ) {
  *                            for use in the filter. Default empty string.
  * @return string The URL with the trailing slash appended or stripped.
  */
-function user_trailingslashit($string, $type_of_url = '') {
+function user_trailingslashit( $string, $type_of_url = '' ) {
 	$app = getApp();
 	if ( $app['rewrite']->use_trailing_slashes ) {
-			$string = trailingslashit($string);
+			$string = trailingslashit( $string);
 	} else {
-			$string = untrailingslashit($string);
+			$string = untrailingslashit( $string);
 	}
 
 	/**
@@ -140,19 +140,19 @@ function get_permalink( $post = 0, $leavename = false ) {
 		$sample = false;
 	}
 
-	if ( empty($post->ID) ) {
+	if ( empty( $post->ID) ) {
 			return false;
 	}
 
 	if ( $post->post_type == 'page' ) {
-			return get_page_link($post, $leavename, $sample);
+			return get_page_link( $post, $leavename, $sample);
 	} elseif ( $post->post_type == 'attachment' ) {
 			return get_attachment_link( $post, $leavename );
-	} elseif ( in_array($post->post_type, get_post_types( array('_builtin' => false) ) ) ) {
-			return get_post_permalink($post, $leavename, $sample);
+	} elseif ( in_array( $post->post_type, get_post_types( array( '_builtin' => false) ) ) ) {
+			return get_post_permalink( $post, $leavename, $sample);
 	}
 
-	$permalink = get_option('permalink_structure');
+	$permalink = get_option( 'permalink_structure' );
 
 	/**
 	 * Filters the permalink structure for a post before token replacement occurs.
@@ -168,13 +168,13 @@ function get_permalink( $post = 0, $leavename = false ) {
 	$permalink = apply_filters( 'pre_post_link', $permalink, $post, $leavename );
 
 	if ( '' != $permalink && !in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft', 'future' ) ) ) {
-		$unixtime = strtotime($post->post_date);
+		$unixtime = strtotime( $post->post_date);
 
 		$category = '';
-		if ( strpos($permalink, '%category%') !== false ) {
-			$cats = get_the_category($post->ID);
+		if ( strpos( $permalink, '%category%' ) !== false ) {
+			$cats = get_the_category( $post->ID);
 			if ( $cats ) {
-				usort($cats, '_usort_terms_by_ID'); // order by ID
+				usort( $cats, '_usort_terms_by_ID' ); // order by ID
 
 				/**
 				 * Filters the category that gets used in the %category% permalink token.
@@ -190,12 +190,12 @@ function get_permalink( $post = 0, $leavename = false ) {
 				$category_object = get_term( $category_object, 'category' );
 				$category = $category_object->slug;
 				if ( $parent = $category_object->parent ) {
-									$category = get_category_parents($parent, false, '/', true) . $category;
+					$category = get_category_parents( $parent, false, '/', true ) . $category;
 				}
 			}
 			// show default category in permalinks, without
 			// having to assign it explicitly
-			if ( empty($category) ) {
+			if ( empty( $category) ) {
 				$default_category = get_term( get_option( 'default_category' ), 'category' );
 				if ( $default_category && ! is_wp_error( $default_category ) ) {
 					$category = $default_category->slug;
@@ -204,12 +204,12 @@ function get_permalink( $post = 0, $leavename = false ) {
 		}
 
 		$author = '';
-		if ( strpos($permalink, '%author%') !== false ) {
-			$authordata = get_userdata($post->post_author);
+		if ( strpos( $permalink, '%author%' ) !== false ) {
+			$authordata = get_userdata( $post->post_author);
 			$author = $authordata->user_nicename;
 		}
 
-		$date = explode(" ",date('Y m d H i s', $unixtime));
+		$date = explode( " ",date( 'Y m d H i s', $unixtime));
 		$rewritereplace =
 		array(
 			$date[0],
@@ -224,11 +224,11 @@ function get_permalink( $post = 0, $leavename = false ) {
 			$author,
 			$post->post_name,
 		);
-		$permalink = home_url( str_replace($rewritecode, $rewritereplace, $permalink) );
-		$permalink = user_trailingslashit($permalink, 'single');
+		$permalink = home_url( str_replace( $rewritecode, $rewritereplace, $permalink) );
+		$permalink = user_trailingslashit( $permalink, 'single' );
 	// if they're not using the fancy permalink option
 	} else {
-		$permalink = home_url('?p=' . $post->ID);
+		$permalink = home_url( '?p=' . $post->ID);
 	}
 
 	/**
@@ -256,37 +256,37 @@ function get_permalink( $post = 0, $leavename = false ) {
  * @return string|Error The post permalink.
  */
 function get_post_permalink( $id = 0, $leavename = false, $sample = false ) {
-	$post = get_post($id);
+	$post = get_post( $id);
 
 	if ( is_wp_error( $post ) ) {
-			return $post;
+		return $post;
 	}
 
 	$app = getApp();
-	$post_link = $app['rewrite']->get_extra_permastruct($post->post_type);
+	$post_link = $app['rewrite']->get_extra_permastruct( $post->post_type);
 
 	$slug = $post->post_name;
 
 	$draft_or_pending = get_post_status( $id ) && in_array( get_post_status( $id ), array( 'draft', 'pending', 'auto-draft', 'future' ) );
 
-	$post_type = get_post_type_object($post->post_type);
+	$post_type = get_post_type_object( $post->post_type);
 
 	if ( $post_type->hierarchical ) {
 		$slug = get_page_uri( $id );
 	}
 
-	if ( !empty($post_link) && ( !$draft_or_pending || $sample ) ) {
+	if ( ! empty( $post_link) && ( !$draft_or_pending || $sample ) ) {
 		if ( ! $leavename ) {
-			$post_link = str_replace("%$post->post_type%", $slug, $post_link);
+			$post_link = str_replace( "%$post->post_type%", $slug, $post_link);
 		}
-		$post_link = home_url( user_trailingslashit($post_link) );
+		$post_link = home_url( user_trailingslashit( $post_link) );
 	} else {
-		if ( $post_type->query_var && ( isset($post->post_status) && !$draft_or_pending ) ) {
-					$post_link = add_query_arg($post_type->query_var, $slug, '');
+		if ( $post_type->query_var && ( isset( $post->post_status) && !$draft_or_pending ) ) {
+			$post_link = add_query_arg( $post_type->query_var, $slug, '' );
 		} else {
-					$post_link = add_query_arg(array('post_type' => $post->post_type, 'p' => $post->ID), '');
+			$post_link = add_query_arg(array( 'post_type' => $post->post_type, 'p' => $post->ID), '' );
 		}
-		$post_link = home_url($post_link);
+		$post_link = home_url( $post_link);
 	}
 
 	/**
@@ -319,9 +319,9 @@ function get_page_link( $post = false, $leavename = false, $sample = false ) {
 	$post = get_post( $post );
 
 	if ( 'page' == get_option( 'show_on_front' ) && $post->ID == get_option( 'page_on_front' ) ) {
-			$link = home_url('/');
+		$link = home_url( '/' );
 	} else {
-			$link = _get_page_link( $post, $leavename, $sample );
+		$link = _get_page_link( $post, $leavename, $sample );
 	}
 
 	/**
@@ -359,13 +359,13 @@ function _get_page_link( $post = false, $leavename = false, $sample = false ) {
 
 	$link = $app['rewrite']->get_page_permastruct();
 
-	if ( !empty($link) && ( ( isset($post->post_status) && !$draft_or_pending ) || $sample ) ) {
+	if ( ! empty( $link) && ( ( isset( $post->post_status) && !$draft_or_pending ) || $sample ) ) {
 		if ( ! $leavename ) {
-			$link = str_replace('%pagename%', get_page_uri( $post ), $link);
+			$link = str_replace( '%pagename%', get_page_uri( $post ), $link);
 		}
 
-		$link = home_url($link);
-		$link = user_trailingslashit($link, 'page');
+		$link = home_url( $link);
+		$link = user_trailingslashit( $link, 'page' );
 	} else {
 		$link = home_url( '?page_id=' . $post->ID );
 	}
@@ -404,34 +404,34 @@ function get_attachment_link( $post = null, $leavename = false ) {
 
 	if ( $app['rewrite']->using_permalinks() && $parent ) {
 		if ( 'page' == $parent->post_type ) {
-					$parentlink = _get_page_link( $post->post_parent );
+			$parentlink = _get_page_link( $post->post_parent );
 		}
 		// Ignores page_on_front
 		else {
-					$parentlink = get_permalink( $post->post_parent );
+			$parentlink = get_permalink( $post->post_parent );
 		}
 
-		if ( is_numeric($post->post_name) || false !== strpos(get_option('permalink_structure'), '%category%') ) {
-					$name = 'attachment/' . $post->post_name;
+		if ( is_numeric( $post->post_name) || false !== strpos(get_option( 'permalink_structure' ), '%category%' ) ) {
+			$name = 'attachment/' . $post->post_name;
 		}
 		// <permalink>/<int>/ is paged so we use the explicit attachment marker
 		else {
-					$name = $post->post_name;
+			$name = $post->post_name;
 		}
 
-		if ( strpos($parentlink, '?') === false ) {
-					$link = user_trailingslashit( trailingslashit($parentlink) . '%postname%' );
+		if ( strpos( $parentlink, '?' ) === false ) {
+			$link = user_trailingslashit( trailingslashit( $parentlink) . '%postname%' );
 		}
 
 		if ( ! $leavename ) {
-					$link = str_replace( '%postname%', $name, $link );
+			$link = str_replace( '%postname%', $name, $link );
 		}
 	} elseif ( $app['rewrite']->using_permalinks() && ! $leavename ) {
 		$link = home_url( user_trailingslashit( $post->post_name ) );
 	}
 
 	if ( ! $link ) {
-			$link = home_url( '/?attachment_id=' . $post->ID );
+		$link = home_url( '/?attachment_id=' . $post->ID );
 	}
 
 	/**
@@ -456,11 +456,11 @@ function get_attachment_link( $post = null, $leavename = false ) {
 function get_year_link( $year ) {
 	$app = getApp();
 	if ( !$year ) {
-			$year = gmdate('Y', current_time('timestamp'));
+			$year = gmdate( 'Y', current_time( 'timestamp' ));
 	}
 	$yearlink = $app['rewrite']->get_year_permastruct();
-	if ( !empty($yearlink) ) {
-		$yearlink = str_replace('%year%', $year, $yearlink);
+	if ( ! empty( $yearlink) ) {
+		$yearlink = str_replace( '%year%', $year, $yearlink);
 		$yearlink = home_url( user_trailingslashit( $yearlink, 'year' ) );
 	} else {
 		$yearlink = home_url( '?m=' . $year );
@@ -486,18 +486,18 @@ function get_year_link( $year ) {
  * @param bool|int $month False for current month. Integer of month.
  * @return string The permalink for the specified month and year archive.
  */
-function get_month_link($year, $month) {
+function get_month_link( $year, $month) {
 	$app = getApp();
 	if ( !$year ) {
-			$year = gmdate('Y', current_time('timestamp'));
+			$year = gmdate( 'Y', current_time( 'timestamp' ));
 	}
 	if ( !$month ) {
-			$month = gmdate('m', current_time('timestamp'));
+			$month = gmdate( 'm', current_time( 'timestamp' ));
 	}
 	$monthlink = $app['rewrite']->get_month_permastruct();
-	if ( !empty($monthlink) ) {
-		$monthlink = str_replace('%year%', $year, $monthlink);
-		$monthlink = str_replace('%monthnum%', zeroise(intval($month), 2), $monthlink);
+	if ( ! empty( $monthlink) ) {
+		$monthlink = str_replace( '%year%', $year, $monthlink);
+		$monthlink = str_replace( '%monthnum%', zeroise(intval( $month), 2), $monthlink);
 		$monthlink = home_url( user_trailingslashit( $monthlink, 'month' ) );
 	} else {
 		$monthlink = home_url( '?m=' . $year . zeroise( $month, 2 ) );
@@ -525,23 +525,23 @@ function get_month_link($year, $month) {
  * @param bool|int $day   False for current day. Integer of day.
  * @return string The permalink for the specified day, month, and year archive.
  */
-function get_day_link($year, $month, $day) {
+function get_day_link( $year, $month, $day) {
 	$app = getApp();
 	if ( !$year ) {
-			$year = gmdate('Y', current_time('timestamp'));
+			$year = gmdate( 'Y', current_time( 'timestamp' ));
 	}
 	if ( !$month ) {
-			$month = gmdate('m', current_time('timestamp'));
+			$month = gmdate( 'm', current_time( 'timestamp' ));
 	}
 	if ( !$day ) {
-			$day = gmdate('j', current_time('timestamp'));
+			$day = gmdate( 'j', current_time( 'timestamp' ));
 	}
 
 	$daylink = $app['rewrite']->get_day_permastruct();
-	if ( !empty($daylink) ) {
-		$daylink = str_replace('%year%', $year, $daylink);
-		$daylink = str_replace('%monthnum%', zeroise(intval($month), 2), $daylink);
-		$daylink = str_replace('%day%', zeroise(intval($day), 2), $daylink);
+	if ( ! empty( $daylink) ) {
+		$daylink = str_replace( '%year%', $year, $daylink);
+		$daylink = str_replace( '%monthnum%', zeroise(intval( $month), 2), $daylink);
+		$daylink = str_replace( '%day%', zeroise(intval( $day), 2), $daylink);
 		$daylink = home_url( user_trailingslashit( $daylink, 'day' ) );
 	} else {
 		$daylink = home_url( '?m=' . $year . zeroise( $month, 2 ) . zeroise( $day, 2 ) );
@@ -596,8 +596,8 @@ function get_feed_link( $feed = '' ) {
 
 	$permalink = $app['rewrite']->get_feed_permastruct();
 	if ( '' != $permalink ) {
-		if ( false !== strpos($feed, 'comments_') ) {
-			$feed = str_replace('comments_', '', $feed);
+		if ( false !== strpos( $feed, 'comments_' ) ) {
+			$feed = str_replace( 'comments_', '', $feed);
 			$permalink = $app['rewrite']->get_comment_feed_permastruct();
 		}
 
@@ -605,19 +605,19 @@ function get_feed_link( $feed = '' ) {
 					$feed = '';
 		}
 
-		$permalink = str_replace('%feed%', $feed, $permalink);
-		$permalink = preg_replace('#/+#', '/', "/$permalink");
-		$output =  home_url( user_trailingslashit($permalink, 'feed') );
+		$permalink = str_replace( '%feed%', $feed, $permalink);
+		$permalink = preg_replace( '#/+#', '/', "/$permalink" );
+		$output =  home_url( user_trailingslashit( $permalink, 'feed' ) );
 	} else {
-		if ( empty($feed) ) {
-					$feed = get_default_feed();
+		if ( empty( $feed) ) {
+			$feed = get_default_feed();
 		}
 
-		if ( false !== strpos($feed, 'comments_') ) {
-					$feed = str_replace('comments_', 'comments-', $feed);
+		if ( false !== strpos( $feed, 'comments_' ) ) {
+			$feed = str_replace( 'comments_', 'comments-', $feed);
 		}
 
-		$output = home_url("?feed={$feed}");
+		$output = home_url( "?feed={$feed}" );
 	}
 
 	/**
@@ -644,21 +644,21 @@ function get_post_comments_feed_link( $post_id = 0, $feed = '' ) {
 	$post_id = absint( $post_id );
 
 	if ( ! $post_id ) {
-			$post_id = get_the_ID();
+		$post_id = get_the_ID();
 	}
 
 	if ( empty( $feed ) ) {
-			$feed = get_default_feed();
+		$feed = get_default_feed();
 	}
 
 	$post = get_post( $post_id );
 	$unattached = 'attachment' === $post->post_type && 0 === (int) $post->post_parent;
 
-	if ( '' != get_option('permalink_structure') ) {
-		if ( 'page' == get_option('show_on_front') && $post_id == get_option('page_on_front') ) {
-					$url = _get_page_link( $post_id );
+	if ( '' != get_option( 'permalink_structure' ) ) {
+		if ( 'page' == get_option( 'show_on_front' ) && $post_id == get_option( 'page_on_front' ) ) {
+			$url = _get_page_link( $post_id );
 		} else {
-					$url = get_permalink($post_id);
+			$url = get_permalink( $post_id);
 		}
 
 		if ( $unattached ) {
@@ -668,11 +668,11 @@ function get_post_comments_feed_link( $post_id = 0, $feed = '' ) {
 			}
 			$url = add_query_arg( 'attachment_id', $post_id, $url );
 		} else {
-			$url = trailingslashit($url) . 'feed';
+			$url = trailingslashit( $url) . 'feed';
 			if ( $feed != get_default_feed() ) {
-							$url .= "/$feed";
+				$url .= "/$feed";
 			}
-			$url = user_trailingslashit($url, 'single_feed');
+			$url = user_trailingslashit( $url, 'single_feed' );
 		}
 	} else {
 		if ( $unattached ) {
@@ -710,7 +710,7 @@ function get_post_comments_feed_link( $post_id = 0, $feed = '' ) {
 function post_comments_feed_link( $link_text = '', $post_id = '', $feed = '' ) {
 	$url = get_post_comments_feed_link( $post_id, $feed );
 	if ( empty( $link_text ) ) {
-		$link_text = __('Comments Feed');
+		$link_text = __( 'Comments Feed' );
 	}
 
 	$link = '<a href="' . esc_url( $url ) . '">' . $link_text . '</a>';
@@ -739,23 +739,23 @@ function post_comments_feed_link( $link_text = '', $post_id = '', $feed = '' ) {
  * @return string Link to the feed for the author specified by $author_id.
  */
 function get_author_feed_link( int $author_id, $feed = '' ) {
-	$permalink_structure = get_option('permalink_structure');
+	$permalink_structure = get_option( 'permalink_structure' );
 
-	if ( empty($feed) ) {
-			$feed = get_default_feed();
+	if ( empty( $feed) ) {
+		$feed = get_default_feed();
 	}
 
 	if ( '' == $permalink_structure ) {
-		$link = home_url("?feed=$feed&amp;author=" . $author_id);
+		$link = home_url( "?feed=$feed&amp;author=" . $author_id);
 	} else {
-		$link = get_author_posts_url($author_id);
+		$link = get_author_posts_url( $author_id);
 		if ( $feed == get_default_feed() ) {
-					$feed_link = 'feed';
+			$feed_link = 'feed';
 		} else {
-					$feed_link = "feed/$feed";
+			$feed_link = "feed/$feed";
 		}
 
-		$link = trailingslashit($link) . user_trailingslashit($feed_link, 'feed');
+		$link = trailingslashit( $link) . user_trailingslashit( $feed_link, 'feed' );
 	}
 
 	/**
@@ -815,12 +815,12 @@ function get_term_feed_link( $term_id, $taxonomy = 'category', $feed = '' ) {
 
 	if ( '' == $permalink_structure ) {
 		if ( 'category' == $taxonomy ) {
-			$link = home_url("?feed=$feed&amp;cat=$term_id");
+			$link = home_url( "?feed=$feed&amp;cat=$term_id" );
 		} elseif ( 'post_tag' == $taxonomy ) {
-			$link = home_url("?feed=$feed&amp;tag=$term->slug");
+			$link = home_url( "?feed=$feed&amp;tag=$term->slug" );
 		} else {
 			$t = get_taxonomy( $taxonomy );
-			$link = home_url("?feed=$feed&amp;$t->query_var=$term->slug");
+			$link = home_url( "?feed=$feed&amp;$t->query_var=$term->slug" );
 		}
 	} else {
 		$link = get_term_link( $term_id, $term->taxonomy );
@@ -1007,7 +1007,7 @@ function edit_term_link( $link = '', $before = '', $after = '', $term = null, $e
 	}
 
 	if ( empty( $link ) ) {
-			$link = __('Edit This');
+			$link = __( 'Edit This' );
 	}
 
 	$link = '<a href="' . get_edit_term_link( $term->term_id, $term->taxonomy ) . '">' . $link . '</a>';
@@ -1039,19 +1039,19 @@ function edit_term_link( $link = '', $before = '', $after = '', $term = null, $e
  */
 function get_search_link( $query = '' ) {
 	$app = getApp();
-	if ( empty($query) ) {
+	if ( empty( $query) ) {
 		$search = get_search_query( false );
 	} else {
-		$search = stripslashes($query);
+		$search = stripslashes( $query);
 	}
 
 	$permastruct = $app['rewrite']->get_search_permastruct();
 
 	if ( empty( $permastruct ) ) {
-		$link = home_url('?s=' . urlencode($search) );
+		$link = home_url( '?s=' . urlencode( $search) );
 	} else {
-		$search = urlencode($search);
-		$search = str_replace('%2F', '/', $search); // %2F(/) is not valid within a URL, send it un-encoded.
+		$search = urlencode( $search);
+		$search = str_replace( '%2F', '/', $search); // %2F(/) is not valid within a URL, send it un-encoded.
 		$link = str_replace( '%search%', $search, $permastruct );
 		$link = home_url( user_trailingslashit( $link, 'search' ) );
 	}
@@ -1076,20 +1076,20 @@ function get_search_link( $query = '' ) {
  * @param string $feed         Optional. Feed type. Default empty.
  * @return string The search results feed permalink.
  */
-function get_search_feed_link($search_query = '', $feed = '') {
-	$link = get_search_link($search_query);
+function get_search_feed_link( $search_query = '', $feed = '' ) {
+	$link = get_search_link( $search_query);
 
-	if ( empty($feed) ) {
+	if ( empty( $feed) ) {
 			$feed = get_default_feed();
 	}
 
 	$app = getApp();
 	$permastruct = $app['rewrite']->get_search_permastruct();
 
-	if ( empty($permastruct) ) {
-		$link = add_query_arg('feed', $feed, $link);
+	if ( empty( $permastruct) ) {
+		$link = add_query_arg( 'feed', $feed, $link);
 	} else {
-		$link = trailingslashit($link);
+		$link = trailingslashit( $link);
 		$link .= "feed/$feed/";
 	}
 
@@ -1114,20 +1114,20 @@ function get_search_feed_link($search_query = '', $feed = '') {
  * @param string $feed         Optional. Feed type. Default empty.
  * @return string The comments feed search results permalink.
  */
-function get_search_comments_feed_link($search_query = '', $feed = '') {
-	if ( empty($feed) ) {
+function get_search_comments_feed_link( $search_query = '', $feed = '' ) {
+	if ( empty( $feed) ) {
 			$feed = get_default_feed();
 	}
 
-	$link = get_search_feed_link($search_query, $feed);
+	$link = get_search_feed_link( $search_query, $feed);
 
 	$app = getApp();
 	$permastruct = $app['rewrite']->get_search_permastruct();
 
-	if ( empty($permastruct) ) {
-			$link = add_query_arg('feed', 'comments-' . $feed, $link);
+	if ( empty( $permastruct) ) {
+			$link = add_query_arg( 'feed', 'comments-' . $feed, $link);
 	} else {
-			$link = add_query_arg('withcomments', 1, $link);
+			$link = add_query_arg( 'withcomments', 1, $link);
 	}
 
 	/** This filter is documented in wp-includes/link-template.php */
@@ -1426,7 +1426,7 @@ function get_edit_comment_link( $comment_id = 0 ) {
 			return;
 	}
 
-	$location = admin_url('comment.php?action=editcomment&amp;c=') . $comment->comment_ID;
+	$location = admin_url( 'comment.php?action=editcomment&amp;c=' ) . $comment->comment_ID;
 
 	/**
 	 * Filters the comment edit link.
@@ -1483,11 +1483,11 @@ function edit_comment_link( $text = null, $before = '', $after = '' ) {
 function get_edit_bookmark_link( $link = 0 ) {
 	$link = get_bookmark( $link );
 
-	if ( !current_user_can('manage_links') ) {
+	if ( !current_user_can( 'manage_links' ) ) {
 			return;
 	}
 
-	$location = admin_url('link.php?action=edit&amp;link_id=') . $link->link_id;
+	$location = admin_url( 'link.php?action=edit&amp;link_id=' ) . $link->link_id;
 
 	/**
 	 * Filters the bookmark edit link.
@@ -1511,14 +1511,14 @@ function get_edit_bookmark_link( $link = 0 ) {
  * @param int    $bookmark Optional. Bookmark ID. Default is the current bookmark.
  */
 function edit_bookmark_link( $link = '', $before = '', $after = '', $bookmark = null ) {
-	$bookmark = get_bookmark($bookmark);
+	$bookmark = get_bookmark( $bookmark);
 
-	if ( !current_user_can('manage_links') ) {
+	if ( !current_user_can( 'manage_links' ) ) {
 			return;
 	}
 
-	if ( empty($link) ) {
-			$link = __('Edit This');
+	if ( empty( $link) ) {
+			$link = __( 'Edit This' );
 	}
 
 	$link = '<a href="' . esc_url( get_edit_bookmark_link( $bookmark ) ) . '">' . $link . '</a>';
@@ -2134,11 +2134,11 @@ function get_pagenum_link( int $pagenum = 1, $escape = true ) {
 	$request = remove_query_arg( 'paged' );
 
 	$home_root = parse_url(home_url());
-	$home_root = ( isset($home_root['path']) ) ? $home_root['path'] : '';
+	$home_root = ( isset( $home_root['path']) ) ? $home_root['path'] : '';
 	$home_root = preg_quote( $home_root, '|' );
 
-	$request = preg_replace('|^'. $home_root . '|i', '', $request);
-	$request = preg_replace('|^/+|', '', $request);
+	$request = preg_replace( '|^'. $home_root . '|i', '', $request);
+	$request = preg_replace( '|^/+|', '', $request);
 
 	$app = getApp();
 	if ( ! $app['rewrite']->using_permalinks() || is_admin() ) {
@@ -2153,7 +2153,7 @@ function get_pagenum_link( int $pagenum = 1, $escape = true ) {
 		$qs_regex = '|\?.*?$|';
 		preg_match( $qs_regex, $request, $qs_match );
 
-		if ( !empty( $qs_match[0] ) ) {
+		if ( ! empty( $qs_match[0] ) ) {
 			$query_string = $qs_match[0];
 			$request = preg_replace( $qs_regex, '', $request );
 		} else {
@@ -2162,7 +2162,7 @@ function get_pagenum_link( int $pagenum = 1, $escape = true ) {
 
 		$request = preg_replace( "|{$app['rewrite']->pagination_base}/\d+/?$|", '', $request);
 		$request = preg_replace( '|^' . preg_quote( $app['rewrite']->index, '|' ) . '|i', '', $request);
-		$request = ltrim($request, '/');
+		$request = ltrim( $request, '/' );
 
 		$base = trailingslashit( get_bloginfo( 'url' ) );
 
@@ -2171,7 +2171,7 @@ function get_pagenum_link( int $pagenum = 1, $escape = true ) {
 		}
 
 		if ( $pagenum > 1 ) {
-			$request = ( ( !empty( $request ) ) ? trailingslashit( $request ) : $request ) . user_trailingslashit( $app['rewrite']->pagination_base . "/" . $pagenum, 'paged' );
+			$request = ( ( ! empty( $request ) ) ? trailingslashit( $request ) : $request ) . user_trailingslashit( $app['rewrite']->pagination_base . "/" . $pagenum, 'paged' );
 		}
 
 		$result = $base . $request . $query_string;
@@ -2205,16 +2205,16 @@ function get_pagenum_link( int $pagenum = 1, $escape = true ) {
  * @param int $max_page Optional. Max pages. Default 0.
  * @return string|void The link URL for next posts page.
  */
-function get_next_posts_page_link($max_page = 0) {
+function get_next_posts_page_link( $max_page = 0) {
 	global $paged;
 
 	if ( !is_single() ) {
 		if ( !$paged ) {
-					$paged = 1;
+			$paged = 1;
 		}
-		$nextpage = intval($paged) + 1;
+		$nextpage = intval( $paged) + 1;
 		if ( !$max_page || $max_page >= $nextpage ) {
-					return get_pagenum_link($nextpage);
+			return get_pagenum_link( $nextpage);
 		}
 	}
 }
@@ -2263,7 +2263,7 @@ function get_next_posts_link( $label = null, $max_page = 0 ) {
 			$paged = 1;
 	}
 
-	$nextpage = intval($paged) + 1;
+	$nextpage = intval( $paged) + 1;
 
 	if ( null === $label ) {
 			$label = __( 'Next Page &raquo;' );
@@ -2279,7 +2279,7 @@ function get_next_posts_link( $label = null, $max_page = 0 ) {
 		 */
 		$attr = apply_filters( 'next_posts_link_attributes', '' );
 
-		return '<a href="' . next_posts( $max_page, false ) . "\" $attr>" . preg_replace('/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $label) . '</a>';
+		return '<a href="' . next_posts( $max_page, false ) . "\" $attr>" . preg_replace( '/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $label) . '</a>';
 	}
 }
 
@@ -2312,11 +2312,11 @@ function get_previous_posts_page_link() {
 	global $paged;
 
 	if ( !is_single() ) {
-		$nextpage = intval($paged) - 1;
+		$nextpage = intval( $paged) - 1;
 		if ( $nextpage < 1 ) {
 					$nextpage = 1;
 		}
-		return get_pagenum_link($nextpage);
+		return get_pagenum_link( $nextpage);
 	}
 }
 
@@ -2404,23 +2404,23 @@ function get_posts_nav_link( $args = [] ) {
 	if ( !is_singular() ) {
 		$defaults = array(
 			'sep' => ' &#8212; ',
-			'prelabel' => __('&laquo; Previous Page'),
-			'nxtlabel' => __('Next Page &raquo;'),
+			'prelabel' => __( '&laquo; Previous Page' ),
+			'nxtlabel' => __( 'Next Page &raquo;' ),
 		);
 		$args = wp_parse_args( $args, $defaults );
 
 		$max_num_pages = $wp_query->max_num_pages;
-		$paged = get_query_var('paged');
+		$paged = get_query_var( 'paged' );
 
 		//only have sep if there's both prev and next results
-		if ($paged < 2 || $paged >= $max_num_pages) {
+		if ( $paged < 2 || $paged >= $max_num_pages) {
 			$args['sep'] = '';
 		}
 
 		if ( $max_num_pages > 1 ) {
-			$return = get_previous_posts_link($args['prelabel']);
-			$return .= preg_replace('/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $args['sep']);
-			$return .= get_next_posts_link($args['nxtlabel']);
+			$return = get_previous_posts_link( $args['prelabel']);
+			$return .= preg_replace( '/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $args['sep']);
+			$return .= get_next_posts_link( $args['nxtlabel']);
 		}
 	}
 	return $return;
@@ -2437,8 +2437,8 @@ function get_posts_nav_link( $args = [] ) {
  * @param string $nxtlabel Optional Label for next pages. Default empty.
  */
 function posts_nav_link( $sep = '', $prelabel = '', $nxtlabel = '' ) {
-	$args = array_filter( compact('sep', 'prelabel', 'nxtlabel') );
-	echo get_posts_nav_link($args);
+	$args = array_filter( compact( 'sep', 'prelabel', 'nxtlabel' ) );
+	echo get_posts_nav_link( $args);
 }
 
 /**
@@ -2677,17 +2677,17 @@ function get_comments_pagenum_link( int $pagenum = 1, $max_page = 0 ) {
 	$app = getApp();
 	$result = get_permalink();
 
-	if ( 'newest' == get_option('default_comments_page') ) {
+	if ( 'newest' == get_option( 'default_comments_page' ) ) {
 		if ( $pagenum != $max_page ) {
 			if ( $app['rewrite']->using_permalinks() ) {
-				$result = user_trailingslashit( trailingslashit($result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged');
+				$result = user_trailingslashit( trailingslashit( $result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged' );
 			} else {
 				$result = add_query_arg( 'cpage', $pagenum, $result );
 			}
 		}
 	} elseif ( $pagenum > 1 ) {
 		if ( $app['rewrite']->using_permalinks() ) {
-			$result = user_trailingslashit( trailingslashit($result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged');
+			$result = user_trailingslashit( trailingslashit( $result) . $app['rewrite']->comments_pagination_base . '-' . $pagenum, 'commentpaged' );
 		} else {
 			$result = add_query_arg( 'cpage', $pagenum, $result );
 		}
@@ -2722,19 +2722,19 @@ function get_next_comments_link( $label = '', $max_page = 0 ) {
 			return;
 	}
 
-	$page = get_query_var('cpage');
+	$page = get_query_var( 'cpage' );
 
 	if ( ! $page ) {
 		$page = 1;
 	}
 
-	$nextpage = intval($page) + 1;
+	$nextpage = intval( $page) + 1;
 
-	if ( empty($max_page) ) {
+	if ( empty( $max_page) ) {
 			$max_page = $wp_query->max_num_comment_pages;
 	}
 
-	if ( empty($max_page) ) {
+	if ( empty( $max_page) ) {
 			$max_page = get_comment_pages_count();
 	}
 
@@ -2742,8 +2742,8 @@ function get_next_comments_link( $label = '', $max_page = 0 ) {
 			return;
 	}
 
-	if ( empty($label) ) {
-			$label = __('Newer Comments &raquo;');
+	if ( empty( $label) ) {
+			$label = __( 'Newer Comments &raquo;' );
 	}
 
 	/**
@@ -2753,7 +2753,7 @@ function get_next_comments_link( $label = '', $max_page = 0 ) {
 	 *
 	 * @param string $attributes Attributes for the anchor tag.
 	 */
-	return '<a href="' . esc_url( get_comments_pagenum_link( $nextpage, $max_page ) ) . '" ' . apply_filters( 'next_comments_link_attributes', '' ) . '>'. preg_replace('/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $label) .'</a>';
+	return '<a href="' . esc_url( get_comments_pagenum_link( $nextpage, $max_page ) ) . '" ' . apply_filters( 'next_comments_link_attributes', '' ) . '>'. preg_replace( '/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $label) .'</a>';
 }
 
 /**
@@ -2781,16 +2781,16 @@ function get_previous_comments_link( $label = '' ) {
 			return;
 	}
 
-	$page = get_query_var('cpage');
+	$page = get_query_var( 'cpage' );
 
-	if ( intval($page) <= 1 ) {
+	if ( intval( $page) <= 1 ) {
 			return;
 	}
 
-	$prevpage = intval($page) - 1;
+	$prevpage = intval( $page) - 1;
 
-	if ( empty($label) ) {
-			$label = __('&laquo; Older Comments');
+	if ( empty( $label) ) {
+			$label = __( '&laquo; Older Comments' );
 	}
 
 	/**
@@ -2800,7 +2800,7 @@ function get_previous_comments_link( $label = '' ) {
 	 *
 	 * @param string $attributes Attributes for the anchor tag.
 	 */
-	return '<a href="' . esc_url( get_comments_pagenum_link( $prevpage ) ) . '" ' . apply_filters( 'previous_comments_link_attributes', '' ) . '>' . preg_replace('/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $label) .'</a>';
+	return '<a href="' . esc_url( get_comments_pagenum_link( $prevpage ) ) . '" ' . apply_filters( 'previous_comments_link_attributes', '' ) . '>' . preg_replace( '/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $label) .'</a>';
 }
 
 /**
@@ -2825,12 +2825,12 @@ function previous_comments_link( $label = '' ) {
  */
 function paginate_comments_links( $args = [] ) {
 	if ( ! is_singular() ) {
-			return;
+		return;
 	}
 
-	$page = get_query_var('cpage');
+	$page = get_query_var( 'cpage' );
 	if ( !$page ) {
-			$page = 1;
+		$page = 1;
 	}
 	$max_page = get_comment_pages_count();
 	$defaults = array(
@@ -2843,18 +2843,18 @@ function paginate_comments_links( $args = [] ) {
 	);
 	$app = getApp();
 	if ( $app['rewrite']->using_permalinks() ) {
-			$defaults['base'] = user_trailingslashit(trailingslashit(get_permalink()) . $app['rewrite']->comments_pagination_base . '-%#%', 'commentpaged');
+		$defaults['base'] = user_trailingslashit(trailingslashit(get_permalink()) . $app['rewrite']->comments_pagination_base . '-%#%', 'commentpaged' );
 	}
 
 	$args = wp_parse_args( $args, $defaults );
 	$page_links = paginate_links( $args );
 
 	if ( $args['echo'] ) {
-			echo $page_links;
+		echo $page_links;
 	} else {
-			return $page_links;
+		return $page_links;
 	}
-	}
+}
 
 /**
  * Retrieves navigation to next/previous set of comments, when applicable.
@@ -2981,7 +2981,7 @@ function get_shortcut_link() {
 			$link = 'javascript:var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,' .
 				's=(e?e():(k)?k():(x?x.createRange().text:0)),f=' . $url . ',l=d.location,e=encodeURIComponent,' .
 				'u=f+"?u="+e(l.href)+"&t="+e(d.title)+"&s="+e(s)+"&v=' . WP_Press_This::VERSION . '";' .
-				'a=function(){if(!w.open(u,"t","toolbar=0,resizable=1,scrollbars=1,status=1,width=600,height=700"))l.href=u;};' .
+				'a=function(){if(!w.open(u,"t","toolbar=0,resizable=1,scrollbars=1,status=1,width=600,height=700" ))l.href=u;};' .
 				'if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else a();void(0)';
 		}
 	}
@@ -3054,9 +3054,9 @@ function get_home_url( $blog_id = null, $path = '', $scheme = null ) {
 
 	if ( ! in_array( $scheme, array( 'http', 'https', 'relative' ) ) ) {
 		if ( is_ssl() && ! is_admin() && 'wp-login.php' !== $app['pagenow'] ) {
-					$scheme = 'https';
+			$scheme = 'https';
 		} else {
-					$scheme = parse_url( $url, PHP_URL_SCHEME );
+			$scheme = parse_url( $url, PHP_URL_SCHEME );
 		}
 	}
 
@@ -3127,7 +3127,7 @@ function get_site_url( $blog_id = null, $path = '', $scheme = null ) {
 	$url = set_url_scheme( $url, $scheme );
 
 	if ( $path && is_string( $path ) ) {
-			$url .= '/' . ltrim( $path, '/' );
+		$url .= '/' . ltrim( $path, '/' );
 	}
 
 	/**
@@ -3171,10 +3171,10 @@ function admin_url( $path = '', $scheme = 'admin' ) {
  * @return string Admin URL link with optional path appended.
  */
 function get_admin_url( $blog_id = null, $path = '', $scheme = 'admin' ) {
-	$url = get_site_url($blog_id, 'wp-admin/', $scheme);
+	$url = get_site_url( $blog_id, 'wp-admin/', $scheme);
 
 	if ( $path && is_string( $path ) ) {
-			$url .= ltrim( $path, '/' );
+		$url .= ltrim( $path, '/' );
 	}
 
 	/**
@@ -3203,7 +3203,7 @@ function includes_url( $path = '', $scheme = null ) {
 	$url = site_url( '/' . WPINC . '/', $scheme );
 
 	if ( $path && is_string( $path ) ) {
-			$url .= ltrim($path, '/');
+		$url .= ltrim( $path, '/' );
 	}
 
 	/**
@@ -3230,7 +3230,7 @@ function content_url( $path = '' ) {
 	$url = set_url_scheme( WP_CONTENT_URL );
 
 	if ( $path && is_string( $path ) ) {
-			$url .= '/' . ltrim($path, '/');
+		$url .= '/' . ltrim( $path, '/' );
 	}
 
 	/**
@@ -3265,24 +3265,24 @@ function plugins_url( $path = '', $plugin = '' ) {
 	$plugin = wp_normalize_path( $plugin );
 	$mu_plugin_dir = wp_normalize_path( WPMU_PLUGIN_DIR );
 
-	if ( !empty($plugin) && 0 === strpos($plugin, $mu_plugin_dir) ) {
-			$url = WPMU_PLUGIN_URL;
+	if ( ! empty( $plugin) && 0 === strpos( $plugin, $mu_plugin_dir) ) {
+		$url = WPMU_PLUGIN_URL;
 	} else {
-			$url = WP_PLUGIN_URL;
+		$url = WP_PLUGIN_URL;
 	}
 
 
 	$url = set_url_scheme( $url );
 
-	if ( !empty($plugin) && is_string($plugin) ) {
-		$folder = dirname(plugin_basename($plugin));
+	if ( ! empty( $plugin) && is_string( $plugin) ) {
+		$folder = dirname(plugin_basename( $plugin));
 		if ( '.' != $folder ) {
-					$url .= '/' . ltrim($folder, '/');
+			$url .= '/' . ltrim( $folder, '/' );
 		}
 	}
 
 	if ( $path && is_string( $path ) ) {
-			$url .= '/' . ltrim($path, '/');
+		$url .= '/' . ltrim( $path, '/' );
 	}
 
 	/**
@@ -3317,7 +3317,7 @@ function plugins_url( $path = '', $plugin = '' ) {
  */
 function network_site_url( $path = '', $scheme = null ) {
 	if ( ! is_multisite() ) {
-		return site_url($path, $scheme);
+		return site_url( $path, $scheme);
 	}
 
 	$current_network = get_network();
@@ -3362,7 +3362,7 @@ function network_site_url( $path = '', $scheme = null ) {
  */
 function network_home_url( $path = '', $scheme = null ) {
 	if ( ! is_multisite() ) {
-		return home_url($path, $scheme);
+		return home_url( $path, $scheme);
 	}
 
 	$current_network = get_network();
@@ -3408,13 +3408,13 @@ function network_home_url( $path = '', $scheme = null ) {
  */
 function network_admin_url( $path = '', $scheme = 'admin' ) {
 	if ( ! is_multisite() ) {
-			return admin_url( $path, $scheme );
+		return admin_url( $path, $scheme );
 	}
 
-	$url = network_site_url('wp-admin/network/', $scheme);
+	$url = network_site_url( 'wp-admin/network/', $scheme);
 
 	if ( $path && is_string( $path ) ) {
-			$url .= ltrim($path, '/');
+		$url .= ltrim( $path, '/' );
 	}
 
 	/**
@@ -3440,10 +3440,10 @@ function network_admin_url( $path = '', $scheme = 'admin' ) {
  * @return string Admin URL link with optional path appended.
  */
 function user_admin_url( $path = '', $scheme = 'admin' ) {
-	$url = network_site_url('wp-admin/user/', $scheme);
+	$url = network_site_url( 'wp-admin/user/', $scheme);
 
 	if ( $path && is_string( $path ) ) {
-			$url .= ltrim($path, '/');
+		$url .= ltrim( $path, '/' );
 	}
 
 	/**
@@ -3470,13 +3470,13 @@ function user_admin_url( $path = '', $scheme = 'admin' ) {
  */
 function self_admin_url( $path = '', $scheme = 'admin' ) {
 	if ( is_network_admin() ) {
-			return network_admin_url($path, $scheme);
+		return network_admin_url( $path, $scheme);
 	} elseif ( is_user_admin() ) {
-			return user_admin_url($path, $scheme);
+		return user_admin_url( $path, $scheme);
 	} else {
-			return admin_url($path, $scheme);
+		return admin_url( $path, $scheme);
 	}
-	}
+}
 
 /**
  * Sets the scheme for a URL.
@@ -3509,7 +3509,7 @@ function set_url_scheme( $url, $scheme = null ) {
 	if ( 'relative' == $scheme ) {
 		$url = ltrim( preg_replace( '#^\w+://[^/]*#', '', $url ) );
 		if ( $url !== '' && $url[0] === '/' ) {
-			$url = '/' . ltrim($url , "/ \t\n\r\0\x0B" );
+			$url = '/' . ltrim( $url , "/ \t\n\r\0\x0B" );
 		}
 	} else {
 		$url = preg_replace( '#^\w+://#', $scheme . '://', $url );
@@ -3548,7 +3548,7 @@ function get_dashboard_url( $user_id = 0, $path = '', $scheme = 'admin' ) {
 	$user_id = $user_id ? (int) $user_id : get_current_user_id();
 
 	$blogs = get_blogs_of_user( $user_id );
-	if ( ! is_super_admin() && empty($blogs) ) {
+	if ( ! is_super_admin() && empty( $blogs) ) {
 		$url = user_admin_url( $path, $scheme );
 	} elseif ( ! is_multisite() ) {
 		$url = admin_url( $path, $scheme );
@@ -3559,9 +3559,9 @@ function get_dashboard_url( $user_id = 0, $path = '', $scheme = 'admin' ) {
 		} else {
 			$active = get_active_blog_for_user( $user_id );
 			if ( $active ) {
-							$url = get_admin_url( $active->blog_id, $path, $scheme );
+				$url = get_admin_url( $active->blog_id, $path, $scheme );
 			} else {
-							$url = user_admin_url( $path, $scheme );
+				$url = user_admin_url( $path, $scheme );
 			}
 		}
 	}
@@ -3594,11 +3594,11 @@ function get_edit_profile_url( $user_id = 0, $scheme = 'admin' ) {
 	$user_id = $user_id ? (int) $user_id : get_current_user_id();
 
 	if ( is_user_admin() ) {
-			$url = user_admin_url( 'profile.php', $scheme );
+		$url = user_admin_url( 'profile.php', $scheme );
 	} elseif ( is_network_admin() ) {
-			$url = network_admin_url( 'profile.php', $scheme );
+		$url = network_admin_url( 'profile.php', $scheme );
 	} else {
-			$url = get_dashboard_url( $user_id, 'profile.php', $scheme );
+		$url = get_dashboard_url( $user_id, 'profile.php', $scheme );
 	}
 
 	/**
@@ -3738,7 +3738,7 @@ function wp_get_shortlink( $id = 0, $context = 'post', $allow_slugs = true ) {
 	} elseif ( 'post' == $context ) {
 		$post = get_post( $id );
 		if ( ! empty( $post->ID ) ) {
-					$post_id = $post->ID;
+			$post_id = $post->ID;
 		}
 	}
 
@@ -3779,7 +3779,7 @@ function wp_shortlink_wp_head() {
 	$shortlink = wp_get_shortlink( 0, 'query' );
 
 	if ( empty( $shortlink ) ) {
-			return;
+		return;
 	}
 
 	echo "<link rel='shortlink' href='" . esc_url( $shortlink ) . "' />\n";
@@ -3794,16 +3794,16 @@ function wp_shortlink_wp_head() {
  */
 function wp_shortlink_header() {
 	if ( headers_sent() ) {
-			return;
+		return;
 	}
 
-	$shortlink = wp_get_shortlink(0, 'query');
+	$shortlink = wp_get_shortlink(0, 'query' );
 
-	if ( empty($shortlink) ) {
-			return;
+	if ( empty( $shortlink) ) {
+		return;
 	}
 
-	header('Link: <' . $shortlink . '>; rel=shortlink', false);
+	header( 'Link: <' . $shortlink . '>; rel=shortlink', false);
 }
 
 /**
@@ -3824,16 +3824,16 @@ function the_shortlink( $text = '', $title = '', $before = '', $after = '' ) {
 	$post = get_post();
 
 	if ( empty( $text ) ) {
-			$text = __('This is the short link.');
+		$text = __( 'This is the short link.' );
 	}
 
 	if ( empty( $title ) ) {
-			$title = the_title_attribute( array( 'echo' => false ) );
+		$title = the_title_attribute( array( 'echo' => false ) );
 	}
 
 	$shortlink = wp_get_shortlink( $post->ID );
 
-	if ( !empty( $shortlink ) ) {
+	if ( ! empty( $shortlink ) ) {
 		$link = '<a rel="shortlink" href="' . esc_url( $shortlink ) . '" title="' . $title . '">' . $text . '</a>';
 
 		/**

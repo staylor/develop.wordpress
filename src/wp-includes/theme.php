@@ -266,9 +266,9 @@ function get_locale_stylesheet_uri() {
 	$stylesheet_dir_uri = get_stylesheet_directory_uri();
 	$dir = get_stylesheet_directory();
 	$locale = get_locale();
-	if ( file_exists("$dir/$locale.css") ) {
+	if ( file_exists( "$dir/$locale.css" ) ) {
 		$stylesheet_uri = "$stylesheet_dir_uri/$locale.css";
-	} elseif ( !empty($wp_locale->text_direction) && file_exists("$dir/{$wp_locale->text_direction}.css") ) {
+	} elseif ( ! empty( $wp_locale->text_direction) && file_exists( "$dir/{$wp_locale->text_direction}.css" ) ) {
 		$stylesheet_uri = "$stylesheet_dir_uri/{$wp_locale->text_direction}.css";
 	} else {
 		$stylesheet_uri = '';
@@ -648,16 +648,16 @@ function get_raw_theme_root( $stylesheet_or_template, $skip_cache = false ) {
 
 	// If requesting the root for the current theme, consult options to avoid calling get_theme_roots()
 	if ( ! $skip_cache ) {
-		if ( get_option('stylesheet') == $stylesheet_or_template ) {
-			$theme_root = get_option('stylesheet_root');
-		} elseif ( get_option('template') == $stylesheet_or_template ) {
-			$theme_root = get_option('template_root');
+		if ( get_option( 'stylesheet' ) == $stylesheet_or_template ) {
+			$theme_root = get_option( 'stylesheet_root' );
+		} elseif ( get_option( 'template' ) == $stylesheet_or_template ) {
+			$theme_root = get_option( 'template_root' );
 		}
 	}
 
-	if ( empty($theme_root) ) {
+	if ( empty( $theme_root) ) {
 		$theme_roots = get_theme_roots();
-		if ( !empty($theme_roots[$stylesheet_or_template]) ) {
+		if ( ! empty( $theme_roots[$stylesheet_or_template] ) ) {
 			$theme_root = $theme_roots[$stylesheet_or_template];
 		}
 	}
@@ -672,7 +672,7 @@ function get_raw_theme_root( $stylesheet_or_template, $skip_cache = false ) {
  */
 function locale_stylesheet() {
 	$stylesheet = get_locale_stylesheet_uri();
-	if ( empty($stylesheet) ) {
+	if ( empty( $stylesheet) ) {
 		return;
 	}
 	echo '<link rel="stylesheet" href="' . $stylesheet . '" type="text/css" media="screen" />';
@@ -725,7 +725,7 @@ function switch_theme( $stylesheet ) {
 		delete_option( 'stylesheet_root' );
 	}
 
-	$new_name  = $new_theme->get('Name');
+	$new_name  = $new_theme->get( 'Name' );
 
 	update_option( 'current_theme', $new_name );
 
@@ -846,7 +846,7 @@ function get_theme_mods() {
 	if ( false === $mods ) {
 		$theme_name = get_option( 'current_theme' );
 		if ( false === $theme_name ) {
-			$theme_name = wp_get_theme()->get('Name');
+			$theme_name = wp_get_theme()->get( 'Name' );
 		}
 		$mods = get_option( "mods_$theme_name" ); // Deprecated location.
 		if ( is_admin() && false !== $mods ) {
@@ -966,7 +966,7 @@ function remove_theme_mods() {
 	// Old style.
 	$theme_name = get_option( 'current_theme' );
 	if ( false === $theme_name ) {
-		$theme_name = wp_get_theme()->get('Name');
+		$theme_name = wp_get_theme()->get( 'Name' );
 	}
 	delete_option( 'mods_' . $theme_name );
 }
@@ -979,7 +979,7 @@ function remove_theme_mods() {
  * @return string Header text color in HEX format (minus the hash symbol).
  */
 function get_header_textcolor() {
-	return get_theme_mod('header_textcolor', get_theme_support( 'custom-header', 'default-text-color' ) );
+	return get_theme_mod( 'header_textcolor', get_theme_support( 'custom-header', 'default-text-color' ) );
 }
 
 /**
@@ -1231,7 +1231,7 @@ function get_uploaded_header_images() {
 	$header_images = [];
 
 	// @todo caching
-	$headers = get_posts( [ 'post_type' => 'attachment', 'meta_key' => '_wp_attachment_is_custom_header', 'meta_value' => get_option('stylesheet'), 'orderby' => 'none', 'nopaging' => true ] );
+	$headers = get_posts( [ 'post_type' => 'attachment', 'meta_key' => '_wp_attachment_is_custom_header', 'meta_value' => get_option( 'stylesheet' ), 'orderby' => 'none', 'nopaging' => true ] );
 
 	if ( empty( $headers ) ) {
 		return [];
@@ -1346,7 +1346,7 @@ function unregister_default_headers( $header ) {
  * @return string
  */
 function get_background_image() {
-	return get_theme_mod('background_image', get_theme_support( 'custom-background', 'default-image' ) );
+	return get_theme_mod( 'background_image', get_theme_support( 'custom-background', 'default-image' ) );
 }
 
 /**
@@ -1366,7 +1366,7 @@ function background_image() {
  * @return string
  */
 function get_background_color() {
-	return get_theme_mod('background_color', get_theme_support( 'custom-background', 'default-color' ) );
+	return get_theme_mod( 'background_color', get_theme_support( 'custom-background', 'default-color' ) );
 }
 
 /**
@@ -2045,7 +2045,7 @@ function current_theme_supports( $feature ) {
 		return current_theme_supports( 'custom-header', 'uploads' );
 	}
 
-	if ( !isset( $app->theme['features'][ $feature ] ) ) {
+	if ( ! isset( $app->theme['features'][ $feature ] ) ) {
 		return false;
 	}
 

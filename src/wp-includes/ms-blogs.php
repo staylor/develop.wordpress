@@ -19,7 +19,7 @@ function wpmu_update_blogs_date() {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	update_blog_details( $wpdb->blogid, array('last_updated' => current_time('mysql', true)) );
+	update_blog_details( $wpdb->blogid, array( 'last_updated' => current_time( 'mysql', true)) );
 	/**
 	 * Fires after the blog details are updated.
 	 *
@@ -65,7 +65,7 @@ function get_blogaddress_by_name( $blogname ) {
 					$blogname = 'www';
 		}
 		$url = rtrim( network_home_url(), '/' );
-		if ( !empty( $blogname ) ) {
+		if ( ! empty( $blogname ) ) {
 					$url = preg_replace( '|^([^\.]+://)|', "\${1}" . $blogname . '.', $url );
 		}
 	} else {
@@ -124,12 +124,12 @@ function get_blog_details( $fields = null, $get_all = true ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( is_array($fields ) ) {
-		if ( isset($fields['blog_id']) ) {
+	if ( is_array( $fields ) ) {
+		if ( isset( $fields['blog_id'] ) ) {
 			$blog_id = $fields['blog_id'];
-		} elseif ( isset($fields['domain']) && isset($fields['path']) ) {
+		} elseif ( isset( $fields['domain'] ) && isset( $fields['path'] ) ) {
 			$key = md5( $fields['domain'] . $fields['path'] );
-			$blog = wp_cache_get($key, 'blog-lookup');
+			$blog = wp_cache_get( $key, 'blog-lookup' );
 			if ( false !== $blog ) {
 							return $blog;
 			}
@@ -140,14 +140,14 @@ function get_blog_details( $fields = null, $get_all = true ) {
 				$blog = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->blogs WHERE domain = %s AND path = %s", $fields['domain'], $fields['path'] ) );
 			}
 			if ( $blog ) {
-				wp_cache_set($blog->blog_id . 'short', $blog, 'blog-details');
+				wp_cache_set( $blog->blog_id . 'short', $blog, 'blog-details' );
 				$blog_id = $blog->blog_id;
 			} else {
 				return false;
 			}
-		} elseif ( isset($fields['domain']) && is_subdomain_install() ) {
+		} elseif ( isset( $fields['domain'] ) && is_subdomain_install() ) {
 			$key = md5( $fields['domain'] );
-			$blog = wp_cache_get($key, 'blog-lookup');
+			$blog = wp_cache_get( $key, 'blog-lookup' );
 			if ( false !== $blog ) {
 							return $blog;
 			}
@@ -158,7 +158,7 @@ function get_blog_details( $fields = null, $get_all = true ) {
 				$blog = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->blogs WHERE domain = %s", $fields['domain'] ) );
 			}
 			if ( $blog ) {
-				wp_cache_set($blog->blog_id . 'short', $blog, 'blog-details');
+				wp_cache_set( $blog->blog_id . 'short', $blog, 'blog-details' );
 				$blog_id = $blog->blog_id;
 			} else {
 				return false;
@@ -188,7 +188,7 @@ function get_blog_details( $fields = null, $get_all = true ) {
 			} else {
 				// Clear old pre-serialized objects. Cache clients do better with that.
 				wp_cache_delete( $blog_id . $all, 'blog-details' );
-				unset($details);
+				unset( $details);
 			}
 		} else {
 			return $details;
@@ -208,7 +208,7 @@ function get_blog_details( $fields = null, $get_all = true ) {
 				} else {
 					// Clear old pre-serialized objects. Cache clients do better with that.
 					wp_cache_delete( $blog_id, 'blog-details' );
-					unset($details);
+					unset( $details);
 				}
 			} else {
 				return $details;
@@ -216,7 +216,7 @@ function get_blog_details( $fields = null, $get_all = true ) {
 		}
 	}
 
-	if ( empty($details) ) {
+	if ( empty( $details) ) {
 		$details = WP_Site::get_instance( $blog_id );
 		if ( ! $details ) {
 			// Set the full cache.
@@ -307,26 +307,26 @@ function update_blog_details( $blog_id, $details = [] ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( empty($details) ) {
-			return false;
+	if ( empty( $details) ) {
+		return false;
 	}
 
-	if ( is_object($details) ) {
-			$details = get_object_vars($details);
+	if ( is_object( $details) ) {
+		$details = get_object_vars( $details);
 	}
 
-	$current_details = get_blog_details($blog_id, false);
-	if ( empty($current_details) ) {
-			return false;
+	$current_details = get_blog_details( $blog_id, false);
+	if ( empty( $current_details) ) {
+		return false;
 	}
 
-	$current_details = get_object_vars($current_details);
+	$current_details = get_object_vars( $current_details);
 
-	$details = array_merge($current_details, $details);
-	$details['last_updated'] = current_time('mysql', true);
+	$details = array_merge( $current_details, $details);
+	$details['last_updated'] = current_time( 'mysql', true);
 
 	$update_details = [];
-	$fields = array( 'site_id', 'domain', 'path', 'registered', 'last_updated', 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id');
+	$fields = array( 'site_id', 'domain', 'path', 'registered', 'last_updated', 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id' );
 	foreach ( array_intersect( array_keys( $details ), $fields ) as $field ) {
 		if ( 'path' === $field ) {
 			$details[ $field ] = trailingslashit( '/' . trim( $details[ $field ], '/' ) );
@@ -335,7 +335,7 @@ function update_blog_details( $blog_id, $details = [] ) {
 		$update_details[ $field ] = $details[ $field ];
 	}
 
-	$result = $wpdb->update( $wpdb->blogs, $update_details, array('blog_id' => $blog_id) );
+	$result = $wpdb->update( $wpdb->blogs, $update_details, array( 'blog_id' => $blog_id) );
 
 	if ( false === $result ) {
 			return false;
@@ -439,7 +439,7 @@ function update_blog_details( $blog_id, $details = [] ) {
 		restore_current_blog();
 	}
 
-	refresh_blog_details($blog_id);
+	refresh_blog_details( $blog_id);
 
 	return true;
 }
@@ -927,7 +927,7 @@ function ms_is_switched() {
  * @return string Whether the blog is archived or not
  */
 function is_archived( $id ) {
-	return get_blog_status($id, 'archived');
+	return get_blog_status( $id, 'archived' );
 }
 
 /**
@@ -940,7 +940,7 @@ function is_archived( $id ) {
  * @return string $archived
  */
 function update_archived( $id, $archived ) {
-	update_blog_status($id, 'archived', $archived);
+	update_blog_status( $id, 'archived', $archived);
 	return $archived;
 }
 
@@ -963,11 +963,11 @@ function update_blog_status( $blog_id, $pref, $value, $deprecated = null ) {
 			_deprecated_argument( __FUNCTION__, '3.1.0' );
 	}
 
-	if ( ! in_array( $pref, array( 'site_id', 'domain', 'path', 'registered', 'last_updated', 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id') ) ) {
+	if ( ! in_array( $pref, array( 'site_id', 'domain', 'path', 'registered', 'last_updated', 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id' ) ) ) {
 			return $value;
 	}
 
-	$result = $wpdb->update( $wpdb->blogs, array($pref => $value, 'last_updated' => current_time('mysql', true)), array('blog_id' => $blog_id) );
+	$result = $wpdb->update( $wpdb->blogs, array( $pref => $value, 'last_updated' => current_time( 'mysql', true)), array( 'blog_id' => $blog_id) );
 
 	if ( false === $result ) {
 			return false;
@@ -1040,7 +1040,7 @@ function get_blog_status( $id, $pref ) {
 			return $details->$pref;
 	}
 
-	return $wpdb->get_var( $wpdb->prepare("SELECT %s FROM {$wpdb->blogs} WHERE blog_id = %d", $pref, $id) );
+	return $wpdb->get_var( $wpdb->prepare( "SELECT %s FROM {$wpdb->blogs} WHERE blog_id = %d", $pref, $id) );
 }
 
 /**
@@ -1062,7 +1062,7 @@ function get_last_updated( $deprecated = '', $start = 0, $quantity = 40 ) {
 	}
 	// never used
 
-	return $wpdb->get_results( $wpdb->prepare("SELECT blog_id, domain, path FROM $wpdb->blogs WHERE site_id = %d AND public = '1' AND archived = '0' AND mature = '0' AND spam = '0' AND deleted = '0' AND last_updated != '0000-00-00 00:00:00' ORDER BY last_updated DESC limit %d, %d", $wpdb->siteid, $start, $quantity ) , ARRAY_A );
+	return $wpdb->get_results( $wpdb->prepare( "SELECT blog_id, domain, path FROM $wpdb->blogs WHERE site_id = %d AND public = '1' AND archived = '0' AND mature = '0' AND spam = '0' AND deleted = '0' AND last_updated != '0000-00-00 00:00:00' ORDER BY last_updated DESC limit %d, %d", $wpdb->siteid, $start, $quantity ) , ARRAY_A );
 }
 
 /**
@@ -1177,7 +1177,7 @@ function _prime_network_caches( $network_ids ) {
 	$wpdb = $app['db'];
 
 	$non_cached_ids = _get_non_cached_ids( $network_ids, 'networks' );
-	if ( !empty( $non_cached_ids ) ) {
+	if ( ! empty( $non_cached_ids ) ) {
 		$fresh_networks = $wpdb->get_results( sprintf( "SELECT $wpdb->site.* FROM $wpdb->site WHERE id IN (%s)", join( ",", array_map( 'intval', $non_cached_ids ) ) ) );
 
 		update_network_cache( $fresh_networks );

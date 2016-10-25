@@ -150,7 +150,7 @@ function wp_safe_remote_head( $url, $args = [] ) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return Error|array The response or Error on failure.
  */
-function wp_remote_request($url, $args = []) {
+function wp_remote_request( $url, $args = []) {
 	$http = _wp_http_get_object();
 	return $http->request( $url, $args );
 }
@@ -167,7 +167,7 @@ function wp_remote_request($url, $args = []) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return Error|array The response or Error on failure.
  */
-function wp_remote_get($url, $args = []) {
+function wp_remote_get( $url, $args = []) {
 	$http = _wp_http_get_object();
 	return $http->get( $url, $args );
 }
@@ -184,7 +184,7 @@ function wp_remote_get($url, $args = []) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return Error|array The response or Error on failure.
  */
-function wp_remote_post($url, $args = []) {
+function wp_remote_post( $url, $args = []) {
 	$http = _wp_http_get_object();
 	return $http->post( $url, $args );
 }
@@ -201,7 +201,7 @@ function wp_remote_post($url, $args = []) {
  * @param array  $args Optional. Request arguments. Default empty array.
  * @return Error|array The response or Error on failure.
  */
-function wp_remote_head($url, $args = []) {
+function wp_remote_head( $url, $args = []) {
 	$http = _wp_http_get_object();
 	return $http->head( $url, $args );
 }
@@ -257,8 +257,8 @@ function wp_remote_retrieve_header( $response, $header ) {
  * @return int|string The response code as an integer. Empty string on incorrect parameter given.
  */
 function wp_remote_retrieve_response_code( $response ) {
-	if ( is_wp_error($response) || ! isset($response['response']) || ! is_array($response['response'])) {
-			return '';
+	if ( is_wp_error( $response) || ! isset( $response['response']) || ! is_array( $response['response']) ) {
+		return '';
 	}
 
 	return $response['response']['code'];
@@ -275,8 +275,8 @@ function wp_remote_retrieve_response_code( $response ) {
  * @return string The response message. Empty string on incorrect parameter given.
  */
 function wp_remote_retrieve_response_message( $response ) {
-	if ( is_wp_error($response) || ! isset($response['response']) || ! is_array($response['response'])) {
-			return '';
+	if ( is_wp_error( $response) || ! isset( $response['response']) || ! is_array( $response['response']) ) {
+		return '';
 	}
 
 	return $response['response']['message'];
@@ -291,8 +291,8 @@ function wp_remote_retrieve_response_message( $response ) {
  * @return string The body of the response. Empty string if no body or incorrect parameter given.
  */
 function wp_remote_retrieve_body( $response ) {
-	if ( is_wp_error($response) || ! isset($response['body']) ) {
-			return '';
+	if ( is_wp_error( $response) || ! isset( $response['body']) ) {
+		return '';
 	}
 
 	return $response['body'];
@@ -381,7 +381,7 @@ function wp_http_supports( $capabilities = [], $url = null ) {
 		$capabilities = array_combine( array_values( $capabilities ), array_fill( 0, $count, true ) );
 	}
 
-	if ( $url && !isset( $capabilities['ssl'] ) ) {
+	if ( $url && ! isset( $capabilities['ssl'] ) ) {
 		$scheme = parse_url( $url, PHP_URL_SCHEME );
 		if ( 'https' == $scheme || 'ssl' == $scheme ) {
 			$capabilities['ssl'] = true;

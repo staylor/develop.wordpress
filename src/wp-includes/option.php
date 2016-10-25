@@ -124,7 +124,7 @@ function get_option( $option, $default = false ) {
 			return get_option( 'siteurl' );
 	}
 
-	if ( in_array( $option, array('siteurl', 'home', 'category_base', 'tag_base') ) ) {
+	if ( in_array( $option, array( 'siteurl', 'home', 'category_base', 'tag_base' ) ) ) {
 			$value = untrailingslashit( $value );
 	}
 
@@ -193,7 +193,7 @@ function wp_load_alloptions() {
 		if ( !$alloptions_db = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options WHERE autoload = 'yes'" ) ) {
 					$alloptions_db = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options" );
 		}
-		$wpdb->suppress_errors($suppress);
+		$wpdb->suppress_errors( $suppress);
 		$alloptions = [];
 		foreach ( (array) $alloptions_db as $o ) {
 			$alloptions[$o->option_name] = $o->option_value;
@@ -221,14 +221,14 @@ function wp_load_core_site_options( $site_id = null ) {
 			return;
 	}
 
-	if ( empty($site_id) ) {
+	if ( empty( $site_id) ) {
 			$site_id = $wpdb->siteid;
 	}
 
-	$core_options = array('site_name', 'siteurl', 'active_sitewide_plugins', '_site_transient_timeout_theme_roots', '_site_transient_theme_roots', 'site_admins', 'can_compress_scripts', 'global_terms_enabled', 'ms_files_rewriting' );
+	$core_options = array( 'site_name', 'siteurl', 'active_sitewide_plugins', '_site_transient_timeout_theme_roots', '_site_transient_theme_roots', 'site_admins', 'can_compress_scripts', 'global_terms_enabled', 'ms_files_rewriting' );
 
-	$core_options_in = "'" . implode("', '", $core_options) . "'";
-	$options = $wpdb->get_results( $wpdb->prepare("SELECT meta_key, meta_value FROM $wpdb->sitemeta WHERE meta_key IN ($core_options_in) AND site_id = %d", $site_id) );
+	$core_options_in = "'" . implode( "', '", $core_options) . "'";
+	$options = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->sitemeta WHERE meta_key IN ( $core_options_in) AND site_id = %d", $site_id) );
 
 	foreach ( $options as $option ) {
 		$key = $option->meta_key;
@@ -264,8 +264,8 @@ function update_option( $option, $value, $autoload = null ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	$option = trim($option);
-	if ( empty($option) ) {
+	$option = trim( $option);
+	if ( empty( $option) ) {
 			return false;
 	}
 
@@ -412,26 +412,26 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = 'yes' )
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( !empty( $deprecated ) ) {
-			_deprecated_argument( __FUNCTION__, '2.3.0' );
+	if ( ! empty( $deprecated ) ) {
+		_deprecated_argument( __FUNCTION__, '2.3.0' );
 	}
 
-	$option = trim($option);
-	if ( empty($option) ) {
-			return false;
+	$option = trim( $option);
+	if ( empty( $option) ) {
+		return false;
 	}
 
 	wp_protect_special_option( $option );
 
-	if ( is_object($value) ) {
-			$value = clone $value;
+	if ( is_object( $value) ) {
+		$value = clone $value;
 	}
 
 	$value = sanitize_option( $option, $value );
 
 	// Make sure the option doesn't already exist. We can check the 'notoptions' cache before we ask for a db query
 	$notoptions = wp_cache_get( 'notoptions', 'options' );
-	if ( !is_array( $notoptions ) || !isset( $notoptions[$option] ) ) {
+	if ( !is_array( $notoptions ) || ! isset( $notoptions[$option] ) ) {
 			/** This filter is documented in wp-includes/option.php */
 		if ( apply_filters( 'default_option_' . $option, false, $option ) !== get_option( $option ) ) {
 			return false;
@@ -658,7 +658,7 @@ function get_transient( $transient ) {
 		if ( ! wp_installing() ) {
 			// If option is not in alloptions, it is not autoloaded and thus has a timeout
 			$alloptions = wp_load_alloptions();
-			if ( !isset( $alloptions[$transient_option] ) ) {
+			if ( ! isset( $alloptions[$transient_option] ) ) {
 				$transient_timeout = '_transient_timeout_' . $transient;
 				$timeout = get_option( $transient_timeout );
 				if ( false !== $timeout && $timeout < time() ) {
@@ -1594,7 +1594,7 @@ function get_site_transient( $transient ) {
 		$value = wp_cache_get( $transient, 'site-transient' );
 	} else {
 		// Core transients that do not have a timeout. Listed here so querying timeouts can be avoided.
-		$no_timeout = array('update_core', 'update_plugins', 'update_themes');
+		$no_timeout = array( 'update_core', 'update_plugins', 'update_themes' );
 		$transient_option = '_site_transient_' . $transient;
 		if ( ! in_array( $transient, $no_timeout ) ) {
 			$transient_timeout = '_site_transient_timeout_' . $transient;

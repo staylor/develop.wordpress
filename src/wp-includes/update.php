@@ -35,17 +35,17 @@ function wp_version_check( $extra_stats = [], $force_check = false ) {
 
 	// Invalidate the transient when $wp_version changes
 	if ( is_object( $current ) && $app['wp_version'] != $current->version_checked ) {
-			$current = false;
+		$current = false;
 	}
 
-	if ( ! is_object($current) ) {
+	if ( ! is_object( $current ) ) {
 		$current = new stdClass;
 		$current->updates = [];
 		$current->version_checked = $app['wp_version'];
 	}
 
 	if ( ! empty( $extra_stats ) ) {
-			$force_check = true;
+		$force_check = true;
 	}
 
 	// Wait 60 seconds between multiple version check requests
@@ -69,9 +69,9 @@ function wp_version_check( $extra_stats = [], $force_check = false ) {
 	set_site_transient( 'update_core', $current );
 
 	if ( method_exists( $wpdb, 'db_version' ) ) {
-			$mysql_version = preg_replace('/[^0-9.].*/', '', $wpdb->db_version());
+		$mysql_version = preg_replace( '/[^0-9.].*/', '', $wpdb->db_version() );
 	} else {
-			$mysql_version = 'N/A';
+		$mysql_version = 'N/A';
 	}
 
 	if ( is_multisite() ) {
@@ -104,16 +104,16 @@ function wp_version_check( $extra_stats = [], $force_check = false ) {
 	];
 
 	if ( is_array( $extra_stats ) ) {
-			$post_body = array_merge( $post_body, $extra_stats );
+		$post_body = array_merge( $post_body, $extra_stats );
 	}
 
 	$url = $http_url = 'http://api.wordpress.org/core/version-check/1.7/?' . http_build_query( $query, null, '&' );
 	if ( $ssl = wp_http_supports( [ 'ssl' ] ) ) {
-			$url = set_url_scheme( $url, 'https' );
+		$url = set_url_scheme( $url, 'https' );
 	}
 
 	$options = [
-		'timeout' => ( ( defined('DOING_CRON') && DOING_CRON ) ? 30 : 3 ),
+		'timeout' => ( ( defined( 'DOING_CRON' ) && DOING_CRON ) ? 30 : 3 ),
 		'user-agent' => 'WordPress/' . $app['wp_version'] . '; ' . home_url( '/' ),
 		'headers' => [
 			'wp_install' => $wp_install,
@@ -144,12 +144,12 @@ function wp_version_check( $extra_stats = [], $force_check = false ) {
 	foreach ( $offers as &$offer ) {
 		foreach ( $offer as $offer_key => $value ) {
 			if ( 'packages' == $offer_key ) {
-							$offer['packages'] = (object) array_intersect_key( array_map( 'esc_url', $offer['packages'] ),
+				$offer['packages'] = (object) array_intersect_key( array_map( 'esc_url', $offer['packages'] ),
 					array_fill_keys( [ 'full', 'no_content', 'new_bundled', 'partial', 'rollback' ], '' ) );
 			} elseif ( 'download' == $offer_key ) {
-							$offer['download'] = esc_url( $value );
+				$offer['download'] = esc_url( $value );
 			} else {
-							$offer[ $offer_key ] = esc_html( $value );
+				$offer[ $offer_key ] = esc_html( $value );
 			}
 		}
 		$offer = (object) array_intersect_key( $offer, array_fill_keys( [ 'response', 'download', 'locale',
@@ -162,7 +162,7 @@ function wp_version_check( $extra_stats = [], $force_check = false ) {
 	$updates->version_checked = $app['wp_version'];
 
 	if ( isset( $body['translations'] ) ) {
-			$updates->translations = $body['translations'];
+		$updates->translations = $body['translations'];
 	}
 
 	set_site_transient( 'update_core', $updates );
@@ -209,7 +209,7 @@ function wp_update_plugins( $extra_stats = [] ) {
 
 	$active  = get_option( 'active_plugins', [] );
 	$current = get_site_transient( 'update_plugins' );
-	if ( ! is_object($current) ) {
+	if ( ! is_object( $current ) ) {
 			$current = new stdClass;
 	}
 
@@ -243,14 +243,14 @@ function wp_update_plugins( $extra_stats = [] ) {
 		foreach ( $plugins as $file => $p ) {
 			$new_option->checked[ $file ] = $p['Version'];
 
-			if ( !isset( $current->checked[ $file ] ) || strval($current->checked[ $file ]) !== strval($p['Version']) ) {
-							$plugin_changed = true;
+			if ( ! isset( $current->checked[ $file ] ) || strval( $current->checked[ $file ] ) !== strval( $p['Version'] ) ) {
+				$plugin_changed = true;
 			}
 		}
 
 		if ( isset ( $current->response ) && is_array( $current->response ) ) {
 			foreach ( $current->response as $plugin_file => $update_details ) {
-				if ( ! isset($plugins[ $plugin_file ]) ) {
+				if ( ! isset( $plugins[ $plugin_file ] ) ) {
 					$plugin_changed = true;
 					break;
 				}
@@ -371,7 +371,7 @@ function wp_update_themes( $extra_stats = [] ) {
 	$translations = wp_get_installed_translations( 'themes' );
 
 	$last_update = get_site_transient( 'update_themes' );
-	if ( ! is_object($last_update) ) {
+	if ( ! is_object( $last_update) ) {
 			$last_update = new stdClass;
 	}
 
@@ -381,14 +381,14 @@ function wp_update_themes( $extra_stats = [] ) {
 	$request['active'] = get_option( 'stylesheet' );
 
 	foreach ( $installed_themes as $theme ) {
-		$checked[ $theme->get_stylesheet() ] = $theme->get('Version');
+		$checked[ $theme->get_stylesheet() ] = $theme->get( 'Version' );
 
 		$themes[ $theme->get_stylesheet() ] = [
-			'Name'       => $theme->get('Name'),
-			'Title'      => $theme->get('Name'),
-			'Version'    => $theme->get('Version'),
-			'Author'     => $theme->get('Author'),
-			'Author URI' => $theme->get('AuthorURI'),
+			'Name'       => $theme->get( 'Name' ),
+			'Title'      => $theme->get( 'Name' ),
+			'Version'    => $theme->get( 'Version' ),
+			'Author'     => $theme->get( 'Author' ),
+			'Author URI' => $theme->get( 'AuthorURI' ),
 			'Template'   => $theme->get_template(),
 			'Stylesheet' => $theme->get_stylesheet(),
 		];
@@ -419,14 +419,14 @@ function wp_update_themes( $extra_stats = [] ) {
 	if ( $time_not_changed && ! $extra_stats ) {
 		$theme_changed = false;
 		foreach ( $checked as $slug => $v ) {
-			if ( !isset( $last_update->checked[ $slug ] ) || strval($last_update->checked[ $slug ]) !== strval($v) ) {
+			if ( ! isset( $last_update->checked[ $slug ] ) || strval( $last_update->checked[ $slug ] ) !== strval( $v) ) {
 							$theme_changed = true;
 			}
 		}
 
 		if ( isset ( $last_update->response ) && is_array( $last_update->response ) ) {
 			foreach ( $last_update->response as $slug => $update_details ) {
-				if ( ! isset($checked[ $slug ]) ) {
+				if ( ! isset( $checked[ $slug ] ) ) {
 					$theme_changed = true;
 					break;
 				}
@@ -569,7 +569,7 @@ function wp_get_update_data() {
 
 	if ( ( $core = current_user_can( 'update_core' ) ) && function_exists( 'get_core_updates' ) ) {
 		$update_wordpress = get_core_updates( [ 'dismissed' => false ] );
-		if ( ! empty( $update_wordpress ) && ! in_array( $update_wordpress[0]->response, [ 'development', 'latest' ] ) && current_user_can('update_core') ) {
+		if ( ! empty( $update_wordpress ) && ! in_array( $update_wordpress[0]->response, [ 'development', 'latest' ] ) && current_user_can( 'update_core' ) ) {
 					$counts['wordpress'] = 1;
 		}
 	}
@@ -581,7 +581,7 @@ function wp_get_update_data() {
 	$counts['total'] = $counts['plugins'] + $counts['themes'] + $counts['wordpress'] + $counts['translations'];
 	$titles = [];
 	if ( $counts['wordpress'] ) {
-			$titles['wordpress'] = sprintf( __( '%d WordPress Update'), $counts['wordpress'] );
+			$titles['wordpress'] = sprintf( __( '%d WordPress Update' ), $counts['wordpress'] );
 	}
 	if ( $counts['plugins'] ) {
 			$titles['plugins'] = sprintf( _n( '%d Plugin Update', '%d Plugin Updates', $counts['plugins'] ), $counts['plugins'] );
@@ -670,15 +670,15 @@ function _maybe_update_themes() {
  */
 function wp_schedule_update_checks() {
 	if ( ! wp_next_scheduled( 'wp_version_check' ) && ! wp_installing() ) {
-			wp_schedule_event(time(), 'twicedaily', 'wp_version_check');
+			wp_schedule_event(time(), 'twicedaily', 'wp_version_check' );
 	}
 
 	if ( ! wp_next_scheduled( 'wp_update_plugins' ) && ! wp_installing() ) {
-			wp_schedule_event(time(), 'twicedaily', 'wp_update_plugins');
+			wp_schedule_event(time(), 'twicedaily', 'wp_update_plugins' );
 	}
 
 	if ( ! wp_next_scheduled( 'wp_update_themes' ) && ! wp_installing() ) {
-			wp_schedule_event(time(), 'twicedaily', 'wp_update_themes');
+			wp_schedule_event(time(), 'twicedaily', 'wp_update_themes' );
 	}
 	}
 

@@ -282,7 +282,7 @@ function wp_debug_mode() {
  */
 function wp_set_lang_dir() {
 	if ( !defined( 'WP_LANG_DIR' ) ) {
-		if ( file_exists( WP_CONTENT_DIR . '/languages' ) && @is_dir( WP_CONTENT_DIR . '/languages' ) || !@is_dir(ABSPATH . WPINC . '/languages') ) {
+		if ( file_exists( WP_CONTENT_DIR . '/languages' ) && @is_dir( WP_CONTENT_DIR . '/languages' ) || !@is_dir(ABSPATH . WPINC . '/languages' ) ) {
 			/**
 			 * Server path of the language directory.
 			 *
@@ -354,8 +354,8 @@ function wp_set_wpdb_vars() {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( !empty( $wpdb->error ) ) {
-			dead_db();
+	if ( ! empty( $wpdb->error ) ) {
+		dead_db();
 	}
 
 	$wpdb->field_types = array( 'post_author' => '%d', 'post_parent' => '%d', 'menu_order' => '%d', 'term_id' => '%d', 'term_group' => '%d', 'term_taxonomy_id' => '%d',

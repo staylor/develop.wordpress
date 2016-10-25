@@ -440,8 +440,8 @@ function wp_register_widget_control( $id, $name, $control_callback, $options = [
 		return;
 	}
 
-	if ( isset( $widget['params'][ 0 ][ 'number' ] ) ) {
-		$widget['params'][ 0 ][ 'number' ] = -1;
+	if ( isset( $widget['params'][0]['number'] ) ) {
+		$widget['params'][0]['number'] = -1;
 	}
 
 	unset( $widget['width'], $widget['height'], $widget['name'], $widget['id'] );
@@ -600,7 +600,7 @@ function dynamic_sidebar( $index = 1 ) {
 
 		// Substitute HTML id and class attributes into before_widget
 		$classname_ = '';
-		foreach ( (array) $app->widgets['registered'][ $id ][ 'classname' ] as $cn ) {
+		foreach ( (array) $app->widgets['registered'][ $id ]['classname'] as $cn ) {
 			if ( is_string( $cn ) ) {
 				$classname_ .= '_' . $cn;
 			} elseif ( is_object( $cn ) ) {
@@ -608,7 +608,7 @@ function dynamic_sidebar( $index = 1 ) {
 			}
 		}
 		$classname_ = ltrim( $classname_, '_' );
-		$params[ 0 ][ 'before_widget' ] = sprintf( $params[ 0 ][ 'before_widget' ], $id, $classname_ );
+		$params[0]['before_widget'] = sprintf( $params[0]['before_widget'], $id, $classname_ );
 
 		/**
 		 * Filters the parameters passed to a widget's display callback.
@@ -839,10 +839,10 @@ function wp_get_sidebars_widgets( $deprecated = true ) {
 	// If loading from front page, consult $_wp_sidebars_widgets rather than options
 	// to see if wp_convert_widget_settings() has made manipulations in memory.
 	if ( ! is_admin() ) {
-		if ( empty( $app->sidebars[ '_widgets' ] ) ) {
-			$app->sidebars[ '_widgets' ] = get_option( 'sidebars_widgets', [] );
+		if ( empty( $app->sidebars['_widgets'] ) ) {
+			$app->sidebars['_widgets'] = get_option( 'sidebars_widgets', [] );
 		}
-		$sidebars_widgets = $app->sidebars[ '_widgets' ];
+		$sidebars_widgets = $app->sidebars['_widgets'];
 	} else {
 		$sidebars_widgets = get_option( 'sidebars_widgets', [] );
 	}
@@ -858,8 +858,8 @@ function wp_get_sidebars_widgets( $deprecated = true ) {
 	 *
 	 * @param array $sidebars_widgets An associative array of sidebars and their widgets.
 	 */
-	$app->sidebars[ 'widgets' ] = apply_filters( 'sidebars_widgets', $sidebars_widgets );
-	return $app->sidebars[ 'widgets' ];
+	$app->sidebars['widgets'] = apply_filters( 'sidebars_widgets', $sidebars_widgets );
+	return $app->sidebars['widgets'];
 }
 
 /**
@@ -931,10 +931,10 @@ function wp_convert_widget_settings( $base_name, $option_name, $settings ) {
 		if ( is_admin() ) {
 			$sidebars_widgets = get_option( 'sidebars_widgets' );
 		} else {
-			if ( empty( $app->sidebars[ '_widgets' ] ) ) {
-				$app->sidebars[ '_widgets' ] = get_option( 'sidebars_widgets', [] );
+			if ( empty( $app->sidebars['_widgets'] ) ) {
+				$app->sidebars['_widgets'] = get_option( 'sidebars_widgets', [] );
 			}
-			$sidebars_widgets = & $app->sidebars[ '_widgets' ];
+			$sidebars_widgets = & $app->sidebars['_widgets'];
 		}
 
 		foreach ( (array) $sidebars_widgets as $index => $sidebar ) {
@@ -997,8 +997,8 @@ function the_widget( $widget, $instance = [], $args = [] ) {
 		'after_title'   => '</h2>',
 	];
 	$opts = wp_parse_args( $args, $default_args );
-	$opts[ 'before_widget' ] = sprintf(
-		$opts[ 'before_widget' ],
+	$opts['before_widget'] = sprintf(
+		$opts['before_widget'],
 		$widget_obj->widget_options['classname']
 	);
 
@@ -1057,7 +1057,7 @@ function _wp_sidebars_changed() {
  */
 function retrieve_widgets( $theme_changed = false ) {
 	$app = getApp();
-	$sidebars_widgets = $app->sidebars[ 'widgets' ];
+	$sidebars_widgets = $app->sidebars['widgets'];
 
 	$registered_sidebar_keys = array_keys( $app->sidebars['registered'] );
 	$orphaned = 0;
@@ -1166,7 +1166,7 @@ function retrieve_widgets( $theme_changed = false ) {
 		wp_set_sidebars_widgets( $sidebars_widgets );
 	}
 
-	$app->sidebars[ 'widgets' ] = $sidebars_widgets;
+	$app->sidebars['widgets'] = $sidebars_widgets;
 	return $sidebars_widgets;
 }
 
@@ -1304,7 +1304,7 @@ function wp_widget_rss_form( $args, $inputs = null ) {
 		echo '<p class="widget-error"><strong>' . sprintf( __( 'RSS Error: %s' ), $args[ 'error' ] ) . '</strong></p>';
 	}
 
-	$esc_number = esc_attr( $args[ 'number' ] );
+	$esc_number = esc_attr( $args['number'] );
 	if ( $inputs[ 'url' ] ) :
 ?>
 	<p><label for="rss-url-<?php echo $esc_number; ?>"><?php _e( 'Enter the RSS feed URL here:' ); ?></label>

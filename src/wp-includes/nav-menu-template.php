@@ -119,7 +119,7 @@ function wp_nav_menu( $args = [] ) {
 	}
 
 	// If the menu exists, get its items.
-	if ( $menu && ! is_wp_error($menu) && !isset($menu_items) ) {
+	if ( $menu && ! is_wp_error( $menu) && ! isset( $menu_items) ) {
 			$menu_items = wp_get_nav_menu_items( $menu->term_id, array( 'update_post_term_cache' => false ) );
 	}
 
@@ -131,7 +131,7 @@ function wp_nav_menu( $args = [] ) {
 	 *  - Fall back, but only if no theme location was specified.
 	 *  - Otherwise, bail.
 	 */
-	if ( ( !$menu || is_wp_error($menu) || ( isset($menu_items) && empty($menu_items) && !$args->theme_location ) )
+	if ( ( !$menu || is_wp_error( $menu) || ( isset( $menu_items) && empty( $menu_items) && !$args->theme_location ) )
 		&& isset( $args->fallback_cb ) && $args->fallback_cb && is_callable( $args->fallback_cb ) ) {
 				return call_user_func( $args->fallback_cb, (array) $args );
 	}
@@ -194,7 +194,7 @@ function wp_nav_menu( $args = [] ) {
 	$sorted_menu_items = apply_filters( 'wp_nav_menu_objects', $sorted_menu_items, $args );
 
 	$items .= walk_nav_menu_tree( $sorted_menu_items, $args->depth, $args );
-	unset($sorted_menu_items);
+	unset( $sorted_menu_items);
 
 	// Attributes
 	if ( ! empty( $args->menu_id ) ) {
@@ -435,14 +435,14 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 				$classes[] = 'current-menu-item';
 			}
 
-			if ( untrailingslashit($item_url) == home_url() ) {
-							$classes[] = 'menu-item-home';
+			if ( untrailingslashit( $item_url) == home_url() ) {
+				$classes[] = 'menu-item-home';
 			}
 		}
 
 		// back-compat with wp_page_menu: add "current_page_parent" to static home page link for any non-page query
 		if ( ! empty( $home_page_id ) && 'post_type' == $menu_item->type && empty( $wp_query->is_page ) && $home_page_id == $menu_item->object_id ) {
-					$classes[] = 'current_page_parent';
+			$classes[] = 'current_page_parent';
 		}
 
 		$menu_items[$key]->classes = array_unique( $classes );
@@ -493,16 +493,16 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 			$menu_items[$key]->current_item_parent = true;
 		}
 		if ( in_array( $parent_item->object_id, $active_parent_object_ids ) ) {
-					$classes[] = 'current-' . $active_object . '-parent';
+			$classes[] = 'current-' . $active_object . '-parent';
 		}
 
 		if ( 'post_type' == $parent_item->type && 'page' == $parent_item->object ) {
 			// Back compat classes for pages to match wp_page_menu()
-			if ( in_array('current-menu-parent', $classes) ) {
-							$classes[] = 'current_page_parent';
+			if ( in_array( 'current-menu-parent', $classes) ) {
+				$classes[] = 'current_page_parent';
 			}
-			if ( in_array('current-menu-ancestor', $classes) ) {
-							$classes[] = 'current_page_ancestor';
+			if ( in_array( 'current-menu-ancestor', $classes) ) {
+				$classes[] = 'current_page_ancestor';
 			}
 		}
 
@@ -522,7 +522,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
  * @return string The HTML list content for the menu items.
  */
 function walk_nav_menu_tree( $items, $depth, $r ) {
-	$walker = ( empty($r->walker) ) ? new Walker_Nav_Menu : $r->walker;
+	$walker = ( empty( $r->walker) ) ? new Walker_Nav_Menu : $r->walker;
 	$args = array( $items, $depth, $r );
 
 	return call_user_func_array( array( $walker, 'walk' ), $args );

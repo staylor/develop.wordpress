@@ -76,7 +76,7 @@ function get_query_template( $type, $templates = [] ) {
  * @return string Full path to index template file.
  */
 function get_index_template() {
-	return get_query_template('index');
+	return get_query_template( 'index' );
 }
 
 /**
@@ -92,7 +92,7 @@ function get_index_template() {
  * @return string Full path to 404 template file.
  */
 function get_404_template() {
-	return get_query_template('404');
+	return get_query_template( '404' );
 }
 
 /**
@@ -337,7 +337,7 @@ function get_taxonomy_template() {
  * @return string Full path to date template file.
  */
 function get_date_template() {
-	return get_query_template('date');
+	return get_query_template( 'date' );
 }
 
 /**
@@ -407,7 +407,7 @@ function get_front_page_template() {
 function get_page_template() {
 	$id = get_queried_object_id();
 	$template = get_page_template_slug();
-	$pagename = get_query_var('pagename');
+	$pagename = get_query_var( 'pagename' );
 
 	if ( ! $pagename && $id ) {
 		// If a static page is set as the front page, $pagename will not be set. Retrieve it from the queried object
@@ -449,7 +449,7 @@ function get_page_template() {
  * @return string Full path to search template file.
  */
 function get_search_template() {
-	return get_query_template('search');
+	return get_query_template( 'search' );
 }
 
 /**
@@ -622,13 +622,13 @@ function get_attachment_template() {
  * @param bool         $require_once   Whether to require_once or require. Default true. Has no effect if $load is false.
  * @return string The template filename if one is located.
  */
-function locate_template($template_names, $load = false, $require_once = true ) {
+function locate_template( $template_names, $load = false, $require_once = true ) {
 	$located = '';
 	foreach ( (array) $template_names as $template_name ) {
 		if ( !$template_name ) {
 			continue;
 		}
-		if ( file_exists(STYLESHEETPATH . '/' . $template_name)) {
+		if ( file_exists(STYLESHEETPATH . '/' . $template_name) ) {
 			$located = STYLESHEETPATH . '/' . $template_name;
 			break;
 		} elseif ( file_exists(TEMPLATEPATH . '/' . $template_name) ) {
