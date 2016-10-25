@@ -705,7 +705,7 @@ class Manager {
 			'<div class="move-widget-area">
 				<p class="description">{description}</p>
 				<ul class="widget-area-select">
-					<% _.each( sidebars, function ( sidebar ){ %>
+					<% _.each( sidebars, function ( sidebar ) { %>
 						<li class="" data-id="<%- sidebar.id %>" title="<%- sidebar.description %>" tabindex="0"><%- sidebar.name %></li>
 					<% }); %>
 				</ul>

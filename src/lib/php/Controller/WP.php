@@ -136,6 +136,48 @@ class WP extends Observer {
 		$this->query_vars[ $key ] = $value;
 	}
 
+	protected function find_matched_rule( $file, $path, $rewrite ) {
+		$use_verbose_page_rules = $this->app['rewrite']->use_verbose_page_rules;
+		foreach ( (array) $rewrite as $match => $query ) {
+			// If the requested file is the anchor of the match, prepend it to the path info.
+			if ( ! empty( $file ) && strpos( $match, $file) === 0 && $file != $path ) {
+				$request_match = $file . '/' . $path;
+			}
+
+			$matches = null;
+			$pattern = sprintf( '#^%s#', $match );
+			if (
+				! ( preg_match( $pattern, $request_match, $matches ) ||
+				preg_match( $pattern, urldecode( $request_match ), $matches ) )
+			) {
+				continue;
+			}
+
+			$varmatch = null;
+			if ( $use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
+				// This is a verbose page match, let's check to be sure about it.
+				$page = get_page_by_path( $matches[ $varmatch[1] ] );
+				if ( ! $page ) {
+					continue;
+				}
+
+				$post_status_obj = get_post_status_object( $page->post_status );
+				if (
+					! $post_status_obj->public &&
+					! $post_status_obj->protected &&
+					! $post_status_obj->private &&
+					$post_status_obj->exclude_from_search
+				) {
+					continue;
+				}
+			}
+
+			// Got a match.
+			$this->matched_rule = $match;
+			return;
+		}
+	}
+
 	/**
 	 * Parse request to find correct WordPress query.
 	 *
@@ -228,45 +270,7 @@ class WP extends Observer {
 					$matches = [ '' ];
 				}
 			} else {
-				foreach ( (array) $rewrite as $match => $query ) {
-					// If the requested file is the anchor of the match, prepend it to the path info.
-					if (
-						! empty( $requested_file ) &&
-						strpos( $match, $requested_file) === 0 &&
-						$requested_file != $requested_path
-					) {
-						$request_match = $requested_file . '/' . $requested_path;
-					}
-
-					$pattern = sprintf( '#^%s#', $match );
-					if (
-						preg_match( $pattern, $request_match, $matches ) ||
-						preg_match( $pattern, urldecode( $request_match ), $matches )
-					) {
-
-						if ( $this->app['rewrite']->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
-							// This is a verbose page match, let's check to be sure about it.
-							$page = get_page_by_path( $matches[ $varmatch[1] ] );
-							if ( ! $page ) {
-								continue;
-							}
-
-							$post_status_obj = get_post_status_object( $page->post_status );
-							if (
-								! $post_status_obj->public &&
-								! $post_status_obj->protected
-								&& ! $post_status_obj->private &&
-								$post_status_obj->exclude_from_search
-							) {
-								continue;
-							}
-						}
-
-						// Got a match.
-						$this->matched_rule = $match;
-						break;
-					}
-				}
+				$this->find_matched_rule( $requested_file, $requested_path, $rewrite );
 			}
 
 			if ( isset( $this->matched_rule ) ) {
@@ -331,21 +335,23 @@ class WP extends Observer {
 				$this->query_vars[ $wpvar ] = $perma_query_vars[ $wpvar ];
 			}
 
-			if ( ! empty( $this->query_vars[ $wpvar ] ) ) {
-				if ( ! is_array( $this->query_vars[ $wpvar ] ) ) {
-					$this->query_vars[ $wpvar ] = (string) $this->query_vars[ $wpvar ];
-				} else {
-					foreach ( $this->query_vars[ $wpvar ] as $vkey => $v ) {
-						if ( ! is_object( $v ) ) {
-							$this->query_vars[ $wpvar ][$vkey] = (string) $v;
-						}
+			if ( empty( $this->query_vars[ $wpvar ] ) ) {
+				continue;
+			}
+
+			if ( ! is_array( $this->query_vars[ $wpvar ] ) ) {
+				$this->query_vars[ $wpvar ] = (string) $this->query_vars[ $wpvar ];
+			} else {
+				foreach ( $this->query_vars[ $wpvar ] as $vkey => $v ) {
+					if ( ! is_object( $v ) ) {
+						$this->query_vars[ $wpvar ][$vkey] = (string) $v;
 					}
 				}
+			}
 
-				if ( isset( $post_type_query_vars[ $wpvar ] ) ) {
-					$this->query_vars['post_type'] = $post_type_query_vars[ $wpvar ];
-					$this->query_vars['name'] = $this->query_vars[ $wpvar ];
-				}
+			if ( isset( $post_type_query_vars[ $wpvar ] ) ) {
+				$this->query_vars['post_type'] = $post_type_query_vars[ $wpvar ];
+				$this->query_vars['name'] = $this->query_vars[ $wpvar ];
 			}
 		}
 

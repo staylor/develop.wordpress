@@ -586,8 +586,8 @@ function _wp_ajax_add_hierarchical_term() {
 	ob_start();
 
 	wp_dropdown_categories( array(
-		'taxonomy' => $taxonomy->name, 'hide_empty' => 0, 'name' => 'new'.$taxonomy->name.'_parent', 'orderby' => 'name',
-		'hierarchical' => 1, 'show_option_none' => '&mdash; '.$taxonomy->labels->parent_item.' &mdash;'
+		'taxonomy' => $taxonomy->name, 'hide_empty' => 0, 'name' => 'new' . $taxonomy->name . '_parent', 'orderby' => 'name',
+		'hierarchical' => 1, 'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;'
 	) );
 
 	$sup = ob_get_clean();
@@ -2029,7 +2029,7 @@ function wp_ajax_find_posts() {
 		wp_send_json_error( __( 'No items found.' ) );
 	}
 
-	$html = '<table class="widefat"><thead><tr><th class="found-radio"><br /></th><th>'.__( 'Title' ).'</th><th class="no-break">'.__( 'Type' ).'</th><th class="no-break">'.__( 'Date' ).'</th><th class="no-break">'.__( 'Status' ).'</th></tr></thead><tbody>';
+	$html = '<table class="widefat"><thead><tr><th class="found-radio"><br /></th><th>' . __( 'Title' ) . '</th><th class="no-break">' . __( 'Type' ) . '</th><th class="no-break">' . __( 'Date' ) . '</th><th class="no-break">' . __( 'Status' ) . '</th></tr></thead><tbody>';
 	$alt = '';
 	foreach ( $posts as $post ) {
 		$title = trim( $post->post_title ) ? $post->post_title : __( '(no title)' );
@@ -2058,8 +2058,8 @@ function wp_ajax_find_posts() {
 			$time = mysql2date( __( 'Y/m/d' ), $post->post_date);
 		}
 
-		$html .= '<tr class="' . trim( 'found-posts ' . $alt ) . '"><td class="found-radio"><input type="radio" id="found-'.$post->ID.'" name="found_post_id" value="' . esc_attr( $post->id ) . '"></td>';
-		$html .= '<td><label for="found-'.$post->ID.'">' . esc_html( $title ) . '</label></td><td class="no-break">' . esc_html( $post_types[$post->post_type]->labels->singular_name ) . '</td><td class="no-break">'.esc_html( $time ) . '</td><td class="no-break">' . esc_html( $stat ). ' </td></tr>' . "\n\n";
+		$html .= '<tr class="' . trim( 'found-posts ' . $alt ) . '"><td class="found-radio"><input type="radio" id="found-' . $post->ID . '" name="found_post_id" value="' . esc_attr( $post->id ) . '"></td>';
+		$html .= '<td><label for="found-' . $post->ID . '">' . esc_html( $title ) . '</label></td><td class="no-break">' . esc_html( $post_types[$post->post_type]->labels->singular_name ) . '</td><td class="no-break">'.esc_html( $time ) . '</td><td class="no-break">' . esc_html( $stat ). ' </td></tr>' . "\n\n";
 	}
 
 	$html .= '</tbody></table>';
@@ -3060,7 +3060,7 @@ function wp_ajax_send_link_to_editor() {
 	$post = get_post( $_post->getInt( 'post_id', 0 ) );
 
 	// Ping WordPress for an embed.
-	$check_embed = $wp_embed->run_shortcode( '[embed]'. $src .'[/embed]' );
+	$check_embed = $wp_embed->run_shortcode( '[embed]' . $src . '[/embed]' );
 
 	// Fallback that WordPress creates when no oEmbed was found.
 	$fallback = $wp_embed->maybe_make_link( $src );

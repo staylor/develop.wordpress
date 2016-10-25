@@ -899,7 +899,7 @@ function get_term_children( int $term_id, $taxonomy ) {
 			continue;
 		}
 
-		if ( isset( $terms[ $child] ) ) {
+		if ( isset( $terms[ $child ] ) ) {
 			$children = array_merge( $children, get_term_children( $child, $taxonomy ) );
 		}
 	}
@@ -1439,7 +1439,7 @@ function sanitize_term( $term, $taxonomy, $context = 'display' ) {
  *                         'attribute', or 'js'.
  * @return mixed Sanitized field.
  */
-function sanitize_term_field( $field, $value, $term_id, $taxonomy, $context) {
+function sanitize_term_field( $field, $value, $term_id, $taxonomy, $context ) {
 	$int_fields = [ 'parent', 'term_id', 'count', 'term_group', 'term_taxonomy_id', 'object_id' ];
 	if ( in_array( $field, $int_fields ) ) {
 		$value = (int) $value;
@@ -1721,7 +1721,7 @@ function wp_delete_term( int $term, $taxonomy, $args = [] ) {
 		}
 		$parent = $term_obj->parent;
 
-		$edit_ids = $wpdb->get_results( "SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE `parent` = " . (int)$term_obj->term_id );
+		$edit_ids = $wpdb->get_results( "SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE `parent` = " . (int) $term_obj->term_id );
 		$edit_tt_ids = wp_list_pluck( $edit_ids, 'term_taxonomy_id' );
 
 		/**
@@ -2267,14 +2267,14 @@ function wp_set_object_terms( int $object_id, $terms, $taxonomy, $append = false
 			}
 			$term_info = wp_insert_term( $term, $taxonomy );
 		}
-		if ( is_wp_error( $term_info) ) {
+		if ( is_wp_error( $term_info ) ) {
 			return $term_info;
 		}
 		$term_ids[] = $term_info['term_id'];
 		$tt_id = $term_info['term_taxonomy_id'];
 		$tt_ids[] = $tt_id;
 
-		$sql =  "SELECT term_taxonomy_id FROM $wpdb->term_relationships WHERE object_id = %d AND term_taxonomy_id = %d";
+		$sql = "SELECT term_taxonomy_id FROM $wpdb->term_relationships WHERE object_id = %d AND term_taxonomy_id = %d";
 		if ( $wpdb->get_var( $wpdb->prepare( $sql, $object_id, $tt_id ) ) ) {
 			continue;
 		}
@@ -2690,7 +2690,7 @@ function wp_update_term( int $term_id, $taxonomy, $args = [] ) {
 		// If an empty slug was passed or the parent changed, reset the slug to something unique.
 		// Otherwise, bail.
 		if ( $empty_slug || ( $parent != $term['parent'] ) ) {
-			$slug = wp_unique_term_slug( $slug, (object) $args);
+			$slug = wp_unique_term_slug( $slug, (object) $args );
 		} else {
 			return new Error( 'duplicate_term_slug', sprintf( __( 'The slug &#8220;%s&#8221; is already in use by another term' ), $slug ) );
 		}
@@ -2907,7 +2907,7 @@ function wp_update_term_count_now( $terms, $taxonomy ) {
 	$terms = array_map( 'intval', $terms );
 
 	$taxonomy = get_taxonomy( $taxonomy );
-	if ( ! empty( $taxonomy->update_count_callback) ) {
+	if ( ! empty( $taxonomy->update_count_callback ) ) {
 		call_user_func( $taxonomy->update_count_callback, $terms, $taxonomy );
 	} else {
 		$object_types = (array) $taxonomy->object_type;
@@ -3254,7 +3254,7 @@ function _get_term_children( $term_id, $terms, $taxonomy, &$ancestors = [] ) {
 	$term_list = [];
 	$has_children = _get_term_hierarchy( $taxonomy );
 
-	if  ( ( 0 != $term_id ) && ! isset( $has_children[ $term_id ] ) ) {
+	if ( ( 0 != $term_id ) && ! isset( $has_children[ $term_id ] ) ) {
 		return $empty_array;
 	}
 
@@ -3321,13 +3321,13 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 
 	// This function only works for hierarchical taxonomies like post categories.
 	if ( ! is_taxonomy_hierarchical( $taxonomy ) ) {
-			return;
+		return;
 	}
 
 	$term_hier = _get_term_hierarchy( $taxonomy );
 
 	if ( empty( $term_hier) ) {
-			return;
+		return;
 	}
 
 	$term_items = [];
@@ -3335,14 +3335,14 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 	$term_ids = [];
 
 	foreach ( (array) $terms as $key => $term ) {
-		$terms_by_id[ $term->term_id ] = & $terms[ $key];
+		$terms_by_id[ $term->term_id ] = & $terms[ $key ];
 		$term_ids[ $term->term_taxonomy_id ] = $term->term_id;
 	}
 
 	// Get the object and term ids and stick them in a lookup table.
 	$tax_obj = get_taxonomy( $taxonomy );
 	$object_types = esc_sql( $tax_obj->object_type );
-	$results = $wpdb->get_results( "SELECT object_id, term_taxonomy_id FROM $wpdb->term_relationships INNER JOIN $wpdb->posts ON object_id = ID WHERE term_taxonomy_id IN ( " . implode( ',', array_keys( $term_ids ) ) . " ) AND post_type IN ( '" . implode( "', '", $object_types) . "' ) AND post_status = 'publish'" );
+	$results = $wpdb->get_results( "SELECT object_id, term_taxonomy_id FROM $wpdb->term_relationships INNER JOIN $wpdb->posts ON object_id = ID WHERE term_taxonomy_id IN ( " . implode( ',', array_keys( $term_ids ) ) . " ) AND post_type IN ( '" . implode( "', '", $object_types ) . "' ) AND post_status = 'publish'" );
 	foreach ( $results as $row ) {
 		$id = $term_ids[ $row->term_taxonomy_id ];
 		$term_items[ $id ][ $row->object_id ] = isset( $term_items[ $id ][ $row->object_id ] ) ? ++$term_items[ $id ][ $row->object_id ] : 1;
@@ -3352,11 +3352,11 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 	foreach ( $term_ids as $term_id ) {
 		$child = $term_id;
 		$ancestors = [];
-		while ( ! empty( $terms_by_id[ $child] ) && $parent = $terms_by_id[ $child]->parent ) {
+		while ( ! empty( $terms_by_id[ $child ] ) && $parent = $terms_by_id[ $child ]->parent ) {
 			$ancestors[] = $child;
 			if ( ! empty( $term_items[ $term_id ] ) ) {
 				foreach ( $term_items[ $term_id ] as $item_id => $touches ) {
-					$term_items[ $parent][ $item_id ] = isset( $term_items[ $parent][ $item_id ] ) ? ++$term_items[ $parent][ $item_id ]: 1;
+					$term_items[ $parent ][ $item_id ] = isset( $term_items[ $parent ][ $item_id ] ) ? ++$term_items[ $parent ][ $item_id ]: 1;
 				}
 			}
 			$child = $parent;
@@ -3369,11 +3369,11 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 
 	// Transfer the touched cells.
 	foreach ( (array) $term_items as $id => $items ) {
-			if ( isset( $terms_by_id[ $id ] ) ) {
-						$terms_by_id[ $id ]->count = count( $items);
-			}
+		if ( isset( $terms_by_id[ $id ] ) ) {
+			$terms_by_id[ $id ]->count = count( $items );
+		}
 	}
-	}
+}
 
 /**
  * Adds any terms from the given IDs to the cache that do not already exist in cache.
@@ -3912,7 +3912,7 @@ function get_term_link( $term, $taxonomy = '' ) {
 	$slug = $term->slug;
 	$t = get_taxonomy( $taxonomy );
 
-	if ( empty( $termlink) ) {
+	if ( empty( $termlink ) ) {
 		if ( 'category' == $taxonomy ) {
 			$termlink = '?cat=' . $term->term_id;
 		} elseif ( $t->query_var ) {

@@ -160,7 +160,7 @@ class Error {
 			$code = $this->get_error_code();
 		}
 
-		if ( isset( $this->error_data[ $code ]) ) {
+		if ( isset( $this->error_data[ $code ] ) ) {
 			return $this->error_data[ $code ];
 		}
 	}
@@ -177,7 +177,7 @@ class Error {
 	 */
 	public function add( $code, $message, $data = '' ) {
 		$this->errors[ $code ][] = $message;
-		if ( ! empty( $data) ) {
+		if ( ! empty( $data ) ) {
 			$this->error_data[ $code ] = $data;
 		}
 	}

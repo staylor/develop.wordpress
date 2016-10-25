@@ -134,7 +134,7 @@ function _wp_oembed_get_object() {
 function wp_oembed_add_provider( $format, $provider, $regex = false ) {
 	if ( did_action( 'plugins_loaded' ) ) {
 		$oembed = _wp_oembed_get_object();
-		$oembed->providers[$format] = array( $provider, $regex );
+		$oembed->providers[ $format ] = array( $provider, $regex );
 	} else {
 		WP_oEmbed::_add_provider_early( $format, $provider, $regex );
 	}
@@ -451,7 +451,7 @@ function get_post_embed_html( $width, $height, $post = null ) {
 		 * minified JavaScript. If you need to debug it, please turn on SCRIPT_DEBUG
 		 * and edit wp-embed.js directly.
 		 */
-		$output .=<<<JS
+		$output .= <<<JS
 		include "js/wp-embed.min.js"
 JS;
 	}

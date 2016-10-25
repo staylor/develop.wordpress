@@ -58,7 +58,7 @@ class FormHandler extends AdminHandler {
 		$username = $user_details->user_login;
 		$user_id = $user_details->ID;
 
-		if ( ( $username != null && ! is_super_admin( $user_id ) ) && ( array_key_exists( $this->app->blog_id, get_blogs_of_user( $user_id )) ) ) {
+		if ( ( $username != null && ! is_super_admin( $user_id ) ) && ( array_key_exists( $this->app->blog_id, get_blogs_of_user( $user_id ) ) ) ) {
 			$location = add_query_arg( [ 'update' => 'addexisting' ], 'user-new.php' );
 			$this->redirect( $location );
 		} else {

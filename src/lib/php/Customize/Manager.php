@@ -2892,7 +2892,7 @@ class Manager {
 			<?php
 
 			// Serialize settings one by one to improve memory usage.
-			echo "(function ( s ){\n";
+			echo "(function ( s ) {\n";
 			foreach ( $this->settings() as $setting ) {
 				if ( $setting->check_capabilities() ) {
 					printf(
@@ -2905,7 +2905,7 @@ class Manager {
 			echo "})( _wpCustomizeSettings.settings );\n";
 
 			// Serialize controls one by one to improve memory usage.
-			echo "(function ( c ){\n";
+			echo "(function ( c ) {\n";
 			foreach ( $this->controls() as $control ) {
 				if ( $control->check_capabilities() ) {
 					printf(

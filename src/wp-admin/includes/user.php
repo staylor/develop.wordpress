@@ -65,7 +65,7 @@ function edit_user( $user_id = 0 ) {
 
 		// If the new role isn't editable by the logged-in user die with error
 		$editable_roles = get_editable_roles();
-		if ( ! empty( $new_role ) && empty( $editable_roles[$new_role] ) ) {
+		if ( ! empty( $new_role ) && empty( $editable_roles[ $new_role ] ) ) {
 			wp_die( __( 'You can&#8217;t give users that role.' ) );
 		}
 	}
@@ -80,7 +80,7 @@ function edit_user( $user_id = 0 ) {
 		} else {
 			$user->user_url = esc_url_raw( $_post->get( 'url' ) );
 			$protocols = implode( '|', array_map( 'preg_quote', wp_allowed_protocols() ) );
-			$user->user_url = preg_match( '/^( ' . $protocols . ' ):/is', $user->user_url) ? $user->user_url : 'http://'.$user->user_url;
+			$user->user_url = preg_match( '/^( ' . $protocols . ' ):/is', $user->user_url ) ? $user->user_url : 'http://' . $user->user_url;
 		}
 	}
 	if ( $_post->get( 'first_name' ) ) {
@@ -450,6 +450,8 @@ function default_password_nag_handler( $errors = false ) {
 		return;
 	}
 
+	$app = getApp();
+	$_get = $app['request']->query;
 	// get_user_setting = JS saved UI setting. else no-js-fallback code.
 	if ( 'hide' == get_user_setting( 'default_password_nag' ) || $_get->get( 'default_password_nag' ) && '0' == $_get->get( 'default_password_nag' ) ) {
 		delete_user_setting( 'default_password_nag' );
@@ -463,13 +465,13 @@ function default_password_nag_handler( $errors = false ) {
  * @param int    $user_ID
  * @param object $old_data
  */
-function default_password_nag_edit_user( $user_ID, $old_data) {
+function default_password_nag_edit_user( $user_ID, $old_data ) {
 	// Short-circuit it.
-	if ( ! get_user_option( 'default_password_nag', $user_id ) ) {
+	if ( ! get_user_option( 'default_password_nag', $user_ID ) ) {
 		return;
 	}
 
-	$new_data = get_userdata( $user_id );
+	$new_data = get_userdata( $user_ID );
 
 	// Remove the nag if the password has been changed.
 	if ( $new_data->user_pass != $old_data->user_pass ) {
@@ -526,11 +528,11 @@ jQuery(document).ready( function( $) {
  *
  * @param object $user User data object
  */
-function use_ssl_preference( $user) {
+function use_ssl_preference( $user ) {
 ?>
 	<tr class="user-use-ssl-wrap">
 		<th scope="row"><?php _e( 'Use https' )?></th>
-		<td><label for="use_ssl"><input name="use_ssl" type="checkbox" id="use_ssl" value="1" <?php checked( '1', $user->use_ssl); ?> /> <?php _e( 'Always use https when visiting the admin' ); ?></label></td>
+		<td><label for="use_ssl"><input name="use_ssl" type="checkbox" id="use_ssl" value="1" <?php checked( '1', $user->use_ssl ); ?> /> <?php _e( 'Always use https when visiting the admin' ); ?></label></td>
 	</tr>
 <?php
 }

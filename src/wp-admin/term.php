@@ -20,7 +20,7 @@ if ( empty( $tag_ID ) ) {
 	exit;
 }
 
-$tag    = get_term( $tag_ID, $taxnow, OBJECT, 'edit' );
+$tag = get_term( $tag_ID, $taxnow, OBJECT, 'edit' );
 
 if ( ! $tag instanceof WP_Term ) {
 	wp_die( __( 'You attempted to edit an item that doesn&#8217;t exist. Perhaps it was deleted?' ) );

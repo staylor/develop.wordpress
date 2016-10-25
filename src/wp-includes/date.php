@@ -271,7 +271,7 @@ class WP_Date_Query {
 	 */
 	public function get_compare( $query ) {
 		if ( ! empty( $query['compare'] ) && in_array( $query['compare'], array( '=', '!=', '>', '>=', '<', '<=', 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN' ) ) ) {
-					return strtoupper( $query['compare'] );
+			return strtoupper( $query['compare'] );
 		}
 
 		return $this->compare;
@@ -933,27 +933,27 @@ class WP_Date_Query {
 		$datetime = array_map( 'absint', $datetime );
 
 		if ( ! isset( $datetime['year'] ) ) {
-					$datetime['year'] = gmdate( 'Y', $now );
+			$datetime['year'] = gmdate( 'Y', $now );
 		}
 
 		if ( ! isset( $datetime['month'] ) ) {
-					$datetime['month'] = ( $default_to_max ) ? 12 : 1;
+			$datetime['month'] = ( $default_to_max ) ? 12 : 1;
 		}
 
 		if ( ! isset( $datetime['day'] ) ) {
-					$datetime['day'] = ( $default_to_max ) ? (int) date( 't', mktime( 0, 0, 0, $datetime['month'], 1, $datetime['year'] ) ) : 1;
+			$datetime['day'] = ( $default_to_max ) ? (int) date( 't', mktime( 0, 0, 0, $datetime['month'], 1, $datetime['year'] ) ) : 1;
 		}
 
 		if ( ! isset( $datetime['hour'] ) ) {
-					$datetime['hour'] = ( $default_to_max ) ? 23 : 0;
+			$datetime['hour'] = ( $default_to_max ) ? 23 : 0;
 		}
 
 		if ( ! isset( $datetime['minute'] ) ) {
-					$datetime['minute'] = ( $default_to_max ) ? 59 : 0;
+			$datetime['minute'] = ( $default_to_max ) ? 59 : 0;
 		}
 
 		if ( ! isset( $datetime['second'] ) ) {
-					$datetime['second'] = ( $default_to_max ) ? 59 : 0;
+			$datetime['second'] = ( $default_to_max ) ? 59 : 0;
 		}
 
 		return sprintf( '%04d-%02d-%02d %02d:%02d:%02d', $datetime['year'], $datetime['month'], $datetime['day'], $datetime['hour'], $datetime['minute'], $datetime['second'] );
@@ -982,7 +982,7 @@ class WP_Date_Query {
 
 		// Have to have at least one
 		if ( ! isset( $hour ) && ! isset( $minute ) && ! isset( $second ) ) {
-					return false;
+			return false;
 		}
 
 		// Complex combined queries aren't supported for multi-value queries
@@ -990,15 +990,15 @@ class WP_Date_Query {
 			$return = [];
 
 			if ( isset( $hour ) && false !== ( $value = $this->build_value( $compare, $hour ) ) ) {
-							$return[] = "HOUR( $column ) $compare $value";
+				$return[] = "HOUR( $column ) $compare $value";
 			}
 
 			if ( isset( $minute ) && false !== ( $value = $this->build_value( $compare, $minute ) ) ) {
-							$return[] = "MINUTE( $column ) $compare $value";
+				$return[] = "MINUTE( $column ) $compare $value";
 			}
 
 			if ( isset( $second ) && false !== ( $value = $this->build_value( $compare, $second ) ) ) {
-							$return[] = "SECOND( $column ) $compare $value";
+				$return[] = "SECOND( $column ) $compare $value";
 			}
 
 			return implode( ' AND ', $return );
@@ -1015,7 +1015,7 @@ class WP_Date_Query {
 
 		// Single units were already handled. Since hour & second isn't allowed, minute must to be set.
 		if ( ! isset( $minute ) ) {
-					return false;
+			return false;
 		}
 
 		$format = $time = '';

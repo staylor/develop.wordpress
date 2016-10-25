@@ -69,7 +69,7 @@ if ( ! $tb_id ) {
 	exit();
 }
 
-$tb_url  = $_post->get( 'url', '' );
+$tb_url = $_post->get( 'url', '' );
 
 // These three are stripslashed here so they can be properly escaped after mb_convert_encoding().
 $_title = wp_unslash( $_post->get( 'title', '' ) );

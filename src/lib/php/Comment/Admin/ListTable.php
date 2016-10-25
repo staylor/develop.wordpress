@@ -718,11 +718,11 @@ class ListTable extends \WP_List_Table {
 			return;
 		}
 
-		if ( isset( $this->pending_count[$post->ID] ) ) {
-			$pending_comments = $this->pending_count[$post->ID];
+		if ( isset( $this->pending_count[ $post->ID ] ) ) {
+			$pending_comments = $this->pending_count[ $post->ID ];
 		} else {
 			$_pending_count_temp = get_pending_comments_num( [ $post->ID ] );
-			$pending_comments = $this->pending_count[$post->ID] = $_pending_count_temp[$post->ID];
+			$pending_comments = $this->pending_count[ $post->ID ] = $_pending_count_temp[ $post->ID ];
 		}
 
 		if ( current_user_can( 'edit_post', $post->ID ) ) {
