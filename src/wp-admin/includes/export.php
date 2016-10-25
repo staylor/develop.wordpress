@@ -370,7 +370,7 @@ function export_wp( $args = [] ) {
 	}
 
 	/**
-	 * Ouput all navigation menu terms
+	 * Output all navigation menu terms
 	 *
 	 * @since 3.1.0
 	 */

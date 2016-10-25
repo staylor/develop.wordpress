@@ -962,7 +962,7 @@ function update_core( $from, $to) {
 	}
 
 	// Check to make sure everything copied correctly, ignoring the contents of wp-content
-	$skip = array( 'wp-content' );
+	$skip = [ 'wp-content' ];
 	$failed = [];
 	if ( isset( $checksums ) && is_array( $checksums ) ) {
 		foreach ( $checksums as $file => $checksum ) {
@@ -973,7 +973,10 @@ function update_core( $from, $to) {
 				continue;
 			}
 
-			if ( file_exists( ABSPATH . $file ) && md5_file( ABSPATH . $file ) == $checksum ) {
+			if (
+				( '.' === dirname( $file ) && in_array( pathinfo( $file, PATHINFO_EXTENSION ), [ 'html', 'txt' ] ) ) ||
+				( file_exists( ABSPATH . $file ) && md5_file( ABSPATH . $file ) === $checksum )
+			) {
 				$skip[] = $file;
 			} else {
 				$failed[] = $file;
