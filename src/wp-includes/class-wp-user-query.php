@@ -291,7 +291,7 @@ class WP_User_Query {
 		}
 
 		// nicename
-		if ( '' !== $qv['nicename']) {
+		if ( '' !== $qv['nicename'] ) {
 			$this->query_where .= $wpdb->prepare( ' AND user_nicename = %s', $qv['nicename'] );
 		}
 
@@ -308,7 +308,7 @@ class WP_User_Query {
 		}
 
 		// login
-		if ( '' !== $qv['login']) {
+		if ( '' !== $qv['login'] ) {
 			$this->query_where .= $wpdb->prepare( ' AND user_login = %s', $qv['login'] );
 		}
 
@@ -325,7 +325,7 @@ class WP_User_Query {
 		}
 
 		// nicename
-		if ( '' !== $qv['nicename']) {
+		if ( '' !== $qv['nicename'] ) {
 			$this->query_where .= $wpdb->prepare( ' AND user_nicename = %s', $qv['nicename'] );
 		}
 
@@ -342,7 +342,7 @@ class WP_User_Query {
 		}
 
 		// login
-		if ( '' !== $qv['login']) {
+		if ( '' !== $qv['login'] ) {
 			$this->query_where .= $wpdb->prepare( ' AND user_login = %s', $qv['login'] );
 		}
 
@@ -545,8 +545,8 @@ class WP_User_Query {
 		}
 
 		if ( $search ) {
-			$leading_wild = ( ltrim($search, '*') != $search );
-			$trailing_wild = ( rtrim($search, '*') != $search );
+			$leading_wild = ( ltrim( $search, '*') != $search );
+			$trailing_wild = ( rtrim( $search, '*') != $search );
 			if ( $leading_wild && $trailing_wild ) {
 				$wild = 'both';
 			} elseif ( $leading_wild ) {
@@ -566,13 +566,13 @@ class WP_User_Query {
 			}
 			if ( ! $search_columns ) {
 				if ( false !== strpos( $search, '@') ) {
-					$search_columns = array('user_email');
-				} elseif ( is_numeric($search) ) {
-					$search_columns = array('user_login', 'ID');
-				} elseif ( preg_match('|^https?://|', $search) && ! ( is_multisite() && wp_is_large_network( 'users' ) ) ) {
-					$search_columns = array('user_url');
+					$search_columns = array( 'user_email');
+				} elseif ( is_numeric( $search) ) {
+					$search_columns = array( 'user_login', 'ID');
+				} elseif ( preg_match( '|^https?://|', $search) && ! ( is_multisite() && wp_is_large_network( 'users' ) ) ) {
+					$search_columns = array( 'user_url');
 				} else {
-					$search_columns = array('user_login', 'user_url', 'user_email', 'user_nicename', 'display_name');
+					$search_columns = array( 'user_login', 'user_url', 'user_email', 'user_nicename', 'display_name');
 				}
 			}
 

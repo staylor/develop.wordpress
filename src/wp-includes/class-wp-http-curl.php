@@ -73,7 +73,7 @@ class WP_Http_Curl {
 	 * @param string|array $args Optional. Override the defaults.
 	 * @return array|Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A Error instance upon error
 	 */
-	public function request($url, $args = []) {
+	public function request( $url, $args = [] ) {
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 5,
 			'redirection' => 5, 'httpversion' => '1.0',
@@ -111,8 +111,8 @@ class WP_Http_Curl {
 			}
 		}
 
-		$is_local = isset($r['local']) && $r['local'];
-		$ssl_verify = isset($r['sslverify']) && $r['sslverify'];
+		$is_local = isset( $r['local'] ) && $r['local'];
+		$ssl_verify = isset( $r['sslverify'] ) && $r['sslverify'];
 		if ( $is_local ) {
 			/** This filter is documented in wp-includes/class-wp-http-streams.php */
 			$ssl_verify = apply_filters( 'https_local_ssl_verify', $ssl_verify );
@@ -197,7 +197,7 @@ class WP_Http_Curl {
 			$this->stream_handle = false;
 		}
 
-		if ( !empty( $r['headers'] ) ) {
+		if ( ! empty( $r['headers'] ) ) {
 			// cURL expects full header strings in each element.
 			$headers = [];
 			foreach ( $r['headers'] as $name => $value ) {
@@ -240,7 +240,7 @@ class WP_Http_Curl {
 			}
 
 			curl_close( $handle );
-			return array( 'headers' => [], 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => [] );
+			return array( 'headers' => [], 'body' => '', 'response' => array( 'code' => false, 'message' => false), 'cookies' => [] );
 		}
 
 		curl_exec( $handle );
@@ -298,7 +298,7 @@ class WP_Http_Curl {
 			return $redirect_response;
 		}
 
-		if ( true === $r['decompress'] && true === WP_Http_Encoding::should_decode($theHeaders['headers']) ) {
+		if ( true === $r['decompress'] && true === WP_Http_Encoding::should_decode( $theHeaders['headers'] ) ) {
 			$theBody = WP_Http_Encoding::decompress( $theBody );
 		}
 
@@ -379,7 +379,7 @@ class WP_Http_Curl {
 		if ( $is_ssl ) {
 			$curl_version = curl_version();
 			// Check whether this cURL version support SSL requests.
-			if ( ! (CURL_VERSION_SSL & $curl_version['features']) ) {
+			if ( ! (CURL_VERSION_SSL & $curl_version['features'] ) ) {
 				return false;
 			}
 		}

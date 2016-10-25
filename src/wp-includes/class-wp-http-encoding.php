@@ -71,7 +71,7 @@ class WP_Http_Encoding {
 			return $gzuncompressed;
 		}
 
-		if ( function_exists('gzdecode') ) {
+		if ( function_exists( 'gzdecode' ) ) {
 			$gzdecoded = gzdecode( $compressed );
 
 			if ( false !== $gzdecoded ) {
@@ -104,35 +104,35 @@ class WP_Http_Encoding {
 	 * @param string $gzData String to decompress.
 	 * @return string|bool False on failure.
 	 */
-	public static function compatible_gzinflate($gzData) {
+	public static function compatible_gzinflate( $gzData) {
 
 		// Compressed data might contain a full header, if so strip it for gzinflate().
-		if ( substr($gzData, 0, 3) == "\x1f\x8b\x08" ) {
+		if ( substr( $gzData, 0, 3) == "\x1f\x8b\x08" ) {
 			$i = 10;
-			$flg = ord( substr($gzData, 3, 1) );
+			$flg = ord( substr( $gzData, 3, 1) );
 			if ( $flg > 0 ) {
 				if ( $flg & 4 ) {
-					list($xlen) = unpack('v', substr($gzData, $i, 2) );
+					list( $xlen) = unpack( 'v', substr( $gzData, $i, 2) );
 					$i = $i + 2 + $xlen;
 				}
 				if ( $flg & 8 ) {
-					$i = strpos($gzData, "\0", $i) + 1;
+					$i = strpos( $gzData, "\0", $i) + 1;
 				}
 				if ( $flg & 16 ) {
-					$i = strpos($gzData, "\0", $i) + 1;
+					$i = strpos( $gzData, "\0", $i) + 1;
 				}
 				if ( $flg & 2 ) {
 					$i = $i + 2;
 				}
 			}
-			$decompressed = @gzinflate( substr($gzData, $i, -8) );
+			$decompressed = @gzinflate( substr( $gzData, $i, -8) );
 			if ( false !== $decompressed ) {
 				return $decompressed;
 			}
 		}
 
 		// Compressed data from java.util.zip.Deflater amongst others.
-		$decompressed = @gzinflate( substr($gzData, 2) );
+		$decompressed = @gzinflate( substr( $gzData, 2) );
 		if ( false !== $decompressed ) {
 			return $decompressed;
 		}
@@ -218,13 +218,13 @@ class WP_Http_Encoding {
 	 * @param array|string $headers All of the available headers.
 	 * @return bool
 	 */
-	public static function should_decode($headers) {
+	public static function should_decode( $headers) {
 		if ( is_array( $headers ) ) {
-			if ( array_key_exists('content-encoding', $headers) && ! empty( $headers['content-encoding'] ) ) {
+			if ( array_key_exists( 'content-encoding', $headers) && ! empty( $headers['content-encoding'] ) ) {
 				return true;
 			}
 		} elseif ( is_string( $headers ) ) {
-			return ( stripos($headers, 'content-encoding:') !== false );
+			return ( stripos( $headers, 'content-encoding:' ) !== false );
 		}
 
 		return false;
@@ -244,6 +244,6 @@ class WP_Http_Encoding {
 	 * @return bool
 	 */
 	public static function is_available() {
-		return ( function_exists('gzuncompress') || function_exists('gzdeflate') || function_exists('gzinflate') );
+		return ( function_exists( 'gzuncompress' ) || function_exists( 'gzdeflate' ) || function_exists( 'gzinflate' ) );
 	}
 }

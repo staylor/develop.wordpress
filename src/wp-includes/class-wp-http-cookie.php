@@ -109,10 +109,10 @@ class WP_Http_Cookie {
 
 			// Set everything else as a property.
 			foreach ( $pairs as $pair ) {
-				$pair = rtrim($pair);
+				$pair = rtrim( $pair);
 
 				// Handle the cookie ending in ; which results in a empty final pair.
-				if ( empty($pair) ) {
+				if ( empty( $pair) ) {
 					continue;
 				}
 
@@ -124,7 +124,7 @@ class WP_Http_Cookie {
 				$this->$key = $val;
 			}
 		} else {
-			if ( !isset( $data['name'] ) ) {
+			if ( ! isset( $data['name'] ) ) {
 				return;
 			}
 
@@ -184,7 +184,7 @@ class WP_Http_Cookie {
 		}
 
 		// Port - supports "port-lists" in the format: "80,8000,8080".
-		if ( !empty( $port ) && !in_array( $url['port'], explode( ',', $port) ) ) {
+		if ( ! empty( $port ) && !in_array( $url['port'], explode( ',', $port) ) ) {
 			return false;
 		}
 

@@ -239,7 +239,7 @@ class WP_oEmbed {
 
 		$provider = false;
 
-		if ( !isset($args['discover']) ) {
+		if ( ! isset( $args['discover'] ) ) {
 			$args['discover'] = true;
 		}
 
@@ -427,7 +427,7 @@ class WP_oEmbed {
 			// Do a quick check
 			$tagfound = false;
 			foreach ( $linktypes as $linktype => $format ) {
-				if ( stripos($html, $linktype) ) {
+				if ( stripos( $html, $linktype) ) {
 					$tagfound = true;
 					break;
 				}
@@ -437,7 +437,7 @@ class WP_oEmbed {
 				foreach ( $links[1] as $link ) {
 					$atts = shortcode_parse_atts( $link );
 
-					if ( !empty($atts['type']) && !empty($linktypes[$atts['type']]) && !empty($atts['href']) ) {
+					if ( ! empty( $atts['type'] ) && ! empty( $linktypes[$atts['type']] ) && ! empty( $atts['href'] ) ) {
 						$providers[$linktypes[$atts['type']]] = htmlspecialchars_decode( $atts['href'] );
 
 						// Stop here if it's JSON (that's all we need)
@@ -450,9 +450,9 @@ class WP_oEmbed {
 		}
 
 		// JSON is preferred to XML
-		if ( !empty($providers['json']) ) {
+		if ( ! empty( $providers['json'] ) ) {
 			return $providers['json'];
-		} elseif ( !empty($providers['xml']) ) {
+		} elseif ( ! empty( $providers['xml'] ) ) {
 			return $providers['xml'];
 		} else {
 			return false;
@@ -475,7 +475,7 @@ class WP_oEmbed {
 
 		$provider = add_query_arg( 'maxwidth', (int) $args['width'], $provider );
 		$provider = add_query_arg( 'maxheight', (int) $args['height'], $provider );
-		$provider = add_query_arg( 'url', urlencode($url), $provider );
+		$provider = add_query_arg( 'url', urlencode( $url), $provider );
 
 		/**
 		 * Filters the oEmbed URL to be fetched.
@@ -634,7 +634,7 @@ class WP_oEmbed {
 			}
 
 			$title = ! empty( $data->title ) && is_string( $data->title ) ? $data->title : '';
-			$return = '<a href="' . esc_url( $url ) . '"><img src="' . esc_url( $data->url ) . '" alt="' . esc_attr($title) . '" width="' . esc_attr($data->width) . '" height="' . esc_attr($data->height) . '" /></a>';
+			$return = '<a href="' . esc_url( $url ) . '"><img src="' . esc_url( $data->url ) . '" alt="' . esc_attr( $title) . '" width="' . esc_attr( $data->width) . '" height="' . esc_attr( $data->height) . '" /></a>';
 			break;
 
 		case 'video':

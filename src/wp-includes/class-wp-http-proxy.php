@@ -30,9 +30,9 @@
  *
  * An example can be as seen below.
  *
- *     define('WP_PROXY_HOST', '192.168.84.101');
- *     define('WP_PROXY_PORT', '8080');
- *     define('WP_PROXY_BYPASS_HOSTS', 'localhost, www.example.com, *.wordpress.org');
+ *     define( 'WP_PROXY_HOST', '192.168.84.101' );
+ *     define( 'WP_PROXY_PORT', '8080' );
+ *     define( 'WP_PROXY_BYPASS_HOSTS', 'localhost, www.example.com, *.wordpress.org' );
  *
  * @link https://core.trac.wordpress.org/ticket/4011 Proxy support ticket in WordPress.
  * @link https://core.trac.wordpress.org/ticket/14636 Allow wildcard domains in WP_PROXY_BYPASS_HOSTS

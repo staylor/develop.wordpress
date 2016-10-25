@@ -40,7 +40,7 @@ function get_categories( $args = '' ) {
 	$taxonomy = apply_filters( 'get_categories_taxonomy', $taxonomy, $args );
 
 	// Back compat
-	if ( isset($args['type']) && 'link' == $args['type'] ) {
+	if ( isset( $args['type'] ) && 'link' == $args['type'] ) {
 		/* translators: 1: "type => link", 2: "taxonomy => link_category" alternative */
 		_deprecated_argument( __FUNCTION__, '3.0.0',
 			sprintf( __( '%1$s is deprecated. Use %2$s instead.' ),

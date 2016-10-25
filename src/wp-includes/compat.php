@@ -8,7 +8,7 @@
 
 // If gettext isn't available
 if ( !function_exists('_') ) {
-	function _($string) {
+	function _( $string) {
 		return $string;
 	}
 }
@@ -233,8 +233,8 @@ if ( !function_exists('hash_hmac') ):
  * @return string|false The hash in output determined by `$raw_output`. False if `$algo`
  *                      is unknown or invalid.
  */
-function hash_hmac($algo, $data, $key, $raw_output = false) {
-	return _hash_hmac($algo, $data, $key, $raw_output);
+function hash_hmac( $algo, $data, $key, $raw_output = false) {
+	return _hash_hmac( $algo, $data, $key, $raw_output);
 }
 endif;
 
@@ -252,28 +252,28 @@ endif;
  * @return string|false The hash in output determined by `$raw_output`. False if `$algo`
  *                      is unknown or invalid.
  */
-function _hash_hmac($algo, $data, $key, $raw_output = false) {
+function _hash_hmac( $algo, $data, $key, $raw_output = false) {
 	$packs = array('md5' => 'H32', 'sha1' => 'H40');
 
-	if ( !isset($packs[$algo]) ) {
-			return false;
+	if ( ! isset( $packs[$algo]) ) {
+		return false;
 	}
 
 	$pack = $packs[$algo];
 
-	if (strlen($key) > 64) {
-			$key = pack($pack, $algo($key));
+	if (strlen( $key) > 64) {
+		$key = pack( $pack, $algo( $key) );
 	}
 
-	$key = str_pad($key, 64, chr(0));
+	$key = str_pad( $key, 64, chr(0) );
 
-	$ipad = (substr($key, 0, 64) ^ str_repeat(chr(0x36), 64));
-	$opad = (substr($key, 0, 64) ^ str_repeat(chr(0x5C), 64));
+	$ipad = (substr( $key, 0, 64) ^ str_repeat(chr(0x36), 64) );
+	$opad = (substr( $key, 0, 64) ^ str_repeat(chr(0x5C), 64) );
 
-	$hmac = $algo($opad . pack($pack, $algo($ipad . $data)));
+	$hmac = $algo( $opad . pack( $pack, $algo( $ipad . $data) ));
 
 	if ( $raw_output ) {
-			return pack( $pack, $hmac );
+		return pack( $pack, $hmac );
 	}
 	return $hmac;
 }

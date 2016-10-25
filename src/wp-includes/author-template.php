@@ -20,11 +20,11 @@ use function WP\getApp;
  * @param string $deprecated Deprecated.
  * @return string|null The author's display name.
  */
-function get_the_author($deprecated = '') {
+function get_the_author( $deprecated = '' ) {
 	$app = getApp();
 	$authordata = $app['wp']->current_query->authordata;
 
-	if ( !empty( $deprecated ) ) {
+	if ( ! empty( $deprecated ) ) {
 		_deprecated_argument( __FUNCTION__, '2.1.0' );
 	}
 
@@ -35,7 +35,7 @@ function get_the_author($deprecated = '') {
 	 *
 	 * @param string $authordata->display_name The author's display name.
 	 */
-	return apply_filters('the_author', is_object( $authordata ) ? $authordata->display_name : null);
+	return apply_filters( 'the_author', is_object( $authordata ) ? $authordata->display_name : null );
 }
 
 /**
@@ -86,8 +86,8 @@ function the_author( $deprecated = '', $deprecated_echo = true ) {
  * @return string|void The author's display name.
  */
 function get_the_modified_author() {
-	if ( $last_id = get_post_meta( get_post()->ID, '_edit_last', true) ) {
-		$last_user = get_userdata($last_id);
+	if ( $last_id = get_post_meta( get_post()->ID, '_edit_last', true ) ) {
+		$last_user = get_userdata( $last_id);
 
 		/**
 		 * Filters the display name of the author who last edited the current post.
@@ -96,7 +96,7 @@ function get_the_modified_author() {
 		 *
 		 * @param string $last_user->display_name The author's display name.
 		 */
-		return apply_filters('the_modified_author', $last_user->display_name);
+		return apply_filters( 'the_modified_author', $last_user->display_name );
 	}
 }
 
@@ -189,9 +189,9 @@ function the_author_meta( $field = '', $user_id = false ) {
  *                     else the result of get_the_author().
  */
 function get_the_author_link() {
-	if ( get_the_author_meta('url') ) {
+	if ( get_the_author_meta( 'url' ) ) {
 		return sprintf( '<a href="%1$s" title="%2$s" rel="author external">%3$s</a>',
-			esc_url( get_the_author_meta('url') ),
+			esc_url( get_the_author_meta( 'url' ) ),
 			/* translators: %s: author's display name */
 			esc_attr( sprintf( __( 'Visit %s&#8217;s website' ), get_the_author() ) ),
 			get_the_author()
@@ -301,17 +301,17 @@ function get_author_posts_url( int $author_id, $author_nicename = '' ) {
 	$app = getApp();
 	$link = $app['rewrite']->get_author_permastruct();
 
-	if ( empty($link) ) {
+	if ( empty( $link) ) {
 		$file = home_url( '/' );
 		$link = $file . '?author=' . $author_id;
 	} else {
 		if ( '' == $author_nicename ) {
 			$user = get_userdata( $author_id );
-			if ( !empty($user->user_nicename) ) {
+			if ( ! empty( $user->user_nicename) ) {
 				$author_nicename = $user->user_nicename;
 			}
 		}
-		$link = str_replace('%author%', $author_nicename, $link);
+		$link = str_replace( '%author%', $author_nicename, $link);
 		$link = home_url( user_trailingslashit( $link ) );
 	}
 
@@ -480,7 +480,7 @@ function is_multi_author() {
 	$wpdb = $app['db'];
 
 	if ( false === ( $is_multi_author = get_transient( 'is_multi_author' ) ) ) {
-		$rows = (array) $wpdb->get_col("SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' LIMIT 2");
+		$rows = (array) $wpdb->get_col( "SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' LIMIT 2" );
 		$is_multi_author = 1 < count( $rows ) ? 1 : 0;
 		set_transient( 'is_multi_author', $is_multi_author );
 	}

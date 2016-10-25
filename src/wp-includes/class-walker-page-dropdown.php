@@ -57,7 +57,7 @@ class Walker_PageDropdown extends Walker {
 	 * @param int     $id     Optional. ID of the current page. Default 0 (unused).
 	 */
 	public function start_el( &$output, $page, $depth = 0, $args = [], $id = 0 ) {
-		$pad = str_repeat('&nbsp;', $depth * 3);
+		$pad = str_repeat( '&nbsp;', $depth * 3);
 
 		if ( ! isset( $args['value_field'] ) || ! isset( $page->{$args['value_field']} ) ) {
 			$args['value_field'] = 'ID';

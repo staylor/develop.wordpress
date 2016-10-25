@@ -80,7 +80,7 @@ function _walk_bookmarks( $bookmarks, $args = '' ) {
 			if ( '00' != substr( $bookmark->link_updated_f, 0, 2 ) ) {
 				$title .= ' (';
 				$title .= sprintf(
-					__('Last updated: %s'),
+					__( 'Last updated: %s' ),
 					date(
 						get_option( 'links_updated_date_format' ),
 						$bookmark->link_updated_f + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS )
@@ -214,7 +214,7 @@ function wp_list_bookmarks( $args = '' ) {
 		'limit' => -1, 'category' => '', 'exclude_category' => '',
 		'category_name' => '', 'hide_invisible' => 1,
 		'show_updated' => 0, 'echo' => 1,
-		'categorize' => 1, 'title_li' => __('Bookmarks'),
+		'categorize' => 1, 'title_li' => __( 'Bookmarks' ),
 		'title_before' => '<h2>', 'title_after' => '</h2>',
 		'category_orderby' => 'name', 'category_order' => 'ASC',
 		'class' => 'linkcat', 'category_before' => '<li id="%id" class="%class">',

@@ -27,7 +27,7 @@ class WP_Http_Streams {
 	 * @param string|array $args Optional. Override the defaults.
 	 * @return array|Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A Error instance upon error
 	 */
-	public function request($url, $args = []) {
+	public function request( $url, $args = [] ) {
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 5,
 			'redirection' => 5, 'httpversion' => '1.0',
@@ -48,7 +48,7 @@ class WP_Http_Streams {
 		// Construct Cookie: header if any cookies are set.
 		WP_Http::buildCookieHeader( $r );
 
-		$arrURL = parse_url($url);
+		$arrURL = parse_url( $url);
 
 		$connect_host = $arrURL['host'];
 
@@ -162,7 +162,7 @@ class WP_Http_Streams {
 							return new Error( 'http_request_failed', __( 'The SSL certificate for the host could not be verified.' ) );
 			}
 
-			return new Error('http_request_failed', $connection_error . ': ' . $connection_error_str );
+			return new Error( 'http_request_failed', $connection_error . ': ' . $connection_error_str );
 		}
 
 		// Verify that the SSL certificate is valid for this request.
@@ -178,10 +178,10 @@ class WP_Http_Streams {
 			//Some proxies require full URL in this field.
 			$requestPath = $url;
 		} else {
-			$requestPath = $arrURL['path'] . ( isset($arrURL['query']) ? '?' . $arrURL['query'] : '' );
+			$requestPath = $arrURL['path'] . ( isset( $arrURL['query'] ) ? '?' . $arrURL['query'] : '' );
 		}
 
-		$strHeaders = strtoupper($r['method']) . ' ' . $requestPath . ' HTTP/' . $r['httpversion'] . "\r\n";
+		$strHeaders = strtoupper( $r['method'] ) . ' ' . $requestPath . ' HTTP/' . $r['httpversion'] . "\r\n";
 
 		$include_port_in_host_header = (
 			( $proxy->is_enabled() && $proxy->send_through_proxy( $url ) ) ||
@@ -195,11 +195,11 @@ class WP_Http_Streams {
 			$strHeaders .= 'Host: ' . $arrURL['host'] . "\r\n";
 		}
 
-		if ( isset($r['user-agent']) ) {
+		if ( isset( $r['user-agent'] ) ) {
 			$strHeaders .= 'User-agent: ' . $r['user-agent'] . "\r\n";
 		}
 
-		if ( is_array($r['headers']) ) {
+		if ( is_array( $r['headers'] ) ) {
 			foreach ( (array) $r['headers'] as $header => $headerValue ) {
 				$strHeaders .= $header . ': ' . $headerValue . "\r\n";
 			}
@@ -213,16 +213,16 @@ class WP_Http_Streams {
 
 		$strHeaders .= "\r\n";
 
-		if ( ! is_null($r['body']) ) {
+		if ( ! is_null( $r['body'] ) ) {
 			$strHeaders .= $r['body'];
 		}
 
-		fwrite($handle, $strHeaders);
+		fwrite( $handle, $strHeaders);
 
 		if ( ! $r['blocking'] ) {
 			stream_set_blocking( $handle, 0 );
 			fclose( $handle );
-			return array( 'headers' => [], 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => [] );
+			return array( 'headers' => [], 'body' => '', 'response' => array( 'code' => false, 'message' => false), 'cookies' => [] );
 		}
 
 		$strResponse = '';
@@ -245,7 +245,7 @@ class WP_Http_Streams {
 			}
 
 			$bytes_written = 0;
-			while ( ! feof($handle) && $keep_reading ) {
+			while ( ! feof( $handle) && $keep_reading ) {
 				$block = fread( $handle, $block_size );
 				if ( ! $bodyStarted ) {
 					$strResponse .= $block;
@@ -275,7 +275,7 @@ class WP_Http_Streams {
 
 				$bytes_written += $bytes_written_to_file;
 
-				$keep_reading = !isset( $r['limit_response_size'] ) || $bytes_written < $r['limit_response_size'];
+				$keep_reading = ! isset( $r['limit_response_size'] ) || $bytes_written < $r['limit_response_size'];
 			}
 
 			fclose( $stream_handle );
@@ -289,7 +289,7 @@ class WP_Http_Streams {
 					$header_length = strpos( $strResponse, "\r\n\r\n" ) + 4;
 					$bodyStarted = true;
 				}
-				$keep_reading = ( ! $bodyStarted || !isset( $r['limit_response_size'] ) || strlen( $strResponse ) < ( $header_length + $r['limit_response_size'] ) );
+				$keep_reading = ( ! $bodyStarted || ! isset( $r['limit_response_size'] ) || strlen( $strResponse ) < ( $header_length + $r['limit_response_size'] ) );
 			}
 
 			$process = WP_Http::processResponse( $strResponse );
@@ -317,10 +317,10 @@ class WP_Http_Streams {
 
 		// If the body was chunk encoded, then decode it.
 		if ( ! empty( $process['body'] ) && isset( $arrHeaders['headers']['transfer-encoding'] ) && 'chunked' == $arrHeaders['headers']['transfer-encoding'] ) {
-			$process['body'] = WP_Http::chunkTransferDecode($process['body']);
+			$process['body'] = WP_Http::chunkTransferDecode( $process['body'] );
 		}
 
-		if ( true === $r['decompress'] && true === WP_Http_Encoding::should_decode($arrHeaders['headers']) ) {
+		if ( true === $r['decompress'] && true === WP_Http_Encoding::should_decode( $arrHeaders['headers'] ) ) {
 			$process['body'] = WP_Http_Encoding::decompress( $process['body'] );
 		}
 
@@ -378,7 +378,7 @@ class WP_Http_Streams {
 					$certificate_hostnames[] = strtolower( trim( $match_host ) );
 				}
 			}
-		} elseif ( !empty( $cert['subject']['CN'] ) ) {
+		} elseif ( ! empty( $cert['subject']['CN'] ) ) {
 			// Only use the CN when the certificate includes no subjectAltName extension.
 			$certificate_hostnames[] = strtolower( $cert['subject']['CN'] );
 		}

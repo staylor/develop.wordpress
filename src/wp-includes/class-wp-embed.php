@@ -87,8 +87,8 @@ class WP_Embed {
 
 ?>
 <script type="text/javascript">
-	jQuery(document).ready(function($){
-		$.get("<?php echo admin_url( 'admin-ajax.php?action=oembed-cache&post=' . $post->ID, 'relative' ); ?>");
+	jQuery(document).ready(function( $){
+		$.get( "<?php echo admin_url( 'admin-ajax.php?action=oembed-cache&post=' . $post->ID, 'relative' ); ?>" );
 	});
 </script>
 <?php
@@ -287,7 +287,7 @@ class WP_Embed {
 	 */
 	public function delete_oembed_caches( $post_ID ) {
 		$post_metas = get_post_custom_keys( $post_ID );
-		if ( empty($post_metas) ) {
+		if ( empty( $post_metas) ) {
 			return;
 		}
 
@@ -379,7 +379,7 @@ class WP_Embed {
 			return false;
 		}
 
-		$output = ( $this->linkifunknown ) ? '<a href="' . esc_url($url) . '">' . esc_html($url) . '</a>' : $url;
+		$output = ( $this->linkifunknown ) ? '<a href="' . esc_url( $url) . '">' . esc_html( $url) . '</a>' : $url;
 
 		/**
 		 * Filters the returned, maybe-linked embed URL.

@@ -288,7 +288,7 @@ endif; ?>
 if ( current_user_can( $tax->cap->edit_terms) ) {
 	if ( 'category' == $taxnow ) {
 		/**
- 		 * Fires before the Add Category form.
+		 * Fires before the Add Category form.
 		 *
 		 * @since 2.1.0
 		 * @deprecated 3.0.0 Use {$taxnow}_pre_add_form instead.

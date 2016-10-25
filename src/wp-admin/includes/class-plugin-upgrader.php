@@ -445,7 +445,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 * @access public
 	 *
 	 * @global WP_Filesystem_Base $wp_filesystem Subclass
-     *
+	 *
 	 * @param bool|Error $removed
 	 * @param string        $local_destination
 	 * @param string        $remote_destination

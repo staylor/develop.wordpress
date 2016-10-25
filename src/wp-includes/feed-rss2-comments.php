@@ -5,9 +5,9 @@
  * @package WordPress
  */
 
-header('Content-Type: ' . feed_content_type('rss2') . '; charset=' . get_option('blog_charset'), true);
+header( 'Content-Type: ' . feed_content_type( 'rss2' ) . '; charset=' . get_option( 'blog_charset' ), true);
 
-echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>';
+echo '<?xml version="1.0" encoding="'.get_option( 'blog_charset' ).'"?'.'>';
 
 /** This action is documented in wp-includes/feed-rss2.php */
 do_action( 'rss_tag_pre', 'rss2-comments' );
@@ -42,9 +42,9 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 		}
 	?></title>
 	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
-	<link><?php (is_single()) ? the_permalink_rss() : bloginfo_rss('url') ?></link>
+	<link><?php (is_single() ) ? the_permalink_rss() : bloginfo_rss( 'url' ) ?></link>
 	<description><?php bloginfo_rss( 'description' ) ?></description>
-	<lastBuildDate><?php echo mysql2date('r', get_lastcommentmodified('GMT')); ?></lastBuildDate>
+	<lastBuildDate><?php echo mysql2date( 'r', get_lastcommentmodified( 'GMT' ) ); ?></lastBuildDate>
 	<sy:updatePeriod><?php
 		/** This filter is documented in wp-includes/feed-rss2.php */
 		echo apply_filters( 'rss_update_period', 'hourly' );
@@ -69,20 +69,20 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 	<item>
 		<title><?php
 			if ( !is_singular() ) {
-				$title = get_the_title($comment_post->ID);
+				$title = get_the_title( $comment_post->ID);
 				/** This filter is documented in wp-includes/feed.php */
 				$title = apply_filters( 'the_title_rss', $title );
-				printf(ent2ncr(__('Comment on %1$s by %2$s')), $title, get_comment_author_rss());
+				printf(ent2ncr( __( 'Comment on %1$s by %2$s' ) ), $title, get_comment_author_rss() );
 			} else {
-				printf(ent2ncr(__('By: %s')), get_comment_author_rss());
+				printf(ent2ncr( __( 'By: %s' ) ), get_comment_author_rss() );
 			}
 		?></title>
 		<link><?php comment_link() ?></link>
 		<dc:creator><![CDATA[<?php echo get_comment_author_rss() ?>]]></dc:creator>
-		<pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_comment_time('Y-m-d H:i:s', true, false), false); ?></pubDate>
+		<pubDate><?php echo mysql2date( 'D, d M Y H:i:s +0000', get_comment_time( 'Y-m-d H:i:s', true, false), false); ?></pubDate>
 		<guid isPermaLink="false"><?php comment_guid() ?></guid>
-<?php if ( post_password_required($comment_post) ) { ?>
-		<description><?php echo ent2ncr(__('Protected Comments: Please enter your password to view comments.')); ?></description>
+<?php if ( post_password_required( $comment_post) ) { ?>
+		<description><?php echo ent2ncr( __( 'Protected Comments: Please enter your password to view comments.' ) ); ?></description>
 		<content:encoded><![CDATA[<?php echo get_the_password_form() ?>]]></content:encoded>
 <?php
 	// post pass

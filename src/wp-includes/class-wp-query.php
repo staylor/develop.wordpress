@@ -991,7 +991,7 @@ class WP_Query {
 
 			unset( $_query['embed'] );
 
-			if ( empty( $_query ) || ! array_diff( array_keys( $_query ), array('preview', 'page', 'paged', 'cpage') ) ) {
+			if ( empty( $_query ) || ! array_diff( array_keys( $_query ), array( 'preview', 'page', 'paged', 'cpage') ) ) {
 				$this->is_page = true;
 				$this->is_home = false;
 				$qv['page_id'] = get_option( 'page_on_front' );
@@ -1334,7 +1334,7 @@ class WP_Query {
 			$q['s'] = urldecode( $q['s'] );
 		}
 		// there are no line breaks in <input /> fields
-		$q['s'] = str_replace( array("\r", "\n"), '', $q['s'] );
+		$q['s'] = str_replace( array( "\r", "\n" ), '', $q['s'] );
 		$q['search_terms_count'] = 1;
 		if ( ! empty( $q['sentence'] ) ) {
 			$q['search_terms'] = [ $q['s'] ];
@@ -1713,7 +1713,7 @@ class WP_Query {
 		 * Fires after the query variable object is created, but before the actual query is run.
 		 *
 		 * Note: If using conditional tags, use the method versions within the passed instance
-		 * (e.g. $this->is_main_query() instead of is_main_query()). This is because the functions
+		 * (e.g. $this->is_main_query() instead of is_main_query() ). This is because the functions
 		 * like is_main_query() test against the global $wp_query instance, not the passed one.
 		 *
 		 * @since 2.0.0
@@ -2075,7 +2075,7 @@ class WP_Query {
 				// Do a fully inclusive search for currently registered post types of queried taxonomies
 				$post_type = [];
 				$taxonomies = array_keys( $this->tax_query->queried_terms );
-				foreach ( get_post_types( array('exclude_from_search' => false) ) as $pt ) {
+				foreach ( get_post_types( array( 'exclude_from_search' => false ) ) as $pt ) {
 					$object_taxonomies = $pt === 'attachment' ? get_taxonomies_for_attachments() : get_object_taxonomies( $pt );
 					if ( array_intersect( $taxonomies, $object_taxonomies ) ) {
 						$post_type[] = $pt;
@@ -2109,7 +2109,7 @@ class WP_Query {
 						continue;
 					}
 
-					if ( ! in_array( $queried_taxonomy, array('category', 'post_tag') ) ) {
+					if ( ! in_array( $queried_taxonomy, array( 'category', 'post_tag') ) ) {
 						$q['taxonomy'] = $queried_taxonomy;
 
 						if ( 'slug' === $queried_items['field'] ) {
@@ -2323,7 +2323,7 @@ class WP_Query {
 		}
 
 		if ( 'any' == $post_type ) {
-			$in_search_post_types = get_post_types( array('exclude_from_search' => false) );
+			$in_search_post_types = get_post_types( array( 'exclude_from_search' => false ) );
 			if ( empty( $in_search_post_types ) ) {
 				$where .= ' AND 1=0 ';
 			} else {
@@ -2369,7 +2369,7 @@ class WP_Query {
 			$p_status = [];
 			$e_status = [];
 			if ( in_array( 'any', $q_status ) ) {
-				foreach ( get_post_stati( array('exclude_from_search' => true) ) as $status ) {
+				foreach ( get_post_stati( array( 'exclude_from_search' => true) ) as $status ) {
 					if ( ! in_array( $status, $q_status ) ) {
 						$e_status[] = "{$wpdb->posts}.post_status <> '$status'";
 					}
@@ -2422,7 +2422,7 @@ class WP_Query {
 			$where .= " AND ({$wpdb->posts}.post_status = 'publish'";
 
 			// Add public states.
-			$public_states = get_post_stati( array('public' => true) );
+			$public_states = get_post_stati( array( 'public' => true) );
 			foreach ( (array) $public_states as $state ) {
 				if ( 'publish' == $state ) {
 					// Publish is hard-coded above.
@@ -2433,7 +2433,7 @@ class WP_Query {
 
 			if ( $this->is_admin ) {
 				// Add protected states that should show in the admin all list.
-				$admin_all_states = get_post_stati( array('protected' => true, 'show_in_admin_all_list' => true) );
+				$admin_all_states = get_post_stati( array( 'protected' => true, 'show_in_admin_all_list' => true) );
 				foreach ( (array) $admin_all_states as $state ) {
 					$where .= " OR {$wpdb->posts}.post_status = '$state'";
 				}
@@ -2441,7 +2441,7 @@ class WP_Query {
 
 			if ( is_user_logged_in() ) {
 				// Add private states that are limited to viewing by the author of a post or someone who has caps to read private states.
-				$private_states = get_post_stati( array('private' => true) );
+				$private_states = get_post_stati( array( 'private' => true) );
 				foreach ( (array) $private_states as $state ) {
 					$where .= current_user_can( $read_private_cap ) ? " OR {$wpdb->posts}.post_status = '$state'" : " OR {$wpdb->posts}.post_author = $user_id AND {$wpdb->posts}.post_status = '$state'";
 				}
@@ -2580,7 +2580,7 @@ class WP_Query {
 			}
 		}
 
-		$pieces = array('where', 'groupby', 'join', 'orderby', 'distinct', 'fields', 'limits');
+		$pieces = array( 'where', 'groupby', 'join', 'orderby', 'distinct', 'fields', 'limits');
 
 		/*
 		 * Apply post-paging filters on where and join. Only plugins that

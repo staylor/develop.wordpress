@@ -18,24 +18,24 @@ use function WP\getApp;
  * @param string $filter Optional, default is 'raw'.
  * @return array|object|null Type returned depends on $output value.
  */
-function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
+function get_bookmark( $bookmark, $output = OBJECT, $filter = 'raw' ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-	if ( empty($bookmark) ) {
-		if ( isset($GLOBALS['link']) ) {
+	if ( empty( $bookmark) ) {
+		if ( isset( $GLOBALS['link'] ) ) {
 			$_bookmark = & $GLOBALS['link'];
 		} else {
 			$_bookmark = null;
 		}
-	} elseif ( is_object($bookmark) ) {
-		wp_cache_add($bookmark->link_id, $bookmark, 'bookmark');
+	} elseif ( is_object( $bookmark) ) {
+		wp_cache_add( $bookmark->link_id, $bookmark, 'bookmark' );
 		$_bookmark = $bookmark;
 	} else {
-		if ( isset($GLOBALS['link']) && ($GLOBALS['link']->link_id == $bookmark) ) {
+		if ( isset( $GLOBALS['link'] ) && ( $GLOBALS['link']->link_id == $bookmark) ) {
 			$_bookmark = & $GLOBALS['link'];
-		} elseif ( ! $_bookmark = wp_cache_get($bookmark, 'bookmark') ) {
-			$_bookmark = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->links WHERE link_id = %d LIMIT 1", $bookmark));
+		} elseif ( ! $_bookmark = wp_cache_get( $bookmark, 'bookmark' ) ) {
+			$_bookmark = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->links WHERE link_id = %d LIMIT 1", $bookmark) );
 			if ( $_bookmark ) {
 				$_bookmark->link_category = array_unique( wp_get_object_terms( $_bookmark->link_id, 'link_category', array( 'fields' => 'ids' ) ) );
 				wp_cache_add( $_bookmark->link_id, $_bookmark, 'bookmark' );
@@ -47,12 +47,12 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
 		return $_bookmark;
 	}
 
-	$_bookmark = sanitize_bookmark($_bookmark, $filter);
+	$_bookmark = sanitize_bookmark( $_bookmark, $filter);
 
 	if ( $output == ARRAY_A ) {
-		return get_object_vars($_bookmark);
+		return get_object_vars( $_bookmark);
 	} elseif ( $output == ARRAY_N ) {
-		return array_values(get_object_vars($_bookmark));
+		return array_values(get_object_vars( $_bookmark) );
 	}
 	return $_bookmark;
 }
@@ -70,19 +70,19 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
 function get_bookmark_field( $field, int $bookmark, $context = 'display' ) {
 	$bookmark = get_bookmark( $bookmark );
 
-	if ( is_wp_error($bookmark) ) {
+	if ( is_wp_error( $bookmark) ) {
 		return $bookmark;
 	}
 
-	if ( !is_object($bookmark) ) {
+	if ( !is_object( $bookmark) ) {
 		return '';
 	}
 
-	if ( !isset($bookmark->$field) ) {
+	if ( ! isset( $bookmark->$field) ) {
 		return '';
 	}
 
-	return sanitize_bookmark_field($field, $bookmark->$field, $bookmark->link_id, $context);
+	return sanitize_bookmark_field( $field, $bookmark->$field, $bookmark->link_id, $context);
 }
 
 /**
@@ -194,7 +194,7 @@ function get_bookmarks( $args = '' ) {
 	}
 
 	if ( ! empty( $r['category_name'] ) ) {
-		if ( $r['category'] = get_term_by('name', $r['category_name'], 'link_category') ) {
+		if ( $r['category'] = get_term_by( 'name', $r['category_name'], 'link_category' ) ) {
 			$r['category'] = $r['category']->term_id;
 		} else {
 			$cache[ $key ] = [];
@@ -214,7 +214,7 @@ function get_bookmarks( $args = '' ) {
 	$join = '';
 	if ( ! empty( $r['category'] ) ) {
 		$incategories = preg_split( '/[\s,]+/', $r['category'] );
-		if ( count($incategories) ) {
+		if ( count( $incategories) ) {
 			foreach ( $incategories as $incat ) {
 				if ( empty( $category_query ) ) {
 					$category_query = ' AND ( tt.term_id = ' . intval( $incat ) . ' ';
@@ -319,12 +319,12 @@ function get_bookmarks( $args = '' ) {
  *		fields
  * @return object|array Same type as $bookmark but with fields sanitized.
  */
-function sanitize_bookmark($bookmark, $context = 'display') {
-	$fields = array('link_id', 'link_url', 'link_name', 'link_image', 'link_target', 'link_category',
+function sanitize_bookmark( $bookmark, $context = 'display' ) {
+	$fields = array( 'link_id', 'link_url', 'link_name', 'link_image', 'link_target', 'link_category',
 		'link_description', 'link_visible', 'link_owner', 'link_rating', 'link_updated',
 		'link_rel', 'link_notes', 'link_rss', );
 
-	if ( is_object($bookmark) ) {
+	if ( is_object( $bookmark) ) {
 		$do_object = true;
 		$link_id = $bookmark->link_id;
 	} else {
@@ -334,12 +334,12 @@ function sanitize_bookmark($bookmark, $context = 'display') {
 
 	foreach ( $fields as $field ) {
 		if ( $do_object ) {
-			if ( isset($bookmark->$field) ) {
-				$bookmark->$field = sanitize_bookmark_field($field, $bookmark->$field, $link_id, $context);
+			if ( isset( $bookmark->$field) ) {
+				$bookmark->$field = sanitize_bookmark_field( $field, $bookmark->$field, $link_id, $context);
 			}
 		} else {
-			if ( isset($bookmark[$field]) ) {
-				$bookmark[$field] = sanitize_bookmark_field($field, $bookmark[$field], $link_id, $context);
+			if ( isset( $bookmark[$field] ) ) {
+				$bookmark[$field] = sanitize_bookmark_field( $field, $bookmark[$field], $link_id, $context);
 			}
 		}
 	}
@@ -386,12 +386,12 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 
 	// bool stored as Y|N
 	case 'link_visible' :
-		$value = preg_replace('/[^YNyn]/', '', $value);
+		$value = preg_replace( '/[^YNyn]/', '', $value);
 		break;
 	// "enum"
 	case 'link_target' :
-		$targets = array('_top', '_blank');
-		if ( ! in_array($value, $targets) ) {
+		$targets = array( '_top', '_blank' );
+		if ( ! in_array( $value, $targets) ) {
 			$value = '';
 		}
 		break;
@@ -408,7 +408,7 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 		if ( 'link_notes' == $field ) {
 			$value = esc_html( $value ); // textarea_escaped
 		} else {
-			$value = esc_attr($value);
+			$value = esc_attr( $value);
 		}
 	} elseif ( 'db' == $context ) {
 		/** This filter is documented in wp-includes/post.php */
@@ -437,5 +437,5 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 function clean_bookmark_cache( $bookmark_id ) {
 	wp_cache_delete( $bookmark_id, 'bookmark' );
 	wp_cache_delete( 'get_bookmarks', 'bookmark' );
-	clean_object_term_cache( $bookmark_id, 'link');
+	clean_object_term_cache( $bookmark_id, 'link' );
 }
