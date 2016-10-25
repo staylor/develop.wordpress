@@ -2,7 +2,6 @@
 /**
  * Installs WordPress for running the tests and loads WordPress and the test libraries
  */
-use function WP\getApp;
 
 $config_file_path = dirname( dirname( __FILE__ ) );
 if ( ! file_exists( $config_file_path . '/wp-tests-config.php' ) ) {
@@ -53,8 +52,10 @@ $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 require_once( dirname( __FILE__ ) . '/mock-mailer.php' );
 $phpmailer = new MockPHPMailer();
 
-// Add a symlink to the empty default theme to the themes directory, so it can be used for the tests.
-_symlink_default_theme();
+if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
+	define( 'WP_DEFAULT_THEME', 'default' );
+}
+$wp_theme_directories = array( DIR_TESTDATA . '/themedir1' );
 
 system( WP_PHP_BINARY . ' ' . escapeshellarg( dirname( __FILE__ ) . '/install.php' ) . ' ' . escapeshellarg( $config_file_path ) . ' ' . $multisite );
 
