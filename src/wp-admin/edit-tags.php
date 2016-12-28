@@ -22,13 +22,13 @@ if ( ! $tax ) {
 }
 
 if ( ! in_array( $tax->name, get_taxonomies( array( 'show_ui' => true ) ) ) ) {
-   wp_die( __( 'Sorry, you are not allowed to manage these items.' ) );
+   wp_die( __( 'Sorry, you are not allowed to edit terms in this taxonomy.' ) );
 }
 
 if ( ! current_user_can( $tax->cap->manage_terms ) ) {
 	wp_die(
 		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
-		'<p>' . __( 'Sorry, you are not allowed to manage these items.' ) . '</p>',
+		'<p>' . __( 'Sorry, you are not allowed to manage terms in this taxonomy.' ) . '</p>',
 		403
 	);
 }
@@ -76,7 +76,7 @@ case 'add-tag':
 	if ( ! current_user_can( $tax->cap->edit_terms ) ) {
 		wp_die(
 			'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
-			'<p>' . __( 'Sorry, you are not allowed to add this item.' ) . '</p>',
+			'<p>' . __( 'Sorry, you are not allowed to create terms in this taxonomy.' ) . '</p>',
 			403
 		);
 	}
@@ -175,19 +175,8 @@ default:
 		break;
 	}
 	check_admin_referer( 'bulk-tags' );
-	$tags = (array) $view->_request->get( 'delete_tags' );
-	/**
-	 * Fires when a custom bulk action should be handled.
-	 *
-	 * The sendback link should be modified with success or failure feedback
-	 * from the action to be used to display feedback to the user.
-	 *
-	 * @since 4.7.0
-	 *
-	 * @param string $location The redirect URL.
-	 * @param string $action   The action being taken.
-	 * @param array  $tags     The tag IDs to take the action on.
-	 */
+	$tags = (array) $_REQUEST['delete_tags'];
+	/** This action is documented in wp-admin/edit-comments.php */
 	$location = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $location, $wp_list_table->current_action(), $tags );
 	break;
 }

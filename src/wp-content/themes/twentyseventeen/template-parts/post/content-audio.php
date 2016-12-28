@@ -15,7 +15,7 @@
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<?php
 		if ( is_sticky() && is_home() ) :
-			echo twentyseventeen_get_svg( array( 'icon' => 'pinned' ) );
+			echo twentyseventeen_get_svg( array( 'icon' => 'thumb-tack' ) );
 		endif;
 	?>
 	<header class="entry-header">
@@ -41,7 +41,13 @@
 
 	<?php
 		$content = apply_filters( 'the_content', get_the_content() );
-		$audio = get_media_embedded_in_content( $content, array( 'audio' ) );
+		$audio = false;
+
+		// Only get audio from the content if a playlist isn't present.
+		if ( false === strpos( $content, 'wp-playlist-script' ) ) {
+			$audio = get_media_embedded_in_content( $content, array( 'audio' ) );
+		}
+
 	?>
 
 	<?php if ( '' !== get_the_post_thumbnail() && ! is_single() ) : ?>

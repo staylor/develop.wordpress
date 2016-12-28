@@ -67,8 +67,13 @@ wp_debug_mode();
  *                                    Default true.
  */
 if ( WP_CACHE && apply_filters( 'enable_loading_advanced_cache_dropin', true ) ) {
-// For an advanced caching plugin to use. Uses a static drop-in because you would only want one.
+	// For an advanced caching plugin to use. Uses a static drop-in because you would only want one.
 	WP_DEBUG ? include( WP_CONTENT_DIR . '/advanced-cache.php' ) : @include( WP_CONTENT_DIR . '/advanced-cache.php' );
+
+	// Re-initialize any hooks added manually by advanced-cache.php
+	if ( $wp_filter ) {
+		$wp_filter = WP_Hook::build_preinitialized_hooks( $wp_filter );
+	}
 }
 
 // Define WP_LANG_DIR if not set.
@@ -76,6 +81,7 @@ wp_set_lang_dir();
 
 // Load early WordPress files.
 require( ABSPATH . WPINC . '/compat.php' );
+require( ABSPATH . WPINC . '/class-wp-list-util.php' );
 require( ABSPATH . WPINC . '/functions.php' );
 
 // Include the wpdb class and, if present, a db.php database drop-in.
@@ -288,6 +294,23 @@ if ( ( 0 === validate_file( $locale ) ) && is_readable( $locale_file ) ) {
 	require( $locale_file );
 }
 unset( $locale_file );
+
+/**
+ * WordPress Locale object for loading locale domain date and various strings.
+ * @global WP_Locale $wp_locale
+ * @since 2.1.0
+ */
+$GLOBALS['wp_locale'] = new WP_Locale();
+
+/**
+ *  WordPress Locale Switcher object for switching locales.
+ *
+ * @since 4.7.0
+ *
+ * @global WP_Locale_Switcher $wp_locale_switcher WordPress locale switcher object.
+ */
+$GLOBALS['wp_locale_switcher'] = new WP_Locale_Switcher();
+$GLOBALS['wp_locale_switcher']->init();
 
 // Load the functions for the active theme, for both parent and child theme if applicable.
 if ( ! wp_installing() || 'wp-activate.php' === $app['pagenow'] ) {

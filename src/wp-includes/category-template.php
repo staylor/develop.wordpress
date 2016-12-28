@@ -108,6 +108,7 @@ function get_the_category( $id = false ) {
 }
 
 /**
+<<<<<<< HEAD
  * Sort categories by name.
  *
  * Used by usort() as a callback, should not be used directly. Can actually be
@@ -148,6 +149,8 @@ function _usort_terms_by_ID( $a, $b ) {
 }
 
 /**
+=======
+>>>>>>> aaronjorbin/master
  * Retrieve category name based on category ID.
  *
  * @since 0.71
@@ -678,7 +681,11 @@ function wp_list_categories( $args = '' ) {
 		$output .= walk_category_tree( $categories, $depth, $r );
 	}
 
+<<<<<<< HEAD
 	if ( $r['title_li'] && 'list' == $r['style'] ) {
+=======
+	if ( $r['title_li'] && 'list' == $r['style'] && ( ! empty( $categories ) || ! $r['hide_title_if_empty'] ) ) {
+>>>>>>> aaronjorbin/master
 		$output .= '</ul></li>';
 	}
 

@@ -4,13 +4,13 @@
  * @group xmlrpc
  */
 class Tests_XMLRPC_wp_getTerm extends WP_XMLRPC_UnitTestCase {
-	var $term;
 
-	function setUp() {
-		parent::setUp();
+	protected static $term_id;
 
-		$this->term = wp_insert_term( 'term' . rand_str() , 'category' );
-		$this->assertInternalType( 'array', $this->term );
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		self::$term_id = $factory->term->create( array(
+			'taxonomy' => 'category',
+		) );
 	}
 
 	function test_invalid_username_password() {
@@ -68,7 +68,7 @@ class Tests_XMLRPC_wp_getTerm extends WP_XMLRPC_UnitTestCase {
 	function test_valid_term() {
 		$this->make_user_by_role( 'editor' );
 
-		$term = get_term( $this->term['term_id'], 'category', ARRAY_A );
+		$term = get_term( self::$term_id, 'category', ARRAY_A );
 
 		$result = $this->myxmlrpcserver->call( 'wp.getTerm', array( 1, 'editor', 'editor', 'category', $this->term['term_id'] ) );
 

@@ -247,36 +247,74 @@ function map_meta_cap( $cap, $user_id ) {
 	case 'edit_post_meta':
 	case 'delete_post_meta':
 	case 'add_post_meta':
-		$post = get_post( $args[0] );
-		if ( ! $post ) {
+	case 'edit_comment_meta':
+	case 'delete_comment_meta':
+	case 'add_comment_meta':
+	case 'edit_term_meta':
+	case 'delete_term_meta':
+	case 'add_term_meta':
+	case 'edit_user_meta':
+	case 'delete_user_meta':
+	case 'add_user_meta':
+		list( $_, $object_type, $_ ) = explode( '_', $cap );
+		$object_id = (int) $args[0];
+
+		switch ( $object_type ) {
+			case 'post':
+				$post = get_post( $object_id );
+				if ( ! $post ) {
+					break;
+				}
+
+				$sub_type = get_post_type( $post );
+				break;
+
+			case 'comment':
+				$comment = get_comment( $object_id );
+				if ( ! $comment ) {
+					break;
+				}
+
+				$sub_type = empty( $comment->comment_type ) ? 'comment' : $comment->comment_type;
+				break;
+
+			case 'term':
+				$term = get_term( $object_id );
+				if ( ! $term ) {
+					break;
+				}
+
+				$sub_type = $term->taxonomy;
+				break;
+
+			case 'user':
+				$user = get_user_by( 'id', $object_id );
+				if ( ! $user ) {
+					break;
+				}
+
+				$sub_type = 'user';
+				break;
+		}
+
+		if ( empty( $sub_type ) ) {
 			$caps[] = 'do_not_allow';
 			break;
 		}
 
-		$post_type = get_post_type( $post );
+		$caps = map_meta_cap( "edit_{$object_type}", $user_id, $object_id );
 
-		$caps = map_meta_cap( 'edit_post', $user_id, $post->ID );
+		$meta_key = isset( $args[1] ) ? $args[1] : false;
 
-		$meta_key = isset( $args[ 1 ] ) ? $args[ 1 ] : false;
+		$has_filter = has_filter( "auth_{$object_type}_meta_{$meta_key}" ) || has_filter( "auth_{$object_type}_{$sub_type}_meta_{$meta_key}" );
+		if ( $meta_key && $has_filter ) {
+			/** This filter is documented in wp-includes/meta.php */
+			$allowed = apply_filters( "auth_{$object_type}_meta_{$meta_key}", false, $meta_key, $object_id, $user_id, $cap, $caps );
 
-		if ( $meta_key && ( has_filter( "auth_post_meta_{$meta_key}" ) || has_filter( "auth_post_{$post_type}_meta_{$meta_key}" ) ) ) {
-			/**
-			 * Filters whether the user is allowed to add post meta to a post.
-			 *
-			 * The dynamic portion of the hook name, `$meta_key`, refers to the
-			 * meta key passed to map_meta_cap().
-			 *
-			 * @since 3.3.0
-			 *
-			 * @param bool   $allowed  Whether the user can add the post meta. Default false.
-			 * @param string $meta_key The meta key.
-			 * @param int    $post_id  Post ID.
-			 * @param int    $user_id  User ID.
-			 * @param string $cap      Capability name.
-			 * @param array  $caps     User capabilities.
-			 */
-			$allowed = apply_filters( "auth_post_meta_{$meta_key}", false, $meta_key, $post->ID, $user_id, $cap, $caps );
+			/** This filter is documented in wp-includes/meta.php */
+			$allowed = apply_filters( "auth_{$object_type}_{$sub_type}_meta_{$meta_key}", $allowed, $meta_key, $object_id, $user_id, $cap, $caps );
 
+<<<<<<< HEAD
 			/**
 			 * Filters whether the user is allowed to add post meta to a post of a given type.
 			 *
@@ -298,6 +336,12 @@ function map_meta_cap( $cap, $user_id ) {
 				$caps[] = $cap;
 			}
 		} elseif ( $meta_key && is_protected_meta( $meta_key, 'post' ) ) {
+=======
+			if ( ! $allowed ) {
+				$caps[] = $cap;
+			}
+		} elseif ( $meta_key && is_protected_meta( $meta_key, $object_type ) ) {
+>>>>>>> aaronjorbin/master
 			$caps[] = $cap;
 		}
 		break;
@@ -327,6 +371,7 @@ function map_meta_cap( $cap, $user_id ) {
 			$caps[] = 'do_not_allow';
 		}
 		break;
+	case 'edit_css' :
 	case 'unfiltered_html' :
 		// Disallow unfiltered_html for all users, even admins and super admins.
 		if (
@@ -334,12 +379,17 @@ function map_meta_cap( $cap, $user_id ) {
 			( is_multisite() && ! is_super_admin( $user_id ) )
 		) {
 			$caps[] = 'do_not_allow';
+<<<<<<< HEAD
 		} else {
 			$caps[] = $cap;
 		}
 		break;
 	case 'unfiltered_css' :
 		$caps[] = 'unfiltered_html';
+=======
+		else
+			$caps[] = 'unfiltered_html';
+>>>>>>> aaronjorbin/master
 		break;
 	case 'edit_files':
 	case 'edit_plugins':
@@ -420,12 +470,16 @@ function map_meta_cap( $cap, $user_id ) {
 		$caps[] = 'edit_theme_options';
 		break;
 	case 'delete_site':
-		$caps[] = 'manage_options';
+		if ( is_multisite() ) {
+			$caps[] = 'manage_options';
+		} else {
+			$caps[] = 'do_not_allow';
+		}
 		break;
 	case 'edit_term':
 	case 'delete_term':
 	case 'assign_term':
-		$term_id = $args[0];
+		$term_id = (int) $args[0];
 		$term = get_term( $term_id );
 		if ( ! $term || is_wp_error( $term ) ) {
 			$caps[] = 'do_not_allow';

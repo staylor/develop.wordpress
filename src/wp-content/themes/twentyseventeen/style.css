@@ -3,7 +3,7 @@ Theme Name: Twenty Seventeen
 Theme URI: https://wordpress.org/themes/twentyseventeen/
 Author: the WordPress team
 Author URI: https://wordpress.org/
-Description: Twenty Seventeen brings your site to life with immersive featured images and subtle animations. With a focus on business sites, it features multiple sections on the front page as well as widgets, navigation and social menus, a logo, and more. Personalize its asymmetrical grid with a custom color scheme and showcase your multimedia content with post formats. Our default theme for 2017 works great in many languages, for any abilities, and on any device.
+Description: Twenty Seventeen brings your site to life with header video and immersive featured images. With a focus on business sites, it features multiple sections on the front page as well as widgets, navigation and social menus, a logo, and more. Personalize its asymmetrical grid with a custom color scheme and showcase your multimedia content with post formats. Our default theme for 2017 works great in many languages, for any abilities, and on any device.
 Version: 1.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -17,35 +17,37 @@ Use it to make something cool, have fun, and share what you've learned with othe
 /*--------------------------------------------------------------
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
-# Normalize
-# Accessibility
-# Alignments
-# Clearings
-# Typography
-# Forms
-# Formatting
-# Lists
-# Tables
-# Links
-# Featured Image Hover
-# Navigation
-# Layout
-   ## Header
-   ## Front Page
-   ## Regular Content
-   ## Posts
-   ## Pages
-   ## Footer
-# Comments
-# Widgets
-# Media
-	## Galleries
-# Customizer
-# Media Queries
+1.0 Normalize
+2.0 Accessibility
+3.0 Alignments
+4.0 Clearings
+5.0 Typography
+6.0 Forms
+7.0 Formatting
+8.0 Lists
+9.0 Tables
+10.0 Links
+11.0 Featured Image Hover
+12.0 Navigation
+13.0 Layout
+   13.1 Header
+   13.2 Front Page
+   13.3 Regular Content
+   13.4 Posts
+   13.5 Pages
+   13.6 Footer
+14.0 Comments
+15.0 Widgets
+16.0 Media
+   16.1 Galleries
+17.0 Customizer
+18.0 SVGs Fallbacks
+19.0 Media Queries
+20.0 Print
 --------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
-# Normalize
+1.0 Normalize
 Styles based on Normalize v5.0.0 @link https://github.com/necolas/normalize.css
 --------------------------------------------------------------*/
 
@@ -119,7 +121,7 @@ strong {
 
 b,
 strong {
-	font-weight: bolder;
+	font-weight: 700;
 }
 
 code,
@@ -295,7 +297,7 @@ template {
 }
 
 /*--------------------------------------------------------------
-# Accessibility
+2.0 Accessibility
 --------------------------------------------------------------*/
 
 /* Text meant only for screen readers. */
@@ -306,6 +308,7 @@ template {
 	overflow: hidden;
 	position: absolute !important;
 	width: 1px;
+	word-wrap: normal !important; /* Many screen reader and browser combinations announce broken words as they would appear visually. */
 }
 
 .screen-reader-text:focus {
@@ -330,14 +333,8 @@ template {
 	z-index: 100000; /* Above WP toolbar. */
 }
 
-/* Do not show the outline on the skip link target. */
-
-#content[tabindex="-1"]:focus {
-	outline: 0;
-}
-
 /*--------------------------------------------------------------
-# Alignments
+3.0 Alignments
 --------------------------------------------------------------*/
 
 .alignleft {
@@ -360,7 +357,7 @@ template {
 }
 
 /*--------------------------------------------------------------
-# Clearings
+4.0 Clearings
 --------------------------------------------------------------*/
 
 .clear:before,
@@ -411,7 +408,7 @@ template {
 }
 
 /*--------------------------------------------------------------
-# Typography
+5.0 Typography
 --------------------------------------------------------------*/
 
 body,
@@ -871,6 +868,7 @@ html[lang="th"] h4,
 html[lang="th"] h5,
 html[lang="th"] h6 {
 	line-height: 1.65;
+	font-family: "Sukhumvit Set", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 html[lang="th"] body,
@@ -879,6 +877,7 @@ html[lang="th"] input,
 html[lang="th"] select,
 html[lang="th"] textarea {
 	line-height: 1.8;
+	font-family: "Sukhumvit Set", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* Remove letter-spacing for all non-latin alphabets */
@@ -905,7 +904,7 @@ html[lang="th"] * {
 }
 
 /*--------------------------------------------------------------
-# Forms
+6.0 Forms
 --------------------------------------------------------------*/
 
 label {
@@ -936,6 +935,7 @@ input[type="datetime-local"],
 input[type="color"],
 textarea {
 	color: #666;
+	background: #fff;
 	background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
 	border: 1px solid #bbb;
 	-webkit-border-radius: 3px;
@@ -1042,8 +1042,31 @@ input[type="submit"].secondary:focus {
 	background: #bbb;
 }
 
+/* Placeholder text color -- selectors need to be separate to work. */
+::-webkit-input-placeholder {
+	color: #333;
+	font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif;
+}
+
+:-moz-placeholder {
+	color: #333;
+	font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif;
+}
+
+::-moz-placeholder {
+	color: #333;
+	font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif;
+	opacity: 1;
+	/* Since FF19 lowers the opacity of the placeholder by default */
+}
+
+:-ms-input-placeholder {
+	color: #333;
+	font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif;
+}
+
 /*--------------------------------------------------------------
-# Formatting
+7.0 Formatting
 --------------------------------------------------------------*/
 
 hr {
@@ -1054,7 +1077,7 @@ hr {
 }
 
 /*--------------------------------------------------------------
-# Lists
+8.0 Lists
 --------------------------------------------------------------*/
 
 ul,
@@ -1068,20 +1091,7 @@ ul {
 }
 
 ol {
-	counter-reset: item;
-}
-
-ol li {
-	display: block;
-	position: relative;
-}
-
-ol li:before {
-	content: counter(item) ".";
-	counter-increment: item;
-	font-weight: 600;
-	left: -1.5em;
-	position: absolute;
+	list-style: decimal;
 }
 
 li > ul,
@@ -1099,7 +1109,7 @@ dd {
 }
 
 /*--------------------------------------------------------------
-# Tables
+9.0 Tables
 --------------------------------------------------------------*/
 
 table {
@@ -1114,7 +1124,7 @@ thead th {
 }
 
 th {
-	padding: 0.4em 0;
+	padding: 0.4em;
 	text-align: left;
 }
 
@@ -1126,8 +1136,18 @@ td {
 	padding: 0.4em;
 }
 
+th:first-child,
+td:first-child {
+	padding-left: 0;
+}
+
+th:last-child,
+td:last-child {
+	padding-right: 0;
+}
+
 /*--------------------------------------------------------------
-# Links
+10.0 Links
 --------------------------------------------------------------*/
 
 a {
@@ -1177,6 +1197,7 @@ a:active {
 .comment-reply-link,
 a .nav-title,
 .pagination a,
+.comments-pagination a,
 .site-info a,
 .widget .widget-title a,
 .widget ul li a,
@@ -1209,13 +1230,6 @@ a .nav-title,
 .comment-reply-link:hover,
 .widget_authors a:focus strong,
 .widget_authors a:hover strong,
-.project-terms a:focus,
-.project-terms a:hover {
-	color: #000;
-	-webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, 0), 0 3px 0 rgba(0, 0, 0, 1);
-	box-shadow: inset 0 0 0 rgba(0, 0, 0, 0), 0 3px 0 rgba(0, 0, 0, 1);
-}
-
 .entry-title a:focus,
 .entry-title a:hover,
 .entry-meta a:focus,
@@ -1230,6 +1244,10 @@ a .nav-title,
 .entry-footer .tags-links a:hover,
 .post-navigation a:focus,
 .post-navigation a:hover,
+.pagination a:not(.prev):not(.next):focus,
+.pagination a:not(.prev):not(.next):hover,
+.comments-pagination a:not(.prev):not(.next):focus,
+.comments-pagination a:not(.prev):not(.next):hover,
 .logged-in-as a:focus,
 .logged-in-as a:hover,
 a:focus .nav-title,
@@ -1260,7 +1278,7 @@ a:hover .nav-title,
 }
 
 /*--------------------------------------------------------------
-# Featured Image Hover
+11.0 Featured Image Hover
 --------------------------------------------------------------*/
 
 .post-thumbnail {
@@ -1279,7 +1297,7 @@ a:hover .nav-title,
 }
 
 /*--------------------------------------------------------------
-# Navigation
+12.0 Navigation
 --------------------------------------------------------------*/
 
 .navigation-top {
@@ -1288,6 +1306,7 @@ a:hover .nav-title,
 	border-top: 1px solid #eee;
 	font-size: 16px;
 	font-size: 1rem;
+	position: relative;
 }
 
 .navigation-top .wrap {
@@ -1333,7 +1352,7 @@ a:hover .nav-title,
 
 .main-navigation > div > ul {
 	border-top: 1px solid #eee;
-	padding: 0.75em 3.375em;
+	padding: 0.75em 1.695em;
 }
 
 .js .main-navigation.toggled-on > div > ul {
@@ -1469,7 +1488,7 @@ a:hover .nav-title,
 }
 
 /*--------------------------------------------------------------
-# Layout
+13.0 Layout
 --------------------------------------------------------------*/
 
 html {
@@ -1494,7 +1513,6 @@ body {
 
 #page {
 	position: relative;
-	-ms-word-wrap: break-word;
 	word-wrap: break-word;
 }
 
@@ -1502,8 +1520,8 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 700px;
-	padding-left: 3em;
-	padding-right: 3em;
+	padding-left: 2em;
+	padding-right: 2em;
 }
 
 .wrap:after {
@@ -1513,7 +1531,7 @@ body {
 }
 
 /*--------------------------------------------------------------
-## Header
+13.1 Header
 --------------------------------------------------------------*/
 
 #masthead .wrap {
@@ -1529,8 +1547,10 @@ body {
 
 .site-branding {
 	padding: 1em 0;
+	position: relative;
 	-webkit-transition: margin-bottom 0.2s;
 	transition: margin-bottom 0.2s;
+	z-index: 3;
 }
 
 .site-branding a {
@@ -1542,11 +1562,6 @@ body {
 .site-branding a:hover,
 .site-branding a:focus {
 	opacity: 0.7;
-}
-
-.has-header-image.twentyseventeen-front-page .site-branding,
-.has-header-image.home.blog .site-branding {
-	align-self: flex-end;
 }
 
 .site-title {
@@ -1564,10 +1579,13 @@ body {
 .site-title,
 .site-title a {
 	color: #222;
+	opacity: 1; /* Prevent opacity from changing during selective refreshes in the customize preview */
 }
 
 body.has-header-image .site-title,
-body.has-header-image .site-title a {
+body.has-header-video .site-title,
+body.has-header-image .site-title a,
+body.has-header-video .site-title a {
 	color: #fff;
 }
 
@@ -1578,7 +1596,8 @@ body.has-header-image .site-title a {
 	margin-bottom: 0;
 }
 
-body.has-header-image .site-description {
+body.has-header-image .site-description,
+body.has-header-video .site-description {
 	color: #fff;
 	opacity: 0.8;
 }
@@ -1596,7 +1615,8 @@ body.has-header-image .site-description {
 	width: auto;
 }
 
-body.home.title-tagline-hidden.has-header-image .custom-logo-link img {
+body.home.title-tagline-hidden.has-header-image .custom-logo-link img,
+body.home.title-tagline-hidden.has-header-video .custom-logo-link img {
 	max-height: 200px;
 	max-width: 100%;
 }
@@ -1616,25 +1636,26 @@ body:not(.title-tagline-hidden) .site-branding-text {
 }
 
 .has-header-image.twentyseventeen-front-page .custom-header,
-.has-header-image.home.blog .custom-header {
-	display: flex;
-	min-height: 300px;
-	min-height: 75vh;
+.has-header-video.twentyseventeen-front-page .custom-header,
+.has-header-image.home.blog .custom-header,
+.has-header-video.home.blog .custom-header {
+	display: table;
+	height: 300px;
+	height: 75vh;
+	width: 100%;
 }
 
-.custom-header-image {
-	background-position: center center;
-	background-repeat: no-repeat;
-	-webkit-background-size: cover;
-	background-size: cover;
+.custom-header-media {
 	bottom: 0;
 	left: 0;
+	overflow: hidden;
 	position: absolute;
 	right: 0;
 	top: 0;
+	width: 100%;
 }
 
-.custom-header-image:before {
+.custom-header-media:before {
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,000000+100&0+0,0.3+75 */
 	background: -moz-linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 75%, rgba(0, 0, 0, 0.3) 100%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 75%, rgba(0, 0, 0, 0.3) 100%); /* Chrome10-25,Safari5.1-6 */
@@ -1647,18 +1668,100 @@ body:not(.title-tagline-hidden) .site-branding-text {
 	left: 0;
 	position: absolute;
 	right: 0;
+	z-index: 2;
 }
 
-.has-header-image:not(.twentyseventeen-front-page):not(.home) .custom-header-image {
-	background-position: center bottom;
+.has-header-image .custom-header-media img,
+.has-header-video .custom-header-media video,
+.has-header-video .custom-header-media iframe {
+	position: fixed;
+	height: auto;
+	left: 50%;
+	max-width: 1000%;
+	min-height: 100%;
+	min-width: 100%;
+	min-width: 100vw; /* vw prevents 1px gap on left that 100% has */
+	width: auto;
+	top: 50%;
+	padding-bottom: 1px; /* Prevent header from extending beyond the footer */
+	-ms-transform: translateX(-50%) translateY(-50%);
+	-moz-transform: translateX(-50%) translateY(-50%);
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
 }
 
-body:not(.has-header-image) .custom-header-image {
-	padding: 5% 0;
+.wp-custom-header .wp-custom-header-video-button { /* Specificity prevents .color-dark button overrides */
+	background-color: rgba(34, 34, 34, 0.5);
+	border: 1px solid rgba(255, 255, 255, 0.6);
+	color: rgba(255, 255, 255, 0.6);
+	height: 45px;
+	overflow: hidden;
+	padding: 0;
+	position: fixed;
+	right: 30px;
+	top: 30px;
+	-webkit-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.3s ease-in-out;
+	transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.3s ease-in-out;
+	width: 45px;
+}
+
+.wp-custom-header .wp-custom-header-video-button:hover,
+.wp-custom-header .wp-custom-header-video-button:focus { /* Specificity prevents .color-dark button overrides */
+	border-color: rgba(255, 255, 255, 0.8);
+	background-color: rgba(34, 34, 34, 0.8);
+	color: #fff;
+}
+
+.admin-bar .wp-custom-header-video-button {
+	top: 62px;
+}
+
+.has-header-image:not(.twentyseventeen-front-page):not(.home) .custom-header-media img {
+	bottom: 0;
+	position: absolute;
+	top: auto;
+	-ms-transform: translateX(-50%) translateY(0);
+	-moz-transform: translateX(-50%) translateY(0);
+	-webkit-transform: translateX(-50%) translateY(0);
+	transform: translateX(-50%) translateY(0);
+}
+
+/* For browsers that support 'object-fit' */
+@supports ( object-fit: cover ) {
+	.has-header-image .custom-header-media img,
+	.has-header-video .custom-header-media video,
+	.has-header-video .custom-header-media iframe,
+	.has-header-image:not(.twentyseventeen-front-page):not(.home) .custom-header-media img {
+		height: 100%;
+		left: 0;
+		-o-object-fit: cover;
+		object-fit: cover;
+		top: 0;
+		-ms-transform: none;
+		-moz-transform: none;
+		-webkit-transform: none;
+		transform: none;
+		width: 100%;
+	}
+}
+
+/* Hides div in Customizer preview when header images or videos change. */
+
+body:not(.has-header-image):not(.has-header-video) .custom-header-media {
+	display: none;
+}
+
+.has-header-image.twentyseventeen-front-page .site-branding,
+.has-header-video.twentyseventeen-front-page .site-branding,
+.has-header-image.home.blog .site-branding,
+.has-header-video.home.blog .site-branding {
+	display: table-cell;
+	height: 100%;
+	vertical-align: bottom;
 }
 
 /*--------------------------------------------------------------
-## Front Page
+13.2 Front Page
 --------------------------------------------------------------*/
 
 .twentyseventeen-front-page .site-content {
@@ -1747,15 +1850,20 @@ body:not(.has-header-image) .custom-header-image {
 }
 
 /*--------------------------------------------------------------
-## Regular Content
+13.3 Regular Content
 --------------------------------------------------------------*/
+
+.site-content-contain {
+	background-color: #fff;
+	position: relative;
+}
 
 .site-content {
 	padding: 2.5em 0 0;
 }
 
 /*--------------------------------------------------------------
-## Posts
+13.4 Posts
 --------------------------------------------------------------*/
 
 /* Post Landing Page */
@@ -1764,19 +1872,16 @@ body:not(.has-header-image) .custom-header-image {
 	position: relative;
 }
 
-.icon-pinned {
+.post:not(.sticky) .icon-thumb-tack {
 	display: none;
 }
 
-.sticky .icon-pinned {
+.sticky .icon-thumb-tack {
 	display: block;
 	height: 18px;
 	left: -1.5em;
 	position: absolute;
 	top: 1.65em;
-	-ms-transform: rotate(-45deg); /* IE 9 */
-	-webkit-transform: rotate(-45deg); /* Chrome, Safari, Opera */
-	transform: rotate(-45deg);
 	width: 20px;
 }
 
@@ -1839,16 +1944,32 @@ body.page:not(.twentyseventeen-front-page) .entry-title {
 	text-align: center;
 }
 
+.pagination .icon,
+.comments-pagination .icon {
+	width: 0.666666666em;
+	height: 0.666666666em;
+}
+
 .comments-pagination {
 	border: 0;
 }
 
 .page-numbers {
-	padding: 0.5em 1em;
+	display: none;
+	padding: 0.5em 0.75em;
 }
 
 .page-numbers.current {
 	color: #767676;
+	display: inline-block;
+}
+
+.page-numbers.current .screen-reader-text {
+	clip: auto;
+	height: auto;
+	overflow: auto;
+	position: relative !important;
+	width: auto;
 }
 
 .prev.page-numbers,
@@ -1856,10 +1977,10 @@ body.page:not(.twentyseventeen-front-page) .entry-title {
 	background-color: #ddd;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
+	display: inline-block;
 	font-size: 24px;
 	font-size: 1.5rem;
 	line-height: 1;
-	margin-top: -0.3em;
 	padding: 0.25em 0.5em 0.4em;
 }
 
@@ -1924,10 +2045,12 @@ body:not(.twentyseventeen-front-page) .entry-header {
 	color: #222;
 	display: inline-block;
 	margin-left: 1em;
+	white-space: nowrap;
 }
 
 .search .page .entry-meta a.post-edit-link {
 	margin-left: 0;
+	white-space: nowrap;
 }
 
 .taxonomy-description {
@@ -1947,7 +2070,9 @@ body:not(.twentyseventeen-front-page) .entry-header {
 /* Single Post */
 
 .single-post:not(.has-sidebar) #primary,
-.page.page-one-column:not(.twentyseventeen-front-page) #primary {
+.page.page-one-column:not(.twentyseventeen-front-page) #primary,
+.archive.page-one-column:not(.has-sidebar) .page-header,
+.archive.page-one-column:not(.has-sidebar) #primary {
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 740px;
@@ -2016,7 +2141,7 @@ body:not(.twentyseventeen-front-page) .entry-header {
 
 .entry-footer .cat-links .icon,
 .entry-footer .tags-links .icon {
-	color: #999;
+	color: #767676;
 	left: 0;
 	margin-right: 0.5em;
 	position: absolute;
@@ -2042,6 +2167,7 @@ body:not(.twentyseventeen-front-page) .entry-header {
 	padding: 0.7em 2em;
 	-webkit-transition: background-color 0.2s ease-in-out;
 	transition: background-color 0.2s ease-in-out;
+	white-space: nowrap;
 }
 
 .entry-footer .edit-link a.post-edit-link:hover,
@@ -2079,7 +2205,6 @@ body:not(.twentyseventeen-front-page) .entry-header {
 	width: 20px;
 }
 
-
 /* Post Navigation */
 
 .post-navigation {
@@ -2104,25 +2229,24 @@ body:not(.twentyseventeen-front-page) .entry-header {
 
 .nav-title {
 	color: #333;
-	font-size: 16px;
-	font-size: 1rem;
-}
-
-.nav-links .nav-next .nav-title .icon,
-.nav-links .nav-previous .nav-title .icon {
-	height: 24px;
-	height: 1.5rem;
-	width: 24px;
-	width: 1.5rem;
-	font-weight: 400;
+	font-size: 15px;
+	font-size: 0.9375rem;
 }
 
 .post-navigation .nav-next {
 	margin-top: 1.5em;
 }
 
+.nav-links .nav-previous .nav-title .nav-title-icon-wrapper {
+	margin-right: 0.5em;
+}
+
+.nav-links .nav-next .nav-title .nav-title-icon-wrapper {
+	margin-left: 0.5em;
+}
+
 /*--------------------------------------------------------------
-## Pages
+13.5 Pages
 --------------------------------------------------------------*/
 
 .page-header {
@@ -2144,6 +2268,10 @@ body:not(.twentyseventeen-front-page) .entry-header {
 	margin: 0 0 1.5em;
 }
 
+.page:not(.home) #content {
+	padding-bottom: 1.5em;
+}
+
 /* 404 page */
 
 .error404 .page-content {
@@ -2156,7 +2284,7 @@ body:not(.twentyseventeen-front-page) .entry-header {
 }
 
 /*--------------------------------------------------------------
-## Footer
+13.6 Footer
 --------------------------------------------------------------*/
 
 .site-footer {
@@ -2238,7 +2366,7 @@ body:not(.twentyseventeen-front-page) .entry-header {
 }
 
 /*--------------------------------------------------------------
-# Comments
+14.0 Comments
 --------------------------------------------------------------*/
 
 #comments {
@@ -2357,7 +2485,7 @@ body:not(.twentyseventeen-front-page) .entry-header {
 }
 
 /*--------------------------------------------------------------
-# Widgets
+15.0 Widgets
 --------------------------------------------------------------*/
 
 #secondary {
@@ -2414,6 +2542,7 @@ h2.widget-title {
 
 .widget ul li li {
 	border: 0;
+	padding-left: 24px;
 	padding-left: 1.5rem;
 }
 
@@ -2453,7 +2582,6 @@ h2.widget-title {
 /* Text widget */
 
 .widget_text {
-	-ms-word-wrap: break-word;
 	word-wrap: break-word;
 }
 
@@ -2553,10 +2681,8 @@ h2.widget-title {
 
 .search-form .search-submit .icon {
 	height: 24px;
-	height: 1.5rem;
 	top: -2px;
 	width: 24px;
-	width: 1.5rem;
 }
 
 /* Tag cloud widget */
@@ -2583,7 +2709,6 @@ h2.widget-title {
 	-webkit-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.3s ease-in-out;
 	transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.3s ease-in-out;
 	width: auto;
-	-ms-word-wrap: break-word;
 	word-wrap: break-word;
 	z-index: 0;
 }
@@ -2612,10 +2737,11 @@ h2.widget-title {
 }
 
 /*--------------------------------------------------------------
-# Media
+16.0 Media
 --------------------------------------------------------------*/
 
-img {
+img,
+video {
 	height: auto; /* Make sure images are scaled correctly. */
 	max-width: 100%; /* Adhere to container width. */
 }
@@ -2820,7 +2946,7 @@ object {
 }
 
 /*--------------------------------------------------------------
-## Galleries
+16.1 Galleries
 --------------------------------------------------------------*/
 
 .gallery-item {
@@ -2847,6 +2973,7 @@ object {
 	box-shadow: none;
 	background: none;
 	display: inline-block;
+	max-width: 100%;
 }
 
 .gallery-item a img {
@@ -2873,21 +3000,11 @@ object {
 }
 
 /*--------------------------------------------------------------
-# Customizer
+17.0 Customizer
 --------------------------------------------------------------*/
 
-/* Hide this until we're in the Customizer */
-
-.twentyseventeen-panel-title {
-	display: none;
-}
-
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel {
-	/* Colour-code all panels (add 1 to account for #twentyseventeen-hero, so 2 is actually panel 1)*/
-}
-
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:after {
-	border: 2px dashed;
+.highlight-front-sections.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:after {
+	border: 2px dashed #0085ba; /* Matches visible edit shortcuts. */
 	bottom: 1em;
 	content: "";
 	display: block;
@@ -2895,125 +3012,47 @@ object {
 	position: absolute;
 	right: 1em;
 	top: 1em;
+	z-index: 1;
 }
 
+.highlight-front-sections.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel .panel-content {
+	z-index: 2; /* Prevent :after from preventing interactions within the section */
+}
+
+/* Used for placeholder text */
 .twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel .twentyseventeen-panel-title {
-	color: #fff;
-	display: inline-block;
+	display: block;
 	font-size: 14px;
 	font-size: 0.875rem;
 	font-weight: 700;
 	letter-spacing: 1px;
-	padding: 5px 10px;
-	position: absolute;
-	right: 3.2em;
+	padding: 3em;
 	text-transform: uppercase;
-	top: 3.2em;
-	-webkit-transform: translate(3px, -3px);
-	-ms-transform: translate(3px, -3px);
-	transform: translate(3px, -3px);
-	z-index: 3;
+	text-align: center;
 }
 
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:nth-of-type(1):after {
+/* Show borders on the custom page panels only when the front page sections are being edited */
+.highlight-front-sections.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:nth-of-type(1):after {
 	border: none;
-}
-
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:nth-of-type(2) .twentyseventeen-panel-title {
-	background: #b569a2;
-}
-
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:nth-of-type(2):after {
-	border-color: #b569a2;
-	color: #b569a2;
-}
-
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:nth-of-type(3) .twentyseventeen-panel-title {
-	background: #8f68bd;
-}
-
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:nth-of-type(3):after {
-	border-color: #8f68bd;
-	color: #8f68bd;
-}
-
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:nth-of-type(4) .twentyseventeen-panel-title {
-	background: #575ebd;
-}
-
-.twentyseventeen-customizer.twentyseventeen-front-page .twentyseventeen-panel:nth-of-type(4):after {
-	border-color: #575ebd;
-	color: #575ebd;
-}
-
-/* Add a highlight class to improve Customizer behaviour */
-
-@-webkit-keyframes flash {
-
-	0%,
-	20%,
-	40%,
-	60%,
-	80%,
-	100% {
-		opacity: 1;
-	}
-
-	10%,
-	30%,
-	50%,
-	70%,
-	90% {
-		opacity: 0;
-	}
-}
-
-@keyframes flash {
-
-	0%,
-	20%,
-	40%,
-	60%,
-	80%,
-	100% {
-		opacity: 1;
-	}
-
-	10%,
-	30%,
-	50%,
-	70%,
-	90% {
-		opacity: 0;
-	}
-}
-
-article.panel-placeholder {
-	display: none;
 }
 
 .twentyseventeen-front-page.twentyseventeen-customizer #primary article.panel-placeholder {
 	border: 0;
 }
 
-.twentyseventeen-customizer .panel-placeholder.twentyseventeen-highlight {
-	display: block;
-	height: 112px;
+/* Add some space around the visual edit shortcut buttons. */
+.twentyseventeen-panel .customize-partial-edit-shortcut button {
+	top: 30px;
+	left: 30px;
 }
 
-.twentyseventeen-highlight:after {
-	-webkit-animation-duration: 2s;
-	animation-duration: 2s;
-	-webkit-animation-name: flash;
-	animation-name: flash;
-	-webkit-animation-timing-function: ease-in-out;
-	animation-timing-function: ease-in-out;
-	-webkit-animation-fill-mode: both;
-	animation-fill-mode: both;
+/* Ensure that placeholder icons are visible. */
+.twentyseventeen-panel .customize-partial-edit-shortcut-hidden:before {
+	visibility: visible;
 }
 
 /*--------------------------------------------------------------
-## SVGs Fallbacks
+18.0 SVGs Fallbacks
 --------------------------------------------------------------*/
 
 .svg-fallback {
@@ -3024,30 +3063,31 @@ article.panel-placeholder {
 	display: inline-block;
 }
 
-.no-svg .dropdown-toggle .svg-fallback.icon-expand {
-	font-size: 16px;
-	font-size: 1em;
+.no-svg .dropdown-toggle {
+	padding: 0.5em 0 0;
+	right: 0;
+	text-align: center;
+	width: 2em;
+}
+
+.no-svg .dropdown-toggle .svg-fallback.icon-angle-down {
+	font-size: 20px;
+	font-size: 1.25rem;
 	font-weight: 400;
-	line-height: 2.5em;
-	position: absolute;
-	top: 8px;
+	line-height: 1;
 	-webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
 	-ms-transform: rotate(180deg); /* IE 9 */
 	transform: rotate(180deg);
 }
 
-.no-svg .dropdown-toggle.toggled-on .svg-fallback.icon-expand {
+.no-svg .dropdown-toggle.toggled-on .svg-fallback.icon-angle-down {
 	-webkit-transform: rotate(0); /* Chrome, Safari, Opera */
 	-ms-transform: rotate(0); /* IE 9 */
 	transform: rotate(0);
 }
 
-.no-svg .dropdown-toggle .svg-fallback.icon-expand:before {
+.no-svg .dropdown-toggle .svg-fallback.icon-angle-down:before {
 	content: "\005E";
-	display: block;
-	height: 25px;
-	text-align: center;
-	width: 20px;
 }
 
 /* Social Menu fallbacks */
@@ -3075,8 +3115,16 @@ article.panel-placeholder {
 }
 
 /*--------------------------------------------------------------
-## Media Queries
+19.0 Media Queries
 --------------------------------------------------------------*/
+
+/* Adjust positioning of edit shortcuts, override style in customize-preview.css */
+@media screen and (min-width: 20em) {
+
+	body.customize-partial-edit-shortcuts-shown .site-header .site-title {
+		padding-left: 0;
+	}
+}
 
 @media screen and (min-width: 30em) {
 
@@ -3171,6 +3219,10 @@ article.panel-placeholder {
 		font-size: 0.875rem;
 	}
 
+	.page-numbers.current {
+		font-size: 16px;
+		font-size: 1rem;
+	}
 
 	/* Site Footer */
 
@@ -3226,6 +3278,8 @@ article.panel-placeholder {
 
 	.wrap {
 		max-width: 1000px;
+		padding-left: 3em;
+		padding-right: 3em;
 	}
 
 	.has-sidebar:not(.error404) #primary {
@@ -3250,25 +3304,41 @@ article.panel-placeholder {
 	}
 
 	.has-header-image.twentyseventeen-front-page .site-branding,
-	.has-header-image.home.blog .site-branding {
+	.has-header-video.twentyseventeen-front-page .site-branding,
+	.has-header-image.home.blog .site-branding,
+	.has-header-video.home.blog .site-branding {
 		bottom: 0;
+		display: block;
+		left: 0;
+		height: auto;
 		padding-top: 0;
 		position: absolute;
 		width: 100%;
 	}
 
 	.has-header-image.twentyseventeen-front-page .custom-header,
-	.has-header-image.home.blog .custom-header {
+	.has-header-video.twentyseventeen-front-page .custom-header,
+	.has-header-image.home.blog .custom-header,
+	.has-header-video.home.blog .custom-header {
 		display: block;
-		min-height: 0;
+		height: auto;
 	}
 
-	.custom-header-image {
+	.custom-header-media {
 		height: 165px;
 		position: relative;
 	}
 
-	.has-header-image:not(.twentyseventeen-front-page):not(.home) .custom-header-image {
+	.twentyseventeen-front-page.has-header-image .custom-header-media,
+	.twentyseventeen-front-page.has-header-video .custom-header-media,
+	.home.blog.has-header-image .custom-header-media,
+	.home.blog.has-header-video .custom-header-media {
+		height: 0;
+		position: relative;
+	}
+
+	.has-header-image:not(.twentyseventeen-front-page):not(.home) .custom-header-media,
+	.has-header-video:not(.twentyseventeen-front-page):not(.home) .custom-header-media {
 		bottom: 0;
 		height: auto;
 		left: 0;
@@ -3277,23 +3347,18 @@ article.panel-placeholder {
 		top: 0;
 	}
 
-	.twentyseventeen-front-page.has-header-image .custom-header-image,
-	.home.blog.has-header-image .custom-header-image {
-		height: 0;
-		padding-top: 66%;
-		position: relative;
-	}
-
 	.custom-logo-link {
 		padding-right: 2em;
 	}
 
 	.custom-logo-link img,
-	body.home.title-tagline-hidden.has-header-image .custom-logo-link img {
+	body.home.title-tagline-hidden.has-header-image .custom-logo-link img,
+	body.home.title-tagline-hidden.has-header-video .custom-logo-link img {
 		max-width: 350px;
 	}
 
-	.title-tagline-hidden.home.has-header-image .custom-logo-link img {
+	.title-tagline-hidden.home.has-header-image .custom-logo-link img,
+	.title-tagline-hidden.home.has-header-video .custom-logo-link img {
 		max-height: 200px;
 	}
 
@@ -3482,7 +3547,7 @@ article.panel-placeholder {
 		display: inline;
 		left: 5px;
 		position: relative;
-		top: -2px;
+		top: -1px;
 	}
 
 	.main-navigation ul ul .menu-item-has-children > a > .icon,
@@ -3514,7 +3579,7 @@ article.panel-placeholder {
 		display: none;
 	}
 
-	.site-navigation-fixed.site-header.menu-scroll-down {
+	.site-header .site-navigation-fixed .menu-scroll-down {
 		display: none;
 	}
 
@@ -3522,9 +3587,12 @@ article.panel-placeholder {
 
 	.site-header .menu-scroll-down {
 		display: block;
-		padding: 0.5em 0.5em 0.4em;
+		padding: 1em;
 		position: absolute;
 		right: 0;
+	}
+
+	.site-header .menu-scroll-down .icon {
 		-webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
 		-ms-transform: rotate(90deg); /* IE 9 */
 		transform: rotate(90deg);
@@ -3537,7 +3605,7 @@ article.panel-placeholder {
 
 	.site-header .navigation-top .menu-scroll-down {
 		color: #767676;
-		top: 0.9em;
+		top: 0.7em;
 	}
 
 	.menu-scroll-down:focus {
@@ -3545,34 +3613,40 @@ article.panel-placeholder {
 	}
 
 	.menu-scroll-down .icon {
-		height: 32px;
-		height: 2rem;
-		width: 32px;
-		width: 2rem;
+		height: 18px;
+		width: 18px;
 	}
 
 	/* Front Page */
 
 	.twentyseventeen-front-page.has-header-image .site-branding,
-	.home.blog.has-header-image .site-branding {
+	.twentyseventeen-front-page.has-header-video .site-branding,
+	.home.blog.has-header-image .site-branding,
+	.home.blog.has-header-video .site-branding {
 		margin-bottom: 70px;
 	}
 
-	.twentyseventeen-front-page.has-header-image .custom-header-image,
-	.home.blog.has-header-image .custom-header-image {
+	.twentyseventeen-front-page.has-header-image .custom-header-media,
+	.twentyseventeen-front-page.has-header-video .custom-header-media,
+	.home.blog.has-header-image .custom-header-media,
+	.home.blog.has-header-video .custom-header-media {
 		height: 1200px;
 		height: 100vh;
 		max-height: 100%;
-		padding: 10% 0;
+		overflow: hidden;
 	}
 
-	.twentyseventeen-front-page.has-header-image .custom-header-image:before,
-	.home.blog.has-header-image .custom-header-image:before {
+	.twentyseventeen-front-page.has-header-image .custom-header-media:before,
+	.twentyseventeen-front-page.has-header-video .custom-header-media:before,
+	.home.blog.has-header-image .custom-header-media:before,
+	.home.blog.has-header-video .custom-header-media:before {
 		height: 33%;
 	}
 
-	.admin-bar.twentyseventeen-front-page.has-header-image .custom-header-image,
-	.admin-bar.home.blog.has-header-image .custom-header-image {
+	.admin-bar.twentyseventeen-front-page.has-header-image .custom-header-media,
+	.admin-bar.twentyseventeen-front-page.has-header-video .custom-header-media,
+	.admin-bar.home.blog.has-header-image .custom-header-media,
+	.admin-bar.home.blog.has-header-video .custom-header-media {
 		height: calc(100vh - 32px);
 	}
 
@@ -3584,6 +3658,11 @@ article.panel-placeholder {
 	.panel-image {
 		height: 100vh;
 		max-height: 1200px;
+	}
+
+	/* With panel images 100% of the screen height, we're going to fix the background image where supported to create a parallax-like effect. */
+	.background-fixed .panel-image {
+		background-attachment: fixed;
 	}
 
 	.page-two-column .panel-content .entry-header {
@@ -3628,7 +3707,7 @@ article.panel-placeholder {
 	/* Posts */
 
 	.site-content {
-		padding: 6.5em 0 0;
+		padding: 5.5em 0 0;
 	}
 
 	.single-post .entry-title,
@@ -3660,26 +3739,27 @@ article.panel-placeholder {
 
 	/* Blog, archive, search */
 
-	.sticky .icon-pinned {
+	.sticky .icon-thumb-tack {
 		height: 23px;
 		left: -2.5em;
 		top: 1.5em;
 		width: 32px;
 	}
 
-	body:not(.has-sidebar) .page-header,
+	body:not(.has-sidebar):not(.page-one-column) .page-header,
 	body.has-sidebar.error404 #primary .page-header,
-	body.page-two-column #primary .entry-header {
+	body.page-two-column:not(.archive) #primary .entry-header,
+	body.page-two-column.archive:not(.has-sidebar) #primary .page-header {
 		float: left;
 		width: 36%;
 	}
 
 	.blog:not(.has-sidebar) #primary article,
-	.archive:not(.has-sidebar) #primary article,
+	.archive:not(.page-one-column):not(.has-sidebar) #primary article,
 	.search:not(.has-sidebar) #primary article,
 	.error404:not(.has-sidebar) #primary .page-content,
 	.error404.has-sidebar #primary .page-content,
-	body.page-two-column #primary .entry-content,
+	body.page-two-column:not(.archive) #primary .entry-content,
 	body.page-two-column #comments {
 		float: right;
 		width: 58%;
@@ -3697,7 +3777,8 @@ article.panel-placeholder {
 		width: 58%;
 	}
 
-	.has-sidebar .navigation.pagination {
+	.has-sidebar .navigation.pagination,
+	.archive.page-one-column:not(.has-sidebar) .navigation.pagination {
 		float: none;
 		width: 100%;
 	}
@@ -3781,8 +3862,14 @@ article.panel-placeholder {
 
 	/* Pages */
 
-	.page-one-column .entry-header {
+	.page.page-one-column .entry-header,
+	.twentyseventeen-front-page.page-one-column .entry-header,
+	.archive.page-one-column:not(.has-sidebar) .page-header {
 		margin-bottom: 4em;
+	}
+
+	.page:not(.home) #content {
+		padding-bottom: 3.25em;
 	}
 
 	/* 404 page */
@@ -3908,18 +3995,6 @@ article.panel-placeholder {
 	}
 }
 
-@media screen and ( min-width: 55em ) {
-
-	.twentyseventeen-front-page.has-header-image .custom-header-image,
-	.home.blog.has-header-image .custom-header-image {
-		background-attachment: fixed;
-	}
-
-	.panel-image {
-		background-attachment: fixed;
-	}
-}
-
 @media screen and ( min-width: 67em ) {
 
 	/* Layout */
@@ -3935,13 +4010,32 @@ article.panel-placeholder {
 
 	/* Sticky posts */
 
-	.sticky .icon-pinned {
+	.sticky .icon-thumb-tack {
 		font-size: 32px;
 		font-size: 2rem;
 		height: 22px;
 		left: -1.25em;
 		top: 0.75em;
 		width: 32px;
+	}
+
+	/* Pagination */
+
+	.page-numbers {
+		display: inline-block;
+	}
+
+	.page-numbers.current {
+		font-size: 15px;
+		font-size: 0.9375rem;
+	}
+
+	.page-numbers.current .screen-reader-text {
+		clip: rect(1px, 1px, 1px, 1px);
+		height: 1px;
+		overflow: hidden;
+		position: absolute !important;
+		width: 1px;
 	}
 
 	/* Comments */
@@ -3974,7 +4068,7 @@ article.panel-placeholder {
 }
 
 /*--------------------------------------------------------------
-# Print
+20.0 Print
 --------------------------------------------------------------*/
 
 @media print {
@@ -3992,7 +4086,7 @@ article.panel-placeholder {
 	.content-bottom-widgets,
 	.header-image,
 	.panel-image-prop,
-	.icon-pinned,
+	.icon-thumb-tack,
 	.page-links,
 	.edit-link,
 	.post-navigation,
@@ -4066,12 +4160,14 @@ article.panel-placeholder {
 		padding: 0;
 	}
 
-	.custom-header-image {
+	.custom-header-media {
 		padding: 0;
 	}
 
 	.twentyseventeen-front-page.has-header-image .site-branding,
-	.home.blog.has-header-image .site-branding {
+	.twentyseventeen-front-page.has-header-video .site-branding,
+	.home.blog.has-header-image .site-branding,
+	.home.blog.has-header-video .site-branding {
 		position: relative;
 	}
 
@@ -4110,7 +4206,9 @@ article.panel-placeholder {
 	a,
 	.site-title a,
 	.twentyseventeen-front-page.has-header-image .site-title,
-	.twentyseventeen-front-page.has-header-image .site-title a {
+	.twentyseventeen-front-page.has-header-video .site-title,
+	.twentyseventeen-front-page.has-header-image .site-title a,
+	.twentyseventeen-front-page.has-header-video .site-title a {
 		color: #222 !important; /* Make sure color schemes don't affect to print */
 	}
 
@@ -4119,6 +4217,7 @@ article.panel-placeholder {
 	blockquote,
 	.site-description,
 	.twentyseventeen-front-page.has-header-image .site-description,
+	.twentyseventeen-front-page.has-header-video .site-description,
 	.entry-meta,
 	.entry-meta a {
 		color: #777 !important; /* Make sure color schemes don't affect to print */

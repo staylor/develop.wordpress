@@ -39,7 +39,7 @@ function wpmu_update_blogs_date() {
  * @return string Full URL of the blog if found. Empty string if not.
  */
 function get_blogaddress_by_id( $blog_id ) {
-	$bloginfo = get_blog_details( (int) $blog_id );
+	$bloginfo = get_site( (int) $blog_id );
 
 	if ( empty( $bloginfo ) ) {
 		return '';
@@ -245,10 +245,11 @@ function get_blog_details( $fields = null, $get_all = true ) {
 	 * Filters a blog's details.
 	 *
 	 * @since MU
+	 * @deprecated 4.7.0 Use site_details
 	 *
 	 * @param object $details The blog details.
 	 */
-	$details = apply_filters( 'blog_details', $details );
+	$details = apply_filters_deprecated( 'blog_details', array( $details ), '4.7.0', 'site_details' );
 
 	wp_cache_set( $blog_id . $all, $details, 'blog-details' );
 
@@ -270,7 +271,7 @@ function refresh_blog_details( int $blog_id = 0 ) {
 		$blog_id = get_current_blog_id();
 	}
 
-	$details = get_blog_details( $blog_id, false );
+	$details = get_site( $blog_id );
 	if ( ! $details ) {
 		// Make sure clean_blog_cache() gets the blog ID
 		// when the blog has been previously cached as
@@ -315,8 +316,13 @@ function update_blog_details( $blog_id, $details = [] ) {
 		$details = get_object_vars( $details);
 	}
 
+<<<<<<< HEAD
 	$current_details = get_blog_details( $blog_id, false);
 	if ( empty( $current_details) ) {
+=======
+	$current_details = get_site( $blog_id );
+	if ( empty($current_details) )
+>>>>>>> aaronjorbin/master
 		return false;
 	}
 
@@ -449,7 +455,7 @@ function update_blog_details( $blog_id, $details = [] ) {
  *
  * @since 3.5.0
  *
- * @param WP_Site $blog The blog details as returned from get_blog_details()
+ * @param WP_Site $blog The site object to be cleared from cache.
  */
 function clean_blog_cache( $blog ) {
 	$blog_id = $blog->blog_id;
@@ -765,8 +771,12 @@ function update_blog_option( int $id, $option, $value, $deprecated = null ) {
  * @return true Always returns True.
  */
 function switch_to_blog( $new_blog, $deprecated = null ) {
+<<<<<<< HEAD
 	$app = getApp();
 	$wpdb = $app['db'];
+=======
+	global $wpdb, $wp_roles;
+>>>>>>> aaronjorbin/master
 
 	$blog_id = get_current_blog_id();
 	if ( empty( $new_blog ) ) {
@@ -821,8 +831,12 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
 	}
 
 	if ( did_action( 'init' ) ) {
+<<<<<<< HEAD
 		$app = getApp();
 		$app['roles']->reinit();
+=======
+		$wp_roles = new WP_Roles();
+>>>>>>> aaronjorbin/master
 		$current_user = wp_get_current_user();
 		$current_user->for_blog( $new_blog );
 	}
@@ -845,8 +859,12 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
  * @return bool True on success, false if we're already on the current blog
  */
 function restore_current_blog() {
+<<<<<<< HEAD
 	$app = getApp();
 	$wpdb = $app['db'];
+=======
+	global $wpdb, $wp_roles;
+>>>>>>> aaronjorbin/master
 
 	if ( empty( $app->switched_stack ) ) {
 		return false;
@@ -891,8 +909,12 @@ function restore_current_blog() {
 	}
 
 	if ( did_action( 'init' ) ) {
+<<<<<<< HEAD
 		$app = getApp();
 		$app['roles']->reinit();
+=======
+		$wp_roles = new WP_Roles();
+>>>>>>> aaronjorbin/master
 		$current_user = wp_get_current_user();
 		$current_user->for_blog( $blog );
 	}
@@ -1035,10 +1057,16 @@ function get_blog_status( $id, $pref ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
+<<<<<<< HEAD
 	$details = get_blog_details( $id, false );
 	if ( $details ) {
 			return $details->$pref;
 	}
+=======
+	$details = get_site( $id );
+	if ( $details )
+		return $details->$pref;
+>>>>>>> aaronjorbin/master
 
 	return $wpdb->get_var( $wpdb->prepare( "SELECT %s FROM {$wpdb->blogs} WHERE blog_id = %d", $pref, $id) );
 }

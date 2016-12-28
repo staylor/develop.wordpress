@@ -269,6 +269,31 @@ https://w.org</a>'
 	}
 
 	/**
+	 * @ticket 38965
+	 */
+	function test_wp_prepare_attachment_for_js_without_image_sizes() {
+		// Create the attachement post.
+		$id = wp_insert_attachment( array(
+			'post_title' => 'Attachment Title',
+			'post_type' => 'attachment',
+			'post_parent' => 0,
+			'post_mime_type' => 'image/jpeg',
+			'guid' => 'http://' . WP_TESTS_DOMAIN . '/wp-content/uploads/test-image.jpg',
+		) );
+
+		// Add attachment metadata without sizes.
+		wp_update_attachment_metadata( $id, array(
+			'width' => 50,
+			'height' => 50,
+			'file' => 'test-image.jpg',
+		) );
+
+		$prepped = wp_prepare_attachment_for_js( get_post( $id ) );
+
+		$this->assertTrue( isset( $prepped['sizes'] ) );
+	}
+
+	/**
 	 * @ticket 19067
 	 * @expectedDeprecated wp_convert_bytes_to_hr
 	 */
@@ -291,16 +316,16 @@ https://w.org</a>'
 
 		// now some values around
 		$hr = wp_convert_bytes_to_hr( $tb + $tb / 2 + $mb );
-		$this->assertTrue( abs( 1.50000095367 - (float) str_replace( ',', '.', $hr ) ) < 0.0001 );
+		$this->assertEquals( 1.50000095367, (float) str_replace( ',', '.', $hr ), 'The values should be equal', 0.0001 );
 
 		$hr = wp_convert_bytes_to_hr( $tb - $mb - $kb );
-		$this->assertTrue( abs( 1023.99902248 - (float) str_replace( ',', '.', $hr ) ) < 0.0001 );
+		$this->assertEquals( 1023.99902248, (float) str_replace( ',', '.', $hr ), 'The values should be equal', 0.0001 );
 
 		$hr = wp_convert_bytes_to_hr( $gb + $gb / 2 + $mb );
-		$this->assertTrue( abs( 1.5009765625 - (float) str_replace( ',', '.', $hr ) ) < 0.0001 );
+		$this->assertEquals( 1.5009765625, (float) str_replace( ',', '.', $hr ), 'The values should be equal', 0.0001 );
 
 		$hr = wp_convert_bytes_to_hr( $gb - $mb - $kb );
-		$this->assertTrue( abs( 1022.99902344 - (float) str_replace( ',', '.', $hr ) ) < 0.0001 );
+		$this->assertEquals( 1022.99902344, (float) str_replace( ',', '.', $hr ), 'The values should be equal', 0.0001 );
 
 		// edge
 		$this->assertEquals( '-1B', wp_convert_bytes_to_hr( -1 ) );

@@ -170,23 +170,11 @@ if ( $doaction ) {
 				$done['locked'] = count( $done['locked'] );
 				$sendback = add_query_arg( $done, $sendback );
 			}
-		}
-		break;
-	default:
-		/**
-		 * Fires when a custom bulk action should be handled.
-		 *
-		 * The sendback link should be modified with success or failure feedback
-		 * from the action to be used to display feedback to the user.
-		 *
-		 * @since 4.7.0
-		 *
-		 * @param string $sendback The redirect URL.
-		 * @param string $doaction The action being taken.
-		 * @param array  $post_ids The post IDs to take the action on.
-		 */
-		$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $doaction, $post_ids );
-		break;
+			break;
+		default:
+			/** This action is documented in wp-admin/edit-comments.php */
+			$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $doaction, $post_ids );
+			break;
 	}
 
 	$sendback = remove_query_arg( array( 'action', 'action2', 'tags_input', 'post_author', 'comment_status', 'ping_status', '_status', 'post', 'bulk_edit', 'post_view' ), $sendback );
@@ -266,8 +254,11 @@ $bulk_counts = array_filter( $bulk_counts );
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 <div class="wrap">
-<h1><?php
+<h1 class="wp-heading-inline"><?php
 echo esc_html( $post_type_object->labels->name );
+?></h1>
+
+<?php
 if ( current_user_can( $post_type_object->cap->create_posts ) ) {
 	echo ' <a href="' . esc_url( admin_url( $post_new_file ) ) . '" class="page-title-action">' . esc_html( $post_type_object->labels->add_new ) . '</a>';
 }
@@ -276,7 +267,9 @@ if ( strlen( $view->_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf( ' <span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', get_search_query() );
 }
-?></h1>
+?>
+
+<hr class="wp-header-end">
 
 <?php
 // If we have a bulk message to issue:

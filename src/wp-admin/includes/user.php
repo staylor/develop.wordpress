@@ -112,13 +112,17 @@ function edit_user( $user_id = 0 ) {
 		$user->show_admin_bar_front = $_post->get( 'admin_bar_front' ) ? 'true' : 'false';
 		$user->locale = '';
 
-		if ( $_post->get( 'locale' ) ) {
-			$locale = sanitize_text_field( $_post->get( 'locale' ) );
-			if ( ! in_array( $locale, get_available_languages(), true ) ) {
+		if ( isset( $_POST['locale'] ) ) {
+			$locale = sanitize_text_field( $_POST['locale'] );
+			if ( 'site-default' === $locale ) {
+				$locale = '';
+			} elseif ( '' === $locale ) {
+				$locale = 'en_US';
+			} elseif ( ! in_array( $locale, get_available_languages(), true ) ) {
 				$locale = '';
 			}
 
-			$user->locale = ( '' === $locale ) ? 'en_US' : $locale;
+			$user->locale = $locale;
 		}
 	}
 

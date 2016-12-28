@@ -562,6 +562,7 @@ function wp_get_nav_menus( $args = [] ) {
 }
 
 /**
+<<<<<<< HEAD
  * Sort menu items by the desired key.
  *
  * @since 3.0.0
@@ -597,6 +598,8 @@ function _sort_nav_menu_items( $a, $b ) {
 }
 
 /**
+=======
+>>>>>>> aaronjorbin/master
  * Return if a menu item is valid.
  *
  * @link https://core.trac.wordpress.org/ticket/13958
@@ -691,8 +694,14 @@ function wp_get_nav_menu_items( $menu, $args = [] ) {
 	}
 
 	if ( ARRAY_A == $args['output'] ) {
+<<<<<<< HEAD
 		$GLOBALS['_menu_item_sort_prop'] = $args['output_key'];
 		usort( $items, '_sort_nav_menu_items' );
+=======
+		$items = wp_list_sort( $items, array(
+			$args['output_key'] => 'ASC',
+		) );
+>>>>>>> aaronjorbin/master
 		$i = 1;
 		foreach ( $items as $k => $item ) {
 			$items[$k]->{$args['output_key']} = $i++;
@@ -782,6 +791,11 @@ function wp_setup_nav_menu_item( $menu_item ) {
 				}
 
 				$menu_item->type_label = __( 'Post Type Archive' );
+<<<<<<< HEAD
+=======
+				$post_content = wp_trim_words( $menu_item->post_content, 200 );
+				$post_type_description = '' == $post_content ? $post_type_description : $post_content;
+>>>>>>> aaronjorbin/master
 				$menu_item->url = get_post_type_archive_link( $menu_item->object );
 			} elseif ( 'taxonomy' == $menu_item->type ) {
 				$object = get_taxonomy( $menu_item->object );

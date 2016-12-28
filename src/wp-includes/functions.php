@@ -1234,6 +1234,23 @@ function bool_from_yn( $yn ) {
  * @since 2.1.0
  */
 function do_feed() {
+<<<<<<< HEAD
+=======
+	global $wp_query;
+
+	// Determine if we are looking at the main comment feed
+	$is_main_comments_feed = ( $wp_query->is_comment_feed() && ! $wp_query->is_singular() );
+
+	/*
+	 * Check the queried object for the existence of posts if it is not a feed for an archive,
+	 * search result, or main comments. By checking for the absense of posts we can prevent rendering the feed
+	 * templates at invalid endpoints. e.g.) /wp-content/plugins/feed/
+	 */
+	if ( ! $wp_query->have_posts() && ! ( $wp_query->is_archive() || $wp_query->is_search() || $is_main_comments_feed ) ) {
+		wp_die( __( 'ERROR: This is not a valid feed.' ), '', array( 'response' => 404 ) );
+	}
+
+>>>>>>> aaronjorbin/master
 	$feed = get_query_var( 'feed' );
 
 	// Remove the pad, if present.
@@ -2962,10 +2979,15 @@ function _ajax_wp_die_handler( $message, $title = '', $args = [] ) {
 	);
 	$r = wp_parse_args( $args, $defaults );
 
-	if ( ! headers_sent() ) {
+	if ( ! headers_sent() && null !== $r['response'] ) {
 		status_header( $r['response'] );
 	}
+<<<<<<< HEAD
 	if ( is_scalar( $message ) ) {
+=======
+
+	if ( is_scalar( $message ) )
+>>>>>>> aaronjorbin/master
 		die( (string) $message );
 	}
 	die( '0' );
@@ -3195,8 +3217,16 @@ function wp_send_json( $response, $status_code = null ) {
 		status_header( $status_code );
 	}
 	echo wp_json_encode( $response );
+<<<<<<< HEAD
 	if ( wp_doing_ajax() ) {
 		wp_die();
+=======
+
+	if ( wp_doing_ajax() ) {
+		wp_die( '', '', array(
+			'response' => null,
+		) );
+>>>>>>> aaronjorbin/master
 	} else {
 		die;
 	}
@@ -3321,6 +3351,16 @@ function _config_wp_siteurl( $url = '' ) {
 		return untrailingslashit( WP_SITEURL );
 	}
 	return $url;
+}
+
+/**
+ * Delete the fresh site option.
+ *
+ * @since 4.7.0
+ * @access private
+ */
+function _delete_option_fresh_site() {
+	update_option( 'fresh_site', 0 );
 }
 
 /**
@@ -3598,6 +3638,7 @@ function wp_is_numeric_array( $data ) {
  * Filters a list of objects, based on a set of key => value arguments.
  *
  * @since 3.0.0
+ * @since 4.7.0 Uses WP_List_Util class.
  *
  * @param array       $list     An array of objects to filter
  * @param array       $args     Optional. An array of key => value arguments to match
@@ -3610,24 +3651,39 @@ function wp_is_numeric_array( $data ) {
  *                              Default false.
  * @return array A list of objects or object fields.
  */
+<<<<<<< HEAD
 function wp_filter_object_list( $list, $args = [], $operator = 'and', $field = false ) {
 	if ( ! is_array( $list ) ) {
 		return [];
+=======
+function wp_filter_object_list( $list, $args = array(), $operator = 'and', $field = false ) {
+	if ( ! is_array( $list ) ) {
+		return array();
+>>>>>>> aaronjorbin/master
 	}
 
-	$list = wp_list_filter( $list, $args, $operator );
+	$util = new WP_List_Util( $list );
 
+<<<<<<< HEAD
 	if ( $field ) {
 		$list = wp_list_pluck( $list, $field );
 	}
+=======
+	$util->filter( $args, $operator );
+>>>>>>> aaronjorbin/master
 
-	return $list;
+	if ( $field ) {
+		$util->pluck( $field );
+	}
+
+	return $util->get_output();
 }
 
 /**
  * Filters a list of objects, based on a set of key => value arguments.
  *
  * @since 3.1.0
+ * @since 4.7.0 Uses WP_List_Util class.
  *
  * @param array  $list     An array of objects to filter.
  * @param array  $args     Optional. An array of key => value arguments to match
@@ -3638,6 +3694,7 @@ function wp_filter_object_list( $list, $args = [], $operator = 'and', $field = f
  *                         match. Default 'AND'.
  * @return array Array of found values.
  */
+<<<<<<< HEAD
 function wp_list_filter( $list, $args = [], $operator = 'AND' ) {
 	if ( ! is_array( $list ) ) {
 		return [];
@@ -3666,9 +3723,15 @@ function wp_list_filter( $list, $args = [], $operator = 'AND' ) {
 		  || ( 'NOT' == $operator && 0 == $matched ) ) {
 			$filtered[$key] = $obj;
 		}
+=======
+function wp_list_filter( $list, $args = array(), $operator = 'AND' ) {
+	if ( ! is_array( $list ) ) {
+		return array();
+>>>>>>> aaronjorbin/master
 	}
 
-	return $filtered;
+	$util = new WP_List_Util( $list );
+	return $util->filter( $args, $operator );
 }
 
 /**
@@ -3679,6 +3742,7 @@ function wp_list_filter( $list, $args = [], $operator = 'AND' ) {
  *
  * @since 3.1.0
  * @since 4.0.0 $index_key parameter added.
+ * @since 4.7.0 Uses WP_List_Util class.
  *
  * @param array      $list      List of objects or arrays
  * @param int|string $field     Field from the object to place instead of the entire object
@@ -3689,21 +3753,11 @@ function wp_list_filter( $list, $args = [], $operator = 'AND' ) {
  *               `$list` will be preserved in the results.
  */
 function wp_list_pluck( $list, $field, $index_key = null ) {
-	if ( ! $index_key ) {
-		/*
-		 * This is simple. Could at some point wrap array_column()
-		 * if we knew we had an array of arrays.
-		 */
-		foreach ( $list as $key => $value ) {
-			if ( is_object( $value ) ) {
-				$list[ $key ] = $value->$field;
-			} else {
-				$list[ $key ] = $value[ $field ];
-			}
-		}
-		return $list;
-	}
+	$util = new WP_List_Util( $list );
+	return $util->pluck( $field, $index_key );
+}
 
+<<<<<<< HEAD
 	/*
 	 * When index_key is not set for a particular item, push the value
 	 * to the end of the stack. This is how array_column() behaves.
@@ -3723,9 +3777,28 @@ function wp_list_pluck( $list, $field, $index_key = null ) {
 				$newlist[] = $value[ $field ];
 			}
 		}
+=======
+/**
+ * Sorts a list of objects, based on one or more orderby arguments.
+ *
+ * @since 4.7.0
+ *
+ * @param array        $list          An array of objects to filter.
+ * @param string|array $orderby       Optional. Either the field name to order by or an array
+ *                                    of multiple orderby fields as $orderby => $order.
+ * @param string       $order         Optional. Either 'ASC' or 'DESC'. Only used if $orderby
+ *                                    is a string.
+ * @param bool         $preserve_keys Optional. Whether to preserve keys. Default false.
+ * @return array The sorted array.
+ */
+function wp_list_sort( $list, $orderby = array(), $order = 'ASC', $preserve_keys = false ) {
+	if ( ! is_array( $list ) ) {
+		return array();
+>>>>>>> aaronjorbin/master
 	}
 
-	return $newlist;
+	$util = new WP_List_Util( $list );
+	return $util->sort( $orderby, $order, $preserve_keys );
 }
 
 /**
@@ -3895,9 +3968,17 @@ function _deprecated_function( $function, $version, $replacement = null ) {
 	if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
 			if ( ! is_null( $replacement ) ) {
+<<<<<<< HEAD
 				trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.' ), $function, $version, $replacement ) );
 			} else {
 				trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.' ), $function, $version ) );
+=======
+				/* translators: 1: PHP function name, 2: version number, 3: alternative function name */
+				trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );
+			} else {
+				/* translators: 1: PHP function name, 2: version number */
+				trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.'), $function, $version ) );
+>>>>>>> aaronjorbin/master
 			}
 		} else {
 			if ( ! is_null( $replacement ) ) {
@@ -4021,9 +4102,17 @@ function _deprecated_file( $file, $version, $replacement = null, $message = '' )
 		$message = empty( $message ) ? '' : ' ' . $message;
 		if ( function_exists( '__' ) ) {
 			if ( ! is_null( $replacement ) ) {
+<<<<<<< HEAD
 				trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.' ), $file, $version, $replacement ) . $message );
 			} else {
 				trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.' ), $file, $version ) . $message );
+=======
+				/* translators: 1: PHP file name, 2: version number, 3: alternative file name */
+				trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.'), $file, $version, $replacement ) . $message );
+			} else {
+				/* translators: 1: PHP file name, 2: version number */
+				trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.'), $file, $version ) . $message );
+>>>>>>> aaronjorbin/master
 			}
 		} else {
 			if ( ! is_null( $replacement ) ) {
@@ -4083,9 +4172,17 @@ function _deprecated_argument( $function, $version, $message = null ) {
 	if ( WP_DEBUG && apply_filters( 'deprecated_argument_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
 			if ( ! is_null( $message ) ) {
+<<<<<<< HEAD
 				trigger_error( sprintf( __( '%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s! %3$s' ), $function, $version, $message ) );
 			} else {
 				trigger_error( sprintf( __( '%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s with no alternative available.' ), $function, $version ) );
+=======
+				/* translators: 1: PHP function name, 2: version number, 3: optional message regarding the change */
+				trigger_error( sprintf( __('%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s! %3$s'), $function, $version, $message ) );
+			} else {
+				/* translators: 1: PHP function name, 2: version number */
+				trigger_error( sprintf( __('%1$s was called with an argument that is <strong>deprecated</strong> since version %2$s with no alternative available.'), $function, $version ) );
+>>>>>>> aaronjorbin/master
 			}
 		} else {
 			if ( ! is_null( $message ) ) {
@@ -4140,8 +4237,10 @@ function _deprecated_hook( $hook, $version, $replacement = null, $message = null
 	if ( WP_DEBUG && apply_filters( 'deprecated_hook_trigger_error', true ) ) {
 		$message = empty( $message ) ? '' : ' ' . $message;
 		if ( ! is_null( $replacement ) ) {
+			/* translators: 1: WordPress hook name, 2: version number, 3: alternative hook name */
 			trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.' ), $hook, $version, $replacement ) . $message );
 		} else {
+			/* translators: 1: WordPress hook name, 2: version number */
 			trigger_error( sprintf( __( '%1$s is <strong>deprecated</strong> since version %2$s with no alternative available.' ), $hook, $version ) . $message );
 		}
 	}
@@ -4195,6 +4294,7 @@ function _doing_it_wrong( $function, $message, $version ) {
 			$message .= ' ' . sprintf( __( 'Please see <a href="%s">Debugging in WordPress</a> for more information.' ),
 				__( 'https://codex.wordpress.org/Debugging_in_WordPress' )
 			);
+			/* translators: Developer debugging message. 1: PHP function name, 2: Explanatory message, 3: Version information message */
 			trigger_error( sprintf( __( '%1$s was called <strong>incorrectly</strong>. %2$s %3$s' ), $function, $message, $version ) );
 		} else {
 			if ( is_null( $version ) ) {
@@ -4632,21 +4732,32 @@ function _wp_timezone_choice_usort_callback( $a, $b ) {
  * Gives a nicely-formatted list of timezone strings.
  *
  * @since 2.9.0
+ * @since 4.7.0 Added the `$locale` parameter.
  *
  * @staticvar bool $mo_loaded
+ * @staticvar string $locale_loaded
  *
  * @param string $selected_zone Selected timezone.
+ * @param string $locale        Optional. Locale to load the timezones in. Default current site locale.
  * @return string
  */
-function wp_timezone_choice( $selected_zone ) {
-	static $mo_loaded = false;
+function wp_timezone_choice( $selected_zone, $locale = null ) {
+	static $mo_loaded = false, $locale_loaded = null;
 
 	$continents = array( 'Africa', 'America', 'Antarctica', 'Arctic', 'Asia', 'Atlantic', 'Australia', 'Europe', 'Indian', 'Pacific' );
 
+<<<<<<< HEAD
 	// Load translations for continents and cities
 	if ( ! $mo_loaded ) {
 		$locale = get_locale();
 		$mofile = WP_LANG_DIR . '/continents-cities-' . $locale . '.mo';
+=======
+	// Load translations for continents and cities.
+	if ( ! $mo_loaded || $locale !== $locale_loaded ) {
+		$locale_loaded = $locale ? $locale : get_locale();
+		$mofile = WP_LANG_DIR . '/continents-cities-' . $locale_loaded . '.mo';
+		unload_textdomain( 'continents-cities' );
+>>>>>>> aaronjorbin/master
 		load_textdomain( 'continents-cities', $mofile );
 		$mo_loaded = true;
 	}

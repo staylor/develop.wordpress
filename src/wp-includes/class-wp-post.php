@@ -257,8 +257,8 @@ final class WP_Post {
 			return true;
 		}
 
-		if ( 'page_template' == $key ) {
-			return ( 'page' == $this->post_type );
+		if ( 'page_template' === $key ) {
+			return true;
 		}
 
 		if ( 'post_category' == $key ) {

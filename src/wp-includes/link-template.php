@@ -174,7 +174,13 @@ function get_permalink( $post = 0, $leavename = false ) {
 		if ( strpos( $permalink, '%category%' ) !== false ) {
 			$cats = get_the_category( $post->ID);
 			if ( $cats ) {
+<<<<<<< HEAD
 				usort( $cats, '_usort_terms_by_ID' ); // order by ID
+=======
+				$cats = wp_list_sort( $cats, array(
+					'term_id' => 'ASC',
+				) );
+>>>>>>> aaronjorbin/master
 
 				/**
 				 * Filters the category that gets used in the %category% permalink token.
@@ -3010,9 +3016,9 @@ function get_shortcut_link() {
 /**
  * Retrieves the URL for the current site where the front end is accessible.
  *
- * Returns the 'home' option with the appropriate protocol, 'https' if
- * is_ssl() and 'http' otherwise. If `$scheme` is 'http' or 'https',
- * `is_ssl()` is overridden.
+ * Returns the 'home' option with the appropriate protocol. The protocol will be 'https'
+ * if is_ssl() evaluates to true; otherwise, it will be the same as the 'home' option.
+ * If `$scheme` is 'http' or 'https', is_ssl() is overridden.
  *
  * @since 3.0.0
  *
@@ -3028,9 +3034,9 @@ function home_url( $path = '', $scheme = null ) {
 /**
  * Retrieves the URL for a given site where the front end is accessible.
  *
- * Returns the 'home' option with the appropriate protocol, 'https' if
- * is_ssl() and 'http' otherwise. If `$scheme` is 'http' or 'https',
- * `is_ssl()` is overridden.
+ * Returns the 'home' option with the appropriate protocol. The protocol will be 'https'
+ * if is_ssl() evaluates to true; otherwise, it will be the same as the 'home' option.
+ * If `$scheme` is 'http' or 'https', is_ssl() is overridden.
  *
  * @since 3.0.0
  *

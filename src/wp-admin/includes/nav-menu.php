@@ -353,9 +353,10 @@ function wp_nav_menu_item_post_type_meta_box( $object, $box ) {
 			)
 		),
 		'format' => '',
-		'prev_text' => __( '&laquo;' ),
-		'next_text' => __( '&raquo;' ),
-		'total' => $num_pages,
+		'prev_text'          => '<span aria-label="' . esc_attr__( 'Previous page' ) . '">' . __( '&laquo;' ) . '</span>',
+		'next_text'          => '<span aria-label="' . esc_attr__( 'Next page' ) . '">' . __( '&raquo;' ) . '</span>',
+		'before_page_number' => '<span class="screen-reader-text">' . __( 'Page' ) . '</span> ',
+		'total'   => $num_pages,
 		'current' => $pagenum
 	) );
 
@@ -646,9 +647,10 @@ function wp_nav_menu_item_taxonomy_meta_box( $object, $box ) {
 			)
 		),
 		'format' => '',
-		'prev_text' => __( '&laquo;' ),
-		'next_text' => __( '&raquo;' ),
-		'total' => $num_pages,
+		'prev_text'          => '<span aria-label="' . esc_attr__( 'Previous page' ) . '">' . __( '&laquo;' ) . '</span>',
+		'next_text'          => '<span aria-label="' . esc_attr__( 'Next page' ) . '">' . __( '&raquo;' ) . '</span>',
+		'before_page_number' => '<span class="screen-reader-text">' . __( 'Page' ) . '</span> ',
+		'total'   => $num_pages,
 		'current' => $pagenum
 	) );
 

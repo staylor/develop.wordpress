@@ -200,10 +200,12 @@ class Theme_Upgrader extends WP_Upgrader {
 		$this->init();
 		$this->install_strings();
 
-		add_filter( 'upgrader_source_selection', array( $this, 'check_package' ) );
-		add_filter( 'upgrader_post_install', array( $this, 'check_parent_theme_filter' ), 10, 3);
-		// Clear cache so wp_update_themes() knows about the new theme.
-		add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
+		add_filter('upgrader_source_selection', array($this, 'check_package') );
+		add_filter('upgrader_post_install', array($this, 'check_parent_theme_filter'), 10, 3);
+		if ( $parsed_args['clear_update_cache'] ) {
+			// Clear cache so wp_update_themes() knows about the new theme.
+			add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
+		}
 
 		$this->run( array(
 			'package' => $package,
@@ -268,11 +270,13 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		$r = $current->response[ $theme ];
 
-		add_filter( 'upgrader_pre_install', array( $this, 'current_before' ), 10, 2);
-		add_filter( 'upgrader_post_install', array( $this, 'current_after' ), 10, 2);
-		add_filter( 'upgrader_clear_destination', array( $this, 'delete_old_theme' ), 10, 4);
-		// Clear cache so wp_update_themes() knows about the new theme.
-		add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
+		add_filter('upgrader_pre_install', array($this, 'current_before'), 10, 2);
+		add_filter('upgrader_post_install', array($this, 'current_after'), 10, 2);
+		add_filter('upgrader_clear_destination', array($this, 'delete_old_theme'), 10, 4);
+		if ( $parsed_args['clear_update_cache'] ) {
+			// Clear cache so wp_update_themes() knows about the new theme.
+			add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
+		}
 
 		$this->run( array(
 			'package' => $r['package'],
@@ -329,11 +333,9 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		$current = get_site_transient( 'update_themes' );
 
-		add_filter( 'upgrader_pre_install', array( $this, 'current_before' ), 10, 2);
-		add_filter( 'upgrader_post_install', array( $this, 'current_after' ), 10, 2);
-		add_filter( 'upgrader_clear_destination', array( $this, 'delete_old_theme' ), 10, 4);
-		// Clear cache so wp_update_themes() knows about the new theme.
-		add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
+		add_filter('upgrader_pre_install', array($this, 'current_before'), 10, 2);
+		add_filter('upgrader_post_install', array($this, 'current_after'), 10, 2);
+		add_filter('upgrader_clear_destination', array($this, 'delete_old_theme'), 10, 4);
 
 		$this->skin->header();
 
@@ -399,6 +401,9 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		$this->maintenance_mode( false );
 
+		// Refresh the Theme Update information
+		wp_clean_themes_cache( $parsed_args['clear_update_cache'] );
+
 		/** This action is documented in wp-admin/includes/class-wp-upgrader.php */
 		do_action( 'upgrader_process_complete', $this, array(
 			'action' => 'update',
@@ -412,13 +417,9 @@ class Theme_Upgrader extends WP_Upgrader {
 		$this->skin->footer();
 
 		// Cleanup our hooks, in case something else does a upgrade on this connection.
-		remove_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9 );
-		remove_filter( 'upgrader_pre_install', array( $this, 'current_before' ) );
-		remove_filter( 'upgrader_post_install', array( $this, 'current_after' ) );
-		remove_filter( 'upgrader_clear_destination', array( $this, 'delete_old_theme' ) );
-
-		// Refresh the Theme Update information
-		wp_clean_themes_cache( $parsed_args['clear_update_cache'] );
+		remove_filter('upgrader_pre_install', array($this, 'current_before'));
+		remove_filter('upgrader_post_install', array($this, 'current_after'));
+		remove_filter('upgrader_clear_destination', array($this, 'delete_old_theme'));
 
 		return $results;
 	}

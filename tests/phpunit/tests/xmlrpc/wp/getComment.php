@@ -4,35 +4,33 @@
  * @group xmlrpc
  */
 class Tests_XMLRPC_wp_getComment extends WP_XMLRPC_UnitTestCase {
-	var $post_id;
-	var $parent_comment_id;
-	var $parent_comment_data;
-	var $child_comment_id;
-	var $child_comment_data;
+	protected static $post_id;
+	protected static $parent_comment_id;
+	protected static $parent_comment_data;
+	protected static $child_comment_id;
+	protected static $child_comment_data;
 
-	function setUp() {
-		parent::setUp();
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		self::$post_id = $factory->post->create();
 
-		$this->post_id = self::factory()->post->create();
-
-		$this->parent_comment_data = array(
-			'comment_post_ID' => $this->post_id,
+		self::$parent_comment_data = array(
+			'comment_post_ID' => self::$post_id,
 			'comment_author' => 'Test commenter',
 			'comment_author_url' => 'http://example.com/',
 			'comment_author_email' => 'example@example.com',
 			'comment_content' => rand_str( 100 ),
 		);
-		$this->parent_comment_id = wp_insert_comment( $this->parent_comment_data );
+		self::$parent_comment_id = wp_insert_comment( self::$parent_comment_data );
 
-		$this->child_comment_data = array(
-			'comment_post_ID' => $this->post_id,
+		self::$child_comment_data = array(
+			'comment_post_ID' => self::$post_id,
 			'comment_author' => 'Test commenter 2',
 			'comment_author_url' => 'http://example.org/',
 			'comment_author_email' => 'example@example.org',
-			'comment_parent' => $this->parent_comment_id,
+			'comment_parent' => self::$parent_comment_id,
 			'comment_content' => rand_str( 100 )
 		);
-		$this->child_comment_id = wp_insert_comment( $this->child_comment_data );
+		self::$child_comment_id = wp_insert_comment( self::$child_comment_data );
 	}
 
 	function test_invalid_username_password() {
@@ -76,13 +74,13 @@ class Tests_XMLRPC_wp_getComment extends WP_XMLRPC_UnitTestCase {
 		$this->assertStringMatchesFormat( '%d', $result['comment_id'] );
 		$this->assertStringMatchesFormat( '%d', $result['parent'] );
 		$this->assertStringMatchesFormat( '%d', $result['post_id'] );
-		$this->assertEquals( $this->parent_comment_id, $result['comment_id'] );
+		$this->assertEquals( self::$parent_comment_id, $result['comment_id'] );
 		$this->assertEquals( 0, $result['parent'] );
-		$this->assertEquals( $this->parent_comment_data['comment_content'], $result['content'] );
-		$this->assertEquals( $this->post_id, $result['post_id'] );
-		$this->assertEquals( $this->parent_comment_data['comment_author'], $result['author'] );
-		$this->assertEquals( $this->parent_comment_data['comment_author_url'], $result['author_url'] );
-		$this->assertEquals( $this->parent_comment_data['comment_author_email'], $result['author_email'] );
+		$this->assertEquals( self::$parent_comment_data['comment_content'], $result['content'] );
+		$this->assertEquals( self::$post_id, $result['post_id'] );
+		$this->assertEquals( self::$parent_comment_data['comment_author'], $result['author'] );
+		$this->assertEquals( self::$parent_comment_data['comment_author_url'], $result['author_url'] );
+		$this->assertEquals( self::$parent_comment_data['comment_author_email'], $result['author_email'] );
 	}
 
 	function test_valid_child_comment() {
@@ -91,8 +89,8 @@ class Tests_XMLRPC_wp_getComment extends WP_XMLRPC_UnitTestCase {
 		$result = $this->myxmlrpcserver->call( 'wp.getComment', array( 1, 'editor', 'editor', $this->child_comment_id ) );
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
-		$this->assertEquals( $this->child_comment_id, $result['comment_id'] );
-		$this->assertEquals( $this->parent_comment_id, $result['parent'] );
+		$this->assertEquals( self::$child_comment_id, $result['comment_id'] );
+		$this->assertEquals( self::$parent_comment_id, $result['parent'] );
 	}
 
 	function test_invalid_id() {

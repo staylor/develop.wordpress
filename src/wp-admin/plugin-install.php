@@ -116,7 +116,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
  * Output the upload plugin form on every non-upload plugin install screen, so it can be
  * displayed via JavaScript rather then opening up the devoted upload plugin page.
  */
-if ( $tab !== 'upload' ) {
+if ( 'upload' !== $tab ) {
 	?>
 	<div class="upload-plugin-wrap">
 		<?php
@@ -125,9 +125,6 @@ if ( $tab !== 'upload' ) {
 		?>
 	</div>
 	<?php
-}
-
-if ( $tab !== 'upload' ) {
 	$wp_list_table->views();
 	echo '<br class="clear" />';
 }

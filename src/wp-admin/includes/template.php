@@ -299,9 +299,7 @@ function get_inline_data( $post) {
 		echo '<div class="post_parent">' . $post->post_parent . '</div>';
 	}
 
-	if ( $post->post_type == 'page' ) {
-		echo '<div class="page_template">' . esc_html( get_post_meta( $post->ID, '_wp_page_template', true ) ) . '</div>';
-	}
+	echo '<div class="page_template">' . ( $post->page_template ? esc_html( $post->page_template ) : 'default' ) . '</div>';
 
 	if ( post_type_supports( $post->post_type, 'page-attributes' ) ) {
 		echo '<div class="menu_order">' . $post->menu_order . '</div>';
@@ -774,11 +772,13 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
  * Print out option HTML elements for the page templates drop-down.
  *
  * @since 1.5.0
+ * @since 4.7.0 Added the `$post_type` parameter.
  *
- * @param string $default Optional. The template file name. Default empty.
+ * @param string $default   Optional. The template file name. Default empty.
+ * @param string $post_type Optional. Post type to get templates for. Default 'post'.
  */
-function page_template_dropdown( $default = '' ) {
-	$templates = get_page_templates( get_post() );
+function page_template_dropdown( $default = '', $post_type = 'page' ) {
+	$templates = get_page_templates( null, $post_type );
 	ksort( $templates );
 	foreach ( array_keys( $templates ) as $template ) {
 		$selected = selected( $default, $templates[ $template ], false );
@@ -1992,10 +1992,6 @@ function get_submit_button( $text = '', $type = 'primary large', $name = 'submit
 	}
 	// Remove empty items, remove duplicate items, and finally build a string.
 	$class = implode( ' ', array_unique( array_filter( $classes ) ) );
-
-	if ( 'delete' === $type ) {
-		$class = 'button delete';
-	}
 
 	$text = $text ? $text : __( 'Save Changes' );
 

@@ -4,13 +4,12 @@
  * @group xmlrpc
  */
 class Tests_XMLRPC_wp_deleteTerm extends WP_XMLRPC_UnitTestCase {
-	var $term;
+	protected static $term_id;
 
-	function setUp() {
-		parent::setUp();
-
-		$this->term = wp_insert_term( 'term' . rand_str() , 'category' );
-		$this->assertInternalType( 'array', $this->term );
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		self::$term_id = $factory->term->create( array(
+			'taxonomy' => 'category',
+		) );
 	}
 
 	function test_invalid_username_password() {

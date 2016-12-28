@@ -605,23 +605,53 @@ function get_body_class( $class = '' ) {
 		$classes[] = 'error404';
 	}
 
-	if ( is_single() ) {
+	if ( is_singular() ) {
 		$post_id = $wp_query->get_queried_object_id();
 		$post = $wp_query->get_queried_object();
+		$post_type = $post->post_type;
 
+<<<<<<< HEAD
 		$classes[] = 'single';
 		if ( isset( $post->post_type ) ) {
 			$classes[] = 'single-' . sanitize_html_class( $post->post_type, $post_id);
 			$classes[] = 'postid-' . $post_id;
+=======
+		if ( is_page_template() ) {
+			$classes[] = "{$post_type}-template";
+>>>>>>> aaronjorbin/master
 
-			// Post Format
-			if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
-				$post_format = get_post_format( $post->ID );
+			$template_slug  = get_page_template_slug( $post_id );
+			$template_parts = explode( '/', $template_slug );
 
+<<<<<<< HEAD
 				if ( $post_format && !is_wp_error( $post_format) ) {
 					$classes[] = 'single-format-' . sanitize_html_class( $post_format );
 				} else {
 					$classes[] = 'single-format-standard';
+=======
+			foreach ( $template_parts as $part ) {
+				$classes[] = "{$post_type}-template-" . sanitize_html_class( str_replace( array( '.', '/' ), '-', basename( $part, '.php' ) ) );
+			}
+			$classes[] = "{$post_type}-template-" . sanitize_html_class( str_replace( '.', '-', $template_slug ) );
+		} else {
+			$classes[] = "{$post_type}-template-default";
+		}
+
+		if ( is_single() ) {
+			$classes[] = 'single';
+			if ( isset( $post->post_type ) ) {
+				$classes[] = 'single-' . sanitize_html_class( $post->post_type, $post_id );
+				$classes[] = 'postid-' . $post_id;
+
+				// Post Format
+				if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
+					$post_format = get_post_format( $post->ID );
+
+					if ( $post_format && !is_wp_error($post_format) )
+						$classes[] = 'single-format-' . sanitize_html_class( $post_format );
+					else
+						$classes[] = 'single-format-standard';
+>>>>>>> aaronjorbin/master
 				}
 			}
 		}
@@ -631,6 +661,23 @@ function get_body_class( $class = '' ) {
 			$mime_prefix = array( 'application/', 'image/', 'text/', 'audio/', 'video/', 'music/' );
 			$classes[] = 'attachmentid-' . $post_id;
 			$classes[] = 'attachment-' . str_replace( $mime_prefix, '', $mime_type );
+		} elseif ( is_page() ) {
+			$classes[] = 'page';
+
+			$page_id = $wp_query->get_queried_object_id();
+
+			$post = get_post($page_id);
+
+			$classes[] = 'page-id-' . $page_id;
+
+			if ( get_pages( array( 'parent' => $page_id, 'number' => 1 ) ) ) {
+				$classes[] = 'page-parent';
+			}
+
+			if ( $post->post_parent ) {
+				$classes[] = 'page-child';
+				$classes[] = 'parent-pageid-' . $post->post_parent;
+			}
 		}
 	} elseif ( is_archive() ) {
 		if ( is_post_type_archive() ) {
@@ -684,6 +731,7 @@ function get_body_class( $class = '' ) {
 				$classes[] = 'term-' . $term->term_id;
 			}
 		}
+<<<<<<< HEAD
 	} elseif ( is_page() ) {
 		$classes[] = 'page';
 
@@ -714,6 +762,8 @@ function get_body_class( $class = '' ) {
 		} else {
 			$classes[] = 'page-template-default';
 		}
+=======
+>>>>>>> aaronjorbin/master
 	}
 
 	if ( is_user_logged_in() ) {
@@ -1651,15 +1701,19 @@ function get_the_password_form( $post = 0 ) {
  *
  * @since 2.5.0
  * @since 4.2.0 The `$template` parameter was changed to also accept an array of page templates.
+ * @since 4.7.0 Now works with any post type, not just pages.
  *
  * @param string|array $template The specific template name or array of templates to match.
  * @return bool True on success, false on failure.
  */
 function is_page_template( $template = '' ) {
+<<<<<<< HEAD
 	if ( ! is_page() ) {
 			return false;
 	}
 
+=======
+>>>>>>> aaronjorbin/master
 	$page_template = get_page_template_slug( get_queried_object_id() );
 
 	if ( empty( $template ) ) {
@@ -1682,14 +1736,16 @@ function is_page_template( $template = '' ) {
 }
 
 /**
- * Get the specific template name for a page.
+ * Get the specific template name for a given post.
  *
  * @since 3.4.0
+ * @since 4.7.0 Now works with any post type, not just pages.
  *
- * @param int $post_id Optional. The page ID to check. Defaults to the current post, when used in the loop.
+ * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global $post.
  * @return string|false Page template filename. Returns an empty string when the default page template
- * 	is in use. Returns false if the post is not a page.
+ * 	is in use. Returns false if the post does not exist.
  */
+<<<<<<< HEAD
 function get_page_template_slug( $post_id = null ) {
 	$post = get_post( $post_id );
 	if ( ! $post || 'page' != $post->post_type ) {
@@ -1699,6 +1755,21 @@ function get_page_template_slug( $post_id = null ) {
 	if ( ! $template || 'default' == $template ) {
 			return '';
 	}
+=======
+function get_page_template_slug( $post = null ) {
+	$post = get_post( $post );
+
+	if ( ! $post ) {
+		return false;
+	}
+
+	$template = get_post_meta( $post->ID, '_wp_page_template', true );
+
+	if ( ! $template || 'default' == $template ) {
+		return '';
+	}
+
+>>>>>>> aaronjorbin/master
 	return $template;
 }
 

@@ -43,27 +43,27 @@ class Tests_XMLRPC_wp_getPages extends WP_XMLRPC_UnitTestCase {
         $results = $this->myxmlrpcserver->call( 'wp.getPages', array( 1, 'administrator', 'administrator' ) );
         $this->assertNotInstanceOf( 'WP\IXR\Error', $results );
 
-        foreach( $results as $result ) {
-            $page = get_post( $result['page_id'] );
-            $this->assertEquals( $page->post_type, 'page' );
-        }
-    }
+		foreach( $results as $result ) {
+			$page = get_post( $result['page_id'] );
+			$this->assertEquals( $page->post_type, 'page' );
+		}
+	}
 
-    function remove_editor_edit_page_cap( $caps, $cap, $user_id, $args ) {
-        if ( in_array( $cap, array( 'edit_page', 'edit_others_pages' ) ) ) {
-            if ( $user_id == $this->editor_id && $args[0] == $this->post_id ) {
-                return array( false );
-            }
-        }
+	function remove_editor_edit_page_cap( $caps, $cap, $user_id, $args ) {
+		if ( in_array( $cap, array( 'edit_page', 'edit_others_pages' ) ) ) {
+			if ( $user_id == self::$editor_id && $args[0] == self::$post_id ) {
+				return array( false );
+			}
+		}
 
-        return $caps;
-    }
+		return $caps;
+	}
 
 	/**
 	 * @ticket 20629
 	 */
 	function test_semi_capable_user() {
-        add_filter( 'map_meta_cap', array( $this, 'remove_editor_edit_page_cap') , 10, 4 );
+		add_filter( 'map_meta_cap', array( $this, 'remove_editor_edit_page_cap') , 10, 4 );
 
         $results = $this->myxmlrpcserver->call( 'wp.getPages', array( 1, 'editor', 'editor' ) );
         $this->assertNotInstanceOf( 'WP\IXR\Error', $results );
@@ -73,14 +73,14 @@ class Tests_XMLRPC_wp_getPages extends WP_XMLRPC_UnitTestCase {
             // WP#20629
             $this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 
-            if ( $result['page_id'] == $this->post_id ) {
-                $found_incapable = true;
-                break;
-            }
-        }
-        $this->assertFalse( $found_incapable );
+			if ( $result['page_id'] == self::$post_id ) {
+				$found_incapable = true;
+				break;
+			}
+		}
+		$this->assertFalse( $found_incapable );
 
-        remove_filter( 'map_meta_cap', array( $this, 'remove_editor_edit_page_cap' ), 10, 4 );
-    }
+		remove_filter( 'map_meta_cap', array( $this, 'remove_editor_edit_page_cap' ), 10, 4 );
+	}
 
 }

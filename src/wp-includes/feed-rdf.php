@@ -31,9 +31,18 @@ do_action( 'rss_tag_pre', 'rdf' );
 >
 <channel rdf:about="<?php bloginfo_rss( 'url' ) ?>">
 	<title><?php wp_title_rss(); ?></title>
+<<<<<<< HEAD
 	<link><?php bloginfo_rss( 'url' ) ?></link>
 	<description><?php bloginfo_rss( 'description' ) ?></description>
 	<dc:date><?php echo mysql2date( 'Y-m-d\TH:i:s\Z', get_lastpostmodified( 'GMT' ), false ); ?></dc:date>
+=======
+	<link><?php bloginfo_rss('url') ?></link>
+	<description><?php bloginfo_rss('description') ?></description>
+	<dc:date><?php
+		$date = get_lastpostmodified( 'GMT' );
+		echo $date ? mysql2date( 'Y-m-d\TH:i:s\Z', $date ) : date( 'Y-m-d\TH:i:s\Z' );
+	?></dc:date>
+>>>>>>> aaronjorbin/master
 	<sy:updatePeriod><?php
 		/** This filter is documented in wp-includes/feed-rss2.php */
 		echo apply_filters( 'rss_update_period', 'hourly' );

@@ -175,21 +175,20 @@ echo esc_html( $visibility_trans ); ?></span>
 /* translators: Publish box date format, see https://secure.php.net/date */
 $datef = __( 'M j, Y @ H:i' );
 if ( 0 != $post->ID ) {
-	// scheduled for publishing at a future date
-	if ( 'future' == $post->post_status ) {
-		$stamp = __( 'Scheduled for: <b>%1$s</b>' );
-	// already published
-	} elseif ( 'publish' == $post->post_status || 'private' == $post->post_status ) {
-		$stamp = __( 'Published on: <b>%1$s</b>' );
-	// draft, 1 or more saves, no date specified
-	} elseif ( '0000-00-00 00:00:00' == $post->post_date_gmt ) {
-		$stamp = __( 'Publish <b>immediately</b>' );
-	// draft, 1 or more saves, future date specified
-	} elseif ( time() < strtotime( $post->post_date_gmt . ' +0000' ) ) {
-		$stamp = __( 'Schedule for: <b>%1$s</b>' );
-	// draft, 1 or more saves, date specified
-	} else {
-		$stamp = __( 'Publish on: <b>%1$s</b>' );
+	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
+		/* translators: Post date information. 1: Date on which the post is currently scheduled to be published */
+		$stamp = __('Scheduled for: <b>%1$s</b>');
+	} elseif ( 'publish' == $post->post_status || 'private' == $post->post_status ) { // already published
+		/* translators: Post date information. 1: Date on which the post was published */
+		$stamp = __('Published on: <b>%1$s</b>');
+	} elseif ( '0000-00-00 00:00:00' == $post->post_date_gmt ) { // draft, 1 or more saves, no date specified
+		$stamp = __('Publish <b>immediately</b>');
+	} elseif ( time() < strtotime( $post->post_date_gmt . ' +0000' ) ) { // draft, 1 or more saves, future date specified
+		/* translators: Post date information. 1: Date on which the post is to be published */
+		$stamp = __('Schedule for: <b>%1$s</b>');
+	} else { // draft, 1 or more saves, date specified
+		/* translators: Post date information. 1: Date on which the post is to be published */
+		$stamp = __('Publish on: <b>%1$s</b>');
 	}
 	$date = date_i18n( $datef, strtotime( $post->post_date ) );
 // draft (no saves, and thus no date specified)
@@ -200,7 +199,10 @@ if ( 0 != $post->ID ) {
 
 if ( ! empty( $args['args']['revisions_count'] ) ) : ?>
 <div class="misc-pub-section misc-pub-revisions">
-	<?php printf( __( 'Revisions: %s' ), '<b>' . number_format_i18n( $args['args']['revisions_count'] ) . '</b>' ); ?>
+	<?php
+		/* translators: Post revisions heading. 1: The number of available revisions */
+		printf( __( 'Revisions: %s' ), '<b>' . number_format_i18n( $args['args']['revisions_count'] ) . '</b>' );
+	?>
 	<a class="hide-if-no-js" href="<?php echo esc_url( get_edit_post_link( $args['args']['revision_id'] ) ); ?>"><span aria-hidden="true"><?php _ex( 'Browse', 'revisions' ); ?></span> <span class="screen-reader-text"><?php _e( 'Browse revisions' ); ?></span></a>
 </div>
 <?php endif;
@@ -308,7 +310,8 @@ function attachment_submit_meta_box( $post ) {
 	<?php
 	/* translators: Publish box date format, see https://secure.php.net/date */
 	$datef = __( 'M j, Y @ H:i' );
-	$stamp = __( 'Uploaded on: <b>%1$s</b>' );
+	/* translators: Attachment information. 1: Date the attachment was uploaded */
+	$stamp = __('Uploaded on: <b>%1$s</b>');
 	$date = date_i18n( $datef, strtotime( $post->post_date ) );
 	?>
 	<div class="misc-pub-section curtime misc-pub-curtime">
@@ -801,9 +804,8 @@ function post_revisions_meta_box( $post ) {
  *
  * @param object $post
  */
-function page_attributes_meta_box( $post) {
-	$post_type_object = get_post_type_object( $post->post_type);
-	if ( $post_type_object->hierarchical ) {
+function page_attributes_meta_box($post) {
+	if ( is_post_type_hierarchical( $post->post_type ) ) :
 		$dropdown_args = array(
 			'post_type'        => $post->post_type,
 			'exclude_tree'     => $post->ID,
@@ -839,7 +841,7 @@ function page_attributes_meta_box( $post) {
 		?>
 <p><strong><?php _e( 'Template' ) ?></strong><?php
 	/**
-	 * Fires immediately after the heading inside the 'Template' section
+	 * Fires immediately after the label inside the 'Template' section
 	 * of the 'Page Attributes' meta box.
 	 *
 	 * @since 4.4.0
@@ -849,7 +851,7 @@ function page_attributes_meta_box( $post) {
 	 */
 	do_action( 'page_attributes_meta_box_template', $template, $post );
 ?></p>
-<label class="screen-reader-text" for="page_template"><?php _e( 'Page Template' ) ?></label><select name="page_template" id="page_template">
+<select name="page_template" id="page_template">
 <?php
 /**
  * Filters the title of the default page template displayed in the drop-down.
@@ -863,16 +865,16 @@ function page_attributes_meta_box( $post) {
 $default_title = apply_filters( 'default_page_template_title',  __( 'Default Template' ), 'meta-box' );
 ?>
 <option value="default"><?php echo esc_html( $default_title ); ?></option>
-<?php page_template_dropdown( $template); ?>
+<?php page_template_dropdown( $template, $post->post_type ); ?>
 </select>
-<?php
-	} ?>
-<p><strong><?php _e( 'Order' ) ?></strong></p>
-<p><label class="screen-reader-text" for="menu_order"><?php _e( 'Order' ) ?></label><input name="menu_order" type="text" size="4" id="menu_order" value="<?php echo esc_attr( $post->menu_order) ?>" /></p>
-<?php if ( 'page' == $post->post_type && get_current_screen()->get_help_tabs() ) { ?>
+<?php endif; ?>
+<?php if ( post_type_supports( $post->post_type, 'page-attributes' ) ) : ?>
+<p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="menu_order"><?php _e( 'Order' ); ?></label></p>
+<input name="menu_order" type="text" size="4" id="menu_order" value="<?php echo esc_attr( $post->menu_order ); ?>" />
+<?php if ( 'page' == $post->post_type && get_current_screen()->get_help_tabs() ) : ?>
 <p><?php _e( 'Need help? Use the Help tab above the screen title.' ); ?></p>
-<?php
-	}
+<?php endif;
+	endif;
 }
 
 // -- Link related Meta Boxes

@@ -2,7 +2,7 @@
 /**
  * The WordPress version string
  */
-$wp_version = '4.7-alpha-38178-src';
+$wp_version = '4.8-alpha-39357-src';
 
 /**
  * Holds the WordPress DB revision, increments when changes are made to the WordPress DB schema.

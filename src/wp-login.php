@@ -361,6 +361,7 @@ function retrieve_password() {
 		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 	}
 
+	/* translators: Password reset email subject. 1: Site name */
 	$title = sprintf( __('[%s] Password Reset'), $blogname );
 
 	/**
@@ -817,11 +818,13 @@ default:
 
 	if ( empty( $_cookie->get(  LOGGED_IN_COOKIE ) ) ) {
 		if ( headers_sent() ) {
-			$user = new Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked due to unexpected output. For help, please see <a href="%1$s">this documentation</a> or try the <a href="%2$s">support forums</a>.' ),
+			/* translators: 1: Browser cookie documentation URL, 2: Support forums URL */
+			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked due to unexpected output. For help, please see <a href="%1$s">this documentation</a> or try the <a href="%2$s">support forums</a>.' ),
 				__( 'https://codex.wordpress.org/Cookies' ), __( 'https://wordpress.org/support/' ) ) );
 		} elseif ( $_post->get( 'testcookie' ) && empty( $_cookie->get(  TEST_COOKIE ) ) ) {
 			// If cookies are disabled we can't log in even with a valid user+pass
-			$user = new Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked or not supported by your browser. You must <a href="%s">enable cookies</a> to use WordPress.' ),
+			/* translators: 1: Browser cookie documentation URL */
+			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked or not supported by your browser. You must <a href="%s">enable cookies</a> to use WordPress.' ),
 				__( 'https://codex.wordpress.org/Cookies' ) ) );
 		}
 	}

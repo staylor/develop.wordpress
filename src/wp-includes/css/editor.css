@@ -657,7 +657,8 @@ div.mce-menu .mce-menu-item-sep,
 }
 
 .mce-menu.mce-menu-align .mce-menu-shortcut {
-	bottom: 0.5em;
+	bottom: 0.6em;
+	font-size: 0.9em;
 }
 
 /* Buttons in modals */
@@ -855,6 +856,11 @@ div.mce-menu .mce-menu-item-sep,
 .mce-toolbar .mce-btn:focus .mce-open,
 .mce-toolbar .mce-btn.mce-active .mce-open {
 	border-left-color: #23282d;
+}
+
+div.mce-notification {
+	left: 10% !important;
+	right: 10%;
 }
 
 .mce-notification button.mce-close {
@@ -1321,7 +1327,7 @@ i.mce-i-wp_code:before {
 
 @media screen and ( min-width: 782px ) {
 	.wp-core-ui .quicktags-toolbar input.button.button-small {
-		/* .button-small is normaly 11px, but a bit too small for these buttons. */
+		/* .button-small is normally 11px, but a bit too small for these buttons. */
 		font-size: 12px;
 		height: 26px;
 		line-height: 24px;

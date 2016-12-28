@@ -57,7 +57,7 @@ function twentyseventeen_setup() {
 
 	// This theme uses wp_nav_menu() in two locations.
 	register_nav_menus( array(
-		'top'    => __( 'Top', 'twentyseventeen' ),
+		'top'    => __( 'Top Menu', 'twentyseventeen' ),
 		'social' => __( 'Social Links Menu', 'twentyseventeen' ),
 	) );
 
@@ -102,6 +102,91 @@ function twentyseventeen_setup() {
 	 * specifically font, colors, and column width.
  	 */
 	add_editor_style( array( 'assets/css/editor-style.css', twentyseventeen_fonts_url() ) );
+
+	add_theme_support( 'starter-content', array(
+		'widgets' => array(
+			'sidebar-1' => array(
+				'text_business_info',
+				'search',
+				'text_about',
+			),
+
+			'sidebar-2' => array(
+				'text_business_info',
+			),
+
+			'sidebar-3' => array(
+				'text_about',
+				'search',
+			),
+		),
+
+		'posts' => array(
+			'home',
+			'about' => array(
+				'thumbnail' => '{{image-sandwich}}',
+			),
+			'contact' => array(
+				'thumbnail' => '{{image-espresso}}',
+			),
+			'blog' => array(
+				'thumbnail' => '{{image-coffee}}',
+			),
+			'homepage-section' => array(
+				'thumbnail' => '{{image-espresso}}',
+			),
+		),
+
+		'attachments' => array(
+			'image-espresso' => array(
+				'post_title' => _x( 'Espresso', 'Theme starter content', 'twentyseventeen' ),
+				'file' => 'assets/images/espresso.jpg',
+			),
+			'image-sandwich' => array(
+				'post_title' => _x( 'Sandwich', 'Theme starter content', 'twentyseventeen' ),
+				'file' => 'assets/images/sandwich.jpg',
+			),
+			'image-coffee' => array(
+				'post_title' => _x( 'Coffee', 'Theme starter content', 'twentyseventeen' ),
+				'file' => 'assets/images/coffee.jpg',
+			),
+		),
+
+		'options' => array(
+			'show_on_front' => 'page',
+			'page_on_front' => '{{home}}',
+			'page_for_posts' => '{{blog}}',
+		),
+
+		'theme_mods' => array(
+			'panel_1' => '{{homepage-section}}',
+			'panel_2' => '{{about}}',
+			'panel_3' => '{{blog}}',
+			'panel_4' => '{{contact}}',
+		),
+
+		'nav_menus' => array(
+			'top' => array(
+				'name' => __( 'Top Menu', 'twentyseventeen' ),
+				'items' => array(
+					'page_home',
+					'page_about',
+					'page_blog',
+					'page_contact',
+				),
+			),
+			'social' => array(
+				'name' => __( 'Social Links Menu', 'twentyseventeen' ),
+				'items' => array(
+					'link_yelp',
+					'link_facebook',
+					'link_twitter',
+					'link_instagram',
+					'link_email',
+				),
+			),
+		),
+	) );
 }
 add_action( 'after_setup_theme', 'twentyseventeen_setup' );
 
@@ -139,10 +224,10 @@ function twentyseventeen_fonts_url() {
 
 	/**
 	 * Translators: If there are characters in your language that are not
-	 * supported by Libre Frankin, translate this to 'off'. Do not translate
+	 * supported by Libre Franklin, translate this to 'off'. Do not translate
 	 * into your own language.
 	 */
-	$libre_franklin = _x( 'on', 'libre_franklin font: on or off', 'twentyseventeen' );
+	$libre_franklin = _x( 'on', 'Libre Franklin font: on or off', 'twentyseventeen' );
 
 	if ( 'off' !== $libre_franklin ) {
 		$font_families = array();
@@ -223,13 +308,15 @@ add_action( 'widgets_init', 'twentyseventeen_widgets_init' );
  * Replaces "[...]" (appended to automatically generated excerpts) with ... and
  * a 'Continue reading' link.
  *
- * Create your own twentysixteen_excerpt_more() function to override in a child theme.
- *
  * @since Twenty Seventeen 1.0
  *
  * @return string 'Continue reading' link prepended with an ellipsis.
  */
-function twentyseventeen_excerpt_more() {
+function twentyseventeen_excerpt_more( $link ) {
+	if ( is_admin() ) {
+		return $link;
+	}
+
 	$link = sprintf( '<p class="link-more"><a href="%1$s" class="more-link">%2$s</a></p>',
 		esc_url( get_permalink( get_the_ID() ) ),
 		/* translators: %s: Name of current post */
@@ -293,6 +380,12 @@ function twentyseventeen_scripts() {
 		wp_enqueue_style( 'twentyseventeen-colors-dark', get_theme_file_uri( '/assets/css/colors-dark.css' ), array( 'twentyseventeen-style' ), '1.0' );
 	}
 
+	// Load the Internet Explorer 9 specific stylesheet, to fix display issues in the Customizer.
+	if ( is_customize_preview() ) {
+		wp_enqueue_style( 'twentyseventeen-ie9', get_theme_file_uri( '/assets/css/ie9.css' ), array( 'twentyseventeen-style' ), '1.0' );
+		wp_style_add_data( 'twentyseventeen-ie9', 'conditional', 'IE 9' );
+	}
+
 	// Load the Internet Explorer 8 specific stylesheet.
 	wp_enqueue_style( 'twentyseventeen-ie8', get_theme_file_uri( '/assets/css/ie8.css' ), array( 'twentyseventeen-style' ), '1.0' );
 	wp_style_add_data( 'twentyseventeen-ie8', 'conditional', 'lt IE 9' );
@@ -305,28 +398,23 @@ function twentyseventeen_scripts() {
 
 	$twentyseventeen_l10n = array(
 		'quote'          => twentyseventeen_get_svg( array( 'icon' => 'quote-right' ) ),
-		'has_navigation' => 'false',
 	);
 
 	if ( has_nav_menu( 'top' ) ) {
 		wp_enqueue_script( 'twentyseventeen-navigation', get_theme_file_uri( '/assets/js/navigation.js' ), array(), '1.0', true );
-		$twentyseventeen_l10n['has_navigation'] = 'true';
 		$twentyseventeen_l10n['expand']         = __( 'Expand child menu', 'twentyseventeen' );
 		$twentyseventeen_l10n['collapse']       = __( 'Collapse child menu', 'twentyseventeen' );
-		$twentyseventeen_l10n['icon']           = twentyseventeen_get_svg( array( 'icon' => 'expand', 'fallback' => true ) );
+		$twentyseventeen_l10n['icon']           = twentyseventeen_get_svg( array( 'icon' => 'angle-down', 'fallback' => true ) );
 	}
 
 	wp_enqueue_script( 'twentyseventeen-global', get_theme_file_uri( '/assets/js/global.js' ), array( 'jquery' ), '1.0', true );
+
+	wp_enqueue_script( 'jquery-scrollto', get_theme_file_uri( '/assets/js/jquery.scrollTo.js' ), array( 'jquery' ), '2.1.2', true );
 
 	wp_localize_script( 'twentyseventeen-skip-link-focus-fix', 'twentyseventeenScreenReaderText', $twentyseventeen_l10n );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
-	}
-
-	// Scroll effects (only loaded on front page).
-	if ( is_front_page() ) {
-		wp_enqueue_script( 'jquery-scrollto', get_template_directory_uri() . '/assets/js/jquery.scrollTo.js', array( 'jquery' ), '2.1.2', true );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'twentyseventeen_scripts' );
@@ -358,6 +446,24 @@ function twentyseventeen_content_image_sizes_attr( $sizes, $size ) {
 	return $sizes;
 }
 add_filter( 'wp_calculate_image_sizes', 'twentyseventeen_content_image_sizes_attr', 10, 2 );
+
+/**
+ * Filter the `sizes` value in the header image markup.
+ *
+ * @since Twenty Seventeen 1.0
+ *
+ * @param string $html   The HTML image tag markup being filtered.
+ * @param object $header The custom header object returned by 'get_custom_header()'.
+ * @param array  $attr   Array of the attributes for the image tag.
+ * @return string The filtered header image HTML.
+ */
+function twentyseventeen_header_image_tag( $html, $header, $attr ) {
+	if ( isset( $attr['sizes'] ) ) {
+		$html = str_replace( $attr['sizes'], '100vw', $html );
+	}
+	return $html;
+}
+add_filter( 'get_header_image_tag', 'twentyseventeen_header_image_tag', 10, 3 );
 
 /**
  * Add custom image sizes attribute to enhance responsive image functionality

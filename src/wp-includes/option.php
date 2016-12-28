@@ -314,7 +314,7 @@ function update_option( $option, $value, $autoload = null ) {
 	}
 
 	/** This filter is documented in wp-includes/option.php */
-	if ( apply_filters( 'default_option_' . $option, false, $option ) === $old_value ) {
+	if ( apply_filters( 'default_option_' . $option, false, $option, false ) === $old_value ) {
 		// Default setting for new options is 'yes'.
 		if ( null === $autoload ) {
 			$autoload = 'yes';
@@ -436,9 +436,15 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = 'yes' )
 
 	// Make sure the option doesn't already exist. We can check the 'notoptions' cache before we ask for a db query
 	$notoptions = wp_cache_get( 'notoptions', 'options' );
+<<<<<<< HEAD
 	if ( !is_array( $notoptions ) || ! isset( $notoptions[$option] ) ) {
 			/** This filter is documented in wp-includes/option.php */
 		if ( apply_filters( 'default_option_' . $option, false, $option ) !== get_option( $option ) ) {
+=======
+	if ( !is_array( $notoptions ) || !isset( $notoptions[$option] ) )
+		/** This filter is documented in wp-includes/option.php */
+		if ( apply_filters( 'default_option_' . $option, false, $option, false ) !== get_option( $option ) )
+>>>>>>> aaronjorbin/master
 			return false;
 		}
 	}
@@ -1743,30 +1749,34 @@ function register_initial_settings() {
 			'name' => 'description',
 		),
 		'type'         => 'string',
-		'description'  => __( 'Site description.' ),
+		'description'  => __( 'Site tagline.' ),
 	) );
 
-	register_setting( 'general', 'siteurl', array(
-		'show_in_rest' => array(
-			'name'    => 'url',
-			'schema'  => array(
-				'format' => 'uri',
+	if ( ! is_multisite() ) {
+		register_setting( 'general', 'siteurl', array(
+			'show_in_rest' => array(
+				'name'    => 'url',
+				'schema'  => array(
+					'format' => 'uri',
+				),
 			),
-		),
-		'type'         => 'string',
-		'description'  => __( 'Site URL.' ),
-	) );
+			'type'         => 'string',
+			'description'  => __( 'Site URL.' ),
+		) );
+	}
 
-	register_setting( 'general', 'admin_email', array(
-		'show_in_rest' => array(
-			'name'    => 'email',
-			'schema'  => array(
-				'format' => 'email',
+	if ( ! is_multisite() ) {
+		register_setting( 'general', 'admin_email', array(
+			'show_in_rest' => array(
+				'name'    => 'email',
+				'schema'  => array(
+					'format' => 'email',
+				),
 			),
-		),
-		'type'         => 'string',
-		'description'  => __( 'This address is used for admin purposes. If you change this we will send you an email at your new address to confirm it. The new address will not become active until confirmed.' ),
-	) );
+			'type'         => 'string',
+			'description'  => __( 'This address is used for admin purposes, like new user notification.' ),
+		) );
+	}
 
 	register_setting( 'general', 'timezone_string', array(
 		'show_in_rest' => array(
@@ -1790,7 +1800,7 @@ function register_initial_settings() {
 
 	register_setting( 'general', 'start_of_week', array(
 		'show_in_rest' => true,
-		'type'         => 'number',
+		'type'         => 'integer',
 		'description'  => __( 'A day number of the week that the week should start on.' ),
 	) );
 
@@ -1812,8 +1822,8 @@ function register_initial_settings() {
 
 	register_setting( 'writing', 'default_category', array(
 		'show_in_rest' => true,
-		'type'         => 'number',
-		'description'  => __( 'Default category.' ),
+		'type'         => 'integer',
+		'description'  => __( 'Default post category.' ),
 	) );
 
 	register_setting( 'writing', 'default_post_format', array(
@@ -1824,10 +1834,31 @@ function register_initial_settings() {
 
 	register_setting( 'reading', 'posts_per_page', array(
 		'show_in_rest' => true,
-		'type'         => 'number',
+		'type'         => 'integer',
 		'description'  => __( 'Blog pages show at most.' ),
 		'default'      => 10,
 	) );
+
+	register_setting( 'discussion', 'default_ping_status', array(
+		'show_in_rest' => array(
+			'schema'   => array(
+				'enum' => array( 'open', 'closed' ),
+			),
+		),
+		'type'         => 'string',
+		'description'  => __( 'Allow link notifications from other blogs (pingbacks and trackbacks) on new articles.' ),
+	) );
+
+	register_setting( 'discussion', 'default_comment_status', array(
+		'show_in_rest' => array(
+			'schema'   => array(
+				'enum' => array( 'open', 'closed' ),
+			),
+		),
+		'type'         => 'string',
+		'description'  => __( 'Allow people to post comments on new articles.' ),
+	) );
+
 }
 
 /**

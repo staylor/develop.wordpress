@@ -185,9 +185,18 @@ function get_approved_comments( $post_id, $args = [] ) {
  *
  * @since 2.0.0
  *
+<<<<<<< HEAD
  * @param Comment|string|int $comment Comment to retrieve.
  * @param string $output Optional. OBJECT or ARRAY_A or ARRAY_N constants.
  * @return Comment|array|null Depends on $output value.
+=======
+ * @global WP_Comment $comment
+ *
+ * @param WP_Comment|string|int $comment Comment to retrieve.
+ * @param string                $output  Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which correspond to
+ *                                       a WP_Comment object, an associative array, or a numeric array, respectively. Default OBJECT.
+ * @return WP_Comment|array|null Depends on $output value.
+>>>>>>> aaronjorbin/master
  */
 function get_comment( &$comment = null, $output = OBJECT ) {
 	$app = getApp();
@@ -307,13 +316,19 @@ function get_default_comment_status( $post_type = 'post', $comment_type = 'comme
  * The date the last comment was modified.
  *
  * @since 1.5.0
+ * @since 4.7.0 Replaced caching the modified date in a local static variable
+ *              with the Object Cache API.
  *
+<<<<<<< HEAD
  * @staticvar array $cache_lastcommentmodified
+=======
+ * @global wpdb $wpdb WordPress database abstraction object.
+>>>>>>> aaronjorbin/master
  *
- * @param string $timezone Which timezone to use in reference to 'gmt', 'blog',
- *		or 'server' locations.
- * @return string Last comment modified date.
+ * @param string $timezone Which timezone to use in reference to 'gmt', 'blog', or 'server' locations.
+ * @return string|false Last comment modified date on success, false on failure.
  */
+<<<<<<< HEAD
 function get_lastcommentmodified( $timezone = 'server') {
 	$app = getApp();
 	$wpdb = $app['db'];
@@ -335,11 +350,40 @@ function get_lastcommentmodified( $timezone = 'server') {
 	case 'server':
 		$lastcommentmodified = $wpdb->get_var( $wpdb->prepare( "SELECT DATE_ADD(comment_date_gmt, INTERVAL %s SECOND) FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1", $add_seconds_server) );
 		break;
+=======
+function get_lastcommentmodified( $timezone = 'server' ) {
+	global $wpdb;
+
+	$timezone = strtolower( $timezone );
+	$key = "lastcommentmodified:$timezone";
+
+	$comment_modified_date = wp_cache_get( $key, 'timeinfo' );
+	if ( false !== $comment_modified_date ) {
+		return $comment_modified_date;
 	}
 
-	$cache_lastcommentmodified[$timezone] = $lastcommentmodified;
+	switch ( $timezone ) {
+		case 'gmt':
+			$comment_modified_date = $wpdb->get_var( "SELECT comment_date_gmt FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1" );
+			break;
+		case 'blog':
+			$comment_modified_date = $wpdb->get_var( "SELECT comment_date FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1" );
+			break;
+		case 'server':
+			$add_seconds_server = date( 'Z' );
 
-	return $lastcommentmodified;
+			$comment_modified_date = $wpdb->get_var( $wpdb->prepare( "SELECT DATE_ADD(comment_date_gmt, INTERVAL %s SECOND) FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1", $add_seconds_server ) );
+			break;
+>>>>>>> aaronjorbin/master
+	}
+
+	if ( $comment_modified_date ) {
+		wp_cache_set( $key, $comment_modified_date, 'timeinfo' );
+
+		return $comment_modified_date;
+	}
+
+	return false;
 }
 
 /**
@@ -1134,6 +1178,37 @@ function wp_get_comment_fields_max_lengths() {
 }
 
 /**
+ * Compares the lengths of comment data against the maximum character limits.
+ *
+ * @since 4.7.0
+ *
+ * @param array $comment_data Array of arguments for inserting a comment.
+ * @return WP_Error|true WP_Error when a comment field exceeds the limit,
+ *                       otherwise true.
+ */
+function wp_check_comment_data_max_lengths( $comment_data ) {
+	$max_lengths = wp_get_comment_fields_max_lengths();
+
+	if ( isset( $comment_data['comment_author'] ) && mb_strlen( $comment_data['comment_author'], '8bit' ) > $max_lengths['comment_author'] ) {
+		return new WP_Error( 'comment_author_column_length', __( '<strong>ERROR</strong>: your name is too long.' ), 200 );
+	}
+
+	if ( isset( $comment_data['comment_author_email'] ) && strlen( $comment_data['comment_author_email'] ) > $max_lengths['comment_author_email'] ) {
+		return new WP_Error( 'comment_author_email_column_length', __( '<strong>ERROR</strong>: your email address is too long.' ), 200 );
+	}
+
+	if ( isset( $comment_data['comment_author_url'] ) && strlen( $comment_data['comment_author_url'] ) > $max_lengths['comment_author_url'] ) {
+		return new WP_Error( 'comment_author_url_column_length', __( '<strong>ERROR</strong>: your url is too long.' ), 200 );
+	}
+
+	if ( isset( $comment_data['comment_content'] ) && mb_strlen( $comment_data['comment_content'], '8bit' ) > $max_lengths['comment_content'] ) {
+		return new WP_Error( 'comment_content_column_length', __( '<strong>ERROR</strong>: your comment is too long.' ), 200 );
+	}
+
+	return true;
+}
+
+/**
  * Does comment contain blacklisted characters or words.
  *
  * @since 1.5.0
@@ -1607,6 +1682,26 @@ function wp_transition_comment_status( $new_status, $old_status, $comment) {
 }
 
 /**
+ * Clear the lastcommentmodified cached value when a comment status is changed.
+ *
+ * Deletes the lastcommentmodified cache key when a comment enters or leaves
+ * 'approved' status.
+ *
+ * @since 4.7.0
+ * @access private
+ *
+ * @param string $new_status The new comment status.
+ * @param string $old_status The old comment status.
+ */
+function _clear_modified_cache_on_transition_comment_status( $new_status, $old_status ) {
+	if ( 'approved' === $new_status || 'approved' === $old_status ) {
+		foreach ( array( 'server', 'gmt', 'blog' ) as $timezone ) {
+			wp_cache_delete( "lastcommentmodified:$timezone", 'timeinfo' );
+		}
+	}
+}
+
+/**
  * Get current commenter's name, email, and URL.
  *
  * Expects cookies content to already be sanitized. User of this function might
@@ -1708,6 +1803,10 @@ function wp_insert_comment( $commentdata ) {
 
 	if ( $comment_approved == 1 ) {
 		wp_update_comment_count( $comment_post_ID );
+
+		foreach ( array( 'server', 'gmt', 'blog' ) as $timezone ) {
+			wp_cache_delete( "lastcommentmodified:$timezone", 'timeinfo' );
+		}
 	}
 
 	clean_comment_cache( $id );
@@ -3052,12 +3151,15 @@ function wp_handle_comment_submission( $comment_data ) {
 		}
 	} else {
 		if ( get_option( 'comment_registration' ) ) {
+<<<<<<< HEAD
 			return new Error( 'not_logged_in', __( 'Sorry, you must be logged in to post a comment.' ), 403 );
+=======
+			return new WP_Error( 'not_logged_in', __( 'Sorry, you must be logged in to comment.' ), 403 );
+>>>>>>> aaronjorbin/master
 		}
 	}
 
 	$comment_type = '';
-	$max_lengths = wp_get_comment_fields_max_lengths();
 
 	if ( get_option( 'require_name_email' ) && ! $user->exists() ) {
 		if ( 6 > strlen( $comment_author_email ) || '' == $comment_author ) {
@@ -3067,6 +3169,7 @@ function wp_handle_comment_submission( $comment_data ) {
 		}
 	}
 
+<<<<<<< HEAD
 	if ( isset( $comment_author ) && $max_lengths['comment_author'] < mb_strlen( $comment_author, '8bit' ) ) {
 		return new Error( 'comment_author_column_length', __( '<strong>ERROR</strong>: your name is too long.' ), 200 );
 	}
@@ -3083,6 +3186,10 @@ function wp_handle_comment_submission( $comment_data ) {
 		return new Error( 'require_valid_comment', __( '<strong>ERROR</strong>: please type a comment.' ), 200 );
 	} elseif ( $max_lengths['comment_content'] < mb_strlen( $comment_content, '8bit' ) ) {
 		return new Error( 'comment_content_column_length', __( '<strong>ERROR</strong>: your comment is too long.' ), 200 );
+=======
+	if ( '' == $comment_content ) {
+		return new WP_Error( 'require_valid_comment', __( '<strong>ERROR</strong>: please type a comment.' ), 200 );
+>>>>>>> aaronjorbin/master
 	}
 
 	$commentdata = compact(
@@ -3095,6 +3202,11 @@ function wp_handle_comment_submission( $comment_data ) {
 		'comment_parent',
 		'user_ID'
 	);
+
+	$check_max_lengths = wp_check_comment_data_max_lengths( $commentdata );
+	if ( is_wp_error( $check_max_lengths ) ) {
+		return $check_max_lengths;
+	}
 
 	$comment_id = wp_new_comment( wp_slash( $commentdata ), true );
 	if ( is_wp_error( $comment_id ) ) {

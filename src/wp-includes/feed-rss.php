@@ -12,9 +12,18 @@ echo '<?xml version="1.0" encoding="' . get_option( 'blog_charset' ) . '"?' . '>
 <rss version="0.92">
 <channel>
 	<title><?php wp_title_rss(); ?></title>
+<<<<<<< HEAD
 	<link><?php bloginfo_rss( 'url' ) ?></link>
 	<description><?php bloginfo_rss( 'description' ) ?></description>
 	<lastBuildDate><?php echo mysql2date( 'D, d M Y H:i:s +0000', get_lastpostmodified( 'GMT' ), false ); ?></lastBuildDate>
+=======
+	<link><?php bloginfo_rss('url') ?></link>
+	<description><?php bloginfo_rss('description') ?></description>
+	<lastBuildDate><?php
+		$date = get_lastpostmodified( 'GMT' );
+		echo $date ? mysql2date( 'D, d M Y H:i:s +0000', $date ) : date( 'D, d M Y H:i:s +0000' );
+	?></lastBuildDate>
+>>>>>>> aaronjorbin/master
 	<docs>http://backend.userland.com/rss092</docs>
 	<language><?php bloginfo_rss( 'language' ); ?></language>
 

@@ -4,19 +4,20 @@
  * @group xmlrpc
  */
 class Tests_XMLRPC_wp_editTerm extends WP_XMLRPC_UnitTestCase {
-	var $parent_term;
-	var $child_term;
-	var $post_tag;
+	protected static $parent_term;
+	protected static $child_term;
+	protected static $post_tag;
 
-	function setUp() {
-		parent::setUp();
-
-		$this->parent_term = wp_insert_term( 'parent' . rand_str() , 'category' );
-		$this->assertInternalType( 'array', $this->parent_term );
-		$this->child_term = wp_insert_term( 'child' . rand_str() , 'category' );
-		$this->assertInternalType( 'array', $this->child_term );
-		$this->post_tag = wp_insert_term( 'test' . rand_str() , 'post_tag' );
-		$this->assertInternalType( 'array', $this->post_tag );
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		self::$parent_term = $factory->term->create( array(
+			'taxonomy' => 'category',
+		) );
+		self::$child_term = $factory->term->create( array(
+			'taxonomy' => 'category',
+		) );
+		self::$post_tag = $factory->term->create( array(
+			'taxonomy' => 'post_tag',
+		) );
 	}
 
 	function test_invalid_username_password() {
@@ -104,7 +105,7 @@ class Tests_XMLRPC_wp_editTerm extends WP_XMLRPC_UnitTestCase {
 		$this->assertNotInstanceOf( 'WP\IXR\Error', $result );
 		$this->assertInternalType( 'boolean', $result );
 
-		$term = get_term( $this->child_term['term_id'], 'category' );
+		$term = get_term( self::$child_term, 'category' );
 		$this->assertEquals( '0', $term->parent );
 	}
 

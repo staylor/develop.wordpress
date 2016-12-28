@@ -10,12 +10,20 @@
  * @group restapi
  */
 class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase {
+	protected static $administrator;
+
+	public static function wpSetUpBeforeClass( $factory ) {
+		self::$administrator = $factory->user->create( array(
+			'role' => 'administrator',
+		) );
+	}
+
+	public static function wpTearDownAfterClass() {
+		self::delete_user( self::$administrator );
+	}
 
 	public function setUp() {
 		parent::setUp();
-		$this->administrator = $this->factory->user->create( array(
-			'role' => 'administrator',
-		) );
 		$this->endpoint = new WP_REST_Settings_Controller();
 	}
 
@@ -37,17 +45,15 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 	}
 
 	public function test_get_item() {
-		wp_set_current_user( $this->administrator );
+		wp_set_current_user( self::$administrator );
 		$request = new WP_REST_Request( 'GET', '/wp/v2/settings' );
 		$response = $this->server->dispatch( $request );
 		$data = $response->get_data();
+		$actual = array_keys( $data );
 
-		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( array(
+		$expected = array(
 			'title',
 			'description',
-			'url',
-			'email',
 			'timezone',
 			'date_format',
 			'time_format',
@@ -57,11 +63,24 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 			'default_category',
 			'default_post_format',
 			'posts_per_page',
-		), array_keys( $data ) );
+			'default_ping_status',
+			'default_comment_status',
+		);
+
+		if ( ! is_multisite() ) {
+			$expected[] = 'url';
+			$expected[] = 'email';
+		}
+
+		sort( $expected );
+		sort( $actual );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function test_get_item_value_is_cast_to_type() {
-		wp_set_current_user( $this->administrator );
+		wp_set_current_user( self::$administrator );
 		update_option( 'posts_per_page', 'invalid_number' ); // this is cast to (int) 1
 		$request = new WP_REST_Request( 'GET', '/wp/v2/settings' );
 		$response = $this->server->dispatch( $request );
@@ -72,7 +91,7 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 	}
 
 	public function test_get_item_with_custom_setting() {
-		wp_set_current_user( $this->administrator );
+		wp_set_current_user( self::$administrator );
 
 		register_setting( 'somegroup', 'mycustomsetting', array(
 			'show_in_rest' => array(
@@ -112,7 +131,7 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 	}
 
 	public function test_get_item_with_filter() {
-		wp_set_current_user( $this->administrator );
+		wp_set_current_user( self::$administrator );
 
 		add_filter( 'rest_pre_get_setting', array( $this, 'get_setting_custom_callback' ), 10, 3 );
 
@@ -149,11 +168,56 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		remove_all_filters( 'rest_pre_get_setting' );
 	}
 
+	public function test_get_item_with_invalid_value_array_in_options() {
+		wp_set_current_user( self::$administrator );
+
+		register_setting( 'somegroup', 'mycustomsetting', array(
+			'show_in_rest' => array(
+				'name'   => 'mycustomsettinginrest',
+				'schema' => array(
+					'enum'    => array( 'validvalue1', 'validvalue2' ),
+					'default' => 'validvalue1',
+				),
+			),
+			'type'         => 'string',
+		) );
+
+		update_option( 'mycustomsetting', array( 'A sneaky array!' ) );
+
+		$request = new WP_REST_Request( 'GET', '/wp/v2/settings' );
+		$response = $this->server->dispatch( $request );
+		$data = $response->get_data();
+		$this->assertEquals( null, $data['mycustomsettinginrest'] );
+	}
+
+	public function test_get_item_with_invalid_object_array_in_options() {
+		wp_set_current_user( self::$administrator );
+
+		register_setting( 'somegroup', 'mycustomsetting', array(
+			'show_in_rest' => array(
+				'name'   => 'mycustomsettinginrest',
+				'schema' => array(
+					'enum'    => array( 'validvalue1', 'validvalue2' ),
+					'default' => 'validvalue1',
+				),
+			),
+			'type'         => 'string',
+		) );
+
+		update_option( 'mycustomsetting', (object) array( 'A sneaky array!' ) );
+
+		$request = new WP_REST_Request( 'GET', '/wp/v2/settings' );
+		$response = $this->server->dispatch( $request );
+		$data = $response->get_data();
+		$this->assertEquals( null, $data['mycustomsettinginrest'] );
+	}
+
+
 	public function test_create_item() {
 	}
 
 	public function test_update_item() {
-		wp_set_current_user( $this->administrator );
+		wp_set_current_user( self::$administrator );
 		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
 		$request->set_param( 'title', 'The new title!' );
 		$response = $this->server->dispatch( $request );
@@ -174,7 +238,7 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 	}
 
 	public function test_update_item_with_filter() {
-		wp_set_current_user( $this->administrator );
+		wp_set_current_user( self::$administrator );
 
 		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
 		$request->set_param( 'title', 'The old title!' );
@@ -205,9 +269,25 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 	}
 
 	public function test_update_item_with_invalid_type() {
-		wp_set_current_user( $this->administrator );
+		wp_set_current_user( self::$administrator );
 		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
 		$request->set_param( 'title', array( 'rendered' => 'This should fail.' ) );
+		$response = $this->server->dispatch( $request );
+		$this->assertErrorResponse( 'rest_invalid_param', $response, 400 );
+	}
+
+	public function test_update_item_with_integer() {
+		wp_set_current_user( self::$administrator );
+		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
+		$request->set_param( 'posts_per_page', 11 );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+	}
+
+	public function test_update_item_with_invalid_float_for_integer() {
+		wp_set_current_user( self::$administrator );
+		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
+		$request->set_param( 'posts_per_page', 10.5 );
 		$response = $this->server->dispatch( $request );
 		$this->assertErrorResponse( 'rest_invalid_param', $response, 400 );
 	}
@@ -218,7 +298,7 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 	public function test_update_item_with_null() {
 		update_option( 'posts_per_page', 9 );
 
-		wp_set_current_user( $this->administrator );
+		wp_set_current_user( self::$administrator );
 		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
 		$request->set_param( 'posts_per_page', null );
 		$response = $this->server->dispatch( $request );
@@ -226,6 +306,33 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 10, $data['posts_per_page'] );
+	}
+
+	public function test_update_item_with_invalid_enum() {
+		update_option( 'posts_per_page', 9 );
+
+		wp_set_current_user( self::$administrator );
+		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
+		$request->set_param( 'default_ping_status', 'open&closed' );
+		$response = $this->server->dispatch( $request );
+		$this->assertErrorResponse( 'rest_invalid_param', $response, 400 );
+	}
+
+	public function test_update_item_with_invalid_stored_value_in_options() {
+		wp_set_current_user( self::$administrator );
+
+		register_setting( 'somegroup', 'mycustomsetting', array(
+			'show_in_rest' => true,
+			'type'         => 'string',
+		) );
+		update_option( 'mycustomsetting', array( 'A sneaky array!' ) );
+
+		wp_set_current_user( self::$administrator );
+		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
+		$request->set_param( 'mycustomsetting', null );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertErrorResponse( 'rest_invalid_stored_value', $response, 500 );
 	}
 
 	public function test_delete_item() {

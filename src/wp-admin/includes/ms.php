@@ -36,10 +36,12 @@ function check_upload_size( $file ) {
 
 	$file_size = filesize( $file['tmp_name'] );
 	if ( $space_left < $file_size ) {
+		/* translators: 1: Required disk space in kilobytes */
 		$file['error'] = sprintf( __( 'Not enough space to upload. %1$s KB needed.' ), number_format( ( $file_size - $space_left ) / KB_IN_BYTES ) );
 	}
 
 	if ( $file_size > ( KB_IN_BYTES * get_site_option( 'fileupload_maxk', 1500 ) ) ) {
+		/* translators: 1: Maximum allowed file size in kilobytes */
 		$file['error'] = sprintf( __( 'This file is too big. Files must be less than %1$s KB in size.' ), get_site_option( 'fileupload_maxk', 1500 ) );
 	}
 
@@ -286,6 +288,8 @@ function update_option_new_admin_email( $old_value, $value ) {
 	);
 	update_option( 'adminhash', $new_admin_email );
 
+	$switched_locale = switch_to_locale( get_user_locale() );
+
 	/* translators: Do not translate USERNAME, ADMIN_URL, EMAIL, SITENAME, SITEURL: those are placeholders. */
 	$email_text = __( 'Howdy ###USERNAME###,
 
@@ -329,6 +333,10 @@ All at ###SITENAME###
 	$content = str_replace( '###SITEURL###', network_home_url(), $content );
 
 	wp_mail( $value, sprintf( __( '[%s] New Admin Email Address' ), wp_specialchars_decode( get_option( 'blogname' ) ) ), $content );
+
+	if ( $switched_locale ) {
+		restore_previous_locale();
+	}
 }
 
 /**
@@ -372,6 +380,8 @@ function send_confirmation_on_profile_email() {
 		);
 		update_user_meta( $current_user->ID, '_new_email', $new_user_email );
 
+		$switched_locale = switch_to_locale( get_user_locale() );
+
 		/* translators: Do not translate USERNAME, ADMIN_URL, EMAIL, SITENAME, SITEURL: those are placeholders. */
 		$email_text = __( 'Howdy ###USERNAME###,
 
@@ -412,8 +422,12 @@ All at ###SITENAME###
 		$content = str_replace( '###SITENAME###', get_site_option( 'site_name' ), $content );
 		$content = str_replace( '###SITEURL###', network_home_url(), $content );
 
-		wp_mail( $_post->get( 'email' ), sprintf( __( '[%s] New Email Address' ), wp_specialchars_decode( get_option( 'blogname' ) ) ), $content );
-		$_post->set( 'email', $current_user->user_email );
+		wp_mail( $_POST['email'], sprintf( __( '[%s] New Email Address' ), wp_specialchars_decode( get_option( 'blogname' ) ) ), $content );
+		$_POST['email'] = $current_user->user_email;
+
+		if ( $switched_locale ) {
+			restore_previous_locale();
+		}
 	}
 }
 
@@ -482,7 +496,10 @@ function display_space_usage() {
 		$space .= __( 'MB' );
 	}
 	?>
-	<strong><?php printf( __( 'Used: %1$s%% of %2$s' ), number_format( $percent_used ), $space ); ?></strong>
+	<strong><?php
+		/* translators: Storage space that's been used. 1: Percentage of used space, 2: Total space allowed in megabytes or gigabytes */
+		printf( __( 'Used: %1$s%% of %2$s' ), number_format( $percent_used ), $space );
+	?></strong>
 	<?php
 }
 

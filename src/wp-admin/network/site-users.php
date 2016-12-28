@@ -142,12 +142,11 @@ if ( $action ) {
 				$user = get_userdata( $user_id );
 				$user->set_role( $_request->get( 'new_role' ) );
 			}
-		} else {
-			$update = 'err_promote';
-		}
-		break;
-	default:
-		if ( ! $_request->get( 'users' ) ) {
+			check_admin_referer( 'bulk-users' );
+			$userids = $_request->get( 'users' );
+			/** This action is documented in wp-admin/network/site-themes.php */
+			$referer = apply_filters( 'handle_network_bulk_actions-' . get_current_screen()->id, $referer, $action, $userids, $id );
+			$update = $action;
 			break;
 		}
 		check_admin_referer( 'bulk-users' );

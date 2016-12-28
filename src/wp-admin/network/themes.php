@@ -180,28 +180,37 @@ if ( $action ) {
 			<?php
 			require_once( ABSPATH . 'wp-admin/admin-footer.php' );
 			exit;
-		} // Endif verify-delete
+		} else {
+			foreach ( $themes as $theme ) {
+				$delete_result = delete_theme( $theme, esc_url( add_query_arg( array(
+					'verify-delete' => 1,
+					'action' => 'delete-selected',
+					'checked' => $_request->get( 'checked' ),
+					'_wpnonce' => $_request->get( '_wpnonce' )
+				), network_admin_url( 'themes.php' ) ) ) );
+			}
 
-		foreach ( $themes as $theme ) {
-			$delete_result = delete_theme( $theme, esc_url( add_query_arg( array(
-				'verify-delete' => 1,
-				'action' => 'delete-selected',
-				'checked' => $_request->get( 'checked' ),
-				'_wpnonce' => $_request->get( '_wpnonce' )
-			), network_admin_url( 'themes.php' ) ) ) );
+			$paged = $_request->getInt( 'paged', 1 );
+			wp_redirect( add_query_arg( array(
+				'deleted' => count( $themes ),
+				'paged' => $paged,
+				's' => $s
+			), network_admin_url( 'themes.php' ) ) );
+			exit;
 		}
 
-		$paged = $_request->getInt( 'paged', 1 );
-		wp_redirect( add_query_arg( array(
-			'deleted' => count( $themes ),
-			'paged' => $paged,
-			's' => $s
-		), network_admin_url( 'themes.php' ) ) );
-		exit;
-	default:
-		$themes = (array) $_post->get( 'checked', [] );
-		if ( empty( $themes ) ) {
-			wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
+		default:
+			$themes = (array) $_post->get( 'checked', [] );
+			if ( empty( $themes ) ) {
+				wp_safe_redirect( add_query_arg( 'error', 'none', $referer ) );
+				exit;
+			}
+			check_admin_referer( 'bulk-themes' );
+
+			/** This action is documented in wp-admin/network/site-themes.php */
+			$referer = apply_filters( 'handle_network_bulk_actions-' . get_current_screen()->id, $referer, $action, $themes );
+
+			wp_safe_redirect( $referer );
 			exit;
 		}
 		check_admin_referer( 'bulk-themes' );

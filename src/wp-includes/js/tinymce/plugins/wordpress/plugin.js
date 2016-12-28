@@ -131,10 +131,9 @@ tinymce.PluginManager.add( 'wordpress', function( editor ) {
 			}
 
 			// Remove spaces from empty paragraphs.
-			// Avoid backtracking, can freeze the editor. See #35890.
-			// (This is also quite faster than using only one regex.)
+			// Try to avoid a lot of backtracking, can freeze the editor. See #35890 and #38294.
 			event.content = event.content.replace( /<p>([^<>]+)<\/p>/gi, function( tag, text ) {
-				if ( /^(&nbsp;|\s|\u00a0|\ufeff)+$/i.test( text ) ) {
+				if ( text === '&nbsp;' || ! /\S/.test( text ) ) {
 					return '<p><br /></p>';
 				}
 
@@ -549,15 +548,15 @@ tinymce.PluginManager.add( 'wordpress', function( editor ) {
 			});
 		}
 
-		if ( editor.settings.wp_shortcut_labels ) {
+		if ( editor.settings.wp_shortcut_labels && editor.theme.panel ) {
 			var labels = {};
 			var access = 'Shift+Alt+';
 			var meta = 'Ctrl+';
 
-			// For Mac: shift = \u2303, ctrl = \u21E7, cmd = \u2318, alt = \u2325
+			// For Mac: ctrl = \u2303, cmd = \u2318, alt = \u2325
 
 			if ( tinymce.Env.mac ) {
-				access = '\u2303\u2325 ';
+				access = '\u2303\u2325';
 				meta = '\u2318';
 			}
 

@@ -316,6 +316,7 @@ function media_handle_upload( $file_id, $post_id, $post_data = [], $overrides = 
 				/* translators: 1: audio track title, 2: artist name */
 				$content .= sprintf( __( '"%1$s" by %2$s.' ), $title, $meta['artist'] );
 			} else {
+				/* translators: 1: audio track title */
 				$content .= sprintf( __( '"%s".' ), $title );
 			}
 
@@ -335,19 +336,23 @@ function media_handle_upload( $file_id, $post_id, $post_data = [], $overrides = 
 		}
 
 		if ( ! empty( $meta['year'] ) ) {
+			/* translators: Audio file track information. 1: Year of audio track release */
 			$content .= ' ' . sprintf( __( 'Released: %d.' ), $meta['year'] );
 		}
 
 		if ( ! empty( $meta['track_number'] ) ) {
 			$track_number = explode( '/', $meta['track_number'] );
 			if ( isset( $track_number[1] ) ) {
+				/* translators: Audio file track information. 1: Audio track number, 2: Total audio tracks */
 				$content .= ' ' . sprintf( __( 'Track %1$s of %2$s.' ), number_format_i18n( $track_number[0] ), number_format_i18n( $track_number[1] ) );
 			} else {
+				/* translators: Audio file track information. 1: Audio track number */
 				$content .= ' ' . sprintf( __( 'Track %1$s.' ), number_format_i18n( $track_number[0] ) );
 			}
 		}
 
 		if ( ! empty( $meta['genre'] ) ) {
+			/* translators: Audio file genre information. 1: Audio genre name */
 			$content .= ' ' . sprintf( __( 'Genre: %s.' ), $meta['genre'] );
 		}
 
@@ -2900,7 +2905,17 @@ function edit_form_image_editor( $post ) {
 
 		echo wp_video_shortcode( $attr );
 
-	} else {
+	elseif ( isset( $thumb_url[0] ) ):
+
+		?>
+		<div class="wp_attachment_image wp-clearfix" id="media-head-<?php echo $attachment_id; ?>">
+			<p id="thumbnail-head-<?php echo $attachment_id; ?>">
+				<img class="thumbnail" src="<?php echo set_url_scheme( $thumb_url[0] ); ?>" style="max-width:100%" alt="" />
+			</p>
+		</div>
+		<?php
+
+	else:
 
 		/**
 		 * Fires when an attachment type can't be rendered in the edit form.

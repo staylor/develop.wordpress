@@ -15,7 +15,7 @@ require_once( __DIR__ . '/admin.php' );
 if ( ! current_user_can( 'list_users' ) ) {
 	wp_die(
 		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
-		'<p>' . __( 'Sorry, you are not allowed to browse users.' ) . '</p>',
+		'<p>' . __( 'Sorry, you are not allowed to list users.' ) . '</p>',
 		403
 	);
 }

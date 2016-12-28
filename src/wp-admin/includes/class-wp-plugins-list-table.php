@@ -684,8 +684,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			 * The default action links for the Network plugins list table include
 			 * 'Network Activate', 'Network Deactivate', 'Edit', and 'Delete'.
 			 *
-			 * @since 3.1.0 As `{$prefix}_plugin_action_links`
-			 * @since 4.4.0
+			 * @since 3.1.0
 			 *
 			 * @param array  $actions     An array of plugin action links.
 			 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
@@ -702,8 +701,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			 * The dynamic portion of the hook name, $plugin_file, refers to the path
 			 * to the plugin file, relative to the plugins directory.
 			 *
-			 * @since 3.1.0 As `{$prefix}_plugin_action_links_{$plugin_file}`
-			 * @since 4.4.0
+			 * @since 3.1.0
 			 *
 			 * @param array  $actions     An array of plugin action links.
 			 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
@@ -723,8 +721,8 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			 * 'Activate', 'Deactivate', and 'Edit', for a network site, and
 			 * 'Activate', 'Deactivate', 'Edit', and 'Delete' for a single site.
 			 *
-			 * @since 2.5.0 As `{$prefix}_plugin_action_links`
-			 * @since 4.4.0
+			 * @since 2.5.0
+			 * @since 2.6.0 The `$context` parameter was added.
 			 *
 			 * @param array  $actions     An array of plugin action links.
 			 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
@@ -741,8 +739,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			 * The dynamic portion of the hook name, $plugin_file, refers to the path
 			 * to the plugin file, relative to the plugins directory.
 			 *
-			 * @since 2.7.0 As `{$prefix}_plugin_action_links_{$plugin_file}`
-			 * @since 4.4.0
+			 * @since 2.7.0
 			 *
 			 * @param array  $actions     An array of plugin action links.
 			 * @param string $plugin_file Path to the plugin file relative to the plugins directory.

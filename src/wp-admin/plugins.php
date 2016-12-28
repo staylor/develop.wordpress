@@ -365,38 +365,26 @@ if ( $action ) {
 		wp_redirect( self_admin_url( "plugins.php?deleted=$plugins_to_delete&plugin_status=$status&paged=$page&s=$s" ) );
 		exit;
 
-	case 'clear-recent-list':
-		if ( ! is_network_admin() ) {
-			update_option( 'recently_activated', [] );
-		} else {
-			update_site_option( 'recently_activated', [] );
-		}
-		break;
+		case 'clear-recent-list':
+			if ( ! is_network_admin() ) {
+				update_option( 'recently_activated', array() );
+			} else {
+				update_site_option( 'recently_activated', array() );
+			}
+			break;
 
-	default:
-		if ( $_post->get( 'checked' ) ) {
-			check_admin_referer( 'bulk-plugins' );
-			$plugins = (array) $_post->get( 'checked', [] );
-			$sendback = wp_get_referer();
+		default:
+			if ( $_post->get( 'checked' ) ) {
+				check_admin_referer('bulk-plugins');
+				$plugins = (array) $_post->get( 'checked', [] );
+				$sendback = wp_get_referer();
 
-			/**
-			 * Fires when a custom bulk action should be handled.
-			 *
-			 * The sendback link should be modified with success or failure feedback
-			 * from the action to be used to display feedback to the user.
-			 *
-			 * @since 4.7.0
-			 *
-			 * @param string $sendback The redirect URL.
-			 * @param string $action   The action being taken.
-			 * @param array  $plugins  The plugins to take the action on.
-			 */
-			$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $action, $plugins );
-
-			wp_safe_redirect( $sendback );
-			exit;
-		}
-		break;
+				/** This action is documented in wp-admin/edit-comments.php */
+				$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $action, $plugins );
+				wp_safe_redirect( $sendback );
+				exit;
+			}
+			break;
 	}
 
 }

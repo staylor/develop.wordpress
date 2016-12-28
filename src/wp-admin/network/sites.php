@@ -136,30 +136,26 @@ if ( $_get->get( 'action' ) ) {
 				} else {
 					wp_die( __( 'Sorry, you are not allowed to change the current site.' ) );
 				}
-			}
-			if ( ! in_array( $doaction, array( 'delete', 'spam', 'notspam' ), true ) ) {
-				$redirect_to = wp_get_referer();
-				$blogs = (array) $_post->get( 'allblogs' );
-				/**
-				 * Fires when a custom bulk action should be handled.
-				 *
-				 * The redirect link should be modified with success or failure feedback
-				 * from the action to be used to display feedback to the user.
-				 *
-				 * @since 4.7.0
-				 *
-				 * @param string $redirect_to The redirect URL.
-				 * @param string $doaction      The action being taken.
-				 * @param array  $blogs       The blogs to take the action on.
-				 * @param int    $site_id     The current site id.
-				 */
-				$redirect_to = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $redirect_to, $doaction, $blogs, $id );
-				wp_safe_redirect( $redirect_to );
+				if ( ! in_array( $doaction, array( 'delete', 'spam', 'notspam' ), true ) ) {
+					$redirect_to = wp_get_referer();
+					$blogs = (array) $_post->get( 'allblogs' );
+					/** This action is documented in wp-admin/network/site-themes.php */
+					$redirect_to = apply_filters( 'handle_network_bulk_actions-' . get_current_screen()->id, $redirect_to, $doaction, $blogs, $id );
+					wp_safe_redirect( $redirect_to );
+					exit();
+				}
+			} else {
+				$location = network_admin_url( 'sites.php' );
+				$paged = $_request->getInt( 'paged', 0 );
+				if ( $paged ) {
+					$location = add_query_arg( 'paged', $paged, $location );
+				}
+				wp_redirect( $location );
 				exit();
 			}
 		} else {
 			$location = network_admin_url( 'sites.php' );
-			$paged = $_request->get( 'paged', 0 );
+			$paged = $_request->getInt( 'paged', 0 );
 			if ( $paged ) {
 				$location = add_query_arg( 'paged', $paged, $location );
 			}

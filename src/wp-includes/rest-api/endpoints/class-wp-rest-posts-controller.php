@@ -1,11 +1,30 @@
 <?php
+<<<<<<< HEAD
 use WP\Error;
 
+=======
+/**
+ * REST API: WP_REST_Posts_Controller class
+ *
+ * @package WordPress
+ * @subpackage REST_API
+ * @since 4.7.0
+ */
+
+/**
+ * Core class to access posts via the REST API.
+ *
+ * @since 4.7.0
+ *
+ * @see WP_REST_Controller
+ */
+>>>>>>> aaronjorbin/master
 class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 	/**
 	 * Post type.
 	 *
+	 * @since 4.7.0
 	 * @access protected
 	 * @var string
 	 */
@@ -14,6 +33,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	/**
 	 * Instance of a post meta fields object.
 	 *
+	 * @since 4.7.0
 	 * @access protected
 	 * @var WP_REST_Post_Meta_Fields
 	 */
@@ -21,6 +41,9 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 	/**
 	 * Constructor.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param string $post_type Post type.
 	 */
@@ -34,51 +57,59 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Register the routes for the objects of the controller.
+	 * Registers the routes for the objects of the controller.
+	 *
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @see register_rest_route()
 	 */
 	public function register_routes() {
 
 		register_rest_route( $this->namespace, '/' . $this->rest_base, array(
 			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_items' ),
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_items' ),
 				'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				'args'            => $this->get_collection_params(),
+				'args'                => $this->get_collection_params(),
 			),
 			array(
-				'methods'         => WP_REST_Server::CREATABLE,
-				'callback'        => array( $this, 'create_item' ),
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'create_item' ),
 				'permission_callback' => array( $this, 'create_item_permissions_check' ),
-				'args'            => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
+				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
+
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', array(
 			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_item' ),
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_item' ),
 				'permission_callback' => array( $this, 'get_item_permissions_check' ),
-				'args'            => array(
+				'args'                => array(
 					'context'  => $this->get_context_param( array( 'default' => 'view' ) ),
 					'password' => array(
 						'description' => __( 'The password for the post if it is password protected.' ),
+						'type'        => 'string',
 					),
 				),
 			),
 			array(
-				'methods'         => WP_REST_Server::EDITABLE,
-				'callback'        => array( $this, 'update_item' ),
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'update_item' ),
 				'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				'args'            => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 			array(
-				'methods'  => WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'delete_item' ),
+				'methods'             => WP_REST_Server::DELETABLE,
+				'callback'            => array( $this, 'delete_item' ),
 				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
-				'args'     => array(
-					'force'    => array(
-						'default'      => false,
-						'description'  => __( 'Whether to bypass trash and force deletion.' ),
+				'args'                => array(
+					'force' => array(
+						'type'        => 'boolean',
+						'default'     => false,
+						'description' => __( 'Whether to bypass trash and force deletion.' ),
 					),
 				),
 			),
@@ -87,26 +118,41 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if a given request has access to read /posts.
+	 * Checks if a given request has access to read posts.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
+<<<<<<< HEAD
 	 * @return Error|boolean
+=======
+	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+>>>>>>> aaronjorbin/master
 	 */
 	public function get_items_permissions_check( $request ) {
 
 		$post_type = get_post_type_object( $this->post_type );
 
 		if ( 'edit' === $request['context'] && ! current_user_can( $post_type->cap->edit_posts ) ) {
+<<<<<<< HEAD
 			return new Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit these posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+=======
+			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+>>>>>>> aaronjorbin/master
 		}
 
 		return true;
 	}
 
 	/**
-	 * Get a collection of posts.
+	 * Retrieves a collection of posts.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+<<<<<<< HEAD
 	 * @return Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
@@ -114,16 +160,32 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		// Make sure a search string is set in case the orderby is set to 'relevance'.
 		if ( ! empty( $request['orderby'] ) && 'relevance' === $request['orderby'] && empty( $request['search'] ) && empty( $request['filter']['s'] ) ) {
 			return new Error( 'rest_no_search_term_defined', __( 'You need to define a search term to order by relevance.' ), array( 'status' => 400 ) );
+=======
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_items( $request ) {
+
+		// Ensure a search string is set in case the orderby is set to 'relevance'.
+		if ( ! empty( $request['orderby'] ) && 'relevance' === $request['orderby'] && empty( $request['search'] ) ) {
+			return new WP_Error( 'rest_no_search_term_defined', __( 'You need to define a search term to order by relevance.' ), array( 'status' => 400 ) );
+>>>>>>> aaronjorbin/master
+		}
+
+		// Ensure an include parameter is set in case the orderby is set to 'include'.
+		if ( ! empty( $request['orderby'] ) && 'include' === $request['orderby'] && empty( $request['include'] ) ) {
+			return new WP_Error( 'rest_orderby_include_missing_include', sprintf( __( 'Missing parameter(s): %s' ), 'include' ), array( 'status' => 400 ) );
 		}
 
 		// Retrieve the list of registered collection query parameters.
 		$registered = $this->get_collection_params();
 		$args = [];
 
-		// This array defines mappings between public API query parameters whose
-		// values are accepted as-passed, and their internal WP_Query parameter
-		// name equivalents (some are the same). Only values which are also
-		// present in $registered will be set.
+		/*
+		 * This array defines mappings between public API query parameters whose
+		 * values are accepted as-passed, and their internal WP_Query parameter
+		 * name equivalents (some are the same). Only values which are also
+		 * present in $registered will be set.
+		 */
 		$parameter_mappings = array(
 			'author'         => 'author__in',
 			'author_exclude' => 'author__not_in',
@@ -137,12 +199,14 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			'parent'         => 'post_parent__in',
 			'parent_exclude' => 'post_parent__not_in',
 			'search'         => 's',
-			'slug'           => 'name',
+			'slug'           => 'post_name__in',
 			'status'         => 'post_status',
 		);
 
-		// For each known parameter which is both registered and present in the request,
-		// set the parameter's value on the query $args.
+		/*
+		 * For each known parameter which is both registered and present in the request,
+		 * set the parameter's value on the query $args.
+		 */
 		foreach ( $parameter_mappings as $api_param => $wp_param ) {
 			if ( isset( $registered[ $api_param ], $request[ $api_param ] ) ) {
 				$args[ $wp_param ] = $request[ $api_param ];
@@ -150,8 +214,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		// Check for & assign any parameters which require special handling or setting.
+<<<<<<< HEAD
 
 		$args['date_query'] = [];
+=======
+		$args['date_query'] = array();
+
+>>>>>>> aaronjorbin/master
 		// Set before into date query. Date query must be specified as an array of an array.
 		if ( isset( $registered['before'], $request['before'] ) ) {
 			$args['date_query'][0]['before'] = $request['before'];
@@ -162,11 +231,6 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$args['date_query'][0]['after'] = $request['after'];
 		}
 
-		if ( isset( $registered['filter'] ) && is_array( $request['filter'] ) ) {
-			$args = array_merge( $args, $request['filter'] );
-			unset( $args['filter'] );
-		}
-
 		// Ensure our per_page parameter overrides any provided posts_per_page filter.
 		if ( isset( $registered['per_page'] ) ) {
 			$args['posts_per_page'] = $request['per_page'];
@@ -175,21 +239,33 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( isset( $registered['sticky'], $request['sticky'] ) ) {
 			$sticky_posts = get_option( 'sticky_posts', [] );
 			if ( $sticky_posts && $request['sticky'] ) {
-				// As post__in will be used to only get sticky posts,
-				// we have to support the case where post__in was already
-				// specified.
+				/*
+				 * As post__in will be used to only get sticky posts,
+				 * we have to support the case where post__in was already
+				 * specified.
+				 */
 				$args['post__in'] = $args['post__in'] ? array_intersect( $sticky_posts, $args['post__in'] ) : $sticky_posts;
 
+<<<<<<< HEAD
 				// If we intersected, but there are no post ids in common,
 				// WP_Query won't return "no posts" for `post__in = []`
 				// so we have to fake it a bit.
+=======
+				/*
+				 * If we intersected, but there are no post ids in common,
+				 * WP_Query won't return "no posts" for post__in = array()
+				 * so we have to fake it a bit.
+				 */
+>>>>>>> aaronjorbin/master
 				if ( ! $args['post__in'] ) {
 					$args['post__in'] = array( -1 );
 				}
 			} elseif ( $sticky_posts ) {
-				// As post___not_in will be used to only get posts that
-				// are not sticky, we have to support the case where post__not_in
-				// was already specified.
+				/*
+				 * As post___not_in will be used to only get posts that
+				 * are not sticky, we have to support the case where post__not_in
+				 * was already specified.
+				 */
 				$args['post__not_in'] = array_merge( $args['post__not_in'], $sticky_posts );
 			}
 		}
@@ -198,12 +274,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$args['post_type'] = $this->post_type;
 
 		/**
-		 * Filter the query arguments for a request.
+		 * Filters the query arguments for a request.
 		 *
-		 * Enables adding extra arguments or setting defaults for a post
-		 * collection request.
+		 * Enables adding extra arguments or setting defaults for a post collection request.
 		 *
-		 * @see https://developer.wordpress.org/reference/classes/wp_query/
+		 * @since 4.7.0
+		 *
+		 * @link https://developer.wordpress.org/reference/classes/wp_query/
 		 *
 		 * @param array           $args    Key value array of query var to query value.
 		 * @param WP_REST_Request $request The request used.
@@ -212,6 +289,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$query_args = $this->prepare_items_query( $args, $request );
 
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
+
 		foreach ( $taxonomies as $taxonomy ) {
 			$base = ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
 			$tax_exclude = $base . '_exclude';
@@ -236,7 +314,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		$posts_query = new WP_Query();
+		$posts_query  = new WP_Query();
 		$query_result = $posts_query->query( $query_args );
 
 		// Allow access to all password protected posts if the context is edit.
@@ -244,13 +322,18 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			add_filter( 'post_password_required', '__return_false' );
 		}
 
+<<<<<<< HEAD
 		$posts = [];
+=======
+		$posts = array();
+
+>>>>>>> aaronjorbin/master
 		foreach ( $query_result as $post ) {
 			if ( ! $this->check_read_permission( $post ) ) {
 				continue;
 			}
 
-			$data = $this->prepare_item_for_response( $post, $request );
+			$data    = $this->prepare_item_for_response( $post, $request );
 			$posts[] = $this->prepare_response_for_collection( $data );
 		}
 
@@ -265,35 +348,35 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( $total_posts < 1 ) {
 			// Out-of-bounds, run the query again without LIMIT for total count.
 			unset( $query_args['paged'] );
+
 			$count_query = new WP_Query();
 			$count_query->query( $query_args );
 			$total_posts = $count_query->found_posts;
 		}
 
-		$max_pages = ceil( $total_posts / (int) $query_args['posts_per_page'] );
+		$max_pages = ceil( $total_posts / (int) $posts_query->query_vars['posts_per_page'] );
+		$response  = rest_ensure_response( $posts );
 
-		$response = rest_ensure_response( $posts );
 		$response->header( 'X-WP-Total', (int) $total_posts );
 		$response->header( 'X-WP-TotalPages', (int) $max_pages );
 
 		$request_params = $request->get_query_params();
-		if ( ! empty( $request_params['filter'] ) ) {
-			// Normalize the pagination params.
-			unset( $request_params['filter']['posts_per_page'], $request_params['filter']['paged'] );
-		}
 		$base = add_query_arg( $request_params, rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ) );
 
 		if ( $page > 1 ) {
 			$prev_page = $page - 1;
+
 			if ( $prev_page > $max_pages ) {
 				$prev_page = $max_pages;
 			}
+
 			$prev_link = add_query_arg( 'page', $prev_page, $base );
 			$response->link_header( 'prev', $prev_link );
 		}
 		if ( $max_pages > $page ) {
 			$next_page = $page + 1;
 			$next_link = add_query_arg( 'page', $next_page, $base );
+
 			$response->link_header( 'next', $next_link );
 		}
 
@@ -301,14 +384,22 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if a given request has access to read a post.
+	 * Checks if a given request has access to read a post.
 	 *
+<<<<<<< HEAD
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return Error|boolean
+=======
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+>>>>>>> aaronjorbin/master
 	 */
 	public function get_item_permissions_check( $request ) {
 
-		$post = $this->get_post( (int) $request['id'] );
+		$post = get_post( (int) $request['id'] );
 
 		if ( 'edit' === $request['context'] && $post && ! $this->check_update_permission( $post ) ) {
 			return new Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit this post.' ), array( 'status' => rest_authorization_required_code() ) );
@@ -334,16 +425,19 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Can the user access password-protected content?
+	 * Checks if the user can access password-protected content.
 	 *
 	 * This method determines whether we need to override the regular password
 	 * check in core with a filter.
 	 *
+	 * @since 4.7.0
+	 * @access public
+	 *
 	 * @param WP_Post         $post    Post to check against.
 	 * @param WP_REST_Request $request Request data to check.
-	 * @return bool True if the user can access password-protected content, false otherwise.
+	 * @return bool True if the user can access password-protected content, otherwise false.
 	 */
-	protected function can_access_password_content( $post, $request ) {
+	public function can_access_password_content( $post, $request ) {
 		if ( empty( $post->post_password ) ) {
 			// No filter required.
 			return false;
@@ -364,20 +458,31 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get a single post.
+	 * Retrieves a single post.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+<<<<<<< HEAD
 	 * @return Error|WP_REST_Response
+=======
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+>>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
-		$id = (int) $request['id'];
-		$post = $this->get_post( $id );
+		$id   = (int) $request['id'];
+		$post = get_post( $id );
 
 		if ( empty( $id ) || empty( $post->ID ) || $this->post_type !== $post->post_type ) {
+<<<<<<< HEAD
 			return new Error( 'rest_post_invalid_id', __( 'Invalid post id.' ), array( 'status' => 404 ) );
+=======
+			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.' ), array( 'status' => 404 ) );
+>>>>>>> aaronjorbin/master
 		}
 
-		$data = $this->prepare_item_for_response( $post, $request );
+		$data     = $this->prepare_item_for_response( $post, $request );
 		$response = rest_ensure_response( $data );
 
 		if ( is_post_type_viewable( get_post_type_object( $post->post_type ) ) ) {
@@ -388,16 +493,25 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if a given request has access to create a post.
+	 * Checks if a given request has access to create a post.
 	 *
+<<<<<<< HEAD
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return Error|boolean
+=======
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
+>>>>>>> aaronjorbin/master
 	 */
 	public function create_item_permissions_check( $request ) {
 
 		$post_type = get_post_type_object( $this->post_type );
 
 		if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
+<<<<<<< HEAD
 			return new Error( 'rest_cannot_edit_others', __( 'You are not allowed to create posts as this user.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
@@ -407,28 +521,53 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( ! current_user_can( $post_type->cap->create_posts ) ) {
 			return new Error( 'rest_cannot_create', __( 'Sorry, you are not allowed to create new posts.' ), array( 'status' => rest_authorization_required_code() ) );
+=======
+			return new WP_Error( 'rest_cannot_edit_others', __( 'Sorry, you are not allowed to create posts as this user.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
+
+		if ( ! empty( $request['sticky'] ) && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
+			return new WP_Error( 'rest_cannot_assign_sticky', __( 'Sorry, you are not allowed to make posts sticky.' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		if ( ! current_user_can( $post_type->cap->create_posts ) ) {
+			return new WP_Error( 'rest_cannot_create', __( 'Sorry, you are not allowed to create posts as this user.' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		if ( ! $this->check_assign_terms_permission( $request ) ) {
+			return new WP_Error( 'rest_cannot_assign_term', __( 'Sorry, you are not allowed to assign the provided terms.' ), array( 'status' => rest_authorization_required_code() ) );
+>>>>>>> aaronjorbin/master
+		}
+
 		return true;
 	}
 
 	/**
-	 * Create a single post.
+	 * Creates a single post.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+<<<<<<< HEAD
 	 * @return Error|WP_REST_Response
+=======
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+>>>>>>> aaronjorbin/master
 	 */
 	public function create_item( $request ) {
 		if ( ! empty( $request['id'] ) ) {
 			return new Error( 'rest_post_exists', __( 'Cannot create existing post.' ), array( 'status' => 400 ) );
 		}
 
-		$post = $this->prepare_item_for_database( $request );
-		if ( is_wp_error( $post ) ) {
-			return $post;
+		$prepared_post = $this->prepare_item_for_database( $request );
+
+		if ( is_wp_error( $prepared_post ) ) {
+			return $prepared_post;
 		}
 
-		$post->post_type = $this->post_type;
-		$post_id = wp_insert_post( $post, true );
+		$prepared_post->post_type = $this->post_type;
+
+		$post_id = wp_insert_post( wp_slash( (array) $prepared_post ), true );
 
 		if ( is_wp_error( $post_id ) ) {
 
@@ -437,9 +576,24 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			} else {
 				$post_id->add_data( array( 'status' => 400 ) );
 			}
+
 			return $post_id;
 		}
-		$post->ID = $post_id;
+
+		$post = get_post( $post_id );
+
+		/**
+		 * Fires after a single post is created or updated via the REST API.
+		 *
+		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 *
+		 * @since 4.7.0
+		 *
+		 * @param WP_Post         $post     Inserted or updated post object.
+		 * @param WP_REST_Request $request  Request object.
+		 * @param bool            $creating True when creating a post, false when updating.
+		 */
+		do_action( "rest_insert_{$this->post_type}", $post, $request, true );
 
 		$schema = $this->get_item_schema();
 
@@ -452,7 +606,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		if ( ! empty( $schema['properties']['featured_media'] ) && isset( $request['featured_media'] ) ) {
-			$this->handle_featured_media( $request['featured_media'], $post->ID );
+			$this->handle_featured_media( $request['featured_media'], $post_id );
 		}
 
 		if ( ! empty( $schema['properties']['format'] ) && ! empty( $request['format'] ) ) {
@@ -460,38 +614,35 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		if ( ! empty( $schema['properties']['template'] ) && isset( $request['template'] ) ) {
-			$this->handle_template( $request['template'], $post->ID );
+			$this->handle_template( $request['template'], $post_id );
 		}
-		$terms_update = $this->handle_terms( $post->ID, $request );
+
+		$terms_update = $this->handle_terms( $post_id, $request );
+
 		if ( is_wp_error( $terms_update ) ) {
 			return $terms_update;
 		}
 
-		$post = $this->get_post( $post_id );
 		if ( ! empty( $schema['properties']['meta'] ) && isset( $request['meta'] ) ) {
-			$meta_update = $this->meta->update_value( $request['meta'], (int) $request['id'] );
+			$meta_update = $this->meta->update_value( $request['meta'], $post_id );
+
 			if ( is_wp_error( $meta_update ) ) {
 				return $meta_update;
 			}
 		}
 
+		$post = get_post( $post_id );
 		$fields_update = $this->update_additional_fields_for_object( $post, $request );
+
 		if ( is_wp_error( $fields_update ) ) {
 			return $fields_update;
 		}
 
-		/**
-		 * Fires after a single post is created or updated via the REST API.
-		 *
-		 * @param object          $post      Inserted Post object (not a WP_Post object).
-		 * @param WP_REST_Request $request   Request object.
-		 * @param boolean         $creating  True when creating post, false when updating.
-		 */
-		do_action( "rest_insert_{$this->post_type}", $post, $request, true );
-
 		$request->set_param( 'context', 'edit' );
+
 		$response = $this->prepare_item_for_response( $post, $request );
 		$response = rest_ensure_response( $response );
+
 		$response->set_status( 201 );
 		$response->header( 'Location', rest_url( sprintf( '%s/%s/%d', $this->namespace, $this->rest_base, $post_id ) ) );
 
@@ -499,17 +650,26 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if a given request has access to update a post.
+	 * Checks if a given request has access to update a post.
 	 *
+<<<<<<< HEAD
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return Error|boolean
+=======
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
+>>>>>>> aaronjorbin/master
 	 */
 	public function update_item_permissions_check( $request ) {
 
-		$post = $this->get_post( $request['id'] );
+		$post = get_post( $request['id'] );
 		$post_type = get_post_type_object( $this->post_type );
 
 		if ( $post && ! $this->check_update_permission( $post ) ) {
+<<<<<<< HEAD
 			return new Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to update this post.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
@@ -519,31 +679,60 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( ! empty( $request['sticky'] ) && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
 			return new Error( 'rest_cannot_assign_sticky', __( 'You do not have permission to make posts sticky.' ), array( 'status' => rest_authorization_required_code() ) );
+=======
+			return new WP_Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to edit this post.' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
+			return new WP_Error( 'rest_cannot_edit_others', __( 'Sorry, you are not allowed to update posts as this user.' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		if ( ! empty( $request['sticky'] ) && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
+			return new WP_Error( 'rest_cannot_assign_sticky', __( 'Sorry, you are not allowed to make posts sticky.' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		if ( ! $this->check_assign_terms_permission( $request ) ) {
+			return new WP_Error( 'rest_cannot_assign_term', __( 'Sorry, you are not allowed to assign the provided terms.' ), array( 'status' => rest_authorization_required_code() ) );
+>>>>>>> aaronjorbin/master
 		}
 
 		return true;
 	}
 
 	/**
-	 * Update a single post.
+	 * Updates a single post.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+<<<<<<< HEAD
 	 * @return Error|WP_REST_Response
+=======
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+>>>>>>> aaronjorbin/master
 	 */
 	public function update_item( $request ) {
-		$id = (int) $request['id'];
-		$post = $this->get_post( $id );
+		$id   = (int) $request['id'];
+		$post = get_post( $id );
 
 		if ( empty( $id ) || empty( $post->ID ) || $this->post_type !== $post->post_type ) {
+<<<<<<< HEAD
 			return new Error( 'rest_post_invalid_id', __( 'Post id is invalid.' ), array( 'status' => 404 ) );
+=======
+			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.' ), array( 'status' => 404 ) );
+>>>>>>> aaronjorbin/master
 		}
 
 		$post = $this->prepare_item_for_database( $request );
+
 		if ( is_wp_error( $post ) ) {
 			return $post;
 		}
+
 		// convert the post object to an array, otherwise wp_update_post will expect non-escaped input.
-		$post_id = wp_update_post( (array) $post, true );
+		$post_id = wp_update_post( wp_slash( (array) $post ), true );
+
 		if ( is_wp_error( $post_id ) ) {
 			if ( 'db_update_error' === $post_id->get_error_code() ) {
 				$post_id->add_data( array( 'status' => 500 ) );
@@ -552,6 +741,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 			return $post_id;
 		}
+
+		$post = get_post( $post_id );
+
+		/* This action is documented in lib/endpoints/class-wp-rest-controller.php */
+		do_action( "rest_insert_{$this->post_type}", $post, $request, false );
 
 		$schema = $this->get_item_schema();
 
@@ -576,76 +770,105 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		$terms_update = $this->handle_terms( $post->ID, $request );
+
 		if ( is_wp_error( $terms_update ) ) {
 			return $terms_update;
 		}
 
-		$post = $this->get_post( $post_id );
-
 		if ( ! empty( $schema['properties']['meta'] ) && isset( $request['meta'] ) ) {
 			$meta_update = $this->meta->update_value( $request['meta'], $post->ID );
+
 			if ( is_wp_error( $meta_update ) ) {
 				return $meta_update;
 			}
 		}
 
+		$post = get_post( $post_id );
 		$fields_update = $this->update_additional_fields_for_object( $post, $request );
+
 		if ( is_wp_error( $fields_update ) ) {
 			return $fields_update;
 		}
 
-		/* This action is documented in lib/endpoints/class-wp-rest-controller.php */
-		do_action( "rest_insert_{$this->post_type}", $post, $request, false );
-
 		$request->set_param( 'context', 'edit' );
+
 		$response = $this->prepare_item_for_response( $post, $request );
+
 		return rest_ensure_response( $response );
 	}
 
 	/**
-	 * Check if a given request has access to delete a post.
+	 * Checks if a given request has access to delete a post.
 	 *
+<<<<<<< HEAD
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return bool|Error
+=======
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
+>>>>>>> aaronjorbin/master
 	 */
 	public function delete_item_permissions_check( $request ) {
 
-		$post = $this->get_post( $request['id'] );
+		$post = get_post( $request['id'] );
 
 		if ( $post && ! $this->check_delete_permission( $post ) ) {
+<<<<<<< HEAD
 			return new Error( 'rest_cannot_delete', __( 'Sorry, you are not allowed to delete posts.' ), array( 'status' => rest_authorization_required_code() ) );
+=======
+			return new WP_Error( 'rest_cannot_delete', __( 'Sorry, you are not allowed to delete this post.' ), array( 'status' => rest_authorization_required_code() ) );
+>>>>>>> aaronjorbin/master
 		}
 
 		return true;
 	}
 
 	/**
-	 * Delete a single post.
+	 * Deletes a single post.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+<<<<<<< HEAD
 	 * @return WP_REST_Response|Error
+=======
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+>>>>>>> aaronjorbin/master
 	 */
 	public function delete_item( $request ) {
-		$id = (int) $request['id'];
+		$id    = (int) $request['id'];
 		$force = (bool) $request['force'];
 
-		$post = $this->get_post( $id );
+		$post = get_post( $id );
 
 		if ( empty( $id ) || empty( $post->ID ) || $this->post_type !== $post->post_type ) {
+<<<<<<< HEAD
 			return new Error( 'rest_post_invalid_id', __( 'Invalid post id.' ), array( 'status' => 404 ) );
+=======
+			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.' ), array( 'status' => 404 ) );
+>>>>>>> aaronjorbin/master
 		}
 
 		$supports_trash = ( EMPTY_TRASH_DAYS > 0 );
+
 		if ( 'attachment' === $post->post_type ) {
 			$supports_trash = $supports_trash && MEDIA_TRASH;
 		}
 
 		/**
-		 * Filter whether a post is trashable.
+		 * Filters whether a post is trashable.
 		 *
-		 * Return false to disable trash support for the post.
+		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
 		 *
-		 * @param boolean $supports_trash Whether the post type support trashing.
+		 * Pass false to disable trash support for the post.
+		 *
+		 * @since 4.7.0
+		 *
+		 * @param bool    $supports_trash Whether the post type support trashing.
 		 * @param WP_Post $post           The Post object being considered for trashing support.
 		 */
 		$supports_trash = apply_filters( "rest_{$this->post_type}_trashable", $supports_trash, $post );
@@ -655,15 +878,22 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		$request->set_param( 'context', 'edit' );
-		$response = $this->prepare_item_for_response( $post, $request );
+
 
 		// If we're forcing, then delete permanently.
 		if ( $force ) {
+			$previous = $this->prepare_item_for_response( $post, $request );
 			$result = wp_delete_post( $id, true );
+			$response = new WP_REST_Response();
+			$response->set_data( array( 'deleted' => true, 'previous' => $previous->get_data() ) );
 		} else {
 			// If we don't support trashing for this type, error out.
 			if ( ! $supports_trash ) {
+<<<<<<< HEAD
 				return new Error( 'rest_trash_not_supported', __( 'The post does not support trashing.' ), array( 'status' => 501 ) );
+=======
+				return new WP_Error( 'rest_trash_not_supported', __( 'The post does not support trashing. Set force=true to delete.' ), array( 'status' => 501 ) );
+>>>>>>> aaronjorbin/master
 			}
 
 			// Otherwise, only trash if we haven't already.
@@ -674,6 +904,8 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			// (Note that internally this falls through to `wp_delete_post` if
 			// the trash is disabled.)
 			$result = wp_trash_post( $id );
+			$post = get_post( $id );
+			$response = $this->prepare_item_for_response( $post, $request );
 		}
 
 		if ( ! $result ) {
@@ -681,7 +913,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		/**
-		 * Fires after a single post is deleted or trashed via the REST API.
+		 * Fires immediately after a single post is deleted or trashed via the REST API.
+		 *
+		 * They dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 *
+		 * @since 4.7.0
 		 *
 		 * @param object           $post     The deleted or trashed post.
 		 * @param WP_REST_Response $response The response data.
@@ -693,13 +929,17 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Determine the allowed query_vars for a get_items() response and
-	 * prepare for WP_Query.
+	 * Determines the allowed query_vars for a get_items() response and prepares
+	 * them for WP_Query.
 	 *
-	 * @param array           $prepared_args Prepared WP_Query arguments.
-	 * @param WP_REST_Request $request       Full details about the request.
-	 * @return array          $query_args
+	 * @since 4.7.0
+	 * @access protected
+	 *
+	 * @param array           $prepared_args Optional. Prepared WP_Query arguments. Default empty array.
+	 * @param WP_REST_Request $request       Optional. Full details about the request.
+	 * @return array Items query arguments.
 	 */
+<<<<<<< HEAD
 	protected function prepare_items_query( $prepared_args = [], $request = null ) {
 
 		$valid_vars = array_flip( $this->get_allowed_query_vars( $request ) );
@@ -715,20 +955,46 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				 */
 				$query_args[ $var ] = apply_filters( "rest_query_var-{$var}", $prepared_args[ $var ] );
 			}
+=======
+	protected function prepare_items_query( $prepared_args = array(), $request = null ) {
+		$query_args = array();
+
+		foreach ( $prepared_args as $key => $value ) {
+			/**
+			 * Filters the query_vars used in get_items() for the constructed query.
+			 *
+			 * The dynamic portion of the hook name, `$key`, refers to the query_var key.
+			 *
+			 * @since 4.7.0
+			 *
+			 * @param string $value The query_var value.
+			 */
+			$query_args[ $key ] = apply_filters( "rest_query_var-{$key}", $value );
+>>>>>>> aaronjorbin/master
 		}
 
 		if ( 'post' !== $this->post_type || ! isset( $query_args['ignore_sticky_posts'] ) ) {
 			$query_args['ignore_sticky_posts'] = true;
 		}
 
-		if ( 'include' === $query_args['orderby'] ) {
-			$query_args['orderby'] = 'post__in';
+		// Map to proper WP_Query orderby param.
+		if ( isset( $query_args['orderby'] ) && isset( $request['orderby'] ) ) {
+			$orderby_mappings = array(
+				'id'      => 'ID',
+				'include' => 'post__in',
+				'slug'    => 'post_name',
+			);
+
+			if ( isset( $orderby_mappings[ $request['orderby'] ] ) ) {
+				$query_args['orderby'] = $orderby_mappings[ $request['orderby'] ];
+			}
 		}
 
 		return $query_args;
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Get all the WP Query vars that are allowed for the API request.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -800,10 +1066,16 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 	/**
 	 * Check the post_date_gmt or modified_gmt and prepare any post or
+=======
+	 * Checks the post_date_gmt or modified_gmt and prepare any post or
+>>>>>>> aaronjorbin/master
 	 * modified date for single post output.
 	 *
+	 * @since 4.7.0
+	 * @access protected
+	 *
 	 * @param string      $date_gmt GMT publication time.
-	 * @param string|null $date     Optional, default is null. Local publication time.
+	 * @param string|null $date     Optional. Local publication time. Default null.
 	 * @return string|null ISO8601/RFC3339 formatted datetime.
 	 */
 	protected function prepare_date_response( $date_gmt, $date = null ) {
@@ -822,15 +1094,22 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepare a single post for create or update.
+	 * Prepares a single post for create or update.
+	 *
+	 * @since 4.7.0
+	 * @access protected
 	 *
 	 * @param WP_REST_Request $request Request object.
+<<<<<<< HEAD
 	 * @return Error|stdClass $prepared_post Post object.
+=======
+	 * @return stdClass|WP_Error Post object or WP_Error.
+>>>>>>> aaronjorbin/master
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$prepared_post = new stdClass;
 
-		// ID.
+		// Post ID.
 		if ( isset( $request['id'] ) ) {
 			$prepared_post->ID = absint( $request['id'] );
 		}
@@ -840,27 +1119,27 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		// Post title.
 		if ( ! empty( $schema['properties']['title'] ) && isset( $request['title'] ) ) {
 			if ( is_string( $request['title'] ) ) {
-				$prepared_post->post_title = wp_filter_post_kses( $request['title'] );
+				$prepared_post->post_title = $request['title'];
 			} elseif ( ! empty( $request['title']['raw'] ) ) {
-				$prepared_post->post_title = wp_filter_post_kses( $request['title']['raw'] );
+				$prepared_post->post_title = $request['title']['raw'];
 			}
 		}
 
 		// Post content.
 		if ( ! empty( $schema['properties']['content'] ) && isset( $request['content'] ) ) {
 			if ( is_string( $request['content'] ) ) {
-				$prepared_post->post_content = wp_filter_post_kses( $request['content'] );
+				$prepared_post->post_content = $request['content'];
 			} elseif ( isset( $request['content']['raw'] ) ) {
-				$prepared_post->post_content = wp_filter_post_kses( $request['content']['raw'] );
+				$prepared_post->post_content = $request['content']['raw'];
 			}
 		}
 
 		// Post excerpt.
 		if ( ! empty( $schema['properties']['excerpt'] ) && isset( $request['excerpt'] ) ) {
 			if ( is_string( $request['excerpt'] ) ) {
-				$prepared_post->post_excerpt = wp_filter_post_kses( $request['excerpt'] );
+				$prepared_post->post_excerpt = $request['excerpt'];
 			} elseif ( isset( $request['excerpt']['raw'] ) ) {
-				$prepared_post->post_excerpt = wp_filter_post_kses( $request['excerpt']['raw'] );
+				$prepared_post->post_excerpt = $request['excerpt']['raw'];
 			}
 		}
 
@@ -872,11 +1151,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			// Updating a post, use previous type.
 			$prepared_post->post_type = get_post_type( $request['id'] );
 		}
+
 		$post_type = get_post_type_object( $prepared_post->post_type );
 
 		// Post status.
 		if ( ! empty( $schema['properties']['status'] ) && isset( $request['status'] ) ) {
 			$status = $this->handle_status_param( $request['status'], $post_type );
+
 			if ( is_wp_error( $status ) ) {
 				return $status;
 			}
@@ -898,6 +1179,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				list( $prepared_post->post_date, $prepared_post->post_date_gmt ) = $date_data;
 			}
 		}
+
 		// Post slug.
 		if ( ! empty( $schema['properties']['slug'] ) && isset( $request['slug'] ) ) {
 			$prepared_post->post_name = $request['slug'];
@@ -906,25 +1188,43 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		// Author.
 		if ( ! empty( $schema['properties']['author'] ) && ! empty( $request['author'] ) ) {
 			$post_author = (int) $request['author'];
+
 			if ( get_current_user_id() !== $post_author ) {
 				$user_obj = get_userdata( $post_author );
+
 				if ( ! $user_obj ) {
+<<<<<<< HEAD
 					return new Error( 'rest_invalid_author', __( 'Invalid author id.' ), array( 'status' => 400 ) );
+=======
+					return new WP_Error( 'rest_invalid_author', __( 'Invalid author ID.' ), array( 'status' => 400 ) );
+>>>>>>> aaronjorbin/master
 				}
 			}
+
 			$prepared_post->post_author = $post_author;
 		}
 
 		// Post password.
-		if ( ! empty( $schema['properties']['password'] ) && isset( $request['password'] ) && '' !== $request['password'] ) {
+		if ( ! empty( $schema['properties']['password'] ) && isset( $request['password'] ) ) {
 			$prepared_post->post_password = $request['password'];
 
+<<<<<<< HEAD
 			if ( ! empty( $schema['properties']['sticky'] ) && ! empty( $request['sticky'] ) ) {
 				return new Error( 'rest_invalid_field', __( 'A post can not be sticky and have a password.' ), array( 'status' => 400 ) );
 			}
 
 			if ( ! empty( $prepared_post->ID ) && is_sticky( $prepared_post->ID ) ) {
 				return new Error( 'rest_invalid_field', __( 'A sticky post can not be password protected.' ), array( 'status' => 400 ) );
+=======
+			if ( '' !== $request['password'] ) {
+				if ( ! empty( $schema['properties']['sticky'] ) && ! empty( $request['sticky'] ) ) {
+					return new WP_Error( 'rest_invalid_field', __( 'A post can not be sticky and have a password.' ), array( 'status' => 400 ) );
+				}
+
+				if ( ! empty( $prepared_post->ID ) && is_sticky( $prepared_post->ID ) ) {
+					return new WP_Error( 'rest_invalid_field', __( 'A sticky post can not be password protected.' ), array( 'status' => 400 ) );
+				}
+>>>>>>> aaronjorbin/master
 			}
 		}
 
@@ -935,13 +1235,23 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		// Parent.
+<<<<<<< HEAD
 		if ( ! empty( $schema['properties']['parent'] ) && ! empty( $request['parent'] ) ) {
 			$parent = $this->get_post( (int) $request['parent'] );
 			if ( empty( $parent ) ) {
 				return new Error( 'rest_post_invalid_id', __( 'Invalid post parent id.' ), array( 'status' => 400 ) );
+=======
+		if ( ! empty( $schema['properties']['parent'] ) && isset( $request['parent'] ) ) {
+			if ( 0 === (int) $request['parent'] ) {
+				$prepared_post->post_parent = 0;
+			} else {
+				$parent = get_post( (int) $request['parent'] );
+				if ( empty( $parent ) ) {
+					return new WP_Error( 'rest_post_invalid_id', __( 'Invalid post parent ID.' ), array( 'status' => 400 ) );
+				}
+				$prepared_post->post_parent = (int) $parent->ID;
+>>>>>>> aaronjorbin/master
 			}
-
-			$prepared_post->post_parent = (int) $parent->ID;
 		}
 
 		// Menu order.
@@ -958,11 +1268,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $schema['properties']['ping_status'] ) && ! empty( $request['ping_status'] ) ) {
 			$prepared_post->ping_status = $request['ping_status'];
 		}
+
 		/**
-		 * Filter a post before it is inserted via the REST API.
+		 * Filters a post before it is inserted via the REST API.
 		 *
-		 * The dynamic portion of the hook name, $this->post_type, refers to post_type of the post being
-		 * prepared for insertion.
+		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 *
+		 * @since 4.7.0
 		 *
 		 * @param stdClass        $prepared_post An object representing a single post prepared
 		 *                                       for inserting or updating the database.
@@ -973,11 +1285,18 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Determine validity and normalize provided status param.
+	 * Determines validity and normalizes the given status parameter.
+	 *
+	 * @since 4.7.0
+	 * @access protected
 	 *
 	 * @param string $post_status Post status.
 	 * @param object $post_type   Post type.
+<<<<<<< HEAD
 	 * @return Error|string $post_status
+=======
+	 * @return string|WP_Error Post status or WP_Error if lacking the proper permission.
+>>>>>>> aaronjorbin/master
 	 */
 	protected function handle_status_param( $post_status, $post_type ) {
 
@@ -1007,11 +1326,18 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Determine the featured media based on a request param.
+	 * Determines the featured media based on a request param.
+	 *
+	 * @since 4.7.0
+	 * @access protected
 	 *
 	 * @param int $featured_media Featured Media ID.
 	 * @param int $post_id        Post ID.
+<<<<<<< HEAD
 	 * @return bool|Error
+=======
+	 * @return bool|WP_Error Whether the post thumbnail was successfully deleted, otherwise WP_Error.
+>>>>>>> aaronjorbin/master
 	 */
 	protected function handle_featured_media( $featured_media, $post_id ) {
 
@@ -1021,7 +1347,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			if ( $result ) {
 				return true;
 			} else {
+<<<<<<< HEAD
 				return new Error( 'rest_invalid_featured_media', __( 'Invalid featured media id.' ), array( 'status' => 400 ) );
+=======
+				return new WP_Error( 'rest_invalid_featured_media', __( 'Invalid featured media ID.' ), array( 'status' => 400 ) );
+>>>>>>> aaronjorbin/master
 			}
 		} else {
 			return delete_post_thumbnail( $post_id );
@@ -1030,13 +1360,16 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Set the template for a page.
+	 * Sets the template for a post.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param string  $template Page template filename.
 	 * @param integer $post_id  Post ID.
 	 */
 	public function handle_template( $template, $post_id ) {
-		if ( in_array( $template, array_keys( wp_get_theme()->get_page_templates( $this->get_post( $post_id ) ) ), true ) ) {
+		if ( in_array( $template, array_keys( wp_get_theme()->get_page_templates( get_post( $post_id ) ) ), true ) ) {
 			update_post_meta( $post_id, '_wp_page_template', $template );
 		} else {
 			update_post_meta( $post_id, '_wp_page_template', '' );
@@ -1044,22 +1377,33 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Update the post's terms from a REST request.
+	 * Updates the post's terms from a REST request.
 	 *
+	 * @since 4.7.0
+	 * @access protected
+	 *
+<<<<<<< HEAD
 	 * @param  int             $post_id The post ID to update the terms form.
 	 * @param  WP_REST_Request $request The request object with post and terms data.
 	 * @return null|Error   Error on an error assigning any of the terms.
+=======
+	 * @param int             $post_id The post ID to update the terms form.
+	 * @param WP_REST_Request $request The request object with post and terms data.
+	 * @return null|WP_Error WP_Error on an error assigning any of the terms, otherwise null.
+>>>>>>> aaronjorbin/master
 	 */
 	protected function handle_terms( $post_id, $request ) {
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
+
 		foreach ( $taxonomies as $taxonomy ) {
 			$base = ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
 
 			if ( ! isset( $request[ $base ] ) ) {
 				continue;
 			}
-			$terms = array_map( 'absint', $request[ $base ] );
-			$result = wp_set_object_terms( $post_id, $terms, $taxonomy->name );
+
+			$result = wp_set_object_terms( $post_id, $request[ $base ], $taxonomy->name );
+
 			if ( is_wp_error( $result ) ) {
 				return $result;
 			}
@@ -1067,10 +1411,45 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if a given post type should be viewed or managed.
+	 * Checks whether current user can assign all terms sent with the current request.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param WP_REST_Request $request The request object with post and terms data.
+	 * @return bool Whether the current user can assign the provided terms.
+	 */
+	protected function check_assign_terms_permission( $request ) {
+		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
+		foreach ( $taxonomies as $taxonomy ) {
+			$base = ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
+
+			if ( ! isset( $request[ $base ] ) ) {
+				continue;
+			}
+
+			foreach ( $request[ $base ] as $term_id ) {
+				// Invalid terms will be rejected later.
+				if ( ! get_term( $term_id, $taxonomy->name ) ) {
+					continue;
+				}
+
+				if ( ! current_user_can( 'assign_term', (int) $term_id ) ) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks if a given post type can be viewed or managed.
+	 *
+	 * @since 4.7.0
+	 * @access protected
 	 *
 	 * @param object|string $post_type Post type name or object.
-	 * @return boolean Is post type allowed?
+	 * @return bool Whether the post type is allowed in REST.
 	 */
 	protected function check_is_post_type_allowed( $post_type ) {
 		if ( ! is_object( $post_type ) ) {
@@ -1085,12 +1464,15 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if we can read a post.
+	 * Checks if a post can be read.
 	 *
 	 * Correctly handles posts with the inherit status.
 	 *
+	 * @since 4.7.0
+	 * @access public
+	 *
 	 * @param object $post Post object.
-	 * @return boolean Can we read it?
+	 * @return bool Whether the post can be read.
 	 */
 	public function check_read_permission( $post ) {
 		$post_type = get_post_type_object( $post->post_type );
@@ -1098,7 +1480,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			return false;
 		}
 
-		// Can we read the post?
+		// Is the post readable?
 		if ( 'publish' === $post->post_status || current_user_can( $post_type->cap->read_post, $post->ID ) ) {
 			return true;
 		}
@@ -1110,12 +1492,14 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		// Can we read the parent if we're inheriting?
 		if ( 'inherit' === $post->post_status && $post->post_parent > 0 ) {
-			$parent = $this->get_post( $post->post_parent );
+			$parent = get_post( $post->post_parent );
 			return $this->check_read_permission( $parent );
 		}
 
-		// If we don't have a parent, but the status is set to inherit, assume
-		// it's published (as per get_post_status()).
+		/*
+		 * If there isn't a parent, but the status is set to inherit, assume
+		 * it's published (as per get_post_status()).
+		 */
 		if ( 'inherit' === $post->post_status ) {
 			return true;
 		}
@@ -1124,10 +1508,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if we can edit a post.
+	 * Checks if a post can be edited.
+	 *
+	 * @since 4.7.0
+	 * @access protected
 	 *
 	 * @param object $post Post object.
-	 * @return boolean Can we edit it?
+	 * @return bool Whether the post can be edited.
 	 */
 	protected function check_update_permission( $post ) {
 		$post_type = get_post_type_object( $post->post_type );
@@ -1140,10 +1527,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if we can create a post.
+	 * Checks if a post can be created.
+	 *
+	 * @since 4.7.0
+	 * @access protected
 	 *
 	 * @param object $post Post object.
-	 * @return boolean Can we create it?.
+	 * @return bool Whether the post can be created.
 	 */
 	protected function check_create_permission( $post ) {
 		$post_type = get_post_type_object( $post->post_type );
@@ -1156,10 +1546,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if we can delete a post.
+	 * Checks if a post can be deleted.
+	 *
+	 * @since 4.7.0
+	 * @access protected
 	 *
 	 * @param object $post Post object.
-	 * @return boolean Can we delete it?
+	 * @return bool Whether the post can be deleted.
 	 */
 	protected function check_delete_permission( $post ) {
 		$post_type = get_post_type_object( $post->post_type );
@@ -1172,14 +1565,18 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepare a single post output for response.
+	 * Prepares a single post output for response.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param WP_Post         $post    Post object.
 	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response $data
+	 * @return WP_REST_Response Response object.
 	 */
 	public function prepare_item_for_response( $post, $request ) {
 		$GLOBALS['post'] = $post;
+
 		setup_postdata( $post );
 
 		$schema = $this->get_item_schema();
@@ -1237,17 +1634,21 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( ! empty( $schema['properties']['title'] ) ) {
 			add_filter( 'protected_title_format', array( $this, 'protected_title_format' ) );
+
 			$data['title'] = array(
 				'raw'      => $post->post_title,
 				'rendered' => get_the_title( $post->ID ),
 			);
+
 			remove_filter( 'protected_title_format', array( $this, 'protected_title_format' ) );
 		}
 
 		$has_password_filter = false;
+
 		if ( $this->can_access_password_content( $post, $request ) ) {
 			// Allow access to the post, permissions already checked before.
 			add_filter( 'post_password_required', '__return_false' );
+
 			$has_password_filter = true;
 		}
 
@@ -1313,6 +1714,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( ! empty( $schema['properties']['format'] ) ) {
 			$data['format'] = get_post_format( $post->ID );
+
 			// Fill in blank post format.
 			if ( empty( $data['format'] ) ) {
 				$data['format'] = 'standard';
@@ -1324,8 +1726,10 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
+
 		foreach ( $taxonomies as $taxonomy ) {
 			$base = ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
+
 			if ( ! empty( $schema['properties'][ $base ] ) ) {
 				$terms = get_the_terms( $post, $taxonomy->name );
 				$data[ $base ] = $terms ? array_values( wp_list_pluck( $terms, 'term_id' ) ) : [];
@@ -1333,8 +1737,8 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$data = $this->add_additional_fields_to_object( $data, $request );
-		$data = $this->filter_response_by_context( $data, $context );
+		$data    = $this->add_additional_fields_to_object( $data, $request );
+		$data    = $this->filter_response_by_context( $data, $context );
 
 		// Wrap the data in a response object.
 		$response = rest_ensure_response( $data );
@@ -1342,33 +1746,37 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$response->add_links( $this->prepare_links( $post ) );
 
 		/**
-		 * Filter the post data for a response.
+		 * Filters the post data for a response.
 		 *
-		 * The dynamic portion of the hook name, $this->post_type, refers to post_type of the post being
-		 * prepared for the response.
+		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
 		 *
-		 * @param WP_REST_Response   $response   The response object.
-		 * @param WP_Post            $post       Post object.
-		 * @param WP_REST_Request    $request    Request object.
+		 * @since 4.7.0
+		 *
+		 * @param WP_REST_Response $response The response object.
+		 * @param WP_Post          $post     Post object.
+		 * @param WP_REST_Request  $request  Request object.
 		 */
 		return apply_filters( "rest_prepare_{$this->post_type}", $response, $post, $request );
 	}
 
 	/**
-	 * Overwrite the default protected title format.
+	 * Overwrites the default protected title format.
 	 *
-	 * By default WordPress will show password protected posts with a title of
+	 * By default, WordPress will show password protected posts with a title of
 	 * "Protected: %s", as the REST API communicates the protected status of a post
 	 * in a machine readable format, we remove the "Protected: " prefix.
 	 *
-	 * @return string
+	 * @return string Protected title format.
 	 */
 	public function protected_title_format() {
 		return '%s';
 	}
 
 	/**
-	 * Prepare links for the request.
+	 * Prepares links for the request.
+	 *
+	 * @since 4.7.0
+	 * @access protected
 	 *
 	 * @param WP_Post $post Post object.
 	 * @return array Links for the given post.
@@ -1400,9 +1808,10 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( in_array( $post->post_type, array( 'post', 'page' ), true ) || post_type_supports( $post->post_type, 'comments' ) ) {
 			$replies_url = rest_url( 'wp/v2/comments' );
 			$replies_url = add_query_arg( 'post', $post->ID, $replies_url );
+
 			$links['replies'] = array(
-				'href'         => $replies_url,
-				'embeddable'   => true,
+				'href'       => $replies_url,
+				'embeddable' => true,
 			);
 		}
 
@@ -1411,7 +1820,9 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				'href' => rest_url( trailingslashit( $base ) . $post->ID . '/revisions' ),
 			);
 		}
+
 		$post_type_obj = get_post_type_object( $post->post_type );
+
 		if ( $post_type_obj->hierarchical && ! empty( $post->post_parent ) ) {
 			$links['up'] = array(
 				'href'       => rest_url( trailingslashit( $base ) . (int) $post->post_parent ),
@@ -1422,31 +1833,37 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		// If we have a featured media, add that.
 		if ( $featured_media = get_post_thumbnail_id( $post->ID ) ) {
 			$image_url = rest_url( 'wp/v2/media/' . $featured_media );
+
 			$links['https://api.w.org/featuredmedia'] = array(
 				'href'       => $image_url,
 				'embeddable' => true,
 			);
 		}
+
 		if ( ! in_array( $post->post_type, array( 'attachment', 'nav_menu_item', 'revision' ), true ) ) {
 			$attachments_url = rest_url( 'wp/v2/media' );
 			$attachments_url = add_query_arg( 'parent', $post->ID, $attachments_url );
+
 			$links['https://api.w.org/attachment'] = array(
-				'href'       => $attachments_url,
+				'href' => $attachments_url,
 			);
 		}
 
 		$taxonomies = get_object_taxonomies( $post->post_type );
+
 		if ( ! empty( $taxonomies ) ) {
 			$links['https://api.w.org/term'] = [];
 
 			foreach ( $taxonomies as $tax ) {
 				$taxonomy_obj = get_taxonomy( $tax );
+
 				// Skip taxonomies that are not public.
 				if ( empty( $taxonomy_obj->show_in_rest ) ) {
 					continue;
 				}
 
 				$tax_base = ! empty( $taxonomy_obj->rest_base ) ? $taxonomy_obj->rest_base : $tax;
+
 				$terms_url = add_query_arg(
 					'post',
 					$post->ID,
@@ -1465,19 +1882,20 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the Post's schema, conforming to JSON Schema.
+	 * Retrieves the post's schema, conforming to JSON Schema.
 	 *
-	 * @return array
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @return array Item schema data.
 	 */
 	public function get_item_schema() {
 
 		$schema = array(
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			'$schema'    => 'http://json-schema.org/schema#',
 			'title'      => $this->post_type,
 			'type'       => 'object',
-			/*
-			 * Base properties for every Post.
-			 */
+			// Base properties for every Post.
 			'properties' => array(
 				'date'            => array(
 					'description' => __( "The date the object was published, in the site's timezone." ),
@@ -1558,13 +1976,19 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 					'context'     => array( 'view', 'edit', 'embed' ),
 					'readonly'    => true,
 				),
+				'password'        => array(
+					'description' => __( 'A password to protect access to the content and excerpt.' ),
+					'type'        => 'string',
+					'context'     => array( 'edit' ),
+				),
 			),
 		);
 
 		$post_type_obj = get_post_type_object( $this->post_type );
+
 		if ( $post_type_obj->hierarchical ) {
 			$schema['properties']['parent'] = array(
-				'description' => __( 'The id for the parent of the object.' ),
+				'description' => __( 'The ID for the parent of the object.' ),
 				'type'        => 'integer',
 				'context'     => array( 'view', 'edit' ),
 			);
@@ -1624,6 +2048,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 			switch ( $attribute ) {
 
+<<<<<<< HEAD
 			case 'title':
 				$schema['properties']['title'] = array(
 					'description' => __( 'The title for the object.' ),
@@ -1750,6 +2175,144 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			case 'custom-fields':
 				$schema['properties']['meta'] = $this->meta->get_field_schema();
 				break;
+=======
+				case 'title':
+					$schema['properties']['title'] = array(
+						'description' => __( 'The title for the object.' ),
+						'type'        => 'object',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'arg_options' => array(
+							'sanitize_callback' => null, // Note: sanitization implemented in self::prepare_item_for_database()
+						),
+						'properties'  => array(
+							'raw' => array(
+								'description' => __( 'Title for the object, as it exists in the database.' ),
+								'type'        => 'string',
+								'context'     => array( 'edit' ),
+							),
+							'rendered' => array(
+								'description' => __( 'HTML title for the object, transformed for display.' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit', 'embed' ),
+								'readonly'    => true,
+							),
+						),
+					);
+					break;
+
+				case 'editor':
+					$schema['properties']['content'] = array(
+						'description' => __( 'The content for the object.' ),
+						'type'        => 'object',
+						'context'     => array( 'view', 'edit' ),
+						'arg_options' => array(
+							'sanitize_callback' => null, // Note: sanitization implemented in self::prepare_item_for_database()
+						),
+						'properties'  => array(
+							'raw' => array(
+								'description' => __( 'Content for the object, as it exists in the database.' ),
+								'type'        => 'string',
+								'context'     => array( 'edit' ),
+							),
+							'rendered' => array(
+								'description' => __( 'HTML content for the object, transformed for display.' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'protected'       => array(
+								'description' => __( 'Whether the content is protected with a password.' ),
+								'type'        => 'boolean',
+								'context'     => array( 'view', 'edit', 'embed' ),
+								'readonly'    => true,
+							),
+						),
+					);
+					break;
+
+				case 'author':
+					$schema['properties']['author'] = array(
+						'description' => __( 'The ID for the author of the object.' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit', 'embed' ),
+					);
+					break;
+
+				case 'excerpt':
+					$schema['properties']['excerpt'] = array(
+						'description' => __( 'The excerpt for the object.' ),
+						'type'        => 'object',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'arg_options' => array(
+							'sanitize_callback' => null, // Note: sanitization implemented in self::prepare_item_for_database()
+						),
+						'properties'  => array(
+							'raw' => array(
+								'description' => __( 'Excerpt for the object, as it exists in the database.' ),
+								'type'        => 'string',
+								'context'     => array( 'edit' ),
+							),
+							'rendered' => array(
+								'description' => __( 'HTML excerpt for the object, transformed for display.' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit', 'embed' ),
+								'readonly'    => true,
+							),
+							'protected'       => array(
+								'description' => __( 'Whether the excerpt is protected with a password.' ),
+								'type'        => 'boolean',
+								'context'     => array( 'view', 'edit', 'embed' ),
+								'readonly'    => true,
+							),
+						),
+					);
+					break;
+
+				case 'thumbnail':
+					$schema['properties']['featured_media'] = array(
+						'description' => __( 'The ID of the featured media for the object.' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit' ),
+					);
+					break;
+
+				case 'comments':
+					$schema['properties']['comment_status'] = array(
+						'description' => __( 'Whether or not comments are open on the object.' ),
+						'type'        => 'string',
+						'enum'        => array( 'open', 'closed' ),
+						'context'     => array( 'view', 'edit' ),
+					);
+					$schema['properties']['ping_status'] = array(
+						'description' => __( 'Whether or not the object can be pinged.' ),
+						'type'        => 'string',
+						'enum'        => array( 'open', 'closed' ),
+						'context'     => array( 'view', 'edit' ),
+					);
+					break;
+
+				case 'page-attributes':
+					$schema['properties']['menu_order'] = array(
+						'description' => __( 'The order of the object in relation to other object of its type.' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit' ),
+					);
+					break;
+
+				case 'post-formats':
+					$supports_formats = get_theme_support( 'post-formats' );
+					$schema['properties']['format'] = array(
+						'description' => __( 'The format for the object.' ),
+						'type'        => 'string',
+						'enum'        => array_merge( array( 'standard' ), $supports_formats ? array_values( $supports_formats[0] ) : array() ),
+						'context'     => array( 'view', 'edit' ),
+					);
+					break;
+
+				case 'custom-fields':
+					$schema['properties']['meta'] = $this->meta->get_field_schema();
+					break;
+>>>>>>> aaronjorbin/master
 
 			}
 		}
@@ -1760,34 +2323,25 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 			);
-
-			$schema['properties']['password'] = array(
-				'description' => __( 'A password to protect access to the content and excerpt.' ),
-				'type'        => 'string',
-				'context'     => array( 'edit' ),
-			);
 		}
 
-		if ( 'page' === $this->post_type ) {
-			$schema['properties']['template'] = array(
-				'description' => __( 'The theme file to use to display the object.' ),
-				'type'        => 'string',
-				'enum'        => array_keys( wp_get_theme()->get_page_templates() ),
-				'context'     => array( 'view', 'edit' ),
-			);
-		}
+		$schema['properties']['template'] = array(
+			'description' => __( 'The theme file to use to display the object.' ),
+			'type'        => 'string',
+			'enum'        => array_merge( array_keys( wp_get_theme()->get_page_templates( null, $this->post_type ) ), array( '' ) ),
+			'context'     => array( 'view', 'edit' ),
+		);
 
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
 		foreach ( $taxonomies as $taxonomy ) {
 			$base = ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
 			$schema['properties'][ $base ] = array(
+				/* translators: %s: taxonomy name */
 				'description' => sprintf( __( 'The terms assigned to the object in the %s taxonomy.' ), $taxonomy->name ),
 				'type'        => 'array',
-				'context'     => array( 'view', 'edit' ),
-			);
-			$schema['properties'][ $base . '_exclude' ] = array(
-				'description' => sprintf( __( 'The terms in the %s taxonomy that should not be assigned to the object.' ), $taxonomy->name ),
-				'type'        => 'array',
+				'items'       => array(
+					'type'    => 'integer',
+				),
 				'context'     => array( 'view', 'edit' ),
 			);
 		}
@@ -1796,9 +2350,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the query params for collections of attachments.
+	 * Retrieves the query params for the posts collection.
 	 *
-	 * @return array
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @return array Collection parameters.
 	 */
 	public function get_collection_params() {
 		$params = parent::get_collection_params();
@@ -1806,64 +2363,93 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$params['context']['default'] = 'view';
 
 		$params['after'] = array(
-			'description'        => __( 'Limit response to resources published after a given ISO8601 compliant date.' ),
+			'description'        => __( 'Limit response to posts published after a given ISO8601 compliant date.' ),
 			'type'               => 'string',
 			'format'             => 'date-time',
-			'validate_callback'  => 'rest_validate_request_arg',
 		);
+
 		if ( post_type_supports( $this->post_type, 'author' ) ) {
 			$params['author'] = array(
 				'description'         => __( 'Limit result set to posts assigned to specific authors.' ),
 				'type'                => 'array',
+<<<<<<< HEAD
 				'default'             => [],
 				'sanitize_callback'   => 'wp_parse_id_list',
+=======
+				'items'               => array(
+					'type'            => 'integer',
+				),
+				'default'             => array(),
+>>>>>>> aaronjorbin/master
 			);
 			$params['author_exclude'] = array(
 				'description'         => __( 'Ensure result set excludes posts assigned to specific authors.' ),
 				'type'                => 'array',
+<<<<<<< HEAD
 				'default'             => [],
 				'sanitize_callback'   => 'wp_parse_id_list',
+=======
+				'items'               => array(
+					'type'            => 'integer',
+				),
+				'default'             => array(),
+>>>>>>> aaronjorbin/master
 			);
 		}
+
 		$params['before'] = array(
-			'description'        => __( 'Limit response to resources published before a given ISO8601 compliant date.' ),
+			'description'        => __( 'Limit response to posts published before a given ISO8601 compliant date.' ),
 			'type'               => 'string',
 			'format'             => 'date-time',
-			'validate_callback'  => 'rest_validate_request_arg',
 		);
+
 		$params['exclude'] = array(
-			'description'        => __( 'Ensure result set excludes specific ids.' ),
+			'description'        => __( 'Ensure result set excludes specific IDs.' ),
 			'type'               => 'array',
+<<<<<<< HEAD
 			'default'            => [],
 			'sanitize_callback'  => 'wp_parse_id_list',
+=======
+			'items'              => array(
+				'type'           => 'integer',
+			),
+			'default'            => array(),
+>>>>>>> aaronjorbin/master
 		);
+
 		$params['include'] = array(
-			'description'        => __( 'Limit result set to specific ids.' ),
+			'description'        => __( 'Limit result set to specific IDs.' ),
 			'type'               => 'array',
+<<<<<<< HEAD
 			'default'            => [],
 			'sanitize_callback'  => 'wp_parse_id_list',
+=======
+			'items'              => array(
+				'type'           => 'integer',
+			),
+			'default'            => array(),
+>>>>>>> aaronjorbin/master
 		);
+
 		if ( 'page' === $this->post_type || post_type_supports( $this->post_type, 'page-attributes' ) ) {
 			$params['menu_order'] = array(
-				'description'        => __( 'Limit result set to resources with a specific menu_order value.' ),
+				'description'        => __( 'Limit result set to posts with a specific menu_order value.' ),
 				'type'               => 'integer',
-				'sanitize_callback'  => 'absint',
-				'validate_callback'  => 'rest_validate_request_arg',
 			);
 		}
+
 		$params['offset'] = array(
 			'description'        => __( 'Offset the result set by a specific number of items.' ),
 			'type'               => 'integer',
-			'sanitize_callback'  => 'absint',
-			'validate_callback'  => 'rest_validate_request_arg',
 		);
+
 		$params['order'] = array(
 			'description'        => __( 'Order sort attribute ascending or descending.' ),
 			'type'               => 'string',
 			'default'            => 'desc',
 			'enum'               => array( 'asc', 'desc' ),
-			'validate_callback'  => 'rest_validate_request_arg',
 		);
+
 		$params['orderby'] = array(
 			'description'        => __( 'Sort collection by object attribute.' ),
 			'type'               => 'string',
@@ -1876,54 +2462,91 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				'title',
 				'slug',
 			),
-			'validate_callback'  => 'rest_validate_request_arg',
 		);
+
 		if ( 'page' === $this->post_type || post_type_supports( $this->post_type, 'page-attributes' ) ) {
 			$params['orderby']['enum'][] = 'menu_order';
 		}
 
 		$post_type_obj = get_post_type_object( $this->post_type );
+
 		if ( $post_type_obj->hierarchical || 'attachment' === $this->post_type ) {
 			$params['parent'] = array(
-				'description'       => __( 'Limit result set to those of particular parent ids.' ),
+				'description'       => __( 'Limit result set to those of particular parent IDs.' ),
 				'type'              => 'array',
+<<<<<<< HEAD
 				'sanitize_callback' => 'wp_parse_id_list',
 				'default'           => [],
+=======
+				'items'             => array(
+					'type'          => 'integer',
+				),
+				'default'           => array(),
+>>>>>>> aaronjorbin/master
 			);
 			$params['parent_exclude'] = array(
-				'description'       => __( 'Limit result set to all items except those of a particular parent id.' ),
+				'description'       => __( 'Limit result set to all items except those of a particular parent ID.' ),
 				'type'              => 'array',
+<<<<<<< HEAD
 				'sanitize_callback' => 'wp_parse_id_list',
 				'default'           => [],
+=======
+				'items'             => array(
+					'type'          => 'integer',
+				),
+				'default'           => array(),
+>>>>>>> aaronjorbin/master
 			);
 		}
 
 		$params['slug'] = array(
-			'description'       => __( 'Limit result set to posts with a specific slug.' ),
-			'type'              => 'string',
-			'validate_callback' => 'rest_validate_request_arg',
+			'description'       => __( 'Limit result set to posts with one or more specific slugs.' ),
+			'type'              => 'array',
+			'items'             => array(
+				'type'          => 'string',
+			),
+			'sanitize_callback' => 'wp_parse_slug_list',
 		);
+
 		$params['status'] = array(
 			'default'           => 'publish',
-			'description'       => __( 'Limit result set to posts assigned a specific status; can be comma-delimited list of status types.' ),
-			'enum'              => array_merge( array_keys( get_post_stati() ), array( 'any' ) ),
-			'sanitize_callback' => 'sanitize_key',
-			'type'              => 'string',
-			'validate_callback' => array( $this, 'validate_user_can_query_private_statuses' ),
-		);
-		$params['filter'] = array(
-			'description'       => __( 'Use WP Query arguments to modify the response; private query vars require appropriate authorization.' ),
+			'description'       => __( 'Limit result set to posts assigned one or more statuses.' ),
+			'type'              => 'array',
+			'items'             => array(
+				'enum'          => array_merge( array_keys( get_post_stati() ), array( 'any' ) ),
+				'type'          => 'string',
+			),
+			'sanitize_callback' => array( $this, 'sanitize_post_statuses' ),
 		);
 
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
+
 		foreach ( $taxonomies as $taxonomy ) {
 			$base = ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
 
 			$params[ $base ] = array(
+				/* translators: %s: taxonomy name */
 				'description'       => sprintf( __( 'Limit result set to all items that have the specified term assigned in the %s taxonomy.' ), $base ),
 				'type'              => 'array',
+<<<<<<< HEAD
 				'sanitize_callback' => 'wp_parse_id_list',
 				'default'           => [],
+=======
+				'items'             => array(
+					'type'          => 'integer',
+				),
+				'default'           => array(),
+			);
+
+			$params[ $base . '_exclude' ] = array(
+				/* translators: %s: taxonomy name */
+				'description' => sprintf( __( 'Limit result set to all items except those that have the specified term assigned in the %s taxonomy.' ), $base ),
+				'type'        => 'array',
+				'items'       => array(
+					'type'    => 'integer',
+				),
+				'default'           => array(),
+>>>>>>> aaronjorbin/master
 			);
 		}
 
@@ -1931,29 +2554,72 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$params['sticky'] = array(
 				'description'       => __( 'Limit result set to items that are sticky.' ),
 				'type'              => 'boolean',
-				'sanitize_callback' => 'rest_parse_request_arg',
 			);
 		}
 
-		return $params;
+		/**
+		 * Filter collection parameters for the posts controller.
+		 *
+		 * The dynamic part of the filter `$this->post_type` refers to the post
+		 * type slug for the controller.
+		 *
+		 * This filter registers the collection parameter, but does not map the
+		 * collection parameter to an internal WP_Query parameter. Use the
+		 * `rest_{$this->post_type}_query` filter to set WP_Query parameters.
+		 *
+		 * @since 4.7.0
+		 *
+		 * @param $params JSON Schema-formatted collection parameters.
+		 * @param WP_Post_Type $post_type_obj Post type object.
+		 */
+		return apply_filters( "rest_{$this->post_type}_collection_params", $params, $post_type_obj );
 	}
 
 	/**
-	 * Validate whether the user can query private statuses.
+	 * Sanitizes and validates the list of post statuses, including whether the
+	 * user can query private statuses.
 	 *
-	 * @param  mixed           $value     Post status.
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @param  string|array    $statuses  One or more post statuses.
 	 * @param  WP_REST_Request $request   Full details about the request.
+<<<<<<< HEAD
 	 * @param  string          $parameter
 	 * @return Error|boolean
+=======
+	 * @param  string          $parameter Additional parameter to pass to validation.
+	 * @return array|WP_Error A list of valid statuses, otherwise WP_Error object.
+>>>>>>> aaronjorbin/master
 	 */
-	public function validate_user_can_query_private_statuses( $value, $request, $parameter ) {
-		if ( 'publish' === $value ) {
-			return rest_validate_request_arg( $value, $request, $parameter );
+	public function sanitize_post_statuses( $statuses, $request, $parameter ) {
+		$statuses = wp_parse_slug_list( $statuses );
+
+		// The default status is different in WP_REST_Attachments_Controller
+		$attributes = $request->get_attributes();
+		$default_status = $attributes['args']['status']['default'];
+
+		foreach ( $statuses as $status ) {
+			if ( $status === $default_status ) {
+				continue;
+			}
+
+			$post_type_obj = get_post_type_object( $this->post_type );
+
+			if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
+				$result = rest_validate_request_arg( $status, $request, $parameter );
+				if ( is_wp_error( $result ) ) {
+					return $result;
+				}
+			} else {
+				return new WP_Error( 'rest_forbidden_status', __( 'Status is forbidden.' ), array( 'status' => rest_authorization_required_code() ) );
+			}
 		}
-		$post_type_obj = get_post_type_object( $this->post_type );
-		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
-			return rest_validate_request_arg( $value, $request, $parameter );
-		}
+<<<<<<< HEAD
 		return new Error( 'rest_forbidden_status', __( 'Status is forbidden.' ), array( 'status' => rest_authorization_required_code() ) );
+=======
+
+		return $statuses;
+>>>>>>> aaronjorbin/master
 	}
 }

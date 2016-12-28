@@ -781,8 +781,8 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 								<?php if ( current_theme_supports( 'menus' ) ) : ?>
 
-									<dl class="menu-theme-locations">
-										<dt class="howto"><?php _e( 'Theme locations' ); ?></dt>
+									<fieldset class="menu-settings-group menu-theme-locations">
+										<legend class="menu-settings-group-name howto"><?php _e( 'Display location' ); ?></legend>
 										<?php foreach ( $locations as $location => $description ) : ?>
 										<dd class="checkbox-input">
 											<input type="checkbox"<?php checked( isset( $menu_locations[ $location ] ) && $menu_locations[ $location ] == $app->nav_menus['selected_id'] ); ?> name="menu-locations[<?php echo esc_attr( $location ); ?>]" id="locations-<?php echo esc_attr( $location ); ?>" value="<?php echo esc_attr( $app->nav_menus['selected_id'] ); ?>" />
@@ -795,9 +795,9 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 													);
 												?></span>
 											<?php endif; ?>
-										</dd>
+										</div>
 										<?php endforeach; ?>
-									</dl>
+									</fieldset>
 
 								<?php endif; ?>
 

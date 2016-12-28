@@ -1,18 +1,42 @@
 <?php
-
 /**
- * Manage a WordPress site's settings.
+ * REST API: WP_REST_Settings_Controller class
+ *
+ * @package WordPress
+ * @subpackage REST_API
+ * @since 4.7.0
  */
 
+/**
+ * Core class used to manage a site's settings via the REST API.
+ *
+ * @since 4.7.0
+ *
+ * @see WP_REST_Controller
+ */
 class WP_REST_Settings_Controller extends WP_REST_Controller {
 
-	protected $rest_base = 'settings';
-	protected $namespace = 'wp/v2';
+	/**
+	 * Constructor.
+	 *
+	 * @since 4.7.0
+	 * @access public
+	 */
+	public function __construct() {
+		$this->namespace = 'wp/v2';
+		$this->rest_base = 'settings';
+	}
 
 	/**
-	 * Register the routes for the objects of the controller.
+	 * Registers the routes for the objects of the controller.
+	 *
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @see register_rest_route()
 	 */
 	public function register_routes() {
+
 		register_rest_route( $this->namespace, '/' . $this->rest_base, array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
@@ -28,23 +52,34 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
+
 	}
 
 	/**
-	 * Check if a given request has access to read and manage settings.
+	 * Checks if a given request has access to read and manage settings.
 	 *
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return boolean
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return bool True if the request has read access for the item, otherwise false.
 	 */
 	public function get_item_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Get the settings.
+	 * Retrieves the settings.
+	 *
+	 * @since 4.7.0
+	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+<<<<<<< HEAD
 	 * @return Error|array
+=======
+	 * @return array|WP_Error Array on success, or WP_Error object on failure.
+>>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
 		$options  = $this->get_registered_options();
@@ -59,11 +94,11 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 			 *
 			 * @since 4.7.0
 			 *
-			 * @param mixed  $result  Value to use for the requested setting. Can be a scalar
-			 *                        matching the registered schema for the setting, or null to
-			 *                        follow the default `get_option` behavior.
-			 * @param string $name    Setting name (as shown in REST API responses).
-			 * @param array  $args    Arguments passed to `register_setting()` for this setting.
+			 * @param mixed  $result Value to use for the requested setting. Can be a scalar
+			 *                       matching the registered schema for the setting, or null to
+			 *                       follow the default get_option() behavior.
+			 * @param string $name   Setting name (as shown in REST API responses).
+			 * @param array  $args   Arguments passed to register_setting() for this setting.
 			 */
 			$response[ $name ] = apply_filters( 'rest_pre_get_setting', null, $name, $args );
 
@@ -72,8 +107,10 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 				$response[ $name ] = get_option( $args['option_name'], $args['schema']['default'] );
 			}
 
-			// Because get_option() is lossy, we have to
-			// cast values to the type they are registered with.
+			/*
+			 * Because get_option() is lossy, we have to
+			 * cast values to the type they are registered with.
+			 */
 			$response[ $name ] = $this->prepare_value( $response[ $name ], $args['schema'] );
 		}
 
@@ -81,14 +118,23 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepare a value for output based off a schema array.
+	 * Prepares a value for output based off a schema array.
 	 *
-	 * @param  mixed $value
-	 * @param  array $schema
-	 * @return mixed
+	 * @since 4.7.0
+	 * @access protected
+	 *
+	 * @param mixed $value  Value to prepare.
+	 * @param array $schema Schema to match.
+	 * @return mixed The prepared value.
 	 */
 	protected function prepare_value( $value, $schema ) {
+		// If the value is not a scalar, it's not possible to cast it to anything.
+		if ( ! is_scalar( $value ) ) {
+			return null;
+		}
+
 		switch ( $schema['type'] ) {
+<<<<<<< HEAD
 		case 'string':
 			return (string) $value;
 		case 'number':
@@ -97,18 +143,38 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 			return (bool) $value;
 		default:
 			return null;
+=======
+			case 'string':
+				return (string) $value;
+			case 'integer':
+				return (int) $value;
+			case 'number':
+				return (float) $value;
+			case 'boolean':
+				return (bool) $value;
+			default:
+				return null;
+>>>>>>> aaronjorbin/master
 		}
 	}
 
 	/**
-	 * Update settings for the settings object.
+	 * Updates settings for the settings object.
 	 *
+<<<<<<< HEAD
 	 * @param  WP_REST_Request $request Full detail about the request.
 	 * @return Error|array
+=======
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return array|WP_Error Array on success, or error object on failure.
+>>>>>>> aaronjorbin/master
 	 */
 	public function update_item( $request ) {
 		$options = $this->get_registered_options();
-		$params = $request->get_params();
+		$params  = $request->get_params();
 
 		foreach ( $options as $name => $args ) {
 			if ( ! array_key_exists( $name, $params ) ) {
@@ -118,25 +184,46 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 			/**
 			 * Filters whether to preempt a setting value update.
 			 *
-			 * Allow hijacking the setting update logic and overriding the built-in behavior by
+			 * Allows hijacking the setting update logic and overriding the built-in behavior by
 			 * returning true.
 			 *
 			 * @since 4.7.0
 			 *
-			 * @param boolean $result Whether to override the default behavior for updating the
-			 *                        value of a setting.
-			 * @param string  $name   Setting name (as shown in REST API responses).
-			 * @param mixed   $value  Updated setting value.
-			 * @param array   $args   Arguments passed to `register_setting()` for this setting.
+			 * @param bool   $result Whether to override the default behavior for updating the
+			 *                       value of a setting.
+			 * @param string $name   Setting name (as shown in REST API responses).
+			 * @param mixed  $value  Updated setting value.
+			 * @param array  $args   Arguments passed to register_setting() for this setting.
 			 */
 			$updated = apply_filters( 'rest_pre_update_setting', false, $name, $request[ $name ], $args );
+
 			if ( $updated ) {
 				continue;
 			}
 
-			// A null value means reset the option, which is essentially deleting it
-			// from the database and then relying on the default value.
+			/*
+			 * A null value for an option would have the same effect as
+			 * deleting the option from the database, and relying on the
+			 * default value.
+			 */
 			if ( is_null( $request[ $name ] ) ) {
+				/*
+				 * A null value is returned in the response for any option
+				 * that has a non-scalar value.
+				 *
+				 * To protect clients from accidentally including the null
+				 * values from a response object in a request, we do not allow
+				 * options with non-scalar values to be updated to null.
+				 * Without this added protection a client could mistakenly
+				 * delete all options that have non-scalar values from the
+				 * database.
+				 */
+				if ( ! is_scalar( get_option( $args['option_name'], false ) ) ) {
+					return new WP_Error(
+						'rest_invalid_stored_value', sprintf( __( 'The %s property has an invalid stored value, and cannot be updated to null.' ), $name ), array( 'status' => 500 )
+					);
+				}
+
 				delete_option( $args['option_name'] );
 			} else {
 				update_option( $args['option_name'], $request[ $name ] );
@@ -147,9 +234,12 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get all the registered options for the Settings API
+	 * Retrieves all of the registered options for the Settings API.
 	 *
-	 * @return array
+	 * @since 4.7.0
+	 * @access protected
+	 *
+	 * @return array Array of registered options.
 	 */
 	protected function get_registered_options() {
 		$rest_options = [];
@@ -159,7 +249,12 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 				continue;
 			}
 
+<<<<<<< HEAD
 			$rest_args = [];
+=======
+			$rest_args = array();
+
+>>>>>>> aaronjorbin/master
 			if ( is_array( $args['show_in_rest'] ) ) {
 				$rest_args = $args['show_in_rest'];
 			}
@@ -168,6 +263,7 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 				'name'   => ! empty( $rest_args['name'] ) ? $rest_args['name'] : $name,
 				'schema' => [],
 			);
+
 			$rest_args = array_merge( $defaults, $rest_args );
 
 			$default_schema = array(
@@ -184,9 +280,11 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 				continue;
 			}
 
-			// Whitelist the supported types for settings, as we don't want invalid types
-			// to be updated with arbitrary values that we can't do decent sanitizing for.
-			if ( ! in_array( $rest_args['schema']['type'], array( 'number', 'string', 'boolean' ), true ) ) {
+			/*
+			 * Whitelist the supported types for settings, as we don't want invalid types
+			 * to be updated with arbitrary values that we can't do decent sanitizing for.
+			 */
+			if ( ! in_array( $rest_args['schema']['type'], array( 'number', 'integer', 'string', 'boolean' ), true ) ) {
 				continue;
 			}
 
@@ -197,15 +295,18 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the site setting schema, conforming to JSON Schema.
+	 * Retrieves the site setting schema, conforming to JSON Schema.
 	 *
-	 * @return array
+	 * @since 4.7.0
+	 * @access public
+	 *
+	 * @return array Item schema data.
 	 */
 	public function get_item_schema() {
 		$options = $this->get_registered_options();
 
 		$schema = array(
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			'$schema'    => 'http://json-schema.org/schema#',
 			'title'      => 'settings',
 			'type'       => 'object',
 			'properties' => [],
@@ -213,8 +314,30 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 
 		foreach ( $options as $option_name => $option ) {
 			$schema['properties'][ $option_name ] = $option['schema'];
+			$schema['properties'][ $option_name ]['arg_options'] = array(
+				'sanitize_callback' => array( $this, 'sanitize_callback' ),
+			);
 		}
 
 		return $this->add_additional_fields_schema( $schema );
+	}
+
+	/**
+	 * Custom sanitize callback used for all options to allow the use of 'null'.
+	 *
+	 * By default, the schema of settings will throw an error if a value is set to
+	 * `null` as it's not a valid value for something like "type => string". We
+	 * provide a wrapper sanitizer to whitelist the use of `null`.
+	 *
+	 * @param  mixed           $value   The value for the setting.
+	 * @param  WP_REST_Request $request The request object.
+	 * @param  string          $param   The parameter name.
+	 * @return mixed|WP_Error
+	 */
+	public function sanitize_callback( $value, $request, $param ) {
+		if ( is_null( $value ) ) {
+			return $value;
+		}
+		return rest_parse_request_arg( $value, $request, $param );
 	}
 }

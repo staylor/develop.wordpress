@@ -55,9 +55,9 @@ function get_active_blog_for_user( $user_id ) {
 	if ( false !== $primary_blog ) {
 		if ( ! isset( $blogs[ $primary_blog ] ) ) {
 			update_user_meta( $user_id, 'primary_blog', $first_blog->userblog_id );
-			$primary = get_blog_details( $first_blog->userblog_id );
+			$primary = get_site( $first_blog->userblog_id );
 		} else {
-			$primary = get_blog_details( $primary_blog );
+			$primary = get_site( $primary_blog );
 		}
 	} else {
 		//TODO Review this call to add_user_to_blog too - to get here the user must have a role on this blog?
@@ -73,8 +73,12 @@ function get_active_blog_for_user( $user_id ) {
 			foreach ( (array) $blogs as $blog_id => $blog ) {
 				if ( $blog->site_id != $wpdb->siteid ) {
 					continue;
+<<<<<<< HEAD
 				}
 				$details = get_blog_details( $blog_id );
+=======
+				$details = get_site( $blog_id );
+>>>>>>> aaronjorbin/master
 				if ( is_object( $details ) && $details->archived == 0 && $details->spam == 0 && $details->deleted == 0 ) {
 					$ret = $blog;
 					if ( get_user_meta( $user_id , 'primary_blog', true ) != $blog_id ) {
@@ -787,13 +791,17 @@ function wpmu_signup_user( $user, $user_email, $meta = [] ) {
  * @param string $domain     The new blog domain.
  * @param string $path       The new blog path.
  * @param string $title      The site title.
- * @param string $user       The user's login name.
+ * @param string $user_login The user's login name.
  * @param string $user_email The user's email address.
  * @param string $key        The activation key created in wpmu_signup_blog()
  * @param array  $meta       By default, contains the requested privacy setting and lang_id.
  * @return bool
  */
+<<<<<<< HEAD
 function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_email, $key, $meta = [] ) {
+=======
+function wpmu_signup_blog_notification( $domain, $path, $title, $user_login, $user_email, $key, $meta = array() ) {
+>>>>>>> aaronjorbin/master
 	/**
 	 * Filters whether to bypass the new site email notification.
 	 *
@@ -802,12 +810,12 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_ema
 	 * @param string|bool $domain     Site domain.
 	 * @param string      $path       Site path.
 	 * @param string      $title      Site title.
-	 * @param string      $user       User login name.
+	 * @param string      $user_login User login name.
 	 * @param string      $user_email User email address.
 	 * @param string      $key        Activation key created in wpmu_signup_blog().
 	 * @param array       $meta       By default, contains the requested privacy setting and lang_id.
 	 */
-	if ( ! apply_filters( 'wpmu_signup_blog_notification', $domain, $path, $title, $user, $user_email, $key, $meta ) ) {
+	if ( ! apply_filters( 'wpmu_signup_blog_notification', $domain, $path, $title, $user_login, $user_email, $key, $meta ) ) {
 		return false;
 	}
 
@@ -826,7 +834,15 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_ema
 		$admin_email = 'support@' . $app['request.server_name'];
 	}
 	$from_name = get_site_option( 'site_name' ) == '' ? 'WordPress' : esc_html( get_site_option( 'site_name' ) );
+<<<<<<< HEAD
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option( 'blog_charset' ) . "\"\n";
+=======
+	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
+
+	$user = get_user_by( 'login', $user_login );
+	$switched_locale = switch_to_locale( get_user_locale( $user ) );
+
+>>>>>>> aaronjorbin/master
 	$message = sprintf(
 		/**
 		 * Filters the message content of the new blog notification email.
@@ -839,14 +855,14 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_ema
 		 * @param string $domain     Site domain.
 		 * @param string $path       Site path.
 		 * @param string $title      Site title.
-		 * @param string $user       User login name.
+		 * @param string $user_login User login name.
 		 * @param string $user_email User email address.
 		 * @param string $key        Activation key created in wpmu_signup_blog().
 		 * @param array  $meta       By default, contains the requested privacy setting and lang_id.
 		 */
 		apply_filters( 'wpmu_signup_blog_notification_email',
 			__( "To activate your blog, please click the following link:\n\n%s\n\nAfter you activate, you will receive *another email* with your login.\n\nAfter you activate, you can visit your site here:\n\n%s" ),
-			$domain, $path, $title, $user, $user_email, $key, $meta
+			$domain, $path, $title, $user_login, $user_email, $key, $meta
 		),
 		$activate_url,
 		esc_url( "http://{$domain}{$path}" ),
@@ -863,19 +879,25 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_ema
 		 * @param string $domain     Site domain.
 		 * @param string $path       Site path.
 		 * @param string $title      Site title.
-		 * @param string $user       User login name.
+		 * @param string $user_login User login name.
 		 * @param string $user_email User email address.
 		 * @param string $key        Activation key created in wpmu_signup_blog().
 		 * @param array  $meta       By default, contains the requested privacy setting and lang_id.
 		 */
 		apply_filters( 'wpmu_signup_blog_notification_subject',
-			__( '[%1$s] Activate %2$s' ),
-			$domain, $path, $title, $user, $user_email, $key, $meta
+			/* translators: New site notification email subject. 1: Network name, 2: New site URL */
+			_x( '[%1$s] Activate %2$s', 'New site notification email subject' ),
+			$domain, $path, $title, $user_login, $user_email, $key, $meta
 		),
 		$from_name,
 		esc_url( 'http://' . $domain . $path )
 	);
 	wp_mail( $user_email, wp_specialchars_decode( $subject ), $message, $message_headers );
+
+	if ( $switched_locale ) {
+		restore_previous_locale();
+	}
+
 	return true;
 }
 
@@ -894,28 +916,41 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_ema
  *
  * @since MU
  *
- * @param string $user       The user's login name.
+ * @param string $user_login The user's login name.
  * @param string $user_email The user's email address.
  * @param string $key        The activation key created in wpmu_signup_user()
  * @param array  $meta       By default, an empty array.
  * @return bool
  */
+<<<<<<< HEAD
 function wpmu_signup_user_notification( $user, $user_email, $key, $meta = [] ) {
+=======
+function wpmu_signup_user_notification( $user_login, $user_email, $key, $meta = array() ) {
+>>>>>>> aaronjorbin/master
 	/**
 	 * Filters whether to bypass the email notification for new user sign-up.
 	 *
 	 * @since MU
 	 *
-	 * @param string $user       User login name.
+	 * @param string $user_login User login name.
 	 * @param string $user_email User email address.
 	 * @param string $key        Activation key created in wpmu_signup_user().
 	 * @param array  $meta       Signup meta data.
 	 */
+<<<<<<< HEAD
 	if ( ! apply_filters( 'wpmu_signup_user_notification', $user, $user_email, $key, $meta ) ) {
 			return false;
 	}
 
 	$app = getApp();
+=======
+	if ( ! apply_filters( 'wpmu_signup_user_notification', $user_login, $user_email, $key, $meta ) )
+		return false;
+
+	$user = get_user_by( 'login', $user_login );
+	$switched_locale = switch_to_locale( get_user_locale( $user ) );
+
+>>>>>>> aaronjorbin/master
 	// Send email with activation link.
 	$admin_email = get_site_option( 'admin_email' );
 	if ( $admin_email == '' ) {
@@ -932,14 +967,14 @@ function wpmu_signup_user_notification( $user, $user_email, $key, $meta = [] ) {
 		 * @since MU
 		 *
 		 * @param string $content    Content of the notification email.
-		 * @param string $user       User login name.
+		 * @param string $user_login User login name.
 		 * @param string $user_email User email address.
 		 * @param string $key        Activation key created in wpmu_signup_user().
 		 * @param array  $meta       Signup meta data.
 		 */
 		apply_filters( 'wpmu_signup_user_notification_email',
 			__( "To activate your user, please click the following link:\n\n%s\n\nAfter you activate, you will receive *another email* with your login." ),
-			$user, $user_email, $key, $meta
+			$user_login, $user_email, $key, $meta
 		),
 		site_url( "wp-activate.php?key=$key" )
 	);
@@ -951,19 +986,25 @@ function wpmu_signup_user_notification( $user, $user_email, $key, $meta = [] ) {
 		 * @since MU
 		 *
 		 * @param string $subject    Subject of the notification email.
-		 * @param string $user       User login name.
+		 * @param string $user_login User login name.
 		 * @param string $user_email User email address.
 		 * @param string $key        Activation key created in wpmu_signup_user().
 		 * @param array  $meta       Signup meta data.
 		 */
 		apply_filters( 'wpmu_signup_user_notification_subject',
-			__( '[%1$s] Activate %2$s' ),
-			$user, $user_email, $key, $meta
+			/* translators: New user notification email subject. 1: Network name, 2: New user login */
+			_x( '[%1$s] Activate %2$s', 'New user notification email subject' ),
+			$user_login, $user_email, $key, $meta
 		),
 		$from_name,
-		$user
+		$user_login
 	);
 	wp_mail( $user_email, wp_specialchars_decode( $subject ), $message, $message_headers );
+
+	if ( $switched_locale ) {
+		restore_previous_locale();
+	}
+
 	return true;
 }
 
@@ -1228,6 +1269,7 @@ function newblog_notify_siteadmin( $blog_id, $deprecated = '' ) {
 	$siteurl = site_url();
 	restore_current_blog();
 
+	/* translators: New site notification email. 1: Site URL, 2: User IP address, 3: Settings screen URL */
 	$msg = sprintf( __( 'New Site: %1$s
 URL: %2$s
 Remote IP: %3$s
@@ -1272,8 +1314,14 @@ function newuser_notify_siteadmin( $user_id ) {
 	$app = getApp();
 	$user = get_userdata( $user_id );
 
+<<<<<<< HEAD
 	$options_site_url = esc_url(network_admin_url( 'settings.php' ) );
 	$msg = sprintf( __( 'New User: %1$s
+=======
+	$options_site_url = esc_url(network_admin_url('settings.php'));
+	/* translators: New user notification email. 1: User login, 2: User IP address, 3: Settings screen URL */
+	$msg = sprintf(__('New User: %1$s
+>>>>>>> aaronjorbin/master
 Remote IP: %2$s
 
 Disable these notifications: %3$s' ), $user->user_login, wp_unslash( $app['request.remote_addr'] ), $options_site_url);
@@ -1487,7 +1535,14 @@ function wpmu_welcome_notification( $blog_id, $user_id, $password, $title, $meta
 		return false;
 	}
 
+<<<<<<< HEAD
 	$app = getApp();
+=======
+	$user = get_userdata( $user_id );
+
+	$switched_locale = switch_to_locale( get_user_locale( $user ) );
+
+>>>>>>> aaronjorbin/master
 	$welcome_email = get_site_option( 'welcome_email' );
 	if ( $welcome_email == false ) {
 		/* translators: Do not translate USERNAME, SITE_NAME, BLOG_URL, PASSWORD: those are placeholders. */
@@ -1507,8 +1562,12 @@ We hope you enjoy your new site. Thanks!
 --The Team @ SITE_NAME' );
 	}
 
+<<<<<<< HEAD
 	$url = get_blogaddress_by_id( $blog_id);
 	$user = get_userdata( $user_id );
+=======
+	$url = get_blogaddress_by_id($blog_id);
+>>>>>>> aaronjorbin/master
 
 	$welcome_email = str_replace( 'SITE_NAME', $current_network->site_name, $welcome_email );
 	$welcome_email = str_replace( 'BLOG_TITLE', $title, $welcome_email );
@@ -1545,6 +1604,9 @@ We hope you enjoy your new site. Thanks!
 		$current_site->site_name = 'WordPress';
 	}
 
+	/* translators: New site notification email subject. 1: Network name, 2: New site name */
+	$subject = __( 'New %1$s Site: %2$s' );
+
 	/**
 	 * Filters the subject of the welcome email after site activation.
 	 *
@@ -1552,8 +1614,13 @@ We hope you enjoy your new site. Thanks!
 	 *
 	 * @param string $subject Subject of the email.
 	 */
-	$subject = apply_filters( 'update_welcome_subject', sprintf( __( 'New %1$s Site: %2$s' ), $current_network->site_name, wp_unslash( $title ) ) );
+	$subject = apply_filters( 'update_welcome_subject', sprintf( $subject, $current_network->site_name, wp_unslash( $title ) ) );
 	wp_mail( $user->user_email, wp_specialchars_decode( $subject ), $message, $message_headers );
+
+	if ( $switched_locale ) {
+		restore_previous_locale();
+	}
+
 	return true;
 }
 
@@ -1595,6 +1662,8 @@ function wpmu_welcome_user_notification( $user_id, $password, $meta = [] ) {
 
 	$user = get_userdata( $user_id );
 
+	$switched_locale = switch_to_locale( get_user_locale( $user ) );
+
 	/**
 	 * Filters the content of the welcome email after user activation.
 	 *
@@ -1627,6 +1696,9 @@ function wpmu_welcome_user_notification( $user_id, $password, $meta = [] ) {
 		$current_site->site_name = 'WordPress';
 	}
 
+	/* translators: New user notification email subject. 1: Network name, 2: New user login */
+	$subject = __( 'New %1$s User: %2$s' );
+
 	/**
 	 * Filters the subject of the welcome email after user activation.
 	 *
@@ -1634,8 +1706,13 @@ function wpmu_welcome_user_notification( $user_id, $password, $meta = [] ) {
 	 *
 	 * @param string $subject Subject of the email.
 	 */
-	$subject = apply_filters( 'update_welcome_user_subject', sprintf( __( 'New %1$s User: %2$s' ), $current_network->site_name, $user->user_login) );
+	$subject = apply_filters( 'update_welcome_user_subject', sprintf( $subject, $current_network->site_name, $user->user_login) );
 	wp_mail( $user->user_email, wp_specialchars_decode( $subject ), $message, $message_headers );
+
+	if ( $switched_locale ) {
+		restore_previous_locale();
+	}
+
 	return true;
 }
 
@@ -1811,8 +1888,8 @@ function check_upload_mimes( $mimes ) {
  *
  * WordPress MS stores a blog's post count as an option so as
  * to avoid extraneous COUNTs when a blog's details are fetched
- * with get_blog_details(). This function is called when posts
- * are published or unpublished to make sure the count stays current.
+ * with get_site(). This function is called when posts are published
+ * or unpublished to make sure the count stays current.
  *
  * @since MU
  *

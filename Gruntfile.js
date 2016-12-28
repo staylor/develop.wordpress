@@ -443,7 +443,8 @@ module.exports = function(grunt) {
 		},
 		uglify: {
 			options: {
-				ASCIIOnly: true
+				ASCIIOnly: true,
+				screwIE8: false
 			},
 			core: {
 				expand: true,
@@ -836,6 +837,9 @@ module.exports = function(grunt) {
 
 	// Patch task.
 	grunt.renameTask('patch_wordpress', 'patch');
+
+	// Add an alias `apply` of the `patch` task name.
+	grunt.registerTask('apply', 'patch');
 
 	// Default task.
 	grunt.registerTask('default', ['build']);

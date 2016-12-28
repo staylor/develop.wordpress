@@ -187,7 +187,7 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 		$post_data['post_date'] = sprintf( "%04d-%02d-%02d %02d:%02d:%02d", $aa, $mm, $jj, $hh, $mn, $ss );
 		$valid_date = wp_checkdate( $mm, $jj, $aa, $post_data['post_date'] );
 		if ( !$valid_date ) {
-			return new Error( 'invalid_date', __( 'Whoops, the provided date is invalid.' ) );
+			return new WP_Error( 'invalid_date', __( 'Invalid date.' ) );
 		}
 		$post_data['post_date_gmt'] = get_gmt_from_date( $post_data['post_date'] );
 	}
@@ -329,8 +329,9 @@ function edit_post( $post_data = null ) {
 			}
 			if ( $meta->post_id != $post_ID ) {
 				continue;
-			}
-			if ( is_protected_meta( $value['key'], 'post' ) || ! current_user_can( 'edit_post_meta', $post_ID, $value['key'] ) ) {
+			if ( is_protected_meta( $meta->meta_key, 'post' ) || ! current_user_can( 'edit_post_meta', $post_ID, $meta->meta_key ) )
+				continue;
+			if ( is_protected_meta( $value['key'], 'post' ) || ! current_user_can( 'edit_post_meta', $post_ID, $value['key'] ) )
 				continue;
 			}
 			update_meta( $key, $value['key'], $value['value'] );
@@ -1250,6 +1251,8 @@ function wp_edit_attachments_query_vars( $q = false ) {
  *
  * @since 4.7.0
  * @access private
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param array $clauses An array including WHERE, GROUP BY, JOIN, ORDER BY,
  *                       DISTINCT, fields (SELECT), and LIMITS clauses.

@@ -1348,8 +1348,10 @@ class wpdb {
 		wp_load_translations_early();
 
 		if ( $caller = $this->get_caller() ) {
+			/* translators: 1: Database error message, 2: SQL query, 3: Name of the calling function */
 			$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s made by %3$s' ), $str, $this->last_query, $caller );
 		} else {
+			/* translators: 1: Database error message, 2: SQL query */
 			$error_str = sprintf( __( 'WordPress database error %1$s for query %2$s' ), $str, $this->last_query );
 		}
 
@@ -2280,10 +2282,8 @@ class wpdb {
 	 * @since 0.71
 	 *
 	 * @param string|null $query  SQL query.
-	 * @param string      $output Optional. one of ARRAY_A | ARRAY_N | OBJECT constants.
-	 *                            Return an associative array (column => value, ...),
-	 *                            a numerically indexed array (0 => value, ...) or
-	 *                            an object ( ->column = value ), respectively.
+	 * @param string      $output Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which correspond to
+	 *                            an stdClass object, an associative array, or a numeric array, respectively. Default OBJECT.
 	 * @param int         $y      Optional. Row to return. Indexed from 0.
 	 * @return array|object|null|void Database query result in format specified by $output or null on failure
 	 */
@@ -3023,12 +3023,18 @@ class wpdb {
 			return str_replace( '`', '', $maybe[1] );
 		}
 
-		// SHOW TABLE STATUS and SHOW TABLES
-		if ( preg_match( '/^\s*(?:'
-				. 'SHOW\s+TABLE\s+STATUS.+(?:LIKE\s+|WHERE\s+Name\s*=\s*)'
-				. '|SHOW\s+(?:FULL\s+)?TABLES.+(?:LIKE\s+|WHERE\s+Name\s*=\s*)'
-				. ')\W((?:[0-9a-zA-Z$_.`-]|[\xC2-\xDF][\x80-\xBF])+)\W/is', $query, $maybe ) ) {
-			return str_replace( '`', '', $maybe[1] );
+		// SHOW TABLE STATUS and SHOW TABLES WHERE Name = 'wp_posts'
+		if ( preg_match( '/^\s*SHOW\s+(?:TABLE\s+STATUS|(?:FULL\s+)?TABLES).+WHERE\s+Name\s*=\s*("|\')((?:[0-9a-zA-Z$_.-]|[\xC2-\xDF][\x80-\xBF])+)\\1/is', $query, $maybe ) ) {
+			return $maybe[2];
+		}
+
+		// SHOW TABLE STATUS LIKE and SHOW TABLES LIKE 'wp\_123\_%'
+		// This quoted LIKE operand seldom holds a full table name.
+		// It is usually a pattern for matching a prefix so we just
+		// strip the trailing % and unescape the _ to get 'wp_123_'
+		// which drop-ins can use for routing these SQL statements.
+		if ( preg_match( '/^\s*SHOW\s+(?:TABLE\s+STATUS|(?:FULL\s+)?TABLES)\s+(?:WHERE\s+Name\s+)?LIKE\s*("|\')((?:[\\\\0-9a-zA-Z$_.-]|[\xC2-\xDF][\x80-\xBF])+)%?\\1/is', $query, $maybe ) ) {
+			return str_replace( '\\_', '_', $maybe[2] );
 		}
 
 		// Big pattern for the rest of the table-related queries.
@@ -3186,16 +3192,27 @@ class wpdb {
 	 */
 	public function check_database_version() {
 		// Make sure the server has the required MySQL version
-		if ( version_compare( $this->db_version(), $this->app['required_mysql_version'], '<' ) ) {
-			return new Error(
-				'database_version',
-				sprintf(
-					__( '<strong>ERROR</strong>: WordPress %1$s requires MySQL %2$s or higher' ),
-					$this->app['wp_version'],
-					$this->app['required_mysql_version']
-				)
-			);
+		if ( version_compare($this->db_version(), $required_mysql_version, '<') ) {
+			/* translators: 1: WordPress version number, 2: Minimum required MySQL version number */
+			return new WP_Error('database_version', sprintf( __( '<strong>ERROR</strong>: WordPress %1$s requires MySQL %2$s or higher' ), $wp_version, $required_mysql_version ));
 		}
+	}
+
+	/**
+	 * Whether the database supports collation.
+	 *
+	 * Called when WordPress is generating the table scheme.
+	 *
+	 * Use `wpdb::has_cap( 'collation' )`.
+	 *
+	 * @since 2.5.0
+	 * @deprecated 3.5.0 Use wpdb::has_cap()
+	 *
+	 * @return bool True if collation is supported, false if version does not
+	 */
+	public function supports_collation() {
+		_deprecated_function( __FUNCTION__, '3.5.0', 'wpdb::has_cap( \'collation\' )' );
+		return $this->has_cap( 'collation' );
 	}
 
 	/**

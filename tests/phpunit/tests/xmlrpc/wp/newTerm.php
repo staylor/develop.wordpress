@@ -4,14 +4,13 @@
  * @group xmlrpc
  */
 class Tests_XMLRPC_wp_newTerm extends WP_XMLRPC_UnitTestCase {
-	var $parent_term;
 
-	function setUp() {
-		parent::setUp();
+	protected static $parent_term_id;
 
-		$this->parent_term = wp_insert_term( 'parent' . rand_str(), 'category' );
-		$this->assertInternalType( 'array', $this->parent_term );
-		$this->parent_term = $this->parent_term['term_id'];
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		self::$parent_term_id = $factory->term->create( array(
+			'taxonomy' => 'category',
+		) );
 	}
 
 	function test_invalid_username_password() {

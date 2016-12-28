@@ -291,6 +291,8 @@ function is_taxonomy_hierarchical( $taxonomy ) {
  * @since 4.4.0 The `show_ui` argument is now enforced on the term editing screen.
  * @since 4.4.0 The `public` argument now controls whether the taxonomy can be queried on the front end.
  * @since 4.5.0 Introduced `publicly_queryable` argument.
+ * @since 4.7.0 Introduced `show_in_rest`, 'rest_base' and 'rest_controller_class'
+ *              arguments to register the Taxonomy in REST API.
  *
  * @global array $wp_taxonomies Registered taxonomies.
  *
@@ -320,6 +322,9 @@ function is_taxonomy_hierarchical( $taxonomy ) {
  *                                                (default true).
  *     @type bool          $show_in_nav_menus     Makes this taxonomy available for selection in navigation menus. If not
  *                                                set, the default is inherited from `$public` (default true).
+ *     @type bool          $show_in_rest          Whether to include the taxonomy in the REST API.
+ *     @type string        $rest_base             To change the base url of REST API route. Default is $taxonomy.
+ *     @type string        $rest_controller_class REST API Controller class name. Default is 'WP_REST_Terms_Controller'.
  *     @type bool          $show_tagcloud         Whether to list the taxonomy in the Tag Cloud Widget controls. If not set,
  *                                                the default is inherited from `$show_ui` (default true).
  *     @type bool          $show_in_quick_edit    Whether to show the taxonomy in the quick/bulk edit panel. It not set,
@@ -390,7 +395,7 @@ function register_taxonomy( $taxonomy, $object_type, $args = [] ) {
 	 * @param array|string $object_type Object type or array of object types.
 	 * @param array        $opts        Array of taxonomy registration arguments.
 	 */
-	do_action( 'registered_taxonomy', $taxonomy, $object_type, $opts );
+	do_action( 'registered_taxonomy', $taxonomy, $object_type, (array) $taxonomy_object );
 }
 
 /**
@@ -703,7 +708,8 @@ function get_tax_sql( $tax_query, $primary_table, $primary_id_column ) {
  *                                 filters and return a `WP_Term` object corresponding to the `$term` data. If `WP_Term`,
  *                                 will return `$term`.
  * @param string     $taxonomy Optional. Taxonomy name that $term is part of.
- * @param string     $output   Constant OBJECT, ARRAY_A, or ARRAY_N
+ * @param string     $output   Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which correspond to
+ *                             a WP_Term object, an associative array, or a numeric array, respectively. Default OBJECT.
  * @param string     $filter   Optional, default is raw or no WordPress defined filter will applied.
  * @return array|WP_Term|Error|null Object of the type specified by `$output` on success. When `$output` is 'OBJECT',
  *                                     a WP_Term instance is returned. If taxonomy does not exist, a Error is
@@ -809,10 +815,11 @@ function get_term( $term, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
  * @param string     $field    Either 'slug', 'name', 'id' (term_id ), or 'term_taxonomy_id'
  * @param string|int $value    Search for this term value
  * @param string     $taxonomy Taxonomy name. Optional, if `$field` is 'term_taxonomy_id'.
- * @param string     $output   Constant OBJECT, ARRAY_A, or ARRAY_N
+ * @param string     $output   Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which correspond to
+ *                             a WP_Term object, an associative array, or a numeric array, respectively. Default OBJECT.
  * @param string     $filter   Optional, default is raw or no WordPress defined filter will applied.
- * @return WP_Term|bool WP_Term instance on success. Will return false if `$taxonomy` does not exist
- *                      or `$term` was not found.
+ * @return WP_Term|array|false WP_Term instance (or array) on success. Will return false if `$taxonomy` does not exist
+ *                             or `$term` was not found.
  */
 function get_term_by( $field, $value, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
 
@@ -2689,10 +2696,18 @@ function wp_update_term( int $term_id, $taxonomy, $args = [] ) {
 	if ( $duplicate && $duplicate->term_id != $term_id ) {
 		// If an empty slug was passed or the parent changed, reset the slug to something unique.
 		// Otherwise, bail.
+<<<<<<< HEAD
 		if ( $empty_slug || ( $parent != $term['parent'] ) ) {
 			$slug = wp_unique_term_slug( $slug, (object) $args );
 		} else {
 			return new Error( 'duplicate_term_slug', sprintf( __( 'The slug &#8220;%s&#8221; is already in use by another term' ), $slug ) );
+=======
+		if ( $empty_slug || ( $parent != $term['parent']) ) {
+			$slug = wp_unique_term_slug($slug, (object) $args);
+		} else {
+			/* translators: 1: Taxonomy term slug */
+			return new WP_Error('duplicate_term_slug', sprintf(__('The slug &#8220;%s&#8221; is already in use by another term'), $slug));
+>>>>>>> aaronjorbin/master
 		}
 	}
 
@@ -3055,7 +3070,11 @@ function clean_term_cache( $ids, $taxonomy = '', $clean_taxonomy = true) {
  * function only fetches relationship data that is already in the cache.
  *
  * @since 2.3.0
+<<<<<<< HEAD
  * @since 4.6.2 Returns a Error object if get_term() returns an error for
+=======
+ * @since 4.7.0 Returns a WP_Error object if get_term() returns an error for
+>>>>>>> aaronjorbin/master
  *              any of the matched terms.
  *
  * @param int    $id       Term object ID.
