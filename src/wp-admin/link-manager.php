@@ -63,13 +63,20 @@ if ( ! current_user_can( 'manage_links' ) ) {
 ?>
 
 <div class="wrap nosubsub">
-<h1><?php echo esc_html( $app->get( 'title' ) ); ?> <a href="link-add.php" class="page-title-action"><?php echo esc_html_x( 'Add New', 'link' ); ?></a> <?php
+<h1 class="wp-heading-inline"><?php
+echo esc_html( $app->get( 'title' ) );
+?></h1>
+
+<a href="link-add.php" class="page-title-action"><?php echo esc_html_x( 'Add New', 'link' ); ?></a>
+
+<?php
 if ( strlen( $_request->get( 's' ) ) ) {
 	/* translators: %s: search keywords */
 	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( wp_unslash( $_request->get( 's' ) ) ) );
 }
 ?>
-</h1>
+
+<hr class="wp-header-end">
 
 <?php
 if ( $_request->get( 'deleted' ) ) {

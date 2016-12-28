@@ -217,9 +217,11 @@ if ( $_request->get( 'updated' ) == 'true' && ! empty( $_request->get( 'action' 
 }
 	?>
 <div class="wrap">
-	<h1><?php esc_html_e( 'Users' );
-	if ( current_user_can( 'create_users' ) ) : ?>
-		<a href="<?php echo network_admin_url( 'user-new.php' ); ?>" class="page-title-action"><?php echo esc_html_x( 'Add New', 'user' ); ?></a><?php
+	<h1 class="wp-heading-inline"><?php esc_html_e( 'Users' ); ?></h1>
+
+	<?php
+	if ( current_user_can( 'create_users') ) : ?>
+		<a href="<?php echo network_admin_url('user-new.php'); ?>" class="page-title-action"><?php echo esc_html_x( 'Add New', 'user' ); ?></a><?php
 	endif;
 
 	if ( strlen( $usersearch ) ) {
@@ -227,7 +229,8 @@ if ( $_request->get( 'updated' ) == 'true' && ! empty( $_request->get( 'action' 
 		printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( $usersearch ) );
 	}
 	?>
-	</h1>
+
+	<hr class="wp-header-end">
 
 	<?php $wp_list_table->views(); ?>
 
