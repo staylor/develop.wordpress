@@ -1474,6 +1474,33 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 				</div>
 			</fieldset>
+			<br class="clear" />
+	<?php endif; // $bulk
+
+		if ( post_type_supports( $screen->post_type, 'author' ) ) :
+			$authors_dropdown = '';
+
+			if ( current_user_can( $post_type_object->cap->edit_others_posts ) ) :
+				$users_opt = array(
+					'hide_if_only_one_author' => false,
+					'who' => 'authors',
+					'name' => 'post_author',
+					'class'=> 'authors',
+					'multi' => 1,
+					'echo' => 0,
+					'show' => 'display_name_with_login',
+				);
+				if ( $bulk )
+					$users_opt['show_option_none'] = __( '&mdash; No Change &mdash;' );
+
+				if ( $authors = wp_dropdown_users( $users_opt ) ) :
+					$authors_dropdown  = '<label class="inline-edit-author">';
+					$authors_dropdown .= '<span class="title">' . __( 'Author' ) . '</span>';
+					$authors_dropdown .= $authors;
+					$authors_dropdown .= '</label>';
+				endif;
+			endif; // authors
+	?>
 
 	<?php if ( count( $hierarchical_taxonomies ) && !$bulk ) { ?>
 

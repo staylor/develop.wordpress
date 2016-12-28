@@ -10,6 +10,8 @@
  * @group restapi
  */
 class Tests_REST_Request extends WP_UnitTestCase {
+	public $request;
+
 	public function setUp() {
 		parent::setUp();
 
@@ -342,6 +344,42 @@ class Tests_REST_Request extends WP_UnitTestCase {
 		$this->assertEquals( 'rest_invalid_param', $valid->get_error_code() );
 	}
 
+	public function test_sanitize_params_with_null_callback() {
+		$this->request->set_url_params( array(
+			'some_email' => '',
+		) );
+
+		$this->request->set_attributes( array(
+			'args' => array(
+				'some_email' => array(
+					'type'              => 'string',
+					'format'            => 'email',
+					'sanitize_callback' => null,
+				),
+			),
+		) );
+
+		$this->assertTrue( $this->request->sanitize_params() );
+	}
+
+	public function test_sanitize_params_with_false_callback() {
+		$this->request->set_url_params( array(
+			'some_uri'   => 1.23422,
+		) );
+
+		$this->request->set_attributes( array(
+			'args' => array(
+				'some_uri' => array(
+					'type'              => 'string',
+					'format'            => 'uri',
+					'sanitize_callback' => false,
+				),
+			),
+		) );
+
+		$this->assertTrue( $this->request->sanitize_params() );
+	}
+
 	public function test_has_valid_params_required_flag() {
 		$this->request->set_attributes( array(
 			'args' => array(
@@ -412,6 +450,19 @@ class Tests_REST_Request extends WP_UnitTestCase {
 		$this->assertEquals( 'rest_invalid_json', $valid->get_error_code() );
 		$data = $valid->get_error_data();
 		$this->assertEquals( JSON_ERROR_SYNTAX, $data['json_error_code'] );
+	}
+
+
+	public function test_has_valid_params_empty_json_no_error() {
+		if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
+			return $this->markTestSkipped( 'JSON validation is only available for PHP 5.3+' );
+		}
+
+		$this->request->set_header( 'Content-Type', 'application/json' );
+		$this->request->set_body( '' );
+
+		$valid = $this->request->has_valid_params();
+		$this->assertNotWPError( $valid );
 	}
 
 	public function test_has_multiple_invalid_params_validate_callback() {

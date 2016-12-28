@@ -1009,7 +1009,11 @@ final class WP_Customize_Manager {
 				'posts_per_page' => -1,
 			) );
 			foreach ( $existing_posts_query->posts as $existing_post ) {
-				$existing_starter_content_posts[ $existing_post->post_type . ':' . $existing_post->post_name ] = $existing_post;
+				$post_name = $existing_post->post_name;
+				if ( empty( $post_name ) ) {
+					$post_name = get_post_meta( $existing_post->ID, '_customize_draft_post_name', true );
+				}
+				$existing_starter_content_posts[ $existing_post->post_type . ':' . $post_name ] = $existing_post;
 			}
 		}
 
@@ -1070,7 +1074,7 @@ final class WP_Customize_Manager {
 					}
 
 					$attachment_post_data = array_merge(
-						wp_array_slice_assoc( $attachment, array( 'post_title', 'post_content', 'post_excerpt', 'post_name' ) ),
+						wp_array_slice_assoc( $attachment, array( 'post_title', 'post_content', 'post_excerpt' ) ),
 						array(
 							'post_status' => 'auto-draft', // So attachment will be garbage collected in a week if changeset is never published.
 						)
@@ -1088,6 +1092,7 @@ final class WP_Customize_Manager {
 						continue;
 					}
 					update_post_meta( $attachment_id, '_starter_content_theme', $this->get_stylesheet() );
+					update_post_meta( $attachment_id, '_customize_draft_post_name', $attachment['post_name'] );
 				}
 
 				$attachment_ids[ $symbol ] = $attachment_id;
@@ -1774,6 +1779,17 @@ final class WP_Customize_Manager {
 			}
 			$allowed_hosts[] = $host;
 		}
+
+		$switched_locale = switch_to_locale( get_user_locale() );
+		$l10n = array(
+			'shiftClickToEdit' => __( 'Shift-click to edit this element.' ),
+			'linkUnpreviewable' => __( 'This link is not live-previewable.' ),
+			'formUnpreviewable' => __( 'This form is not live-previewable.' ),
+		);
+		if ( $switched_locale ) {
+			restore_previous_locale();
+		}
+
 		$settings = array(
 			'changeset' => array(
 				'uuid' => $this->_changeset_uuid,
@@ -1798,11 +1814,7 @@ final class WP_Customize_Manager {
 			'activeControls' => array(),
 			'settingValidities' => $exported_setting_validities,
 			'nonce' => current_user_can( 'customize' ) ? $this->get_nonces() : array(),
-			'l10n' => array(
-				'shiftClickToEdit' => __( 'Shift-click to edit this element.' ),
-				'linkUnpreviewable' => __( 'This link is not live-previewable.' ),
-				'formUnpreviewable' => __( 'This form is not live-previewable.' ),
-			),
+			'l10n' => $l10n,
 			'_dirty' => array_keys( $post_values ),
 		);
 
@@ -3887,7 +3899,7 @@ final class WP_Customize_Manager {
 		$this->add_setting( 'external_header_video', array(
 			'theme_supports'    => array( 'custom-header', 'video' ),
 			'transport'         => 'postMessage',
-			'sanitize_callback' => 'esc_url_raw',
+			'sanitize_callback' => array( $this, '_sanitize_external_header_video' ),
 			'validate_callback' => array( $this, '_validate_external_header_video' ),
 		) );
 
@@ -4131,6 +4143,9 @@ final class WP_Customize_Manager {
 			'type'     => 'textarea',
 			'section'  => 'custom_css',
 			'settings' => array( 'default' => $custom_css_setting->id ),
+			'input_attrs' => array(
+				'class' => 'code', // Ensures contents displayed as LTR instead of RTL.
+			),
 		) );
 	}
 
@@ -4304,6 +4319,18 @@ final class WP_Customize_Manager {
 			}
 		}
 		return $validity;
+	}
+
+	/**
+	 * Callback for sanitizing the external_header_video value.
+	 *
+	 * @since 4.7.1
+	 *
+	 * @param string $value URL.
+	 * @return string Sanitized URL.
+	 */
+	public function _sanitize_external_header_video( $value ) {
+		return esc_url_raw( trim( $value ) );
 	}
 
 	/**

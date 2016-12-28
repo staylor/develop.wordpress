@@ -1389,16 +1389,20 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	 * @ticket 28374
 	 */
 	function test_current_user_edit_caps() {
-		$user = new User( self::factory()->user->create( array( 'role' => 'contributor' ) ) );
+		$user = self::$users['contributor'];
 		wp_set_current_user( $user->ID );
 
 		$user->add_cap( 'publish_posts' );
-		$user->add_cap( 'publish_pages' );
 		$this->assertTrue( $user->has_cap( 'publish_posts' ) );
+
+		$user->add_cap( 'publish_pages' );
 		$this->assertTrue( $user->has_cap( 'publish_pages' ) );
 
 		$user->remove_cap( 'publish_pages' );
 		$this->assertFalse( $user->has_cap( 'publish_pages' ) );
+
+		$user->remove_cap( 'publish_posts' );
+		$this->assertFalse( $user->has_cap( 'publish_posts' ) );
 	}
 
 	function test_subscriber_cant_edit_posts() {
@@ -1757,5 +1761,22 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	public function test_user_cannot_add_user_meta() {
 		wp_set_current_user( self::$users['editor']->ID );
 		$this->assertFalse( current_user_can( 'add_user_meta', self::$users['subscriber']->ID, 'foo' ) );
+	}
+
+	/**
+	 * @ticket 39063
+	 */
+	public function test_only_super_admins_can_remove_themselves_on_multisite() {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'Test only runs in multisite.' );
+		}
+
+		$this->assertTrue( user_can( self::$super_admin->ID, 'remove_user', self::$super_admin->ID ) );
+
+		$this->assertFalse( user_can( self::$users['administrator']->ID, 'remove_user', self::$users['administrator']->ID ) );
+		$this->assertFalse( user_can( self::$users['editor']->ID,        'remove_user', self::$users['editor']->ID ) );
+		$this->assertFalse( user_can( self::$users['author']->ID,        'remove_user', self::$users['author']->ID ) );
+		$this->assertFalse( user_can( self::$users['contributor']->ID,   'remove_user', self::$users['contributor']->ID ) );
+		$this->assertFalse( user_can( self::$users['subscriber']->ID,    'remove_user', self::$users['subscriber']->ID ) );
 	}
 }

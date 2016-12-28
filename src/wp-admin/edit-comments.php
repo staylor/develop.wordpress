@@ -79,7 +79,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 
 <div class="wrap">
-<h1><?php
+<h1 class="wp-heading-inline"><?php
 if ( $post_id ) {
 	/* translators: %s: link to post */
 	printf( __( 'Comments on &#8220;%s&#8221;' ),
@@ -91,6 +91,7 @@ if ( $post_id ) {
 } else {
 	_e( 'Comments' );
 }
+?></h1>
 
 if ( strlen( $view->_request->get( 's' ) ) ) {
 	echo '<span class="subtitle">';
@@ -100,7 +101,9 @@ if ( strlen( $view->_request->get( 's' ) ) ) {
 	);
 	echo '</span>';
 }
-?></h1>
+?>
+
+<hr class="wp-header-end">
 
 <?php
 $error = $view->_request->getInt( 'error' );

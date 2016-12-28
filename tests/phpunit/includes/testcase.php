@@ -59,6 +59,13 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	}
 
 	public static function setUpBeforeClass() {
+		global $wpdb;
+
+		$wpdb->suppress_errors = false;
+		$wpdb->show_errors = true;
+		$wpdb->db_connect();
+		ini_set('display_errors', 1 );
+
 		parent::setUpBeforeClass();
 
 		$c = self::get_called_class();
@@ -107,6 +114,7 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 		$wpdb->show_errors = true;
 		$wpdb->db_connect();
 		ini_set('display_errors', 1 );
+
 		$this->clean_up_global_scope();
 
 		/*

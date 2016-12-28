@@ -2211,7 +2211,7 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *                        values include 'raw', 'edit', 'db', 'display',
 			 *                        'attribute' and 'js'.
 			 */
-			$value = apply_filters( $field, $value, $post_id, $context );
+			$value = apply_filters( "{$field}", $value, $post_id, $context );
 		} else {
 			$value = apply_filters( "post_{$field}", $value, $post_id, $context );
 		}
@@ -3882,7 +3882,7 @@ function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_p
 
 	if ( 'attachment' == $post_type ) {
 		// Attachment slugs must be unique across all types.
-		$check_sql = "SELECT post_name FROM $wpdb->posts WHERE post_status != 'auto-draft' AND post_name = %s AND ID != %d LIMIT 1";
+		$check_sql = "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND ID != %d LIMIT 1";
 		$post_name_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $slug, $post_ID ) );
 
 		/**
@@ -3911,7 +3911,7 @@ function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_p
 		 * Page slugs must be unique within their own trees. Pages are in a separate
 		 * namespace than posts so page slugs are allowed to overlap post slugs.
 		 */
-		$check_sql = "SELECT post_name FROM $wpdb->posts WHERE post_status != 'auto-draft' AND post_name = %s AND post_type IN ( %s, 'attachment' ) AND ID != %d AND post_parent = %d LIMIT 1";
+		$check_sql = "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_type IN ( %s, 'attachment' ) AND ID != %d AND post_parent = %d LIMIT 1";
 		$post_name_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $slug, $post_type, $post_ID, $post_parent ) );
 
 		/**
@@ -3935,7 +3935,7 @@ function wp_unique_post_slug( $slug, $post_ID, $post_status, $post_type, $post_p
 		}
 	} else {
 		// Post slugs must be unique across all posts.
-		$check_sql = "SELECT post_name FROM $wpdb->posts WHERE post_status != 'auto-draft' AND post_name = %s AND post_type = %s AND ID != %d LIMIT 1";
+		$check_sql = "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_type = %s AND ID != %d LIMIT 1";
 		$post_name_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $slug, $post_type, $post_ID ) );
 
 		// Prevent new post slugs that could result in URLs that conflict with date archives.
@@ -6508,4 +6508,33 @@ function wp_add_trashed_suffix_to_post_name_for_post( $post ) {
 	);
 	clean_post_cache( $post->ID );
 	return $post_name;
+}
+
+/**
+ * Filter the SQL clauses of an attachment query to include filenames.
+ *
+ * @since 4.7.0
+ * @access private
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param array $clauses An array including WHERE, GROUP BY, JOIN, ORDER BY,
+ *                       DISTINCT, fields (SELECT), and LIMITS clauses.
+ * @return array The modified clauses.
+ */
+function _filter_query_attachment_filenames( $clauses ) {
+	global $wpdb;
+	remove_filter( 'posts_clauses', __FUNCTION__ );
+
+	// Add a LEFT JOIN of the postmeta table so we don't trample existing JOINs.
+	$clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS sq1 ON ( {$wpdb->posts}.ID = sq1.post_id AND sq1.meta_key = '_wp_attached_file' )";
+
+	$clauses['groupby'] = "{$wpdb->posts}.ID";
+
+	$clauses['where'] = preg_replace(
+		"/\({$wpdb->posts}.post_content (NOT LIKE|LIKE) (\'[^']+\')\)/",
+		"$0 OR ( sq1.meta_value $1 $2 )",
+		$clauses['where'] );
+
+	return $clauses;
 }

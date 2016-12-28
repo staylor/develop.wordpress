@@ -350,7 +350,7 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 				'top' => array(
 					'name'  => 'Menu Name',
 					'items' => array(
-						'page_home',
+						'link_home',
 						'page_about',
 						'page_blog',
 						'link_email',
@@ -453,8 +453,13 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 				$this->assertEquals( 'inherit', $post->post_status );
 			} else {
 				$this->assertEquals( 'auto-draft', $post->post_status );
+				$this->assertEmpty( $post->post_name );
 			}
-			$posts_by_name[ $post->post_name ] = $post->ID;
+			$post_name = $post->post_name;
+			if ( empty( $post_name ) ) {
+				$post_name = get_post_meta( $post->ID, '_customize_draft_post_name', true );
+			}
+			$posts_by_name[ $post_name ] = $post->ID;
 		}
 		$this->assertEquals( array( 'waffles', 'canola', 'home', 'about', 'blog', 'custom' ), array_keys( $posts_by_name ) );
 		$this->assertEquals( 'Custom', get_post( $posts_by_name['custom'] )->post_title );
@@ -464,6 +469,7 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 		$this->assertEquals( '', get_post_thumbnail_id( $posts_by_name['blog'] ) );
 		$attachment_metadata = wp_get_attachment_metadata( $posts_by_name['waffles'] );
 		$this->assertEquals( 'Waffles', get_post( $posts_by_name['waffles'] )->post_title );
+		$this->assertEquals( 'waffles', get_post_meta( $posts_by_name['waffles'], '_customize_draft_post_name', true ) );
 		$this->assertArrayHasKey( 'file', $attachment_metadata );
 		$this->assertContains( 'waffles', $attachment_metadata['file'] );
 
@@ -472,7 +478,9 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 		$this->assertEquals( $posts_by_name['blog'], $changeset_values['page_for_posts'] );
 
 		$this->assertEquals( -1, $changeset_values['nav_menu_locations[top]'] );
-		$this->assertEquals( $posts_by_name['home'], $changeset_values['nav_menu_item[-1]']['object_id'] );
+		$this->assertEquals( 0, $changeset_values['nav_menu_item[-1]']['object_id'] );
+		$this->assertEquals( 'custom', $changeset_values['nav_menu_item[-1]']['type'] );
+		$this->assertEquals( home_url(), $changeset_values['nav_menu_item[-1]']['url'] );
 
 		$this->assertEmpty( $wp_customize->changeset_data() );
 		$this->assertNull( $wp_customize->changeset_post_id() );
@@ -488,7 +496,7 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 		// Ensure that re-importing doesn't cause auto-drafts to balloon.
 		$wp_customize->import_theme_starter_content();
 		$changeset_data = $wp_customize->changeset_data();
-		$this->assertEqualSets( array_values( $posts_by_name ), $changeset_data['nav_menus_created_posts']['value'], 'Auto-drafts should not get re-created and amended with each import.' );
+		$this->assertEqualSets( array_values( $posts_by_name ), $changeset_data['nav_menus_created_posts']['value'] ); // Auto-drafts should not get re-created and amended with each import.
 
 		// Test that saving non-starter content on top of the changeset clears the starter_content flag.
 		$wp_customize->save_changeset_post( array(
@@ -539,6 +547,8 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 		$this->assertContains( 'canola', get_custom_logo() );
 		$this->assertContains( 'waffles', get_header_image() );
 		$this->assertContains( 'waffles', get_background_image() );
+		$this->assertEquals( 'waffles', get_post( $posts_by_name['waffles'] )->post_name );
+		$this->assertEmpty( get_post_meta( $posts_by_name['waffles'], '_customize_draft_post_name', true ) );
 	}
 
 	/**
@@ -2571,6 +2581,31 @@ class Tests_WP_Customize_Manager extends WP_UnitTestCase {
 
 		$result = $this->manager->panels();
 		$this->assertEquals( $panels_sorted, array_keys( $result ) );
+	}
+
+	/**
+	 * Verify sanitization of external header video URL will trim the whitespaces in the beginning and end of the URL.
+	 *
+	 * @ticket 39125
+	 */
+	function test_sanitize_external_header_video_trim() {
+		$this->manager->register_controls();
+		$setting = $this->manager->get_setting( 'external_header_video' );
+		$video_url = 'https://www.youtube.com/watch?v=KiS8rZBeIO0';
+
+		$whitespaces = array(
+			' ',  // space
+			"\t", // horizontal tab
+			"\n", // line feed
+			"\r", // carriage return,
+			"\f", // form feed,
+			"\v", // vertical tab
+		);
+
+		foreach ( $whitespaces as $whitespace  ) {
+			$sanitized = $setting->sanitize( $whitespace . $video_url . $whitespace );
+			$this->assertEquals( $video_url, $sanitized );
+		}
 	}
 }
 

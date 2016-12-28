@@ -1898,6 +1898,8 @@ function wp_get_object_terms( $object_ids, $taxonomies, $args = [] ) {
 	}
 	$ids = array_map( 'intval', $object_ids );
 
+	$args = wp_parse_args( $args );
+
 	$args['taxonomy'] = $taxonomies;
 	$args['object_ids'] = $ids;
 

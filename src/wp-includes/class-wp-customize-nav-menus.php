@@ -534,10 +534,7 @@ final class WP_Customize_Nav_Menus {
 	 */
 	public function customize_register() {
 
-		/*
-		 * Preview settings for nav menus early so that the sections and controls will be added properly.
-		 * See https://github.com/xwp/wp-customize-snapshots/blob/962586659688a5b1fd9ae93618b7ce2d4e7a421c/php/class-customize-snapshot-manager.php#L506-L543
-		 */
+		// Preview settings for nav menus early so that the sections and controls will be added properly.
 		$nav_menus_setting_ids = array();
 		foreach ( array_keys( $this->manager->unsanitized_post_values() ) as $setting_id ) {
 			if ( preg_match( '/^(nav_menu_locations|nav_menu|nav_menu_item)\[/', $setting_id ) ) {
@@ -545,10 +542,12 @@ final class WP_Customize_Nav_Menus {
 			}
 		}
 		$this->manager->add_dynamic_settings( $nav_menus_setting_ids );
-		foreach ( $nav_menus_setting_ids as $setting_id ) {
-			$setting = $this->manager->get_setting( $setting_id );
-			if ( $setting ) {
-				$setting->preview();
+		if ( ! $this->manager->doing_ajax( 'customize_save' ) ) {
+			foreach ( $nav_menus_setting_ids as $setting_id ) {
+				$setting = $this->manager->get_setting( $setting_id );
+				if ( $setting ) {
+					$setting->preview();
+				}
 			}
 		}
 
@@ -806,6 +805,11 @@ final class WP_Customize_Nav_Menus {
 		if ( empty( $postarr['post_name'] ) ) {
 			$postarr['post_name'] = sanitize_title( $postarr['post_title'] );
 		}
+		if ( ! isset( $postarr['meta_input'] ) ) {
+			$postarr['meta_input'] = array();
+		}
+		$postarr['meta_input']['_customize_draft_post_name'] = $postarr['post_name'];
+		unset( $postarr['post_name'] );
 
 		add_filter( 'wp_insert_post_empty_content', '__return_false', 1000 );
 		$r = wp_insert_post( wp_slash( $postarr ), true );
@@ -1195,9 +1199,19 @@ final class WP_Customize_Nav_Menus {
 		if ( ! empty( $post_ids ) ) {
 			foreach ( $post_ids as $post_id ) {
 				$target_status = 'attachment' === get_post_type( $post_id ) ? 'inherit' : 'publish';
+				$args = array(
+					'ID' => $post_id,
+					'post_status' => $target_status,
+				);
+				$post_name = get_post_meta( $post_id, '_customize_draft_post_name', true );
+				if ( $post_name ) {
+					$args['post_name'] = $post_name;
+				}
 
 				// Note that wp_publish_post() cannot be used because unique slugs need to be assigned.
-				wp_update_post( array( 'ID' => $post_id, 'post_status' => $target_status ) );
+				wp_update_post( wp_slash( $args ) );
+
+				delete_post_meta( $post_id, '_customize_draft_post_name' );
 			}
 		}
 	}

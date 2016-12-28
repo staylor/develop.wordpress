@@ -725,7 +725,7 @@ case 'register' :
 	$user_email = '';
 	if ( $http_post ) {
 		$user_login = $_post->get( 'user_login', '' );
-		$user_email = $_post->get( 'user_email', '' );
+		$user_email = wp_unslash( $_post->get( 'user_email', '' ) );
 		$errors = register_new_user($user_login, $user_email);
 		if ( !is_error($errors) ) {
 			$redirect_to = $_post->get( 'redirect_to', 'wp-login.php?checkemail=registered' );

@@ -185,14 +185,7 @@ function image_hwstring( $width, $height ) {
  *                     the image is an intermediate size. False on failure.
  */
 function image_downsize( $id, $size = 'medium' ) {
-<<<<<<< HEAD
-
-	if ( !wp_attachment_is_image( $id) ) {
-			return false;
-	}
-=======
 	$is_image = wp_attachment_is_image( $id );
->>>>>>> aaronjorbin/master
 
 	/**
 	 * Filters whether to preempt the output of image_downsize().
@@ -707,16 +700,12 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 	if ( is_array( $size ) ) {
 		$candidates = [];
 
-<<<<<<< HEAD
-		foreach ( $imagedata['sizes'] as $data ) {
-=======
 		if ( ! isset( $imagedata['file'] ) && isset( $imagedata['sizes']['full'] ) ) {
 			$imagedata['height'] = $imagedata['sizes']['full']['height'];
 			$imagedata['width']  = $imagedata['sizes']['full']['width'];
 		}
 
 		foreach ( $imagedata['sizes'] as $_size => $data ) {
->>>>>>> aaronjorbin/master
 			// If there's an exact match to an existing image size, short circuit.
 			if ( $data['width'] == $size[0] && $data['height'] == $size[1] ) {
 				$candidates[ $data['width'] * $data['height'] ] = $data;
@@ -769,17 +758,10 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 	}
 
 	// include the full filesystem path of the intermediate file
-<<<<<<< HEAD
-	if ( empty( $data['path'] ) && ! empty( $data['file'] ) ) {
-		$file_url = wp_get_attachment_url( $post_id);
-		$data['path'] = path_join( dirname( $imagedata['file'] ), $data['file'] );
-		$data['url'] = path_join( dirname( $file_url), $data['file'] );
-=======
 	if ( empty( $data['path'] ) && ! empty( $data['file'] ) && ! empty( $imagedata['file'] ) ) {
 		$file_url = wp_get_attachment_url($post_id);
 		$data['path'] = path_join( dirname($imagedata['file']), $data['file'] );
 		$data['url'] = path_join( dirname($file_url), $data['file'] );
->>>>>>> aaronjorbin/master
 	}
 
 	/**
@@ -3105,6 +3087,7 @@ function wp_prepare_attachment_for_js( $attachment ) {
 	}
 
 	$attachment_url = wp_get_attachment_url( $attachment->ID );
+	$base_url = str_replace( wp_basename( $attachment_url ), '', $attachment_url );
 
 	$response = array(
 		'id'          => $attachment->ID,
@@ -3182,13 +3165,8 @@ function wp_prepare_attachment_for_js( $attachment ) {
 			$response['nonces']['delete'] = wp_create_nonce( 'delete-post_' . $attachment->ID );
 	}
 
-<<<<<<< HEAD
-	if ( $meta && 'image' === $type ) {
-		$sizes = [];
-=======
 	if ( $meta && ( 'image' === $type || ! empty( $meta['sizes'] ) ) ) {
 		$sizes = array();
->>>>>>> aaronjorbin/master
 
 		/** This filter is documented in wp-admin/includes/media.php */
 		$possible_sizes = apply_filters( 'image_size_names_choose', array(
@@ -3207,16 +3185,10 @@ function wp_prepare_attachment_for_js( $attachment ) {
 
 			/** This filter is documented in wp-includes/media.php */
 			if ( $downsize = apply_filters( 'image_downsize', false, $attachment->ID, $size ) ) {
-<<<<<<< HEAD
-				if ( ! $downsize[3] ) {
-									continue;
-				}
-=======
 				if ( empty( $downsize[3] ) ) {
 					continue;
 				}
 
->>>>>>> aaronjorbin/master
 				$sizes[ $size ] = array(
 					'height'      => $downsize[2],
 					'width'       => $downsize[1],
@@ -3224,10 +3196,6 @@ function wp_prepare_attachment_for_js( $attachment ) {
 					'orientation' => $downsize[2] > $downsize[1] ? 'portrait' : 'landscape',
 				);
 			} elseif ( isset( $meta['sizes'][ $size ] ) ) {
-				if ( ! isset( $base_url ) ) {
-									$base_url = str_replace( wp_basename( $attachment_url ), '', $attachment_url );
-				}
-
 				// Nothing from the filter, so consult image metadata if we have it.
 				$size_meta = $meta['sizes'][ $size ];
 
@@ -3263,16 +3231,6 @@ function wp_prepare_attachment_for_js( $attachment ) {
 			);
 		}
 
-<<<<<<< HEAD
-		$response = array_merge( $response, array( 'sizes' => $sizes ), $sizes['full'] );
-	} elseif ( $meta && 'video' === $type ) {
-		if ( isset( $meta['width'] ) ) {
-					$response['width'] = (int) $meta['width'];
-		}
-		if ( isset( $meta['height'] ) ) {
-					$response['height'] = (int) $meta['height'];
-		}
-=======
 		$response = array_merge( $response, array( 'sizes' => $sizes ) );
 	}
 
@@ -3281,7 +3239,6 @@ function wp_prepare_attachment_for_js( $attachment ) {
 			$response['width'] = (int) $meta['width'];
 		if ( isset( $meta['height'] ) )
 			$response['height'] = (int) $meta['height'];
->>>>>>> aaronjorbin/master
 	}
 
 	if ( $meta && ( 'audio' === $type || 'video' === $type ) ) {

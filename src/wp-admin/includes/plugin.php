@@ -1082,7 +1082,7 @@ function uninstall_plugin( $plugin) {
 		wp_register_plugin_realpath( WP_PLUGIN_DIR . '/' . $file );
 		include( WP_PLUGIN_DIR . '/' . $file );
 
-		add_action( 'uninstall_' . $file, $callable );
+		add_action( "uninstall_{$file}", $callable );
 
 		/**
 		 * Fires in uninstall_plugin() once the plugin has been uninstalled.
@@ -1092,7 +1092,7 @@ function uninstall_plugin( $plugin) {
 		 *
 		 * @since 2.7.0
 		 */
-		do_action( 'uninstall_' . $file );
+		do_action( "uninstall_{$file}" );
 	}
 }
 

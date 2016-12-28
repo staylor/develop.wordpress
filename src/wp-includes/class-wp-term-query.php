@@ -306,7 +306,7 @@ class WP_Term_Query {
 		$wpdb = $app['db'];
 
 		$this->parse_query( $this->query_vars );
-		$args = $this->query_vars;
+		$args = &$this->query_vars;
 
 		// Set up meta_query so it's available to 'pre_get_terms'.
 		$this->meta_query = new WP_Meta_Query();

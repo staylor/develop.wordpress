@@ -198,34 +198,6 @@ foreach ( array( 'publish_post', 'publish_page', 'wp_ajax_save-widget', 'wp_ajax
 }
 
 // Misc filters
-<<<<<<< HEAD
-add_filter( 'option_ping_sites', 'privacy_ping_filter' );
-add_filter( 'option_blog_charset', '_wp_specialchars' ); // IMPORTANT: This must not be wp_specialchars() or esc_html() or it'll cause an infinite loop
-add_filter( 'option_blog_charset', '_canonical_charset' );
-add_filter( 'option_home', '_config_wp_home' );
-add_filter( 'option_siteurl', '_config_wp_siteurl' );
-add_filter( 'tiny_mce_before_init', '_mce_set_direction' );
-add_filter( 'teeny_mce_before_init', '_mce_set_direction' );
-add_filter( 'pre_kses', 'wp_pre_kses_less_than' );
-add_filter( 'sanitize_title', 'sanitize_title_with_dashes', 10, 3 );
-add_action( 'check_comment_flood', 'check_comment_flood_db', 10, 4 );
-add_filter( 'comment_flood_filter', 'wp_throttle_comment_flood', 10, 3 );
-add_filter( 'pre_comment_content', 'wp_rel_nofollow', 15 );
-add_filter( 'comment_email', 'antispambot' );
-add_filter( 'option_tag_base', '_wp_filter_taxonomy_base' );
-add_filter( 'option_category_base', '_wp_filter_taxonomy_base' );
-add_filter( 'the_posts', '_close_comments_for_old_posts', 10, 2 );
-add_filter( 'comments_open', '_close_comments_for_old_post', 10, 2 );
-add_filter( 'pings_open', '_close_comments_for_old_post', 10, 2 );
-add_filter( 'editable_slug', 'urldecode' );
-add_filter( 'editable_slug', 'esc_textarea' );
-add_filter( 'nav_menu_meta_box_object', '_wp_nav_menu_meta_box_object' );
-add_filter( 'pingback_ping_source_uri', 'pingback_ping_source_uri' );
-add_filter( 'xmlrpc_pingback_error', 'xmlrpc_pingback_error' );
-add_filter( 'title_save_pre', 'trim' );
-
-add_filter( 'http_request_host_is_external', 'allowed_http_request_hosts', 10, 2 );
-=======
 add_filter( 'option_ping_sites',        'privacy_ping_filter'                 );
 add_filter( 'option_blog_charset',      '_wp_specialchars'                    ); // IMPORTANT: This must not be wp_specialchars() or esc_html() or it'll cause an infinite loop
 add_filter( 'option_blog_charset',      '_canonical_charset'                  );
@@ -254,7 +226,6 @@ add_filter( 'title_save_pre',           'trim'                                );
 add_action( 'transition_comment_status', '_clear_modified_cache_on_transition_comment_status', 10, 2 );
 
 add_filter( 'http_request_host_is_external',    'allowed_http_request_hosts', 10, 2 );
->>>>>>> aaronjorbin/master
 
 // REST API filters.
 add_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
@@ -268,34 +239,34 @@ add_action( 'auth_cookie_valid', 'rest_cookie_collect_status' );
 add_filter( 'rest_authentication_errors', 'rest_cookie_check_errors', 100 );
 
 // Actions
-add_action( 'wp_head', '_wp_render_title_tag', 1 );
-add_action( 'wp_head', 'wp_enqueue_scripts', 1 );
-add_action( 'wp_head', 'wp_resource_hints', 2 );
-add_action( 'wp_head', 'feed_links', 2 );
-add_action( 'wp_head', 'feed_links_extra', 3 );
-add_action( 'wp_head', 'rsd_link' );
-add_action( 'wp_head', 'wlwmanifest_link' );
-add_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 );
-add_action( 'wp_head', 'locale_stylesheet' );
-add_action( 'publish_future_post', 'check_and_publish_future_post', 10, 1 );
-add_action( 'wp_head', 'noindex', 1 );
-add_action( 'wp_head', 'print_emoji_detection_script', 7 );
-add_action( 'wp_head', 'wp_print_styles', 8 );
-add_action( 'wp_head', 'wp_print_head_scripts', 9 );
-add_action( 'wp_head', 'wp_generator' );
-add_action( 'wp_head', 'rel_canonical' );
-add_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );
-add_action( 'wp_head', 'wp_site_icon', 99 );
-add_action( 'wp_footer', 'wp_print_footer_scripts', 20 );
-add_action( 'template_redirect', 'wp_shortlink_header', 11, 0 );
-add_action( 'wp_print_footer_scripts', '_wp_footer_scripts' );
-add_action( 'init', 'check_theme_switched', 99 );
-add_action( 'after_switch_theme', '_wp_sidebars_changed' );
-add_action( 'wp_print_styles', 'print_emoji_styles' );
+add_action( 'wp_head',             '_wp_render_title_tag',            1     );
+add_action( 'wp_head',             'wp_enqueue_scripts',              1     );
+add_action( 'wp_head',             'wp_resource_hints',               2     );
+add_action( 'wp_head',             'feed_links',                      2     );
+add_action( 'wp_head',             'feed_links_extra',                3     );
+add_action( 'wp_head',             'rsd_link'                               );
+add_action( 'wp_head',             'wlwmanifest_link'                       );
+add_action( 'wp_head',             'adjacent_posts_rel_link_wp_head', 10, 0 );
+add_action( 'wp_head',             'locale_stylesheet'                      );
+add_action( 'publish_future_post', 'check_and_publish_future_post',   10, 1 );
+add_action( 'wp_head',             'noindex',                          1    );
+add_action( 'wp_head',             'print_emoji_detection_script',     7    );
+add_action( 'wp_head',             'wp_print_styles',                  8    );
+add_action( 'wp_head',             'wp_print_head_scripts',            9    );
+add_action( 'wp_head',             'wp_generator'                           );
+add_action( 'wp_head',             'rel_canonical'                          );
+add_action( 'wp_head',             'wp_shortlink_wp_head',            10, 0 );
+add_action( 'wp_head',             'wp_custom_css_cb',                101   );
+add_action( 'wp_head',             'wp_site_icon',                    99    );
+add_action( 'wp_footer',           'wp_print_footer_scripts',         20    );
+add_action( 'template_redirect',   'wp_shortlink_header',             11, 0 );
+add_action( 'wp_print_footer_scripts', '_wp_footer_scripts'                 );
+add_action( 'init',                'check_theme_switched',            99    );
+add_action( 'after_switch_theme',  '_wp_sidebars_changed'                   );
+add_action( 'wp_print_styles',     'print_emoji_styles'                     );
 
-if ( $app[ 'request' ]->query->get( 'replytocom' ) ) {
-	add_action( 'wp_head', 'wp_no_robots' );
-}
+if ( isset( $_GET['replytocom'] ) )
+    add_action( 'wp_head', 'wp_no_robots' );
 
 // Login actions
 add_filter( 'login_head', 'wp_resource_hints', 8 );
@@ -444,12 +415,8 @@ add_action( 'transition_post_status', '__clear_multi_author_cache' );
 add_action( 'init', 'create_initial_post_types', 0 ); // highest priority
 add_action( 'admin_menu', '_add_post_type_submenus' );
 add_action( 'before_delete_post', '_reset_front_page_settings_for_post' );
-<<<<<<< HEAD
-add_action( 'wp_trash_post', '_reset_front_page_settings_for_post' );
-=======
 add_action( 'wp_trash_post',      '_reset_front_page_settings_for_post' );
 add_action( 'change_locale', 'create_initial_post_types' );
->>>>>>> aaronjorbin/master
 
 // Post Formats
 add_filter( 'request', '_post_format_request' );

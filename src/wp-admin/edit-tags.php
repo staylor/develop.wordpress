@@ -247,7 +247,8 @@ if ( strlen( $view->_request->get( 's' ) ) ) {
 	);
 }
 ?>
-</h1>
+
+<hr class="wp-header-end">
 
 <?php if ( $message ) : ?>
 <div id="message" class="<?php echo $class; ?> notice is-dismissible"><p><?php echo $message; ?></p></div>
