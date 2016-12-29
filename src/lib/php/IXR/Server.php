@@ -108,7 +108,7 @@ class Server {
 		return $result;
 	}
 
-	private function error( $error, string $message = '' ) {
+	private function error( $error, $message = '' ) {
 		// Accepts either an error object or an error code and message
 		if ( $message && ! is_object( $error ) ) {
 			$error = new Error( $error, $message );

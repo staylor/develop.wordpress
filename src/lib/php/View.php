@@ -72,7 +72,8 @@ class View {
 			if ( empty( $this->actions[ $action ] ) ) {
 				ob_start();
 				do_action( $action );
-				return ob_get_clean();
+				$output = ob_get_clean();
+				return trim( $output );
 			}
 
 			$args = $this->actions[ $action ];
@@ -80,7 +81,8 @@ class View {
 
 			ob_start();
 			call_user_func_array( 'do_action', $args );
-			return ob_get_clean();
+			$output = ob_get_clean();
+			return trim( $output );
 		};
 	}
 }

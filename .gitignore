@@ -24,6 +24,9 @@ wp-tests-config.php
 # All composer files
 /src/vendor/*
 
+# HHVM pid
+/src/www.pid
+
 # Files and folders that get created in wp-content
 /src/wp-content/blogs.dir
 /src/wp-content/languages

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="{{ charset }}"?>
 <rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd">
-	<service>
-		<engineName>WordPress</engineName>
-		<engineLink>https://wordpress.org/</engineLink>
-		<homePageLink>{{ url }}</homePageLink>
-		<apis>
-			<api name="WordPress" blogID="1" preferred="true" apiLink="{{ xmlrpc_url }}" />
-			<api name="Movable Type" blogID="1" preferred="false" apiLink="{{ xmlrpc_url }}" />
-			<api name="MetaWeblog" blogID="1" preferred="false" apiLink="{{ xmlrpc_url }}" />
-			<api name="Blogger" blogID="1" preferred="false" apiLink="{{ xmlrpc_url }}" />
-			{{!
-			/**
-			 * Add additional APIs to the Really Simple Discovery (RSD) endpoint.
-			 *
-			 * @link http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
-			 *
-			 * @since 3.5.0
-			 */
-			}}
-			{{# doAction }}xmlrpc_rsd_apis{{/ doAction }}
-		</apis>
-	</service>
+  <service>
+    <engineName>WordPress</engineName>
+    <engineLink>https://wordpress.org/</engineLink>
+    <homePageLink>{{ url }}</homePageLink>
+    <apis>
+      <api name="WordPress" blogID="1" preferred="true" apiLink="{{ xmlrpc_url }}" />
+      <api name="Movable Type" blogID="1" preferred="false" apiLink="{{ xmlrpc_url }}" />
+      <api name="MetaWeblog" blogID="1" preferred="false" apiLink="{{ xmlrpc_url }}" />
+      <api name="Blogger" blogID="1" preferred="false" apiLink="{{ xmlrpc_url }}" />
+      {{!
+      /**
+       * Add additional APIs to the Really Simple Discovery (RSD) endpoint.
+       *
+       * @link http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
+       *
+       * @since 3.5.0
+       */
+      }}
+      {{# doAction }}xmlrpc_rsd_apis{{/ doAction }}
+    </apis>
+  </service>
 </rsd>
