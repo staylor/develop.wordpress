@@ -12,18 +12,17 @@
  * @package WordPress
  */
 
-require_once( __DIR__ . '/wp-load.php' );
+require_once( dirname( __FILE__ ) . '/wp-load.php' );
 
-header( 'Content-Type: text/xml; charset=' . get_option( 'blog_charset' ), true );
+header('Content-Type: text/xml; charset=' . get_option('blog_charset'), true);
 $link_cat = '';
-if ( ! empty( $_get->get( 'link_cat' ) ) ) {
-	$link_cat = $_get->get( 'link_cat' );
-	if ( ! in_array( $link_cat, array( 'all', '0' ) ) ) {
-		$link_cat = absint( (string) urldecode( $link_cat ) );
-	}
+if ( !empty($_GET['link_cat']) ) {
+	$link_cat = $_GET['link_cat'];
+	if ( !in_array($link_cat, array('all', '0')) )
+		$link_cat = absint( (string)urldecode($link_cat) );
 }
 
-echo '<?xml version="1.0"?' . ">\n";
+echo '<?xml version="1.0"?'.">\n";
 ?>
 <opml version="1.0">
 	<head>
@@ -43,13 +42,12 @@ echo '<?xml version="1.0"?' . ">\n";
 	</head>
 	<body>
 <?php
-if ( empty( $link_cat ) ) {
-	$cats = get_categories( array( 'taxonomy' => 'link_category', 'hierarchical' => 0 ) );
-} else {
-	$cats = get_categories( array( 'taxonomy' => 'link_category', 'hierarchical' => 0, 'include' => $link_cat ) );
-}
+if ( empty($link_cat) )
+	$cats = get_categories(array('taxonomy' => 'link_category', 'hierarchical' => 0));
+else
+	$cats = get_categories(array('taxonomy' => 'link_category', 'hierarchical' => 0, 'include' => $link_cat));
 
-foreach ( (array) $cats as $cat ) :
+foreach ( (array)$cats as $cat ) :
 	/**
 	 * Filters the OPML outline link category name.
 	 *
@@ -60,10 +58,10 @@ foreach ( (array) $cats as $cat ) :
 	$catname = apply_filters( 'link_category', $cat->name );
 
 ?>
-<outline type="category" title="<?php echo esc_attr( $catname ); ?>">
+<outline type="category" title="<?php echo esc_attr($catname); ?>">
 <?php
-	$bookmarks = get_bookmarks( array( 'category' => $cat->term_id ) );
-	foreach ( (array) $bookmarks as $bookmark ) :
+	$bookmarks = get_bookmarks(array("category" => $cat->term_id));
+	foreach ( (array)$bookmarks as $bookmark ) :
 		/**
 		 * Filters the OPML outline link title text.
 		 *
@@ -73,10 +71,7 @@ foreach ( (array) $cats as $cat ) :
 		 */
 		$title = apply_filters( 'link_title', $bookmark->link_name );
 ?>
-	<outline text="<?php echo esc_attr( $title ); ?>" type="link" xmlUrl="<?php echo esc_attr( $bookmark->link_rss ); ?>" htmlUrl="<?php echo esc_attr( $bookmark->link_url ); ?>" updated="<?php if ( '0000-00-00 00:00:00' != $bookmark->link_updated ) {
-	echo $bookmark->link_updated;
-}
-?>" />
+	<outline text="<?php echo esc_attr($title); ?>" type="link" xmlUrl="<?php echo esc_attr($bookmark->link_rss); ?>" htmlUrl="<?php echo esc_attr($bookmark->link_url); ?>" updated="<?php if ('0000-00-00 00:00:00' != $bookmark->link_updated) echo $bookmark->link_updated; ?>" />
 <?php
 	endforeach; // $bookmarks
 ?>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="{{ charset }}"?>
+<opml version="1.0">
+  <head>
+    <title>{{{ title }}}</title>
+    <dateCreated>{{{ dateCreated }}} GMT</dateCreated>
+    {{# doAction }}opml_head{{/ doAction }}
+  </head>
+  <body>
+    {{# categories }}
+    <outline type="category" title="{{ name }}">
+        {{# bookmarks }}
+        <outline
+          text="{{ title }}"
+          type="link"
+          xmlUrl="{{ rss }}"
+          htmlUrl="{{ url }}"
+          updated="{{ updated }}"
+        />
+        {{/ bookmarks }}
+    </outline>
+    {{/ categories }}
+  </body>
+</opml>

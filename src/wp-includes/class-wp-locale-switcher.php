@@ -216,8 +216,6 @@ class WP_Locale_Switcher {
 	 * @since 4.7.0
 	 * @access private
 	 *
-	 * @global WP_Locale $wp_locale The WordPress date and time locale object.
-	 *
 	 * @param string $locale The locale to change to.
 	 */
 	private function change_locale( $locale ) {
@@ -225,8 +223,6 @@ class WP_Locale_Switcher {
 		_get_path_to_translation( null, true );
 
 		$this->load_translations( $locale );
-
-		$GLOBALS['wp_locale'] = new WP_Locale();
 
 		/**
 		 * Fires when the locale is switched to or restored.

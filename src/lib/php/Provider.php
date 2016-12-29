@@ -27,12 +27,22 @@ class Provider implements ServiceProviderInterface {
 
 		$app['required_mysql_version'] = '5.0';
 
+		$app['charset'] = function () {
+			return get_option('blog_charset');
+		};
+
 		$app['super_admins'] = $app->factory( function () {
 			return $GLOBALS['super_admins'] ?? null; //NOSONAR
 		} );
 
 		// for non-US English locales
 		$app['wp_local_package'] = null;
+
+		$app['locale.switcher'] = $app->factory( function () {
+			$switcher = new \WP_Locale_Switcher();
+			$switcher->init();
+			return $switcher;
+		} );
 
 		$app['locale.factory'] = $app->factory( function () {
 			return new I18N\Locale();

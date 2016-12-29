@@ -78,8 +78,8 @@ trait MustacheTrait {
 	 * @param array $data
 	 * @return string
 	 */
-	public function render( $template, $data )
+	public function render( $template, $data = null )
 	{
-		return $this->getEngine()->render( $template, $data );
+		return $this->getEngine()->render( $template, $data ? $data : $this );
 	}
 }
