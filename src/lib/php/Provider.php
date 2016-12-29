@@ -6,7 +6,7 @@ use Pimple\{Container,ServiceProviderInterface};
 class Provider implements ServiceProviderInterface {
 	public function register( Container $app ) {
 		$app['wp_version'] = function () {
-			$version = '4.7-alpha-38178-src';
+			$version = '4.8-alpha-39357-src';
 			// themes!
 			$GLOBALS['wp_version'] = $version; //NOSONAR
 			return $version;
@@ -21,7 +21,7 @@ class Provider implements ServiceProviderInterface {
 			return __get_option( 'db_version' );
 		} );
 
-		$app['tinymce_version'] = '4401-20160726';
+		$app['tinymce_version'] = '4403-20160901';
 
 		$app['required_php_version'] = '5.6';
 
@@ -136,10 +136,12 @@ class Provider implements ServiceProviderInterface {
 				$taxnow = $app->current_screen->taxonomy;
 			}
 
-			if ( $app['request']->request->get( 'taxonomy' ) ) {
-				$taxnow = $app['request']->request->get( 'taxonomy' );
-			} elseif ( $app['request']->query->get( 'taxonomy' ) ) {
-				$taxnow = $app['request']->query->get( 'taxonomy' );
+			$_get = $app['request']->query;
+			$_post = $app['request']->request;
+			if ( $_post->get( 'taxonomy' ) ) {
+				$taxnow = $_post->get( 'taxonomy' );
+			} elseif ( $_get->get( 'taxonomy' ) ) {
+				$taxnow = $_get->get( 'taxonomy' );
 			}
 
 			return $taxnow;
