@@ -253,11 +253,7 @@ function rest_api_loaded() {
 	$server = rest_get_server();
 
 	// Fire off the request.
-<<<<<<< HEAD
-	$server->serve_request( $app['wp']->query_vars['rest_route'] );
-=======
-	$server->serve_request( untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] ) );
->>>>>>> aaronjorbin/master
+	$server->serve_request( untrailingslashit( $app['wp']->query_vars['rest_route'] ) );
 
 	// We're done.
 	die();
@@ -408,16 +404,10 @@ function rest_ensure_request( $request ) {
  *
  * @since 4.4.0
  *
-<<<<<<< HEAD
- * @param Error|WP_HTTP_Response|mixed $response Response to check.
- * @return mixed Error if response generated an error, WP_HTTP_Response if response
- *               is a already an instance, otherwise returns a new WP_REST_Response instance.
-=======
  * @param WP_Error|WP_HTTP_Response|mixed $response Response to check.
  * @return WP_REST_Response|mixed If response generated an error, WP_Error, if response
  *                                is already an instance, WP_HTTP_Response, otherwise
  *                                returns a new WP_REST_Response instance.
->>>>>>> aaronjorbin/master
  */
 function rest_ensure_response( $response ) {
 	if ( is_wp_error( $response ) ) {
@@ -789,84 +779,7 @@ function rest_validate_request_arg( $value, $request, $param ) {
 	}
 	$args = $attributes['args'][ $param ];
 
-<<<<<<< HEAD
-	if ( ! empty( $args['enum'] ) ) {
-		if ( ! in_array( $value, $args['enum'], true ) ) {
-			return new Error( 'rest_invalid_param', sprintf( /* translators: 1: parameter, 2: list of valid values */ __( '%1$s is not one of %2$s.' ), $param, implode( ', ', $args['enum'] ) ) );
-		}
-	}
-
-	if ( 'integer' === $args['type'] && ! is_numeric( $value ) ) {
-		return new Error( 'rest_invalid_param', sprintf( /* translators: 1: parameter, 2: type name */ __( '%1$s is not of type %2$s.' ), $param, 'integer' ) );
-	}
-
-	if ( 'boolean' === $args['type'] && ! rest_is_boolean( $value ) ) {
-		return new Error( 'rest_invalid_param', sprintf( /* translators: 1: parameter, 2: type name */ __( '%1$s is not of type %2$s.' ), $value, 'boolean' ) );
-	}
-
-	if ( 'string' === $args['type'] && ! is_string( $value ) ) {
-		return new Error( 'rest_invalid_param', sprintf( /* translators: 1: parameter, 2: type name */ __( '%1$s is not of type %2$s.' ), $param, 'string' ) );
-	}
-
-	if ( isset( $args['format'] ) ) {
-		switch ( $args['format'] ) {
-		case 'date-time' :
-			if ( ! rest_parse_date( $value ) ) {
-				return new Error( 'rest_invalid_date', __( 'The date you provided is invalid.' ) );
-			}
-			break;
-
-		case 'email' :
-			if ( ! is_email( $value ) ) {
-				return new Error( 'rest_invalid_email', __( 'The email address you provided is invalid.' ) );
-			}
-			break;
-		case 'ipv4' :
-			if ( ! rest_is_ip_address( $value ) ) {
-				return new Error( 'rest_invalid_param', sprintf( __( '%s is not a valid IP address.' ), $value ) );
-			}
-			break;
-		}
-	}
-
-	if ( in_array( $args['type'], array( 'numeric', 'integer' ), true ) && ( isset( $args['minimum'] ) || isset( $args['maximum'] ) ) ) {
-		if ( isset( $args['minimum'] ) && ! isset( $args['maximum'] ) ) {
-			if ( ! empty( $args['exclusiveMinimum'] ) && $value <= $args['minimum'] ) {
-				return new Error( 'rest_invalid_param', sprintf( __( '%1$s must be greater than %2$d (exclusive)' ), $param, $args['minimum'] ) );
-			} elseif ( empty( $args['exclusiveMinimum'] ) && $value < $args['minimum'] ) {
-				return new Error( 'rest_invalid_param', sprintf( __( '%1$s must be greater than %2$d (inclusive)' ), $param, $args['minimum'] ) );
-			}
-		} elseif ( isset( $args['maximum'] ) && ! isset( $args['minimum'] ) ) {
-			if ( ! empty( $args['exclusiveMaximum'] ) && $value >= $args['maximum'] ) {
-				return new Error( 'rest_invalid_param', sprintf( __( '%1$s must be less than %2$d (exclusive)' ), $param, $args['maximum'] ) );
-			} elseif ( empty( $args['exclusiveMaximum'] ) && $value > $args['maximum'] ) {
-				return new Error( 'rest_invalid_param', sprintf( __( '%1$s must be less than %2$d (inclusive)' ), $param, $args['maximum'] ) );
-			}
-		} elseif ( isset( $args['maximum'] ) && isset( $args['minimum'] ) ) {
-			if ( ! empty( $args['exclusiveMinimum'] ) && ! empty( $args['exclusiveMaximum'] ) ) {
-				if ( $value >= $args['maximum'] || $value <= $args['minimum'] ) {
-					return new Error( 'rest_invalid_param', sprintf( /* translators: 1: parameter, 2: minimum number, 3: maximum number */ __( '%1$s must be between %2$d (exclusive) and %3$d (exclusive)' ), $param, $args['minimum'], $args['maximum'] ) );
-				}
-			} elseif ( empty( $args['exclusiveMinimum'] ) && ! empty( $args['exclusiveMaximum'] ) ) {
-				if ( $value >= $args['maximum'] || $value < $args['minimum'] ) {
-					return new Error( 'rest_invalid_param', sprintf( /* translators: 1: parameter, 2: minimum number, 3: maximum number */ __( '%1$s must be between %2$d (inclusive) and %3$d (exclusive)' ), $param, $args['minimum'], $args['maximum'] ) );
-				}
-			} elseif ( ! empty( $args['exclusiveMinimum'] ) && empty( $args['exclusiveMaximum'] ) ) {
-				if ( $value > $args['maximum'] || $value <= $args['minimum'] ) {
-					return new Error( 'rest_invalid_param', sprintf( /* translators: 1: parameter, 2: minimum number, 3: maximum number */ __( '%1$s must be between %2$d (exclusive) and %3$d (inclusive)' ), $param, $args['minimum'], $args['maximum'] ) );
-				}
-			} elseif ( empty( $args['exclusiveMinimum'] ) && empty( $args['exclusiveMaximum'] ) ) {
-				if ( $value > $args['maximum'] || $value < $args['minimum'] ) {
-					return new Error( 'rest_invalid_param', sprintf( /* translators: 1: parameter, 2: minimum number, 3: maximum number */ __( '%1$s must be between %2$d (inclusive) and %3$d (inclusive)' ), $param, $args['minimum'], $args['maximum'] ) );
-				}
-			}
-		}
-	}
-
-	return true;
-=======
 	return rest_validate_value_from_schema( $value, $args, $param );
->>>>>>> aaronjorbin/master
 }
 
 /**
@@ -886,34 +799,7 @@ function rest_sanitize_request_arg( $value, $request, $param ) {
 	}
 	$args = $attributes['args'][ $param ];
 
-<<<<<<< HEAD
-	if ( 'integer' === $args['type'] ) {
-		return (int) $value;
-	}
-
-	if ( 'boolean' === $args['type'] ) {
-		return rest_sanitize_boolean( $value );
-	}
-
-	if ( isset( $args['format'] ) ) {
-		switch ( $args['format'] ) {
-		case 'date-time' :
-		/*
-		 * sanitize_email() validates, which would be unexpected
-		 */
-		case 'email' :
-		case 'ipv4' :
-			return sanitize_text_field( $value );
-
-		case 'uri' :
-			return esc_url_raw( $value );
-		}
-	}
-
-	return $value;
-=======
 	return rest_sanitize_value_from_schema( $value, $args );
->>>>>>> aaronjorbin/master
 }
 
 /**

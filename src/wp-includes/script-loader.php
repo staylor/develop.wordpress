@@ -221,13 +221,8 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->add( 'jquery-ui-widget', "/wp-includes/js/jquery/ui/widget$dev_suffix.js", [ 'jquery' ], '1.11.4', 1 );
 
 	// Strings for 'jquery-ui-autocomplete' live region messages
-<<<<<<< HEAD
 	did_action( 'init' ) && $scripts->localize( 'jquery-ui-autocomplete', 'uiAutocompleteL10n', [
 		'noResults' => __( 'No search results.' ),
-=======
-	did_action( 'init' ) && $scripts->localize( 'jquery-ui-autocomplete', 'uiAutocompleteL10n', array(
-		'noResults' => __( 'No results found.' ),
->>>>>>> aaronjorbin/master
 		/* translators: Number of results found when using jQuery UI Autocomplete */
 		'oneResult' => __( '1 result found. Use up and down arrow keys to navigate.' ),
 		/* translators: %d: Number of results found when using jQuery UI Autocomplete */
@@ -269,36 +264,7 @@ function wp_default_scripts( &$scripts ) {
 
 	$scripts->add( 'jcrop', "/wp-includes/js/jcrop/jquery.Jcrop.min.js", [ 'jquery' ], '0.9.12' );
 
-<<<<<<< HEAD
 	$scripts->add( 'swfobject', "/wp-includes/js/swfobject.js", [], '2.2-20120417' );
-=======
-	// error message for both plupload and swfupload
-	$uploader_l10n = array(
-		'queue_limit_exceeded' => __('You have attempted to queue too many files.'),
-		'file_exceeds_size_limit' => __('%s exceeds the maximum upload size for this site.'),
-		'zero_byte_file' => __('This file is empty. Please try another.'),
-		'invalid_filetype' => __('This file type is not allowed. Please try another.'),
-		'not_an_image' => __('This file is not an image. Please try another.'),
-		'image_memory_exceeded' => __('Memory exceeded. Please try another smaller file.'),
-		'image_dimensions_exceeded' => __('This is larger than the maximum size. Please try another.'),
-		'default_error' => __('An error occurred in the upload. Please try again later.'),
-		'missing_upload_url' => __('There was a configuration error. Please contact the server administrator.'),
-		'upload_limit_exceeded' => __('You may only upload 1 file.'),
-		'http_error' => __('HTTP error.'),
-		'upload_failed' => __('Upload failed.'),
-		/* translators: 1: Opening link tag, 2: Closing link tag */
-		'big_upload_failed' => __('Please try uploading this file with the %1$sbrowser uploader%2$s.'),
-		'big_upload_queued' => __('%s exceeds the maximum upload size for the multi-file uploader when used in your browser.'),
-		'io_error' => __('IO error.'),
-		'security_error' => __('Security error.'),
-		'file_cancelled' => __('File canceled.'),
-		'upload_stopped' => __('Upload stopped.'),
-		'dismiss' => __('Dismiss'),
-		'crunching' => __('Crunching&hellip;'),
-		'deleted' => __('moved to the trash.'),
-		'error_uploading' => __('&#8220;%s&#8221; has failed to upload.')
-	);
->>>>>>> aaronjorbin/master
 
 	// error message for both plupload and swfupload
 	$uploader_l10n = [
@@ -506,13 +472,9 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->add( 'customize-nav-menus', "/wp-admin/js/customize-nav-menus$suffix.js", [ 'jquery', 'wp-backbone', 'customize-controls', 'accordion', 'nav-menu' ], false, 1 );
 	$scripts->add( 'customize-preview-nav-menus', "/wp-includes/js/customize-preview-nav-menus$suffix.js", [ 'jquery', 'wp-util', 'customize-preview', 'customize-selective-refresh' ], false, 1 );
 
-<<<<<<< HEAD
-	$scripts->add( 'accordion', "/wp-admin/js/accordion$suffix.js", [ 'jquery' ], false, 1 );
-=======
 	$scripts->add( 'wp-custom-header', "/wp-includes/js/wp-custom-header$suffix.js", array( 'wp-a11y' ), false, 1 );
 
 	$scripts->add( 'accordion', "/wp-admin/js/accordion$suffix.js", array( 'jquery' ), false, 1 );
->>>>>>> aaronjorbin/master
 
 	$scripts->add( 'shortcode', "/wp-includes/js/shortcode$suffix.js", [ 'underscore' ], false, 1 );
 	$scripts->add( 'media-models', "/wp-includes/js/media-models$suffix.js", [ 'wp-backbone' ], false, 1 );
@@ -886,21 +848,12 @@ function wp_default_styles( &$styles ) {
 	$styles->add( 'dashicons', "/wp-includes/css/dashicons$suffix.css" );
 
 	// Includes CSS
-<<<<<<< HEAD
-	$styles->add( 'admin-bar',            "/wp-includes/css/admin-bar$suffix.css", [ 'dashicons' ] );
-	$styles->add( 'wp-auth-check',        "/wp-includes/css/wp-auth-check$suffix.css", [ 'dashicons' ] );
-	$styles->add( 'editor-buttons',       "/wp-includes/css/editor$suffix.css", [ 'dashicons' ] );
-	$styles->add( 'media-views',          "/wp-includes/css/media-views$suffix.css", [ 'buttons', 'dashicons', 'wp-mediaelement' ] );
-	$styles->add( 'wp-pointer',           "/wp-includes/css/wp-pointer$suffix.css", [ 'dashicons' ] );
-	$styles->add( 'customize-preview',    "/wp-includes/css/customize-preview$suffix.css" );
-=======
 	$styles->add( 'admin-bar',            "/wp-includes/css/admin-bar$suffix.css", array( 'dashicons' ) );
 	$styles->add( 'wp-auth-check',        "/wp-includes/css/wp-auth-check$suffix.css", array( 'dashicons' ) );
 	$styles->add( 'editor-buttons',       "/wp-includes/css/editor$suffix.css", array( 'dashicons' ) );
 	$styles->add( 'media-views',          "/wp-includes/css/media-views$suffix.css", array( 'buttons', 'dashicons', 'wp-mediaelement' ) );
 	$styles->add( 'wp-pointer',           "/wp-includes/css/wp-pointer$suffix.css", array( 'dashicons' ) );
 	$styles->add( 'customize-preview',    "/wp-includes/css/customize-preview$suffix.css", array( 'dashicons' ) );
->>>>>>> aaronjorbin/master
 	$styles->add( 'wp-embed-template-ie', "/wp-includes/css/wp-embed-template-ie$suffix.css" );
 	$styles->add_data( 'wp-embed-template-ie', 'conditional', 'lte IE 8' );
 

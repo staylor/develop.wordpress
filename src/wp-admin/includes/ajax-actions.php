@@ -526,6 +526,7 @@ function _wp_ajax_add_hierarchical_term() {
 		$category_nicename = sanitize_title( $cat_name);
 		if ( '' === $category_nicename ) {
 			continue;
+		}
 
 		$cat_id = wp_insert_term( $cat_name, $taxonomy->name, array( 'parent' => $parent ) );
 		if ( ! $cat_id || is_wp_error( $cat_id ) ) {
@@ -926,7 +927,7 @@ function wp_ajax_add_link_category( $action ) {
 		$slug = sanitize_title( $cat_name);
 		if ( '' === $slug ) {
 			continue;
-
+		}
 		$cat_id = wp_insert_term( $cat_name, 'link_category' );
 		if ( ! $cat_id || is_wp_error( $cat_id ) ) {
 			continue;

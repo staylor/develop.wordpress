@@ -2900,7 +2900,7 @@ function wp_get_image_editor( $path, $args = [] ) {
 		// If $file_info['type'] is false, then we let the editor attempt to
 		// figure out the file type, rather than forcing a failure based on extension.
 		if ( isset( $file_info ) && $file_info['type'] ) {
-					$args['mime_type'] = $file_info['type'];
+			$args['mime_type'] = $file_info['type'];
 		}
 	}
 
@@ -2911,7 +2911,7 @@ function wp_get_image_editor( $path, $args = [] ) {
 		$loaded = $editor->load();
 
 		if ( is_wp_error( $loaded ) ) {
-					return $loaded;
+			return $loaded;
 		}
 
 		return $editor;

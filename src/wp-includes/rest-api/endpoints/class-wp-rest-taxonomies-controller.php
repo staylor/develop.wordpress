@@ -1,7 +1,6 @@
 <?php
-<<<<<<< HEAD
 use WP\Error;
-=======
+
 /**
  * REST API: WP_REST_Taxonomies_Controller class
  *
@@ -9,7 +8,6 @@ use WP\Error;
  * @subpackage REST_API
  * @since 4.7.0
  */
->>>>>>> aaronjorbin/master
 
 /**
  * Core class used to manage taxonomies via the REST API.
@@ -67,16 +65,11 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	/**
 	 * Checks whether a given request has permission to read taxonomies.
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|boolean
-=======
 	 * @since 4.7.0
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( 'edit' === $request['context'] ) {
@@ -90,11 +83,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 					return true;
 				}
 			}
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_view', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_cannot_view', __( 'Sorry, you are not allowed to manage terms in this taxonomy.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 		return true;
 	}
@@ -143,11 +132,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return true|WP_Error True if the request has read access for the item, otherwise false or WP_Error object.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item_permissions_check( $request ) {
 
@@ -158,11 +143,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 				return false;
 			}
 			if ( 'edit' === $request['context'] && ! current_user_can( $tax_obj->cap->manage_terms ) ) {
-<<<<<<< HEAD
-				return new Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to manage this resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 				return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to manage terms in this taxonomy.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 			}
 		}
 
@@ -172,25 +153,16 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	/**
 	 * Retrieves a specific taxonomy.
 	 *
-<<<<<<< HEAD
-	 * @param WP_REST_Request $request
-	 * @return array|Error
-=======
 	 * @since 4.7.0
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
 		$tax_obj = get_taxonomy( $request['taxonomy'] );
 		if ( empty( $tax_obj ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_taxonomy_invalid', __( 'Invalid resource.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_taxonomy_invalid', __( 'Invalid taxonomy.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 		$data = $this->prepare_item_for_response( $tax_obj, $request );
 		return rest_ensure_response( $data );

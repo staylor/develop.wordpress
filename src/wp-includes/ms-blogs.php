@@ -316,13 +316,8 @@ function update_blog_details( $blog_id, $details = [] ) {
 		$details = get_object_vars( $details);
 	}
 
-<<<<<<< HEAD
-	$current_details = get_blog_details( $blog_id, false);
-	if ( empty( $current_details) ) {
-=======
 	$current_details = get_site( $blog_id );
 	if ( empty($current_details) )
->>>>>>> aaronjorbin/master
 		return false;
 	}
 
@@ -771,12 +766,8 @@ function update_blog_option( int $id, $option, $value, $deprecated = null ) {
  * @return true Always returns True.
  */
 function switch_to_blog( $new_blog, $deprecated = null ) {
-<<<<<<< HEAD
 	$app = getApp();
 	$wpdb = $app['db'];
-=======
-	global $wpdb, $wp_roles;
->>>>>>> aaronjorbin/master
 
 	$blog_id = get_current_blog_id();
 	if ( empty( $new_blog ) ) {
@@ -831,12 +822,9 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
 	}
 
 	if ( did_action( 'init' ) ) {
-<<<<<<< HEAD
 		$app = getApp();
 		$app['roles']->reinit();
-=======
-		$wp_roles = new WP_Roles();
->>>>>>> aaronjorbin/master
+
 		$current_user = wp_get_current_user();
 		$current_user->for_blog( $new_blog );
 	}
@@ -859,12 +847,8 @@ function switch_to_blog( $new_blog, $deprecated = null ) {
  * @return bool True on success, false if we're already on the current blog
  */
 function restore_current_blog() {
-<<<<<<< HEAD
 	$app = getApp();
 	$wpdb = $app['db'];
-=======
-	global $wpdb, $wp_roles;
->>>>>>> aaronjorbin/master
 
 	if ( empty( $app->switched_stack ) ) {
 		return false;
@@ -909,12 +893,9 @@ function restore_current_blog() {
 	}
 
 	if ( did_action( 'init' ) ) {
-<<<<<<< HEAD
 		$app = getApp();
 		$app['roles']->reinit();
-=======
-		$wp_roles = new WP_Roles();
->>>>>>> aaronjorbin/master
+
 		$current_user = wp_get_current_user();
 		$current_user->for_blog( $blog );
 	}
@@ -1057,16 +1038,9 @@ function get_blog_status( $id, $pref ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
-<<<<<<< HEAD
-	$details = get_blog_details( $id, false );
-	if ( $details ) {
-			return $details->$pref;
-	}
-=======
 	$details = get_site( $id );
 	if ( $details )
 		return $details->$pref;
->>>>>>> aaronjorbin/master
 
 	return $wpdb->get_var( $wpdb->prepare( "SELECT %s FROM {$wpdb->blogs} WHERE blog_id = %d", $pref, $id) );
 }

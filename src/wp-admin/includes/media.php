@@ -2905,7 +2905,7 @@ function edit_form_image_editor( $post ) {
 
 		echo wp_video_shortcode( $attr );
 
-	elseif ( isset( $thumb_url[0] ) ):
+	} elseif ( isset( $thumb_url[0] ) ) {
 
 		?>
 		<div class="wp_attachment_image wp-clearfix" id="media-head-<?php echo $attachment_id; ?>">
@@ -2915,7 +2915,7 @@ function edit_form_image_editor( $post ) {
 		</div>
 		<?php
 
-	else:
+	} else {
 
 		/**
 		 * Fires when an attachment type can't be rendered in the edit form.

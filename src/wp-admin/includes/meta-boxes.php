@@ -805,7 +805,7 @@ function post_revisions_meta_box( $post ) {
  * @param object $post
  */
 function page_attributes_meta_box($post) {
-	if ( is_post_type_hierarchical( $post->post_type ) ) :
+	if ( is_post_type_hierarchical( $post->post_type ) ) {
 		$dropdown_args = array(
 			'post_type'        => $post->post_type,
 			'exclude_tree'     => $post->ID,
@@ -867,7 +867,7 @@ $default_title = apply_filters( 'default_page_template_title',  __( 'Default Tem
 <option value="default"><?php echo esc_html( $default_title ); ?></option>
 <?php page_template_dropdown( $template, $post->post_type ); ?>
 </select>
-<?php endif; ?>
+<?php } ?>
 <?php if ( post_type_supports( $post->post_type, 'page-attributes' ) ) : ?>
 <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="menu_order"><?php _e( 'Order' ); ?></label></p>
 <input name="menu_order" type="text" size="4" id="menu_order" value="<?php echo esc_attr( $post->menu_order ); ?>" />

@@ -318,35 +318,10 @@ function map_meta_cap( $cap, $user_id ) {
 
 			/** This filter is documented in wp-includes/meta.php */
 			$allowed = apply_filters( "auth_{$object_type}_{$sub_type}_meta_{$meta_key}", $allowed, $meta_key, $object_id, $user_id, $cap, $caps );
-
-<<<<<<< HEAD
-			/**
-			 * Filters whether the user is allowed to add post meta to a post of a given type.
-			 *
-			 * The dynamic portions of the hook name, `$meta_key` and `$post_type`,
-			 * refer to the meta key passed to map_meta_cap() and the post type, respectively.
-			 *
-			 * @since 4.6.0
-			 *
-			 * @param bool   $allowed  Whether the user can add the post meta. Default false.
-			 * @param string $meta_key The meta key.
-			 * @param int    $post_id  Post ID.
-			 * @param int    $user_id  User ID.
-			 * @param string $cap      Capability name.
-			 * @param array  $caps     User capabilities.
-			 */
-			$allowed = apply_filters( "auth_post_{$post_type}_meta_{$meta_key}", $allowed, $meta_key, $post->ID, $user_id, $cap, $caps );
-
-			if ( ! $allowed ) {
-				$caps[] = $cap;
-			}
-		} elseif ( $meta_key && is_protected_meta( $meta_key, 'post' ) ) {
-=======
 			if ( ! $allowed ) {
 				$caps[] = $cap;
 			}
 		} elseif ( $meta_key && is_protected_meta( $meta_key, $object_type ) ) {
->>>>>>> aaronjorbin/master
 			$caps[] = $cap;
 		}
 		break;
@@ -384,17 +359,9 @@ function map_meta_cap( $cap, $user_id ) {
 			( is_multisite() && ! is_super_admin( $user_id ) )
 		) {
 			$caps[] = 'do_not_allow';
-<<<<<<< HEAD
 		} else {
-			$caps[] = $cap;
-		}
-		break;
-	case 'unfiltered_css' :
-		$caps[] = 'unfiltered_html';
-=======
-		else
 			$caps[] = 'unfiltered_html';
->>>>>>> aaronjorbin/master
+		}
 		break;
 	case 'edit_files':
 	case 'edit_plugins':

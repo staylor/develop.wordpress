@@ -1,8 +1,6 @@
 <?php
-<<<<<<< HEAD
 use WP\Error;
 
-=======
 /**
  * REST API: WP_REST_Controller class
  *
@@ -16,7 +14,7 @@ use WP\Error;
  *
  * @since 4.7.0
  */
->>>>>>> aaronjorbin/master
+
 abstract class WP_REST_Controller {
 
 	/**
@@ -54,11 +52,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return WP_Error|bool True if the request has read access, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items_permissions_check( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -71,11 +65,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -88,11 +78,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return WP_Error|bool True if the request has read access for the item, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item_permissions_check( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -105,11 +91,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -122,11 +104,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return WP_Error|bool True if the request has access to create items, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function create_item_permissions_check( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -139,11 +117,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function create_item( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -156,11 +130,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return WP_Error|bool True if the request has access to update the item, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function update_item_permissions_check( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -173,11 +143,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function update_item( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -190,11 +156,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return WP_Error|bool True if the request has access to delete the item, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function delete_item_permissions_check( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -207,11 +169,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function delete_item( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -224,11 +182,7 @@ abstract class WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Request object.
-<<<<<<< HEAD
-	 * @return Error|object $prepared_item
-=======
 	 * @return WP_Error|object The prepared item, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	protected function prepare_item_for_database( $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -242,11 +196,7 @@ abstract class WP_REST_Controller {
 	 *
 	 * @param mixed           $item    WordPress representation of the item.
 	 * @param WP_REST_Request $request Request object.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response $response
-=======
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		return new Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass." ), __METHOD__ ), array( 'status' => 405 ) );
@@ -416,13 +366,9 @@ abstract class WP_REST_Controller {
 		if ( empty( $schema['properties'] ) ) {
 			return array_merge( $param_details, $args );
 		}
-<<<<<<< HEAD
+
 		$contexts = [];
-=======
 
-		$contexts = array();
-
->>>>>>> aaronjorbin/master
 		foreach ( $schema['properties'] as $attributes ) {
 			if ( ! empty( $attributes['context'] ) ) {
 				$contexts = array_merge( $contexts, $attributes['context'] );
@@ -469,15 +415,9 @@ abstract class WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access protected
 	 *
-<<<<<<< HEAD
-	 * @param array  $object
-	 * @param WP_REST_Request $request
-	 * @return bool|Error True on success, Error object if a field cannot be updated.
-=======
 	 * @param array           $object  Data Object.
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return bool|WP_Error True on success, WP_Error object if a field cannot be updated.
->>>>>>> aaronjorbin/master
 	 */
 	protected function update_additional_fields_for_object( $object, $request ) {
 		$additional_fields = $this->get_additional_fields();
@@ -594,15 +534,9 @@ abstract class WP_REST_Controller {
 	 */
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
 
-<<<<<<< HEAD
 		$schema                = $this->get_item_schema();
 		$schema_properties     = ! empty( $schema['properties'] ) ? $schema['properties'] : [];
 		$endpoint_args = [];
-=======
-		$schema            = $this->get_item_schema();
-		$schema_properties = ! empty( $schema['properties'] ) ? $schema['properties'] : array();
-		$endpoint_args     = array();
->>>>>>> aaronjorbin/master
 
 		foreach ( $schema_properties as $field_id => $params ) {
 
@@ -655,31 +589,7 @@ abstract class WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param int|WP_Post $post Post ID or post object. Defaults to global $post.
-	 * @return WP_Post|null A `WP_Post` object when successful.
-	 */
-	public function get_post( $post ) {
-		$post_obj = get_post( $post );
-
-		/**
-		 * Filter the post.
-		 *
-		 * Allows plugins to filter the post object as returned by `\WP_REST_Controller::get_post()`.
-		 *
-		 * @param WP_Post|null $post_obj  The post object as returned by `get_post()`.
-		 * @param int|WP_Post  $post      The original value used to obtain the post object.
-		 */
-		return apply_filters( 'rest_the_post', $post_obj, $post );
-	}
-
-	/**
-	 * Sanitize the slug value.
-	 *
-	 * @internal We can't use {@see sanitize_title} directly, as the second
-=======
 	 * @internal We can't use sanitize_title() directly, as the second
->>>>>>> aaronjorbin/master
 	 * parameter is the fallback title, which would end up being set to the
 	 * request object.
 	 *

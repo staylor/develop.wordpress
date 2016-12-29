@@ -215,10 +215,7 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 	// (Re)create it, if it's gone missing
 	if ( ! ( $phpmailer instanceof PHPMailer ) ) {
 		require_once ABSPATH . WPINC . '/class-phpmailer.php';
-<<<<<<< HEAD
-=======
 		require_once ABSPATH . WPINC . '/class-smtp.php';
->>>>>>> aaronjorbin/master
 		$phpmailer = new PHPMailer( true );
 	}
 
@@ -492,17 +489,10 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = [] ) {
 		 *
 		 * @since 4.4.0
 		 *
-<<<<<<< HEAD
-		 * @param Error $error A Error object with the phpmailerException code, message, and an array
-		 *                        containing the mail recipient, subject, message, headers, and attachments.
-		 */
-		do_action( 'wp_mail_failed', new Error( $e->getCode(), $e->getMessage(), $mail_error_data ) );
-=======
 		 * @param WP_Error $error A WP_Error object with the phpmailerException message, and an array
 		 *                        containing the mail recipient, subject, message, headers, and attachments.
 		 */
 		do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', $e->getMessage(), $mail_error_data ) );
->>>>>>> aaronjorbin/master
 
 		return false;
 	}
@@ -1446,13 +1436,9 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 		$emails = array_flip( $emails );
 	}
 
-<<<<<<< HEAD
-	$comment_author_domain = @gethostbyaddr( $comment->comment_author_IP);
-=======
 	$switched_locale = switch_to_locale( get_locale() );
 
 	$comment_author_domain = @gethostbyaddr($comment->comment_author_IP);
->>>>>>> aaronjorbin/master
 
 	// The blogname option is escaped with esc_html on the way into the database in sanitize_option
 	// we want to reverse this for the plain text arena of emails.
@@ -1460,42 +1446,6 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 	$comment_content = wp_specialchars_decode( $comment->comment_content );
 
 	switch ( $comment->comment_type ) {
-<<<<<<< HEAD
-	case 'trackback':
-		$notify_message  = sprintf( __( 'New trackback on your post "%s"' ), $post->post_title ) . "\r\n";
-		/* translators: 1: website name, 2: website IP, 3: website hostname */
-		$notify_message .= sprintf( __( 'Website: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-		$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
-		$notify_message .= __( 'You can see all trackbacks on this post here:' ) . "\r\n";
-		/* translators: 1: blog name, 2: post title */
-		$subject = sprintf( __( '[%1$s] Trackback: "%2$s"' ), $blogname, $post->post_title );
-		break;
-	case 'pingback':
-		$notify_message  = sprintf( __( 'New pingback on your post "%s"' ), $post->post_title ) . "\r\n";
-		/* translators: 1: website name, 2: website IP, 3: website hostname */
-		$notify_message .= sprintf( __( 'Website: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-		$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
-		$notify_message .= __( 'You can see all pingbacks on this post here:' ) . "\r\n";
-		/* translators: 1: blog name, 2: post title */
-		$subject = sprintf( __( '[%1$s] Pingback: "%2$s"' ), $blogname, $post->post_title );
-		break;
-	default: // Comments
-		$notify_message  = sprintf( __( 'New comment on your post "%s"' ), $post->post_title ) . "\r\n";
-		/* translators: 1: comment author, 2: author IP, 3: author domain */
-		$notify_message .= sprintf( __( 'Author: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-		$notify_message .= sprintf( __( 'Email: %s' ), $comment->comment_author_email ) . "\r\n";
-		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-		$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
-		$notify_message .= __( 'You can see all comments on this post here:' ) . "\r\n";
-		/* translators: 1: blog name, 2: post title */
-		$subject = sprintf( __( '[%1$s] Comment: "%2$s"' ), $blogname, $post->post_title );
-		break;
-	}
-	$notify_message .= get_permalink( $comment->comment_post_ID) . "#comments\r\n\r\n";
-	$notify_message .= sprintf( __( 'Permalink: %s' ), get_comment_link( $comment ) ) . "\r\n";
-=======
 		case 'trackback':
 			/* translators: 1: Post title */
 			$notify_message  = sprintf( __( 'New trackback on your post "%s"' ), $post->post_title ) . "\r\n";
@@ -1532,7 +1482,6 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 	}
 	$notify_message .= get_permalink($comment->comment_post_ID) . "#comments\r\n\r\n";
 	$notify_message .= sprintf( __('Permalink: %s'), get_comment_link( $comment ) ) . "\r\n";
->>>>>>> aaronjorbin/master
 
 	if ( user_can( $post->post_author, 'edit_comment', $comment->comment_ID ) ) {
 		if ( EMPTY_TRASH_DAYS ) {
@@ -1650,15 +1599,10 @@ function wp_notify_moderator( $comment_id) {
 		}
 	}
 
-<<<<<<< HEAD
-	$comment_author_domain = @gethostbyaddr( $comment->comment_author_IP);
-	$comments_waiting = $wpdb->get_var( "SELECT count(comment_ID) FROM $wpdb->comments WHERE comment_approved = '0'" );
-=======
 	$switched_locale = switch_to_locale( get_locale() );
 
 	$comment_author_domain = @gethostbyaddr($comment->comment_author_IP);
 	$comments_waiting = $wpdb->get_var("SELECT count(comment_ID) FROM $wpdb->comments WHERE comment_approved = '0'");
->>>>>>> aaronjorbin/master
 
 	// The blogname option is escaped with esc_html on the way into the database in sanitize_option
 	// we want to reverse this for the plain text arena of emails.
@@ -1666,32 +1610,6 @@ function wp_notify_moderator( $comment_id) {
 	$comment_content = wp_specialchars_decode( $comment->comment_content );
 
 	switch ( $comment->comment_type ) {
-<<<<<<< HEAD
-	case 'trackback':
-		$notify_message  = sprintf( __( 'A new trackback on the post "%s" is waiting for your approval' ), $post->post_title ) . "\r\n";
-		$notify_message .= get_permalink( $comment->comment_post_ID) . "\r\n\r\n";
-		/* translators: 1: website name, 2: website IP, 3: website hostname */
-		$notify_message .= sprintf( __( 'Website: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-		$notify_message .= __( 'Trackback excerpt: ' ) . "\r\n" . $comment_content . "\r\n\r\n";
-		break;
-	case 'pingback':
-		$notify_message  = sprintf( __( 'A new pingback on the post "%s" is waiting for your approval' ), $post->post_title ) . "\r\n";
-		$notify_message .= get_permalink( $comment->comment_post_ID) . "\r\n\r\n";
-		/* translators: 1: website name, 2: website IP, 3: website hostname */
-		$notify_message .= sprintf( __( 'Website: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-		$notify_message .= __( 'Pingback excerpt: ' ) . "\r\n" . $comment_content . "\r\n\r\n";
-		break;
-	default: // Comments
-		$notify_message  = sprintf( __( 'A new comment on the post "%s" is waiting for your approval' ), $post->post_title ) . "\r\n";
-		$notify_message .= get_permalink( $comment->comment_post_ID) . "\r\n\r\n";
-		$notify_message .= sprintf( __( 'Author: %1$s (IP: %2$s, %3$s)' ), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-		$notify_message .= sprintf( __( 'Email: %s' ), $comment->comment_author_email ) . "\r\n";
-		$notify_message .= sprintf( __( 'URL: %s' ), $comment->comment_author_url ) . "\r\n";
-		$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
-		break;
-=======
 		case 'trackback':
 			/* translators: 1: Post title */
 			$notify_message  = sprintf( __('A new trackback on the post "%s" is waiting for your approval'), $post->post_title ) . "\r\n";
@@ -1725,36 +1643,22 @@ function wp_notify_moderator( $comment_id) {
 			/* translators: 1: Comment text */
 			$notify_message .= sprintf( __( 'Comment: %s' ), "\r\n" . $comment_content ) . "\r\n\r\n";
 			break;
->>>>>>> aaronjorbin/master
 	}
 
 	/* translators: Comment moderation. 1: Comment action URL */
 	$notify_message .= sprintf( __( 'Approve it: %s' ), admin_url( "comment.php?action=approve&c={$comment_id}#wpbody-content" ) ) . "\r\n";
 
 	if ( EMPTY_TRASH_DAYS ) {
-<<<<<<< HEAD
-			$notify_message .= sprintf( __( 'Trash it: %s' ), admin_url( "comment.php?action=trash&c={$comment_id}#wpbody-content" ) ) . "\r\n";
-	} else {
-			$notify_message .= sprintf( __( 'Delete it: %s' ), admin_url( "comment.php?action=delete&c={$comment_id}#wpbody-content" ) ) . "\r\n";
-=======
 		/* translators: Comment moderation. 1: Comment action URL */
 		$notify_message .= sprintf( __( 'Trash it: %s' ), admin_url( "comment.php?action=trash&c={$comment_id}#wpbody-content" ) ) . "\r\n";
 	} else {
 		/* translators: Comment moderation. 1: Comment action URL */
 		$notify_message .= sprintf( __( 'Delete it: %s' ), admin_url( "comment.php?action=delete&c={$comment_id}#wpbody-content" ) ) . "\r\n";
->>>>>>> aaronjorbin/master
 	}
 
 	/* translators: Comment moderation. 1: Comment action URL */
 	$notify_message .= sprintf( __( 'Spam it: %s' ), admin_url( "comment.php?action=spam&c={$comment_id}#wpbody-content" ) ) . "\r\n";
 
-<<<<<<< HEAD
-	$notify_message .= sprintf( _n( 'Currently %s comment is waiting for approval. Please visit the moderation panel:',
-		'Currently %s comments are waiting for approval. Please visit the moderation panel:', $comments_waiting), number_format_i18n( $comments_waiting) ) . "\r\n";
-	$notify_message .= admin_url( "edit-comments.php?comment_status=moderated#wpbody-content" ) . "\r\n";
-
-	$subject = sprintf( __( '[%1$s] Please moderate: "%2$s"' ), $blogname, $post->post_title );
-=======
 	/* translators: Comment moderation. 1: Number of comments awaiting approval */
 	$notify_message .= sprintf( _n('Currently %s comment is waiting for approval. Please visit the moderation panel:',
  		'Currently %s comments are waiting for approval. Please visit the moderation panel:', $comments_waiting), number_format_i18n($comments_waiting) ) . "\r\n";
@@ -1762,7 +1666,6 @@ function wp_notify_moderator( $comment_id) {
 
 	/* translators: Comment moderation notification email subject. 1: Site name, 2: Post title */
 	$subject = sprintf( __('[%1$s] Please moderate: "%2$s"'), $blogname, $post->post_title );
->>>>>>> aaronjorbin/master
 	$message_headers = '';
 
 	/**
@@ -1898,15 +1801,6 @@ function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) 
 	$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
 	$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user->user_login ) );
 
-<<<<<<< HEAD
-	$message = sprintf( __( 'Username: %s' ), $user->user_login) . "\r\n\r\n";
-	$message .= __( 'To set your password, visit the following address:' ) . "\r\n\r\n";
-	$message .= '<' . network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user->user_login), 'login' ) . ">\r\n\r\n";
-
-	$message .= wp_login_url() . "\r\n";
-
-	wp_mail( $user->user_email, sprintf( __( '[%s] Your username and password info' ), $blogname), $message);
-=======
 	$switched_locale = switch_to_locale( get_user_locale( $user ) );
 
 	$message = sprintf(__('Username: %s'), $user->user_login) . "\r\n\r\n";
@@ -1920,7 +1814,6 @@ function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) 
 	if ( $switched_locale ) {
 		restore_previous_locale();
 	}
->>>>>>> aaronjorbin/master
 }
 endif;
 
@@ -2292,7 +2185,7 @@ if ( !function_exists( 'wp_rand' ) ) :
  * @param int $max Upper limit for the generated number
  * @return int A random number between min and max
  */
-function wp_rand( int $min = 0, int $max = 0 ) {
+function wp_rand( $min = 0, $max = 0 ) {
 	global $rnd_value;
 
 	// Some misconfigured 32bit environments (Entropy PHP, for example) truncate integers larger than PHP_INT_MAX to PHP_INT_MAX rather than overflowing them to floats.
@@ -2607,4 +2500,3 @@ function wp_text_diff( $left_string, $right_string, $args = null ) {
 	return $r . '</table>';
 }
 endif;
-

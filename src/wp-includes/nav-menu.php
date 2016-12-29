@@ -364,7 +364,7 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = [] ) {
  * @param array $menu_item_data  The menu item's data.
  * @return int|Error The menu item's database ID or Error object on failure.
  */
-function wp_update_nav_menu_item( int $menu_id = 0, int $menu_item_db_id = 0, $menu_item_data = [] ) {
+function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0, $menu_item_data = [] ) {
 	// make sure that we don't convert non-nav_menu_item objects into nav_menu_item objects
 	if ( ! empty( $menu_item_db_id ) && ! is_nav_menu_item( $menu_item_db_id ) ) {
 		return new Error( 'update_nav_menu_item_failed', __( 'The given object ID is not that of a menu item.' ) );
@@ -562,44 +562,6 @@ function wp_get_nav_menus( $args = [] ) {
 }
 
 /**
-<<<<<<< HEAD
- * Sort menu items by the desired key.
- *
- * @since 3.0.0
- * @access private
- *
- * @global string $_menu_item_sort_prop
- *
- * @param object $a The first object to compare
- * @param object $b The second object to compare
- * @return int -1, 0, or 1 if $a is considered to be respectively less than, equal to, or greater than $b.
- */
-function _sort_nav_menu_items( $a, $b ) {
-	global $_menu_item_sort_prop;
-
-	if ( empty( $_menu_item_sort_prop ) ) {
-		return 0;
-	}
-
-	if ( ! isset( $a->$_menu_item_sort_prop ) || ! isset( $b->$_menu_item_sort_prop ) ) {
-		return 0;
-	}
-
-	$_a = (int) $a->$_menu_item_sort_prop;
-	$_b = (int) $b->$_menu_item_sort_prop;
-
-	if ( $a->$_menu_item_sort_prop == $b->$_menu_item_sort_prop ) {
-		return 0;
-	} elseif ( $_a == $a->$_menu_item_sort_prop && $_b == $b->$_menu_item_sort_prop ) {
-		return $_a < $_b ? -1 : 1;
-	} else {
-		return strcmp( $a->$_menu_item_sort_prop, $b->$_menu_item_sort_prop );
-	}
-}
-
-/**
-=======
->>>>>>> aaronjorbin/master
  * Return if a menu item is valid.
  *
  * @link https://core.trac.wordpress.org/ticket/13958
@@ -694,14 +656,9 @@ function wp_get_nav_menu_items( $menu, $args = [] ) {
 	}
 
 	if ( ARRAY_A == $args['output'] ) {
-<<<<<<< HEAD
-		$GLOBALS['_menu_item_sort_prop'] = $args['output_key'];
-		usort( $items, '_sort_nav_menu_items' );
-=======
 		$items = wp_list_sort( $items, array(
 			$args['output_key'] => 'ASC',
 		) );
->>>>>>> aaronjorbin/master
 		$i = 1;
 		foreach ( $items as $k => $item ) {
 			$items[$k]->{$args['output_key']} = $i++;
@@ -791,11 +748,9 @@ function wp_setup_nav_menu_item( $menu_item ) {
 				}
 
 				$menu_item->type_label = __( 'Post Type Archive' );
-<<<<<<< HEAD
-=======
 				$post_content = wp_trim_words( $menu_item->post_content, 200 );
 				$post_type_description = '' == $post_content ? $post_type_description : $post_content;
->>>>>>> aaronjorbin/master
+
 				$menu_item->url = get_post_type_archive_link( $menu_item->object );
 			} elseif ( 'taxonomy' == $menu_item->type ) {
 				$object = get_taxonomy( $menu_item->object );
@@ -955,7 +910,7 @@ function wp_get_associated_nav_menu_items( int $object_id, $object_type = 'post_
  * @param int $object_id The ID of the original object being trashed.
  *
  */
-function _wp_delete_post_menu_item( int $object_id = 0 ) {
+function _wp_delete_post_menu_item( $object_id = 0 ) {
 	$menu_item_ids = wp_get_associated_nav_menu_items( $object_id, 'post_type' );
 
 	foreach ( (array) $menu_item_ids as $menu_item_id ) {

@@ -33,7 +33,7 @@ if ( force_ssl_admin() && ! is_ssl() ) {
  * @param string   $message  Optional. Message to display in header. Default empty.
  * @param Error $error Optional. The error to pass. Default empty.
  */
-function login_header( $title = 'Log In', $message = '', $error = '' ) {
+function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	global $error;
 
 	$app = getApp();
@@ -43,8 +43,8 @@ function login_header( $title = 'Log In', $message = '', $error = '' ) {
 
 	add_action( 'login_head', 'wp_login_viewport_meta' );
 
-	if ( empty( $error) ) {
-		$error = new Error();
+	if ( empty( $wp_error ) ) {
+		$wp_error = new Error();
 	}
 
 	// Shake it!
@@ -58,7 +58,7 @@ function login_header( $title = 'Log In', $message = '', $error = '' ) {
 	 */
 	$shake_error_codes = apply_filters( 'shake_error_codes', $shake_error_codes );
 
-	if ( $shake_error_codes && $error->get_error_code() && in_array( $error->get_error_code(), $shake_error_codes ) ) {
+	if ( $shake_error_codes && $wp_error->get_error_code() && in_array( $wp_error->get_error_code(), $shake_error_codes ) ) {
 		add_action( 'login_head', 'wp_shake_js', 12 );
 	}
 
@@ -83,7 +83,7 @@ function login_header( $title = 'Log In', $message = '', $error = '' ) {
 	 * This could be added by add_action('login_head'...) like wp_shake_js(),
 	 * but maybe better if it's not removable by plugins
 	 */
-	if ( 'loggedout' == $error->get_error_code() ) {
+	if ( 'loggedout' == $wp_error->get_error_code() ) {
 		?>
 		<script>if("sessionStorage" in window){try{for(var key in sessionStorage){if(key.indexOf("wp-autosave-")!=-1){sessionStorage.removeItem(key)}}}catch(e){}};</script>
 		<?php
@@ -188,16 +188,16 @@ function login_header( $title = 'Log In', $message = '', $error = '' ) {
 
 	// In case a plugin uses $error rather than the $errors object
 	if ( !empty( $error ) ) {
-		$error->add('error', $error);
+		$wp_error->add('error', $error);
 		unset($error);
 	}
 
-	if ( $error->get_error_code() ) {
+	if ( $wp_error->get_error_code() ) {
 		$errors = '';
 		$messages = '';
-		foreach ( $error->get_error_codes() as $code ) {
-			$severity = $error->get_error_data( $code );
-			foreach ( $error->get_error_messages( $code ) as $error_message ) {
+		foreach ( $wp_error->get_error_codes() as $code ) {
+			$severity = $wp_error->get_error_data( $code );
+			foreach ( $wp_error->get_error_messages( $code ) as $error_message ) {
 				if ( 'message' == $severity ) {
 					$messages .= '	' . $error_message . "<br />\n";
 				} else {
@@ -841,7 +841,7 @@ default:
 	 */
 	$redirect_to = apply_filters( 'login_redirect', $redirect_to, $requested_redirect_to, $user );
 
-	if ( !is_error($user) && !$reauth ) {
+	if ( !is_wp_error($user) && !$reauth ) {
 		if ( $app->get( 'interim_login' ) ) {
 			$message = '<p class="message">' . __('You have logged in successfully.') . '</p>';
 			$app->set( 'interim_login', 'success' );

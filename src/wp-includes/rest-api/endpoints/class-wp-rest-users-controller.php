@@ -1,7 +1,6 @@
 <?php
-<<<<<<< HEAD
 use WP\Error;
-=======
+
 /**
  * REST API: WP_REST_Users_Controller class
  *
@@ -10,7 +9,6 @@ use WP\Error;
  * @since 4.7.0
  */
 
->>>>>>> aaronjorbin/master
 /**
  * Core class used to manage users via the REST API.
  *
@@ -99,22 +97,12 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 						'required'    => true,
 						'sanitize_callback' => array( $this, 'check_reassign' ),
 					),
-<<<<<<< HEAD
-					'reassign' => [],
-=======
->>>>>>> aaronjorbin/master
 				),
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
 
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/me', array(
-<<<<<<< HEAD
-			'methods'         => WP_REST_Server::READABLE,
-			'callback'        => array( $this, 'get_current_item' ),
-			'args'            => array(
-				'context'          => [],
-=======
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_current_item' ),
@@ -145,7 +133,6 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 						'sanitize_callback' => array( $this, 'check_reassign' ),
 					),
 				),
->>>>>>> aaronjorbin/master
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
@@ -183,26 +170,11 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return true|WP_Error True if the request has read access, otherwise WP_Error object.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items_permissions_check( $request ) {
 		// Check if roles is specified in GET request and if user can list users.
 		if ( ! empty( $request['roles'] ) && ! current_user_can( 'list_users' ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_user_cannot_view', __( 'Sorry, you cannot filter by role.' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-
-		if ( 'edit' === $request['context'] && ! current_user_can( 'list_users' ) ) {
-			return new Error( 'rest_forbidden_context', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-
-		if ( in_array( $request['orderby'], array( 'email', 'registered_date' ), true ) && ! current_user_can( 'list_users' ) ) {
-			return new Error( 'rest_forbidden_orderby', __( 'Sorry, you cannot order by this parameter.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_user_cannot_view', __( 'Sorry, you are not allowed to filter users by role.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
@@ -212,7 +184,6 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		if ( in_array( $request['orderby'], array( 'email', 'registered_date' ), true ) && ! current_user_can( 'list_users' ) ) {
 			return new WP_Error( 'rest_forbidden_orderby', __( 'Sorry, you are not allowed to order users by this parameter.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -225,11 +196,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items( $request ) {
 
@@ -309,12 +276,8 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		$query = new WP_User_Query( $prepared_args );
 
-<<<<<<< HEAD
 		$users = [];
-=======
-		$users = array();
 
->>>>>>> aaronjorbin/master
 		foreach ( $query->results as $user ) {
 			$data = $this->prepare_item_for_response( $user, $request );
 			$users[] = $this->prepare_response_for_collection( $data );
@@ -370,13 +333,8 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|boolean
-=======
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access for the item, otherwise WP_Error object.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item_permissions_check( $request ) {
 
@@ -385,11 +343,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		$types = get_post_types( array( 'show_in_rest' => true ), 'names' );
 
 		if ( empty( $id ) || empty( $user->ID ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_user_invalid_id', __( 'Invalid resource id.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_user_invalid_id', __( 'Invalid user ID.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		if ( get_current_user_id() === $id ) {
@@ -397,15 +351,9 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		}
 
 		if ( 'edit' === $request['context'] && ! current_user_can( 'list_users' ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_user_cannot_view', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
-		} elseif ( ! count_user_posts( $id, $types ) && ! current_user_can( 'edit_user', $id ) && ! current_user_can( 'list_users' ) ) {
-			return new Error( 'rest_user_cannot_view', __( 'Sorry, you cannot view this resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_user_cannot_view', __( 'Sorry, you are not allowed to list users.' ), array( 'status' => rest_authorization_required_code() ) );
 		} elseif ( ! count_user_posts( $id, $types ) && ! current_user_can( 'edit_user', $id ) && ! current_user_can( 'list_users' ) ) {
 			return new WP_Error( 'rest_user_cannot_view', __( 'Sorry, you are not allowed to list users.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -418,22 +366,14 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
 		$id   = (int) $request['id'];
 		$user = get_userdata( $id );
 
 		if ( empty( $id ) || empty( $user->ID ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_user_invalid_id', __( 'Invalid resource id.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_user_invalid_id', __( 'Invalid user ID.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$user = $this->prepare_item_for_response( $user, $request );
@@ -447,11 +387,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_current_item( $request ) {
 		$current_user_id = get_current_user_id();
@@ -474,22 +410,13 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|boolean
-=======
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function create_item_permissions_check( $request ) {
 
 		if ( ! current_user_can( 'create_users' ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_create_user', __( 'Sorry, you are not allowed to create resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_cannot_create_user', __( 'Sorry, you are not allowed to create new users.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -502,19 +429,11 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-	 */
-	public function create_item( $request ) {
-		if ( ! empty( $request['id'] ) ) {
-			return new Error( 'rest_user_exists', __( 'Cannot create existing resource.' ), array( 'status' => 400 ) );
-=======
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function create_item( $request ) {
 		if ( ! empty( $request['id'] ) ) {
 			return new WP_Error( 'rest_user_exists', __( 'Cannot create existing user.' ), array( 'status' => 400 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$schema = $this->get_item_schema();
@@ -550,11 +469,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			$user_id = wpmu_create_user( $user->user_login, $user->user_pass, $user->user_email );
 
 			if ( ! $user_id ) {
-<<<<<<< HEAD
-				return new Error( 'rest_user_create', __( 'Error creating new resource.' ), array( 'status' => 500 ) );
-=======
 				return new WP_Error( 'rest_user_create', __( 'Error creating new user.' ), array( 'status' => 500 ) );
->>>>>>> aaronjorbin/master
 			}
 
 			$user->ID = $user_id;
@@ -619,35 +534,22 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	/**
 	 * Checks if a given request has access to update a user.
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|boolean
-=======
 	 * @since 4.7.0
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function update_item_permissions_check( $request ) {
 
 		$id = (int) $request['id'];
 
 		if ( ! current_user_can( 'edit_user', $id ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to edit resource.' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-
-		if ( ! empty( $request['roles'] ) && ! current_user_can( 'edit_users' ) ) {
-			return new Error( 'rest_cannot_edit_roles', __( 'Sorry, you are not allowed to edit roles of this resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to edit this user.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		if ( ! empty( $request['roles'] ) && ! current_user_can( 'edit_users' ) ) {
 			return new WP_Error( 'rest_cannot_edit_roles', __( 'Sorry, you are not allowed to edit roles of this user.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -660,30 +562,18 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function update_item( $request ) {
 		$id   = (int) $request['id'];
 		$user = get_userdata( $id );
 
 		if ( ! $user ) {
-<<<<<<< HEAD
-			return new Error( 'rest_user_invalid_id', __( 'Invalid resource id.' ), array( 'status' => 404 ) );
-		}
-
-		if ( email_exists( $request['email'] ) && $request['email'] !== $user->user_email ) {
-			return new Error( 'rest_user_invalid_email', __( 'Email address is invalid.' ), array( 'status' => 400 ) );
-=======
 			return new WP_Error( 'rest_user_invalid_id', __( 'Invalid user ID.' ), array( 'status' => 404 ) );
 		}
 
 		if ( email_exists( $request['email'] ) && $request['email'] !== $user->user_email ) {
 			return new WP_Error( 'rest_user_invalid_email', __( 'Invalid email address.' ), array( 'status' => 400 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		if ( ! empty( $request['username'] ) && $request['username'] !== $user->user_login ) {
@@ -691,11 +581,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		}
 
 		if ( ! empty( $request['slug'] ) && $request['slug'] !== $user->user_nicename && get_user_by( 'slug', $request['slug'] ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_user_invalid_slug', __( 'Slug is invalid.' ), array( 'status' => 400 ) );
-=======
 			return new WP_Error( 'rest_user_invalid_slug', __( 'Invalid slug.' ), array( 'status' => 400 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		if ( ! empty( $request['roles'] ) ) {
@@ -750,13 +636,9 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		$request->set_param( 'context', 'edit' );
 
 		$response = $this->prepare_item_for_response( $user, $request );
-<<<<<<< HEAD
-		return rest_ensure_response( $response );
-=======
 		$response = rest_ensure_response( $response );
 
 		return $response;
->>>>>>> aaronjorbin/master
 	}
 
 	/**
@@ -765,10 +647,6 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|boolean
-=======
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
 	 */
@@ -801,18 +679,13 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function delete_item_permissions_check( $request ) {
 
 		$id = (int) $request['id'];
 
 		if ( ! current_user_can( 'delete_user', $id ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_user_cannot_delete', __( 'Sorry, you are not allowed to delete this resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_user_cannot_delete', __( 'Sorry, you are not allowed to delete this user.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -825,11 +698,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function delete_item( $request ) {
 		// We don't support delete requests in multisite.
@@ -843,30 +712,18 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		// We don't support trashing for users.
 		if ( ! $force ) {
-<<<<<<< HEAD
-			return new Error( 'rest_trash_not_supported', __( 'Users do not support trashing.' ), array( 'status' => 501 ) );
-=======
 			return new WP_Error( 'rest_trash_not_supported', __( 'Users do not support trashing. Set force=true to delete.' ), array( 'status' => 501 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$user = get_userdata( $id );
 
 		if ( ! $user ) {
-<<<<<<< HEAD
-			return new Error( 'rest_user_invalid_id', __( 'Invalid resource id.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_user_invalid_id', __( 'Invalid user ID.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		if ( ! empty( $reassign ) ) {
 			if ( $reassign === $id || ! get_userdata( $reassign ) ) {
-<<<<<<< HEAD
-				return new Error( 'rest_user_invalid_reassign', __( 'Invalid resource id for reassignment.' ), array( 'status' => 400 ) );
-=======
 				return new WP_Error( 'rest_user_invalid_reassign', __( 'Invalid user ID for reassignment.' ), array( 'status' => 400 ) );
->>>>>>> aaronjorbin/master
 			}
 		}
 
@@ -880,11 +737,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		$result = wp_delete_user( $id, $reassign );
 
 		if ( ! $result ) {
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_delete', __( 'The resource cannot be deleted.' ), array( 'status' => 500 ) );
-=======
 			return new WP_Error( 'rest_cannot_delete', __( 'The user cannot be deleted.' ), array( 'status' => 500 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$response = new WP_REST_Response();
@@ -946,11 +799,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $user, $request ) {
 
-<<<<<<< HEAD
-		$data = [];
-=======
 		$data   = array();
->>>>>>> aaronjorbin/master
 		$schema = $this->get_item_schema();
 
 		if ( ! empty( $schema['properties']['id'] ) ) {
@@ -1156,12 +1005,8 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 *
 	 * @param integer $user_id User ID.
 	 * @param array   $roles   New user roles.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return true|WP_Error True if the current user is allowed to make the role change,
 	 *                       otherwise a WP_Error object.
->>>>>>> aaronjorbin/master
 	 */
 	protected function check_role_update( $user_id, $roles ) {
 		global $wp_roles;
@@ -1169,23 +1014,11 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		foreach ( $roles as $role ) {
 
 			if ( ! isset( $wp_roles->role_objects[ $role ] ) ) {
-<<<<<<< HEAD
-				return new Error( 'rest_user_invalid_role', sprintf( __( 'The role %s does not exist.' ), $role ), array( 'status' => 400 ) );
-			}
-
-			$potential_role = $wp_roles->role_objects[ $role ];
-			// Don't let anyone with 'edit_users' (admins) edit their own role to something without it.
-			// Multisite super admins can freely edit their blog roles -- they possess all caps.
-			if ( ! ( is_multisite() && current_user_can( 'manage_sites' ) ) && get_current_user_id() === $user_id && ! $potential_role->has_cap( 'edit_users' ) ) {
-				return new Error( 'rest_user_invalid_role', __( 'You cannot give resource that role.' ), array( 'status' => rest_authorization_required_code() ) );
-			}
-=======
 				/* translators: %s: role key */
 				return new WP_Error( 'rest_user_invalid_role', sprintf( __( 'The role %s does not exist.' ), $role ), array( 'status' => 400 ) );
 			}
 
 			$potential_role = $wp_roles->role_objects[ $role ];
->>>>>>> aaronjorbin/master
 
 			/*
 			 * Don't let anyone with 'edit_users' (admins) edit their own role to something without it.
@@ -1206,11 +1039,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			$editable_roles = get_editable_roles();
 
 			if ( empty( $editable_roles[ $role ] ) ) {
-<<<<<<< HEAD
-				return new Error( 'rest_user_invalid_role', __( 'You cannot give resource that role.' ), array( 'status' => 403 ) );
-=======
 				return new WP_Error( 'rest_user_invalid_role', __( 'Sorry, you are not allowed to give users that role.' ), array( 'status' => 403 ) );
->>>>>>> aaronjorbin/master
 			}
 		}
 
@@ -1390,11 +1219,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 				'password'        => array(
 					'description' => __( 'Password for the user (never included).' ),
 					'type'        => 'string',
-<<<<<<< HEAD
-					'context'     => [], // Password is never displayed
-=======
 					'context'     => array(), // Password is never displayed.
->>>>>>> aaronjorbin/master
 					'required'    => true,
 					'arg_options' => array(
 						'sanitize_callback' => array( $this, 'check_user_password' ),
@@ -1460,29 +1285,19 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		$query_params['exclude'] = array(
 			'description'        => __( 'Ensure result set excludes specific IDs.' ),
 			'type'               => 'array',
-<<<<<<< HEAD
-			'default'            => [],
-			'sanitize_callback'  => 'wp_parse_id_list',
-=======
 			'items'              => array(
 				'type'           => 'integer',
 			),
 			'default'            => array(),
->>>>>>> aaronjorbin/master
 		);
 
 		$query_params['include'] = array(
 			'description'        => __( 'Limit result set to specific IDs.' ),
 			'type'               => 'array',
-<<<<<<< HEAD
-			'default'            => [],
-			'sanitize_callback'  => 'wp_parse_id_list',
-=======
 			'items'              => array(
 				'type'           => 'integer',
 			),
 			'default'            => array(),
->>>>>>> aaronjorbin/master
 		);
 
 		$query_params['offset'] = array(

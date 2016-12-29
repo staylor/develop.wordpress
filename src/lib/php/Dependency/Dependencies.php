@@ -427,7 +427,7 @@ class Dependencies {
 	 * @param mixed  $group     Group level.
 	 * @return bool Not already in the group or a lower group
 	 */
-	public function set_group( $handle, $recursion, int $group ) {
+	public function set_group( $handle, $recursion, $group ) {
 		if ( isset( $this->groups[ $handle ] ) && $this->groups[ $handle ] <= $group ) {
 			return false;
 		}

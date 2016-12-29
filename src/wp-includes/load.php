@@ -45,17 +45,14 @@ function wp_check_php_mysql_versions() {
 		$protocol = wp_get_server_protocol();
 		header( sprintf( '%s 500 Internal Server Error', $protocol ), true, 500 );
 		header( 'Content-Type: text/html; charset=utf-8' );
-<<<<<<< HEAD
+
+		/* translators: 1: Current PHP version number, 2: WordPress version number, 3: Minimum required PHP version number */
 		die( sprintf(
 			__( 'Your server is running PHP version %1$s but WordPress %2$s requires at least %3$s.' ),
 			$php_version,
 			$app['wp_version'],
 			$app['required_php_version']
 		) );
-=======
-		/* translators: 1: Current PHP version number, 2: WordPress version number, 3: Minimum required PHP version number */
-		die( sprintf( __( 'Your server is running PHP version %1$s but WordPress %2$s requires at least %3$s.' ), $php_version, $wp_version, $required_php_version ) );
->>>>>>> aaronjorbin/master
 	}
 
 	if ( ! extension_loaded( 'mysql' ) && ! extension_loaded( 'mysqli' ) && ! extension_loaded( 'mysqlnd' ) && ! file_exists( WP_CONTENT_DIR . '/db.php' ) ) {
@@ -612,7 +609,7 @@ function wp_magic_quotes() {
 	$_get->replace( add_magic_quotes( $_get->all() ) );
 	$_post->replace( add_magic_quotes( $_post->all() ) );
 	$_cookie->replace( add_magic_quotes( $_cookie->all() ) );
-	$_server->replace( add_magic_quotes( $_server->all ) );
+	$_server->replace( add_magic_quotes( $_server->all() ) );
 
 	// Force REQUEST to be GET + POST.
 	$_request->replace( array_merge( $_get->all(), $_post->all() ) );
@@ -804,19 +801,10 @@ function get_current_network_id() {
  * @since 3.4.0
  * @access private
  *
-<<<<<<< HEAD
  * @staticvar bool $loaded
  */
 function wp_load_translations_early() {
 	$app = getApp();
-=======
- * @global WP_Locale $wp_locale The WordPress date and time locale object.
- *
- * @staticvar bool $loaded
- */
-function wp_load_translations_early() {
-	global $wp_locale;
->>>>>>> aaronjorbin/master
 
 	static $loaded = false;
 	if ( $loaded ) {
@@ -829,14 +817,6 @@ function wp_load_translations_early() {
 	}
 
 	require_once ABSPATH . WPINC . '/l10n.php';
-<<<<<<< HEAD
-=======
-	require_once ABSPATH . WPINC . '/class-wp-locale.php';
-	require_once ABSPATH . WPINC . '/class-wp-locale-switcher.php';
-
-	// General libraries
-	require_once ABSPATH . WPINC . '/plugin.php';
->>>>>>> aaronjorbin/master
 
 	$locales = $locations = [];
 

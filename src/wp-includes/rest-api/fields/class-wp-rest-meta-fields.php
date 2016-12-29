@@ -1,7 +1,6 @@
 <?php
-<<<<<<< HEAD
 use WP\Error;
-=======
+
 /**
  * REST API: WP_REST_Meta_Fields class
  *
@@ -10,7 +9,6 @@ use WP\Error;
  * @since 4.7.0
  */
 
->>>>>>> aaronjorbin/master
 /**
  * Core class to manage meta values for an object via the REST API.
  *
@@ -51,13 +49,8 @@ abstract class WP_REST_Meta_Fields {
 		register_rest_field( $this->get_rest_field_type(), 'meta', array(
 			'get_callback'    => array( $this, 'get_value' ),
 			'update_callback' => array( $this, 'update_value' ),
-<<<<<<< HEAD
-			'schema' => $this->get_field_schema(),
-		) );
-=======
 			'schema'          => $this->get_field_schema(),
 		));
->>>>>>> aaronjorbin/master
 	}
 
 	/**
@@ -68,11 +61,7 @@ abstract class WP_REST_Meta_Fields {
 	 *
 	 * @param int             $object_id Object ID to fetch meta for.
 	 * @param WP_REST_Request $request   Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|object
-=======
-	 * @return WP_Error|object Object containing the meta values by name, otherwise WP_Error object.
->>>>>>> aaronjorbin/master
+	 * @return Error|object Object containing the meta values by name, otherwise WP_Error object.
 	 */
 	public function get_value( $object_id, $request ) {
 		$fields   = $this->get_registered_fields();
@@ -130,15 +119,9 @@ abstract class WP_REST_Meta_Fields {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param WP_REST_Request $request    Full details about the request.
-	 * @param int             $object_id  Object ID to fetch meta for.
-	 * @return Error|null Error if one occurs, null on success.
-=======
 	 * @param array           $meta      Array of meta parsed from the request.
 	 * @param int             $object_id Object ID to fetch meta for.
 	 * @return WP_Error|null WP_Error if one occurs, null on success.
->>>>>>> aaronjorbin/master
 	 */
 	public function update_value( $meta, $object_id ) {
 		$fields = $this->get_registered_fields();
@@ -189,14 +172,6 @@ abstract class WP_REST_Meta_Fields {
 	 * @access protected
 	 *
 	 * @param int    $object_id Object ID the field belongs to.
-<<<<<<< HEAD
-	 * @param string $name      Key for the field.
-	 * @return bool|Error True if meta field is deleted, error otherwise.
-	 */
-	protected function delete_meta_value( $object_id, $name ) {
-		if ( ! current_user_can( 'delete_post_meta', $object_id, $name ) ) {
-			return new Error(
-=======
 	 * @param string $meta_key  Key for the field.
 	 * @param string $name      Name for the field that is exposed in the REST API.
 	 * @return bool|WP_Error True if meta field is deleted, WP_Error otherwise.
@@ -205,7 +180,6 @@ abstract class WP_REST_Meta_Fields {
 		$meta_type = $this->get_meta_type();
 		if ( ! current_user_can( "delete_{$meta_type}_meta", $object_id, $meta_key ) ) {
 			return new WP_Error(
->>>>>>> aaronjorbin/master
 				'rest_cannot_delete',
 				/* translators: %s: custom field key */
 				sprintf( __( 'Sorry, you are not allowed to edit the %s custom field.' ), $name ),
@@ -213,13 +187,8 @@ abstract class WP_REST_Meta_Fields {
 			);
 		}
 
-<<<<<<< HEAD
-		if ( ! delete_metadata( $this->get_meta_type(), $object_id, wp_slash( $name ) ) ) {
-			return new Error(
-=======
 		if ( ! delete_metadata( $meta_type, $object_id, wp_slash( $meta_key ) ) ) {
 			return new WP_Error(
->>>>>>> aaronjorbin/master
 				'rest_meta_database_error',
 				__( 'Could not delete meta value from database.' ),
 				array( 'key' => $name, 'status' => WP_Http::INTERNAL_SERVER_ERROR )
@@ -241,20 +210,12 @@ abstract class WP_REST_Meta_Fields {
 	 * @param string $meta_key  Key for the custom field.
 	 * @param string $name      Name for the field that is exposed in the REST API.
 	 * @param array  $values    List of values to update to.
-<<<<<<< HEAD
-	 * @return bool|Error True if meta fields are updated, error otherwise.
-	 */
-	protected function update_multi_meta_value( $object_id, $name, $values ) {
-		if ( ! current_user_can( 'edit_post_meta', $object_id, $name ) ) {
-			return new Error(
-=======
 	 * @return bool|WP_Error True if meta fields are updated, WP_Error otherwise.
 	 */
 	protected function update_multi_meta_value( $object_id, $meta_key, $name, $values ) {
 		$meta_type = $this->get_meta_type();
 		if ( ! current_user_can( "edit_{$meta_type}_meta", $object_id, $meta_key ) ) {
 			return new WP_Error(
->>>>>>> aaronjorbin/master
 				'rest_cannot_update',
 				/* translators: %s: custom field key */
 				sprintf( __( 'Sorry, you are not allowed to edit the %s custom field.' ), $name ),
@@ -289,13 +250,8 @@ abstract class WP_REST_Meta_Fields {
 		$to_remove = array_unique( $to_remove );
 
 		foreach ( $to_remove as $value ) {
-<<<<<<< HEAD
-			if ( ! delete_metadata( $this->get_meta_type(), $object_id, wp_slash( $name ), wp_slash( $value ) ) ) {
-				return new Error(
-=======
 			if ( ! delete_metadata( $meta_type, $object_id, wp_slash( $meta_key ), wp_slash( $value ) ) ) {
 				return new WP_Error(
->>>>>>> aaronjorbin/master
 					'rest_meta_database_error',
 					__( 'Could not update meta value in database.' ),
 					array( 'key' => $name, 'status' => WP_Http::INTERNAL_SERVER_ERROR )
@@ -304,13 +260,8 @@ abstract class WP_REST_Meta_Fields {
 		}
 
 		foreach ( $to_add as $value ) {
-<<<<<<< HEAD
-			if ( ! add_metadata( $this->get_meta_type(), $object_id, wp_slash( $name ), wp_slash( $value ) ) ) {
-				return new Error(
-=======
 			if ( ! add_metadata( $meta_type, $object_id, wp_slash( $meta_key ), wp_slash( $value ) ) ) {
 				return new WP_Error(
->>>>>>> aaronjorbin/master
 					'rest_meta_database_error',
 					__( 'Could not update meta value in database.' ),
 					array( 'key' => $name, 'status' => WP_Http::INTERNAL_SERVER_ERROR )
@@ -331,20 +282,12 @@ abstract class WP_REST_Meta_Fields {
 	 * @param string $meta_key  Key for the custom field.
 	 * @param string $name      Name for the field that is exposed in the REST API.
 	 * @param mixed  $value     Updated value.
-<<<<<<< HEAD
-	 * @return bool|Error True if meta field is updated, error otherwise.
-	 */
-	protected function update_meta_value( $object_id, $name, $value ) {
-		if ( ! current_user_can( 'edit_post_meta', $object_id, $name ) ) {
-			return new Error(
-=======
 	 * @return bool|WP_Error True if the meta field was updated, WP_Error otherwise.
 	 */
 	protected function update_meta_value( $object_id, $meta_key, $name, $value ) {
 		$meta_type = $this->get_meta_type();
 		if ( ! current_user_can(  "edit_{$meta_type}_meta", $object_id, $meta_key ) ) {
 			return new WP_Error(
->>>>>>> aaronjorbin/master
 				'rest_cannot_update',
 				/* translators: %s: custom field key */
 				sprintf( __( 'Sorry, you are not allowed to edit the %s custom field.' ), $name ),
@@ -391,12 +334,8 @@ abstract class WP_REST_Meta_Fields {
 				continue;
 			}
 
-<<<<<<< HEAD
 			$rest_args = [];
-=======
-			$rest_args = array();
 
->>>>>>> aaronjorbin/master
 			if ( is_array( $args['show_in_rest'] ) ) {
 				$rest_args = $args['show_in_rest'];
 			}
@@ -404,12 +343,8 @@ abstract class WP_REST_Meta_Fields {
 			$default_args = array(
 				'name'             => $name,
 				'single'           => $args['single'],
-<<<<<<< HEAD
-				'schema'           => [],
-=======
 				'type'             => ! empty( $args['type'] ) ? $args['type'] : null,
 				'schema'           => array(),
->>>>>>> aaronjorbin/master
 				'prepare_callback' => array( $this, 'prepare_value' ),
 			);
 
@@ -457,15 +392,11 @@ abstract class WP_REST_Meta_Fields {
 			'description' => __( 'Meta fields.' ),
 			'type'        => 'object',
 			'context'     => array( 'view', 'edit' ),
-<<<<<<< HEAD
-			'properties'  => [],
-=======
 			'properties'  => array(),
 			'arg_options' => array(
 				'sanitize_callback' => null,
 				'validate_callback' => array( $this, 'check_meta_is_array' ),
 			),
->>>>>>> aaronjorbin/master
 		);
 
 		foreach ( $fields as $args ) {
@@ -498,17 +429,6 @@ abstract class WP_REST_Meta_Fields {
 		}
 
 		switch ( $type ) {
-<<<<<<< HEAD
-		case 'string':
-			$value = (string) $value;
-			break;
-		case 'number':
-			$value = (float) $value;
-			break;
-		case 'boolean':
-			$value = (bool) $value;
-			break;
-=======
 			case 'string':
 				$value = (string) $value;
 				break;
@@ -521,7 +441,6 @@ abstract class WP_REST_Meta_Fields {
 			case 'boolean':
 				$value = (bool) $value;
 				break;
->>>>>>> aaronjorbin/master
 		}
 
 		// Don't allow objects to be output.

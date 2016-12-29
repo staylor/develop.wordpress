@@ -1,7 +1,6 @@
 <?php
-<<<<<<< HEAD
 use WP\Error;
-=======
+
 /**
  * REST API: WP_REST_Post_Types_Controller class
  *
@@ -9,7 +8,6 @@ use WP\Error;
  * @subpackage REST_API
  * @since 4.7.0
  */
->>>>>>> aaronjorbin/master
 
 /**
  * Core class to access post types via the REST API.
@@ -66,16 +64,11 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 	/**
 	 * Checks whether a given request has permission to read types.
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|boolean
-=======
 	 * @since 4.7.0
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|true True if the request has read access, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( 'edit' === $request['context'] ) {
@@ -84,12 +77,8 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 					return true;
 				}
 			}
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_view', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 
 			return new WP_Error( 'rest_cannot_view', __( 'Sorry, you are not allowed to edit posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -101,14 +90,6 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param WP_REST_Request $request
-	 * @return array|Error
-	 */
-	public function get_items( $request ) {
-		$data = [];
-		foreach ( get_post_types( [], 'object' ) as $obj ) {
-=======
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
@@ -116,7 +97,6 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 		$data = array();
 
 		foreach ( get_post_types( array(), 'object' ) as $obj ) {
->>>>>>> aaronjorbin/master
 			if ( empty( $obj->show_in_rest ) || ( 'edit' === $request['context'] && ! current_user_can( $obj->cap->edit_posts ) ) ) {
 				continue;
 			}
@@ -134,39 +114,22 @@ class WP_REST_Post_Types_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param WP_REST_Request $request
-	 * @return array|Error
-=======
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
 		$obj = get_post_type_object( $request['type'] );
 
 		if ( empty( $obj ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_type_invalid', __( 'Invalid resource.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_type_invalid', __( 'Invalid post type.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		if ( empty( $obj->show_in_rest ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_read_type', __( 'Cannot view resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_cannot_read_type', __( 'Cannot view post type.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		if ( 'edit' === $request['context'] && ! current_user_can( $obj->cap->edit_posts ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to manage this resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$data = $this->prepare_item_for_response( $obj, $request );

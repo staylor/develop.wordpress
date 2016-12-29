@@ -578,11 +578,7 @@ final class WP_Theme implements ArrayAccess {
 	 * @access public
 	 */
 	public function cache_delete() {
-<<<<<<< HEAD
-		foreach ( [ 'theme', 'screenshot', 'headers', 'page_templates' ] as $key ) {
-=======
-		foreach ( array( 'theme', 'screenshot', 'headers', 'post_templates' ) as $key )
->>>>>>> aaronjorbin/master
+		foreach ( [ 'theme', 'screenshot', 'headers', 'post_templates' ] as $key ) {
 			wp_cache_delete( $key . '-' . $this->cache_hash, 'themes' );
 		}
 		$this->template = $this->textdomain_loaded = $this->theme_root_uri = $this->parent = $this->errors = $this->headers_sanitized = $this->name_translated = null;
@@ -1047,24 +1043,14 @@ final class WP_Theme implements ArrayAccess {
 	 */
 	public function get_post_templates() {
 		// If you screw up your current theme and we invalidate your parent, most things still work. Let it slide.
-<<<<<<< HEAD
 		if ( $this->errors() && $this->errors()->get_error_codes() !== [ 'theme_parent_invalid' ] ) {
 			return [];
-=======
-		if ( $this->errors() && $this->errors()->get_error_codes() !== array( 'theme_parent_invalid' ) ) {
-			return array();
->>>>>>> aaronjorbin/master
 		}
 
 		$post_templates = $this->cache_get( 'post_templates' );
 
-<<<<<<< HEAD
-		if ( ! is_array( $page_templates ) ) {
-			$page_templates = [];
-=======
 		if ( ! is_array( $post_templates ) ) {
-			$post_templates = array();
->>>>>>> aaronjorbin/master
+			$post_templates = [];
 
 			$files = (array) $this->get_files( 'php', 1 );
 
@@ -1072,9 +1058,6 @@ final class WP_Theme implements ArrayAccess {
 				if ( ! preg_match( '|Template Name:(.*)$|mi', file_get_contents( $full_path ), $header ) ) {
 					continue;
 				}
-<<<<<<< HEAD
-				$page_templates[ $file ] = _cleanup_header_comment( $header[1] );
-=======
 
 				$types = array( 'page' );
 				if ( preg_match( '|Template Post Type:(.*)$|mi', file_get_contents( $full_path ), $type ) ) {
@@ -1089,7 +1072,6 @@ final class WP_Theme implements ArrayAccess {
 
 					$post_templates[ $type ][ $file ] = _cleanup_header_comment( $header[1] );
 				}
->>>>>>> aaronjorbin/master
 			}
 
 			$this->cache_add( 'post_templates', $post_templates );
@@ -1103,10 +1085,6 @@ final class WP_Theme implements ArrayAccess {
 			}
 		}
 
-<<<<<<< HEAD
-		if ( $this->parent() ) {
-			$page_templates += $this->parent()->get_page_templates( $post );
-=======
 		return $post_templates;
 	}
 
@@ -1132,7 +1110,6 @@ final class WP_Theme implements ArrayAccess {
 
 		if ( $this->parent() ) {
 			$post_templates += $this->parent()->get_page_templates( $post, $post_type );
->>>>>>> aaronjorbin/master
 		}
 
 		/**

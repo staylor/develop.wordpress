@@ -15,22 +15,22 @@ class App extends Container {
 	 * @param string $name
 	 * @return mixed
 	 */
-	public function get( string $name ) {
+	public function get( $name ) {
 		if ( array_key_exists( $name, $this->globals ) ) {
 			return $this->globals[ $name ];
 		}
 	}
 
-	public function set( string $name, $value = null ) {
+	public function set( $name, $value = null ) {
 		$this->globals[ $name ] = $value;
 	}
 
-	public function remove( string $name ) {
+	public function remove( $name ) {
 		unset( $this->globals[ $name ] );
 	}
 
 	// wrap callables that produce output
-	public function mute( callable $callback ) {
+	public function mute( $callback ) {
 		return function () use ( $callback ) {
 			ob_start();
 			$return = call_user_func( $callback );

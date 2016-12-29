@@ -2698,18 +2698,11 @@ function wp_update_term( int $term_id, $taxonomy, $args = [] ) {
 	if ( $duplicate && $duplicate->term_id != $term_id ) {
 		// If an empty slug was passed or the parent changed, reset the slug to something unique.
 		// Otherwise, bail.
-<<<<<<< HEAD
-		if ( $empty_slug || ( $parent != $term['parent'] ) ) {
-			$slug = wp_unique_term_slug( $slug, (object) $args );
-		} else {
-			return new Error( 'duplicate_term_slug', sprintf( __( 'The slug &#8220;%s&#8221; is already in use by another term' ), $slug ) );
-=======
 		if ( $empty_slug || ( $parent != $term['parent']) ) {
 			$slug = wp_unique_term_slug($slug, (object) $args);
 		} else {
 			/* translators: 1: Taxonomy term slug */
 			return new WP_Error('duplicate_term_slug', sprintf(__('The slug &#8220;%s&#8221; is already in use by another term'), $slug));
->>>>>>> aaronjorbin/master
 		}
 	}
 
@@ -3072,11 +3065,7 @@ function clean_term_cache( $ids, $taxonomy = '', $clean_taxonomy = true) {
  * function only fetches relationship data that is already in the cache.
  *
  * @since 2.3.0
-<<<<<<< HEAD
- * @since 4.6.2 Returns a Error object if get_term() returns an error for
-=======
  * @since 4.7.0 Returns a WP_Error object if get_term() returns an error for
->>>>>>> aaronjorbin/master
  *              any of the matched terms.
  *
  * @param int    $id       Term object ID.
@@ -4208,7 +4197,7 @@ function is_object_in_taxonomy( $object_type, $taxonomy ) {
  *                              or 'taxonomy'. Default empty.
  * @return array An array of ancestors from lowest to highest in the hierarchy.
  */
-function get_ancestors( int $object_id = 0, $object_type = '', $resource_type = '' ) {
+function get_ancestors( $object_id = 0, $object_type = '', $resource_type = '' ) {
 	$ancestors = [];
 
 	if ( empty( $object_id ) ) {

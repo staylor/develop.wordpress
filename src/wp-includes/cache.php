@@ -458,7 +458,7 @@ class WP_Object_Cache {
 	 * @param string     $group  Optional. The group the key is in. Default 'default'.
 	 * @return false|int False on failure, the item's new value on success.
 	 */
-	public function decr( $key, int $offset = 1, $group = 'default' ) {
+	public function decr( $key, $offset = 1, $group = 'default' ) {
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}
@@ -583,7 +583,7 @@ class WP_Object_Cache {
 	 * @param string     $group  Optional. The group the key is in. Default 'default'.
 	 * @return false|int False on failure, the item's new value on success.
 	 */
-	public function incr( $key, int $offset = 1, $group = 'default' ) {
+	public function incr( $key, $offset = 1, $group = 'default' ) {
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}

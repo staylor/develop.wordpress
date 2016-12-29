@@ -21,7 +21,6 @@ final class Screen {
 	use MustacheTrait;
 	use Request;
 
-	protected $app;
 	/**
 	 * Any action associated with the screen. 'add' for *-add.php and *-new.php screens. Empty otherwise.
 	 *
@@ -335,7 +334,7 @@ final class Screen {
 				return $screen;
 			}
 		} else {
-			$screen = new Screen();
+			$screen = new static();
 			$screen->id = $id;
 		}
 

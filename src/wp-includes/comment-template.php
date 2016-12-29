@@ -2309,9 +2309,6 @@ function comment_form( $args = [], $post_id = null ) {
 	// Ensure that the filtered args contain all required default values.
 	$args = array_merge( $defaults, $args );
 
-<<<<<<< HEAD
-	if ( comments_open( $post_id ) ) { ?>
-=======
 	/**
 	 * Fires before the comment form.
 	 *
@@ -2320,7 +2317,6 @@ function comment_form( $args = [], $post_id = null ) {
 	do_action( 'comment_form_before' );
 	?>
 	<div id="respond" class="comment-respond">
->>>>>>> aaronjorbin/master
 		<?php
 		echo $args['title_reply_before'];
 
@@ -2334,10 +2330,6 @@ function comment_form( $args = [], $post_id = null ) {
 
 		echo $args['title_reply_after'];
 
-<<<<<<< HEAD
-			if ( get_option( 'comment_registration' ) && !is_user_logged_in() ) {
-				echo $args['must_log_in'];
-=======
 		if ( get_option( 'comment_registration' ) && !is_user_logged_in() ) :
 			echo $args['must_log_in'];
 			/**
@@ -2349,23 +2341,14 @@ function comment_form( $args = [], $post_id = null ) {
 		else : ?>
 			<form action="<?php echo esc_url( $args['action'] ); ?>" method="post" id="<?php echo esc_attr( $args['id_form'] ); ?>" class="<?php echo esc_attr( $args['class_form'] ); ?>"<?php echo $html5 ? ' novalidate' : ''; ?>>
 				<?php
->>>>>>> aaronjorbin/master
 				/**
 				 * Fires at the top of the comment form, inside the form tag.
 				 *
 				 * @since 3.0.0
 				 */
-<<<<<<< HEAD
-				do_action( 'comment_form_must_log_in_after' );
-			} else { ?>
-				<form action="<?php echo esc_url( $args['action'] );
-			?>" method="post" id="<?php echo esc_attr( $args['id_form'] ); ?>" class="<?php echo esc_attr( $args['class_form'] ); ?>"<?php echo $html5 ? ' novalidate' : ''; ?>>
-					<?php
-=======
 				do_action( 'comment_form_top' );
 
-				if ( is_user_logged_in() ) :
->>>>>>> aaronjorbin/master
+				if ( is_user_logged_in() ) {
 					/**
 					 * Filters the 'logged in' message for the comment form for display.
 					 *
@@ -2379,21 +2362,6 @@ function comment_form( $args = [], $post_id = null ) {
 					 */
 					echo apply_filters( 'comment_form_logged_in', $args['logged_in_as'], $commenter, $user_identity );
 
-<<<<<<< HEAD
-					if ( is_user_logged_in() ) {
-						/**
-						 * Filters the 'logged in' message for the comment form for display.
-						 *
-						 * @since 3.0.0
-						 *
-						 * @param string $args_logged_in The logged-in-as HTML-formatted message.
-						 * @param array  $commenter      An array containing the comment author's
-						 *                               username, email, and URL.
-						 * @param string $user_identity  If the commenter is a registered user,
-						 *                               the display name, blank otherwise.
-						 */
-						echo apply_filters( 'comment_form_logged_in', $args['logged_in_as'], $commenter, $user_identity );
-=======
 					/**
 					 * Fires after the is_user_logged_in() check in the comment form.
 					 *
@@ -2405,24 +2373,12 @@ function comment_form( $args = [], $post_id = null ) {
 					 *                              the display name, blank otherwise.
 					 */
 					do_action( 'comment_form_logged_in_after', $commenter, $user_identity );
->>>>>>> aaronjorbin/master
 
-				else :
-
-<<<<<<< HEAD
-					} else {
-=======
+				} else {
 					echo $args['comment_notes_before'];
->>>>>>> aaronjorbin/master
-
-				endif;
-
-<<<<<<< HEAD
-					}
-=======
+				}
 				// Prepare an array of all fields, including the textarea
 				$comment_fields = array( 'comment' => $args['comment_field'] ) + (array) $args['fields'];
->>>>>>> aaronjorbin/master
 
 				/**
 				 * Filters the comment form fields, including the textarea.
@@ -2526,35 +2482,6 @@ function comment_form( $args = [], $post_id = null ) {
 				 */
 				echo apply_filters( 'comment_form_submit_field', $submit_field, $args );
 
-<<<<<<< HEAD
-					/**
-					 * Fires at the bottom of the comment form, inside the closing </form> tag.
-					 *
-					 * @since 1.5.0
-					 *
-					 * @param int $post_id The post ID.
-					 */
-					do_action( 'comment_form', $post_id );
-					?>
-				</form>
-			<?php } ?>
-		</div><!-- #respond -->
-		<?php
-		/**
-		 * Fires after the comment form.
-		 *
-		 * @since 3.0.0
-		 */
-		do_action( 'comment_form_after' );
-	} else {
-		/**
-		 * Fires after the comment form if comments are closed.
-		 *
-		 * @since 3.0.0
-		 */
-		do_action( 'comment_form_comments_closed' );
-	}
-=======
 				/**
 				 * Fires at the bottom of the comment form, inside the closing </form> tag.
 				 *
@@ -2575,5 +2502,4 @@ function comment_form( $args = [], $post_id = null ) {
 	 * @since 3.0.0
 	 */
 	do_action( 'comment_form_after' );
->>>>>>> aaronjorbin/master
 }

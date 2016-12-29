@@ -237,7 +237,7 @@ function get_tags_to_edit( $post_id, $taxonomy = 'post_tag' ) {
  * @param string $taxonomy Optional. The taxonomy for which to retrieve terms. Default 'post_tag'.
  * @return string|bool|Error
  */
-function get_terms_to_edit( int $post_id, $taxonomy = 'post_tag' ) {
+function get_terms_to_edit( $post_id, $taxonomy = 'post_tag' ) {
 	if ( !$post_id ) {
 		return false;
 	}

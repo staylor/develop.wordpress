@@ -279,15 +279,7 @@ class WP_REST_Server {
 
 		$jsonp_callback = null;
 
-<<<<<<< HEAD
-		if ( ! $enabled ) {
-			echo $this->json_error( 'rest_disabled', __( 'The REST API is disabled on this site.' ), 404 );
-			return false;
-		}
 		if ( $app['request']->query->get( '_jsonp' ) ) {
-=======
-		if ( isset( $_GET['_jsonp'] ) ) {
->>>>>>> aaronjorbin/master
 			if ( ! $jsonp_enabled ) {
 				echo $this->json_error( 'rest_callback_disabled', __( 'JSONP support is disabled on this site.' ), 400 );
 				return false;
@@ -909,11 +901,7 @@ class WP_REST_Server {
 						if ( is_wp_error( $permission ) ) {
 							$response = $permission;
 						} elseif ( false === $permission || null === $permission ) {
-<<<<<<< HEAD
 							$response = new Error( 'rest_forbidden', __( 'Sorry, you are not allowed to do that.' ), array( 'status' => 403 ) );
-=======
-							$response = new WP_Error( 'rest_forbidden', __( 'Sorry, you are not allowed to do that.' ), array( 'status' => 403 ) );
->>>>>>> aaronjorbin/master
 						}
 					}
 				}

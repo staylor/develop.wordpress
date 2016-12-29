@@ -601,7 +601,7 @@ function get_users( $args = [] ) {
  * @return array A list of the user's sites. An empty array if the user doesn't exist
  *               or belongs to no sites.
  */
-function get_blogs_of_user( int $user_id, $all = false ) {
+function get_blogs_of_user( $user_id, $all = false ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -726,7 +726,7 @@ function get_blogs_of_user( int $user_id, $all = false ) {
  * @param int $blog_id Optional. ID of the blog to check. Defaults to the current site.
  * @return bool
  */
-function is_user_member_of_blog( int $user_id = 0, int $blog_id = 0 ) {
+function is_user_member_of_blog( $user_id = 0, $blog_id = 0 ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 

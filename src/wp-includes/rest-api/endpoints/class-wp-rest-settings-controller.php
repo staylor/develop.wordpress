@@ -75,11 +75,7 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|array
-=======
 	 * @return array|WP_Error Array on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
 		$options  = $this->get_registered_options();
@@ -134,16 +130,6 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 		}
 
 		switch ( $schema['type'] ) {
-<<<<<<< HEAD
-		case 'string':
-			return (string) $value;
-		case 'number':
-			return (float) $value;
-		case 'boolean':
-			return (bool) $value;
-		default:
-			return null;
-=======
 			case 'string':
 				return (string) $value;
 			case 'integer':
@@ -154,23 +140,17 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 				return (bool) $value;
 			default:
 				return null;
->>>>>>> aaronjorbin/master
 		}
 	}
 
 	/**
 	 * Updates settings for the settings object.
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full detail about the request.
-	 * @return Error|array
-=======
 	 * @since 4.7.0
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return array|WP_Error Array on success, or error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function update_item( $request ) {
 		$options = $this->get_registered_options();
@@ -249,12 +229,8 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 				continue;
 			}
 
-<<<<<<< HEAD
 			$rest_args = [];
-=======
-			$rest_args = array();
 
->>>>>>> aaronjorbin/master
 			if ( is_array( $args['show_in_rest'] ) ) {
 				$rest_args = $args['show_in_rest'];
 			}

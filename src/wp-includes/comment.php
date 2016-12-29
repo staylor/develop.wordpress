@@ -185,18 +185,12 @@ function get_approved_comments( $post_id, $args = [] ) {
  *
  * @since 2.0.0
  *
-<<<<<<< HEAD
- * @param Comment|string|int $comment Comment to retrieve.
- * @param string $output Optional. OBJECT or ARRAY_A or ARRAY_N constants.
- * @return Comment|array|null Depends on $output value.
-=======
  * @global WP_Comment $comment
  *
  * @param WP_Comment|string|int $comment Comment to retrieve.
  * @param string                $output  Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which correspond to
  *                                       a WP_Comment object, an associative array, or a numeric array, respectively. Default OBJECT.
  * @return WP_Comment|array|null Depends on $output value.
->>>>>>> aaronjorbin/master
  */
 function get_comment( &$comment = null, $output = OBJECT ) {
 	$app = getApp();
@@ -319,40 +313,14 @@ function get_default_comment_status( $post_type = 'post', $comment_type = 'comme
  * @since 4.7.0 Replaced caching the modified date in a local static variable
  *              with the Object Cache API.
  *
-<<<<<<< HEAD
  * @staticvar array $cache_lastcommentmodified
-=======
- * @global wpdb $wpdb WordPress database abstraction object.
->>>>>>> aaronjorbin/master
  *
  * @param string $timezone Which timezone to use in reference to 'gmt', 'blog', or 'server' locations.
  * @return string|false Last comment modified date on success, false on failure.
  */
-<<<<<<< HEAD
-function get_lastcommentmodified( $timezone = 'server') {
+function get_lastcommentmodified( $timezone = 'server' ) {
 	$app = getApp();
 	$wpdb = $app['db'];
-	static $cache_lastcommentmodified = [];
-
-	if ( isset( $cache_lastcommentmodified[$timezone] ) ) {
-			return $cache_lastcommentmodified[$timezone];
-	}
-
-	$add_seconds_server = date( 'Z');
-
-	switch ( strtolower( $timezone) ) {
-	case 'gmt':
-		$lastcommentmodified = $wpdb->get_var( "SELECT comment_date_gmt FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1" );
-		break;
-	case 'blog':
-		$lastcommentmodified = $wpdb->get_var( "SELECT comment_date FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1" );
-		break;
-	case 'server':
-		$lastcommentmodified = $wpdb->get_var( $wpdb->prepare( "SELECT DATE_ADD(comment_date_gmt, INTERVAL %s SECOND) FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1", $add_seconds_server) );
-		break;
-=======
-function get_lastcommentmodified( $timezone = 'server' ) {
-	global $wpdb;
 
 	$timezone = strtolower( $timezone );
 	$key = "lastcommentmodified:$timezone";
@@ -374,7 +342,6 @@ function get_lastcommentmodified( $timezone = 'server' ) {
 
 			$comment_modified_date = $wpdb->get_var( $wpdb->prepare( "SELECT DATE_ADD(comment_date_gmt, INTERVAL %s SECOND) FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 1", $add_seconds_server ) );
 			break;
->>>>>>> aaronjorbin/master
 	}
 
 	if ( $comment_modified_date ) {
@@ -397,7 +364,7 @@ function get_lastcommentmodified( $timezone = 'server' ) {
  * @param int $post_id Optional. Comment amount in post if > 0, else total comments blog wide.
  * @return array The amount of spam, approved, awaiting moderation, and total comments.
  */
-function get_comment_count( int $post_id = 0 ) {
+function get_comment_count( $post_id = 0 ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -1289,7 +1256,7 @@ function wp_blacklist_check( $author, $email, $url, $comment, $user_ip, $user_ag
  * @param int $post_id Optional. Post ID.
  * @return object|array Comment stats.
  */
-function wp_count_comments( int $post_id = 0 ) {
+function wp_count_comments( $post_id = 0 ) {
 	/**
 	 * Filters the comments count for a given post.
 	 *
@@ -1403,12 +1370,12 @@ function wp_delete_comment( $comment_id, $force_delete = false) {
  * @param int|Comment $comment_id Comment ID or Comment object.
  * @return bool True on success, false on failure.
  */
-function wp_trash_comment( $comment_id) {
+function wp_trash_comment( $comment_id ) {
 	if ( !EMPTY_TRASH_DAYS ) {
-			return wp_delete_comment( $comment_id, true);
+			return wp_delete_comment( $comment_id, true );
 	}
 
-	if ( !$comment = get_comment( $comment_id) ) {
+	if ( !$comment = get_comment( $comment_id ) ) {
 			return false;
 	}
 
@@ -3151,11 +3118,7 @@ function wp_handle_comment_submission( $comment_data ) {
 		}
 	} else {
 		if ( get_option( 'comment_registration' ) ) {
-<<<<<<< HEAD
-			return new Error( 'not_logged_in', __( 'Sorry, you must be logged in to post a comment.' ), 403 );
-=======
 			return new WP_Error( 'not_logged_in', __( 'Sorry, you must be logged in to comment.' ), 403 );
->>>>>>> aaronjorbin/master
 		}
 	}
 
@@ -3169,27 +3132,8 @@ function wp_handle_comment_submission( $comment_data ) {
 		}
 	}
 
-<<<<<<< HEAD
-	if ( isset( $comment_author ) && $max_lengths['comment_author'] < mb_strlen( $comment_author, '8bit' ) ) {
-		return new Error( 'comment_author_column_length', __( '<strong>ERROR</strong>: your name is too long.' ), 200 );
-	}
-
-	if ( isset( $comment_author_email ) && $max_lengths['comment_author_email'] < strlen( $comment_author_email ) ) {
-		return new Error( 'comment_author_email_column_length', __( '<strong>ERROR</strong>: your email address is too long.' ), 200 );
-	}
-
-	if ( isset( $comment_author_url ) && $max_lengths['comment_author_url'] < strlen( $comment_author_url ) ) {
-		return new Error( 'comment_author_url_column_length', __( '<strong>ERROR</strong>: your url is too long.' ), 200 );
-	}
-
-	if ( '' == $comment_content ) {
-		return new Error( 'require_valid_comment', __( '<strong>ERROR</strong>: please type a comment.' ), 200 );
-	} elseif ( $max_lengths['comment_content'] < mb_strlen( $comment_content, '8bit' ) ) {
-		return new Error( 'comment_content_column_length', __( '<strong>ERROR</strong>: your comment is too long.' ), 200 );
-=======
 	if ( '' == $comment_content ) {
 		return new WP_Error( 'require_valid_comment', __( '<strong>ERROR</strong>: please type a comment.' ), 200 );
->>>>>>> aaronjorbin/master
 	}
 
 	$commentdata = compact(

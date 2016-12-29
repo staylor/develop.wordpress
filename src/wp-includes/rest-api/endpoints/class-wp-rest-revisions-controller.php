@@ -1,8 +1,6 @@
 <?php
-<<<<<<< HEAD
 use WP\Error;
 
-=======
 /**
  * REST API: WP_REST_Revisions_Controller class
  *
@@ -18,7 +16,7 @@ use WP\Error;
  *0
  * @see WP_REST_Controller
  */
->>>>>>> aaronjorbin/master
+
 class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 	/**
@@ -118,11 +116,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items_permissions_check( $request ) {
 
@@ -132,11 +126,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 		}
 		$parent_post_type_obj = get_post_type_object( $parent->post_type );
 		if ( ! current_user_can( $parent_post_type_obj->cap->edit_post, $parent->ID ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_read', __( 'Sorry, you cannot view revisions of this post.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_cannot_read', __( 'Sorry, you are not allowed to view revisions of this post.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -149,20 +139,12 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|WP_REST_Response
-=======
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items( $request ) {
 		$parent = get_post( $request['parent'] );
 		if ( ! $request['parent'] || ! $parent || $this->parent_post_type !== $parent->post_type ) {
-<<<<<<< HEAD
-			return new Error( 'rest_post_invalid_parent', __( 'Invalid post parent id.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_post_invalid_parent', __( 'Invalid post parent ID.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$revisions = wp_get_post_revisions( $request['parent'] );
@@ -182,11 +164,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item_permissions_check( $request ) {
 		return $this->get_items_permissions_check( $request );
@@ -199,29 +177,17 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-<<<<<<< HEAD
-	 * @return Error|array
-=======
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
 		$parent = get_post( $request['parent'] );
 		if ( ! $request['parent'] || ! $parent || $this->parent_post_type !== $parent->post_type ) {
-<<<<<<< HEAD
-			return new Error( 'rest_post_invalid_parent', __( 'Invalid post parent id.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_post_invalid_parent', __( 'Invalid post parent ID.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$revision = get_post( $request['id'] );
 		if ( ! $revision || 'revision' !== $revision->post_type ) {
-<<<<<<< HEAD
-			return new Error( 'rest_post_invalid_id', __( 'Invalid revision id.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid revision ID.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$response = $this->prepare_item_for_response( $revision, $request );
@@ -235,11 +201,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return bool|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function delete_item_permissions_check( $request ) {
 
@@ -250,11 +212,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 		$post = get_post( $request['id'] );
 		if ( ! $post ) {
-<<<<<<< HEAD
-			return new Error( 'rest_post_invalid_id', __( 'Invalid revision id.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_post_invalid_id', __( 'Invalid revision ID.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 		$post_type = get_post_type_object( 'revision' );
 		return current_user_can( $post_type->cap->delete_post, $post->ID );
@@ -267,11 +225,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-<<<<<<< HEAD
-	 * @return Error|boolean
-=======
 	 * @return true|WP_Error True on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function delete_item( $request ) {
 		$force = isset( $request['force'] ) ? (bool) $request['force'] : false;
@@ -298,15 +252,8 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 		 */
 		do_action( 'rest_delete_revision', $result, $request );
 
-<<<<<<< HEAD
-		if ( $result ) {
-			return true;
-		} else {
-			return new Error( 'rest_cannot_delete', __( 'The post cannot be deleted.' ), array( 'status' => 500 ) );
-=======
 		if ( ! $result ) {
 			return new WP_Error( 'rest_cannot_delete', __( 'The post cannot be deleted.' ), array( 'status' => 500 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$response = new WP_REST_Response();

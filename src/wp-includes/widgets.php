@@ -107,7 +107,7 @@ function unregister_widget( $widget_class ) {
  *                        Default 'Sidebar' for the first sidebar, otherwise 'Sidebar %d'.
  * }
  */
-function register_sidebars( int $number = 1, $args = [] ) {
+function register_sidebars( $number = 1, $args = [] ) {
 	$app = getApp();
 
 	if ( is_string( $args ) ) {

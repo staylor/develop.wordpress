@@ -376,7 +376,7 @@ if ( isset( $post_new_file ) && current_user_can( $post_type_object->cap->create
 
 <hr class="wp-header-end">
 
-<?php if ( $notice ) : ?>
+<?php if ( $notice ) { ?>
 <div id="notice" class="notice notice-warning"><p id="has-newer-autosave"><?php echo $notice ?></p></div>
 <?php }
 

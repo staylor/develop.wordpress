@@ -2132,7 +2132,7 @@ function adjacent_post_link( $format, $link, $in_same_term = false, $excluded_te
  * 	                    Otherwise, prepares the URL with esc_url_raw().
  * @return string The link URL for the given page number.
  */
-function get_pagenum_link( int $pagenum = 1, $escape = true ) {
+function get_pagenum_link( $pagenum = 1, $escape = true ) {
 	$request = remove_query_arg( 'paged' );
 
 	$home_root = parse_url(home_url());
@@ -2675,7 +2675,7 @@ function _navigation_markup( $links, $class = 'posts-navigation', $screen_reader
  * @param int $max_page Optional. The maximum number of comment pages. Default 0.
  * @return string The comments page number link URL.
  */
-function get_comments_pagenum_link( int $pagenum = 1, $max_page = 0 ) {
+function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
 	$app = getApp();
 	$result = get_permalink();
 

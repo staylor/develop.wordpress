@@ -966,7 +966,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 		echo "</strong>\n";
 
-		if ( ! is_post_type_hierarchical( $this->screen->post_type ) && 'excerpt' === $mode && current_user_can( 'read_post', $post->ID ) ) {
+		if ( ! is_post_type_hierarchical( $this->screen->post_type ) && isset( $mode ) && 'excerpt' === $mode && current_user_can( 'read_post', $post->ID ) ) {
 			the_excerpt();
 		}
 
@@ -1349,11 +1349,8 @@ class WP_Posts_List_Table extends WP_List_Table {
 		$hierarchical_taxonomies = [];
 		$flat_taxonomies = [];
 		foreach ( $taxonomy_names as $taxonomy_name ) {
-
 			$taxonomy = get_taxonomy( $taxonomy_name );
-
 			$show_in_quick_edit = $taxonomy->show_in_quick_edit;
-
 			/**
 			 * Filters whether the current taxonomy should be shown in the Quick Edit panel.
 			 *
@@ -1366,22 +1363,17 @@ class WP_Posts_List_Table extends WP_List_Table {
 			if ( ! apply_filters( 'quick_edit_show_taxonomy', $show_in_quick_edit, $taxonomy_name, $screen->post_type ) ) {
 				continue;
 			}
-
-			if ( $taxonomy->hierarchical ) {
+			if ( $taxonomy->hierarchical )
 				$hierarchical_taxonomies[] = $taxonomy;
-			} else {
+			else
 				$flat_taxonomies[] = $taxonomy;
-			}
 		}
-
-		$m = 'excerpt' === $this->app->get( 'mode' ) ? 'excerpt' : 'list';
+		$m = ( isset( $mode ) && 'excerpt' === $mode ) ? 'excerpt' : 'list';
 		$can_publish = current_user_can( $post_type_object->cap->publish_posts );
 		$core_columns = array( 'cb' => true, 'date' => true, 'title' => true, 'categories' => true, 'tags' => true, 'comments' => true, 'author' => true );
-
 	?>
 
-<form method="get"><table style="display: none">
-	<tbody id="inlineedit">
+	<form method="get"><table style="display: none"><tbody id="inlineedit">
 		<?php
 		$hclass = count( $hierarchical_taxonomies ) ? 'post' : 'page';
 		$bulk = 0;
@@ -1389,97 +1381,42 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 		<tr id="<?php echo $bulk ? 'bulk-edit' : 'inline-edit'; ?>" class="inline-edit-row inline-edit-row-<?php echo "$hclass inline-edit-" . $screen->post_type;
 			echo $bulk ? " bulk-edit-row bulk-edit-row-$hclass bulk-edit-{$screen->post_type}" : " quick-edit-row quick-edit-row-$hclass inline-edit-{$screen->post_type}";
-		?>" style="display: none">
-			<td colspan="<?php echo $this->get_column_count(); ?>" class="colspanchange">
-				<fieldset class="inline-edit-col-left">
-					<legend class="inline-edit-legend"><?php echo $bulk ? __( 'Bulk Edit' ) : __( 'Quick Edit' ); ?></legend>
-					<div class="inline-edit-col">
-					<?php
-					if ( post_type_supports( $screen->post_type, 'title' ) ) {
-						if ( $bulk ) { ?>
-						<div id="bulk-title-div">
-							<div id="bulk-titles"></div>
-						</div>
-					<?php } else { ?>
-						<label>
-							<span class="title"><?php _e( 'Title' ); ?></span>
-							<span class="input-text-wrap"><input type="text" name="post_title" class="ptitle" value="" /></span>
-						</label>
+		?>" style="display: none"><td colspan="<?php echo $this->get_column_count(); ?>" class="colspanchange">
 
-						<label>
-							<span class="title"><?php _e( 'Slug' ); ?></span>
-							<span class="input-text-wrap"><input type="text" name="post_name" value="" /></span>
-						</label>
-						<?php }
-					}
+		<fieldset class="inline-edit-col-left">
+			<legend class="inline-edit-legend"><?php echo $bulk ? __( 'Bulk Edit' ) : __( 'Quick Edit' ); ?></legend>
+			<div class="inline-edit-col">
+	<?php
+	if ( post_type_supports( $screen->post_type, 'title' ) ) :
+		if ( $bulk ) : ?>
+			<div id="bulk-title-div">
+				<div id="bulk-titles"></div>
+			</div>
 
-					if ( ! $bulk ) { ?>
-					<fieldset class="inline-edit-date">
-						<legend><span class="title"><?php _e( 'Date' ); ?></span></legend>
-						<?php touch_time( 1, 1, 0, 1 ); ?>
-					</fieldset>
-					<br class="clear" />
-					<?php }
+	<?php else : // $bulk ?>
 
-					if ( post_type_supports( $screen->post_type, 'author' ) ) {
-						$authors_dropdown = '';
+			<label>
+				<span class="title"><?php _e( 'Title' ); ?></span>
+				<span class="input-text-wrap"><input type="text" name="post_title" class="ptitle" value="" /></span>
+			</label>
 
-						if ( is_super_admin() || current_user_can( $post_type_object->cap->edit_others_posts ) ) {
-							$users_opt = array(
-								'hide_if_only_one_author' => false,
-								'who' => 'authors',
-								'name' => 'post_author',
-								'class'=> 'authors',
-								'multi' => 1,
-								'echo' => 0,
-								'show' => 'display_name_with_login',
-							);
-							if ( $bulk ) {
-								$users_opt['show_option_none'] = __( '&mdash; No Change &mdash;' );
-							}
+			<label>
+				<span class="title"><?php _e( 'Slug' ); ?></span>
+				<span class="input-text-wrap"><input type="text" name="post_name" value="" /></span>
+			</label>
 
-							$authors = wp_dropdown_users( $users_opt );
-							if ( $authors ) {
-								$authors_dropdown  = '<label class="inline-edit-author">';
-								$authors_dropdown .= '<span class="title">' . __( 'Author' ) . '</span>';
-								$authors_dropdown .= $authors;
-								$authors_dropdown .= '</label>';
-							}
-						}
+	<?php endif; // $bulk
+	endif; // post_type_supports title ?>
 
-						if ( ! $bulk ) {
-							echo $authors_dropdown;
-						}
-					}
-
-					if ( !$bulk && $can_publish ) { ?>
-					<div class="inline-edit-group wp-clearfix">
-						<label class="alignleft">
-							<span class="title"><?php _e( 'Password' ); ?></span>
-							<span class="input-text-wrap"><input type="text" name="post_password" class="inline-edit-password-input" value="" /></span>
-						</label>
-
-						<em class="alignleft inline-edit-or">
-							<?php
-							/* translators: Between password field and private checkbox on post quick edit interface */
-							_e( '&ndash;OR&ndash;' );
-							?>
-						</em>
-						<label class="alignleft inline-edit-private">
-							<input type="checkbox" name="keep_private" value="private" />
-							<span class="checkbox-title"><?php _e( 'Private' ); ?></span>
-						</label>
-					</div>
-					<?php } ?>
-
-				</div>
+	<?php if ( !$bulk ) : ?>
+			<fieldset class="inline-edit-date">
+			<legend><span class="title"><?php _e( 'Date' ); ?></span></legend>
+				<?php touch_time( 1, 1, 0, 1 ); ?>
 			</fieldset>
 			<br class="clear" />
 	<?php endif; // $bulk
-
 		if ( post_type_supports( $screen->post_type, 'author' ) ) :
 			$authors_dropdown = '';
-
 			if ( current_user_can( $post_type_object->cap->edit_others_posts ) ) :
 				$users_opt = array(
 					'hide_if_only_one_author' => false,
@@ -1492,7 +1429,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 				);
 				if ( $bulk )
 					$users_opt['show_option_none'] = __( '&mdash; No Change &mdash;' );
-
 				if ( $authors = wp_dropdown_users( $users_opt ) ) :
 					$authors_dropdown  = '<label class="inline-edit-author">';
 					$authors_dropdown .= '<span class="title">' . __( 'Author' ) . '</span>';
@@ -1502,34 +1438,58 @@ class WP_Posts_List_Table extends WP_List_Table {
 			endif; // authors
 	?>
 
-	<?php if ( count( $hierarchical_taxonomies ) && !$bulk ) { ?>
+	<?php if ( !$bulk ) echo $authors_dropdown;
+	endif; // post_type_supports author
+	if ( !$bulk && $can_publish ) :
+	?>
 
-		<fieldset class="inline-edit-col-center inline-edit-categories">
-			<div class="inline-edit-col">
+			<div class="inline-edit-group wp-clearfix">
+				<label class="alignleft">
+					<span class="title"><?php _e( 'Password' ); ?></span>
+					<span class="input-text-wrap"><input type="text" name="post_password" class="inline-edit-password-input" value="" /></span>
+				</label>
 
-			<?php foreach ( $hierarchical_taxonomies as $taxonomy ) { ?>
-				<span class="title inline-edit-categories-label"><?php echo esc_html( $taxonomy->labels->name ) ?></span>
-				<input type="hidden" name="<?php echo ( $taxonomy->name === 'category' ) ? 'post_category[]' : 'tax_input[' . esc_attr( $taxonomy->name ) . '][]'; ?>" value="0" />
-				<ul class="cat-checklist <?php echo esc_attr( $taxonomy->name )?>-checklist">
-					<?php wp_terms_checklist( null, array( 'taxonomy' => $taxonomy->name ) ) ?>
-				</ul>
-			<?php } ?>
-
+				<em class="alignleft inline-edit-or">
+					<?php
+					/* translators: Between password field and private checkbox on post quick edit interface */
+					_e( '&ndash;OR&ndash;' );
+					?>
+				</em>
+				<label class="alignleft inline-edit-private">
+					<input type="checkbox" name="keep_private" value="private" />
+					<span class="checkbox-title"><?php _e( 'Private' ); ?></span>
+				</label>
 			</div>
-		</fieldset>
 
-	<?php } ?>
+	<?php endif; ?>
+
+		</div></fieldset>
+
+	<?php if ( count( $hierarchical_taxonomies ) && !$bulk ) : ?>
+
+		<fieldset class="inline-edit-col-center inline-edit-categories"><div class="inline-edit-col">
+
+	<?php foreach ( $hierarchical_taxonomies as $taxonomy ) : ?>
+
+			<span class="title inline-edit-categories-label"><?php echo esc_html( $taxonomy->labels->name ) ?></span>
+			<input type="hidden" name="<?php echo ( $taxonomy->name === 'category' ) ? 'post_category[]' : 'tax_input[' . esc_attr( $taxonomy->name ) . '][]'; ?>" value="0" />
+			<ul class="cat-checklist <?php echo esc_attr( $taxonomy->name )?>-checklist">
+				<?php wp_terms_checklist( null, array( 'taxonomy' => $taxonomy->name ) ) ?>
+			</ul>
+
+	<?php endforeach; //$hierarchical_taxonomies as $taxonomy ?>
+
+		</div></fieldset>
+
+	<?php endif; // count( $hierarchical_taxonomies ) && !$bulk ?>
 
 		<fieldset class="inline-edit-col-right"><div class="inline-edit-col">
 
 	<?php
-		if ( post_type_supports( $screen->post_type, 'author' ) && $bulk ) {
+		if ( post_type_supports( $screen->post_type, 'author' ) && $bulk )
 			echo $authors_dropdown;
-		}
-
-		if ( post_type_supports( $screen->post_type, 'page-attributes' ) ) {
-
-			if ( $post_type_object->hierarchical ) {
+		if ( post_type_supports( $screen->post_type, 'page-attributes' ) ) :
+			if ( $post_type_object->hierarchical ) :
 		?>
 			<label>
 				<span class="title"><?php _e( 'Parent' ); ?></span>
@@ -1542,11 +1502,8 @@ class WP_Posts_List_Table extends WP_List_Table {
 			'option_none_value' => 0,
 			'sort_column'       => 'menu_order, post_title',
 		);
-
-		if ( $bulk ) {
+		if ( $bulk )
 			$dropdown_args['show_option_no_change'] =  __( '&mdash; No Change &mdash;' );
-		}
-
 		/**
 		 * Filters the arguments used to generate the Quick Edit page-parent drop-down.
 		 *
@@ -1557,15 +1514,13 @@ class WP_Posts_List_Table extends WP_List_Table {
 		 * @param array $dropdown_args An array of arguments.
 		 */
 		$dropdown_args = apply_filters( 'quick_edit_dropdown_pages_args', $dropdown_args );
-
 		wp_dropdown_pages( $dropdown_args );
 	?>
 			</label>
 
 	<?php
-			}
-
-			if ( !$bulk ) { ?>
+			endif; // hierarchical
+			if ( !$bulk ) : ?>
 
 			<label>
 				<span class="title"><?php _e( 'Order' ); ?></span>
@@ -1599,7 +1554,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 	<?php foreach ( $flat_taxonomies as $taxonomy ) : ?>
 		<?php if ( current_user_can( $taxonomy->cap->assign_terms ) ) :
 			$taxonomy_name = esc_attr( $taxonomy->name );
-
 			?>
 			<label class="inline-edit-tags">
 				<span class="title"><?php echo esc_html( $taxonomy->labels->name ) ?></span>
@@ -1609,28 +1563,13 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 	<?php endforeach; //$flat_taxonomies as $taxonomy ?>
 
-	<?php
-		foreach ( $flat_taxonomies as $taxonomy ) {
-			if ( current_user_can( $taxonomy->cap->assign_terms ) ) {
-				$taxonomy_name = esc_attr( $taxonomy->name );
-				?>
-				<label class="inline-edit-tags">
-					<span class="title"><?php echo esc_html( $taxonomy->labels->name ) ?></span>
-					<textarea data-wp-taxonomy="<?php echo $taxonomy_name; ?>" cols="22" rows="1" name="tax_input[<?php echo $taxonomy_name; ?>]" class="tax_input_<?php echo $taxonomy_name; ?>"></textarea>
-				</label>
-			<?php
-			}
-		}
-	}
+	<?php endif; // count( $flat_taxonomies ) && !$bulk  ?>
 
-	if (
-		post_type_supports( $screen->post_type, 'comments' ) ||
-		post_type_supports( $screen->post_type, 'trackbacks' )
-	) {
-		if ( $bulk ) { ?>
+	<?php if ( post_type_supports( $screen->post_type, 'comments' ) || post_type_supports( $screen->post_type, 'trackbacks' ) ) :
+		if ( $bulk ) : ?>
 
 			<div class="inline-edit-group wp-clearfix">
-		<?php if ( post_type_supports( $screen->post_type, 'comments' ) ) { ?>
+		<?php if ( post_type_supports( $screen->post_type, 'comments' ) ) : ?>
 			<label class="alignleft">
 				<span class="title"><?php _e( 'Comments' ); ?></span>
 				<select name="comment_status">
@@ -1639,9 +1578,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 					<option value="closed"><?php _e( 'Do not allow' ); ?></option>
 				</select>
 			</label>
-		<?php }
-
-			if ( post_type_supports( $screen->post_type, 'trackbacks' ) ) { ?>
+		<?php endif; if ( post_type_supports( $screen->post_type, 'trackbacks' ) ) : ?>
 			<label class="alignright">
 				<span class="title"><?php _e( 'Pings' ); ?></span>
 				<select name="ping_status">
@@ -1650,60 +1587,50 @@ class WP_Posts_List_Table extends WP_List_Table {
 					<option value="closed"><?php _e( 'Do not allow' ); ?></option>
 				</select>
 			</label>
-			<?php } ?>
+		<?php endif; ?>
 			</div>
 
-		<?php } else { ?>
+	<?php else : // $bulk ?>
 
 			<div class="inline-edit-group wp-clearfix">
-			<?php if ( post_type_supports( $screen->post_type, 'comments' ) ) { ?>
+			<?php if ( post_type_supports( $screen->post_type, 'comments' ) ) : ?>
 				<label class="alignleft">
 					<input type="checkbox" name="comment_status" value="open" />
 					<span class="checkbox-title"><?php _e( 'Allow Comments' ); ?></span>
 				</label>
-			<?php }
-
-			if ( post_type_supports( $screen->post_type, 'trackbacks' ) ) { ?>
+			<?php endif; if ( post_type_supports( $screen->post_type, 'trackbacks' ) ) : ?>
 				<label class="alignleft">
 					<input type="checkbox" name="ping_status" value="open" />
 					<span class="checkbox-title"><?php _e( 'Allow Pings' ); ?></span>
 				</label>
-			<?php } ?>
+			<?php endif; ?>
 			</div>
 
-	<?php
-			}
-		}
-	?>
+	<?php endif; // $bulk
+	endif; // post_type_supports comments or pings ?>
 
 			<div class="inline-edit-group wp-clearfix">
 				<label class="inline-edit-status alignleft">
 					<span class="title"><?php _e( 'Status' ); ?></span>
 					<select name="_status">
-					<?php if ( $bulk ) { ?>
+	<?php if ( $bulk ) : ?>
 						<option value="-1"><?php _e( '&mdash; No Change &mdash;' ); ?></option>
-					<?php }
-
-					if ( $can_publish ) { ?>
+	<?php endif; // $bulk ?>
+					<?php if ( $can_publish ) : // Contributors only get "Unpublished" and "Pending Review" ?>
 						<option value="publish"><?php _e( 'Published' ); ?></option>
 						<option value="future"><?php _e( 'Scheduled' ); ?></option>
-						<?php if ( $bulk ) { ?>
+	<?php if ( $bulk ) : ?>
 						<option value="private"><?php _e( 'Private' ) ?></option>
-						<?php }
-					} ?>
+	<?php endif; // $bulk ?>
+					<?php endif; ?>
 						<option value="pending"><?php _e( 'Pending Review' ); ?></option>
 						<option value="draft"><?php _e( 'Draft' ); ?></option>
 					</select>
 				</label>
 
-			<?php
-			if (
-				'post' === $screen->post_type &&
-				$can_publish &&
-				current_user_can( $post_type_object->cap->edit_others_posts )
-			) { ?>
+	<?php if ( 'post' === $screen->post_type && $can_publish && current_user_can( $post_type_object->cap->edit_others_posts ) ) : ?>
 
-				<?php if ( $bulk ) { ?>
+	<?php	if ( $bulk ) : ?>
 
 				<label class="alignright">
 					<span class="title"><?php _e( 'Sticky' ); ?></span>
@@ -1714,60 +1641,50 @@ class WP_Posts_List_Table extends WP_List_Table {
 					</select>
 				</label>
 
-				<?php } else { ?>
+	<?php	else : // $bulk ?>
 
 				<label class="alignleft">
 					<input type="checkbox" name="sticky" value="sticky" />
 					<span class="checkbox-title"><?php _e( 'Make this post sticky' ); ?></span>
 				</label>
 
-				<?php } ?>
+	<?php	endif; // $bulk ?>
 
-			<?php } ?>
+	<?php endif; // 'post' && $can_publish && current_user_can( 'edit_others_cap' ) ?>
 
 			</div>
 
+	<?php
+	if ( $bulk && current_theme_supports( 'post-formats' ) && post_type_supports( $screen->post_type, 'post-formats' ) ) {
+		$post_formats = get_theme_support( 'post-formats' );
+		?>
+		<label class="alignleft">
+		<span class="title"><?php _ex( 'Format', 'post format' ); ?></span>
+		<select name="post_format">
+			<option value="-1"><?php _e( '&mdash; No Change &mdash;' ); ?></option>
+			<option value="0"><?php echo get_post_format_string( 'standard' ); ?></option>
 			<?php
-
-			if (
-				$bulk &&
-				current_theme_supports( 'post-formats' ) &&
-				post_type_supports( $screen->post_type, 'post-formats' )
-			) {
-				$post_formats = get_theme_support( 'post-formats' );
-
-				?>
-				<label class="alignleft">
-				<span class="title"><?php _ex( 'Format', 'post format' ); ?></span>
-					<select name="post_format">
-						<option value="-1"><?php _e( '&mdash; No Change &mdash;' ); ?></option>
-						<option value="0"><?php echo get_post_format_string( 'standard' ); ?></option>
-						<?php
-						if ( is_array( $post_formats[0] ) ) {
-							foreach ( $post_formats[0] as $format ) { ?>
-								<option value="<?php echo esc_attr( $format ); ?>"><?php echo esc_html( get_post_format_string( $format ) ); ?></option>
-							<?php }
-						}
-						?>
-					</select>
-				</label>
-			<?php
+			if ( is_array( $post_formats[0] ) ) {
+				foreach ( $post_formats[0] as $format ) {
+					?>
+					<option value="<?php echo esc_attr( $format ); ?>"><?php echo esc_html( get_post_format_string( $format ) ); ?></option>
+					<?php
+				}
 			}
-
 			?>
-		</div>
-	</fieldset>
+		</select></label>
+	<?php
+	}
+	?>
+
+		</div></fieldset>
 
 	<?php
 		list( $columns ) = $this->get_column_info();
-
 		foreach ( $columns as $column_name => $column_display_name ) {
-			if ( isset( $core_columns[$column_name] ) ) {
+			if ( isset( $core_columns[$column_name] ) )
 				continue;
-			}
-
 			if ( $bulk ) {
-
 				/**
 				 * Fires once for each column in Bulk Edit mode.
 				 *
@@ -1778,7 +1695,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 				 */
 				do_action( 'bulk_edit_custom_box', $column_name, $screen->post_type );
 			} else {
-
 				/**
 				 * Fires once for each column in Quick Edit mode.
 				 *
@@ -1789,7 +1705,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 				 */
 				do_action( 'quick_edit_custom_box', $column_name, $screen->post_type );
 			}
-
 		}
 	?>
 		<p class="submit inline-edit-save">

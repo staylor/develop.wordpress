@@ -382,7 +382,7 @@ class View extends BaseView {
 		return $menu->compile();
 	}
 
-	public function render( string $template, $data ): string {
+	public function render( $template, $data ) {
 		header( 'Content-Type: ' . $this->html_type . '; charset=' . $this->charset );
 
 		if ( $this->app['is_IE'] ) {

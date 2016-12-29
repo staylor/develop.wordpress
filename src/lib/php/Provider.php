@@ -23,7 +23,7 @@ class Provider implements ServiceProviderInterface {
 
 		$app['tinymce_version'] = '4401-20160726';
 
-		$app['required_php_version'] = '7.0';
+		$app['required_php_version'] = '5.6';
 
 		$app['required_mysql_version'] = '5.0';
 

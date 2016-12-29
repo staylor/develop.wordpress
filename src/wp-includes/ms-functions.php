@@ -73,12 +73,9 @@ function get_active_blog_for_user( $user_id ) {
 			foreach ( (array) $blogs as $blog_id => $blog ) {
 				if ( $blog->site_id != $wpdb->siteid ) {
 					continue;
-<<<<<<< HEAD
 				}
-				$details = get_blog_details( $blog_id );
-=======
+
 				$details = get_site( $blog_id );
->>>>>>> aaronjorbin/master
 				if ( is_object( $details ) && $details->archived == 0 && $details->spam == 0 && $details->deleted == 0 ) {
 					$ret = $blog;
 					if ( get_user_meta( $user_id , 'primary_blog', true ) != $blog_id ) {
@@ -797,11 +794,7 @@ function wpmu_signup_user( $user, $user_email, $meta = [] ) {
  * @param array  $meta       By default, contains the requested privacy setting and lang_id.
  * @return bool
  */
-<<<<<<< HEAD
-function wpmu_signup_blog_notification( $domain, $path, $title, $user, $user_email, $key, $meta = [] ) {
-=======
 function wpmu_signup_blog_notification( $domain, $path, $title, $user_login, $user_email, $key, $meta = array() ) {
->>>>>>> aaronjorbin/master
 	/**
 	 * Filters whether to bypass the new site email notification.
 	 *
@@ -834,15 +827,11 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user_login, $us
 		$admin_email = 'support@' . $app['request.server_name'];
 	}
 	$from_name = get_site_option( 'site_name' ) == '' ? 'WordPress' : esc_html( get_site_option( 'site_name' ) );
-<<<<<<< HEAD
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option( 'blog_charset' ) . "\"\n";
-=======
-	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 
 	$user = get_user_by( 'login', $user_login );
 	$switched_locale = switch_to_locale( get_user_locale( $user ) );
 
->>>>>>> aaronjorbin/master
 	$message = sprintf(
 		/**
 		 * Filters the message content of the new blog notification email.
@@ -922,11 +911,7 @@ function wpmu_signup_blog_notification( $domain, $path, $title, $user_login, $us
  * @param array  $meta       By default, an empty array.
  * @return bool
  */
-<<<<<<< HEAD
-function wpmu_signup_user_notification( $user, $user_email, $key, $meta = [] ) {
-=======
 function wpmu_signup_user_notification( $user_login, $user_email, $key, $meta = array() ) {
->>>>>>> aaronjorbin/master
 	/**
 	 * Filters whether to bypass the email notification for new user sign-up.
 	 *
@@ -937,20 +922,13 @@ function wpmu_signup_user_notification( $user_login, $user_email, $key, $meta = 
 	 * @param string $key        Activation key created in wpmu_signup_user().
 	 * @param array  $meta       Signup meta data.
 	 */
-<<<<<<< HEAD
-	if ( ! apply_filters( 'wpmu_signup_user_notification', $user, $user_email, $key, $meta ) ) {
-			return false;
-	}
-
 	$app = getApp();
-=======
 	if ( ! apply_filters( 'wpmu_signup_user_notification', $user_login, $user_email, $key, $meta ) )
 		return false;
 
 	$user = get_user_by( 'login', $user_login );
 	$switched_locale = switch_to_locale( get_user_locale( $user ) );
 
->>>>>>> aaronjorbin/master
 	// Send email with activation link.
 	$admin_email = get_site_option( 'admin_email' );
 	if ( $admin_email == '' ) {
@@ -1314,14 +1292,10 @@ function newuser_notify_siteadmin( $user_id ) {
 	$app = getApp();
 	$user = get_userdata( $user_id );
 
-<<<<<<< HEAD
-	$options_site_url = esc_url(network_admin_url( 'settings.php' ) );
-	$msg = sprintf( __( 'New User: %1$s
-=======
 	$options_site_url = esc_url(network_admin_url('settings.php'));
 	/* translators: New user notification email. 1: User login, 2: User IP address, 3: Settings screen URL */
 	$msg = sprintf(__('New User: %1$s
->>>>>>> aaronjorbin/master
+
 Remote IP: %2$s
 
 Disable these notifications: %3$s' ), $user->user_login, wp_unslash( $app['request.remote_addr'] ), $options_site_url);
@@ -1535,14 +1509,12 @@ function wpmu_welcome_notification( $blog_id, $user_id, $password, $title, $meta
 		return false;
 	}
 
-<<<<<<< HEAD
 	$app = getApp();
-=======
+
 	$user = get_userdata( $user_id );
 
 	$switched_locale = switch_to_locale( get_user_locale( $user ) );
 
->>>>>>> aaronjorbin/master
 	$welcome_email = get_site_option( 'welcome_email' );
 	if ( $welcome_email == false ) {
 		/* translators: Do not translate USERNAME, SITE_NAME, BLOG_URL, PASSWORD: those are placeholders. */
@@ -1562,12 +1534,10 @@ We hope you enjoy your new site. Thanks!
 --The Team @ SITE_NAME' );
 	}
 
-<<<<<<< HEAD
 	$url = get_blogaddress_by_id( $blog_id);
 	$user = get_userdata( $user_id );
-=======
+
 	$url = get_blogaddress_by_id($blog_id);
->>>>>>> aaronjorbin/master
 
 	$welcome_email = str_replace( 'SITE_NAME', $current_network->site_name, $welcome_email );
 	$welcome_email = str_replace( 'BLOG_TITLE', $title, $welcome_email );

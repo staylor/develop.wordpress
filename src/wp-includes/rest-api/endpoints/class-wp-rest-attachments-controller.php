@@ -1,8 +1,6 @@
 <?php
-<<<<<<< HEAD
 use WP\Error;
 
-=======
 /**
  * REST API: WP_REST_Attachments_Controller class
  *
@@ -18,7 +16,7 @@ use WP\Error;
  *
  * @see WP_REST_Posts_Controller
  */
->>>>>>> aaronjorbin/master
+
 class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 
 	/**
@@ -66,13 +64,8 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|true Boolean true if the attachment may be created, or a Error if not.
-=======
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|true Boolean true if the attachment may be created, or a WP_Error if not.
->>>>>>> aaronjorbin/master
 	 */
 	public function create_item_permissions_check( $request ) {
 		$ret = parent::create_item_permissions_check( $request );
@@ -91,11 +84,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 			$post_parent_type = get_post_type_object( $parent->post_type );
 
 			if ( ! current_user_can( $post_parent_type->cap->edit_post, $request['post'] ) ) {
-<<<<<<< HEAD
-				return new Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to upload media to this resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 				return new WP_Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to upload media to this post.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 			}
 		}
 
@@ -499,11 +488,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 *
 	 * @param array $data    Supplied file data.
 	 * @param array $headers HTTP headers from the request.
-<<<<<<< HEAD
-	 * @return array|Error Data from {@see wp_handle_sideload()}.
-=======
 	 * @return array|WP_Error Data from wp_handle_sideload().
->>>>>>> aaronjorbin/master
 	 */
 	protected function upload_from_data( $data, $headers ) {
 		if ( empty( $data ) ) {
@@ -568,13 +553,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 
 		if ( isset( $sideloaded['error'] ) ) {
 			@unlink( $tmpfname );
-<<<<<<< HEAD
-			// @codingStandardsIgnoreEnd
-			return new Error( 'rest_upload_sideload_error', $sideloaded['error'], array( 'status' => 500 ) );
-=======
-
 			return new WP_Error( 'rest_upload_sideload_error', $sideloaded['error'], array( 'status' => 500 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return $sideloaded;
@@ -621,19 +600,12 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 				continue;
 			}
 
-<<<<<<< HEAD
-			list( /*$type*/, $attr_parts ) = explode( ';', $value, 2 );
-			$parts = explode( ';', $attr_parts );
-			$attributes = [];
-			foreach ( $parts as $part ) {
-=======
 			list( $type, $attr_parts ) = explode( ';', $value, 2 );
 
 			$attr_parts = explode( ';', $attr_parts );
 			$attributes = array();
 
 			foreach ( $attr_parts as $part ) {
->>>>>>> aaronjorbin/master
 				if ( strpos( $part, '=' ) === false ) {
 					continue;
 				}
@@ -691,12 +663,6 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	/**
 	 * Validates whether the user can query private statuses.
 	 *
-<<<<<<< HEAD
-	 * @param  mixed           $value     Status value.
-	 * @param  WP_REST_Request $request   Request object.
-	 * @param  string          $parameter Additional parameter to pass to validation.
-	 * @return Error|boolean Boolean true if the user may query, Error if not.
-=======
 	 * @since 4.7.0
 	 * @access public
 	 *
@@ -704,7 +670,6 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * @param WP_REST_Request $request   Request object.
 	 * @param string          $parameter Additional parameter to pass for validation.
 	 * @return WP_Error|bool True if the user may query, WP_Error if not.
->>>>>>> aaronjorbin/master
 	 */
 	public function validate_user_can_query_private_statuses( $value, $request, $parameter ) {
 		if ( 'inherit' === $value ) {
@@ -722,11 +687,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 *
 	 * @param array $files   Data from the `$_FILES` superglobal.
 	 * @param array $headers HTTP headers from the request.
-<<<<<<< HEAD
-	 * @return array|Error Data from {@see wp_handle_upload()}.
-=======
 	 * @return array|WP_Error Data from wp_handle_upload().
->>>>>>> aaronjorbin/master
 	 */
 	protected function upload_from_file( $files, $headers ) {
 		if ( empty( $files ) ) {
@@ -777,12 +738,8 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 	 * @return array Array of supported media types.
 	 */
 	protected function get_media_types() {
-<<<<<<< HEAD
 		$media_types = [];
-=======
-		$media_types = array();
 
->>>>>>> aaronjorbin/master
 		foreach ( get_allowed_mime_types() as $mime_type ) {
 			$parts = explode( '/', $mime_type );
 

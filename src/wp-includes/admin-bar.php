@@ -420,7 +420,7 @@ function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 	] );
 
 	if ( current_user_can( 'manage_network' ) ) {
-		$wp_admin_bar->add_group( array(
+		$wp_admin_bar->add_group( [
 			'parent' => 'my-sites',
 			'id'     => 'my-sites-super-admin',
 		] );
@@ -477,7 +477,7 @@ function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 		'meta'   => array(
 			'class' => current_user_can( 'manage_network' ) ? 'ab-sub-secondary' : '',
 		),
-	) );
+	] );
 
 	foreach ( (array) $wp_admin_bar->user->blogs as $blog ) {
 		switch_to_blog( $blog->userblog_id );

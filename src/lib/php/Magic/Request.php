@@ -16,7 +16,7 @@ trait Request {
 	/**
 	 * @return App|ParameterBag|ServerBag|void
 	 */
-	public function __get( string $name ) {
+	public function __get( $name ) {
 		$app = getApp();
 
 		switch ( $name ) {

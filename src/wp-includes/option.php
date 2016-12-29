@@ -444,9 +444,9 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = 'yes' )
 
 	// Make sure the option doesn't already exist. We can check the 'notoptions' cache before we ask for a db query
 	$notoptions = wp_cache_get( 'notoptions', 'options' );
-	if ( !is_array( $notoptions ) || !isset( $notoptions[$option] ) )
+	if ( !is_array( $notoptions ) || !isset( $notoptions[$option] ) ) {
 		/** This filter is documented in wp-includes/option.php */
-		if ( apply_filters( "default_option_{$option}", false, $option, false ) !== get_option( $option ) )
+		if ( apply_filters( "default_option_{$option}", false, $option, false ) !== get_option( $option ) ) {
 			return false;
 		}
 	}
@@ -716,7 +716,7 @@ function get_transient( $transient ) {
  * @param int    $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
  * @return bool False if value was not set and true if value was set.
  */
-function set_transient( $transient, $value, int $expiration = 0 ) {
+function set_transient( $transient, $value, $expiration = 0 ) {
 	/**
 	 * Filters a specific transient before its value is set.
 	 *
@@ -1117,7 +1117,7 @@ function update_site_option( $option, $value ) {
  * @param mixed    $default    Optional. Value to return if the option doesn't exist. Default false.
  * @return mixed Value set for the option.
  */
-function get_network_option( int $network_id, $option, $default = false ) {
+function get_network_option( $network_id, $option, $default = false ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -1654,7 +1654,7 @@ function get_site_transient( $transient ) {
  * @param int    $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
  * @return bool False if value was not set and true if value was set.
  */
-function set_site_transient( $transient, $value, int $expiration = 0 ) {
+function set_site_transient( $transient, $value, $expiration = 0 ) {
 
 	/**
 	 * Filters the value of a specific site transient before it is set.

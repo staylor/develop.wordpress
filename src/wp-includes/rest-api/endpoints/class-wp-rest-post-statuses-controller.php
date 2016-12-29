@@ -1,7 +1,6 @@
 <?php
-<<<<<<< HEAD
 use WP\Error;
-=======
+
 /**
  * REST API: WP_REST_Post_Statuses_Controller class
  *
@@ -9,7 +8,6 @@ use WP\Error;
  * @subpackage REST_API
  * @since 4.7.0
  */
->>>>>>> aaronjorbin/master
 
 /**
  * Core class used to access post statuses via the REST API.
@@ -70,13 +68,8 @@ class WP_REST_Post_Statuses_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|boolean
-=======
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|bool True if the request has read access, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( 'edit' === $request['context'] ) {
@@ -87,11 +80,7 @@ class WP_REST_Post_Statuses_Controller extends WP_REST_Controller {
 					return true;
 				}
 			}
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_view', __( 'Sorry, you cannot view this resource with edit context.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_cannot_view', __( 'Sorry, you are not allowed to edit posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -100,27 +89,18 @@ class WP_REST_Post_Statuses_Controller extends WP_REST_Controller {
 	/**
 	 * Retrieves all post statuses, depending on user context.
 	 *
-<<<<<<< HEAD
-	 * @param WP_REST_Request $request
-	 * @return array|Error
-=======
 	 * @since 4.7.0
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_items( $request ) {
 		$data = [];
 		$statuses = get_post_stati( array( 'internal' => false ), 'object' );
 		$statuses['trash'] = get_post_status_object( 'trash' );
-<<<<<<< HEAD
-		foreach ( $statuses as $obj ) {
-=======
 
 		foreach ( $statuses as $slug => $obj ) {
->>>>>>> aaronjorbin/master
 			$ret = $this->check_read_permission( $obj );
 
 			if ( ! $ret ) {
@@ -140,33 +120,20 @@ class WP_REST_Post_Statuses_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 * @access public
 	 *
-<<<<<<< HEAD
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return Error|boolean
-=======
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|bool True if the request has read access for the item, WP_Error object otherwise.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item_permissions_check( $request ) {
 		$status = get_post_status_object( $request['status'] );
 
 		if ( empty( $status ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_status_invalid', __( 'Invalid resource.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_status_invalid', __( 'Invalid status.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$check = $this->check_read_permission( $status );
 
 		if ( ! $check ) {
-<<<<<<< HEAD
-			return new Error( 'rest_cannot_read_status', __( 'Cannot view resource.' ), array( 'status' => rest_authorization_required_code() ) );
-=======
 			return new WP_Error( 'rest_cannot_read_status', __( 'Cannot view status.' ), array( 'status' => rest_authorization_required_code() ) );
->>>>>>> aaronjorbin/master
 		}
 
 		return true;
@@ -202,26 +169,17 @@ class WP_REST_Post_Statuses_Controller extends WP_REST_Controller {
 	/**
 	 * Retrieves a specific post status.
 	 *
-<<<<<<< HEAD
-	 * @param WP_REST_Request $request
-	 * @return array|Error
-=======
 	 * @since 4.7.0
 	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
->>>>>>> aaronjorbin/master
 	 */
 	public function get_item( $request ) {
 		$obj = get_post_status_object( $request['status'] );
 
 		if ( empty( $obj ) ) {
-<<<<<<< HEAD
-			return new Error( 'rest_status_invalid', __( 'Invalid resource.' ), array( 'status' => 404 ) );
-=======
 			return new WP_Error( 'rest_status_invalid', __( 'Invalid status.' ), array( 'status' => 404 ) );
->>>>>>> aaronjorbin/master
 		}
 
 		$data = $this->prepare_item_for_response( $obj, $request );

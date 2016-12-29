@@ -122,7 +122,7 @@ final class WP_Term {
 	 *                                there's insufficient data to distinguish which term is intended.
 	 *                                False for other failures.
 	 */
-	public static function get_instance( int $term_id, $taxonomy = null ) {
+	public static function get_instance( $term_id, $taxonomy = null ) {
 		$app = getApp();
 		$wpdb = $app['db'];
 

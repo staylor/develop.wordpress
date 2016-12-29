@@ -164,17 +164,18 @@ if ( $doaction ) {
 		if ( $view->_request->get( 'bulk_edit' ) ) {
 			$done = bulk_edit_posts( $view->_request->all() );
 
-			if ( is_array( $done) ) {
+			if ( is_array( $done ) ) {
 				$done['updated'] = count( $done['updated'] );
 				$done['skipped'] = count( $done['skipped'] );
 				$done['locked'] = count( $done['locked'] );
 				$sendback = add_query_arg( $done, $sendback );
 			}
-			break;
-		default:
-			/** This action is documented in wp-admin/edit-comments.php */
-			$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $doaction, $post_ids );
-			break;
+		}
+		break;
+	default:
+		/** This action is documented in wp-admin/edit-comments.php */
+		$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $doaction, $post_ids );
+		break;
 	}
 
 	$sendback = remove_query_arg( array( 'action', 'action2', 'tags_input', 'post_author', 'comment_status', 'ping_status', '_status', 'post', 'bulk_edit', 'post_view' ), $sendback );
