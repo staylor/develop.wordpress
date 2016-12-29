@@ -44,7 +44,7 @@ $wp_list_table->prepare_items();
 wp_enqueue_script( 'admin-comments' );
 enqueue_comment_hotkeys_js();
 
-if ( $post_id ) {
+if ( isset( $post_id ) && $post_id ) {
 	$comments_count = wp_count_comments( $post_id );
 	$draft_or_post_title = wp_html_excerpt( _draft_or_post_title( $post_id ), 50, '&hellip;' );
 	if ( $comments_count->moderated > 0 ) {
@@ -80,7 +80,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 <div class="wrap">
 <h1 class="wp-heading-inline"><?php
-if ( $post_id ) {
+if ( isset( $post_id ) && $post_id ) {
 	/* translators: %s: link to post */
 	printf( __( 'Comments on &#8220;%s&#8221;' ),
 		sprintf( '<a href="%1$s">%2$s</a>',
@@ -92,7 +92,7 @@ if ( $post_id ) {
 	_e( 'Comments' );
 }
 ?></h1>
-
+<?php
 if ( strlen( $view->_request->get( 's' ) ) ) {
 	echo '<span class="subtitle">';
 	/* translators: %s: search keywords */
@@ -135,10 +135,10 @@ if ( $messages ) {
 
 <?php $wp_list_table->search_box( __( 'Search Comments' ), 'comment' ); ?>
 
-<?php if ( $post_id ) : ?>
+<?php if ( isset( $post_id ) && $post_id ) : ?>
 <input type="hidden" name="p" value="<?php echo esc_attr( intval( $post_id ) ); ?>" />
 <?php endif; ?>
-<input type="hidden" name="comment_status" value="<?php echo esc_attr( $comment_status); ?>" />
+<input type="hidden" name="comment_status" value="<?php echo isset( $comment_status ) ? esc_attr( $comment_status ) : '' ?>" />
 <input type="hidden" name="pagegen_timestamp" value="<?php echo esc_attr(current_time( 'mysql', 1) ); ?>" />
 
 <input type="hidden" name="_total" value="<?php echo esc_attr( $wp_list_table->get_pagination_arg( 'total_items' ) ); ?>" />

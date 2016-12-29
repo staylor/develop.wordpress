@@ -1234,7 +1234,7 @@ function get_network_option( $network_id, $option, $default = false ) {
  * @param mixed  $value      Option value, can be anything. Expected to not be SQL-escaped.
  * @return bool False if option was not added and true if option was added.
  */
-function add_network_option( int $network_id, $option, $value ) {
+function add_network_option( $network_id, $option, $value ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -1341,7 +1341,7 @@ function add_network_option( int $network_id, $option, $value ) {
  * @param string $option     Name of option to remove. Expected to not be SQL-escaped.
  * @return bool True, if succeed. False, if failure.
  */
-function delete_network_option( int $network_id, $option ) {
+function delete_network_option( $network_id, $option ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -1424,7 +1424,7 @@ function delete_network_option( int $network_id, $option ) {
  * @param mixed    $value      Option value. Expected to not be SQL-escaped.
  * @return bool False if value was not updated and true if value was updated.
  */
-function update_network_option( int $network_id, $option, $value ) {
+function update_network_option( $network_id, $option, $value ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
