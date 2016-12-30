@@ -3191,8 +3191,9 @@ class wpdb {
 	 * @return Error|void
 	 */
 	public function check_database_version() {
+		$app = getApp();
 		// Make sure the server has the required MySQL version
-		if ( version_compare($this->db_version(), $required_mysql_version, '<') ) {
+		if ( version_compare($this->db_version(), $app['required_mysql_version'], '<') ) {
 			/* translators: 1: WordPress version number, 2: Minimum required MySQL version number */
 			return new WP_Error('database_version', sprintf( __( '<strong>ERROR</strong>: WordPress %1$s requires MySQL %2$s or higher' ), $wp_version, $required_mysql_version ));
 		}

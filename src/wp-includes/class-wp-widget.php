@@ -338,7 +338,7 @@ class WP_Widget {
 	 */
 	public function is_preview() {
 		$app = getApp();
-		return $app->get( 'customize' )->is_preview();
+		return $app->get( 'customize' ) && $app->get( 'customize' )->is_preview();
 	}
 
 	/**

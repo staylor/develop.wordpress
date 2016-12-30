@@ -5072,7 +5072,7 @@ function wp_get_attachment_metadata( $post_id = 0, $unfiltered = false ) {
  * @param array $data    Attachment data.
  * @return int|bool False if $post is invalid.
  */
-function wp_update_attachment_metadata( int $post_id, $data ) {
+function wp_update_attachment_metadata( $post_id, $data ) {
 	$post = get_post( $post_id );
 	if ( ! $post ) {
 		return false;
@@ -5920,7 +5920,7 @@ function update_postmeta_cache( $post_ids ) {
  * @param int  $id          The attachment ID in the cache to clean.
  * @param bool $clean_terms Optional. Whether to clean terms cache. Default false.
  */
-function clean_attachment_cache( int $id, $clean_terms = false ) {
+function clean_attachment_cache( $id, $clean_terms = false ) {
 	$app = getApp();
 
 	if ( $app->get( 'suspend_cache_invalidation' ) ) {
@@ -6086,7 +6086,7 @@ function wp_get_post_parent_id( $post_ID ) {
  * @param int $post_ID     ID of the post we're checking.
  * @return int The new post_parent for the post, 0 otherwise.
  */
-function wp_check_post_hierarchy_for_loops( int $post_parent, int $post_ID ) {
+function wp_check_post_hierarchy_for_loops( $post_parent, $post_ID ) {
 	// Nothing fancy here - bail.
 	if ( 0 === $post_parent ) {
 		return 0;
@@ -6131,7 +6131,7 @@ function wp_check_post_hierarchy_for_loops( int $post_parent, int $post_ID ) {
  * @param int         $thumbnail_id Thumbnail to attach.
  * @return int|bool True on success, false on failure.
  */
-function set_post_thumbnail( $post, int $thumbnail_id ) {
+function set_post_thumbnail( $post, $thumbnail_id ) {
 	$post = get_post( $post );
 	if ( $post && $thumbnail_id && get_post( $thumbnail_id ) ) {
 		if ( wp_get_attachment_image( $thumbnail_id, 'thumbnail' ) ) {

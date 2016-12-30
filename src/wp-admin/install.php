@@ -205,8 +205,8 @@ if ( is_blog_installed() ) {
 
 $php_version    = phpversion();
 $mysql_version  = $wpdb->db_version();
-$php_compat     = version_compare( $php_version, $required_php_version, '>=' );
-$mysql_compat   = version_compare( $mysql_version, $required_mysql_version, '>=' ) || file_exists( WP_CONTENT_DIR . '/db.php' );
+$php_compat     = version_compare( $php_version, $app['required_php_version'], '>=' );
+$mysql_compat   = version_compare( $mysql_version, $app['required_mysql_version'], '>=' ) || file_exists( WP_CONTENT_DIR . '/db.php' );
 
 if ( !$mysql_compat && !$php_compat ) {
 	/* translators: 1: WordPress version number, 2: Minimum required PHP version number, 3: Minimum required MySQL version number, 4: Current PHP version number, 5: Current MySQL version number */

@@ -690,11 +690,11 @@ function locale_stylesheet() {
  */
 function switch_theme( $stylesheet ) {
 	$app = getApp();
-	$wp_customize = $app->get( 'customize' );
 	$sidebars_widgets = $app->sidebars['widgets'];
 
 	$_sidebars_widgets = null;
 	if ( 'wp_ajax_customize_save' === current_action() ) {
+		$wp_customize = $app->get( 'customize' );
 		$_sidebars_widgets = $wp_customize->post_value( $wp_customize->get_setting( 'old_sidebars_widgets_data' ) );
 	} elseif ( is_array( $sidebars_widgets ) ) {
 		$_sidebars_widgets = $sidebars_widgets;
@@ -1681,7 +1681,7 @@ function wp_get_custom_css_post( $stylesheet = '' ) {
 			$post = get_post( $post_id );
 		} else {
 			$query = new WP_Query( $custom_css_query_vars );
-			$post = $query->post;
+			$post = reset( $query->posts );
 
 			/*
 			 * Cache the lookup. See WP_Customize_Custom_CSS_Setting::update().

@@ -280,7 +280,7 @@ As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to d
 	update_option( 'widget_categories', array ( 2 => array ( 'title' => '', 'count' => 0, 'hierarchical' => 0, 'dropdown' => 0 ), '_multiwidget' => 1 ) );
 	update_option( 'widget_meta', array ( 2 => array ( 'title' => '' ), '_multiwidget' => 1 ) );
 	update_option( 'sidebars_widgets', array( 'wp_inactive_widgets' => array(), 'sidebar-1' => array( 0 => 'search-2', 1 => 'recent-posts-2', 2 => 'recent-comments-2', 3 => 'archives-2', 4 => 'categories-2', 5 => 'meta-2' ), 'sidebar-2' => array(), 'sidebar-3' => array(), 'array_version' => 3 ) );
-	if ( ! is_multisite() )
+	if ( ! is_multisite() ) {
 		update_user_meta( $user_id, 'show_welcome_panel', 1 );
 	} elseif ( ! is_super_admin( $user_id ) && ! metadata_exists( 'user', $user_id, 'show_welcome_panel' ) ) {
 		update_user_meta( $user_id, 'show_welcome_panel', 2 );
@@ -1727,7 +1727,7 @@ function upgrade_430_fix_comments() {
  */
 function upgrade_431() {
 	// Fix incorrect cron entries for term splitting
-	$cron_array = _get_cron_[];
+	$cron_array = _get_cron_array();
 	if ( isset( $cron_array['wp_batch_split_terms'] ) ) {
 		unset( $cron_array['wp_batch_split_terms'] );
 		_set_cron_array( $cron_array );

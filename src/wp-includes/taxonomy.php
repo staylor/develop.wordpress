@@ -888,7 +888,7 @@ function get_term_by( $field, $value, $taxonomy = '', $output = OBJECT, $filter 
  * @param string $taxonomy Taxonomy Name.
  * @return array|Error List of Term IDs. Error returned if `$taxonomy` does not exist.
  */
-function get_term_children( int $term_id, $taxonomy ) {
+function get_term_children( $term_id, $taxonomy ) {
 	if ( ! taxonomy_exists( $taxonomy ) ) {
 		return new Error( 'invalid_taxonomy', __( 'Invalid taxonomy.' ) );
 	}
@@ -1638,7 +1638,7 @@ function wp_count_terms( $taxonomy, $args = [] ) {
  * @param int          $object_id  The term Object Id that refers to the term.
  * @param string|array $taxonomies List of Taxonomy Names or single Taxonomy name.
  */
-function wp_delete_object_term_relationships( int $object_id, $taxonomies ) {
+function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
 	if ( ! is_array( $taxonomies ) ) {
 		$taxonomies = [ $taxonomies ];
 	}
@@ -1674,7 +1674,7 @@ function wp_delete_object_term_relationships( int $object_id, $taxonomies ) {
  * @return bool|int|Error True on success, false if term does not exist. Zero on attempted
  *                           deletion of default Category. Error if the taxonomy does not exist.
  */
-function wp_delete_term( int $term, $taxonomy, $args = [] ) {
+function wp_delete_term( $term, $taxonomy, $args = [] ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -2239,7 +2239,7 @@ function wp_insert_term( $term, $taxonomy, $args = [] ) {
  * @param bool             $append    Optional. If false will delete difference of terms. Default false.
  * @return array|Error Term taxonomy IDs of the affected terms.
  */
-function wp_set_object_terms( int $object_id, $terms, $taxonomy, $append = false ) {
+function wp_set_object_terms( $object_id, $terms, $taxonomy, $append = false ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -2398,7 +2398,7 @@ function wp_add_object_terms( $object_id, $terms, $taxonomy ) {
  * @param array|string     $taxonomy  Taxonomy name.
  * @return bool|Error True on success, false or Error on failure.
  */
-function wp_remove_object_terms( int $object_id, $terms, $taxonomy ) {
+function wp_remove_object_terms( $object_id, $terms, $taxonomy ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -2600,7 +2600,7 @@ function wp_unique_term_slug( $slug, $term ) {
  * @param array|string $args     Optional. Array of get_terms() arguments. Default empty array.
  * @return array|Error Returns Term ID and Taxonomy Term ID
  */
-function wp_update_term( int $term_id, $taxonomy, $args = [] ) {
+function wp_update_term( $term_id, $taxonomy, $args = [] ) {
 	$app = getApp();
 	$wpdb = $app['db'];
 
@@ -4109,7 +4109,7 @@ function get_post_taxonomies( $post = 0 ) {
  * @param int|string|array $terms     Optional. Term term_id, name, slug or array of said. Default null.
  * @return bool|Error Error on input error.
  */
-function is_object_in_term( int $object_id, $taxonomy, $terms = null ) {
+function is_object_in_term( $object_id, $taxonomy, $terms = null ) {
 	if ( ! $object_id ) {
 		return new Error( 'invalid_object', __( 'Invalid object ID' ) );
 	}

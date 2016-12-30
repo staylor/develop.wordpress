@@ -3562,10 +3562,12 @@ function wp_admin_css_uri( $file = 'wp-admin' ) {
  * @param bool   $force_echo Optional. Force the stylesheet link to be printed rather than enqueued.
  */
 function wp_admin_css( $file = 'wp-admin', $force_echo = false ) {
+	$app = getApp();
 	// For backward compatibility
 	$handle = 0 === strpos( $file, 'css/' ) ? substr( $file, 4 ) : $file;
 
-	if ( wp_styles()->query( $handle ) ) {
+	$wp_styles = $app['styles.global'];
+	if ( $wp_styles->query( $handle ) ) {
 		if ( $force_echo || did_action( 'wp_print_styles' ) ) {
 			// we already printed the style queue. Print this one immediately
 			wp_print_styles( $handle );

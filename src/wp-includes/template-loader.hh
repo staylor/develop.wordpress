@@ -57,69 +57,37 @@ if (!defined('WP_USE_THEMES') || !WP_USE_THEMES) {
     return;
 }
 
-if (is_embed()) {
-    $template = get_embed_template();
-}
+$template = '';
 
-if (empty($template) && is_404()) {
-    $template = get_404_template();
-}
+$templates = [
+    [ 'is_embed', 'get_embed_template' ],
+    [ 'is_404', 'get_404_template' ],
+    [ 'is_search', 'get_search_template' ],
+    [ 'is_front_page', 'get_front_page_template' ],
+    [ 'is_home', 'get_home_template' ],
+    [ 'is_post_type_archive', 'get_post_type_archive_template' ],
+    [ 'is_tax', 'get_taxonomy_template' ],
+    [ 'is_attachment', 'get_attachment_template', function () {
+        remove_filter('the_content', 'prepend_attachment');
+    } ],
+    [ 'is_single', 'get_single_template' ],
+    [ 'is_page', 'get_page_template' ],
+    [ 'is_singular', 'get_singular_template' ],
+    [ 'is_category' , 'get_category_template' ],
+    [ 'is_tag' , 'get_tag_template' ],
+    [ 'is_author' , 'get_author_template' ],
+    [ 'is_date' , 'get_date_template' ],
+    [ 'is_archive' , 'get_archive_template' ],
+];
 
-if (empty($template) && is_search()) {
-    $template = get_search_template();
-}
-
-if (empty($template) && is_front_page()) {
-    $template = get_front_page_template();
-}
-
-if (empty($template) && is_home()) {
-    $template = get_home_template();
-}
-
-if (empty($template) && is_post_type_archive()) {
-    $template = get_post_type_archive_template();
-}
-
-if (empty($template) && is_tax()) {
-    $template = get_taxonomy_template();
-}
-
-if (empty($template) && is_attachment()) {
-    $template = get_attachment_template();
-    remove_filter('the_content', 'prepend_attachment');
-}
-
-if (empty($template) && is_single()) {
-    $template = get_single_template();
-}
-
-if (empty($template) && is_page()) {
-    $template = get_page_template();
-}
-
-if (empty($template) && is_singular()) {
-    $template = get_singular_template();
-}
-
-if (empty($template) && is_category()) {
-    $template = get_category_template();
-}
-
-if (empty($template) && is_tag()) {
-    $template = get_tag_template();
-}
-
-if (empty($template) && is_author()) {
-    $template = get_author_template();
-}
-
-if (empty($template) && is_date()) {
-    $template = get_date_template();
-}
-
-if (empty($template) && is_archive()) {
-    $template = get_archive_template();
+while (empty($template) && count($templates) > 0) {
+    list($check, $get_template, $func) = array_shift($templates);
+    if ($check()) {
+        $template = $get_template();
+        if (is_callable($func)) {
+            $func();
+        }
+    }
 }
 
 if (empty($template)) {

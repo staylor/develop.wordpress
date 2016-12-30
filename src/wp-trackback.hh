@@ -14,7 +14,7 @@
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-if (empty($app) ) {
+if (empty($app)) {
     // load WordPress
     include_once __DIR__ . '/wp-load.hh';
 
@@ -22,13 +22,13 @@ if (empty($app) ) {
 }
 
 $charset = $_post->get('charset', '');
-if ($charset ) {
+if ($charset) {
     $charset = str_replace([ ',', ' ' ], '', strtoupper(trim($charset)));
 } else {
     $charset = 'ASCII, UTF-8, ISO-8859-1, JIS, EUC-JP, SJIS';
 }
 // No valid uses for UTF-7.
-if (false !== strpos($charset, 'UTF-7') ) {
+if (false !== strpos($charset, 'UTF-7')) {
     exit();
 }
 
