@@ -1,0 +1,40 @@
+# A definition for docker-compose to boot containers for local development
+version: '2'
+services:
+  mysql:
+    image: "mysql:5.7"
+    environment:
+      - MYSQL_DATABASE=core
+      - MYSQL_ROOT_PASSWORD=mypassword
+  memcached:
+    image: "memcached"
+    environment:
+      # Memcached memory limit in megabytes
+      - MEMCACHED_MEMORY_LIMIT=128
+  hhvm:
+    build:
+      context: .
+    command: hhvm -m server -d hhvm.server.type=fastcgi -d hhvm.server.port=9000
+    links:
+      - memcached
+      - mysql
+    depends_on:
+      - memcached
+      - mysql
+    volumes:
+      - ./src:/usr/src/app/
+    environment:
+      - SITE_HOSTNAME=hhvm.wordpress.dev
+      - MEMCACHED_HOST=memcached
+  nginx:
+    build:
+      context: .
+    volumes:
+      - ./src:/usr/src/app/
+    ports:
+      - "80:80"
+      - "9000:9000"
+    depends_on:
+      - hhvm
+    environment:
+      - SITE_HOSTNAME=hhvm.wordpress.dev
