@@ -17,6 +17,8 @@ class View {
 	protected $actions = [];
 	protected $data = [];
 
+	public $l10n;
+
 	public function __construct( App $app ) {
 		$this->app = $app;
 	}

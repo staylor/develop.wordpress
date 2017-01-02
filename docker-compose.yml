@@ -14,7 +14,7 @@ services:
   hhvm:
     build:
       context: .
-    command: hhvm -m server -d hhvm.server.type=fastcgi -d hhvm.server.port=9000
+    command: hh_client /usr/src/app && hhvm -m server -d hhvm.server.type=fastcgi -d hhvm.server.port=9000
     links:
       - memcached
       - mysql

@@ -7,7 +7,6 @@ class View extends BaseView {
 	public $help;
 	public $handler;
 
-	public $l10n;
 	public $html_type;
 	public $charset;
 

@@ -1,0 +1,43 @@
+<div id="signup-content" class="widecolumn">
+    <div class="wp-activate-container">
+        {{# key }}
+            {{# errorMessage }}
+                {{# errorData }}
+                <h2>{{ l10n.now_active }}</h2>
+                <p class="lead-in">
+                {{# accountUrl }}{{{ . }}}{{/ accountUrl }}
+                {{# siteUrl }}{{{ . }}}{{/ siteUrl }}
+                </p>
+                {{/ errorData }}
+                {{^ errorData }}
+                <h2>{{ l10n.error_occurred }}</h2>
+                <p>{{{ . }}}</p>
+                {{/ errorData }}
+            {{/ errorMessage }}
+            {{^ errorMessage }}
+            <h2>{{ l10n.now_active }}</h2>
+            <div id="signup-welcome">
+                <p><span class="h3">{{ l10n.username }}</span> {{ username }}</p>
+                <p><span class="h3">{{ l10n.password }}</span> {{ password }}</p>
+            </div>
+            <p class="view">{{{ loginUrl }}}</p>
+            {{/ errorMessage }}
+        {{/ key }}
+        {{^ key }}
+        <h2>{{ l10n.activation_key_required }}</h2>
+        <form name="activateform" id="activateform" method="post" action="{{{ action }}}">
+            <p>
+                <label for="key">{{ l10n.activation_key_label }}</label>
+                <br /><input type="text" name="key" id="key" value="" size="50" />
+            </p>
+            <p class="submit">
+                <input id="submit" type="submit" name="Submit" class="submit" value="{{ l10n.activate }}" />
+            </p>
+        </form>
+        {{/ key }}
+    </div>
+</div>
+<script type="text/javascript">
+var key_input = document.getElementById('key');
+key_input && key_input.focus();
+</script>
