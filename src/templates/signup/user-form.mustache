@@ -1,0 +1,18 @@
+<label for="user_name">{{ l10n.username }}</label>
+{{# errors.name }}
+<p>{{{ . }}}</p>
+{{/ errors.name }}
+<input name="user_name" type="text" id="user_name" value="{{ userName }}"
+    autocapitalize="none" autocorrect="off" maxlength="60" /><br />
+{{{ l10n.name_rules }}}
+
+<label for="user_email">{{ l10n.email_address }}</label>
+{{# errors.email }}
+<p>{{{ . }}}</p>
+{{/ errors.email }}
+<input name="user_email" type="email" id="user_email" value="{{ userEmail }}" maxlength="200" /><br />
+{{{ l10n.double_check }}}
+
+{{# errors.generic }}
+<p>{{{ . }}}</p>
+{{/ errors.generic }}

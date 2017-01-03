@@ -12,6 +12,7 @@
  */
 
 use WP\{View,Error};
+use WP\Registration\L10N;
 use function WP\{getApp,render};
 
 /**
@@ -164,33 +165,28 @@ function show_user_form( // @codingStandardsIgnoreLine
     $user_email = '',
     $errors = null
 ) {
-    if (! is_wp_error($errors)) {
+    $nameError = null;
+    $emailError = null;
+    $genericError = null;
+
+    if (null === $errors || ! is_wp_error($errors)) {
         $errors = new Error();
+    } else {
+        $nameError = $errors->get_error_message('user_name');
+        $emailError = $errors->get_error_message('user_email');
+        $genericError = $errors->get_error_message('generic');
     }
 
-    // User name
-    echo '<label for="user_name">' . __('Username:') . '</label>';
-    if ($errmsg = $errors->get_error_message('user_name')) {
-        echo '<p class="error">'.$errmsg.'</p>';
-    }
-    echo '<input name="user_name" type="text" id="user_name" value="'.
-        esc_attr($user_name) .
-        '" autocapitalize="none" autocorrect="off" maxlength="60" /><br />';
-    _e('(Must be at least 4 characters, letters and numbers only.)');
-    ?>
-
-    <label for="user_email"><?php _e('Email&nbsp;Address:') ?></label>
-    <?php if ($errmsg = $errors->get_error_message('user_email')) { ?>
-        <p class="error"><?php echo $errmsg ?></p>
-    <?php } ?>
-    <input name="user_email" type="email" id="user_email" value="<?php
-        echo esc_attr($user_email) ?>" maxlength="200" /><br /><?php
-        _e('We send your registration email to this address. (Double-check your email address before continuing.)'); // @codingStandardsIgnoreLine
-    ?>
-    <?php
-    if ($errmsg = $errors->get_error_message('generic')) {
-        echo '<p class="error">' . $errmsg . '</p>';
-    }
+    echo render('signup/user-form', [
+        'userName' => $user_name,
+        'userEmail' => $user_email,
+        'errors' => [
+            'name' => $nameError,
+            'email' => $emailError,
+            'generic' => $genericError,
+        ],
+        'l10n' => new L10N(),
+    ]);
     /**
      * Fires at the end of the user registration form on the site sign-up form.
      *
@@ -234,12 +230,13 @@ function signup_another_blog( // @codingStandardsIgnoreLine
     $errors = null
 ) {
     $current_user = wp_get_current_user();
+    $l10n = new L10N();
 
     if (! is_wp_error($errors)) {
         $errors = new Error();
     }
 
-    $signup_defaults = [
+    $defaults = [
         'blogname'   => $blogname,
         'blog_title' => $blog_title,
         'errors'     => $errors
@@ -248,65 +245,43 @@ function signup_another_blog( // @codingStandardsIgnoreLine
     /**
      * Filters the default site sign-up variables.
      *
-     * @param array $signup_defaults {
+     * @param array $defaults {
      *     An array of default site sign-up variables.
      *
      *     @type string $blogname   The site blogname.
      *     @type string $blog_title The site title.
      *     @type Error  $errors     A Error object possibly containing
      *                              'blogname' or 'blog_title' errors.
+     * }
      *
      * @since 3.0.0
-     * }
      */
-    $filtered_results = apply_filters('signup_another_blog_init', $signup_defaults);
+    $filtered = apply_filters('signup_another_blog_init', $defaults);
 
-    $blogname = $filtered_results['blogname'];
-    $blog_title = $filtered_results['blog_title'];
-    $errors = $filtered_results['errors'];
+    $strings = [
+        'get_another_site' => sprintf(
+            $l10n->get_another_site,
+            get_network()->site_name
+        ),
+        'welcome_back' => sprintf(
+            $l10n->welcome_back,
+            $current_user->display_name
+        ),
+    ];
 
-    echo '<h2>' . sprintf(
-        __('Get <em>another</em> %s site in seconds'),
-        get_network()->site_name
-    ) . '</h2>';
-
-    if ($errors->get_error_code()) {
-        echo '<p>' .
-            __('There was a problem, please correct the form below and try again.') .
-        '</p>';
+    $blogs = [];
+    $userBlogs = get_blogs_of_user($current_user->ID);
+    foreach ($userBlogs as $userBlog) {
+        $url = get_home_url($userBlog->userblog_id);
+        $blogs[] = [
+            'url' => $url,
+            'escUrl' => esc_url($url),
+        ];
     }
-    ?>
-    <p>
-    <?php
-    printf(
-        __('Welcome back, %s. By filling out the form below, you can <strong>add another site to your account</strong>. There is no limit to the number of sites you can have, so create to your heart&#8217;s content, but write responsibly!'), // @codingStandardsIgnoreLine
-        $current_user->display_name
-    );
-    ?></p>
 
-    <?php
-    $blogs = get_blogs_of_user($current_user->ID);
-    if (!empty($blogs)) { ?>
-
-            <p><?php _e('Sites you are already a member of:') ?></p>
-            <ul>
-                <?php
-                foreach ($blogs as $blog) {
-                    $home_url = get_home_url($blog->userblog_id);
-                    echo '<li><a href="' . esc_url($home_url) . '">' .
-                        $home_url .
-                    '</a></li>';
-                }
-                ?>
-            </ul>
-    <?php } ?>
-
-    <p><?php
-        _e('If you&#8217;re not going to use a great site domain, leave it for a new user. Now have at it!'); // @codingStandardsIgnoreLine
-    ?></p>
-    <form id="setupform" method="post" action="wp-signup.php">
-        <input type="hidden" name="stage" value="gimmeanotherblog" />
-        <?php
+    $app = getApp();
+    $view = new View($app);
+    $view->setActions([
         /**
          * Hidden sign-up form fields output when creating another site or user.
          *
@@ -317,15 +292,23 @@ function signup_another_blog( // @codingStandardsIgnoreLine
          *
          * @since MU
          */
-        do_action('signup_hidden_fields', 'create-another-site');
-        ?>
-        <?php show_blog_form($blogname, $blog_title, $errors); ?>
-        <p class="submit">
-            <input type="submit" name="submit" class="submit"
-                value="<?php esc_attr_e('Create Site') ?>" />
-        </p>
-    </form>
-    <?php
+        'signup_hidden_fields' => ['create-another-site'],
+    ]);
+    $view->setData([
+        'blogForm' => $app->mute(() ==> {
+            show_blog_form(
+                $filtered['blogname'],
+                $filtered['blog_title'],
+                $filtered['errors']
+            );
+        }),
+        'hasBlogs' => count($blogs) > 0,
+        'blogs' => $blogs,
+        'errors' => $filtered['errors']->get_error_code(),
+        'l10n' => array_merge($l10n->getData(), $strings),
+    ]);
+
+    echo $view->render('signup/another-blog');
 }
 
 /**
@@ -338,7 +321,6 @@ function signup_another_blog( // @codingStandardsIgnoreLine
  */
 function validate_another_blog_signup() // @codingStandardsIgnoreLine
 {
-    global $blogname, $blog_title, $errors, $domain, $path;
     $app = getApp();
     $_post = $app['request']->request;
     $wpdb = $app['db'];
@@ -350,15 +332,12 @@ function validate_another_blog_signup() // @codingStandardsIgnoreLine
 
     $result = validate_blog_form();
 
-    // Extracted values set/overwrite globals.
-    $domain = $result['domain'];
-    $path = $result['path'];
-    $blogname = $result['blogname'];
-    $blog_title = $result['blog_title'];
-    $errors = $result['errors'];
-
-    if ($errors->get_error_code()) {
-        signup_another_blog($blogname, $blog_title, $errors);
+    if ($result['errors']->get_error_code()) {
+        signup_another_blog(
+            $result['blogname'],
+            $result['blog_title'],
+            $result['errors']
+        );
         return false;
     }
 
@@ -411,9 +390,9 @@ function validate_another_blog_signup() // @codingStandardsIgnoreLine
     $meta = apply_filters('add_signup_meta', $meta_defaults);
 
     $blog_id = wpmu_create_blog(
-        $domain,
-        $path,
-        $blog_title,
+        $result['domain'],
+        $result['path'],
+        $result['blog_title'],
         $current_user->ID,
         $meta,
         $wpdb->siteid
@@ -424,9 +403,9 @@ function validate_another_blog_signup() // @codingStandardsIgnoreLine
     }
 
     confirm_another_blog_signup(
-        $domain,
-        $path,
-        $blog_title,
+        $result['domain'],
+        $result['path'],
+        $result['blog_title'],
         $current_user->user_login,
         $blog_id
     );
@@ -460,35 +439,31 @@ function confirm_another_blog_signup( // @codingStandardsIgnoreLine
         restore_current_blog();
     } else {
         $home_url  = 'http://' . $domain . $path;
-        $login_url = 'http://' . $domain . $path . 'wp-login.php';
+        $login_url = $home_url . 'wp-login.php';
     }
 
     $site = sprintf(
-        '<a href="%1$s">%2$s</a>',
+        '<a href="%s">%s</a>',
         esc_url($home_url),
         $blog_title
     );
 
-    ?>
-    <h2><?php
-        /* translators: %s: site name */
-        printf(__('The site %s is yours.'), $site);
-    ?></h2>
-    <p>
-        <?php printf(
-            /* translators:
-                1: home URL,
-                2: site address,
-                3: login URL,
-                4: username */
-            __('<a href="%1$s">%2$s</a> is your new site. <a href="%3$s">Log in</a> as &#8220;%4$s&#8221; using your existing password.'), // @codingStandardsIgnoreLine
+    $l10n = new L10N();
+    $strings = [
+        'the_site_is_yours' => sprintf($l10n->the_site_is_yours, $site),
+        'your_new_site' => sprintf(
+            $l10n->your_new_site, // @codingStandardsIgnoreLine
             esc_url($home_url),
             untrailingslashit($domain . $path),
             esc_url($login_url),
             $user_name
-        ); ?>
-    </p>
-    <?php
+        )
+    ];
+
+    echo render('signup/confirm-another-blog-signup', [
+        'l10n' => $strings
+    ]);
+
     /**
      * Fires when the site or user sign-up process is complete.
      *
@@ -522,7 +497,7 @@ function signup_user( // @codingStandardsIgnoreLine
     $_post = $app['request']->request;
     $signup_for = esc_html($_post->get('signup_for', 'blog'));
 
-    $signup_user_defaults = array(
+    $defaults = array(
         'user_name'  => $user_name,
         'user_email' => $user_email,
         'errors'     => $errors,
@@ -531,7 +506,7 @@ function signup_user( // @codingStandardsIgnoreLine
     /**
      * Filters the default user variables used on the user sign-up form.
      *
-     * @param array $signup_user_defaults {
+     * @param array $defaults {
      *     An array of default user variables.
      *
      *     @type string $user_name  The user username.
@@ -542,51 +517,42 @@ function signup_user( // @codingStandardsIgnoreLine
      *
      * @since 3.0.0
      */
-    $filtered_results = apply_filters(
+    $filtered = apply_filters(
         'signup_user_init',
-        $signup_user_defaults
+        $defaults
     );
-    $user_name = $filtered_results['user_name'];
-    $user_email = $filtered_results['user_email'];
-    $errors = $filtered_results['errors'];
-    ?>
 
-    <h2><?php
+    $l10n = new L10N();
+
+    $strings = [
         /* translators: %s: name of the network */
-        printf(__('Get your own %s account in seconds'), get_network()->site_name);
-    ?></h2>
-    <form id="setupform" method="post" action="wp-signup.php">
-        <input type="hidden" name="stage" value="validate-user-signup" />
-        <?php
-        // This action is documented in wp-signup.php
-        do_action('signup_hidden_fields', 'validate-user');
-        ?>
-        <?php show_user_form($user_name, $user_email, $errors); ?>
+        'get_your_own_account' => sprintf(
+            $l10n->get_your_own_account,
+            get_network()->site_name
+        ),
+    ];
 
-        <p>
-        <?php if ($active_signup == 'blog') { ?>
-            <input id="signupblog" type="hidden" name="signup_for" value="blog" />
-        <?php } elseif ($active_signup == 'user') { ?>
-            <input id="signupblog" type="hidden" name="signup_for" value="user" />
-        <?php } else { ?>
-            <input id="signupblog" type="radio" name="signup_for" value="blog"
-                <?php checked($signup_for, 'blog'); ?> />
-            <label class="checkbox" for="signupblog">
-                <?php _e('Gimme a site!') ?>
-            </label>
-            <br />
-            <input id="signupuser" type="radio" name="signup_for" value="user"
-                <?php checked($signup_for, 'user'); ?> />
-            <label class="checkbox" for="signupuser">
-                <?php _e('Just a username, please.') ?>
-            </label>
-        <?php } ?>
-        </p>
+    $app = getApp();
+    $view = new View($app);
+    $view->setActions([
+        'signup_hidden_fields' => ['validate-user'],
+    ]);
+    $view->setData([
+        'l10n' => array_merge($l10n->getData(), $strings),
+        'userForm' => $app->mute(() ==> {
+            show_user_form(
+                $filtered['user_name'],
+                $filtered['user_email'],
+                $filtered['errors']
+            );
+        }),
+        'signupForUser' => $active_signup === 'user',
+        'signupForBlog' => $active_signup === 'blog',
+        'blogChecked' => checked($signup_for, 'blog', false),
+        'userChecked' => checked($signup_for, 'user', false),
+    ]);
 
-        <p class="submit"><input type="submit" name="submit" class="submit"
-            value="<?php esc_attr_e('Next') ?>" /></p>
-    </form>
-    <?php
+    echo $view->render('signup/confirm-another-blog-signup');
 }
 
 /**
@@ -831,10 +797,11 @@ function confirm_blog_signup( // @codingStandardsIgnoreLine
     $blog_title,
     $user_email = ''
 ) {
-    $l10n = [
+    $l10n new L10N();
+
+    $strings = [
         'congratulations' => sprintf(
-            /* translators: %s: site address */
-            __('Congratulations! Your new site, %s, is almost ready.'),
+            $l10n->congratulations,
             sprintf(
                 '<a href="http://%s%s">%s</a>',
                 $domain,
@@ -842,31 +809,18 @@ function confirm_blog_signup( // @codingStandardsIgnoreLine
                 $blog_title
             )
         ),
-        // @codingStandardsIgnoreLine
-        'before_you_can_start' => __('But, before you can start using your site, <strong>you must activate it</strong>.'),
-        /* translators: %s: email address */
         'check_your_inbox' => sprintf(
-            __('Check your inbox at %s and click the link given.'),
+            $l10n->check_your_inbox,
             '<strong>' . $user_email . '</strong>'
         ),
-         // @codingStandardsIgnoreLine
-        'within_two_days' => __('If you do not activate your site within two days, you will have to sign up again.'),
-        'still_waiting' => __('Still waiting for your email?'),
-         // @codingStandardsIgnoreLine
-        'havent_received' => __('If you haven&#8217;t received your email yet, there are a number of things you can do:'),
-         // @codingStandardsIgnoreLine
-        'wait_a_little' => __('Wait a little longer. Sometimes delivery of email can be delayed by processes outside of our control.'),
-        // @codingStandardsIgnoreLine
-        'check_the_junk' => __('Check the junk or spam folder of your email client. Sometime emails wind up there by mistake.'),
         'have_you_entered' => sprintf(
-            /* translators: %s: email address */
-            __('Have you entered your email correctly? You have entered %s, if it&#8217;s incorrect, you will not receive your email.'), // @codingStandardsIgnoreLine
+            $l10n->have_you_entered,
             $user_email
         )
     ];
 
     echo render('signup/confirm-blog-signup', [
-        'l10n' => $l10n,
+        'l10n' => array_merge($l10n->getData(), $strings),
     ]);
     // This action is documented in wp-signup-functions.hh
     do_action('signup_finished');

@@ -1,0 +1,27 @@
+<h2>{{ l10n.get_another_site }}</h2>
+{{# errors }}
+<p>{{{ l10n.there_was_a_problem }}}</p>
+{{/ errors }}
+<p>{{{ l10n.welcome_back }}}</p>
+
+{{# hasBlogs }}
+    <p>{{ l10n.member_sites }}</p>
+    <ul>
+        {{# blogs }}
+        <li>
+            <a href="{{{ escUrl }}}">{{{ url }}}</a>
+        </li>';
+        {{/ blogs }}
+    </ul>
+{{/ hasBlogs }}
+
+<p>{{{ l10n.great_site_domain }}}</p>
+
+<form id="setupform" method="post" action="wp-signup.php">
+    <input type="hidden" name="stage" value="gimmeanotherblog" />
+    {{# doAction }}signup_hidden_fields{{/ doAction }}
+    {{{ blogForm }}}
+    <p class="submit">
+        <input type="submit" name="submit" class="submit" value="{{ l10n.create_site }}" />
+    </p>
+</form>
