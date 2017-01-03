@@ -1,0 +1,10 @@
+<form id="setupform" method="post" action="wp-signup.php">
+    <input type="hidden" name="stage" value="validate-blog-signup" />
+    <input type="hidden" name="user_name" value="{{ userName }}" />
+    <input type="hidden" name="user_email" value="{{ userEmail }}" />
+    {{# doAction }}signup_hidden_fields{{/ doAction }}
+    {{{ blogForm }}}
+    <p class="submit">
+        <input type="submit" name="submit" class="submit" value="{{ l10n.signup }}" />
+    </p>
+</form>

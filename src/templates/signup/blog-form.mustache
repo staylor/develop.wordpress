@@ -1,0 +1,45 @@
+<label for="blogname">{{ l10n.blogname_label }}</label>
+{{# errors.name }}
+<p class="error">{{ . }}</p>
+{{/ errors.name }}
+{{# isSubdomainInstall }}
+<input name="blogname" type="text" id="blogname" value="{{ blogname }}" maxlength="60" />
+<span class="suffix_address">{{ siteDomain }}</span><br />
+{{/ isSubdomainInstall }}
+{{^ isSubdomainInstall }}
+<span class="prefix_address">{{{ currentNetwork.domain }}}{{{ currentNetwork.path }}}</span>
+<input name="blogname" type="text" id="blogname" value="{{ blogname }}" maxlength="60" /><br />'
+{{/ isSubdomainInstall }}
+
+{{^ loggedIn }}
+<p>(<strong>{{{ l10n.your_address }}}</strong>) {{{ l10n.name_rules }}}</p>
+{{/ loggedIn }}
+
+<label for="blog_title">{{ l10n.site_title }}</label>
+{{# errors.title }}
+<p class="error">{{ . }}</p>
+{{/ errors.title }}
+<input name="blog_title" type="text" id="blog_title" value="{{ blogTitle }}" />
+
+{{# languageDropdown }}
+<p>
+    <label for="site-language">{{ l10n.site_language }}</label>
+    {{{ . }}}
+</p>
+{{/ languageDropdown }}
+
+<div id="privacy">
+    <p class="privacy-intro">
+        <label for="blog_public_on">{{ l10n.privacy }}</label>
+        {{ l10n.allow_search_engines }}
+        <br style="clear:both" />
+        <label class="checkbox" for="blog_public_on">
+            <input type="radio" id="blog_public_on" name="blog_public" value="1" {{{ yesChecked }}} />
+            <strong>{{ l10n.yes }}</strong>
+        </label>
+        <label class="checkbox" for="blog_public_off">
+            <input type="radio" id="blog_public_off" name="blog_public" value="0" {{{ noChecked }}} />
+            <strong>{{ l10n.no }}</strong>
+        </label>
+    </p>
+</div>

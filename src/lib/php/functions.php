@@ -1,7 +1,8 @@
 <?php
 namespace WP;
 
-function getApp( App $app = null ) {
+function getApp( App $app = null ): App
+{
 	static $store = null;
 	if ( $app ) {
 		$store = $app;
@@ -16,4 +17,13 @@ function getApp( App $app = null ) {
 	}
 
 	return $store;
+}
+
+function render(): string
+{
+	static $mustache = null;
+	if (null === $mustache) {
+		$mustache = new Template\Mustache();
+	}
+	return call_user_func_array([$mustache, 'render'], func_get_args());
 }

@@ -1,5 +1,16 @@
 <?php
-use WP\Error;
+
+/** Sets up the WordPress Environment. */
+require( dirname(__FILE__) . '/wp-load.php' );
+
+add_action( 'wp_head', 'wp_no_robots' );
+
+require( dirname( __FILE__ ) . '/wp-blog-header.php' );
+
+if ( is_array( get_site_option( 'illegal_names' )) && isset( $_GET[ 'new' ] ) && in_array( $_GET[ 'new' ], get_site_option( 'illegal_names' ) ) ) {
+	wp_redirect( network_home_url() );
+	die();
+}
 
 /**
  * Prints signup_header via wp_head
@@ -14,37 +25,20 @@ function do_signup_header() {
 	 */
 	do_action( 'signup_header' );
 }
+add_action( 'wp_head', 'do_signup_header' );
 
-/** Sets up the WordPress Environment. */
-require( __DIR__ . '/wp-load.php' );
-
-if ( ! is_multisite() ) {
+if ( !is_multisite() ) {
 	wp_redirect( wp_registration_url() );
 	die();
 }
 
-if ( ! is_main_site() ) {
+if ( !is_main_site() ) {
 	wp_redirect( network_site_url( 'wp-signup.php' ) );
 	die();
 }
 
-$new = $_get->get( 'new' );
-if ( is_array( get_site_option( 'illegal_names' )) && $new && in_array( $new, get_site_option( 'illegal_names' ) ) ) {
-	wp_redirect( network_home_url() );
-	die();
-}
-
-// Set up the WordPress query.
-wp();
-
-add_action( 'wp_head', 'wp_no_robots' );
-add_action( 'wp_head', 'do_signup_header' );
-
-// Load the theme template.
-require_once( ABSPATH . WPINC . '/template-loader.php' );
-
 // Fix for page title
-$app['wp']->current_query->is_404 = false;
+$wp_query->is_404 = false;
 
 /**
  * Fires before the Site Signup page is loaded.
@@ -99,33 +93,28 @@ do_action( 'before_signup_form' );
  *
  * @param string          $blogname   The new site name.
  * @param string          $blog_title The new site title.
- * @param Error|string $errors     A Error object containing existing errors. Defaults to empty string.
+ * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
  */
 function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
-	$app = getApp();
-	$_post = $app['request']->request;
-
 	if ( ! is_wp_error( $errors ) ) {
-		$errors = new Error();
+		$errors = new WP_Error();
 	}
 
 	$current_network = get_network();
 	// Blog name
-	if ( ! is_subdomain_install() ) {
+	if ( !is_subdomain_install() )
 		echo '<label for="blogname">' . __('Site Name:') . '</label>';
-	} else {
+	else
 		echo '<label for="blogname">' . __('Site Domain:') . '</label>';
-	}
 
 	if ( $errmsg = $errors->get_error_message('blogname') ) { ?>
 		<p class="error"><?php echo $errmsg ?></p>
 	<?php }
 
-	if ( !is_subdomain_install() ) {
+	if ( !is_subdomain_install() )
 		echo '<span class="prefix_address">' . $current_network->domain . $current_network->path . '</span><input name="blogname" type="text" id="blogname" value="'. esc_attr($blogname) .'" maxlength="60" /><br />';
-	} else {
+	else
 		echo '<input name="blogname" type="text" id="blogname" value="'.esc_attr($blogname).'" maxlength="60" /><span class="suffix_address">.' . ( $site_domain = preg_replace( '|^www\.|', '', $current_network->domain ) ) . '</span><br />';
-	}
 
 	if ( ! is_user_logged_in() ) {
 		if ( ! is_subdomain_install() ) {
@@ -157,7 +146,11 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 			<label for="site-language"><?php _e( 'Site Language:' ); ?></label>
 			<?php
 			// Network default.
-			$lang = $_post->get( 'WPLANG', get_site_option( 'WPLANG' ) );
+			$lang = get_site_option( 'WPLANG' );
+
+			if ( isset( $_POST['WPLANG'] ) ) {
+				$lang = $_POST['WPLANG'];
+			}
 
 			// Use US English if the default isn't available.
 			if ( ! in_array( $lang, $languages ) ) {
@@ -176,19 +169,19 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 	<?php endif; // Languages. ?>
 
 	<div id="privacy">
-		<p class="privacy-intro">
-			<label for="blog_public_on"><?php _e('Privacy:') ?></label>
-			<?php _e( 'Allow search engines to index this site.' ); ?>
-			<br style="clear:both" />
-			<label class="checkbox" for="blog_public_on">
-				<input type="radio" id="blog_public_on" name="blog_public" value="1" <?php if ( ! $_post->has( 'blog_public' ) || $_post->get( 'blog_public' ) == '1' ) { ?>checked="checked"<?php } ?> />
-				<strong><?php _e( 'Yes' ); ?></strong>
-			</label>
-			<label class="checkbox" for="blog_public_off">
-				<input type="radio" id="blog_public_off" name="blog_public" value="0" <?php if ( $_post->has( 'blog_public' ) && $_post->get( 'blog_public' ) == '0' ) { ?>checked="checked"<?php } ?> />
-				<strong><?php _e( 'No' ); ?></strong>
-			</label>
-		</p>
+        <p class="privacy-intro">
+            <label for="blog_public_on"><?php _e('Privacy:') ?></label>
+            <?php _e( 'Allow search engines to index this site.' ); ?>
+            <br style="clear:both" />
+            <label class="checkbox" for="blog_public_on">
+                <input type="radio" id="blog_public_on" name="blog_public" value="1" <?php if ( !isset( $_POST['blog_public'] ) || $_POST['blog_public'] == '1' ) { ?>checked="checked"<?php } ?> />
+                <strong><?php _e( 'Yes' ); ?></strong>
+            </label>
+            <label class="checkbox" for="blog_public_off">
+                <input type="radio" id="blog_public_off" name="blog_public" value="0" <?php if ( isset( $_POST['blog_public'] ) && $_POST['blog_public'] == '0' ) { ?>checked="checked"<?php } ?> />
+                <strong><?php _e( 'No' ); ?></strong>
+            </label>
+        </p>
 	</div>
 
 	<?php
@@ -197,7 +190,7 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param Error $errors A Error object possibly containing 'blogname' or 'blog_title' errors.
+	 * @param WP_Error $errors A WP_Error object possibly containing 'blogname' or 'blog_title' errors.
 	 */
 	do_action( 'signup_blogform', $errors );
 }
@@ -210,14 +203,11 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
  * @return array Contains the new site data and error messages.
  */
 function validate_blog_form() {
-	$app = getApp();
-	$_post = $app['request']->request;
-
 	$user = '';
-	if ( is_user_logged_in() ) {
+	if ( is_user_logged_in() )
 		$user = wp_get_current_user();
-	}
-	return wpmu_validate_blog_signup( $_post->get( 'blogname' ), $_post->get( 'blog_title' ), $user );
+
+	return wpmu_validate_blog_signup($_POST['blogname'], $_POST['blog_title'], $user);
 }
 
 /**
@@ -227,11 +217,11 @@ function validate_blog_form() {
  *
  * @param string          $user_name  The entered username.
  * @param string          $user_email The entered email address.
- * @param Error|string $errors     A Error object containing existing errors. Defaults to empty string.
+ * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
  */
 function show_user_form($user_name = '', $user_email = '', $errors = '') {
 	if ( ! is_wp_error( $errors ) ) {
-		$errors = new Error();
+		$errors = new WP_Error();
 	}
 
 	// User name
@@ -257,7 +247,7 @@ function show_user_form($user_name = '', $user_email = '', $errors = '') {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param Error $errors A Error object containing containing 'user_name' or 'user_email' errors.
+	 * @param WP_Error $errors A WP_Error object containing containing 'user_name' or 'user_email' errors.
 	 */
 	do_action( 'signup_extra_fields', $errors );
 }
@@ -270,9 +260,7 @@ function show_user_form($user_name = '', $user_email = '', $errors = '') {
  * @return array Contains username, email, and error messages.
  */
 function validate_user_form() {
-	$app = getApp();
-	$_post = $app['request']->request;
-	return wpmu_validate_user_signup( $_post->get( 'user_name' ), $_post->get( 'user_email' ) );
+	return wpmu_validate_user_signup($_POST['user_name'], $_POST['user_email']);
 }
 
 /**
@@ -282,13 +270,13 @@ function validate_user_form() {
  *
  * @param string          $blogname   The new site name
  * @param string          $blog_title The new site title.
- * @param Error|string $errors     A Error object containing existing errors. Defaults to empty string.
+ * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
  */
 function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
 	$current_user = wp_get_current_user();
 
 	if ( ! is_wp_error($errors) ) {
-		$errors = new Error();
+		$errors = new WP_Error();
 	}
 
 	$signup_defaults = array(
@@ -307,7 +295,7 @@ function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
 	 *
 	 *     @type string   $blogname   The site blogname.
 	 *     @type string   $blog_title The site title.
-	 *     @type Error $errors     A Error object possibly containing 'blogname' or 'blog_title' errors.
+	 *     @type WP_Error $errors     A WP_Error object possibly containing 'blogname' or 'blog_title' errors.
 	 * }
 	 */
 	$filtered_results = apply_filters( 'signup_another_blog_init', $signup_defaults );
@@ -366,11 +354,7 @@ function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
  *                   The function halts all execution if the user is not logged in.
  */
 function validate_another_blog_signup() {
-	global $blogname, $blog_title, $errors, $domain, $path;
-	$app = getApp();
-	$_post = $app['request']->request;
-	$wpdb = $app['db'];
-
+	global $wpdb, $blogname, $blog_title, $errors, $domain, $path;
 	$current_user = wp_get_current_user();
 	if ( ! is_user_logged_in() ) {
 		die();
@@ -390,7 +374,7 @@ function validate_another_blog_signup() {
 		return false;
 	}
 
-	$public = $_post->getInt( 'blog_public' );
+	$public = (int) $_POST['blog_public'];
 
 	$blog_meta_defaults = array(
 		'lang_id' => 1,
@@ -398,12 +382,12 @@ function validate_another_blog_signup() {
 	);
 
 	// Handle the language setting for the new site.
-	if ( ! empty( $_post->get( 'WPLANG' ) ) ) {
+	if ( ! empty( $_POST['WPLANG'] ) ) {
 
 		$languages = signup_get_available_languages();
 
-		if ( in_array( $_post->get( 'WPLANG' ), $languages ) ) {
-			$language = wp_unslash( sanitize_text_field( $_post->get( 'WPLANG' ) ) );
+		if ( in_array( $_POST['WPLANG'], $languages ) ) {
+			$language = wp_unslash( sanitize_text_field( $_POST['WPLANG'] ) );
 
 			if ( $language ) {
 				$blog_meta_defaults['WPLANG'] = $language;
@@ -444,7 +428,7 @@ function validate_another_blog_signup() {
 		return false;
 	}
 
-	confirm_another_blog_signup( $domain, $path, $blog_title, $current_user->user_login, $blog_id );
+	confirm_another_blog_signup( $domain, $path, $blog_title, $current_user->user_login, $current_user->user_email, $meta, $blog_id );
 	return true;
 }
 
@@ -458,9 +442,11 @@ function validate_another_blog_signup() {
  * @param string $path       The site root path.
  * @param string $blog_title The site title.
  * @param string $user_name  The username.
+ * @param string $user_email The user's email address.
+ * @param array  $meta       Any additional meta from the {@see 'add_signup_meta'} filter in validate_blog_signup().
  * @param int    $blog_id    The site ID.
  */
-function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $blog_id = 0 ) {
+function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $user_email = '', $meta = array(), $blog_id = 0 ) {
 
 	if ( $blog_id ) {
 		switch_to_blog( $blog_id );
@@ -508,19 +494,15 @@ function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $
  *
  * @param string          $user_name  The username.
  * @param string          $user_email The user's email.
- * @param Error|string $errors     A Error object containing existing errors. Defaults to empty string.
+ * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
  */
 function signup_user( $user_name = '', $user_email = '', $errors = '' ) {
-	$app = getApp();
-	$active_signup = $app->get( 'active_signup' );
+	global $active_signup;
 
-	if ( !is_wp_error($errors) ) {
-			$errors = new Error();
-	}
+	if ( !is_wp_error($errors) )
+		$errors = new WP_Error();
 
-	$app = getApp();
-	$_post = $app['request']->request;
-	$signup_for = esc_html( $_post->get( 'signup_for', 'blog' ) );
+	$signup_for = isset( $_POST[ 'signup_for' ] ) ? esc_html( $_POST[ 'signup_for' ] ) : 'blog';
 
 	$signup_user_defaults = array(
 		'user_name'  => $user_name,
@@ -538,7 +520,7 @@ function signup_user( $user_name = '', $user_email = '', $errors = '' ) {
 	 *
 	 *     @type string   $user_name  The user username.
 	 *     @type string   $user_email The user email address.
-	 *     @type Error $errors     A Error object with possible errors relevant to the sign-up user.
+	 *     @type WP_Error $errors     A WP_Error object with possible errors relevant to the sign-up user.
 	 * }
 	 */
 	$filtered_results = apply_filters( 'signup_user_init', $signup_user_defaults );
@@ -597,15 +579,13 @@ function validate_user_signup() {
 		return false;
 	}
 
-	$app = getApp();
-	$_post = $app['request']->request;
-	if ( 'blog' == $_post->get( 'signup_for' ) ) {
+	if ( 'blog' == $_POST['signup_for'] ) {
 		signup_blog($user_name, $user_email);
 		return false;
 	}
 
 	/** This filter is documented in wp-signup.php */
-	wpmu_signup_user( $user_name, $user_email, apply_filters( 'add_signup_meta', [] ) );
+	wpmu_signup_user( $user_name, $user_email, apply_filters( 'add_signup_meta', array() ) );
 
 	confirm_user_signup($user_name, $user_email);
 	return true;
@@ -641,12 +621,11 @@ function confirm_user_signup($user_name, $user_email) {
  * @param string          $user_email The user's email address.
  * @param string          $blogname   The site name.
  * @param string          $blog_title The site title.
- * @param Error|string $errors     A Error object containing existing errors. Defaults to empty string.
+ * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
  */
 function signup_blog($user_name = '', $user_email = '', $blogname = '', $blog_title = '', $errors = '') {
-	if ( !is_wp_error($errors) ) {
-			$errors = new Error();
-	}
+	if ( !is_wp_error($errors) )
+		$errors = new WP_Error();
 
 	$signup_blog_defaults = array(
 		'user_name'  => $user_name,
@@ -668,7 +647,7 @@ function signup_blog($user_name = '', $user_email = '', $blogname = '', $blog_ti
 	 *     @type string   $user_email The user email address.
 	 *     @type string   $blogname   The blogname.
 	 *     @type string   $blog_title The title of the site.
-	 *     @type Error $errors     A Error object with possible errors relevant to new site creation variables.
+	 *     @type WP_Error $errors     A WP_Error object with possible errors relevant to new site creation variables.
 	 * }
 	 */
 	$filtered_results = apply_filters( 'signup_blog_init', $signup_blog_defaults );
@@ -679,9 +658,8 @@ function signup_blog($user_name = '', $user_email = '', $blogname = '', $blog_ti
 	$blog_title = $filtered_results['blog_title'];
 	$errors = $filtered_results['errors'];
 
-	if ( empty($blogname) ) {
-			$blogname = $user_name;
-	}
+	if ( empty($blogname) )
+		$blogname = $user_name;
 	?>
 	<form id="setupform" method="post" action="wp-signup.php">
 		<input type="hidden" name="stage" value="validate-blog-signup" />
@@ -705,11 +683,8 @@ function signup_blog($user_name = '', $user_email = '', $blogname = '', $blog_ti
  * @return bool True if the site signup was validated, false if error
  */
 function validate_blog_signup() {
-	$app = getApp();
-	$_post = $app['request']->request;
-
 	// Re-validate user info.
-	$user_result = wpmu_validate_user_signup( $_post->get( 'user_name' ), $_post->get( 'user_email' ) );
+	$user_result = wpmu_validate_user_signup( $_POST['user_name'], $_POST['user_email'] );
 	$user_name = $user_result['user_name'];
 	$user_email = $user_result['user_email'];
 	$user_errors = $user_result['errors'];
@@ -719,7 +694,7 @@ function validate_blog_signup() {
 		return false;
 	}
 
-	$result = wpmu_validate_blog_signup( $_post->get( 'blogname' ), $_post->get( 'blog_title' ) );
+	$result = wpmu_validate_blog_signup( $_POST['blogname'], $_POST['blog_title'] );
 	$domain = $result['domain'];
 	$path = $result['path'];
 	$blogname = $result['blogname'];
@@ -731,16 +706,16 @@ function validate_blog_signup() {
 		return false;
 	}
 
-	$public = $_post->getInt( 'blog_public' );
+	$public = (int) $_POST['blog_public'];
 	$signup_meta = array ('lang_id' => 1, 'public' => $public);
 
 	// Handle the language setting for the new site.
-	if ( ! empty( $_post->get( 'WPLANG' ) ) ) {
+	if ( ! empty( $_POST['WPLANG'] ) ) {
 
 		$languages = signup_get_available_languages();
 
-		if ( in_array( $_post->get( 'WPLANG' ), $languages ) ) {
-			$language = wp_unslash( sanitize_text_field( $_post->get( 'WPLANG' ) ) );
+		if ( in_array( $_POST['WPLANG'], $languages ) ) {
+			$language = wp_unslash( sanitize_text_field( $_POST['WPLANG'] ) );
 
 			if ( $language ) {
 				$signup_meta['WPLANG'] = $language;
@@ -753,7 +728,7 @@ function validate_blog_signup() {
 	$meta = apply_filters( 'add_signup_meta', $signup_meta );
 
 	wpmu_signup_blog($domain, $path, $blog_title, $user_name, $user_email, $meta);
-	confirm_blog_signup( $domain, $path, $blog_title, $user_email );
+	confirm_blog_signup($domain, $path, $blog_title, $user_name, $user_email, $meta);
 	return true;
 }
 
@@ -765,20 +740,14 @@ function validate_blog_signup() {
  * @param string $domain The domain URL
  * @param string $path The site root path
  * @param string $blog_title The new site title
+ * @param string $user_name The user's username
  * @param string $user_email The user's email address
+ * @param array $meta Any additional meta from the {@see 'add_signup_meta'} filter in validate_blog_signup()
  */
-function confirm_blog_signup( $domain, $path, $blog_title, $user_email = '' ) {
+function confirm_blog_signup( $domain, $path, $blog_title, $user_name = '', $user_email = '', $meta = array() ) {
 	?>
 	<h2><?php /* translators: %s: site address */
-	printf(
-		__( 'Congratulations! Your new site, %s, is almost ready.' ),
-		sprintf(
-			'<a href="http://%s%s">%s</a>',
-			$domain,
-			$path,
-			$blog_title
-		)
-	) ?></h2>
+	printf( __( 'Congratulations! Your new site, %s, is almost ready.' ), "<a href='http://{$domain}{$path}'>{$blog_title}</a>" ) ?></h2>
 
 	<p><?php _e( 'But, before you can start using your site, <strong>you must activate it</strong>.' ) ?></p>
 	<p><?php /* translators: %s: email address */
@@ -846,7 +815,6 @@ $active_signup = get_site_option( 'registration', 'none' );
  *                              'all', 'none', 'blog', or 'user'.
  */
 $active_signup = apply_filters( 'wpmu_active_signup', $active_signup );
-$app->set( 'active_signup', $active_signup );
 
 // Make the signup type translatable.
 $i18n_signup['all'] = _x('all', 'Multisite active signup type');
@@ -859,7 +827,7 @@ if ( is_super_admin() ) {
 	echo '<div class="mu_alert">' . sprintf( __( 'Greetings Site Administrator! You are currently allowing &#8220;%s&#8221; registrations. To change or disable registration go to your <a href="%s">Options page</a>.' ), $i18n_signup[$active_signup], esc_url( network_admin_url( 'settings.php' ) ) ) . '</div>';
 }
 
-$newblogname = $_get->get( 'new' ) ? strtolower( preg_replace('/^-|-$|[^-a-zA-Z0-9]/', '', $_get->get( 'new' ) ) ) : null;
+$newblogname = isset($_GET['new']) ? strtolower(preg_replace('/^-|-$|[^-a-zA-Z0-9]/', '', $_GET['new'])) : null;
 
 $current_user = wp_get_current_user();
 if ( $active_signup == 'none' ) {
@@ -869,60 +837,56 @@ if ( $active_signup == 'none' ) {
 	/* translators: %s: login URL */
 	printf( __( 'You must first <a href="%s">log in</a>, and then you can create a new site.' ), $login_url );
 } else {
-	$stage = $_post->get( 'stage', 'default' );
+	$stage = isset( $_POST['stage'] ) ?  $_POST['stage'] : 'default';
 	switch ( $stage ) {
-	case 'validate-user-signup' :
-		if ( $active_signup == 'all' || $_post->get( 'signup_for' ) == 'blog' && $active_signup == 'blog' || $_post->get( 'signup_for' ) == 'user' && $active_signup == 'user' ) {
-			validate_user_signup();
-		} else {
-			_e( 'User registration has been disabled.' );
-		}
-	break;
-	case 'validate-blog-signup':
-		if ( $active_signup == 'all' || $active_signup == 'blog' ) {
-			validate_blog_signup();
-		} else {
-			_e( 'Site registration has been disabled.' );
-		}
+		case 'validate-user-signup' :
+			if ( $active_signup == 'all' || $_POST[ 'signup_for' ] == 'blog' && $active_signup == 'blog' || $_POST[ 'signup_for' ] == 'user' && $active_signup == 'user' )
+				validate_user_signup();
+			else
+				_e( 'User registration has been disabled.' );
 		break;
-	case 'gimmeanotherblog':
-		validate_another_blog_signup();
-		break;
-	case 'default':
-	default :
-		$user_email = $_post->get( 'user_email', '' );
-		/**
-		 * Fires when the site sign-up form is sent.
-		 *
-		 * @since 3.0.0
-		 */
-		do_action( 'preprocess_signup_form' );
-		if ( is_user_logged_in() && ( $active_signup == 'all' || $active_signup == 'blog' ) ) {
-			signup_another_blog($newblogname);
-		} elseif ( ! is_user_logged_in() && ( $active_signup == 'all' || $active_signup == 'user' ) ) {
-			signup_user( $newblogname, $user_email );
-		} elseif ( ! is_user_logged_in() && ( $active_signup == 'blog' ) ) {
-			_e( 'Sorry, new registrations are not allowed at this time.' );
-		} else {
-			_e( 'You are logged in already. No need to register again!' );
-		}
+		case 'validate-blog-signup':
+			if ( $active_signup == 'all' || $active_signup == 'blog' )
+				validate_blog_signup();
+			else
+				_e( 'Site registration has been disabled.' );
+			break;
+		case 'gimmeanotherblog':
+			validate_another_blog_signup();
+			break;
+		case 'default':
+		default :
+			$user_email = isset( $_POST[ 'user_email' ] ) ? $_POST[ 'user_email' ] : '';
+			/**
+			 * Fires when the site sign-up form is sent.
+			 *
+			 * @since 3.0.0
+			 */
+			do_action( 'preprocess_signup_form' );
+			if ( is_user_logged_in() && ( $active_signup == 'all' || $active_signup == 'blog' ) )
+				signup_another_blog($newblogname);
+			elseif ( ! is_user_logged_in() && ( $active_signup == 'all' || $active_signup == 'user' ) )
+				signup_user( $newblogname, $user_email );
+			elseif ( ! is_user_logged_in() && ( $active_signup == 'blog' ) )
+				_e( 'Sorry, new registrations are not allowed at this time.' );
+			else
+				_e( 'You are logged in already. No need to register again!' );
 
-		if ( null !== $newblogname ) {
-			$newblog = get_blogaddress_by_name( $newblogname );
+			if ( $newblogname ) {
+				$newblog = get_blogaddress_by_name( $newblogname );
 
-			if ( $active_signup == 'blog' || $active_signup == 'all' ) {
-				/* translators: %s: site address */
-				printf( '<p><em>' . __( 'The site you were looking for, %s, does not exist, but you can create it now!' ) . '</em></p>',
-					'<strong>' . $newblog . '</strong>'
-				);
-			} else {
-				/* translators: %s: site address */
-				printf( '<p><em>' . __( 'The site you were looking for, %s, does not exist.' ) . '</em></p>',
-					'<strong>' . $newblog . '</strong>'
-				);
+				if ( $active_signup == 'blog' || $active_signup == 'all' )
+					/* translators: %s: site address */
+					printf( '<p><em>' . __( 'The site you were looking for, %s, does not exist, but you can create it now!' ) . '</em></p>',
+						'<strong>' . $newblog . '</strong>'
+					);
+				else
+					/* translators: %s: site address */
+					printf( '<p><em>' . __( 'The site you were looking for, %s, does not exist.' ) . '</em></p>',
+						'<strong>' . $newblog . '</strong>'
+					);
 			}
-		}
-		break;
+			break;
 	}
 }
 ?>
