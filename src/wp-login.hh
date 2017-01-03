@@ -7,17 +7,20 @@
  *
  * @package WordPress
  */
+use WP\Error;
+use WP\User\User;
+use function WP\getApp;
 
 /** Make sure that the WordPress bootstrap has run before continuing. */
-require( dirname(__FILE__) . '/wp-load.php' );
+require( __DIR__ . '/wp-load.hh' );
 
 // Redirect to https login if forced to use SSL
 if ( force_ssl_admin() && ! is_ssl() ) {
-	if ( 0 === strpos($_SERVER['REQUEST_URI'], 'http') ) {
-		wp_redirect( set_url_scheme( $_SERVER['REQUEST_URI'], 'https' ) );
+	if ( 0 === strpos( $app['request.uri'], 'http') ) {
+		wp_redirect( set_url_scheme( $app['request.uri'], 'https' ) );
 		exit();
 	} else {
-		wp_redirect( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+		wp_redirect( 'https://' . $app['request.host'] . $app['request.uri'] );
 		exit();
 	}
 }
@@ -28,18 +31,21 @@ if ( force_ssl_admin() && ! is_ssl() ) {
  * @param string   $title    Optional. WordPress login Page title to display in the `<title>` element.
  *                           Default 'Log In'.
  * @param string   $message  Optional. Message to display in header. Default empty.
- * @param WP_Error $wp_error Optional. The error to pass. Default empty.
+ * @param Error $error Optional. The error to pass. Default empty.
  */
 function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
-	global $error, $interim_login, $action;
+	global $error;
+
+	$app = getApp();
 
 	// Don't index any of these forms
 	add_action( 'login_head', 'wp_no_robots' );
 
 	add_action( 'login_head', 'wp_login_viewport_meta' );
 
-	if ( empty($wp_error) )
-		$wp_error = new WP_Error();
+	if ( empty( $wp_error ) ) {
+		$wp_error = new Error();
+	}
 
 	// Shake it!
 	$shake_error_codes = array( 'empty_password', 'empty_email', 'invalid_email', 'invalidcombo', 'empty_username', 'invalid_username', 'incorrect_password' );
@@ -52,8 +58,9 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	 */
 	$shake_error_codes = apply_filters( 'shake_error_codes', $shake_error_codes );
 
-	if ( $shake_error_codes && $wp_error->get_error_code() && in_array( $wp_error->get_error_code(), $shake_error_codes ) )
+	if ( $shake_error_codes && $wp_error->get_error_code() && in_array( $wp_error->get_error_code(), $shake_error_codes ) ) {
 		add_action( 'login_head', 'wp_shake_js', 12 );
+	}
 
 	$separator = is_rtl() ? ' &rsaquo; ' : ' &lsaquo; ';
 
@@ -122,17 +129,21 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	 */
 	$login_header_title = apply_filters( 'login_headertitle', $login_header_title );
 
+	$action = $app->get( 'action' );
 	$classes = array( 'login-action-' . $action, 'wp-core-ui' );
-	if ( is_rtl() )
+	if ( is_rtl() ) {
 		$classes[] = 'rtl';
+	}
+	$interim_login = $app->get( 'interim_login' );
 	if ( $interim_login ) {
 		$classes[] = 'interim-login';
 		?>
 		<style type="text/css">html{background-color: transparent;}</style>
 		<?php
 
-		if ( 'success' ===  $interim_login )
+		if ( 'success' ===  $interim_login ) {
 			$classes[] = 'interim-login-success';
+		}
 	}
 	$classes[] =' locale-' . sanitize_html_class( strtolower( str_replace( '_', '-', get_locale() ) ) );
 
@@ -171,10 +182,11 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 	 * @param string $message Login message text.
 	 */
 	$message = apply_filters( 'login_message', $message );
-	if ( !empty( $message ) )
+	if ( !empty( $message ) ) {
 		echo $message . "\n";
+	}
 
-	// In case a plugin uses $error rather than the $wp_errors object
+	// In case a plugin uses $error rather than the $errors object
 	if ( !empty( $error ) ) {
 		$wp_error->add('error', $error);
 		unset($error);
@@ -186,10 +198,11 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
 		foreach ( $wp_error->get_error_codes() as $code ) {
 			$severity = $wp_error->get_error_data( $code );
 			foreach ( $wp_error->get_error_messages( $code ) as $error_message ) {
-				if ( 'message' == $severity )
+				if ( 'message' == $severity ) {
 					$messages .= '	' . $error_message . "<br />\n";
-				else
+				} else {
 					$errors .= '	' . $error_message . "<br />\n";
+				}
 			}
 		}
 		if ( ! empty( $errors ) ) {
@@ -221,7 +234,8 @@ function login_header( $title = 'Log In', $message = '', $wp_error = '' ) {
  * @param string $input_id Which input to auto-focus
  */
 function login_footer($input_id = '') {
-	global $interim_login;
+	$app = getApp();
+	$interim_login = $app->get( 'interim_login' );
 
 	// Don't allow interim logins to navigate away from the page.
 	if ( ! $interim_login ): ?>
@@ -280,19 +294,23 @@ function wp_login_viewport_meta() {
 /**
  * Handles sending password retrieval email to user.
  *
- * @return bool|WP_Error True: when finish. WP_Error on error
+ * @return bool| Error True: when finish. Error on error
  */
 function retrieve_password() {
-	$errors = new WP_Error();
+	$app = getApp();
+	$_post = $app['request']->request;
+	$_cookie = $app['request']->cookies;
+	$errors = new Error();
 
-	if ( empty( $_POST['user_login'] ) ) {
+	if ( empty( $_post->get( 'user_login' ) ) ) {
 		$errors->add('empty_username', __('<strong>ERROR</strong>: Enter a username or email address.'));
-	} elseif ( strpos( $_POST['user_login'], '@' ) ) {
-		$user_data = get_user_by( 'email', trim( wp_unslash( $_POST['user_login'] ) ) );
-		if ( empty( $user_data ) )
+	} elseif ( strpos( $_post->get( 'user_login' ), '@' ) ) {
+		$user_data = get_user_by( 'email', trim( wp_unslash( $_post->get( 'user_login' ) ) ) );
+		if ( empty( $user_data ) ) {
 			$errors->add('invalid_email', __('<strong>ERROR</strong>: There is no user registered with that email address.'));
+		}
 	} else {
-		$login = trim($_POST['user_login']);
+		$login = trim( $_post->get( 'user_login' ) );
 		$user_data = get_user_by('login', $login);
 	}
 
@@ -302,13 +320,14 @@ function retrieve_password() {
 	 * @since 2.1.0
 	 * @since 4.4.0 Added the `$errors` parameter.
 	 *
-	 * @param WP_Error $errors A WP_Error object containing any errors generated
+	 * @param Error $errors A Error object containing any errors generated
 	 *                         by using invalid credentials.
 	 */
 	do_action( 'lostpassword_post', $errors );
 
-	if ( $errors->get_error_code() )
+	if ( $errors->get_error_code() ) {
 		return $errors;
+	}
 
 	if ( !$user_data ) {
 		$errors->add('invalidcombo', __('<strong>ERROR</strong>: Invalid username or email.'));
@@ -320,7 +339,7 @@ function retrieve_password() {
 	$user_email = $user_data->user_email;
 	$key = get_password_reset_key( $user_data );
 
-	if ( is_wp_error( $key ) ) {
+	if ( is_error( $key ) ) {
 		return $key;
 	}
 
@@ -329,7 +348,8 @@ function retrieve_password() {
 	$message .= sprintf(__('Username: %s'), $user_login) . "\r\n\r\n";
 	$message .= __('If this was a mistake, just ignore this email and nothing will happen.') . "\r\n\r\n";
 	$message .= __('To reset your password, visit the following address:') . "\r\n\r\n";
-	$message .= '<' . network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login') . ">\r\n";
+	$url = 'wp-login.php?action=rp&key=' . $key . '&login=' . rawurlencode( $user_login );
+	$message .= '<' . network_site_url( $url, 'login' ) . ">\r\n";
 
 	if ( is_multisite() ) {
 		$blogname = get_network()->site_name;
@@ -352,7 +372,7 @@ function retrieve_password() {
 	 *
 	 * @param string  $title      Default email title.
 	 * @param string  $user_login The username for the user.
-	 * @param WP_User $user_data  WP_User object.
+	 * @param User    $user_data  User object.
 	 */
 	$title = apply_filters( 'retrieve_password_title', $title, $user_login, $user_data );
 
@@ -365,12 +385,13 @@ function retrieve_password() {
 	 * @param string  $message    Default mail message.
 	 * @param string  $key        The activation key.
 	 * @param string  $user_login The username for the user.
-	 * @param WP_User $user_data  WP_User object.
+	 * @param User    $user_data  User object.
 	 */
 	$message = apply_filters( 'retrieve_password_message', $message, $key, $user_login, $user_data );
 
-	if ( $message && !wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) )
+	if ( $message && !wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
 		wp_die( __('The email could not be sent.') . "<br />\n" . __('Possible reason: your host may have disabled the mail() function.') );
+	}
 
 	return true;
 }
@@ -379,34 +400,39 @@ function retrieve_password() {
 // Main
 //
 
-$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
-$errors = new WP_Error();
+$action = $_request->get( 'action', 'login' );
+$errors = new Error();
 
-if ( isset($_GET['key']) )
+if ( $_get->get( 'key' ) ) {
 	$action = 'resetpass';
-
+}
 // validate action so as to default to the login screen
-if ( !in_array( $action, array( 'postpass', 'logout', 'lostpassword', 'retrievepassword', 'resetpass', 'rp', 'register', 'login' ), true ) && false === has_filter( 'login_form_' . $action ) )
+if ( ! in_array( $action, [ 'postpass', 'logout', 'lostpassword', 'retrievepassword', 'resetpass', 'rp', 'register', 'login' ], true ) && false === has_filter( 'login_form_' . $action ) ) {
 	$action = 'login';
-
+}
+$app->set( 'action', $action );
 nocache_headers();
 
 header('Content-Type: '.get_bloginfo('html_type').'; charset='.get_bloginfo('charset'));
 
-if ( defined( 'RELOCATE' ) && RELOCATE ) { // Move flag is set
-	if ( isset( $_SERVER['PATH_INFO'] ) && ($_SERVER['PATH_INFO'] != $_SERVER['PHP_SELF']) )
-		$_SERVER['PHP_SELF'] = str_replace( $_SERVER['PATH_INFO'], '', $_SERVER['PHP_SELF'] );
+// Move flag is set
+if ( defined( 'RELOCATE' ) && RELOCATE ) {
+	if ( $app['request.path_info'] && ( $app['request.path_info'] !== $app['request.php_self'] ) ) {
+		$app['request.php_self'] = str_replace( $app['request.path_info'], '', $app['request.php_self'] );
+	}
 
-	$url = dirname( set_url_scheme( 'http://' .  $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] ) );
-	if ( $url != get_option( 'siteurl' ) )
+	$url = dirname( set_url_scheme( 'http://' .  $app['request.host'] . $app['request.php_self'] ) );
+	if ( $url != get_option( 'siteurl' ) ) {
 		update_option( 'siteurl', $url );
+	}
 }
 
 //Set a cookie now to see if they are supported by the browser.
 $secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
 setcookie( TEST_COOKIE, 'WP Cookie check', 0, COOKIEPATH, COOKIE_DOMAIN, $secure );
-if ( SITECOOKIEPATH != COOKIEPATH )
+if ( SITECOOKIEPATH != COOKIEPATH ) {
 	setcookie( TEST_COOKIE, 'WP Cookie check', 0, SITECOOKIEPATH, COOKIE_DOMAIN, $secure );
+}
 
 /**
  * Fires when the login form is initialized.
@@ -423,15 +449,15 @@ do_action( 'login_init' );
  *
  * @since 2.8.0
  */
-do_action( "login_form_{$action}" );
+do_action( 'login_form_' . $action );
 
-$http_post = ('POST' == $_SERVER['REQUEST_METHOD']);
-$interim_login = isset($_REQUEST['interim-login']);
+$http_post = ( 'POST' === $app['request.method'] );
+$app->set( 'interim_login', $_request->has( 'interim-login' ) );
 
 switch ($action) {
 
 case 'postpass' :
-	if ( ! array_key_exists( 'post_password', $_POST ) ) {
+	if ( ! array_key_exists( 'post_password', $_post->all() ) ) {
 		wp_safe_redirect( wp_get_referer() );
 		exit();
 	}
@@ -455,7 +481,7 @@ case 'postpass' :
 	} else {
 		$secure = false;
 	}
-	setcookie( 'wp-postpass_' . COOKIEHASH, $hasher->HashPassword( wp_unslash( $_POST['post_password'] ) ), $expire, COOKIEPATH, COOKIE_DOMAIN, $secure );
+	setcookie( 'wp-postpass_' . COOKIEHASH, $hasher->HashPassword( wp_unslash( $_post->get( 'post_password' ) ) ), $expire, COOKIEPATH, COOKIE_DOMAIN, $secure );
 
 	wp_safe_redirect( wp_get_referer() );
 	exit();
@@ -467,8 +493,8 @@ case 'logout' :
 
 	wp_logout();
 
-	if ( ! empty( $_REQUEST['redirect_to'] ) ) {
-		$redirect_to = $requested_redirect_to = $_REQUEST['redirect_to'];
+	if ( $_request->get( 'redirect_to' ) ) {
+		$redirect_to = $requested_redirect_to = $_request->get( 'redirect_to' );
 	} else {
 		$redirect_to = 'wp-login.php?loggedout=true';
 		$requested_redirect_to = '';
@@ -481,7 +507,7 @@ case 'logout' :
 	 *
 	 * @param string  $redirect_to           The redirect destination URL.
 	 * @param string  $requested_redirect_to The requested redirect destination URL passed as a parameter.
-	 * @param WP_User $user                  The WP_User object for the user that's logging out.
+	 * @param User    $user                  The User object for the user that's logging out.
 	 */
 	$redirect_to = apply_filters( 'logout_redirect', $redirect_to, $requested_redirect_to, $user );
 	wp_safe_redirect( $redirect_to );
@@ -492,22 +518,22 @@ case 'retrievepassword' :
 
 	if ( $http_post ) {
 		$errors = retrieve_password();
-		if ( !is_wp_error($errors) ) {
-			$redirect_to = !empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : 'wp-login.php?checkemail=confirm';
+		if ( !is_error($errors) ) {
+			$redirect_to = $_request->get( 'redirect_to', 'wp-login.php?checkemail=confirm' );
 			wp_safe_redirect( $redirect_to );
 			exit();
 		}
 	}
 
-	if ( isset( $_GET['error'] ) ) {
-		if ( 'invalidkey' == $_GET['error'] ) {
+	if ( $_get->get( 'error' ) ) {
+		if ( 'invalidkey' == $_get->get( 'error' ) ) {
 			$errors->add( 'invalidkey', __( 'Your password reset link appears to be invalid. Please request a new link below.' ) );
-		} elseif ( 'expiredkey' == $_GET['error'] ) {
+		} elseif ( 'expiredkey' == $_get->get( 'error' ) ) {
 			$errors->add( 'expiredkey', __( 'Your password reset link has expired. Please request a new link below.' ) );
 		}
 	}
 
-	$lostpassword_redirect = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+	$lostpassword_redirect = $_request->get( 'redirect_to', '' );
 	/**
 	 * Filters the URL redirected to after submitting the lostpassword/retrievepassword form.
 	 *
@@ -526,7 +552,7 @@ case 'retrievepassword' :
 
 	login_header(__('Lost Password'), '<p class="message">' . __('Please enter your username or email address. You will receive a link to create a new password via email.') . '</p>', $errors);
 
-	$user_login = isset($_POST['user_login']) ? wp_unslash($_POST['user_login']) : '';
+	$user_login = wp_unslash( $_post->get( 'user_login', '' ) );
 
 ?>
 
@@ -564,38 +590,40 @@ break;
 
 case 'resetpass' :
 case 'rp' :
-	list( $rp_path ) = explode( '?', wp_unslash( $_SERVER['REQUEST_URI'] ) );
+	list( $rp_path ) = explode( '?', wp_unslash( $app['request.uri'] ) );
 	$rp_cookie = 'wp-resetpass-' . COOKIEHASH;
-	if ( isset( $_GET['key'] ) ) {
-		$value = sprintf( '%s:%s', wp_unslash( $_GET['login'] ), wp_unslash( $_GET['key'] ) );
+	if ( $_get->get( 'key' ) ) {
+		$value = sprintf( '%s:%s', wp_unslash( $_get->get( 'login' ) ), wp_unslash( $_get->get( 'key' ) ) );
 		setcookie( $rp_cookie, $value, 0, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
 		wp_safe_redirect( remove_query_arg( array( 'key', 'login' ) ) );
 		exit;
 	}
 
-	if ( isset( $_COOKIE[ $rp_cookie ] ) && 0 < strpos( $_COOKIE[ $rp_cookie ], ':' ) ) {
-		list( $rp_login, $rp_key ) = explode( ':', wp_unslash( $_COOKIE[ $rp_cookie ] ), 2 );
+	if ( $_cookie->get( $rp_cookie ) && 0 < strpos( $_cookie->get( $rp_cookie ), ':' ) ) {
+		list( $rp_login, $rp_key ) = explode( ':', wp_unslash( $_cookie->get( $rp_cookie ) ), 2 );
 		$user = check_password_reset_key( $rp_key, $rp_login );
-		if ( isset( $_POST['pass1'] ) && ! hash_equals( $rp_key, $_POST['rp_key'] ) ) {
+		if ( $_post->get( 'pass1' ) && ! hash_equals( $rp_key, $_post->get( 'rp_key' ) ) ) {
 			$user = false;
 		}
 	} else {
 		$user = false;
 	}
 
-	if ( ! $user || is_wp_error( $user ) ) {
+	if ( ! $user || is_error( $user ) ) {
 		setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
-		if ( $user && $user->get_error_code() === 'expired_key' )
+		if ( $user && $user->get_error_code() === 'expired_key' ) {
 			wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=expiredkey' ) );
-		else
+		} else {
 			wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=invalidkey' ) );
+		}
 		exit;
 	}
 
-	$errors = new WP_Error();
+	$errors = new Error();
 
-	if ( isset($_POST['pass1']) && $_POST['pass1'] != $_POST['pass2'] )
+	if ( $_post->get( 'pass1' ) && $_post->get( 'pass1' ) != $_post->get( 'pass2' ) ) {
 		$errors->add( 'password_reset_mismatch', __( 'The passwords do not match.' ) );
+	}
 
 	/**
 	 * Fires before the password reset procedure is validated.
@@ -603,12 +631,12 @@ case 'rp' :
 	 * @since 3.5.0
 	 *
 	 * @param object           $errors WP Error object.
-	 * @param WP_User|WP_Error $user   WP_User object if the login and reset key match. WP_Error object otherwise.
+	 * @param User| Error    $user   User object if the login and reset key match. Error object otherwise.
 	 */
 	do_action( 'validate_password_reset', $errors, $user );
 
-	if ( ( ! $errors->get_error_code() ) && isset( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
-		reset_password($user, $_POST['pass1']);
+	if ( ( ! $errors->get_error_code() ) && $_post->get( 'pass1' ) && !empty( $_post->get( 'pass1' ) ) ) {
+		reset_password($user, $_post->get( 'pass1' ) );
 		setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
 		login_header( __( 'Password Reset' ), '<p class="message reset-pass">' . __( 'Your password has been reset.' ) . ' <a href="' . esc_url( wp_login_url() ) . '">' . __( 'Log in' ) . '</a></p>' );
 		login_footer();
@@ -651,7 +679,7 @@ case 'rp' :
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param WP_User $user User object of the user whose password is being reset.
+	 * @param User $user User object of the user whose password is being reset.
 	 */
 	do_action( 'resetpass_form', $user );
 	?>
@@ -696,17 +724,17 @@ case 'register' :
 	$user_login = '';
 	$user_email = '';
 	if ( $http_post ) {
-		$user_login = isset( $_POST['user_login'] ) ? $_POST['user_login'] : '';
-		$user_email = isset( $_POST['user_email'] ) ? wp_unslash( $_POST['user_email'] ) : '';
+		$user_login = $_post->get( 'user_login', '' );
+		$user_email = wp_unslash( $_post->get( 'user_email', '' ) );
 		$errors = register_new_user($user_login, $user_email);
-		if ( !is_wp_error($errors) ) {
-			$redirect_to = !empty( $_POST['redirect_to'] ) ? $_POST['redirect_to'] : 'wp-login.php?checkemail=registered';
+		if ( !is_error($errors) ) {
+			$redirect_to = $_post->get( 'redirect_to', 'wp-login.php?checkemail=registered' );
 			wp_safe_redirect( $redirect_to );
 			exit();
 		}
 	}
 
-	$registration_redirect = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+	$registration_redirect = $_request->get( 'redirect_to', '' );
 	/**
 	 * Filters the registration redirect URL.
 	 *
@@ -752,13 +780,14 @@ break;
 case 'login' :
 default:
 	$secure_cookie = '';
-	$customize_login = isset( $_REQUEST['customize-login'] );
-	if ( $customize_login )
-		wp_enqueue_script( 'customize-base' );
+	$customize_login = $_request->has( 'customize-login' );
+	if ( $customize_login ) {
+			wp_enqueue_script( 'customize-base' );
+	}
 
 	// If the user wants ssl but the session is not ssl, force a secure cookie.
-	if ( !empty($_POST['log']) && !force_ssl_admin() ) {
-		$user_name = sanitize_user($_POST['log']);
+	if ( $_post->get( 'log' ) && !force_ssl_admin() ) {
+		$user_name = sanitize_user( $_post->get( 'log' ) );
 		$user = get_user_by( 'login', $user_name );
 
 		if ( ! $user && strpos( $user_name, '@' ) ) {
@@ -773,25 +802,26 @@ default:
 		}
 	}
 
-	if ( isset( $_REQUEST['redirect_to'] ) ) {
-		$redirect_to = $_REQUEST['redirect_to'];
+	if ( $_request->get( 'redirect_to' ) ) {
+		$redirect_to = $_request->get( 'redirect_to' );
 		// Redirect to https if user wants ssl
-		if ( $secure_cookie && false !== strpos($redirect_to, 'wp-admin') )
+		if ( $secure_cookie && false !== strpos($redirect_to, 'wp-admin') ) {
 			$redirect_to = preg_replace('|^http://|', 'https://', $redirect_to);
+		}
 	} else {
 		$redirect_to = admin_url();
 	}
 
-	$reauth = empty($_REQUEST['reauth']) ? false : true;
+	$reauth = $_request->get( 'reauth' );
 
-	$user = wp_signon( array(), $secure_cookie );
+	$user = wp_signon( [], $secure_cookie );
 
-	if ( empty( $_COOKIE[ LOGGED_IN_COOKIE ] ) ) {
+	if ( empty( $_cookie->get(  LOGGED_IN_COOKIE ) ) ) {
 		if ( headers_sent() ) {
 			/* translators: 1: Browser cookie documentation URL, 2: Support forums URL */
 			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked due to unexpected output. For help, please see <a href="%1$s">this documentation</a> or try the <a href="%2$s">support forums</a>.' ),
 				__( 'https://codex.wordpress.org/Cookies' ), __( 'https://wordpress.org/support/' ) ) );
-		} elseif ( isset( $_POST['testcookie'] ) && empty( $_COOKIE[ TEST_COOKIE ] ) ) {
+		} elseif ( $_post->get( 'testcookie' ) && empty( $_cookie->get(  TEST_COOKIE ) ) ) {
 			// If cookies are disabled we can't log in even with a valid user+pass
 			/* translators: 1: Browser cookie documentation URL */
 			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked or not supported by your browser. You must <a href="%s">enable cookies</a> to use WordPress.' ),
@@ -799,7 +829,7 @@ default:
 		}
 	}
 
-	$requested_redirect_to = isset( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+	$requested_redirect_to = $_request->get( 'redirect_to', '' );
 	/**
 	 * Filters the login redirect URL.
 	 *
@@ -807,14 +837,14 @@ default:
 	 *
 	 * @param string           $redirect_to           The redirect destination URL.
 	 * @param string           $requested_redirect_to The requested redirect destination URL passed as a parameter.
-	 * @param WP_User|WP_Error $user                  WP_User object if login was successful, WP_Error object otherwise.
+	 * @param User| Error    $user                  User object if login was successful, Error object otherwise.
 	 */
 	$redirect_to = apply_filters( 'login_redirect', $redirect_to, $requested_redirect_to, $user );
 
 	if ( !is_wp_error($user) && !$reauth ) {
-		if ( $interim_login ) {
+		if ( $app->get( 'interim_login' ) ) {
 			$message = '<p class="message">' . __('You have logged in successfully.') . '</p>';
-			$interim_login = 'success';
+			$app->set( 'interim_login', 'success' );
 			login_header( '', $message ); ?>
 			</div>
 			<?php
@@ -829,12 +859,13 @@ default:
 
 		if ( ( empty( $redirect_to ) || $redirect_to == 'wp-admin/' || $redirect_to == admin_url() ) ) {
 			// If the user doesn't belong to a blog, send them to user admin. If the user can't edit posts, send them to their profile.
-			if ( is_multisite() && !get_active_blog_for_user($user->ID) && !is_super_admin( $user->ID ) )
+			if ( is_multisite() && !get_active_blog_for_user($user->ID) && !is_super_admin( $user->ID ) ) {
 				$redirect_to = user_admin_url();
-			elseif ( is_multisite() && !$user->has_cap('read') )
+			} elseif ( is_multisite() && !$user->has_cap('read') ) {
 				$redirect_to = get_dashboard_url( $user->ID );
-			elseif ( !$user->has_cap('edit_posts') )
+			} elseif ( !$user->has_cap('edit_posts') ) {
 				$redirect_to = $user->has_cap( 'read' ) ? admin_url( 'profile.php' ) : home_url();
+			}
 
 			wp_redirect( $redirect_to );
 			exit();
@@ -845,26 +876,29 @@ default:
 
 	$errors = $user;
 	// Clear errors if loggedout is set.
-	if ( !empty($_GET['loggedout']) || $reauth )
-		$errors = new WP_Error();
+	if ( $_get->get( 'loggedout' ) || $reauth ) {
+		$errors = new Error();
+	}
 
-	if ( $interim_login ) {
-		if ( ! $errors->get_error_code() )
+	if ( $app->get( 'interim_login' ) ) {
+		if ( ! $errors->get_error_code() ) {
 			$errors->add( 'expired', __( 'Your session has expired. Please log in to continue where you left off.' ), 'message' );
+		}
 	} else {
 		// Some parts of this script use the main login form to display a message
-		if		( isset($_GET['loggedout']) && true == $_GET['loggedout'] )
+		if ( true == $_get->get( 'loggedout' ) ) {
 			$errors->add('loggedout', __('You are now logged out.'), 'message');
-		elseif	( isset($_GET['registration']) && 'disabled' == $_GET['registration'] )
+		} elseif ( 'disabled' == $_get->get( 'registration' ) ) {
 			$errors->add('registerdisabled', __('User registration is currently not allowed.'));
-		elseif	( isset($_GET['checkemail']) && 'confirm' == $_GET['checkemail'] )
+		} elseif ( 'confirm' == $_get->get( 'checkemail' ) ) {
 			$errors->add('confirm', __('Check your email for the confirmation link.'), 'message');
-		elseif	( isset($_GET['checkemail']) && 'newpass' == $_GET['checkemail'] )
+		} elseif ( 'newpass' == $_get->get( 'checkemail' ) ) {
 			$errors->add('newpass', __('Check your email for your new password.'), 'message');
-		elseif	( isset($_GET['checkemail']) && 'registered' == $_GET['checkemail'] )
+		} elseif ( 'registered' == $_get->get( 'checkemail' ) ) {
 			$errors->add('registered', __('Registration complete. Please check your email.'), 'message');
-		elseif ( strpos( $redirect_to, 'about.php?updated' ) )
+		} elseif ( strpos( $redirect_to, 'about.php?updated' ) ) {
 			$errors->add('updated', __( '<strong>You have successfully updated WordPress!</strong> Please log back in to see what&#8217;s new.' ), 'message' );
+		}
 	}
 
 	/**
@@ -878,14 +912,16 @@ default:
 	$errors = apply_filters( 'wp_login_errors', $errors, $redirect_to );
 
 	// Clear any stale cookies.
-	if ( $reauth )
+	if ( $reauth ) {
 		wp_clear_auth_cookie();
+	}
 
 	login_header(__('Log In'), '', $errors);
 
-	if ( isset($_POST['log']) )
-		$user_login = ( 'incorrect_password' == $errors->get_error_code() || 'empty_password' == $errors->get_error_code() ) ? esc_attr(wp_unslash($_POST['log'])) : '';
-	$rememberme = ! empty( $_POST['rememberme'] );
+	if ( $_post->get( 'log' ) ) {
+		$user_login = ( 'incorrect_password' == $errors->get_error_code() || 'empty_password' == $errors->get_error_code() ) ? esc_attr( wp_unslash( $_post->get( 'log' ) ) ) : '';
+	}
+	$rememberme = ! empty( $_post->get( 'rememberme' ) );
 
 	if ( ! empty( $errors->errors ) ) {
 		$aria_describedby_error = ' aria-describedby="login_error"';
@@ -914,7 +950,7 @@ default:
 	<p class="forgetmenot"><label for="rememberme"><input name="rememberme" type="checkbox" id="rememberme" value="forever" <?php checked( $rememberme ); ?> /> <?php esc_html_e( 'Remember Me' ); ?></label></p>
 	<p class="submit">
 		<input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e('Log In'); ?>" />
-<?php	if ( $interim_login ) { ?>
+<?php	if ( $app->get( 'interim_login' ) ) { ?>
 		<input type="hidden" name="interim-login" value="1" />
 <?php	} else { ?>
 		<input type="hidden" name="redirect_to" value="<?php echo esc_attr($redirect_to); ?>" />
@@ -926,9 +962,9 @@ default:
 	</p>
 </form>
 
-<?php if ( ! $interim_login ) { ?>
+<?php if ( ! $app->get( 'interim_login' ) ) { ?>
 <p id="nav">
-<?php if ( ! isset( $_GET['checkemail'] ) || ! in_array( $_GET['checkemail'], array( 'confirm', 'newpass' ) ) ) :
+<?php if ( ! $_get->get( 'checkemail' ) || ! in_array( $_get->get( 'checkemail' ), array( 'confirm', 'newpass' ) ) ) :
 	if ( get_option( 'users_can_register' ) ) :
 		$registration_url = sprintf( '<a href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
 
@@ -965,7 +1001,7 @@ d.select();
 wp_attempt_focus();
 <?php } ?>
 if(typeof wpOnload=='function')wpOnload();
-<?php if ( $interim_login ) { ?>
+<?php if ( $app->get( 'interim_login' ) ) { ?>
 (function(){
 try {
 	var i, links = document.getElementsByTagName('a');

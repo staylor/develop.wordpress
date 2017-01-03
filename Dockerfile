@@ -40,7 +40,7 @@ RUN sed -i 's/user www www/user nginx nginx/g' /etc/nginx/nginx.conf
 
 # Add the WordPress site's Nginx configuration file.
 ADD nginx/site.conf /etc/nginx/sites-available/site.conf
-RUN ln -s /etc/nginx/sites-available/site.conf /etc/nginx/sites-enabled/site.conf
+ADD nginx/site.conf /etc/nginx/sites-enabled/site.conf
 
 # Expose the application source directory inside the container.
 ADD src/ /usr/src/app/

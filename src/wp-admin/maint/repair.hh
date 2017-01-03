@@ -5,9 +5,14 @@
  * @package WordPress
  * @subpackage Database
  */
-define('WP_REPAIRING', true);
+use function WP\getApp;
 
-require_once( dirname( dirname( dirname( __FILE__ ) ) ) . '/wp-load.php' );
+define( 'WP_REPAIRING', true );
+
+require_once( dirname( dirname( __DIR__ ) ) . '/wp-load.hh' );
+
+$app = getApp();
+$wpdb = $app['db'];
 
 header( 'Content-Type: text/html; charset=utf-8' );
 ?>
@@ -37,11 +42,11 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 		__( 'To allow use of this page to automatically repair database problems, please add the following line to your %s file. Once this line is added to your config, reload this page.' ),
 		'<code>wp-config.php</code>'
 	);
-	echo "</p><p><code>define('WP_ALLOW_REPAIR', true);</code></p>";
+	echo "</p><p><code>define( 'WP_ALLOW_REPAIR', true );</code></p>";
 
 	$default_key     = 'put your unique phrase here';
 	$missing_key     = false;
-	$duplicated_keys = array();
+	$duplicated_keys = [];
 
 	foreach ( array( 'AUTH_KEY', 'SECURE_AUTH_KEY', 'LOGGED_IN_KEY', 'NONCE_KEY', 'AUTH_SALT', 'SECURE_AUTH_SALT', 'LOGGED_IN_SALT', 'NONCE_SALT' ) as $key ) {
 		if ( defined( $key ) ) {
@@ -69,13 +74,13 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 		echo '<p>' . sprintf( __( 'While you are editing your %1$s file, take a moment to make sure you have all 8 keys and that they are unique. You can generate these using the <a href="%2$s">WordPress.org secret key service</a>.' ), '<code>wp-config.php</code>', 'https://api.wordpress.org/secret-key/1.1/salt/' ) . '</p>';
 	}
 
-} elseif ( isset( $_GET['repair'] ) ) {
+} elseif ( $_get->get( 'repair' ) ) {
 
 	echo '<h1 class="screen-reader-text">' . __( 'Database repair results' ) . '</h1>';
 
-	$optimize = 2 == $_GET['repair'];
+	$optimize = 2 == $_get->get( 'repair' );
 	$okay = true;
-	$problems = array();
+	$problems = [];
 
 	$tables = $wpdb->tables();
 
@@ -92,7 +97,7 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 	 *
 	 * @param array $tables Array of prefixed table names to be repaired.
 	 */
-	$tables = array_merge( $tables, (array) apply_filters( 'tables_to_repair', array() ) );
+	$tables = array_merge( $tables, (array) apply_filters( 'tables_to_repair', [] ) );
 
 	// Loop over the tables, checking and repairing as needed.
 	foreach ( $tables as $table ) {
@@ -144,23 +149,25 @@ if ( ! defined( 'WP_ALLOW_REPAIR' ) ) {
 	}
 
 	if ( $problems ) {
-		printf( '<p>' . __('Some database problems could not be repaired. Please copy-and-paste the following list of errors to the <a href="%s">WordPress support forums</a> to get additional assistance.') . '</p>', __( 'https://wordpress.org/support/forum/how-to-and-troubleshooting' ) );
+		printf( '<p>' . __( 'Some database problems could not be repaired. Please copy-and-paste the following list of errors to the <a href="%s">WordPress support forums</a> to get additional assistance.' ) . '</p>', __( 'https://wordpress.org/support/forum/how-to-and-troubleshooting' ) );
 		$problem_output = '';
-		foreach ( $problems as $table => $problem )
+		foreach ( $problems as $table => $problem ) {
 			$problem_output .= "$table: $problem\n";
+		}
 		echo '<p><textarea name="errors" id="errors" rows="20" cols="60">' . esc_textarea( $problem_output ) . '</textarea></p>';
 	} else {
-		echo '<p>' . __( 'Repairs complete. Please remove the following line from wp-config.php to prevent this page from being used by unauthorized users.' ) . "</p><p><code>define('WP_ALLOW_REPAIR', true);</code></p>";
+		echo '<p>' . __( 'Repairs complete. Please remove the following line from wp-config.php to prevent this page from being used by unauthorized users.' ) . "</p><p><code>define( 'WP_ALLOW_REPAIR', true );</code></p>";
 	}
 } else {
 
 	echo '<h1 class="screen-reader-text">' . __( 'WordPress database repair' ) . '</h1>';
 
-	if ( isset( $_GET['referrer'] ) && 'is_blog_installed' == $_GET['referrer'] )
+	if ( 'is_blog_installed' == $_get->get( 'referrer' ) ) {
 		echo '<p>' . __( 'One or more database tables are unavailable. To allow WordPress to attempt to repair these tables, press the &#8220;Repair Database&#8221; button. Repairing can take a while, so please be patient.' ) . '</p>';
-	else
+	} else {
 		echo '<p>' . __( 'WordPress can automatically look for some common database problems and repair them. Repairing can take a while, so please be patient.' ) . '</p>';
-?>
+	}
+	?>
 	<p class="step"><a class="button button-large" href="repair.php?repair=1"><?php _e( 'Repair Database' ); ?></a></p>
 	<p><?php _e( 'WordPress can also attempt to optimize the database. This improves performance in some situations. Repairing and optimizing the database can take a long time and the database will be locked while optimizing.' ); ?></p>
 	<p class="step"><a class="button button-large" href="repair.php?repair=2"><?php _e( 'Repair and Optimize Database' ); ?></a></p>

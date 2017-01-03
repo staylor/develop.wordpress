@@ -9,15 +9,17 @@
  * @subpackage Administration
  */
 
+use function WP\getApp;
+
 /**
  * We are installing.
  */
-define('WP_INSTALLING', true);
+const WP_INSTALLING = true;
 
 /**
  * We are blissfully unaware of anything.
  */
-define('WP_SETUP_CONFIG', true);
+const WP_SETUP_CONFIG = true;
 
 /**
  * Disable error reporting
@@ -27,10 +29,10 @@ define('WP_SETUP_CONFIG', true);
 error_reporting(0);
 
 if ( ! defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', dirname( dirname( __FILE__ ) ) . '/' );
+	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
 
-require( ABSPATH . 'wp-settings.php' );
+require( ABSPATH . 'wp-settings.hh' );
 
 /** Load WordPress Administration Upgrade API */
 require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -41,24 +43,26 @@ require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 nocache_headers();
 
 // Support wp-config-sample.php one level up, for the develop repo.
-if ( file_exists( ABSPATH . 'wp-config-sample.php' ) )
+if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
 	$config_file = file( ABSPATH . 'wp-config-sample.php' );
-elseif ( file_exists( dirname( ABSPATH ) . '/wp-config-sample.php' ) )
+} elseif ( file_exists( dirname( ABSPATH ) . '/wp-config-sample.php' ) ) {
 	$config_file = file( dirname( ABSPATH ) . '/wp-config-sample.php' );
-else
+} else {
 	wp_die( __( 'Sorry, I need a wp-config-sample.php file to work from. Please re-upload this file to your WordPress installation.' ) );
+}
 
 // Check if wp-config.php has been created
-if ( file_exists( ABSPATH . 'wp-config.php' ) )
+if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
 	wp_die( '<p>' . sprintf(
 			/* translators: %s: install.php */
 			__( "The file 'wp-config.php' already exists. If you need to reset any of the configuration items in this file, please delete it first. You may try <a href='%s'>installing now</a>." ),
 			'install.php'
 		) . '</p>'
 	);
+}
 
 // Check if wp-config.php exists above the root directory but is not part of another install
-if ( @file_exists( ABSPATH . '../wp-config.php' ) && ! @file_exists( ABSPATH . '../wp-settings.php' ) ) {
+if ( @file_exists( ABSPATH . '../wp-config.php' ) && ! @file_exists( ABSPATH . '../wp-settings.hh' ) ) {
 	wp_die( '<p>' . sprintf(
 			/* translators: %s: install.php */
 			__( "The file 'wp-config.php' already exists one level above your WordPress installation. If you need to reset any of the configuration items in this file, please delete it first. You may try <a href='%s'>installing now</a>." ),
@@ -67,7 +71,7 @@ if ( @file_exists( ABSPATH . '../wp-config.php' ) && ! @file_exists( ABSPATH . '
 	);
 }
 
-$step = isset( $_GET['step'] ) ? (int) $_GET['step'] : -1;
+$step = $_get->getInt( 'step', -1 );;
 
 /**
  * Display setup wp-config.php file header.
@@ -75,12 +79,9 @@ $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : -1;
  * @ignore
  * @since 2.3.0
  *
- * @global string    $wp_local_package
- * @global WP_Locale $wp_locale
- *
  * @param string|array $body_classes
  */
-function setup_config_display_header( $body_classes = array() ) {
+function setup_config_display_header( $body_classes = [] ) {
 	$body_classes = (array) $body_classes;
 	$body_classes[] = 'wp-core-ui';
 	if ( is_rtl() ) {
@@ -90,7 +91,10 @@ function setup_config_display_header( $body_classes = array() ) {
 	header( 'Content-Type: text/html; charset=utf-8' );
 ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) echo ' dir="rtl"'; ?>>
+<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) {
+	echo ' dir="rtl"';
+}
+?>>
 <head>
 	<meta name="viewport" content="width=device-width" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -104,42 +108,43 @@ function setup_config_display_header( $body_classes = array() ) {
 } // end function setup_config_display_header();
 
 $language = '';
-if ( ! empty( $_REQUEST['language'] ) ) {
-	$language = preg_replace( '/[^a-zA-Z_]/', '', $_REQUEST['language'] );
-} elseif ( isset( $GLOBALS['wp_local_package'] ) ) {
-	$language = $GLOBALS['wp_local_package'];
+if ( ! empty( $_request->get( 'language' ) ) ) {
+	$language = preg_replace( '/[^a-zA-Z_]/', '', $_request->get( 'language' ) );
+} elseif ( isset( $app['wp_local_package'] ) ) {
+	$language = $app['wp_local_package'];
 }
 
-switch($step) {
-	case -1:
-		if ( wp_can_install_language_pack() && empty( $language ) && ( $languages = wp_get_available_translations() ) ) {
-			setup_config_display_header( 'language-chooser' );
-			echo '<h1 class="screen-reader-text">Select a default language</h1>';
-			echo '<form id="setup" method="post" action="?step=0">';
-			wp_install_language_form( $languages );
-			echo '</form>';
-			break;
-		}
+switch( $step) {
+case -1:
+	if ( wp_can_install_language_pack() && empty( $language ) && ( $languages = wp_get_available_translations() ) ) {
+		setup_config_display_header( 'language-chooser' );
+		echo '<h1 class="screen-reader-text">Select a default language</h1>';
+		echo '<form id="setup" method="post" action="?step=0">';
+		wp_install_language_form( $languages );
+		echo '</form>';
+		break;
+	}
 
-		// Deliberately fall through if we can't reach the translations API.
+	// Deliberately fall through if we can't reach the translations API.
 
-	case 0:
-		if ( ! empty( $language ) ) {
-			$loaded_language = wp_download_language_pack( $language );
-			if ( $loaded_language ) {
-				load_default_textdomain( $loaded_language );
-				$GLOBALS['wp_locale'] = new WP_Locale();
-			}
+case 0:
+	if ( ! empty( $language ) ) {
+		$loaded_language = wp_download_language_pack( $language );
+		if ( $loaded_language ) {
+			load_default_textdomain( $loaded_language );
+			unset( $app['locale'] );
+			$app['locale'] = $app['locale.factory'];
 		}
+	}
 
-		setup_config_display_header();
-		$step_1 = 'setup-config.php?step=1';
-		if ( isset( $_REQUEST['noapi'] ) ) {
-			$step_1 .= '&amp;noapi';
-		}
-		if ( ! empty( $loaded_language ) ) {
-			$step_1 .= '&amp;language=' . $loaded_language;
-		}
+	setup_config_display_header();
+	$step_1 = 'setup-config.php?step=1';
+	if ( $_request->get( 'noapi' ) ) {
+		$step_1 .= '&amp;noapi';
+	}
+	if ( ! empty( $loaded_language ) ) {
+		$step_1 .= '&amp;language=' . $loaded_language;
+	}
 ?>
 <h1 class="screen-reader-text"><?php _e( 'Before getting started' ) ?></h1>
 <p><?php _e( 'Welcome to WordPress. Before getting started, we need some information on the database. You will need to know the following items before proceeding.' ) ?></p>
@@ -177,7 +182,8 @@ switch($step) {
 
 	case 1:
 		load_default_textdomain( $language );
-		$GLOBALS['wp_locale'] = new WP_Locale();
+		unset( $app['locale'] );
+		$app['locale'] = $app['locale.factory'];
 
 		setup_config_display_header();
 	?>
@@ -214,7 +220,7 @@ switch($step) {
 			<td><?php _e( 'If you want to run multiple WordPress installations in a single database, change this.' ); ?></td>
 		</tr>
 	</table>
-	<?php if ( isset( $_GET['noapi'] ) ) { ?><input name="noapi" type="hidden" value="1" /><?php } ?>
+	<?php if ( $_get->get( 'noapi' ) ) { ?><input name="noapi" type="hidden" value="1" /><?php } ?>
 	<input type="hidden" name="language" value="<?php echo esc_attr( $language ); ?>" />
 	<p class="step"><input name="submit" type="submit" value="<?php echo htmlspecialchars( __( 'Submit' ), ENT_QUOTES ); ?>" class="button button-large" /></p>
 </form>
@@ -223,17 +229,18 @@ switch($step) {
 
 	case 2:
 	load_default_textdomain( $language );
-	$GLOBALS['wp_locale'] = new WP_Locale();
+	unset( $app['locale'] );
+	$app['locale'] = $app['locale.factory'];
 
-	$dbname = trim( wp_unslash( $_POST[ 'dbname' ] ) );
-	$uname = trim( wp_unslash( $_POST[ 'uname' ] ) );
-	$pwd = trim( wp_unslash( $_POST[ 'pwd' ] ) );
-	$dbhost = trim( wp_unslash( $_POST[ 'dbhost' ] ) );
-	$prefix = trim( wp_unslash( $_POST[ 'prefix' ] ) );
+	$dbname = trim( wp_unslash( $_post->get( 'dbname' ) ) );
+	$uname = trim( wp_unslash( $_post->get( 'uname' ) ) );
+	$pwd = trim( wp_unslash( $_post->get( 'pwd' ) ) );
+	$dbhost = trim( wp_unslash( $_post->get( 'dbhost' ) ) );
+	$prefix = trim( wp_unslash( $_post->get( 'prefix' ) ) );
 
 	$step_1 = 'setup-config.php?step=1';
 	$install = 'install.php';
-	if ( isset( $_REQUEST['noapi'] ) ) {
+	if ( $_request->get( 'noapi' ) ) {
 		$step_1 .= '&amp;noapi';
 	}
 
@@ -246,21 +253,23 @@ switch($step) {
 
 	$tryagain_link = '</p><p class="step"><a href="' . $step_1 . '" onclick="javascript:history.go(-1);return false;" class="button button-large">' . __( 'Try again' ) . '</a>';
 
-	if ( empty( $prefix ) )
+	if ( empty( $prefix ) ) {
 		wp_die( __( '<strong>ERROR</strong>: "Table Prefix" must not be empty.' . $tryagain_link ) );
+	}
 
 	// Validate $prefix: it can only contain letters, numbers and underscores.
-	if ( preg_match( '|[^a-z0-9_]|i', $prefix ) )
+	if ( preg_match( '|[^a-z0-9_]|i', $prefix ) ) {
 		wp_die( __( '<strong>ERROR</strong>: "Table Prefix" can only contain numbers, letters, and underscores.' . $tryagain_link ) );
+	}
 
 	// Test the db connection.
 	/**#@+
 	 * @ignore
 	 */
-	define('DB_NAME', $dbname);
-	define('DB_USER', $uname);
-	define('DB_PASSWORD', $pwd);
-	define('DB_HOST', $dbhost);
+	define( 'DB_NAME', $dbname);
+	define( 'DB_USER', $uname);
+	define( 'DB_PASSWORD', $pwd);
+	define( 'DB_HOST', $dbhost);
 	/**#@-*/
 
 	// Re-construct $wpdb with these new values.
@@ -273,8 +282,9 @@ switch($step) {
 	 */
 	$wpdb->db_connect();
 
-	if ( ! empty( $wpdb->error ) )
+	if ( ! empty( $wpdb->error ) ) {
 		wp_die( $wpdb->error->get_error_message() . $tryagain_link );
+	}
 
 	$wpdb->query( "SELECT $prefix" );
 	if ( ! $wpdb->last_error ) {
@@ -285,7 +295,7 @@ switch($step) {
 	// Generate keys and salts using secure CSPRNG; fallback to API if enabled; further fallback to original wp_generate_password().
 	try {
 		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|';
-		$max = strlen($chars) - 1;
+		$max = strlen( $chars) - 1;
 		for ( $i = 0; $i < 8; $i++ ) {
 			$key = '';
 			for ( $j = 0; $j < 64; $j++ ) {
@@ -294,14 +304,14 @@ switch($step) {
 			$secret_keys[] = $key;
 		}
 	} catch ( Exception $ex ) {
-		$no_api = isset( $_POST['noapi'] );
+		$no_api = $_post->get( 'noapi' );
 
 		if ( ! $no_api ) {
 			$secret_keys = wp_remote_get( 'https://api.wordpress.org/secret-key/1.1/salt/' );
 		}
 
 		if ( $no_api || is_wp_error( $secret_keys ) ) {
-			$secret_keys = array();
+			$secret_keys = [];
 			for ( $i = 0; $i < 8; $i++ ) {
 				$secret_keys[] = wp_generate_password( 64, true, true );
 			}
@@ -320,39 +330,40 @@ switch($step) {
 			continue;
 		}
 
-		if ( ! preg_match( '/^define\(\'([A-Z_]+)\',([ ]+)/', $line, $match ) )
+		if ( ! preg_match( '/^define\(\'([A-Z_]+)\',([ ]+)/', $line, $match ) ) {
 			continue;
+		}
 
 		$constant = $match[1];
 		$padding  = $match[2];
 
 		switch ( $constant ) {
-			case 'DB_NAME'     :
-			case 'DB_USER'     :
-			case 'DB_PASSWORD' :
-			case 'DB_HOST'     :
-				$config_file[ $line_num ] = "define('" . $constant . "'," . $padding . "'" . addcslashes( constant( $constant ), "\\'" ) . "');\r\n";
-				break;
-			case 'DB_CHARSET'  :
-				if ( 'utf8mb4' === $wpdb->charset || ( ! $wpdb->charset && $wpdb->has_cap( 'utf8mb4' ) ) ) {
-					$config_file[ $line_num ] = "define('" . $constant . "'," . $padding . "'utf8mb4');\r\n";
-				}
-				break;
-			case 'AUTH_KEY'         :
-			case 'SECURE_AUTH_KEY'  :
-			case 'LOGGED_IN_KEY'    :
-			case 'NONCE_KEY'        :
-			case 'AUTH_SALT'        :
-			case 'SECURE_AUTH_SALT' :
-			case 'LOGGED_IN_SALT'   :
-			case 'NONCE_SALT'       :
-				$config_file[ $line_num ] = "define('" . $constant . "'," . $padding . "'" . $secret_keys[$key++] . "');\r\n";
-				break;
+		case 'DB_NAME'     :
+		case 'DB_USER'     :
+		case 'DB_PASSWORD' :
+		case 'DB_HOST'     :
+			$config_file[ $line_num ] = "define( '" . $constant . "'," . $padding . "'" . addcslashes( constant( $constant ), "\\'" ) . "' );\r\n";
+			break;
+		case 'DB_CHARSET'  :
+			if ( 'utf8mb4' === $wpdb->charset || ( ! $wpdb->charset && $wpdb->has_cap( 'utf8mb4' ) ) ) {
+				$config_file[ $line_num ] = "define( '" . $constant . "'," . $padding . "'utf8mb4' );\r\n";
+			}
+			break;
+		case 'AUTH_KEY'         :
+		case 'SECURE_AUTH_KEY'  :
+		case 'LOGGED_IN_KEY'    :
+		case 'NONCE_KEY'        :
+		case 'AUTH_SALT'        :
+		case 'SECURE_AUTH_SALT' :
+		case 'LOGGED_IN_SALT'   :
+		case 'NONCE_SALT'       :
+			$config_file[ $line_num ] = "define( '" . $constant . "'," . $padding . "'" . $secret_keys[$key++] . "' );\r\n";
+			break;
 		}
 	}
 	unset( $line );
 
-	if ( ! is_writable(ABSPATH) ) :
+	if ( ! is_writable( ABSPATH ) ) {
 		setup_config_display_header();
 ?>
 <p><?php
@@ -365,7 +376,7 @@ switch($step) {
 ?></p>
 <textarea id="wp-config" cols="98" rows="15" class="code" readonly="readonly"><?php
 		foreach ( $config_file as $line ) {
-			echo htmlentities($line, ENT_COMPAT, 'UTF-8');
+			echo htmlentities( $line, ENT_COMPAT, 'UTF-8' );
 		}
 ?></textarea>
 <p><?php _e( 'After you&#8217;ve done that, click &#8220;Run the install.&#8221;' ); ?></p>
@@ -373,22 +384,24 @@ switch($step) {
 <script>
 (function(){
 if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
-	var el = document.getElementById('wp-config');
+	var el = document.getElementById( 'wp-config' );
 	el.focus();
 	el.select();
 }
 })();
 </script>
 <?php
-	else :
+	} else {
 		/*
 		 * If this file doesn't exist, then we are using the wp-config-sample.php
 		 * file one level up, which is for the develop repo.
 		 */
-		if ( file_exists( ABSPATH . 'wp-config-sample.php' ) )
+		if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
 			$path_to_wp_config = ABSPATH . 'wp-config.php';
-		else
-			$path_to_wp_config = dirname( ABSPATH ) . '/wp-config.php';
+
+		} else {
+					$path_to_wp_config = dirname( ABSPATH ) . '/wp-config.php';
+		}
 
 		$handle = fopen( $path_to_wp_config, 'w' );
 		foreach ( $config_file as $line ) {
@@ -403,7 +416,7 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 
 <p class="step"><a href="<?php echo $install; ?>" class="button button-large"><?php _e( 'Run the install' ); ?></a></p>
 <?php
-	endif;
+	}
 	break;
 }
 ?>

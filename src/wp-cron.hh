@@ -15,7 +15,7 @@
  * @link     http://wordpress.org
  */
 
-require __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $app = WP\getApp();
 $_post = $app['request']->request;

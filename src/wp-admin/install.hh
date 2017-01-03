@@ -6,23 +6,7 @@
  * @subpackage Administration
  */
 
-// Sanity check.
-if ( false ) {
-?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Error: PHP is not running</title>
-</head>
-<body class="wp-core-ui">
-	<p id="logo"><a href="https://wordpress.org/">WordPress</a></p>
-	<h1>Error: PHP is not running</h1>
-	<p>WordPress requires that your web server is running PHP. Your server does not have PHP installed, or PHP is turned off.</p>
-</body>
-</html>
-<?php
-}
+use function WP\getApp;
 
 /**
  * We are installing WordPress.
@@ -30,10 +14,10 @@ if ( false ) {
  * @since 1.5.1
  * @var bool
  */
-define( 'WP_INSTALLING', true );
+const WP_INSTALLING = true;
 
 /** Load WordPress Bootstrap */
-require_once( dirname( dirname( __FILE__ ) ) . '/wp-load.php' );
+require_once( dirname( __DIR__ ) . '/wp-load.hh' );
 
 /** Load WordPress Administration Upgrade API */
 require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -41,12 +25,9 @@ require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 /** Load WordPress Translation Install API */
 require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
-/** Load wpdb */
-require_once( ABSPATH . WPINC . '/wp-db.php' );
-
 nocache_headers();
 
-$step = isset( $_GET['step'] ) ? (int) $_GET['step'] : 0;
+$step = $_get->getInt( 'step', 0 );
 
 /**
  * Display install header.
@@ -90,20 +71,23 @@ function display_header( $body_classes = '' ) {
  * @param string|null $error
  */
 function display_setup_form( $error = null ) {
-	global $wpdb;
+	$app = getApp();
+	$_post = $app['request']->request;
+	$_request = $app['request']->attributes;
+	$wpdb = $app['db'];
 
 	$sql = $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->esc_like( $wpdb->users ) );
 	$user_table = ( $wpdb->get_var( $sql ) != null );
 
 	// Ensure that Blogs appear in search engines by default.
 	$blog_public = 1;
-	if ( isset( $_POST['weblog_title'] ) ) {
-		$blog_public = isset( $_POST['blog_public'] );
+	if ( $_post->get( 'weblog_title' ) ) {
+		$blog_public = $_post->has( 'blog_public' );
 	}
 
-	$weblog_title = isset( $_POST['weblog_title'] ) ? trim( wp_unslash( $_POST['weblog_title'] ) ) : '';
-	$user_name = isset($_POST['user_name']) ? trim( wp_unslash( $_POST['user_name'] ) ) : '';
-	$admin_email  = isset( $_POST['admin_email']  ) ? trim( wp_unslash( $_POST['admin_email'] ) ) : '';
+	$weblog_title = trim( wp_unslash( $_post->get( 'weblog_title', '' ) ) );
+	$user_name = trim( wp_unslash( $_post->get( 'user_name', '' ) ) );
+	$admin_email  = trim( wp_unslash( $_post->get( 'admin_email', '' ) ) );
 
 	if ( ! is_null( $error ) ) {
 ?>
@@ -117,11 +101,11 @@ function display_setup_form( $error = null ) {
 			<td><input name="weblog_title" type="text" id="weblog_title" size="25" value="<?php echo esc_attr( $weblog_title ); ?>" /></td>
 		</tr>
 		<tr>
-			<th scope="row"><label for="user_login"><?php _e('Username'); ?></label></th>
+			<th scope="row"><label for="user_login"><?php _e( 'Username' ); ?></label></th>
 			<td>
 			<?php
 			if ( $user_table ) {
-				_e('User(s) already exists.');
+				_e( 'User(s) already exists.' );
 				echo '<input name="user_name" type="hidden" value="admin" />';
 			} else {
 				?><input name="user_name" type="text" id="user_login" size="25" value="<?php echo esc_attr( sanitize_user( $user_name, true ) ); ?>" />
@@ -139,9 +123,9 @@ function display_setup_form( $error = null ) {
 			</th>
 			<td>
 				<div class="">
-					<?php $initial_password = isset( $_POST['admin_password'] ) ? stripslashes( $_POST['admin_password'] ) : wp_generate_password( 18 ); ?>
+					<?php $initial_password = $_post->get( 'admin_password' ) ? stripslashes( $_post->get( 'admin_password' ) ) : wp_generate_password( 18 ); ?>
 					<input type="password" name="admin_password" id="pass1" class="regular-text" autocomplete="off" data-reveal="1" data-pw="<?php echo esc_attr( $initial_password ); ?>" aria-describedby="pass-strength-result" />
-					<button type="button" class="button wp-hide-pw hide-if-no-js" data-start-masked="<?php echo (int) isset( $_POST['admin_password'] ); ?>" data-toggle="0" aria-label="<?php esc_attr_e( 'Hide password' ); ?>">
+					<button type="button" class="button wp-hide-pw hide-if-no-js" data-start-masked="<?php echo (int) $_post->has( 'admin_password' ); ?>" data-toggle="0" aria-label="<?php esc_attr_e( 'Hide password' ); ?>">
 						<span class="dashicons dashicons-hidden"></span>
 						<span class="text"><?php _e( 'Hide' ); ?></span>
 					</button>
@@ -203,7 +187,7 @@ function display_setup_form( $error = null ) {
 		</tr>
 	</table>
 	<p class="step"><?php submit_button( __( 'Install WordPress' ), 'large', 'Submit', false, array( 'id' => 'submit' ) ); ?></p>
-	<input type="hidden" name="language" value="<?php echo isset( $_REQUEST['language'] ) ? esc_attr( $_REQUEST['language'] ) : ''; ?>" />
+	<input type="hidden" name="language" value="<?php echo esc_attr( $_request->get( 'language', '' ) ) ?>" />
 </form>
 <?php
 } // end display_setup_form()
@@ -219,18 +203,10 @@ if ( is_blog_installed() ) {
 	);
 }
 
-/**
- * @global string $wp_version
- * @global string $required_php_version
- * @global string $required_mysql_version
- * @global wpdb   $wpdb
- */
-global $wp_version, $required_php_version, $required_mysql_version;
-
 $php_version    = phpversion();
 $mysql_version  = $wpdb->db_version();
-$php_compat     = version_compare( $php_version, $required_php_version, '>=' );
-$mysql_compat   = version_compare( $mysql_version, $required_mysql_version, '>=' ) || file_exists( WP_CONTENT_DIR . '/db.php' );
+$php_compat     = version_compare( $php_version, $app['required_php_version'], '>=' );
+$mysql_compat   = version_compare( $mysql_version, $app['required_mysql_version'], '>=' ) || file_exists( WP_CONTENT_DIR . '/db.php' );
 
 if ( !$mysql_compat && !$php_compat ) {
 	/* translators: 1: WordPress version number, 2: Minimum required PHP version number, 3: Minimum required MySQL version number, 4: Current PHP version number, 5: Current MySQL version number */
@@ -273,44 +249,41 @@ if ( defined( 'DO_NOT_UPGRADE_GLOBAL_TABLES' ) ) {
 	);
 }
 
-/**
- * @global string    $wp_local_package
- * @global WP_Locale $wp_locale
- */
 $language = '';
-if ( ! empty( $_REQUEST['language'] ) ) {
-	$language = preg_replace( '/[^a-zA-Z_]/', '', $_REQUEST['language'] );
-} elseif ( isset( $GLOBALS['wp_local_package'] ) ) {
-	$language = $GLOBALS['wp_local_package'];
+if ( ! empty( $_request->get( 'language' ) ) ) {
+	$language = preg_replace( '/[^a-zA-Z_]/', '', $_request->get( 'language' ) );
+} elseif ( isset( $app['wp_local_package'] ) ) {
+	$language = $app['wp_local_package'];
 }
 
 $scripts_to_print = array( 'jquery' );
 
-switch($step) {
-	case 0: // Step 0
-		if ( wp_can_install_language_pack() && empty( $language ) && ( $languages = wp_get_available_translations() ) ) {
-			$scripts_to_print[] = 'language-chooser';
-			display_header( 'language-chooser' );
-			echo '<form id="setup" method="post" action="?step=1">';
-			wp_install_language_form( $languages );
-			echo '</form>';
-			break;
+switch( $step) {
+case 0: // Step 0
+	if ( wp_can_install_language_pack() && empty( $language ) && ( $languages = wp_get_available_translations() ) ) {
+		$scripts_to_print[] = 'language-chooser';
+		display_header( 'language-chooser' );
+		echo '<form id="setup" method="post" action="?step=1">';
+		wp_install_language_form( $languages );
+		echo '</form>';
+		break;
+	}
+
+	// Deliberately fall through if we can't reach the translations API.
+
+case 1: // Step 1, direct link or from language chooser.
+	if ( ! empty( $language ) ) {
+		$loaded_language = wp_download_language_pack( $language );
+		if ( $loaded_language ) {
+			load_default_textdomain( $loaded_language );
+			unset( $app['locale'] );
+			$app['locale'] = $app['locale.factory'];
 		}
+	}
 
-		// Deliberately fall through if we can't reach the translations API.
+	$scripts_to_print[] = 'user-profile';
 
-	case 1: // Step 1, direct link or from language chooser.
-		if ( ! empty( $language ) ) {
-			$loaded_language = wp_download_language_pack( $language );
-			if ( $loaded_language ) {
-				load_default_textdomain( $loaded_language );
-				$GLOBALS['wp_locale'] = new WP_Locale();
-			}
-		}
-
-		$scripts_to_print[] = 'user-profile';
-
-		display_header();
+	display_header();
 ?>
 <h1><?php _ex( 'Welcome', 'Howdy' ); ?></h1>
 <p><?php _e( 'Welcome to the famous five-minute WordPress installation process! Just fill in the information below and you&#8217;ll be on your way to using the most extendable and powerful personal publishing platform in the world.' ); ?></p>
@@ -319,70 +292,72 @@ switch($step) {
 <p><?php _e( 'Please provide the following information. Don&#8217;t worry, you can always change these settings later.' ); ?></p>
 
 <?php
-		display_setup_form();
-		break;
-	case 2:
-		if ( ! empty( $language ) && load_default_textdomain( $language ) ) {
-			$loaded_language = $language;
-			$GLOBALS['wp_locale'] = new WP_Locale();
-		} else {
-			$loaded_language = 'en_US';
+	display_setup_form();
+	break;
+case 2:
+	if ( ! empty( $language ) && load_default_textdomain( $language ) ) {
+		$loaded_language = $language;
+		unset( $app['locale'] );
+		$app['locale'] = $app['locale.factory'];
+	} else {
+		$loaded_language = 'en_US';
+	}
+
+	if ( ! empty( $wpdb->error ) ) {
+		wp_die( $wpdb->error->get_error_message() );
+	}
+
+	$scripts_to_print[] = 'user-profile';
+
+	// Fill in the data we gathered
+	$weblog_title = trim( wp_unslash( $_post->get( 'weblog_title', '' ) ) );
+	$user_name = trim( wp_unslash( $_post->get( 'user_name', '' ) ) );
+	$admin_password = wp_unslash( $_post->get( 'admin_password', '' ) );
+	$admin_password_check = wp_unslash( $_post->get( 'admin_password2', '' ) );
+	$admin_email  = wp_unslash( $_post->get( 'admin_email', '' ) );
+	$public       = $_post->getInt( 'blog_public', 1 );
+
+	// Check email address.
+	$error = false;
+	if ( empty( $user_name ) ) {
+		// TODO: poka-yoke
+		display_header();
+		display_setup_form( __( 'Please provide a valid username.' ) );
+		$error = true;
+	} elseif ( $user_name != sanitize_user( $user_name, true ) ) {
+		display_header();
+		display_setup_form( __( 'The username you provided has invalid characters.' ) );
+		$error = true;
+	} elseif ( $admin_password != $admin_password_check ) {
+		// TODO: poka-yoke
+		display_header();
+		display_setup_form( __( 'Your passwords do not match. Please try again.' ) );
+		$error = true;
+	} elseif ( empty( $admin_email ) ) {
+		// TODO: poka-yoke
+		display_header();
+		display_setup_form( __( 'You must provide an email address.' ) );
+		$error = true;
+	} elseif ( ! is_email( $admin_email ) ) {
+		// TODO: poka-yoke
+		display_header();
+		display_setup_form( __( 'Sorry, that isn&#8217;t a valid email address. Email addresses look like <code>username@example.com</code>.' ) );
+		$error = true;
+	}
+
+	if ( $error === false ) {
+		$wpdb->show_errors();
+		$result = wp_install( $weblog_title, $user_name, $admin_email, $public, '', wp_slash( $admin_password ), $loaded_language );
+
+		// Log the user in and send them to wp-admin:
+		if ( ! headers_sent() ) {
+			wp_set_auth_cookie( $result['user_id'], true, is_ssl() );
+			wp_redirect( admin_url() );
+			exit;
 		}
 
-		if ( ! empty( $wpdb->error ) )
-			wp_die( $wpdb->error->get_error_message() );
-
-		$scripts_to_print[] = 'user-profile';
-
-		// Fill in the data we gathered
-		$weblog_title = isset( $_POST['weblog_title'] ) ? trim( wp_unslash( $_POST['weblog_title'] ) ) : '';
-		$user_name = isset($_POST['user_name']) ? trim( wp_unslash( $_POST['user_name'] ) ) : '';
-		$admin_password = isset($_POST['admin_password']) ? wp_unslash( $_POST['admin_password'] ) : '';
-		$admin_password_check = isset($_POST['admin_password2']) ? wp_unslash( $_POST['admin_password2'] ) : '';
-		$admin_email  = isset( $_POST['admin_email'] ) ?trim( wp_unslash( $_POST['admin_email'] ) ) : '';
-		$public       = isset( $_POST['blog_public'] ) ? (int) $_POST['blog_public'] : 1;
-
-		// Check email address.
-		$error = false;
-		if ( empty( $user_name ) ) {
-			// TODO: poka-yoke
-			display_header();
-			display_setup_form( __( 'Please provide a valid username.' ) );
-			$error = true;
-		} elseif ( $user_name != sanitize_user( $user_name, true ) ) {
-			display_header();
-			display_setup_form( __( 'The username you provided has invalid characters.' ) );
-			$error = true;
-		} elseif ( $admin_password != $admin_password_check ) {
-			// TODO: poka-yoke
-			display_header();
-			display_setup_form( __( 'Your passwords do not match. Please try again.' ) );
-			$error = true;
-		} elseif ( empty( $admin_email ) ) {
-			// TODO: poka-yoke
-			display_header();
-			display_setup_form( __( 'You must provide an email address.' ) );
-			$error = true;
-		} elseif ( ! is_email( $admin_email ) ) {
-			// TODO: poka-yoke
-			display_header();
-			display_setup_form( __( 'Sorry, that isn&#8217;t a valid email address. Email addresses look like <code>username@example.com</code>.' ) );
-			$error = true;
-		}
-
-		if ( $error === false ) {
-			$wpdb->show_errors();
-			$result = wp_install( $weblog_title, $user_name, $admin_email, $public, '', wp_slash( $admin_password ), $loaded_language );
-
-			// Log the user in and send them to wp-admin:
-			if ( ! headers_sent() ) {
-				wp_set_auth_cookie( $result['user_id'], true, is_ssl() );
-				wp_redirect( admin_url() );
-				exit;
-			}
-
-			// If headers have already been sent, fall back to a "Success!" message:
-			display_header();
+		// If headers have already been sent, fall back to a "Success!" message:
+		display_header();
 ?>
 
 <h1><?php _e( 'Success!' ); ?></h1>
@@ -397,7 +372,7 @@ switch($step) {
 	<tr>
 		<th><?php _e( 'Password' ); ?></th>
 		<td><?php
-		if ( ! empty( $result['password'] ) && empty( $admin_password_check ) ): ?>
+	if ( ! empty( $result['password'] ) && empty( $admin_password_check ) ): ?>
 			<code><?php echo esc_html( $result['password'] ) ?></code><br />
 		<?php endif ?>
 			<p><?php echo $result['password_message'] ?></p>
@@ -408,13 +383,13 @@ switch($step) {
 <p class="step"><a href="<?php echo esc_url( wp_login_url() ); ?>" class="button button-large"><?php _e( 'Log In' ); ?></a></p>
 
 <?php
-		}
-		break;
+	}
+	break;
 }
 
 if ( ! wp_is_mobile() ) {
 	?>
-<script type="text/javascript">var t = document.getElementById('weblog_title'); if (t){ t.focus(); }</script>
+<script type="text/javascript">var t = document.getElementById( 'weblog_title' ); if (t){ t.focus(); }</script>
 	<?php
 }
 
