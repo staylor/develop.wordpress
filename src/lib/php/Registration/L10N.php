@@ -1,4 +1,4 @@
-<?php
+<?hh
 namespace WP\Registration;
 
 use WP\Magic\Data;
@@ -57,6 +57,25 @@ class L10N {
 			'gimme_a_site' => __('Gimme a site!'),
 			'just_a_username' => __('Just a username, please.'),
 			'next' => __('Next'),
+			'no' => __('No'),
+			'yes' => __('Yes'),
+			'privacy' => __('Privacy:'),
+			// @codingStandardsIgnoreLine
+			'allow_search_engines' => __('Allow search engines to index this site.'),
+			// @codingStandardsIgnoreLine
+            'extended_name_rules' => __('Must be at least 4 characters, letters and numbers only. It cannot be changed, so choose carefully!'),
+            'site_title' => __('Site Title:'),
+            'site_language' => __('Site Language:'),
+			'site_domain' => __('Site Domain:'),
+			'site_name' => __('Site Name:'),
+			/* translators: %s: username */
+			'is_your_username' => __('%s is your new username'),
+			// @codingStandardsIgnoreLine
+			'before_you_can_start' => __('But, before you can start using your new username, <strong>you must activate it</strong>.'),
+			/* translators: %s: email address */
+			'check_your_inbox' => __('Check your inbox at %s and click the link given.'),
+			// @codingStandardsIgnoreLine
+			'do_not_activate' => __('If you do not activate your username within two days, you will have to sign up again.'),
  		];
 	}
 }

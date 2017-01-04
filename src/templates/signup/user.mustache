@@ -1,0 +1,26 @@
+<h2>{{ l10n.get_your_own_account }}</h2>
+<form id="setupform" method="post" action="wp-signup.php">
+    <input type="hidden" name="stage" value="validate-user-signup" />
+    {{# doAction }}signup_hidden_fields{{/ doAction }}
+    {{> signup/user-form }}
+    {{# doAction }}signup_extra_fields{{/ doAction }}
+    <p>
+        {{# signupForUser }}
+        <input id="signupblog" type="hidden" name="signup_for" value="user" />
+        {{/ signupForUser }}
+        {{# signupForBlog }}
+        <input id="signupblog" type="hidden" name="signup_for" value="blog" />
+        {{/ signupForBlog }}
+        {{^ signupForUser }}
+            {{^ signupForBlog }}
+            <input id="signupblog" type="radio" name="signup_for" value="blog" {{{ blogChecked }}} />
+            <label class="checkbox" for="signupblog">{{ l10n.gimme_a_site }}</label>
+            <br />
+            <input id="signupuser" type="radio" name="signup_for" value="user" {{{ userChecked }}} />
+            <label class="checkbox" for="signupuser">{{ l10n.just_a_username }}</label>
+            {{/ signupForBlog }}
+        {{/ signupForUser }}
+    </p>
+
+    <p class="submit"><input type="submit" name="submit" class="submit" value="{{ l10n.next }}" /></p>
+</form>

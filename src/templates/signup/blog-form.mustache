@@ -1,4 +1,9 @@
-<label for="blogname">{{ l10n.blogname_label }}</label>
+{{# isSubdomainInstall }}
+<label for="blogname">{{ l10n.site_domain }}</label>
+{{/ isSubdomainInstall }}
+{{^ isSubdomainInstall }}
+<label for="blogname">{{ l10n.site_name }}</label>
+{{/ isSubdomainInstall }}
 {{# errors.name }}
 <p class="error">{{ . }}</p>
 {{/ errors.name }}
@@ -12,7 +17,7 @@
 {{/ isSubdomainInstall }}
 
 {{^ loggedIn }}
-<p>(<strong>{{{ l10n.your_address }}}</strong>) {{{ l10n.name_rules }}}</p>
+<p>(<strong>{{{ l10n.your_address }}}</strong>) {{{ l10n.extended_name_rules }}}</p>
 {{/ loggedIn }}
 
 <label for="blog_title">{{ l10n.site_title }}</label>
