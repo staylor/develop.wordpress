@@ -43,10 +43,7 @@ if (false !== strpos($charset, 'UTF-7')) {
  *
  * @since 0.71
  */
-$trackback_response = function ($error = 0, $error_message = '') use (
-    $app,
-    $response
-) {
+$trackback_response = ($error = 0, $error_message = '') ==> {
     $response->setCharset($app['charset']);
     $response->headers->set('Content-Type', 'text/xml');
 

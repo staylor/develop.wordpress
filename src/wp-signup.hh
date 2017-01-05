@@ -51,7 +51,7 @@ add_action('wp_head', 'wp_no_robots');
 add_action('wp_head', () ==> do_action('signup_header'));
 
 // Load the theme template.
-require_once ABSPATH . WPINC . '/template-loader.php';
+require_once ABSPATH . WPINC . '/template-loader.hh';
 
 // Fix for page title
 $app['wp']->current_query->is_404 = false;
